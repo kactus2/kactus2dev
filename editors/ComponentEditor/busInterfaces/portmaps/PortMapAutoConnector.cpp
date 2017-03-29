@@ -56,7 +56,7 @@ PortMapAutoConnector::~PortMapAutoConnector()
 //-----------------------------------------------------------------------------
 void PortMapAutoConnector::setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV,
     General::InterfaceMode newMode,
-    QString systemGroup)
+    QString const& systemGroup)
 {
     interfaceMode_ = newMode;
     systemGroup_ =  systemGroup;

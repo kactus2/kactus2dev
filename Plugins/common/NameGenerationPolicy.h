@@ -23,7 +23,7 @@ namespace NameGenerationPolicy
 	 *
 	 *      @return The resolved name for the file set.
 	 */
-	QString systemViewFilesetName( QString systemViewName );
+	QString systemViewFilesetName(QString const& systemViewName);
 	
     /*!
      *  Returns name of a instance file set, based on the name of it. and its system view.
@@ -33,7 +33,7 @@ namespace NameGenerationPolicy
 	 *
 	 *      @return The resolved name for the file set.
 	 */
-	QString instanceFilesetName( QString systemViewName, QString instanceName );
+	QString instanceFilesetName(QString const& systemViewName, QString const& instanceName);
 	
     /*!
      *  Returns name of a verilog structural view, based on name of another view.
@@ -42,7 +42,7 @@ namespace NameGenerationPolicy
 	 *
 	 *      @return The resolved name for the verilog structural view.
 	 */
-	QString verilogStructuralViewName( QString viewName );
+	QString verilogStructuralViewName(QString const& viewName);
 	
     /*!
      *  Returns name of a generic flat view.
@@ -58,7 +58,7 @@ namespace NameGenerationPolicy
 	 *
 	 *      @return The resolved name for the instantiation.
 	 */
-	QString verilogComponentInstantiationName( QString viewName );
+	QString verilogComponentInstantiationName(QString const& viewName);
 	
     /*!
      *  Returns name of a vhdl component instantiation, based on name of its associated view.
@@ -67,7 +67,7 @@ namespace NameGenerationPolicy
 	 *
 	 *      @return The resolved name for the instantiation.
 	 */
-	QString vhdlComponentInstantiationName( QString viewName );
+	QString vhdlComponentInstantiationName(QString const& viewName);
 	
     /*!
      *  Returns name of a design instantiation, based on name of its associated view.
@@ -76,7 +76,7 @@ namespace NameGenerationPolicy
 	 *
 	 *      @return The resolved name for the instantiation.
 	 */
-	QString designInstantiationName( QString viewName );
+	QString designInstantiationName(QString const& viewName);
 	
     /*!
      *  Returns name of a design configuration instantiation, based on name of its associated view.
@@ -85,7 +85,7 @@ namespace NameGenerationPolicy
 	 *
 	 *      @return The resolved name for the instantiation.
 	 */
-	QString designConfigurationInstantiationName( QString viewName );
+	QString designConfigurationInstantiationName(QString const& viewName);
 };
 
 #endif

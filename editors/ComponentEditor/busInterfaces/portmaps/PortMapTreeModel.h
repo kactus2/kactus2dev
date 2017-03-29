@@ -162,7 +162,7 @@ public:
      *      @param [in] mode            The used bus interface mode.
      *      @param [in] systemGroup     The used system group in case of system mode.
 	 */
-	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString systemGroup);
+	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString const& systemGroup);
 
     /*!
      *  Get the list of acceptable mime types.

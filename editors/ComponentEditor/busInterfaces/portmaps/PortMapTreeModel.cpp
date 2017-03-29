@@ -1000,7 +1000,7 @@ void PortMapTreeModel::reset()
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeModel::setAbsType()
 //-----------------------------------------------------------------------------
-void PortMapTreeModel::setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString systemGroup)
+void PortMapTreeModel::setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString const& systemGroup)
 {
     interfaceMode_ = mode;
     systemGroup_ = systemGroup;

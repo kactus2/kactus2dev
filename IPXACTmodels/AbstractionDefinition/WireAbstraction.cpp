@@ -285,7 +285,7 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
     {
         return DirectionTypes::convert2Mirrored(getSlavePort()->getDirection());
     }   
-    else if (mode == General::SYSTEM && !getSystemPorts()->isEmpty())
+    else if (mode == General::SYSTEM)
     {
         QSharedPointer<WirePort> systemPort = findSystemPort(systemGroup);
 
@@ -295,7 +295,7 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
         }
 
     } 
-    else if (mode == General::MIRROREDSYSTEM && !getSystemPorts()->isEmpty())
+    else if (mode == General::MIRROREDSYSTEM)
     {
         QSharedPointer<WirePort> systemPort = findSystemPort(systemGroup);
 
@@ -304,10 +304,8 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
             return DirectionTypes::convert2Mirrored(systemPort->getDirection());
         }
     }
-    else
-    {
-        return DirectionTypes::DIRECTION_INVALID;
-    }
+
+    return DirectionTypes::DIRECTION_INVALID;
 }
 
 
@@ -324,7 +322,7 @@ QString WireAbstraction::getWidth(General::InterfaceMode mode, QString const& sy
     {
         return getSlavePort()->getWidth();
     }                        
-    else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) && !getSystemPorts()->isEmpty())
+    else if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
     {
         QSharedPointer<WirePort> systemPort = findSystemPort(systemGroup);
 
@@ -334,10 +332,7 @@ QString WireAbstraction::getWidth(General::InterfaceMode mode, QString const& sy
         }
     } 
 
-    else
-    {
-        return QString();
-    }
+    return QStringLiteral("");
 }
 
 //-----------------------------------------------------------------------------

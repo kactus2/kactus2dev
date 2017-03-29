@@ -649,7 +649,7 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
                 QSharedPointer<PortAbstraction> absPort = absDef->getPort(portMap->getLogicalPort()->name_);
                 if (absPort && absPort->hasWire())
                 {
-                    showLogicalIndex = absPort->getWire()->getWidth(busInterface->getInterfaceMode()).toInt() > 1; 
+                    showLogicalIndex = absPort->getWire()->getWidth(busInterface->getInterfaceMode(), busInterface->getSystem()).toInt() > 1; 
                 }                
             }
         }

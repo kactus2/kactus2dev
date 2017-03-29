@@ -70,5 +70,5 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/MasterInterface.cpp \
     ../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \
-    ./tst_businterfaceReader.cpp \
+    ./tst_BusInterfaceReader.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp
