@@ -236,14 +236,14 @@ bool BusInterfaceValidator::abstractionTypeHasValidPortMaps(QSharedPointer<BusIn
         }
         else if (!abstraction->getPortMaps()->isEmpty())
         {
-            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode());
+            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode(), busInterface->getSystem());
 
             MemoryReserve reservedArea;
             foreach (QSharedPointer<PortMap> portMap, *abstraction->getPortMaps())
             {
                 if (abstractionDefinition && portMap->getLogicalPort() &&
                     !logicalPortHasValidPresence(abstractionDefinition, portMap->getLogicalPort()->name_,
-                    busInterface->getInterfaceMode()))
+                    busInterface->getInterfaceMode(), busInterface->getSystem()))
                 {
                     return false;
                 }
@@ -292,9 +292,9 @@ bool BusInterfaceValidator::requiredPortAbstractionsAreMapped(QSharedPointer<Bus
     {
         foreach (QSharedPointer<PortAbstraction> logicalPort, *abstractionDefinition->getLogicalPorts())
         {
-            if (logicalPort->hasMode(busInterface->getInterfaceMode()) &&
-                logicalPort->getPresence(busInterface->getInterfaceMode()) == PresenceTypes::REQUIRED &&
-                !logicalPortHasReferencingPortMaps(logicalPort->name(), portMaps))
+            if (logicalPort->hasMode(busInterface->getInterfaceMode(), busInterface->getSystem()) &&
+                logicalPort->getPresence(busInterface->getInterfaceMode(), busInterface->getSystem())
+                == PresenceTypes::REQUIRED && !logicalPortHasReferencingPortMaps(logicalPort->name(), portMaps))
             {
                 return false;
             }
@@ -345,12 +345,12 @@ QSharedPointer<AbstractionDefinition const> BusInterfaceValidator::getAbstractio
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::logicalPortHasValidPresence(
     QSharedPointer<AbstractionDefinition const> abstractionDefinition, QString const& logicalPortName,
-    General::InterfaceMode mode) const
+    General::InterfaceMode mode, QString systemGroup) const
 {
     QSharedPointer<PortAbstraction> logicalPort =
         getLogicalPort(logicalPortName, abstractionDefinition);
 
-    if (logicalPort && logicalPort->getPresence(mode) == PresenceTypes::ILLEGAL)
+    if (logicalPort && logicalPort->getPresence(mode, systemGroup) == PresenceTypes::ILLEGAL)
     {
         return false;
     }
@@ -913,7 +913,7 @@ void BusInterfaceValidator::findErrorsInAbstractionPortMaps(QVector<QString>& er
 
         if (!abstraction->getPortMaps()->isEmpty())
         {
-            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode());
+            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode(), busInterface->getSystem());
 
             QStringList portNames;
 
@@ -923,7 +923,7 @@ void BusInterfaceValidator::findErrorsInAbstractionPortMaps(QVector<QString>& er
             {
                 if (abstractionDefinition && portMap->getLogicalPort() &&
                     !logicalPortHasValidPresence(abstractionDefinition, portMap->getLogicalPort()->name_,
-                    busInterface->getInterfaceMode()) && !portNames.contains(portMap->getLogicalPort()->name_))
+                    busInterface->getInterfaceMode(), busInterface->getSystem()) && !portNames.contains(portMap->getLogicalPort()->name_))
                 {
                     errors.append(QObject::tr("Logical port %1 with presence 'ILLEGAL' mapped within %2.")
                         .arg(portMap->getLogicalPort()->name_)
@@ -972,9 +972,9 @@ void BusInterfaceValidator::findErrorsInRequiredPortAbstractions(QVector<QString
     {
         foreach (QSharedPointer<PortAbstraction> logicalPort, *abstractionDefinition->getLogicalPorts())
         {
-            if (logicalPort->hasMode(busInterface->getInterfaceMode()) &&
-                logicalPort->getPresence(busInterface->getInterfaceMode()) == PresenceTypes::REQUIRED &&
-                !logicalPortHasReferencingPortMaps(logicalPort->name(), portMaps))
+            if (logicalPort->hasMode(busInterface->getInterfaceMode(), busInterface->getSystem()) &&
+                logicalPort->getPresence(busInterface->getInterfaceMode(), busInterface->getSystem())
+                == PresenceTypes::REQUIRED && !logicalPortHasReferencingPortMaps(logicalPort->name(), portMaps))
             {
                 errors.append(QObject::tr("Logical port %1 with presence 'REQUIRED' is not mapped within %2.")
                     .arg(logicalPort->name())

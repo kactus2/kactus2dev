@@ -158,10 +158,11 @@ public:
 	/*!
      *  Set the abstraction definition that is used in this port map.
 	 *
-	 *      @param [in] vlnv    Identifies the abstraction definition.
-     *      @param [in] mode    The used bus interface mode.
+	 *      @param [in] vlnv            Identifies the abstraction definition.
+     *      @param [in] mode            The used bus interface mode.
+     *      @param [in] systemGroup     The used system group in case of system mode.
 	 */
-	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
+	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString systemGroup);
 
     /*!
      *  Get the list of acceptable mime types.
@@ -422,6 +423,9 @@ private:
 
     //! Specifies the interface mode of this bus interface
     General::InterfaceMode interfaceMode_;
+
+    //! The system group name in case of system mode.
+    QString systemGroup_;
 
     //! The used expression formatter.
     QSharedPointer<ExpressionFormatter> formatter_;

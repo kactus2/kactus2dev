@@ -55,11 +55,6 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
     setItemSettings();
     createRoute(endpoint1_, endpoint2_);
 
-    if (endpoint1_->isAdHoc())
-    {
-        setLineWidth(1);
-    }
-
     if (autoConnect)
     {
         endpoint1_->onConnect(endpoint2_);

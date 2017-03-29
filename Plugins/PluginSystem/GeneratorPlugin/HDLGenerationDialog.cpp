@@ -194,7 +194,7 @@ void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput>
         return;
     }
 
-    QColor const& highlightColor = KactusColors::WARNING;
+    QColor const& highlightColor = QColor::fromRgb(183,225,252);
 
     QTextCursor cursor = previewer_->textCursor();
     cursor.setPosition(implementationStart);

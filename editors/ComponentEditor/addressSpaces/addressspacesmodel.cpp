@@ -189,7 +189,7 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
         {
-            return KactusColors::MANDATORY_FIELD;
+            return KactusColors::DISABLED_TEXT;
         }
         
         return blackForValidOrRedForInvalidIndex(index);

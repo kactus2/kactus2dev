@@ -59,7 +59,7 @@ QDialog(parent),
         expressionFormatter, parameterFinder, portMapValidator, this);
 
     portmapWidget_->setAbsType(*busIf->getAbstractionTypes()->first()->getAbstractionRef(),
-        busIf->getInterfaceMode());
+        busIf->getInterfaceMode(), busIf_->getSystem());
 
     // Create a separator.
     QGroupBox* separator = new QGroupBox(this);

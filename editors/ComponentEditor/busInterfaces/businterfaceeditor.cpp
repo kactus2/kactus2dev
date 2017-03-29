@@ -97,7 +97,7 @@ void BusInterfaceEditor::onTabChange(int index)
         }
 
 		// update the abstraction type
-        portmapsEditor_.setAbsType(generalEditor_.getAbsType(), busMode);
+        portmapsEditor_.setAbsType(generalEditor_.getAbsType(), busMode, busif_->getSystem());
 	}
 }
 

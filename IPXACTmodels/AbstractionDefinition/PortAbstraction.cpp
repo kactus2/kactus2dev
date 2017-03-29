@@ -253,7 +253,7 @@ bool PortAbstraction::requiresDriver() const
 //-----------------------------------------------------------------------------
 // Function: PortAbstraction::getPresence()
 //-----------------------------------------------------------------------------
-PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode) const
+PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode, QString const& systemGroup) const
 {
     if (hasWire())
     {
@@ -268,16 +268,13 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
         else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) &&
             !wire_->getSystemPorts()->isEmpty())
         {
-            PresenceTypes::Presence systemPresence = wire_->getSystemPorts()->first()->getPresence();
             foreach (QSharedPointer<WirePort> systemPort, *wire_->getSystemPorts())
             {
-                if (systemPort->getPresence() != systemPresence)
+                if (systemPort->getSystemGroup() == systemGroup)
                 {
-                    return PresenceTypes::UNKNOWN;
+                    return systemPort->getPresence();
                 }
             }
-
-            return systemPresence;
         }
     }
 
@@ -287,11 +284,11 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
 //-----------------------------------------------------------------------------
 // Function: PortAbstraction::hasMode()
 //-----------------------------------------------------------------------------
-bool PortAbstraction::hasMode(General::InterfaceMode mode) const
+bool PortAbstraction::hasMode(General::InterfaceMode mode, QString const& systemGroup) const
 {
     if (hasWire())
     {
-        return wire_->hasMode(mode);
+        return wire_->hasMode(mode, systemGroup);
     }
     else
     {

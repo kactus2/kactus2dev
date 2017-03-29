@@ -62,10 +62,11 @@ public:
     /*!
      *  Update the available logical ports.
      *
-     *      @param [in] vlnv    The VLNV the of the abstraction definition containing the logical ports.
-     *      @param [in] mode    The new bus interface mode.
+     *      @param [in] vlnv            The VLNV the of the abstraction definition containing the logical ports.
+     *      @param [in] mode            The new bus interface mode.
+     *      @param [in] systemGroup     The new bus interface system group.
      */
-    void updateLogicalPortNames(VLNV const& vlnv, General::InterfaceMode mode);
+    void updateLogicalPortNames(VLNV const& vlnv, General::InterfaceMode mode, QString const& systemGroup);
 
     /*!
 	 *  Create a new editor for the given item.

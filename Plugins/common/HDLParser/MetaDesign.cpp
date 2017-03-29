@@ -148,10 +148,12 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 void MetaDesign::parseDesign()
 {
     parseInstances();
-    parseInterconnections();
-    parseAdHocs();
 
-    removeUnconnectedAssignments();
+    parseInterconnections();
+    removeUnconnectedInterfaceAssignments();
+
+    parseAdHocs();
+    removeUnconnectedAdHocAssignments();
 }
 
 //-----------------------------------------------------------------------------
@@ -180,6 +182,20 @@ void MetaDesign::parseInstances()
         {
             QString activeViewName = designConf_->getActiveView(instance->getInstanceName());
             activeView = component->getModel()->findView(activeViewName);
+        }
+
+        // No chosen active view -> If there is only one in the component, use it.
+        if (!activeView && component->getViews()->size() > 0)
+        {
+            if (component->getViews()->size() == 1)
+            {
+                activeView = component->getViews()->first();
+            }
+            else
+            {
+                messages_->errorMessage(QObject::tr("Design %1: Instance %2 did not have specified active view, and its component %3 has multiple possible views, so no active view was chosen.")
+                    .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
+            }
         }
 
         // Cull the CEVS for the instance.
@@ -390,7 +406,7 @@ void MetaDesign::wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
                     mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
                 }
 
-                mWire->refCount = mWire->refCount+  1;
+                mWire->refCount = mWire->refCount + 1;
                 mpa->wire_ = mWire;
                 // Also assign larger bounds for wire, if applicable.
                 assignLargerBounds(mWire, mpa->logicalBounds_);
@@ -594,9 +610,48 @@ void MetaDesign::parseAdHocs()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaDesign::removeUnconnectedAssignments()
+// Function: MetaDesign::removeUnconnectedInterfaceAssignments()
 //-----------------------------------------------------------------------------
-void MetaDesign::removeUnconnectedAssignments()
+void MetaDesign::removeUnconnectedInterfaceAssignments()
+{
+    // Go through each meta instance.
+    foreach(QSharedPointer<MetaInstance> mInstance, *instances_)
+    {
+        foreach(QSharedPointer<MetaInterface> mInterface, *mInstance->getInterfaces())
+        {
+            if (mInterface->upInterconnection_)
+            {
+                continue;
+            }
+
+            // Go through its ports.
+            foreach(QSharedPointer<MetaPort> mPort, mInterface->ports_)
+            {
+                mPort->upAssignments_.clear();
+            }
+        }
+    }
+
+    // Go through ports of the top instance.
+    foreach(QSharedPointer<MetaInterface> mInterface, *topInstance_->getInterfaces())
+    {
+        if (mInterface->downInterconnection_)
+        {
+            continue;
+        }
+
+        // Go through its ports.
+        foreach(QSharedPointer<MetaPort> mPort, mInterface->ports_)
+        {
+            mPort->downAssignments_.clear();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::removeUnconnectedAdHocAssignments()
+//-----------------------------------------------------------------------------
+void MetaDesign::removeUnconnectedAdHocAssignments()
 {
     // Go through each meta instance.
     foreach(QSharedPointer<MetaInstance> mInstance, *instances_)
@@ -610,6 +665,7 @@ void MetaDesign::removeUnconnectedAssignments()
             while (iter != end)
             {
                 QSharedPointer<MetaPortAssignment> mpa = *iter;
+                bool isAdHocWire = getAdHocWires()->contains(mpa->wire_);
 
                 // Wire does not have at least two users -> remove.
                 if (mpa->wire_ && mpa->wire_->refCount < 2)
@@ -617,8 +673,8 @@ void MetaDesign::removeUnconnectedAssignments()
                     mpa->wire_ = QSharedPointer<MetaWire>();
                 }
 
-                // Remove port that do not match the criteria.
-                if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
+                // Remove port assignment that do not match the criteria. Applies only to the ad hoc wires.
+                if (!mpa->wire_ && mpa->defaultValue_.isEmpty() && isAdHocWire)
                 {
                     iter = mPort->upAssignments_.erase(iter);
                 }
@@ -639,15 +695,16 @@ void MetaDesign::removeUnconnectedAssignments()
         while (iter != end)
         {
             QSharedPointer<MetaPortAssignment> mpa = *iter;
+            bool isAdHocWire = getAdHocWires()->contains(mpa->wire_);
 
-            // Wire does not have at least two users -> remove.
+            // Wire does not have at least two users -> remove. Applies only to the ad hoc wires.
             if (mpa->wire_ && mpa->wire_->refCount < 2)
             {
                 mpa->wire_ = QSharedPointer<MetaWire>();
             }
 
-            // Remove port that do not match the criteria.
-            if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
+            // Remove port assignment that do not match the criteria. Applies only to the ad hoc wires.
+            if (!mpa->wire_ && mpa->defaultValue_.isEmpty() && isAdHocWire)
             {
                 iter = mPort->downAssignments_.erase(iter);
             }

@@ -50,6 +50,7 @@ handler_(handler),
 containingBusInterface_(busif),
 absDef_(),
 interfaceMode_(General::MASTER),
+systemGroup_(),
 formatter_(expressionFormatter),
 portMappings_(),
 portMapValidator_(portMapValidator)
@@ -289,7 +290,7 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
 
         else if (!index.parent().isValid() && index.column() == PortMapsColumns::LOGICAL_PRESENCE)
         {
-            PresenceTypes::Presence requirement = abstractPort->getPresence(interfaceMode_);
+            PresenceTypes::Presence requirement = abstractPort->getPresence(interfaceMode_, systemGroup_);
             if (requirement == PresenceTypes::UNKNOWN)
             {
                 requirement = PresenceTypes::OPTIONAL;
@@ -385,7 +386,7 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
             DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
             if (absDef_ && abstractPort)
             {
-                direction = absDef_->getPortDirection(abstractPort->name(), interfaceMode_);
+                direction = absDef_->getPortDirection(abstractPort->name(), interfaceMode_, systemGroup_);
             }
 
             return getIconForDirection(direction);
@@ -431,7 +432,7 @@ QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
 {
     if (!index.parent().isValid())
     {
-        if (logicalPort->getPresence(interfaceMode_) == PresenceTypes::REQUIRED &&
+        if (logicalPort->getPresence(interfaceMode_, systemGroup_) == PresenceTypes::REQUIRED &&
             index.column() == PortMapsColumns::PHYSICAL_PORT)
         {
             return KactusColors::MANDATORY_FIELD;
@@ -610,7 +611,7 @@ QVariant PortMapTreeModel::getLogicalLeftBound(QSharedPointer<PortAbstraction> l
         QSharedPointer<WireAbstraction> abstractWire = logicalPort->getWire();
         if (abstractWire)
         {
-            QString logicalWidth = abstractWire->getWidth(interfaceMode_);
+            QString logicalWidth = abstractWire->getWidth(interfaceMode_, systemGroup_);
             if (!logicalWidth.isEmpty())
             {
                 int logicalLeft = parseExpressionToDecimal(logicalWidth).toInt() - 1;
@@ -944,7 +945,7 @@ void PortMapTreeModel::reset()
     {
         foreach (QSharedPointer<PortAbstraction> logicalPort, *absDef_->getLogicalPorts())
         {
-            if (logicalPort->hasMode(interfaceMode_))
+            if (logicalPort->hasMode(interfaceMode_, systemGroup_))
             {
                 PortMapping newMapping;
                 newMapping.logicalPort_ = logicalPort;
@@ -999,9 +1000,10 @@ void PortMapTreeModel::reset()
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeModel::setAbsType()
 //-----------------------------------------------------------------------------
-void PortMapTreeModel::setAbsType(VLNV const& vlnv, General::InterfaceMode mode)
+void PortMapTreeModel::setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString systemGroup)
 {
     interfaceMode_ = mode;
+    systemGroup_ = systemGroup;
 
     absDef_ = QSharedPointer<AbstractionDefinition>();
 
@@ -1067,7 +1069,7 @@ QVariant PortMapTreeModel::expressionOrValueForIndex(QModelIndex const& index) c
     }
     else if (index.column() == PortMapsColumns::LOGICAL_PRESENCE)
     {
-        return PresenceTypes::presence2Str(abstractPort->getPresence(interfaceMode_));
+        return PresenceTypes::presence2Str(abstractPort->getPresence(interfaceMode_, systemGroup_));
     }
     else
     {
@@ -1109,7 +1111,7 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
         (!physicalPortName.isEmpty() || physicalPortName.compare(MULTIPLE_SELECTED) != 0) && physicalPort &&
         logicalPort->getWire())
     {
-        DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_);
+        DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_, systemGroup_);
         DirectionTypes::Direction physicalDirection = physicalPort->getDirection();
         if ((logicalDirection != physicalDirection && (physicalDirection != DirectionTypes::INOUT && 
             physicalDirection != DirectionTypes::DIRECTION_PHANTOM)) ||
@@ -1173,7 +1175,7 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
     {
         QSharedPointer<PortAbstraction> logicalPort = portMappings_.at(index.row()).logicalPort_;
         bool hasPortMaps = !portMappings_.at(index.row()).portMaps_.isEmpty();
-        if (logicalPort && (logicalPort->getPresence(interfaceMode_) == PresenceTypes::ILLEGAL) && hasPortMaps)
+        if (logicalPort && (logicalPort->getPresence(interfaceMode_, systemGroup_) == PresenceTypes::ILLEGAL) && hasPortMaps)
         {
             return false;
         }

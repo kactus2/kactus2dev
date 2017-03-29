@@ -108,7 +108,7 @@ void BusInterfaceWizardBusDefinitionEditorPage::initializePage()
         mappingMode_ = GENERATE_SINGLE;
         QString logicalSignal = absDef->getPortNames(busIf_->getInterfaceMode()).first();
         createLogicalMappings(physicalPorts_, logicalSignal, 
-            absDef->getPortDirection(logicalSignal, busIf_->getInterfaceMode()));
+            absDef->getPortDirection(logicalSignal, busIf_->getInterfaceMode(), busIf_->getSystem()));
     }
     else
     {
@@ -310,7 +310,7 @@ void BusInterfaceWizardBusDefinitionEditorPage::createPortMaps()
                         logicalMax = lowerLogical + portWidth;
                     }
 
-                    QString absWidth = absDef->getPort(logicalName)->getWire()->getWidth(busIf_->getInterfaceMode());
+                    QString absWidth = absDef->getPort(logicalName)->getWire()->getWidth(busIf_->getInterfaceMode(), busIf_->getSystem());
                     if (absWidth.isEmpty() || higherLogical < absWidth.toInt())
                     {
                         QSharedPointer<PortMap> portMap(new PortMap());

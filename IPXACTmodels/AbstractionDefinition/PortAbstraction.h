@@ -153,20 +153,22 @@ public:
     /*!
      *  Gets the presence requirement for the port in given interface mode.
      *
-     *      @param [in] mode   The mode to get the presence for.
+     *      @param [in] mode            The mode to get the presence for.
+     *      @param [in] systemGroup     The system group, if applicable.
      *
      *      @return The required presence for the mode.
      */
-    PresenceTypes::Presence getPresence(General::InterfaceMode mode) const;
+    PresenceTypes::Presence getPresence(General::InterfaceMode mode, QString const& systemGroup) const;
 
     /*!
      *  Check if the port has the selected interface mode.
      *
-     *      @param [in] mode    The selected interface mode.
+     *      @param [in] mode            The selected interface mode.
+     *      @param [in] systemGroup     The system group, if applicable.
      *
      *      @return True, if the port has the selected mode, otherwise false.
      */
-    bool hasMode(General::InterfaceMode mode) const;
+    bool hasMode(General::InterfaceMode mode, QString const& systemGroup) const;
 
 private:
 

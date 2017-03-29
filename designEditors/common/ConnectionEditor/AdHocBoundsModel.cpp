@@ -48,7 +48,7 @@ AdHocBoundsModel::~AdHocBoundsModel()
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::setConnection()
 //-----------------------------------------------------------------------------
-void AdHocBoundsModel::setConnection(AdHocConnectionItem* connection, QSharedPointer<IEditProvider> editProvider)
+void AdHocBoundsModel::setConnection(QSharedPointer<AdHocConnection> connection, QSharedPointer<IEditProvider> editProvider)
 {
     editProvider_ = editProvider;
     connection_ = connection;
@@ -117,14 +117,14 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role) const
             {
                 return part->getLeftRange();
             }
-            else if (index.row() == 0)
+            /*else if (index.row() == 0)
             {
                 return connection_->endpoint1()->getPort()->getLeftBound();
             }
             else if (index.row() == 1)
             {
                 return connection_->endpoint2()->getPort()->getLeftBound();
-            }
+            }*/
         }
 
         else if (index.column() == AdHocBoundColumns::RIGHT_BOUND)
@@ -135,14 +135,14 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role) const
             {
                 return part->getRightRange();
             }
-            else if (index.row() == 0)
+            /*else if (index.row() == 0)
             {
                 return connection_->endpoint1()->getPort()->getRightBound();
             }
             else if (index.row() == 1)
             {
                 return connection_->endpoint2()->getPort()->getRightBound();
-            }
+            }*/
         }
     }   
 
@@ -256,13 +256,13 @@ Qt::ItemFlags AdHocBoundsModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int AdHocBoundsModel::getEndpointCount() const
 {
-    if (connection_ == 0 || connection_->getAdHocConnection() == 0)
+    if (connection_ == 0)
     {
         return 0;
     }
 
-    return connection_->getAdHocConnection()->getInternalPortReferences()->count() +
-        connection_->getAdHocConnection()->getExternalPortReferences()->count();
+    return connection_->getInternalPortReferences()->count() +
+        connection_->getExternalPortReferences()->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -270,13 +270,13 @@ int AdHocBoundsModel::getEndpointCount() const
 //-----------------------------------------------------------------------------
 QSharedPointer<PortReference> AdHocBoundsModel::getEndpoint(int row) const
 {
-    int internalPortCount = connection_->getAdHocConnection()->getInternalPortReferences()->count();
+    int internalPortCount = connection_->getInternalPortReferences()->count();
     if (row < internalPortCount)
     {
-        return connection_->getAdHocConnection()->getInternalPortReferences()->at(row);
+        return connection_->getInternalPortReferences()->at(row);
     }
     else
     {
-        return connection_->getAdHocConnection()->getExternalPortReferences()->at(row - internalPortCount);
+        return connection_->getExternalPortReferences()->at(row - internalPortCount);
     }
 }

@@ -51,9 +51,11 @@ public:
      *
      *      @param [in] newAbstractionReference     Abstraction definition of the new bus interface.
      *      @param [in] newInterfaceMode            Interface mode of the new bus interface.
+     *      @param [in] newSystemGroup              Used system group of the new bus interface.
      */
     void busInterfaceChanged(QSharedPointer<ConfigurableVLNVReference> newAbstractionReference,
-        General::InterfaceMode newInterfaceMode);
+        General::InterfaceMode newInterfaceMode,
+        QString const& newSystemGroup);
 
     /*!
      *  Handle the change of abstraction definition.
@@ -288,6 +290,9 @@ private:
 
     //! Interface mode of the containing bus interface.
     General::InterfaceMode interfaceMode_;
+
+    //! The system group name in case of system mode.
+    QString systemGroup_;
 
     //! The library interface.
     LibraryInterface* libraryHandler_;

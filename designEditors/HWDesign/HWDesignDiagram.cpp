@@ -1550,7 +1550,7 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
                 DirectionTypes::Direction directionOverride = sourcePort->getDirection();
                 if (absDef && absDef->hasPort(logicalName, mode))
                 { 
-                    directionOverride = absDef->getPortDirection(logicalName, mode);
+                    directionOverride = absDef->getPortDirection(logicalName, mode, target->getBusInterface()->getSystem());
                 }
 
                 QSharedPointer<Port> clonePort = createConnectingPhysicalPort(sourcePort, directionOverride, reservedNames);
@@ -2361,6 +2361,12 @@ void HWDesignDiagram::createAdHocTieOffConnection(QSharedPointer<AdHocConnection
     foreach (QSharedPointer<PortReference> internalPort, *connection->getInternalPortReferences())
     {
         HWComponentItem* comp1 = getComponentItem(internalPort->getComponentRef());
+
+        if (!comp1)
+        {
+            continue;
+        }
+
         AdHocItem* componentPort = comp1->getAdHocPort(internalPort->getPortRef());
 
         if (!componentPort)
