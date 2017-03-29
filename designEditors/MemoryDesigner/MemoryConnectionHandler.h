@@ -97,6 +97,34 @@ private:
     MemoryConnectionHandler(MemoryConnectionHandler const& rhs);
     MemoryConnectionHandler& operator=(MemoryConnectionHandler const& rhs);
 
+    //! Path variables determined during connection path examination.
+    struct ConnectionPathVariables
+    {
+        //! The base address number of the path interfaces.
+        quint64 baseAddressNumber_;
+
+        //! Address change caused by mirrored slave bus interfaces.
+        quint64 mirroredSlaveAddressChange_;
+
+        //! End address of the memory map modified by mirrored slave interfaces.
+        quint64 memoryMapEndAddress_;
+
+        //! Base address modified by the interface bridges.
+        quint64 spaceChainBaseAddress_;
+
+        //! Flag for paths that have gone through a mirrored slave with a remapped address range.
+        bool hasRemapRange_;
+
+        //! Flag for paths that have gone through a bridge.
+        bool isChainedSpaceConnection_;
+
+        //! Address space items referenced by the bridged master bus interfaces of the path.
+        QVector<MainMemoryGraphicsItem*> spaceChain_;
+
+        //! The last address space item that will be connected to the memory map item.
+        MainMemoryGraphicsItem* spaceItemConnectedToMapItem_;
+    };
+
     /*!
      *  Create a memory connection between an address space and a memory map.
      *
@@ -113,6 +141,117 @@ private:
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
         int& spaceYPlacement, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
         MemoryColumn* spaceColumn, qreal& previousConnectionLow);
+
+    /*!
+     *  Get the end item for the memory connection.
+     *
+     *      @param [in] startInterface  Start interface of the memory connection path.
+     *      @param [in] endInterface    End interface of the memory connection path.
+     *
+     *      @return The end item of the memory connection.
+     */
+    MainMemoryGraphicsItem* getConnectionEndItem(QSharedPointer<ConnectivityInterface> startInterface,
+        QSharedPointer<ConnectivityInterface> endInterface) const;
+
+    /*!
+     *  Get the starting base address of the memory connection.
+     *
+     *      @param [in] startInterface  Start interface of the memory connection path.
+     *      @param [in] endInterface    End interface of the memory connection path.
+     *
+     *      @return Starting base address of the memory connection.
+     */
+    quint64 getStartingBaseAddress(QSharedPointer<ConnectivityInterface> startInterface,
+        QSharedPointer<ConnectivityInterface> endInterface) const;
+
+    /*!
+     *  Examine the connection path for master or mirrored slave interfaces..
+     *
+     *      @param [in] baseAddressNumber       Base address number of the memory connection.
+     *      @param [in] connectionStartItem     Start item of the memory connection.
+     *      @param [in] connectionEndItem       End item of the memory connection.
+     *      @param [in] startInterface          Start interface of the connection path.
+     *      @param [in] endInterface            End interface of the connection path.
+     *      @param [in] connectionPath          The connection path.
+     *      @param [in] spaceColumn             Memory column for address space items.
+     *      @param [in] placedSpaceItems        List of all the placed address space items.
+     *      @param [in] spaceYPlacement         Y-coordinate of the next address space item.
+     *
+     *      @return List of variable changes caused by the interfaces on the connection path.
+     */
+    ConnectionPathVariables examineConnectionPath(quint64 baseAddressNumber,
+        MainMemoryGraphicsItem* connectionStartItem, MainMemoryGraphicsItem* connectionEndItem,
+        QSharedPointer<ConnectivityInterface> startInterface, QSharedPointer<ConnectivityInterface> endInterface,
+        QVector<QSharedPointer<ConnectivityInterface> > connectionPath, MemoryColumn* spaceColumn,
+        QSharedPointer<QVector<MainMemoryGraphicsItem* > > placedSpaceItems, int& spaceYPlacement);
+
+    /*!
+     *  Calculate the remapped base address for the memory connection.
+     *
+     *      @param [in] memoryMapBaseAddress                Base address of the memory map item.
+     *      @param [in] baseAddressNumber                   Base address of the memory connection.
+     *      @param [in] spaceChainConnectionBaseAddress     Base address modifier caused by the bridged interfaces.
+     *      @param [in] mirroredSlaveAddressChange          Address change caused by the mirrored slave interfaces.
+     *      @param [in] hasRemapRange                       Flag for remapped connection range.
+     *
+     *      @return The remapped base address of the memory connection.
+     */
+    quint64 getRemappedBaseAddress(quint64 memoryMapBaseAddress, quint64 baseAddressNumber,
+        quint64 spaceChainConnectionBaseAddress, quint64 mirroredSlaveAddressChange, bool hasRemapRange) const;
+
+    /*!
+     *  Get the initial transfer in y-coordinate for the memory connection.
+     *
+     *      @param [in] baseAddressNumber                   Base address of the memory connection.
+     *      @param [in] mirroredSlaveAddressChange          Address change caused by the mirrored slave interfaces.
+     *      @param [in] hasRemapRange                       Flag for remapped connection range.
+     *      @param [in] memoryMapBaseAddress                Base address of the connected memory map item.
+     *      @param [in] spaceChainConnectionBaseAddress     Base address modified caused by the bridged interfaces.
+     *
+     *      @return The initial transfer value for the memory connection item.
+     */
+    qreal getConnectionInitialTransferY(quint64 baseAddressNumber, quint64 mirroredSlaveAddressChange,
+        bool hasRemapRange, quint64 memoryMapBaseAddress, quint64 spaceChainConnectionBaseAddress) const;
+
+    /*!
+     *  Place the memory map item.
+     *
+     *      @param [in] connectionEndItem           End item of the memory connection.
+     *      @param [in] connectionStartItem         Start item of the memory connection.
+     *      @param [in] yTransfer                   Memory connection transfer in the y-coordinate.
+     *      @param [in] hasRemapRange               Flag for remapped connection range.
+     *      @param [in] memoryMapBaseAddress        Base address of the connected memory map.
+     *      @param [in] spaceItemPlaced             Flag for placed address space item.
+     *      @param [in] isChainedSpaceConnection    Flag for bridged bus interfaces on the path.
+     *      @param [in] placedMapItems              List of all the placed memory map items.
+     *      @param [in] placedSpaceItems            List of all the placed address space items.
+     *      @param [in] memoryMapColumn             Column containing the memory map items.
+     *      @param [in] spaceColumn                 Column containing the address space items.
+     *      @param [in] spaceYPlacement             Y-coordinate for the address space item.
+     */
+    void placeMemoryMapItem(MainMemoryGraphicsItem* connectionEndItem, MainMemoryGraphicsItem* connectionStartItem,
+        qreal yTransfer, bool hasRemapRange, quint64 memoryMapBaseAddress, bool spaceItemPlaced,
+        bool isChainedSpaceConnection, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems, MemoryColumn* memoryMapColumn,
+        MemoryColumn* spaceColumn, int& spaceYPlacement);
+
+    /*!
+     *  Create the memory connection item.
+     *
+     *      @param [in] connectionStartItem     Start item of the memory connection.
+     *      @param [in] connectionEndItem       End item of the memory connection.
+     *      @param [in] remappedAddress         Remapped base address of the memory connection.
+     *      @param [in] remappedEndAddress      Remapped last address of the memory connection.
+     *      @param [in] memoryMapBaseAddress    Base address of the memory map item.
+     *      @param [in] hasRemapRange           Flag for remapped connection range.
+     *      @param [in] yTransfer               Memory connection transfer in y-coordinate.
+     *      @param [in] previousConnectionLow   Lowest point of the previous memory connection.
+     *      @param [in] spaceYPlacement         Y-coordinate for the address space item.
+     */
+    void createMemoryConnectionItem(MainMemoryGraphicsItem* connectionStartItem,
+        MainMemoryGraphicsItem* connectionEndItem, quint64 remappedAddress, quint64 remappedEndAddress,
+        quint64 memoryMapBaseAddress, bool hasRemapRange, qreal yTransfer, qreal& previousConnectionLow,
+        int& spaceYPlacement);
 
     /*!
      *  Check and reposition a memory map to a memory map overlap column if needed.
