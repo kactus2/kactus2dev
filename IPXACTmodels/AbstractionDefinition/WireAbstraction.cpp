@@ -304,10 +304,8 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
             return DirectionTypes::convert2Mirrored(systemPort->getDirection());
         }
     }
-    else
-    {
-        return DirectionTypes::DIRECTION_INVALID;
-    }
+
+     return DirectionTypes::DIRECTION_INVALID;
 }
 
 
@@ -334,10 +332,7 @@ QString WireAbstraction::getWidth(General::InterfaceMode mode, QString const& sy
         }
     } 
 
-    else
-    {
-        return QString();
-    }
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
