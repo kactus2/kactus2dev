@@ -551,7 +551,7 @@ private:
      *      @return True, if the logical port has a valid presence, otherwise false.
      */
     bool logicalPortHasValidPresence(QSharedPointer<AbstractionDefinition const> abstractionDefinition,
-        QString const& logicalPortName, General::InterfaceMode mode) const;
+        QString const& logicalPortName, General::InterfaceMode mode, QString systemGroup) const;
 
     /*!
      *  Check if the required logical ports have port maps.

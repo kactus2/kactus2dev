@@ -20,6 +20,7 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 
 #include <QPen>
 #include <QIcon>
@@ -62,7 +63,7 @@ void PortMapTreeDelegate::updatePortNames(QStringList newPortNames)
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeDelegate::updateLogicalPortNames()
 //-----------------------------------------------------------------------------
-void PortMapTreeDelegate::updateLogicalPortNames(VLNV const& vlnv, General::InterfaceMode mode)
+void PortMapTreeDelegate::updateLogicalPortNames(VLNV const& vlnv, General::InterfaceMode mode, QString const& systemGroup)
 {
     logicalPortNames_.clear();
 
@@ -78,8 +79,16 @@ void PortMapTreeDelegate::updateLogicalPortNames(VLNV const& vlnv, General::Inte
             {
                 foreach(QSharedPointer<PortAbstraction> logicalPort, *abstractionDefinition->getLogicalPorts())
                 {
-                    if (logicalPort->hasMode(mode))
+                    if (logicalPort->hasMode(mode, systemGroup))
                     {
+                        if (mode == General::SYSTEM)
+                        {
+                            if (!logicalPort->getWire()->findSystemPort(systemGroup))
+                            {
+                                continue;
+                            }
+                        }
+
                         logicalPortNames_.append(logicalPort->name());
                     }
                 }

@@ -184,6 +184,20 @@ void MetaDesign::parseInstances()
             activeView = component->getModel()->findView(activeViewName);
         }
 
+        // No chosen active view -> If there is only one in the component, use it.
+        if (!activeView && component->getViews()->size() > 0)
+        {
+            if (component->getViews()->size() == 1)
+            {
+                activeView = component->getViews()->first();
+            }
+            else
+            {
+                messages_->errorMessage(QObject::tr("Design %1: Instance %2 did not have specified active view, and its component %3 has multiple possible views, so no active view was chosen.")
+                    .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
+            }
+        }
+
         // Cull the CEVS for the instance.
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs
              (new QList<QSharedPointer<ConfigurableElementValue> >);

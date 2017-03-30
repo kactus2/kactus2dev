@@ -194,6 +194,15 @@ private:
      *      @return Y-coordinate for the unconnected memory items.
      */
     quint64 getUnconnectedItemPosition(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems) const;
+
+    /*!
+     *  Get the first address space graphics item connected the memory item.
+     *
+     *      @param [in] memoryItem  The selected memory item.
+     *
+     *      @return The first connected address space graphics item.
+     */
+    MainMemoryGraphicsItem* getFirstConnectedAddressSpaceItem(MainMemoryGraphicsItem* memoryItem);
 };
 
 //-----------------------------------------------------------------------------

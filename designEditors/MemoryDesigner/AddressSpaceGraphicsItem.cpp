@@ -182,8 +182,6 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
         connectionItem->condenseToUnCutAddresses(visitedMemoryItems, unCutAddresses, CUTMODIFIER);
     }
 
-    QList<quint64> unCutAddressesInList = unCutAddresses.toList();
-
     connectionIterator.toFront();
     quint64 cutAreaBegin = getBaseAddress();
     quint64 itemLastAddress = getLastAddress();

@@ -310,7 +310,7 @@ void BusInterfaceWizardBusDefinitionEditorPage::createPortMaps()
                         logicalMax = lowerLogical + portWidth;
                     }
 
-                    QString absWidth = absDef->getPort(logicalName)->getWire()->getWidth(busIf_->getInterfaceMode());
+                    QString absWidth = absDef->getPort(logicalName)->getWire()->getWidth(busIf_->getInterfaceMode(), busIf_->getSystem());
                     if (absWidth.isEmpty() || higherLogical < absWidth.toInt())
                     {
                         QSharedPointer<PortMap> portMap(new PortMap());

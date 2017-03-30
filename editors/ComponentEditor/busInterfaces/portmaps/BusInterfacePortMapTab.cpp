@@ -161,7 +161,7 @@ void BusInterfacePortMapTab::refresh()
 void BusInterfacePortMapTab::setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString systemGroup)
 {
     portMapsModel_.setAbsType(vlnv, mode, systemGroup);
-    portMapsDelegate_->updateLogicalPortNames(vlnv, mode);
+    portMapsDelegate_->updateLogicalPortNames(vlnv, mode, systemGroup);
     autoConnector_.setAbstractionDefinition(vlnv, mode, systemGroup);
 
     refresh();

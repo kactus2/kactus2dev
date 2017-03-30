@@ -234,7 +234,7 @@ QStringList AbstractionDefinition::getPortNames(General::InterfaceMode mode) con
 // Function: AbstractionDefinition::getPortDirection()
 //-----------------------------------------------------------------------------
 DirectionTypes::Direction AbstractionDefinition::getPortDirection(QString const& portName,
-    General::InterfaceMode mode, QString newSystemGroup) const
+    General::InterfaceMode mode, QString const& newSystemGroup) const
 {
     if (logicalPorts_)
     {

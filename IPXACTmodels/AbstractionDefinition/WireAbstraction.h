@@ -80,8 +80,13 @@ public:
      *      @return The system ports for the wire.
      */
     QSharedPointer<QList<QSharedPointer<WirePort> > > getSystemPorts() const;
-
-    QSharedPointer<WirePort> findSystemPort(QString groupName) const;
+    
+    /*!
+     *  Finds system port corresponding the name.
+     *
+     *      @return The wire port corresponding the name if it exists, else null.
+     */
+    QSharedPointer<WirePort> findSystemPort(QString const& groupName) const;
 
     /*!
      *  Checks if the wire has a port definition for master mode.
@@ -162,25 +167,27 @@ public:
      *      @return The direction of the wire for the given interface mode.
      */
     DirectionTypes::Direction getDirection(General::InterfaceMode mode,
-        QString systemGroup) const;
+        QString const& systemGroup) const;
 
     /*!
      *  Gets the wire width for a given interface mode.
      *
-     *      @param [in] mode   The mode to get the width for.
+     *      @param [in] mode            The mode to get the width for.
+     *      @param [in] systemGroup     The system group to get widthn for.
      *
      *      @return The width of the wire for the given interface mode.
      */
-    QString getWidth(General::InterfaceMode mode) const;
+    QString getWidth(General::InterfaceMode mode, QString const& systemGroup) const;
 
     /*!
      *  Check if the wire has the selected interface mode.
      *
-     *      @param [in] mode    The selected interface mode.
+     *      @param [in] mode            The selected interface mode.
+     *      @param [in] systemGroup     The selected interface system group.
      *
      *      @return True, if the wire has the selected mode, otherwise false.
      */
-    bool hasMode(General::InterfaceMode mode) const;
+    bool hasMode(General::InterfaceMode mode, QString const& systemGroup) const;
 
 private:
 

@@ -172,6 +172,10 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
         MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
         if (memoryItem && memoryItem->isVisible())
         {
+            MainMemoryGraphicsItem* originalItem = memoryItem;
+
+            memoryItem = getFirstConnectedAddressSpaceItem(memoryItem);
+
             qreal memoryItemLowBefore = memoryItem->getLowestPointOfConnectedItems();
 
             if (condenseMemoryItems && !memoryItem->isCompressed())
@@ -179,7 +183,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
                 memoryItem->condenseItemAndChildItems(movedConnectionItems);
             }
 
-            extendMemoryItem(memoryItem, spaceYPlacement);
+            extendMemoryItem(originalItem, spaceYPlacement);
 
             if (condenseMemoryItems)
             {
@@ -225,6 +229,32 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
             memoryItem->createOverlappingSubItemMarkings();
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::getFirstConnectedAddressSpaceItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryColumn::getFirstConnectedAddressSpaceItem(MainMemoryGraphicsItem* memoryItem)
+{
+    MainMemoryGraphicsItem* firstItem = memoryItem;
+
+    AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
+    if (spaceItem)
+    {
+        qreal spaceTop = spaceItem->sceneBoundingRect().top();
+
+        foreach (MainMemoryGraphicsItem* topSpaceItem, spaceItem->getAllConnectedSpaceItems())
+        {
+            qreal connectedTop = topSpaceItem->sceneBoundingRect().top();
+            if (connectedTop < spaceTop)
+            {
+                spaceTop = connectedTop;
+                firstItem = topSpaceItem;
+            }
+        }
+    }
+
+    return firstItem;
 }
 
 //-----------------------------------------------------------------------------
