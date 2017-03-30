@@ -16,7 +16,6 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/common/Association/AssociationAddCommand.h \
     ../../../designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ../../../designEditors/common/Association/AssociationRemoveCommand.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
     ../../../common/graphicsItems/CommonGraphicsUndoCommands.h \
     ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h \
     ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h \
@@ -24,6 +23,7 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
     ../../../common/graphicsItems/ConnectionUndoCommands.h \
     ../../../designEditors/common/DesignDiagramResolver.h \
+    ../../../library/LibraryItem.h \
     ../../MockObjects/DesignWidgetFactoryMock.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
@@ -32,6 +32,7 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/HWDeleteCommands.h \
     ../../../designEditors/HWDesign/HWMoveCommands.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.h \
     ../../../common/widgets/assistedLineEdit/LineContentAssistWidget.h \
     ../../../designEditors/common/NamelabelWidth.h \
     ../../../editors/ComponentEditor/common/NullParser.h \
@@ -53,6 +54,7 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/widgets/assistedLineEdit/AssistedLineEdit.h \
     ../../../designEditors/HWDesign/BusInterfaceDialog.h \
     ../../../designEditors/HWDesign/BusInterfaceItem.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
     ../../../designEditors/HWDesign/BusPortItem.h \
     ../../../designEditors/HWDesign/views/CellEditTableView.h \
     ../../../designEditors/common/StickyNote/ColorFillTextItem.h \
@@ -113,17 +115,14 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/widgets/tabDocument/TabDocument.h \
     ../../../designEditors/common/ConfigurationEditor/activeviewmodel.h \
     ../../../kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ../../../library/LibraryManager/libraryitem.h \
     ../../../common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ../../../common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ../../../common/validators/LibraryPathValidator/librarypathvalidator.h \
     ../../../common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
     ../../../common/delegates/LineEditDelegate/lineeditdelegate.h \
     ../../../common/dialogs/newObjectDialog/newobjectdialog.h \
-    ../../../common/widgets/vlnvEditor/vlnveditor.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.h
-SOURCES += ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.cpp \
-    ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
+    ../../../common/widgets/vlnvEditor/vlnveditor.h
+SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../../designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
     ../../../designEditors/HWDesign/AdHocConnectionItem.cpp \
     ../../../designEditors/HWDesign/AdHocEnabled.cpp \
@@ -161,6 +160,7 @@ SOURCES += ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAl
     ../../../designEditors/common/DesignDiagram.cpp \
     ../../../designEditors/common/DesignDiagramResolver.cpp \
     ../../../designEditors/common/DesignWidget.cpp \
+    ../../../library/LibraryItem.cpp \
     ../../MockObjects/DesignWidgetFactoryMock.cpp \
     ../../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
@@ -183,6 +183,7 @@ SOURCES += ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAl
     ../../MockObjects/HWDesignWidgetMock.cpp \
     ../../../designEditors/HWDesign/HWMoveCommands.cpp \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.cpp \
     ../../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
@@ -227,7 +228,6 @@ SOURCES += ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAl
     ../../../common/widgets/vlnvEditor/VLNVDataTree.cpp \
     ../../../designEditors/common/ConfigurationEditor/activeviewmodel.cpp \
     ../../../kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ../../../library/LibraryManager/libraryitem.cpp \
     ../../../common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
     ../../../common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.cpp \
     ../../../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
