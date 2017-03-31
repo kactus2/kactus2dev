@@ -345,7 +345,7 @@ QSharedPointer<AbstractionDefinition const> BusInterfaceValidator::getAbstractio
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::logicalPortHasValidPresence(
     QSharedPointer<AbstractionDefinition const> abstractionDefinition, QString const& logicalPortName,
-    General::InterfaceMode mode, QString systemGroup) const
+    General::InterfaceMode mode, QString const& systemGroup) const
 {
     QSharedPointer<PortAbstraction> logicalPort =
         getLogicalPort(logicalPortName, abstractionDefinition);

@@ -965,9 +965,9 @@ void MainWindow::setupMenus()
 
 	// The "Edit" group.
 	editGroup_ = ribbon_->addGroup(tr("Edit"));	
-    editGroup_->addAction(actUndo_);
-	editGroup_->addAction(actRedo_);
     editGroup_->addAction(actRefresh_);
+    editGroup_->addAction(actUndo_);
+	editGroup_->addAction(actRedo_);    
 	editGroup_->setVisible(false);
 	editGroup_->setEnabled(false);
 
@@ -1032,11 +1032,11 @@ void MainWindow::setupMenus()
 
 	//! The "View" group.
 	RibbonGroup* viewGroup = ribbon_->addGroup(tr("View"));
-	viewGroup->addAction(actZoomIn_);
+	viewGroup->addAction(actVisibleDocks_);
+    viewGroup->addAction(actZoomIn_);
 	viewGroup->addAction(actZoomOut_);
 	viewGroup->addAction(actZoomOriginal_);
-	viewGroup->addAction(actFitInView_);
-	viewGroup->addAction(actVisibleDocks_);
+	viewGroup->addAction(actFitInView_);	
     viewGroup->addAction(actVisibilityControl_);
     viewGroup->addAction(openMemoryDesignerAction_);
 

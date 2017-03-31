@@ -547,11 +547,12 @@ private:
      *      @param [in] abstractionDefinition   The abstraction definition containing the logical port.
      *      @param [in] logicalPortName         The name of the logical port.
      *      @param [in] mode                    Interface mode used in the containing bus interface.
+     *      @param [in] systemGroup             System group used in the containing bus interface.
      *
      *      @return True, if the logical port has a valid presence, otherwise false.
      */
     bool logicalPortHasValidPresence(QSharedPointer<AbstractionDefinition const> abstractionDefinition,
-        QString const& logicalPortName, General::InterfaceMode mode, QString systemGroup) const;
+        QString const& logicalPortName, General::InterfaceMode mode, QString const& systemGroup) const;
 
     /*!
      *  Check if the required logical ports have port maps.

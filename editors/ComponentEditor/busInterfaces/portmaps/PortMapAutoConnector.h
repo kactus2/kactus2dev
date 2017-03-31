@@ -64,7 +64,7 @@ public:
      *      @param [in] systemGroup                 The used system group in case of system mode.
      */
     void setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV, General::InterfaceMode newMode,
-        QString systemGroup);
+        QString const& systemGroup);
 
 public slots:
 

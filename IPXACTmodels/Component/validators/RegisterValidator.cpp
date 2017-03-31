@@ -115,7 +115,7 @@ bool RegisterValidator::hasValidDimension(QSharedPointer<Register> selectedRegis
         QString solvedValue = expressionParser_->parseExpression(selectedRegister->getDimension());
 
         bool toIntOk = true;
-        quint64 intValue = solvedValue.toULongLong(&toIntOk);
+        solvedValue.toULongLong(&toIntOk);
 
         return toIntOk;
     }
@@ -307,7 +307,7 @@ bool RegisterValidator::fieldHasValidAccess(QSharedPointer<RegisterDefinition> s
         (registerAccess == AccessTypes::READ_WRITEONCE && (fieldAccess == AccessTypes::READ_ONLY ||
             fieldAccess == AccessTypes::READ_WRITEONCE || fieldAccess == AccessTypes::WRITEONCE)) ||
         (registerAccess == AccessTypes::WRITEONCE && fieldAccess == AccessTypes::WRITEONCE) ||
-        registerAccess == AccessTypes::ACCESS_COUNT ||
+        registerAccess == AccessTypes::ACCESS_COUNT || fieldAccess == AccessTypes::ACCESS_COUNT ||
         registerAccess == AccessTypes::READ_WRITE)
      {
          return true;

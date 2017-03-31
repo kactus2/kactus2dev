@@ -274,7 +274,7 @@ QVariant EnumerationModel::getEnumerationColumnData(int row, int role) const
         }
         else if (role == Qt::ForegroundRole)
         { 
-            return KactusColors::MANDATORY_FIELD;
+            return KactusColors::DISABLED_TEXT;
         }        
     }
 

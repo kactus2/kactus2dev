@@ -68,5 +68,5 @@ SOURCES += ../../../IPXACTmodels/Component/MasterInterface.cpp \
     ../../../IPXACTmodels/Component/BusInterface.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \
-    ./tst_businterfaceWriter.cpp \
+    ./tst_BusInterfaceWriter.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp

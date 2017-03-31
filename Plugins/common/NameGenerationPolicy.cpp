@@ -20,7 +20,7 @@
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::systemViewFilesetName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::systemViewFilesetName( QString systemViewName )
+	QString NameGenerationPolicy::systemViewFilesetName(QString const& systemViewName)
 	{
 		return systemViewName + SYSVIEW_FILESET_SUFFIX;
 	}
@@ -28,7 +28,7 @@
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::systemViewFilesetName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::instanceFilesetName( QString systemViewName, QString instanceName )
+	QString NameGenerationPolicy::instanceFilesetName(QString const& systemViewName, QString const& instanceName)
 	{
 		return systemViewName + "_" + instanceName + INSTANCE_FILESET_SUFFIX;
 	}
@@ -36,7 +36,7 @@
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::verilogStructuralViewName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::verilogStructuralViewName( QString viewName )
+	QString NameGenerationPolicy::verilogStructuralViewName(QString const& viewName)
 	{
 		return viewName + "_verilog";
 	}
@@ -52,7 +52,7 @@
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::verilogComponentInstanceName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::verilogComponentInstantiationName( QString viewName )
+	QString NameGenerationPolicy::verilogComponentInstantiationName(QString const& viewName)
 	{
 		return viewName + "_verilog_component";
 	}
@@ -60,7 +60,7 @@
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::vhdlComponentInstanceName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::vhdlComponentInstantiationName( QString viewName )
+	QString NameGenerationPolicy::vhdlComponentInstantiationName(QString const& viewName)
 	{
 		return viewName + "_vhdl_component";
 	}
@@ -68,7 +68,7 @@
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::designInstanceName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::designInstantiationName( QString viewName )
+	QString NameGenerationPolicy::designInstantiationName(QString const& viewName)
 	{
 		return viewName + "_design";
 	}
@@ -76,7 +76,7 @@
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::designConfigurationInstanceName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::designConfigurationInstantiationName( QString viewName )
+	QString NameGenerationPolicy::designConfigurationInstantiationName(QString const& viewName)
 	{
 		return viewName + "_design_configuration";
 	}
