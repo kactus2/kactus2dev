@@ -597,8 +597,7 @@ void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > register
             }
 
             QStringList registerHeaders;
-            registerHeaders << "Offset [AUB]" << "Size [bits]" << "Dimension" << "Volatile" << "Access" <<
-                "Reset value" << "Reset mask";
+            registerHeaders << "Offset [AUB]" << "Size [bits]" << "Dimension" << "Volatile" << "Access";
             QString title = "List of values in " + currentRegister->name() + ".";
             writeTableElement(registerHeaders, title, stream);
 
@@ -649,7 +648,7 @@ void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QT
 
         QStringList fieldHeaders;
         fieldHeaders << "Field name" << "Offset [bits]" << "Width [bits]" << "Volatile" << "Access" <<
-            "Description";
+            "Reset value" << "Reset mask" << "Description";
         QString title = "List of fields contained within register " + currentRegister->name() + ".";
         writeTableElement(fieldHeaders, title, stream);
 
@@ -680,6 +679,8 @@ void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QT
             stream << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << currentField->getVolatile().toString()  << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentField->getAccess()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(currentField->getResetValue()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(currentField->getResetMask()) << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << currentField->description() << "</td>" << endl;
             stream << "\t\t\t\t</tr>" << endl;
         }

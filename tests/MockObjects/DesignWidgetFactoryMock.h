@@ -15,7 +15,7 @@
 #include <designEditors/common/DesignWidgetFactory.h>
 #include <designEditors/common/DesignWidget.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/libraryinterface.h>
 
 //-----------------------------------------------------------------------------
 //! Mock class for constructing design widgets.
