@@ -216,6 +216,8 @@ private:
     /*!
      *  Place the memory map item.
      *
+     *      @param [in] connectionBaseAddress       Base address of the current memory connection.
+     *      @param [in] connectionLastAddress       Last address of the current memory connection.
      *      @param [in] connectionEndItem           End item of the memory connection.
      *      @param [in] connectionStartItem         Start item of the memory connection.
      *      @param [in] yTransfer                   Memory connection transfer in the y-coordinate.
@@ -229,9 +231,10 @@ private:
      *      @param [in] spaceColumn                 Column containing the address space items.
      *      @param [in] spaceYPlacement             Y-coordinate for the address space item.
      */
-    void placeMemoryMapItem(MainMemoryGraphicsItem* connectionEndItem, MainMemoryGraphicsItem* connectionStartItem,
-        qreal yTransfer, bool hasRemapRange, quint64 memoryMapBaseAddress, bool spaceItemPlaced,
-        bool isChainedSpaceConnection, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
+    void placeMemoryMapItem(quint64 connectionBaseAddress, quint64 connectionLastAddress,
+        MainMemoryGraphicsItem* connectionEndItem, MainMemoryGraphicsItem* connectionStartItem, qreal yTransfer,
+        bool hasRemapRange, quint64 memoryMapBaseAddress, bool spaceItemPlaced, bool isChainedSpaceConnection,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems, MemoryColumn* memoryMapColumn,
         MemoryColumn* spaceColumn, int& spaceYPlacement);
 
@@ -256,13 +259,16 @@ private:
     /*!
      *  Check and reposition a memory map to a memory map overlap column if needed.
      *
+     *      @param [in] connectionBaseAddress   Lowest base address connected to the selected memory item.
+     *      @param [in] connectionLastAddress   Highest last address connected to the selected memory item.
      *      @param [in] placedMaps              A list of placed memory map items.
      *      @param [in] memoryItem              The selected memory map item.
      *      @param [in] originalColumn          The original column of the memory map item.
      *      @param [in] connectionStartItem     The start item of the memory map connection.
      */
-    void checkMemoryMapRepositionToOverlapColumn(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
-        MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, MainMemoryGraphicsItem* connectionStartItem);
+    void checkMemoryMapRepositionToOverlapColumn(quint64 connectionBaseAddress, quint64 connectionLastAddress,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps, MainMemoryGraphicsItem* memoryItem,
+        MemoryColumn* originalColumn, MainMemoryGraphicsItem* connectionStartItem);
 
     /*!
      *  Reposition the selected memory map item.

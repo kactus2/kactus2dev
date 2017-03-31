@@ -125,6 +125,8 @@ public:
     /*!
      *  Check if a memory map overlaps within this column.
      *
+     *      @param [in] connectionBaseAddress   Lowest base address of the connections in the selected memory item.
+     *      @param [in] connectionLastAddress   Highest last address of the connections in the selected memory item.
      *      @param [in] memoryGraphicsItem      The selected memory map item.
      *      @param [in] memoryItemRect          Bounding rectangle of the selected memory map item.
      *      @param [in] memoryPenWidth          Line width of the memory map item.
@@ -133,8 +135,9 @@ public:
      *
      *      @return True if the memory map overlaps another item in this column, false otherwise.
      */
-    bool memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraphicsItem, QRectF memoryItemRect,
-        int memoryPenWidth, QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
+    bool memoryMapOverlapsInColumn(quint64 connectionBaseAddress, quint64 connectionLastAddress,
+        MainMemoryGraphicsItem* memoryGraphicsItem, QRectF memoryItemRect, int memoryPenWidth,
+        QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const;
 
     /*!
