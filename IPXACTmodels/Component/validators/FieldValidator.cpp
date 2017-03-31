@@ -109,7 +109,7 @@ bool FieldValidator::hasValidBitOffset(QSharedPointer<Field> field) const
     QString solvedValue = expressionParser_->parseExpression(field->getBitOffset());
 
     bool changeOk = true;
-    quint64 intValue = solvedValue.toULongLong(&changeOk);
+    solvedValue.toULongLong(&changeOk);
 
     return changeOk;
 }

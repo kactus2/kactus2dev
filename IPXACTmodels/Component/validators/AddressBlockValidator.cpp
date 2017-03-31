@@ -112,7 +112,7 @@ bool AddressBlockValidator::hasValidBaseAddress(QSharedPointer<AddressBlock> add
 
     QString parsedBaseAddress = addressBlock->getBaseAddress();
 
-    quint64 baseAddress = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toULongLong(&toIntOk);
+    expressionParser_->parseExpression(addressBlock->getBaseAddress()).toULongLong(&toIntOk);
 
     return toIntOk;
 }
@@ -134,7 +134,7 @@ bool AddressBlockValidator::hasValidRange(QSharedPointer<AddressBlock> addressBl
 bool AddressBlockValidator::hasValidWidth(QSharedPointer<AddressBlock> addressBlock) const
 {
     bool toIntOk = true;
-    quint64 width = expressionParser_->parseExpression(addressBlock->getWidth()).toULongLong(&toIntOk);
+    expressionParser_->parseExpression(addressBlock->getWidth()).toULongLong(&toIntOk);
 
     return toIntOk;
 }
