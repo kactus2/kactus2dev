@@ -197,6 +197,20 @@ public:
      */
     qreal getLowestPointOfConnectedItems();
 
+    /*!
+     *  Get the lowest base address of all the connected memory items.
+     *
+     *      @return The lowest base address of all the connected memory items.
+     */
+    quint64 getLowestConnectedBaseAddress() const;
+
+    /*!
+     *  Get the highest last address of all the connected memory items.
+     *
+     *      @return The highest last address of all the connected memory items.
+     */
+    quint64 getHighestConnectedLastAddress() const;
+
 protected:
 
     /*!

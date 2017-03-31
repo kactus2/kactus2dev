@@ -510,3 +510,39 @@ qreal MainMemoryGraphicsItem::getLowestPointOfConnectedItems()
 
     return lowestPoint;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getLowestConnectedBaseAddress()
+//-----------------------------------------------------------------------------
+quint64 MainMemoryGraphicsItem::getLowestConnectedBaseAddress() const
+{
+    quint64 lowestBaseAddress = getBaseAddress();
+    if (!getMemoryConnections().isEmpty())
+    {
+        quint64 lowestConnectionBaseAddress = getFirstConnection()->getRangeStartValue();
+        if (lowestConnectionBaseAddress < lowestBaseAddress)
+        {
+            lowestBaseAddress = lowestConnectionBaseAddress;
+        }
+    }
+
+    return lowestBaseAddress;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getHighestConnectedLastAddress()
+//-----------------------------------------------------------------------------
+quint64 MainMemoryGraphicsItem::getHighestConnectedLastAddress() const
+{
+    quint64 highestLastAddress = getLastAddress();
+    if (!getMemoryConnections().isEmpty())
+    {
+        quint64 highestConnectionLastAddress = getLastConnection()->getRangeEndValue();
+        if (highestConnectionLastAddress > highestLastAddress)
+        {
+            highestLastAddress = highestConnectionLastAddress;
+        }
+    }
+
+    return highestLastAddress;
+}

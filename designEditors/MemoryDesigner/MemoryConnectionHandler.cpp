@@ -192,9 +192,10 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
 
     if (!placedMapItems->contains(connectionEndItem))
     {
-        placeMemoryMapItem(connectionEndItem, connectionStartItem, yTransfer, pathVariables.hasRemapRange_,
-            memoryMapBaseAddress, spaceItemPlaced, pathVariables.isChainedSpaceConnection_, placedMapItems,
-            placedSpaceItems, memoryMapColumn, spaceColumn, spaceYPlacement);
+        placeMemoryMapItem(remappedAddress, remappedEndAddress, connectionEndItem, connectionStartItem, yTransfer,
+            pathVariables.hasRemapRange_, memoryMapBaseAddress, spaceItemPlaced,
+            pathVariables.isChainedSpaceConnection_, placedMapItems, placedSpaceItems, memoryMapColumn,
+            spaceColumn, spaceYPlacement);
     }
     else
     {
@@ -389,9 +390,9 @@ qreal MemoryConnectionHandler::getConnectionInitialTransferY(quint64 baseAddress
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::placeMemoryMapItem()
 //-----------------------------------------------------------------------------
-void MemoryConnectionHandler::placeMemoryMapItem(MainMemoryGraphicsItem* connectionEndItem,
-    MainMemoryGraphicsItem* connectionStartItem, qreal yTransfer, bool hasRemapRange, quint64 memoryMapBaseAddress,
-    bool spaceItemPlaced, bool isChainedSpaceConnection,
+void MemoryConnectionHandler::placeMemoryMapItem(quint64 connectionBaseAddress, quint64 connectionLastAddress,
+    MainMemoryGraphicsItem* connectionEndItem, MainMemoryGraphicsItem* connectionStartItem, qreal yTransfer,
+    bool hasRemapRange, quint64 memoryMapBaseAddress, bool spaceItemPlaced, bool isChainedSpaceConnection,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems, MemoryColumn* memoryMapColumn,
     MemoryColumn* spaceColumn, int& spaceYPlacement)
@@ -414,8 +415,8 @@ void MemoryConnectionHandler::placeMemoryMapItem(MainMemoryGraphicsItem* connect
     }
     else
     {
-        checkMemoryMapRepositionToOverlapColumn(
-            placedMapItems, connectionEndItem, memoryMapColumn, connectionStartItem);
+        checkMemoryMapRepositionToOverlapColumn(connectionBaseAddress, connectionLastAddress, placedMapItems,
+            connectionEndItem, memoryMapColumn, connectionStartItem);
     }
 
     qreal startItemPositionAfter = connectionStartItem->pos().y();
@@ -678,9 +679,9 @@ void MemoryConnectionHandler::changeCollidingMasterAddressSpaceColumn(MemoryColu
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn()
 //-----------------------------------------------------------------------------
-void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(
-    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps, MainMemoryGraphicsItem* memoryItem,
-    MemoryColumn* originalColumn, MainMemoryGraphicsItem* connectionStartItem)
+void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(quint64 connectionBaseAddress,
+    quint64 connectionLastAddress, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
+    MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, MainMemoryGraphicsItem* connectionStartItem)
 {
     QRectF selectedItemRect = memoryItem->getSceneRectangleWithSubItems();
 
@@ -693,15 +694,15 @@ void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(
         connectedSpaceItems.append(chainedSpaceItem);
     }
 
-    if (originalColumn->memoryMapOverlapsInColumn(
-        memoryItem, selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
+    if (originalColumn->memoryMapOverlapsInColumn(connectionBaseAddress, connectionLastAddress, memoryItem,
+        selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
     {
         foreach (MemoryColumn* memoryColumn, columnHandler_->getMapOverlapColumns())
         {
             selectedItemRect.setX(selectedItemRect.x() + memoryColumn->boundingRect().width());
 
-            if (!memoryColumn->memoryMapOverlapsInColumn(
-                memoryItem, selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
+            if (!memoryColumn->memoryMapOverlapsInColumn(connectionBaseAddress, connectionLastAddress, memoryItem,
+                selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
             {
                 originalColumn->removeItem(memoryItem);
                 memoryColumn->addItem(memoryItem);
@@ -943,6 +944,9 @@ void MemoryConnectionHandler::repositionCompressedMemoryMaps(
 
             QVector<MainMemoryGraphicsItem*> connectedSpaceItems = mapItem->getChainedSpaceItems();
 
+            quint64 firstConnectionBaseAddress = mapItem->getLowestConnectedBaseAddress();
+            quint64 lastConnectionLastAddress = mapItem->getHighestConnectedLastAddress();
+
             int columnWidth = originalColumn->sceneBoundingRect().width();
 
             QPointF columnPoint (originalColumn->pos().x() - columnWidth, mapRectangle.y());
@@ -955,7 +959,8 @@ void MemoryConnectionHandler::repositionCompressedMemoryMaps(
                     mapRectangle.setX(mapRectangle.x() - columnWidth);
 
                     if (!comparisonColumn->memoryMapOverlapsInColumn(
-                        mapItem, mapRectangle, mapPenWidth, connectedSpaceItems, placedMapItems))
+                        firstConnectionBaseAddress, lastConnectionLastAddress, mapItem, mapRectangle, mapPenWidth,
+                        connectedSpaceItems, placedMapItems))
                     {
                         originalColumn->removeItem(mapItem);
                         comparisonColumn->addItem(mapItem, true);

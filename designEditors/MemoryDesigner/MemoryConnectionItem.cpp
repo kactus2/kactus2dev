@@ -257,15 +257,17 @@ void MemoryConnectionItem::moveCutConnectionAndConnectedItems(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems, MainMemoryGraphicsItem* movementOrigin,
     quint64 cutAreaBegin, quint64 cutAreaEnd, qreal transferY)
 {
-    if (getRangeStartValue() >= cutAreaEnd)
+    MainMemoryGraphicsItem* connectionStartItem = getConnectionStartItem();
+    MainMemoryGraphicsItem* connectionEndItem = getConnectionEndItem();
+    if (connectionStartItem && connectionEndItem)
     {
-        MainMemoryGraphicsItem* connectionStartItem = getConnectionStartItem();
-        MainMemoryGraphicsItem* connectionEndItem = getConnectionEndItem();
-        if (connectionStartItem && connectionEndItem)
-        {
-            quint64 startItemBaseAddress = connectionStartItem->getBaseAddress();
-            quint64 endItemBaseAddress = connectionEndItem->getBaseAddress();
+        quint64 startItemBaseAddress = connectionStartItem->getBaseAddress();
+        quint64 endItemBaseAddress = connectionEndItem->getBaseAddress();
+        
+        bool needRedraw = false;
 
+        if (getRangeStartValue() >= cutAreaEnd)
+        {
             if (cutAreaBegin >= startItemBaseAddress)
             {
                 moveConnectionWithoutConnectedItemsInY(transferY);
@@ -276,6 +278,26 @@ void MemoryConnectionItem::moveCutConnectionAndConnectedItems(
             moveCutConnectedItemWithoutConnections(
                 movedItems, movementOrigin, connectionEndItem, endItemBaseAddress, transferY, cutAreaEnd);
 
+            needRedraw = true;
+        }
+        else
+        {
+            if (startItemBaseAddress >= cutAreaBegin)
+            {
+                moveCutConnectedItemWithoutConnections(
+                    movedItems, movementOrigin, connectionStartItem, startItemBaseAddress, transferY, cutAreaEnd);
+                needRedraw = true;
+            }
+            if (endItemBaseAddress >= cutAreaEnd)
+            {
+                moveCutConnectedItemWithoutConnections(
+                    movedItems, movementOrigin, connectionEndItem, endItemBaseAddress, transferY, cutAreaEnd);
+                needRedraw = true;
+            }
+        }
+
+        if (needRedraw)
+        {
             reDrawConnection();
         }
     }
