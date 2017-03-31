@@ -103,7 +103,7 @@ void BusIfGeneralDetails::refresh()
 {
     modeSelector_.setMode(busif_->getInterfaceMode());
 
-	connectionRequired_.setChecked(busif_->getConnectionRequired() == "1");
+	connectionRequired_.setChecked(busif_->getConnectionRequired() == QLatin1String("true"));
 
 	bitsInLauEditor_.setText(busif_->getBitsInLau());
 
