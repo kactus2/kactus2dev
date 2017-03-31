@@ -510,31 +510,82 @@ void BusPortsModel::addSignalOptions(QModelIndexList const& indexes)
     // Make other port modes for the ports.
     foreach (BusPortsModel::SignalRow port, targetPorts) 
     {
-        // Make copies of the port with different modes.
-        BusPortsModel::SignalRow master(port);
-        master.mode_ = General::MASTER;
-        master.wire_->setSystemGroup("");
-
-        BusPortsModel::SignalRow slave(port);
-        slave.mode_ = General::SLAVE;
-        slave.wire_->setSystemGroup("");
-
-        BusPortsModel::SignalRow system(port);
-        system.mode_ = General::SYSTEM;
-        system.wire_->setSystemGroup("");
-
-        // add the ports that are not already in the table
-        if (!table_.contains(master))
+        if (port.mode_ == General::SYSTEM)
         {
-            table_.append(master);
+            QStringList groups;
+            if (busDefinition_)
+            {
+                groups = busDefinition_->getSystemGroupNames();
+            }
+            else
+            {
+                groups.append("");
+            }
+
+            foreach(QString systemGroup, groups)
+            {
+                // Make copies of the port in system mode, since it cannot convert to others anyways.
+                BusPortsModel::SignalRow system(port);
+                system.mode_ = General::SYSTEM;
+                // Clear the system group, though: Cannot have the same signal multiple times for the same group.
+                system.wire_->setSystemGroup(systemGroup);
+
+                // Reverse the direction for convenience, if unidirectional.
+                if (groups.size() < 3 && port.wire_->getDirection() == DirectionTypes::IN)
+                {
+                    system.wire_->setDirection(DirectionTypes::OUT);
+                }
+                else if (port.wire_->getDirection() == DirectionTypes::OUT ||
+                    port.wire_->getDirection() == DirectionTypes::IN)
+                {
+                    system.wire_->setDirection(DirectionTypes::IN);
+                }
+                
+            
+                // Add the ports that are not already in the table.
+                if (!table_.contains(system))
+                {
+                    table_.append(system);
+                }
+            }
         }
-        if (!table_.contains(slave))
+        else
         {
-            table_.append(slave);
-        }
-        if (!table_.contains(system))
-        {
-            table_.append(system);
+            // Make copies of the port with different modes.
+            // Clear the system group, though.
+            BusPortsModel::SignalRow master(port);
+            master.mode_ = General::MASTER;
+            master.wire_->setSystemGroup("");
+
+            BusPortsModel::SignalRow slave(port);
+            slave.mode_ = General::SLAVE;
+            slave.wire_->setSystemGroup("");
+
+            // Reverse the direction for convenience, if unidirectional.
+            if (port.mode_ == General::MASTER)
+            {
+                if (port.wire_->getDirection() == DirectionTypes::IN)
+                {
+                    slave.wire_->setDirection(DirectionTypes::OUT);
+                    master.wire_->setDirection(DirectionTypes::OUT);
+                }
+                else if (port.wire_->getDirection() == DirectionTypes::OUT)
+                {
+                    slave.wire_->setDirection(DirectionTypes::IN);
+                    master.wire_->setDirection(DirectionTypes::IN);
+                }
+            }
+
+            // Add the ports that are not already in the table.
+            if (!table_.contains(master))
+            {
+                table_.append(master);
+            }
+
+            if (!table_.contains(slave))
+            {
+                table_.append(slave);
+            }
         }
     }
 

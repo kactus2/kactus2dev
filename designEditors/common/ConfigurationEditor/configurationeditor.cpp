@@ -231,7 +231,7 @@ void ConfigurationEditor::onAdd()
     if (dialog.designSelection() == CreateConfigurationDialog::USE_EXISTING)
     {
         // set the configuration to reference the same design.
-        desConf->setDesignRef(designWidget_->getDiagram()->getDesignConfiguration()->getDesignRef());
+        desConf->setDesignRef(designWidget_->getDiagram()->getDesign()->getVlnv());
     }
 
     // if user wanted to create a new design
