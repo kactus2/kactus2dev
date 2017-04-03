@@ -273,6 +273,37 @@ private:
      */
     bool isLocalMapConnection() const;
 
+    /*!
+     *  Create a path for a local memory map connection or an address space connection avoiding colliding items.
+     *
+     *      @param [in] connectionIsLocal       Flag for identifying the connection type.
+     *      @param [in] highStartPoint          High start point of the connection.
+     *      @param [in] highEndPoint            High end point of the connection.
+     *      @param [in] lowStartPoint           Low start point of the connection.
+     *      @param [in] lowEndPoint             Low end point of the connection.
+     *      @param [in] highCollisionPoints     High collision points.
+     *      @param [in] lowCollisionPoints      Low collision points.
+     *
+     *      @return The memory connection path for local memory connection and address space connection with the
+     *              colliding lines removed.
+     */
+    QPainterPath createCollidingPathForUnusualConnection(bool connectionIsLocal, QPointF highStartPoint,
+        QPointF highEndPoint, QPointF lowStartPoint, QPointF lowEndPoint,
+        QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints = QMap<qreal, QPair<QPointF, QPointF> >(),
+        QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints = QMap<qreal, QPair<QPointF, QPointF> >());
+
+    /*!
+     *  Erase the colliding lines from the memory connection.
+     *
+     *      @param [in] collisionPath       The selected memory connection path.
+     *      @param [in] collisionBegin      Start point of the colliding connection line.
+     *      @param [in] collisionPoints     List of the colliding points.
+     *
+     *      @return The memory connection path with the colliding lines removed.
+     */
+    QPainterPath eraseCollisionsFromPath(QPainterPath collisionPath, QPointF collisionBegin,
+        QMap<qreal, QPair<QPointF, QPointF> > collisionPoints);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -306,6 +337,9 @@ private:
 
     //! Width of the memory connection item.
     qreal connectionWidth_;
+
+    //! The connection line modifier used in the unusual memory connections.
+    const int BRIDGEMODIFIER_;
 };
 
 //-----------------------------------------------------------------------------
