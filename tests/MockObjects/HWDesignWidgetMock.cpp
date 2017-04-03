@@ -16,7 +16,7 @@
 
 #include <common/GenericEditProvider.h>
 
-#include <library/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Model.h>

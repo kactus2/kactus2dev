@@ -13,7 +13,7 @@
 
 #include <editors/ComponentEditor/software/swView/SWViewEditor.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/SWView.h>

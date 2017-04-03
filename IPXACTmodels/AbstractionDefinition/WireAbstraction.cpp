@@ -310,7 +310,7 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
 
 
 //-----------------------------------------------------------------------------
-// Function: WireAbstraction::getDirection()
+// Function: WireAbstraction::getWidth()
 //-----------------------------------------------------------------------------
 QString WireAbstraction::getWidth(General::InterfaceMode mode, QString const& systemGroup) const
 {
