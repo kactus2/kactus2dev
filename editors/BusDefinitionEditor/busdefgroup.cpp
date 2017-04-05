@@ -25,7 +25,7 @@
 BusDefGroup::BusDefGroup(QWidget *parent): 
 QGroupBox(tr("General (Bus Definition)"), parent),
     busDef_(),
-    directConnection_(tr("Allow direct master-slave connection"), this),
+    directConnection_(tr("Allow non-mirrored connections"), this),
     isBroadcast_(tr("Support broadcast"), this),
     isAddressable_(tr("Addressable bus"), this),
     maxMastersEditor_(this),

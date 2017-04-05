@@ -206,6 +206,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
         }
 
         QString interfaceName;
+        QString interfaceDescription;
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
             component_->getComponent()->getInterfacesUsedByPort(cPort->name());
 
@@ -222,6 +223,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
             if (busInterfaces->count() == 1)
             {
                 interfaceName  = busInterfaces->first()->name();
+                interfaceDescription = busInterfaces->first()->description();
             }
             else
             {
@@ -229,7 +231,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
             }
         }
 
-        writeInterfaceIntroduction(interfaceName, cPort->description(), previousInterfaceName, outputStream);
+        writeInterfaceIntroduction(interfaceName, interfaceDescription, previousInterfaceName, outputStream);
         bool lastPortToWrite = cPort == ports.last();
         writePort(outputStream, mPort, lastPortToWrite);
     }
@@ -259,9 +261,12 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
         {
             outputStream << indentation() << "// Interface: " << interfaceName << endl;
 
-            CommentWriter descriptionWriter(interfaceDescription);
-            descriptionWriter.setIndent(4);
-            descriptionWriter.write(outputStream);
+            if (!interfaceDescription.isEmpty())
+            {
+                CommentWriter descriptionWriter(interfaceDescription);
+                descriptionWriter.setIndent(4);
+                descriptionWriter.write(outputStream);
+            }
         }        
         previousInterfaceName = interfaceName;                
     }

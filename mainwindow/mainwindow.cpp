@@ -1781,12 +1781,6 @@ void MainWindow::runGeneratorPlugin(QAction* action)
         // the implementation defines where to search for the hierarchy ref
         switch (desWidget->getImplementation())
         {
-        case KactusAttribute::HW: 
-        case KactusAttribute::SW:
-            {
-	            desConfVLNV = component->getHierRef(viewName);
-	            break;
-            }
         case KactusAttribute::SYSTEM:
             {
                 desConfVLNV = component->getHierSystemRef(viewName);
@@ -1794,13 +1788,16 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 			}
         default:
             {
-	            Q_ASSERT(false);
-	            return;
+                desConfVLNV = component->getHierRef(viewName);
 			}
         }
 
 		// the hierarchy reference must be valid
-		Q_ASSERT(desConfVLNV.isValid());
+		if(!desConfVLNV.isValid())
+        {
+            emit errorMessage(tr("Cannot run generator plugin: Invalid VLNV reference %1 for view %2").arg(desConfVLNV.toString(), viewName));
+            return;
+        }
 
 		// if the hierarchy ref is not directly to the design but design config is in between
 		if (desConfVLNV != desVLNV)

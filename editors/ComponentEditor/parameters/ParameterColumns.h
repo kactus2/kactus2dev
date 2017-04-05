@@ -17,7 +17,6 @@ namespace ParameterColumns
         NAME = 0,
         DISPLAY_NAME,
         DESCRIPTION,
-        ID,
         TYPE,
         VALUE,
         CHOICE,
@@ -29,6 +28,7 @@ namespace ParameterColumns
         ARRAY_LEFT,
         ARRAY_RIGHT,
         USAGE_COUNT,
+        ID,
         COLUMN_COUNT
     };
 }

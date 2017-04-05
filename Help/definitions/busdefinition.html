@@ -5,22 +5,24 @@
 <body>
     <h2>Bus Definition</h2>
     <p>
-        Bus definitions are a part of the IP-XACT and they are used to define bus connections
-        in HW designs.
+        Bus definitions are used to define bus connections in HW designs. Each bus interface of a component
+        must refer to a bus definition and connected bus interfaces must refer to the same bus definition.
 
         <p>
-            <b>Allow direct master-slave connection</b> defines if a master bus interface can be directly 
-            connected to a slave bus interface. If unselected, a bus interface can be connected only to
-            a mirrored bus interface of the same type e.g. master to mirrored-master.
+            <b>Allow non-mirrored connections</b> defines if a bus interface can be directly connected to
+            a non-mirrored bus interface. If unselected, a bus interface can be connected only to
+            a mirrored bus interface of the same type e.g. master to mirrored-master and system to mirrored-system.
         </p>
         
         <p>
-            <b>Support broadcast</b> defines if the bus interface using this definition can be 
-            connected to more than one opposing interface i.e. supports one-to-many connections.
+            <b>Support broadcast</b> defines if a bus interface can be <b>directly</b> connected to more
+            than one opposing interface i.e. supports one-to-many connections.
+            Notice that bridges and mirrored connections are possible even when broadcasts are not supported.
         </p>
 
         <p>
-            <b>Addressable bus</b> defines if the bus interfaces contain addressing information.
+            <b>Addressable bus</b> defines if the bus has addressing information <b>and</b>
+            a memory map can be traced through a bus interface.
         </p>
 
         <p>
@@ -40,7 +42,8 @@
         </p>
 
         <p>
-            <b>Description</b> is an optional free text for further details.
+            <b>Description</b> is a text that describes further details, such as the purpose of the bus
+            and link to the specification.
         </p>
     </p>
 
