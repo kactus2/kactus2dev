@@ -540,12 +540,13 @@ void MemoryConnectionHandler::createSpaceConnection(MainMemoryGraphicsItem* conn
             recalculateYPosition = true;
         }
 
-        quint64 startItemBaseAddress = connectionStartItem->getBaseAddress();
+        quint64 startItemBaseAddress = connectionStartItem->getOriginalBaseAddress();
 
         quint64 middleItemRangeStart = startItemBaseAddress + connectionBaseAddress;
         quint64 middleItemRangeEnd = middleItemRangeStart +
             (connectionMiddleItem->getLastAddress() - connectionMiddleItem->getBaseAddress());
-        int yTransfer = (startItemBaseAddress + connectionBaseAddress ) * MemoryDesignerConstants::RANGEINTERVAL;
+        int yTransfer = (startItemBaseAddress + connectionBaseAddress - connectionStartItem->getBaseAddress()) *
+            MemoryDesignerConstants::RANGEINTERVAL;
 
         if (!placedSpaceItems->contains(connectionMiddleItem))
         {

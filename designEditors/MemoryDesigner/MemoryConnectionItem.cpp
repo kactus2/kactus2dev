@@ -41,7 +41,8 @@ endItem_(endItem),
 yTransfer_(yTransfer),
 connectionBaseAddress_(firstStartValue),
 connectionLastAddress_(firstEndValue),
-connectionWidth_(getConnectionWidth())
+connectionWidth_(getConnectionWidth()),
+BRIDGEMODIFIER_(10)
 {
     setupLabels(firstStartValue, firstEndValue);
 
@@ -112,50 +113,18 @@ QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, 
     }
     else
     {
-        const int BRIDGEMODIFIER = 10;
-        qreal bridgeHighLineY = highStartPoint.y();
-        qreal bridgeLowLineY = lowStartPoint.y();
-        qreal bridgeHighY = highStartPoint.y() + BRIDGEMODIFIER;
-        qreal bridgeLowY = lowStartPoint.y() - BRIDGEMODIFIER;
-        qreal bridgeStartX = highStartPoint.x() + BRIDGEMODIFIER;
-        qreal bridgeFirstPillarX = bridgeStartX + BRIDGEMODIFIER;
-        qreal bridgeEndX = highEndPoint.x() - BRIDGEMODIFIER;
-        qreal bridgeLastPillarX = bridgeEndX - BRIDGEMODIFIER;
-
-        if (isLocalMapConnection())
+        bool connectionIsLocal = isLocalMapConnection();
+        if (connectionIsLocal)
         {
-            path.lineTo(bridgeFirstPillarX, bridgeHighLineY);
-            path.lineTo(bridgeFirstPillarX, bridgeHighY);
-            path.lineTo(bridgeLastPillarX, bridgeHighY);
-            path.lineTo(bridgeLastPillarX, bridgeHighLineY);
-            path.lineTo(highEndPoint);
-            path.moveTo(lowStartPoint);
-            path.lineTo(bridgeFirstPillarX, bridgeLowLineY);
-            path.lineTo(bridgeFirstPillarX, bridgeLowY);
-            path.lineTo(bridgeLastPillarX, bridgeLowY);
-            path.lineTo(bridgeLastPillarX, bridgeLowLineY);
-            path.lineTo(lowEndPoint);
-
             connectionPen.setColor(QColor(0, 128, 255));
         }
-
         else
         {
-            path.lineTo(bridgeStartX, bridgeHighLineY);
-            path.lineTo(bridgeFirstPillarX, bridgeHighY);
-            path.lineTo(bridgeLastPillarX, bridgeHighY);
-            path.lineTo(bridgeEndX, bridgeHighLineY);
-            path.lineTo(highEndPoint);
-
-            path.moveTo(lowStartPoint);
-            path.lineTo(bridgeStartX, bridgeLowLineY);
-            path.lineTo(bridgeFirstPillarX, bridgeLowY);
-            path.lineTo(bridgeLastPillarX, bridgeLowY);
-            path.lineTo(bridgeEndX, bridgeLowLineY);
-            path.lineTo(lowEndPoint);
-
             connectionPen.setColor(QColor(60, 153, 60));
         }
+
+        path = createCollidingPathForUnusualConnection(
+            connectionIsLocal, highStartPoint, highEndPoint, lowStartPoint, lowEndPoint);
     }
 
     setPen(connectionPen);
@@ -443,36 +412,129 @@ void MemoryConnectionItem::createCollisionPath(QPointF highStartPoint, QPointF h
     QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints)
 {
     QPainterPath collisionPath;
-
-    QPointF highCollisionStartPoint = highStartPoint;
-    QMapIterator<qreal, QPair<QPointF, QPointF> > highIterator(highCollisionPoints);
-    while (highIterator.hasNext())
+    
+    if (dynamic_cast<MemoryMapGraphicsItem*>(endItem_) && !isLocalMapConnection())
     {
-        highIterator.next();
-        QPair<QPointF, QPointF> collisionPoint = highIterator.value();
-        collisionPath.moveTo(highCollisionStartPoint);
-        collisionPath.lineTo(collisionPoint.first);
-        highCollisionStartPoint = collisionPoint.second;
+        collisionPath = eraseCollisionsFromPath(collisionPath, highStartPoint, highCollisionPoints);
+        collisionPath.lineTo(highEndPoint);
+
+        collisionPath = eraseCollisionsFromPath(collisionPath, lowStartPoint, lowCollisionPoints);
+        collisionPath.lineTo(lowEndPoint);
     }
-
-    collisionPath.moveTo(highCollisionStartPoint);
-    collisionPath.lineTo(highEndPoint);
-
-    QPointF lowCollisionStartPoint = lowStartPoint;
-    QMapIterator<qreal, QPair<QPointF, QPointF> > lowIterator(lowCollisionPoints);
-    while (lowIterator.hasNext())
+    else
     {
-        lowIterator.next();
-        QPair<QPointF, QPointF> collisionPoint = lowIterator.value();
-        collisionPath.moveTo(lowCollisionStartPoint);
-        collisionPath.lineTo(collisionPoint.first);
-        lowCollisionStartPoint = collisionPoint.second;
+        collisionPath = createCollidingPathForUnusualConnection(isLocalMapConnection(), highStartPoint, highEndPoint,
+            lowStartPoint, lowEndPoint, highCollisionPoints, lowCollisionPoints);
     }
-
-    collisionPath.moveTo(lowCollisionStartPoint);
-    collisionPath.lineTo(lowEndPoint);
 
     setPath(collisionPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::createCollidingPathForLocalConnection()
+//-----------------------------------------------------------------------------
+QPainterPath MemoryConnectionItem::createCollidingPathForUnusualConnection(bool connectionIsLocal,
+    QPointF highStartPoint, QPointF highEndPoint, QPointF lowStartPoint, QPointF lowEndPoint,
+    QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
+    QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints)
+{
+    QPainterPath collisionPath;
+
+    qreal bridgeHighLineY = highStartPoint.y();
+    qreal bridgeLowLineY = lowStartPoint.y();
+    qreal bridgeHighY = highStartPoint.y() + BRIDGEMODIFIER_;
+    qreal bridgeLowY = lowStartPoint.y() - BRIDGEMODIFIER_;
+    qreal bridgeStartX = highStartPoint.x() + BRIDGEMODIFIER_;
+    qreal bridgeFirstPillarX = bridgeStartX + BRIDGEMODIFIER_;
+    qreal bridgeEndX = highEndPoint.x() - BRIDGEMODIFIER_;
+    qreal bridgeLastPillarX = bridgeEndX - BRIDGEMODIFIER_;
+
+    QPointF highCollisionStartPoint (bridgeFirstPillarX, bridgeHighY);
+    QPointF lowCollisionStartPoint (bridgeFirstPillarX, bridgeLowY);
+
+    collisionPath.moveTo(highStartPoint);
+    if (connectionIsLocal)
+    {
+        collisionPath.lineTo(bridgeFirstPillarX, bridgeHighLineY);
+        collisionPath.lineTo(highCollisionStartPoint);
+    }
+    else
+    {
+        collisionPath.lineTo(bridgeStartX, bridgeHighLineY);
+        collisionPath.lineTo(bridgeFirstPillarX, bridgeHighY);
+    }
+
+    if (!highCollisionPoints.isEmpty() && highCollisionPoints.first().first.y() <= bridgeHighY)
+    {
+        collisionPath = eraseCollisionsFromPath(collisionPath, highCollisionStartPoint, highCollisionPoints);
+    }
+
+    if (connectionIsLocal)
+    {
+        collisionPath.lineTo(bridgeLastPillarX, bridgeHighY);
+        collisionPath.lineTo(bridgeLastPillarX, bridgeHighLineY);
+        collisionPath.lineTo(highEndPoint);
+
+        collisionPath.moveTo(lowStartPoint);
+        collisionPath.lineTo(bridgeFirstPillarX, bridgeLowLineY);
+        collisionPath.lineTo(lowCollisionStartPoint);
+    }
+    else
+    {
+        collisionPath.lineTo(bridgeLastPillarX, bridgeHighY);
+        collisionPath.lineTo(bridgeEndX, bridgeHighLineY);
+        collisionPath.lineTo(highEndPoint);
+
+        collisionPath.moveTo(lowStartPoint);
+        collisionPath.lineTo(bridgeStartX, bridgeLowLineY);
+        collisionPath.lineTo(bridgeFirstPillarX, bridgeLowY);
+    }
+
+    if (!lowCollisionPoints.isEmpty() && lowCollisionPoints.first().first.y() <= bridgeLowY)
+    {
+        collisionPath = eraseCollisionsFromPath(collisionPath, lowCollisionStartPoint, lowCollisionPoints);
+    }
+
+    if (connectionIsLocal)
+    {
+        collisionPath.lineTo(bridgeLastPillarX, bridgeLowY);
+        collisionPath.lineTo(bridgeLastPillarX, bridgeLowLineY);
+    }
+    else
+    {
+        collisionPath.lineTo(bridgeLastPillarX, bridgeLowY);
+        collisionPath.lineTo(bridgeEndX, bridgeLowLineY);
+   }
+
+    collisionPath.lineTo(lowEndPoint);
+    return collisionPath;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::eraseCollisionsFromPath()
+//-----------------------------------------------------------------------------
+QPainterPath MemoryConnectionItem::eraseCollisionsFromPath(QPainterPath collisionPath, QPointF collisionBegin,
+    QMap<qreal, QPair<QPointF, QPointF> > collisionPoints)
+{
+    QPainterPath erasedPath = collisionPath;
+    QPointF collisionStartPoint = collisionBegin;
+    qreal pathY = collisionStartPoint.y();
+
+    QMapIterator<qreal, QPair<QPointF, QPointF> > collisionIterator(collisionPoints);
+    while (collisionIterator.hasNext())
+    {
+        collisionIterator.next();
+        QPair<QPointF, QPointF> singleCollisionPoints = collisionIterator.value();
+        erasedPath.moveTo(collisionStartPoint);
+        erasedPath.lineTo(singleCollisionPoints.first.x(), pathY);
+
+        QPointF collisionEndPoint(singleCollisionPoints.second.x(), pathY);
+        collisionStartPoint = collisionEndPoint;
+    }
+
+    erasedPath.moveTo(collisionStartPoint);
+
+    return erasedPath;
 }
 
 //-----------------------------------------------------------------------------
