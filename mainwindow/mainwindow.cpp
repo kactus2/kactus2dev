@@ -41,6 +41,8 @@
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 
+#include <common/NameGenerationPolicy.h>
+
 #include <designEditors/MemoryDesigner/MemoryDesignDocument.h>
 
 #include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
@@ -2199,18 +2201,6 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, Kac
     component->setFirmness(firmness);
     component->setImplementation(KactusAttribute::HW);
 
-    QSharedPointer<View> emptyFlatView (new View());
-    if (component->getHierarchy() == KactusAttribute::IP || component->getHierarchy() == KactusAttribute::SOC)
-    {
-        emptyFlatView->setName("rtl");
-    }
-    else
-    {
-        emptyFlatView->setName("flat");
-    }
-
-    component->getViews()->append(emptyFlatView);
-
     component->setVersion(VersionHelper::versionFileStr());
 
     // Create the file.
@@ -2244,21 +2234,14 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
 	// Create a component and a hierarchical view .
 	QSharedPointer<Component> component(new Component(vlnv));
 
-	// Set Kactus attributes.
+	// Set Kactus2 attributes.
     component->setHierarchy(prodHier);
     component->setFirmness(firmness);
     component->setImplementation(KactusAttribute::HW);
     component->setVersion(VersionHelper::versionFileStr());
 
     QSharedPointer<View> newHierarchicalView(new View());
-    if (component->getHierarchy() == KactusAttribute::IP || component->getHierarchy() == KactusAttribute::SOC)
-    {
-        newHierarchicalView->setName("structural");
-    }
-    else
-    {
-        newHierarchicalView->setName("hierarchical");
-    }
+    newHierarchicalView->setName(NameGenerationPolicy::hierarchicalViewName());
 
     QSharedPointer<ConfigurableVLNVReference> tempReference (new ConfigurableVLNVReference(desConfVLNV));
 

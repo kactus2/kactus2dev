@@ -12,21 +12,21 @@ HEADERS += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
     ../../../../Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../../Plugins/importPlugins/common/ImportColors.h \
-    ../../../../Plugins/common/NameGenerationPolicy.h \
     ../../../../editors/ComponentEditor/common/NullParser.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../Plugins/VerilogImport/VerilogParameterParser.h \
     ../../../../Plugins/VerilogImport/VerilogPortParser.h \
     ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
-    ../../../../Plugins/VerilogImport/VerilogImporter.h
+    ../../../../Plugins/VerilogImport/VerilogImporter.h \
+    ../../../../common/NameGenerationPolicy.h
 SOURCES += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
-    ../../../../Plugins/common/NameGenerationPolicy.cpp \
     ../../../../editors/ComponentEditor/common/NullParser.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../Plugins/VerilogImport/VerilogImporter.cpp \
     ../../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ../../../../Plugins/VerilogImport/VerilogPortParser.cpp \
+    ../../../../Plugins/VerilogImport/VerilogSyntax.cpp \
     ./tst_VerilogImporter.cpp \
-    ../../../../Plugins/VerilogImport/VerilogSyntax.cpp
+    ../../../../common/NameGenerationPolicy.cpp

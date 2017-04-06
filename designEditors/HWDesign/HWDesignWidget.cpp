@@ -44,7 +44,7 @@
 
 #include <library/LibraryInterface.h>
 
-#include <Plugins/common/NameGenerationPolicy.h>
+#include <common/NameGenerationPolicy.h>
 
 #include "columnview/ColumnEditDialog.h"
 #include "columnview/HWColumn.h"
@@ -775,7 +775,7 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	}
 
 	// the name of the view to create
-	QString viewName = tr("structural");
+	QString viewName = NameGenerationPolicy::hierarchicalViewName();
     QString configurationName = NameGenerationPolicy::designConfigurationInstantiationName(viewName);
 
 	// and a hierarchical view for it

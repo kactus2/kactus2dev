@@ -58,9 +58,6 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\NameGenerationPolicy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SWStackParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -94,6 +91,9 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\NameGenerationPolicy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MakefileGenerator.h">
@@ -117,9 +117,6 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\NameGenerationPolicy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MakeCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -127,6 +124,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\NameGenerationPolicy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,7 +20,7 @@
 #include <Plugins/VerilogImport/VerilogImporter.h>
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
-#include <Plugins/common/NameGenerationPolicy.h>
+#include <common/NameGenerationPolicy.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
@@ -859,8 +859,7 @@ void tst_VerilogImporter::testExistingModelParameterIdDoesNotChange()
 
 	QSharedPointer<View> importView = QSharedPointer<View>(new View);
 	QSharedPointer<ComponentInstantiation> importComponentInstantiation( new ComponentInstantiation );
-	importComponentInstantiation->setName( NameGenerationPolicy::verilogComponentInstantiationName
-		( NameGenerationPolicy::flatViewName() ) );
+	importComponentInstantiation->setName(NameGenerationPolicy::componentInstantiationName("verilog"));
 	importComponentInstantiation->getModuleParameters()->append(existingParameter);
 	importComponent_->getModel()->getComponentInstantiations()->append(importComponentInstantiation);
 	importView->setComponentInstantiationRef(importComponentInstantiation->name());
@@ -1026,8 +1025,8 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView()
 	QCOMPARE(importComponent_->getFlatViews().count(), 1);
 
     QCOMPARE(importComponentInstantiation->getModuleName(), modelName);
-    QCOMPARE(importComponentInstantiation->getLanguage(), QString("verilog"));
-	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->language, QString("verilog"));
+    QCOMPARE(importComponentInstantiation->getLanguage(), QString("Verilog"));
+	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->language, QString("Verilog"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, VerilogSyntax::TOOL_NAME);
 
     verifyDeclarationIsHighlighted(fileContent.lastIndexOf(modelName), modelName.length(), ImportColors::VIEWNAME);

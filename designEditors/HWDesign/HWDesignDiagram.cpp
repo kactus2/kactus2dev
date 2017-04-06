@@ -550,8 +550,6 @@ void HWDesignDiagram::onAddToLibraryAction()
             targetComponent->setHierarchy(dialog.getProductHierarchy());
             targetComponent->setFirmness(dialog.getFirmness());
 
-            targetComponent->getViews()->append(QSharedPointer<View>(new View("flat")));
-
             foreach (ConnectionEndpoint* interfacePoint, componentItem->getEndpoints())
             {
                 interfacePoint->setSelectionHighlight(true);
@@ -2431,6 +2429,13 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
         adHocPort = static_cast<HWConnectionEndpoint*>(adHocPort->getOffPageConnector());
 
         primaryPortItem = primaryPortItem->getOffPageConnector();
+    }
+
+    if (!adHocPort)
+    {
+        emit errorMessage(tr("Port %1 was not found in component %2")
+            .arg(internalPort->getPortRef(), internalPort->getComponentRef()));
+        return;
     }
 
     // Create the ad-hoc connection graphics item.

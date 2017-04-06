@@ -18,7 +18,7 @@
 
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 
-#include <Plugins/common/NameGenerationPolicy.h>
+#include <common/NameGenerationPolicy.h>
 
 //-----------------------------------------------------------------------------
 // Function: TLMWHeaderGenerator::TLMWHeaderGenerator()

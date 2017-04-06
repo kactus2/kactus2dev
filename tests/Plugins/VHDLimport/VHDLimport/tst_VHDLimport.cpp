@@ -24,7 +24,7 @@
 
 #include <QPlainTextEdit>
 #include <QSharedPointer>
-#include "Plugins/common/NameGenerationPolicy.h"
+#include <common/NameGenerationPolicy.h>
 
 Q_DECLARE_METATYPE(QSharedPointer<Port>)
 Q_DECLARE_METATYPE(QSharedPointer<ModuleParameter>)
@@ -710,8 +710,7 @@ void tst_VHDLimport::testParameterNotFoundInFileIsRemoved()
     existingParameter->setName("oldParameter");
 
 	QSharedPointer<ComponentInstantiation> importComponentInstantiation( new ComponentInstantiation );
-	importComponentInstantiation->setName( NameGenerationPolicy::vhdlComponentInstantiationName(
-		NameGenerationPolicy::flatViewName() ) );
+	importComponentInstantiation->setName(NameGenerationPolicy::componentInstantiationName("vhdl"));
 	importComponentInstantiation->getModuleParameters()->append(existingParameter);
 	importComponent_->getModel()->getComponentInstantiations()->append(importComponentInstantiation);
 
@@ -739,8 +738,7 @@ void tst_VHDLimport::testExistingModelParameterIdDoesNotChange()
     existingParameter->setValueId("existingId");
 
 	QSharedPointer<ComponentInstantiation> importComponentInstantiation( new ComponentInstantiation );
-	importComponentInstantiation->setName( NameGenerationPolicy::vhdlComponentInstantiationName(
-		NameGenerationPolicy::flatViewName() ) );
+	importComponentInstantiation->setName(NameGenerationPolicy::componentInstantiationName("vhdl"));
 	importComponentInstantiation->getModuleParameters()->append(existingParameter);
 	importComponent_->getModel()->getComponentInstantiations()->append(importComponentInstantiation);
 
@@ -825,13 +823,13 @@ void tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
 
     runParser(fileContent);
 
-    QVERIFY2(importComponent_->hasView("flat"), "No view 'flat' found in component.");
+    QVERIFY2(importComponent_->hasView("flat_vhdl"), "No view 'flat' found in component.");
 
 
 	QSharedPointer<ComponentInstantiation> cimp = importComponent_->getComponentInstantiations()->first();
 
     QCOMPARE(cimp->getModuleName(), QString("testbench(structural)"));
-    QCOMPARE(cimp->getLanguage(), QString("vhdl"));
+    QCOMPARE(cimp->getLanguage(), QString("VHDL"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->language, QString("VHDL"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, QString("Kactus2"));
 
@@ -870,7 +868,7 @@ void tst_VHDLimport::testArchitecturePrecedesConfigurationForModelName()
 
     runParser(fileContent);
 
-    QVERIFY2(importComponent_->hasView("flat"), "No view 'flat' found in component.");
+    QVERIFY2(importComponent_->hasView("flat_vhdl"), "No view 'flat' found in component.");
     QCOMPARE(importComponent_->getComponentInstantiations()->first()->getModuleName(), QString("testbench(structural)"));
 
 
@@ -899,7 +897,7 @@ void tst_VHDLimport::testConfigurationIsImportedToViewIfNoArchitectureAvailable(
 
     runParser(fileContent);
 
-    QVERIFY2(importComponent_->hasView("flat"), "No view 'flat' found in component.");
+    QVERIFY2(importComponent_->hasView("flat_vhdl"), "No view 'flat' found in component.");
     QCOMPARE(importComponent_->getComponentInstantiations()->first()->getModuleName(), QString("behavioral"));
 
     QString configuration = "CONFIGURATION behavioral OF testbench";

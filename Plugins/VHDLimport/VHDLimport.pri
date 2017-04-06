@@ -7,13 +7,13 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../common/NameGenerationPolicy.h \
+HEADERS += ../../common/NameGenerationPolicy.h \
     ./VHDLSyntax.h \
     ./vhdlimport_global.h \
     ./VHDLimport.h \
     ./VHDLPortParser.h \
     ./VHDLGenericParser.h
-SOURCES += ../common/NameGenerationPolicy.cpp \
+SOURCES += ../../common/NameGenerationPolicy.cpp \
     ./VHDLGenericParser.cpp \
     ./VHDLimport.cpp \
     ./VHDLPortParser.cpp

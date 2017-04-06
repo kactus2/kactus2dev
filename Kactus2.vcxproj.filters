@@ -3421,9 +3421,6 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\InterfaceDeleteCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\common\NameGenerationPolicy.cpp">
-      <Filter>Source Files\Plugins\common</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\InstantiationsItem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
@@ -4233,6 +4230,9 @@
     </ClCompile>
     <ClCompile Include="library\HierarchyView\hierarchymodel.cpp">
       <Filter>Source Files\library\HierarchyView</Filter>
+    </ClCompile>
+    <ClCompile Include="common\NameGenerationPolicy.cpp">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6248,9 +6248,6 @@
     <ClInclude Include="designEditors\HWDesign\undoCommands\PortDeleteCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\common\NameGenerationPolicy.h">
-      <Filter>Header Files\Plugins\common</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\instantiations\ComponentInstantiationDisplayer.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </ClInclude>
@@ -6403,6 +6400,9 @@
     </ClInclude>
     <ClInclude Include="library\TableViewDialog.h">
       <Filter>Header Files\library</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameGenerationPolicy.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

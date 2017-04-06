@@ -15,7 +15,7 @@
 
 #include <library/LibraryInterface.h>
 
-#include <Plugins/common/NameGenerationPolicy.h>
+#include <common/NameGenerationPolicy.h>
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 #include <editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h>

@@ -15,9 +15,9 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <common/NameGenerationPolicy.h>
 
 #include <QString>
-#include "../common/NameGenerationPolicy.h"
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::VerilogImporter()
@@ -228,7 +228,7 @@ QSharedPointer<View> VerilogImporter::findOrCreateFlatView(QSharedPointer<Compon
 		// If there was none, create a new view.
 		QSharedPointer<View> newView( new View() );
 		// Rip its name from the generation policy.
-		newView->setName(NameGenerationPolicy::verilogStructuralViewName(NameGenerationPolicy::flatViewName()));
+		newView->setName(NameGenerationPolicy::flatViewName("verilog"));
 		// Add to the component.
 		targetComponent->getViews()->append(newView);
 
@@ -251,7 +251,7 @@ void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Comp
 
 	// Create environment identifiers for the view as needed.
     QSharedPointer<View::EnvironmentIdentifier> envIdentifierForImport(new View::EnvironmentIdentifier);
-	envIdentifierForImport->language = "verilog";
+	envIdentifierForImport->language = "Verilog";
 	envIdentifierForImport->tool = VerilogSyntax::TOOL_NAME;
 
     if (!flatView->hasEnvIdentifier(envIdentifierForImport))
@@ -266,11 +266,11 @@ void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Comp
 	if ( !targetComponentInstantiation )
 	{
 		// Create if does not exist.
-		QString instaName = NameGenerationPolicy::verilogComponentInstantiationName( flatView->name() );
+		QString instaName = NameGenerationPolicy::componentInstantiationName("verilog");
 		targetComponentInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
 		// Set appropriate name and language.
 		targetComponentInstantiation->setName(instaName);
-		targetComponentInstantiation->setLanguage("verilog");
+		targetComponentInstantiation->setLanguage("Verilog");
 
 		// Add to the component.
 		targetComponent->getComponentInstantiations()->append(targetComponentInstantiation);

@@ -20,7 +20,7 @@
 #include <Plugins/MakefileGenerator/MakefileParser.h>
 #include <Plugins/MakefileGenerator/MakefileGenerator.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
-#include <Plugins/common/NameGenerationPolicy.h>
+#include <common/NameGenerationPolicy.h>
 
 #include <QRegExp>
 

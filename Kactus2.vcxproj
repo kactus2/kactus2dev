@@ -320,6 +320,7 @@ CreateHelp
     <ClCompile Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.cpp" />
     <ClCompile Include="common\dialogs\NewBusDialog\NewBusDialog.cpp" />
     <ClCompile Include="common\GenericEditProvider.cpp" />
+    <ClCompile Include="common\NameGenerationPolicy.cpp" />
     <ClCompile Include="common\TextEditProvider.cpp" />
     <ClCompile Include="common\utils.cpp" />
     <ClCompile Include="common\dialogs\comboSelector\comboselector.cpp" />
@@ -1371,7 +1372,6 @@ CreateHelp
     <ClCompile Include="mainwindow\SaveHierarchy\SaveHierarchyDialog.cpp" />
     <ClCompile Include="mainwindow\SplashScreen.cpp" />
     <ClCompile Include="Plugins\common\LanguageHighlighter.cpp" />
-    <ClCompile Include="Plugins\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp" />
     <ClCompile Include="Plugins\PluginSystem\NewPluginsDialog.cpp" />
     <ClCompile Include="Plugins\PluginSystem\PluginInfoWidget.cpp" />
@@ -1916,6 +1916,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
+    <ClInclude Include="common\NameGenerationPolicy.h" />
     <ClInclude Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsColumns.h" />
     <CustomBuild Include="designEditors\common\DesignCompletionModel.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -6838,7 +6839,6 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
-    <ClInclude Include="Plugins\common\NameGenerationPolicy.h" />
     <ClInclude Include="Plugins\common\SourceHighlightStyle.h" />
     <ClInclude Include="Plugins\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h" />
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ExpressionSupport.h" />

@@ -141,7 +141,6 @@
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp" />
     <ClCompile Include="..\common\LanguageHighlighter.cpp" />
-    <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="..\common\PortSorter\InterfaceDirectionNameSorter.cpp" />
     <ClCompile Include="..\common\SourceHighlightStyle.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp" />

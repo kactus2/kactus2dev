@@ -131,10 +131,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\NullParser.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
-    <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_VerilogImporter.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -149,12 +149,12 @@
     <ClCompile Include="VerilogSyntax.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\NameGenerationPolicy.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\NullParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="..\common\HDLmath.h" />
-    <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="VerilogParameterParser.h" />
     <ClInclude Include="VerilogPortParser.h" />
     <ClInclude Include="VerilogSyntax.h" />

@@ -25,9 +25,10 @@
 #include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h>
 
+#include <common/NameGenerationPolicy.h>
+
 #include "VHDLPortParser.h"
 #include "VHDLGenericParser.h"
-#include "../common/NameGenerationPolicy.h"
 
 namespace
 {
@@ -344,7 +345,7 @@ QSharedPointer<View> VHDLimport::findOrCreateFlatView() const
     {
 		// create new view
 		QSharedPointer<View> newView( new View() );
-		newView->setName("flat");
+		newView->setName(NameGenerationPolicy::flatViewName("vhdl"));
 		targetComponent_->getViews()->append(newView);
 
 		flatViews = targetComponent_->getFlatViews();
@@ -371,7 +372,7 @@ QSharedPointer<ComponentInstantiation> VHDLimport::setLanguageAndEnvironmentalId
 	}
 
 	// Must have a component instantiation for module parameters.
-	QString instaName = NameGenerationPolicy::vhdlComponentInstantiationName( rtlView->name() );
+	QString instaName = NameGenerationPolicy::componentInstantiationName("vhdl");
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation =
 		targetComponent_->getModel()->findComponentInstantiation(instaName);
 
@@ -380,7 +381,7 @@ QSharedPointer<ComponentInstantiation> VHDLimport::setLanguageAndEnvironmentalId
 	{
 		targetComponentInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
 		targetComponentInstantiation->setName(instaName);
-		targetComponentInstantiation->setLanguage("vhdl");
+		targetComponentInstantiation->setLanguage("VHDL");
 		targetComponent_->getComponentInstantiations()->append(targetComponentInstantiation);
 	}
 

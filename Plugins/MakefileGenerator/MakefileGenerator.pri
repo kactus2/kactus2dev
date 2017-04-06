@@ -7,11 +7,12 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+HEADERS += ../../common/NameGenerationPolicy.h \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../editors/ComponentEditor/common/SystemVerilogSyntax.h \
-    ../common/NameGenerationPolicy.h \
+    ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ./MakeCommon.h \
     ./MakefileGenerator.h \
     ./MakefileParser.h \
@@ -20,18 +21,17 @@ HEADERS += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
     ./MakeConfiguration.h \
     ./MakeParametersDialog.h \
-    ./MakefileGeneratorPlugin.h \
-    ../PluginSystem/GeneratorPlugin/OutputControl.h
+    ./MakefileGeneratorPlugin.h
 SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../common/NameGenerationPolicy.cpp \
-    ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
+    ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
     ./MakeConfiguration.cpp \
     ./MakefileGenerator.cpp \
     ./MakefileGeneratorPlugin.cpp \
     ./MakefileParser.cpp \
     ./MakeParametersDialog.cpp \
-    ./SWStackParser.cpp
+    ./SWStackParser.cpp \
+    ../../common/NameGenerationPolicy.cpp
 RESOURCES += MakefileGenerator.qrc

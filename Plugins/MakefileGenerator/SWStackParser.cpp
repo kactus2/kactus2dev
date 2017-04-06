@@ -16,10 +16,10 @@
 
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
-#include "editors/ComponentEditor/common/ListParameterFinder.h"
-#include "editors/ComponentEditor/common/IPXactSystemVerilogParser.h"
+#include <common/NameGenerationPolicy.h>
 
-#include <Plugins/common/NameGenerationPolicy.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWStackParser::MakefileParser()

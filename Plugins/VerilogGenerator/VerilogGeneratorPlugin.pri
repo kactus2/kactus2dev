@@ -7,7 +7,10 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../VerilogImport/VerilogSyntax.h \
+HEADERS += ../common/SourceHighlightStyle.h \
+    ./VerilogSourceHighlight.h \
+    ../VerilogImport/VerilogSyntax.h \
+    ../common/LanguageHighlighter.h \
     ./VerilogGeneratorPlugin.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ./common/Writer.h \
@@ -47,12 +50,12 @@ HEADERS += ../VerilogImport/VerilogSyntax.h \
     ../common/HDLParser/HDLParserCommon.h \
     ../common/HDLParser/MetaComponent.h \
     ../common/HDLParser/MetaDesign.h \
-    ../common/HDLParser/MetaInstance.h \
-    ./VerilogSourceHighlight.h \
-    ../common/SourceHighlightStyle.h \
-    ../common/LanguageHighlighter.h
-SOURCES += ../VerilogImport/VerilogSyntax.cpp \
+    ../common/HDLParser/MetaInstance.h
+SOURCES += ../common/LanguageHighlighter.cpp \
+    ../common/SourceHighlightStyle.cpp \
+    ../VerilogImport/VerilogSyntax.cpp \
     ./VerilogGeneratorPlugin.cpp \
+    ./VerilogSourceHighlight.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ./ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ./ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
@@ -63,7 +66,6 @@ SOURCES += ../VerilogImport/VerilogSyntax.cpp \
     ./VerilogWireWriter/VerilogWireWriter.cpp \
     ./CommentWriter/CommentWriter.cpp \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
-    ../common/NameGenerationPolicy.cpp \
     ./common/WriterGroup.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
@@ -86,8 +88,5 @@ SOURCES += ../VerilogImport/VerilogSyntax.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ../common/HDLParser/MetaComponent.cpp \
     ../common/HDLParser/MetaDesign.cpp \
-    ../common/HDLParser/MetaInstance.cpp \
-    ../common/LanguageHighlighter.cpp \
-    ./VerilogSourceHighlight.cpp \
-    ../common/SourceHighlightStyle.cpp
+    ../common/HDLParser/MetaInstance.cpp
 RESOURCES += VerilogGenerator.qrc

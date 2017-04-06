@@ -195,17 +195,32 @@ HEADERS += ./VersionHelper.h \
     ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
-    ./Plugins/common/NameGenerationPolicy.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
-    ./library/LibraryErrorModel.h \
-    ./library/LibraryData.h \
+    ./library/LibraryInterface.h \
     ./library/LibraryUtils.h \
-    ./library/LibraryTreeView.h \
-    ./library/LibraryTreeWidget.h \
-    ./library/LibraryTreeModel.h \
-    ./library/LibraryTreeFilter.h \
+    ./library/TableViewDialog.h \
+    ./library/LibraryFilter.h \
+    ./library/LibraryHandler.h \
+    ./library/LibraryData.h \
+    ./library/LibraryErrorModel.h \
     ./library/LibraryItem.h \
+    ./library/LibraryTreeFilter.h \
+    ./library/LibraryTreeModel.h \
+    ./library/LibraryTreeWidget.h \
+    ./library/LibraryTreeView.h \
+    ./library/VLNVDialer/dialerwidget.h \
+    ./library/VLNVDialer/filterwidget.h \
+    ./library/VLNVDialer/firmnessgroup.h \
+    ./library/VLNVDialer/hierarchygroup.h \
+    ./library/VLNVDialer/implementationgroup.h \
+    ./library/VLNVDialer/typegroup.h \
+    ./library/VLNVDialer/vlnvdialer.h \
+    ./library/HierarchyView/hierarchywidget.h \
+    ./library/HierarchyView/hierarchyview.h \
+    ./library/HierarchyView/hierarchyfilter.h \
+    ./library/HierarchyView/hierarchyitem.h \
+    ./library/HierarchyView/hierarchymodel.h \
     ./editors/ApiDefinitionEditor/ApiFunctionColumns.h \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
@@ -696,22 +711,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./library/VLNVDialer/vlnvdialer.h \
-    ./library/VLNVDialer/typegroup.h \
-    ./library/VLNVDialer/implementationgroup.h \
-    ./library/HierarchyView/hierarchymodel.h \
-    ./library/VLNVDialer/hierarchygroup.h \
-    ./library/HierarchyView/hierarchyitem.h \
-    ./library/HierarchyView/hierarchyfilter.h \
-    ./library/HierarchyView/hierarchywidget.h \
-    ./library/HierarchyView/hierarchyview.h \
-    ./library/VLNVDialer/firmnessgroup.h \
-    ./library/TableViewDialog.h \
-    ./library/LibraryInterface.h \
-    ./library/LibraryFilter.h \
-    ./library/LibraryHandler.h \
-    ./library/VLNVDialer/filterwidget.h \
-    ./library/VLNVDialer/dialerwidget.h
+    ./common/NameGenerationPolicy.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -867,31 +867,30 @@ SOURCES += ./VersionHelper.cpp \
     ./Plugins/PluginSystem/PluginManager.cpp \
     ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
-    ./Plugins/common/NameGenerationPolicy.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
-    ./library/TableViewDialog.cpp \
-    ./library/LibraryUtils.cpp \
+    ./library/LibraryData.cpp \
+    ./library/LibraryErrorModel.cpp \
+    ./library/LibraryFilter.cpp \
+    ./library/LibraryHandler.cpp \
+    ./library/LibraryItem.cpp \
+    ./library/LibraryTreeFilter.cpp \
+    ./library/LibraryTreeModel.cpp \
     ./library/LibraryTreeView.cpp \
     ./library/LibraryTreeWidget.cpp \
-    ./library/LibraryTreeModel.cpp \
-    ./library/LibraryTreeFilter.cpp \
-    ./library/LibraryItem.cpp \
-    ./library/LibraryHandler.cpp \
-    ./library/LibraryFilter.cpp \
-    ./library/LibraryErrorModel.cpp \
-    ./library/LibraryData.cpp \
-    ./library/HierarchyView/hierarchymodel.cpp \
-    ./library/HierarchyView/hierarchyitem.cpp \
+    ./library/LibraryUtils.cpp \
+    ./library/TableViewDialog.cpp \
+    ./library/VLNVDialer/dialerwidget.cpp \
+    ./library/VLNVDialer/filterwidget.cpp \
+    ./library/VLNVDialer/firmnessgroup.cpp \
+    ./library/VLNVDialer/hierarchygroup.cpp \
+    ./library/VLNVDialer/implementationgroup.cpp \
+    ./library/VLNVDialer/typegroup.cpp \
+    ./library/VLNVDialer/vlnvdialer.cpp \
     ./library/HierarchyView/hierarchyfilter.cpp \
+    ./library/HierarchyView/hierarchyitem.cpp \
+    ./library/HierarchyView/hierarchymodel.cpp \
     ./library/HierarchyView/hierarchyview.cpp \
     ./library/HierarchyView/hierarchywidget.cpp \
-    ./library/VLNVDialer/vlnvdialer.cpp \
-    ./library/VLNVDialer/typegroup.cpp \
-    ./library/VLNVDialer/implementationgroup.cpp \
-    ./library/VLNVDialer/hierarchygroup.cpp \
-    ./library/VLNVDialer/firmnessgroup.cpp \
-    ./library/VLNVDialer/filterwidget.cpp \
-    ./library/VLNVDialer/dialerwidget.cpp \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionModel.cpp \
@@ -1332,5 +1331,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./common/NameGenerationPolicy.cpp
 RESOURCES += kactus.qrc

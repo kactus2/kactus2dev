@@ -20,7 +20,7 @@
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
-#include <Plugins/common/NameGenerationPolicy.h>
+#include <common/NameGenerationPolicy.h>
 
 //-----------------------------------------------------------------------------
 // Function: MCAPIHeaderGenerator::MCAPIHeaderGenerator()

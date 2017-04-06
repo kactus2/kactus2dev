@@ -60,7 +60,7 @@
     <ClCompile Include="TLMWGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\NameGenerationPolicy.cpp">
+    <ClCompile Include="..\..\common\NameGenerationPolicy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,7 +88,7 @@
     <ClInclude Include="TLMWParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\NameGenerationPolicy.h">
+    <ClInclude Include="..\..\common\NameGenerationPolicy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

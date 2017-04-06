@@ -224,11 +224,10 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapHeaderGeneration()
 
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
-    QSharedPointer<Document> libComponent = library_.getModel(topComponent_->getVlnv());
 
     QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
 
-    headerGenerator_->runGenerator(&adapter, libComponent);
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(), QSharedPointer<DesignConfiguration>());
 
     QCOMPARE(generatorSpy.count(), 4);
 
@@ -350,9 +349,8 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithHexadecimalRegisterOffset()
 
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
-    QSharedPointer<Document> libComponent = library_.getModel(topComponent_->getVlnv());
 
-    headerGenerator_->runGenerator(&adapter, libComponent);
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(), QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -450,9 +448,8 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithReferencingRegisterOffset()
 
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
-    QSharedPointer<Document> libComponent = library_.getModel(topComponent_->getVlnv());
 
-    headerGenerator_->runGenerator(&adapter, libComponent);
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(), QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -564,9 +561,8 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapAddressBlockIsMemoryOrReser
 
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
-    QSharedPointer<Document> libComponent = library_.getModel(topComponent_->getVlnv());
 
-    headerGenerator_->runGenerator(&adapter, libComponent);
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(), QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -675,7 +671,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderGeneration()
 
     QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
     QCOMPARE(generatorSpy.count(), 4);
 
@@ -849,7 +845,7 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -992,7 +988,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithReferences()
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -1103,7 +1099,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithMasterReference(
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -1267,7 +1263,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesignConfiguration, headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, headerDesignConfiguration);
 
     readOutPutFile();
 
@@ -1383,7 +1379,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithChannel()
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -1501,7 +1497,7 @@ void tst_MemoryMapHeaderGenerator::testChannelDesignWithReferences()
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -1609,7 +1605,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithBridge()
     QWidget parentWidget;
     PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
     readOutPutFile();
 
@@ -1734,7 +1730,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithOpaqueBridge()
 
     QSignalSpy errorMessageSignals(&adapter, SIGNAL(errorMessage(QString const&)));
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
+    headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>()
 
     QCOMPARE(errorMessageSignals.count(), 1);
     QString errorMessage = errorMessageSignals.first().first().toString();
