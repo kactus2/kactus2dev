@@ -27,6 +27,7 @@
 #include <QTextStream>
 #include <QString>
 #include <QStringList>
+#include <QIcon>
 
 #include <QRegularExpression>
 
@@ -93,6 +94,8 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
 		return QVariant();
 	}
 
+    QSharedPointer<Port> port = portOnRow(index.row());
+
     if (role == Qt::DisplayRole) 
     {
         if (isValidExpressionColumn(index))
@@ -141,7 +144,6 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
     }
 	else if (Qt::BackgroundRole == role)
     {
-        QSharedPointer<Port> port = portOnRow(index.row());
         if (index.column() == PortColumns::ROW_NUMBER ||
             (index.column() == PortColumns::DEFAULT_VALUE && (port->getDirection() != DirectionTypes::IN &&
                 port->getDirection() != DirectionTypes::INOUT)) ||
@@ -158,6 +160,34 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
         else
         {
             return KactusColors::REGULAR_FIELD;
+        }
+    }
+    else if (role == Qt::DecorationRole)
+    {
+        if (index.column() == PortColumns::DIRECTION)
+        {
+            DirectionTypes::Direction direction = port->getDirection();
+
+            if(direction == DirectionTypes::IN)
+            {
+                return QIcon(":icons/common/graphics/input.png");
+            }
+            else if (direction == DirectionTypes::OUT)
+            {
+                return QIcon(":icons/common/graphics/output.png");
+            }
+            else if (direction == DirectionTypes::INOUT)
+            {
+                return QIcon(":icons/common/graphics/inout.png");
+            }
+            else if (direction == DirectionTypes::DIRECTION_PHANTOM)
+            {
+                return QIcon(":icons/common/graphics/phantom.png");
+            }
+            else
+            {
+                return QIcon(":icons/common/graphics/cross.png");
+            }
         }
     }
     else if (Qt::CheckStateRole == role)

@@ -20,6 +20,7 @@
 #include <common/KactusColors.h>
 
 #include <QStringList>
+#include <QIcon>
 
 //-----------------------------------------------------------------------------
 // Function: BusPortsModel::BusPortsModel()
@@ -276,6 +277,34 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
         else
         {
             return QVariant();
+        }
+    }
+    else if (role == Qt::DecorationRole)
+    {
+        if (index.column() == LogicalPortColumns::DIRECTION)
+        {
+            DirectionTypes::Direction direction = port.wire_->getDirection();
+
+            if(direction == DirectionTypes::IN)
+            {
+                return QIcon(":icons/common/graphics/input.png");
+            }
+            else if (direction == DirectionTypes::OUT)
+            {
+                return QIcon(":icons/common/graphics/output.png");
+            }
+            else if (direction == DirectionTypes::INOUT)
+            {
+                return QIcon(":icons/common/graphics/inout.png");
+            }
+            else if (direction == DirectionTypes::DIRECTION_PHANTOM)
+            {
+                return QIcon(":icons/common/graphics/phantom.png");
+            }
+            else
+            {
+                return QIcon(":icons/common/graphics/cross.png");
+            }
         }
     }
 
