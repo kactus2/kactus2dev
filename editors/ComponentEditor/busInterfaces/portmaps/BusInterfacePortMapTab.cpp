@@ -126,15 +126,15 @@ void BusInterfacePortMapTab::addItemsToDirectionFilter()
 
         if (portDirection.compare("In", Qt::CaseInsensitive) == 0)
         {
-            iconPath = ":icons/common/graphics/control-180.png";
+            iconPath = ":icons/common/graphics/input.png";
         }
         else if (portDirection.compare("Out", Qt::CaseInsensitive) == 0)
         {
-            iconPath = ":icons/common/graphics/control.png";
+            iconPath = ":icons/common/graphics/output.png";
         }
         else if (portDirection.compare("Inout", Qt::CaseInsensitive) == 0)
         {
-            iconPath = ":icons/common/graphics/control-dual.png";
+            iconPath = ":icons/common/graphics/inout.png";
         }
 
         QIcon directionIcon(iconPath);

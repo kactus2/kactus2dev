@@ -36,46 +36,42 @@ namespace NameGenerationPolicy
 	QString instanceFilesetName(QString const& systemViewName, QString const& instanceName);
 	
     /*!
-     *  Returns name of a flat view, based on language.
-     *  If the language is empty, returns a name without language.
+     *  Returns name of a flat view, based on a qualifier.
+     *  If the qualifier is empty, returns a name without language.
      *
-     *      @param [in] languageName    The supposed implementation language of the view.
+     *      @param [in] qualifierName       The qualifier that separates the view from others.
 	 */
-	QString flatViewName(QString const& languageName = QString(""));
+	QString flatViewName(QString const& qualifierName = QString(""));
 	
     /*!
-     *  Returns name of a hierarchical view, based on language.
-     *  If the language is empty, returns a name without language.
+     *  Returns name of a hierarchical view, on a qualifier.
+     *  If the qualifier is empty, returns a name without language.
      *
-     *      @param [in] languageName    The supposed implementation language of the view.
+     *      @param [in] qualifierName       The qualifier that separates the view from others.
 	 */
-	QString hierarchicalViewName(QString const& languageName = QString(""));
+	QString hierarchicalViewName(QString const& qualifierName = QString(""));
 	
     /*!
-     *  Returns name of a component instantiation, based on language.
-     *  If the language is empty, returns a name without language.
+     *  Returns name of a component instantiation, based on a qualifier.
+     *  If the qualifier is empty, returns a name without language.
      *
-     *      @param [in] viewName  Name of the view.
+     *      @param [in] qualifierName       The qualifier that separates the instantiation from others.
 	 */
-	QString componentInstantiationName(QString const& languageName = QString(""));
+	QString componentInstantiationName(QString const& qualifierName = QString(""));
 	
     /*!
-     *  Returns name of a design instantiation, based on name of its associated view.
+     *  Returns name of a design instantiation, based on a qualifier.
      *
-     *      @param [in] viewName  Name of the view.
-	 *
-	 *      @return The resolved name for the instantiation.
+     *      @param [in] qualifierName       The qualifier that separates the instantiation from others.
 	 */
-	QString designInstantiationName(QString const& viewName);
+	QString designInstantiationName(QString const& qualifierName);
 	
     /*!
-     *  Returns name of a design configuration instantiation, based on name of its associated view.
+     *  Returns name of a design configuration instantiation, based on a qualifier.
      *
-     *      @param [in] viewName  Name of the view.
-	 *
-	 *      @return The resolved name for the instantiation.
+     *      @param [in] qualifierName       The qualifier that separates the instantiation from others.
 	 */
-	QString designConfigurationInstantiationName(QString const& viewName);
+	QString designConfigurationInstantiationName(QString const& qualifierName);
 };
 
 #endif

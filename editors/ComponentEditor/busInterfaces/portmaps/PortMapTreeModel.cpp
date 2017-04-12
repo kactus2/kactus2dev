@@ -463,19 +463,19 @@ QIcon PortMapTreeModel::getIconForDirection(DirectionTypes::Direction direction)
     QString directionPath = ":icons/common/graphics/cross.png";
     if (direction == DirectionTypes::IN)
     {
-        directionPath = ":icons/common/graphics/control-180.png";
+        directionPath = ":icons/common/graphics/input.png";
     }
     else if (direction == DirectionTypes::OUT)
     {
-        directionPath = ":icons/common/graphics/control.png";
+        directionPath = ":icons/common/graphics/output.png";
     }
     else if (direction == DirectionTypes::INOUT)
     {
-        directionPath = ":icons/common/graphics/control-dual.png";
+        directionPath = ":icons/common/graphics/inout.png";
     }
     else if (direction == DirectionTypes::DIRECTION_PHANTOM)
     {
-        directionPath = ":icons/common/graphics/draw-triangle3.png";
+        directionPath = ":icons/common/graphics/phantom.png";
     }
 
     return QIcon(directionPath);

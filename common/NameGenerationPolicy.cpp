@@ -36,55 +36,55 @@
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::flatViewName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::flatViewName(QString const& languageName)
+	QString NameGenerationPolicy::flatViewName(QString const& qualifierName)
 	{
-        if (languageName.isEmpty())
+        if (qualifierName.isEmpty())
         {
 		    return "flat";
         }
 
-        return "flat_" + languageName;
+        return "flat_" + qualifierName;
     }
 
     //-----------------------------------------------------------------------------
     // Function: NameGenerationPolicy::flatViewName()
     //-----------------------------------------------------------------------------
-    QString NameGenerationPolicy::hierarchicalViewName(QString const& languageName)
+    QString NameGenerationPolicy::hierarchicalViewName(QString const& qualifierName)
     {
-        if (languageName.isEmpty())
+        if (qualifierName.isEmpty())
         {
             return "hierarchical";
         }
 
-        return "hierarchical_" + languageName;
+        return "hierarchical_" + qualifierName;
     }
 
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::componentInstantiationName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::componentInstantiationName(QString const& languageName)
+	QString NameGenerationPolicy::componentInstantiationName(QString const& qualifierName)
     {
-        if (languageName.isEmpty())
+        if (qualifierName.isEmpty())
         {
             return "implementation";
         }
 
-		return languageName + "_implementation";
+		return qualifierName + "_implementation";
 	}
 
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::designInstanceName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::designInstantiationName(QString const& viewName)
+	QString NameGenerationPolicy::designInstantiationName(QString const& qualifierName)
 	{
-		return viewName + "_design";
+		return qualifierName + "_design";
 	}
 
 	//-----------------------------------------------------------------------------
 	// Function: NameGenerationPolicy::designConfigurationInstanceName()
 	//-----------------------------------------------------------------------------
-	QString NameGenerationPolicy::designConfigurationInstantiationName(QString const& viewName)
+	QString NameGenerationPolicy::designConfigurationInstantiationName(QString const& qualifierName)
 	{
-		return viewName + "_design_configuration";
+		return qualifierName + "_design_configuration";
 	}
 

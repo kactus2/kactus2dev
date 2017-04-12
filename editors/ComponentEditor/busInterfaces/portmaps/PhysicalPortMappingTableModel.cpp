@@ -130,19 +130,19 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
             DirectionTypes::Direction direction = selectedPort->getDirection();
             if(direction == DirectionTypes::IN)
             {
-                return QIcon(":icons/common/graphics/control-180.png");
+                return QIcon(":icons/common/graphics/input.png");
             }
             else if (direction == DirectionTypes::OUT)
             {
-                return QIcon(":icons/common/graphics/control.png");
+                return QIcon(":icons/common/graphics/output.png");
             }
             else if (direction == DirectionTypes::INOUT)
             {
-                return QIcon(":icons/common/graphics/control-dual.png");
+                return QIcon(":icons/common/graphics/inout.png");
             }
             else if (direction == DirectionTypes::DIRECTION_PHANTOM)
             {
-                return QIcon(":icons/common/graphics/draw-triangle3.png");
+                return QIcon(":icons/common/graphics/phantom.png");
             }
             else
             {

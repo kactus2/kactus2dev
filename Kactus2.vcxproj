@@ -15788,9 +15788,6 @@ CreateHelp
     <None Include="common\graphics\cleanup.png" />
     <None Include="common\graphics\collapse.png" />
     <None Include="common\graphics\configuration.png" />
-    <None Include="common\graphics\connect.png" />
-    <None Include="common\graphics\control-180.png" />
-    <None Include="common\graphics\control-dual.png" />
     <None Include="common\graphics\control-play.png" />
     <None Include="common\graphics\control-stop.png" />
     <None Include="common\graphics\control.png" />
@@ -15826,6 +15823,8 @@ CreateHelp
     <None Include="common\graphics\import.png" />
     <None Include="common\graphics\imported.png" />
     <None Include="common\graphics\import_folders.png" />
+    <None Include="common\graphics\inout.png" />
+    <None Include="common\graphics\input.png" />
     <None Include="common\graphics\library-config.png" />
     <None Include="common\graphics\library-refresh.png" />
     <None Include="common\graphics\lock-off.png" />
@@ -15840,6 +15839,7 @@ CreateHelp
     <None Include="common\graphics\new-api_definition.png" />
     <None Include="common\graphics\new-bus.png" />
     <None Include="common\graphics\new-com_definition.png" />
+    <None Include="common\graphics\output.png" />
     <None Include="common\graphics\plugin-generator.png" />
     <None Include="common\graphics\plugin-source_analyzer.png" />
     <None Include="common\graphics\protection-locked.png" />

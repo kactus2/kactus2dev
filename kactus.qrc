@@ -96,9 +96,10 @@
       <file>common/graphics/plugin-source_analyzer.png</file>
       <file>common/graphics/control-play.png</file>
       <file>common/graphics/control-stop.png</file>
-	  <file>common/graphics/control.png</file>
-	  <file>common/graphics/control-180.png</file>
- 	  <file>common/graphics/control-dual.png</file>
+      <file>common/graphics/output.png</file>
+      <file>common/graphics/input.png</file>
+      <file>common/graphics/inout.png</file>
+      <file>common/graphics/phantom.png</file>
 	  <file>common/graphics/cross.png</file>
       <file>common/graphics/balloon.png</file>
 	  <file>common/graphics/pin--plus.png</file>
@@ -119,7 +120,6 @@
 	  <file>common/graphics/generatorChain.png</file>
 	  <file>common/graphics/exclamation--frame.png</file>
       <file>common/graphics/paginator.png</file>
-	  <file>common/graphics/draw-triangle3.png</file>
     </qresource>
     <qresource prefix="/">        
       <file>common/graphics/splash.png</file>

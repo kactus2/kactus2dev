@@ -6433,16 +6433,7 @@
     <None Include="common\graphics\configuration.png">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="common\graphics\connect.png">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="common\graphics\control.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="common\graphics\control-180.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="common\graphics\control-dual.png">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="common\graphics\control-play.png">
@@ -6735,6 +6726,15 @@
     </None>
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
+    </None>
+    <None Include="common\graphics\inout.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\input.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\output.png">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
 </Project>

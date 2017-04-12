@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./VersionHelper.h \
+    ./common/NameGenerationPolicy.h \
     ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -710,10 +711,10 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./common/NameGenerationPolicy.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
+    ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -1331,6 +1332,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./common/NameGenerationPolicy.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc

@@ -141,15 +141,15 @@ void PortMapTreeDelegate::setPortDirectionIcons(QComboBox* portSelector) const
             DirectionTypes::Direction portDirection = currentPort->getDirection();
             if (portDirection == DirectionTypes::IN)
             {
-                iconPath = ":icons/common/graphics/control-180.png";
+                iconPath = ":icons/common/graphics/input.png";
             }
             else if (portDirection == DirectionTypes::OUT)
             {
-                iconPath = ":icons/common/graphics/control.png";
+                iconPath = ":icons/common/graphics/output.png";
             }
             else if (portDirection == DirectionTypes::INOUT)
             {
-                iconPath = ":icons/common/graphics/control-dual.png";
+                iconPath = ":icons/common/graphics/inout.png";
             }
         }
 
