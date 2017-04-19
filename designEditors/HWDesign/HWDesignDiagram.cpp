@@ -2313,16 +2313,19 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
 					primaryPort->getComponentRef()));
             }
 
-            if (adHocConnection->isOffPage())
+            if (port1)
             {
-                port1 = static_cast<HWConnectionEndpoint*>(port1->getOffPageConnector());
-            }
+                if (adHocConnection->isOffPage())
+                {
+                    port1 = static_cast<HWConnectionEndpoint*>(port1->getOffPageConnector());
+                }
 
-            for (int i = 1; i < adHocConnection->getInternalPortReferences()->size(); ++i)
-            {
-                QSharedPointer<PortReference> secondaryPort = adHocConnection->getInternalPortReferences()->at(i);
-                createConnectionForAdHocPorts(adHocConnection, secondaryPort, primaryPort, port1);
-            }         
+                for (int i = 1; i < adHocConnection->getInternalPortReferences()->size(); ++i)
+                {
+                    QSharedPointer<PortReference> secondaryPort = adHocConnection->getInternalPortReferences()->at(i);
+                    createConnectionForAdHocPorts(adHocConnection, secondaryPort, primaryPort, port1);
+                }    
+            }     
         }
 
         foreach (QSharedPointer<PortReference> externalPort, *adHocConnection->getExternalPortReferences())
