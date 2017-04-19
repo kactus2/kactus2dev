@@ -10,6 +10,8 @@ Kactus2 is a toolset for designing embedded products, especially FPGA-based
 MP-SoCs. The aim is easier IP reusabilility and integration for both hardware and
 software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 
+Windows installer and tar-package for Linux are available at https://sourceforge.net/projects/kactus2/
+
 What you can do with Kactus2
 ----------------------------------------------------
 
