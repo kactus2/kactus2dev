@@ -34,7 +34,7 @@ class HDLGenerationDialog : public QDialog
 public:
 
 	//! The constructor.
-	HDLGenerationDialog(QSharedPointer<GenerationControl> configuration, QWidget *parent);
+	HDLGenerationDialog(QSharedPointer<GenerationControl> configuration, QString const& targetFileType, QWidget *parent);
 
 	//! The destructor.
     virtual ~HDLGenerationDialog();
@@ -59,8 +59,9 @@ public slots:
 
 private slots:
 
-
     void onSelectedFileChanged(QSharedPointer<GenerationOutput> newSelection);
+
+    void onOutputPathChanged();
 
 private:
 

@@ -28,7 +28,8 @@ MetaComponent::MetaComponent(MessagePasser* messages,
     activeView_(activeView),
     parameters_(new QList<QSharedPointer<Parameter> >()),
     ports_(new QMap<QString,QSharedPointer<MetaPort> >()),
-    remapStates_(new QList<QSharedPointer<FormattedRemapState> >())
+    remapStates_(new QList<QSharedPointer<FormattedRemapState> >()),
+    fileSets_(new QList<QSharedPointer<FileSet> >())
 {
     // Try to find a component instantiation for the view.
     if (activeView_)
@@ -40,6 +41,7 @@ MetaComponent::MetaComponent(MessagePasser* messages,
         {
             // If there is a named component instantiation, its module name shall be used.
             moduleName_ = activeInstantiation_->getModuleName();
+            parsesFileSets();
         }
     }
 
@@ -58,6 +60,22 @@ MetaComponent::MetaComponent(MessagePasser* messages,
 //-----------------------------------------------------------------------------
 MetaComponent::~MetaComponent()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::parsesFileSets()
+//-----------------------------------------------------------------------------
+void MetaComponent::parsesFileSets()
+{
+    foreach(QString fileSetRef, *activeInstantiation_->getFileSetReferences())
+    {
+        QSharedPointer<FileSet> fileSet = component_->getFileSet(fileSetRef);
+
+        if (fileSet)
+        {
+            fileSets_->append(fileSet);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

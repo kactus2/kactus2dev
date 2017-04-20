@@ -120,7 +120,7 @@ private:
 	VerilogGeneratorPlugin(VerilogGeneratorPlugin const& rhs);
 	VerilogGeneratorPlugin& operator=(VerilogGeneratorPlugin const& rhs);
 
-     //-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 

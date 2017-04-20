@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ModelSimGeneratorPlugin.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 10.06.2016
 //
@@ -9,22 +9,25 @@
 // ModelSim generator plugin.
 //-----------------------------------------------------------------------------
 
-#include "ModelSimGenerator.h"
 #include "ModelSimGeneratorPlugin.h"
 
-#include <QCoreApplication>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include "ModelSimWriterFactory/ModelSimWriterFactory.h"
 
-#include "QFileDialog"
+#include <Plugins/common/LanguageHighlighter.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
+
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: ModelSimGeneratorPlugin::ModelSimGeneratorPlugin()
 //-----------------------------------------------------------------------------
 ModelSimGeneratorPlugin::ModelSimGeneratorPlugin() : QObject(0)
 {
-
+    settings_.generateInterfaces_ = false;
+    settings_.lastFileSetName_ = "";
+    settings_.lastViewName_ = "";
 }
 
 //-----------------------------------------------------------------------------
@@ -32,7 +35,6 @@ ModelSimGeneratorPlugin::ModelSimGeneratorPlugin() : QObject(0)
 //-----------------------------------------------------------------------------
 ModelSimGeneratorPlugin::~ModelSimGeneratorPlugin()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +50,7 @@ QString ModelSimGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString ModelSimGeneratorPlugin::getVersion() const
 {
-    return "1.1";
+    return "2.0";
 }
 
 //-----------------------------------------------------------------------------
@@ -56,8 +58,7 @@ QString ModelSimGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString ModelSimGeneratorPlugin::getDescription() const
 {
-	return "Generates a ModelSim do file, which adds the files in design to ModelSim library and then starts "\
-		 "a simulation for the design.";
+	return "Generates a ModelSim do file, which adds the files in design to the active ModelSim project.";
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +108,19 @@ bool ModelSimGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component con
     QSharedPointer<Design const> design,
     QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-	return component && component->getImplementation() == KactusAttribute::HW;
+    // If design or design configuration exists, their implementation overrides the top component.
+    if (design)
+    {
+        return design->getImplementation() == KactusAttribute::HW;
+    }
+
+    if (designConfiguration)
+    {
+        return designConfiguration->getImplementation() == KactusAttribute::HW;
+    }
+
+    // Else the availability is determined based on the top component.
+    return component && component->getImplementation() == KactusAttribute::HW;
 }
 
 //-----------------------------------------------------------------------------
@@ -118,83 +131,49 @@ void ModelSimGeneratorPlugin::runGenerator(IPluginUtility* utility,
     QSharedPointer<Design> design,
     QSharedPointer<DesignConfiguration> designConfiguration)
 {
-	// In principle, these could be null.
-	if (!component || (design && !designConfiguration) || (!design && designConfiguration))
-	{
-		utility->printError( "ModelSim generator received null top component or design!" );
-		return;
-	}
+    // First state we are running. Tell the version.
+    utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
-	// Must know if generating for a design.
-	bool targetIsDesign = design && designConfiguration;
+    // Must have a component under any condition.
+    if (!component)
+    {
+        utility->printError(tr("Null component given as a parameter."));
+        return;
+    }
 
-	// Inform when done.
-	utility->printInfo( "ModelSim generation complete." );
+    MessagePasser messages;
 
-	// Top component may have been affected by changes -> save.
-	utility->getLibraryInterface()->writeModelToFile(component);
+    GenerationTuple input;
+    input.component = component;
+    input.design = design;
+    input.designConfiguration = designConfiguration;
+    input.messages = &messages;
 
-	// select a view to generate the ModelSim script for
-	QSharedPointer<View> view = component->getViews()->first();//ComboSelector::selectView(component, utility->getParentWidget(), QString(), tr("Select a view to generate the modelsim script for"));
-	if (!view)
-	{
-		return;
-	}
+    ModelSimWriterFactory factory(utility->getLibraryInterface(), &messages, &settings_,
+        utility->getKactusVersion(), getVersion());
 
-	QString fileName = utility->getLibraryInterface()->getPath(component->getVlnv());
-	QFileInfo targetInfo(fileName);
-	fileName = targetInfo.absolutePath();
-	fileName += QString("/%1.%2.create_makefile").arg(component->getVlnv().getName()).arg(view->name());
+    // Create model for the configuration widget.
+    QSharedPointer<GenerationControl> configuration(new GenerationControl
+        (utility->getLibraryInterface(), &factory, input, &settings_));
 
-	// ask user to select a location to save the makefile
-	fileName = QFileDialog::getSaveFileName(utility->getParentWidget(), 
-		tr("Set the file name for the modelsim script."), fileName,
-		tr("Modelsim scripts (*.do);;Shell Scripts (*.sh)"));
+    // Create the dialog and execute: The user will ultimately accept the configuration.
+    HDLGenerationDialog dialog(configuration, "ModelSim", utility->getParentWidget());
 
-	// if user clicked cancel
-	if (fileName.isEmpty())
-	{
-		return;
-	}
+    connect(&messages, SIGNAL(errorMessage(const QString&)),
+        &dialog, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(&messages, SIGNAL(noticeMessage(const QString&)),
+        & dialog, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 
-	// Parse the matching file sets.
-	ModelSimParser sparser(utility, utility->getLibraryInterface());
-	sparser.parseFiles(component, view);
+    dialog.onViewChanged();
 
-	// construct the generator
-	ModelSimGenerator generator(sparser,utility,utility->getLibraryInterface());
-	/*connect(&generator, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(&generator, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);*/
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        utility->printInfo(tr("Generation aborted."));
+        return;
+    }
 
-	// create the script file
-	generator.generateMakefile(fileName);
-
-	// check if the file already exists in the metadata
-	QString basePath = utility->getLibraryInterface()->getPath(component->getVlnv());
-	QString relativePath = General::getRelativePath(basePath, fileName);
-	if (!component->hasFile(relativePath))
-	{
-		// ask user if he wants to save the generated ModelSim script into 
-		// object metadata
-		QMessageBox::StandardButton button = QMessageBox::question(utility->getParentWidget(), 
-			tr("Save generated ModelSim script to metadata?"),
-			tr("Would you like to save the generated ModelSim script to IP-XACT"
-			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-		// if the generated file is saved
-		if (button == QMessageBox::Yes)
-		{
-			QString xmlPath = utility->getLibraryInterface()->getPath(component->getVlnv());
-
-			// if the file was successfully added to the library
-			if (generator.addMakefile2IPXact(component, fileName, xmlPath))
-			{
-				utility->getLibraryInterface()->writeModelToFile(component);
-			}
-		}
-	}
+    // Finally, save the changes.
+    utility->printInfo(tr("Generation complete."));
 }
 
 //-----------------------------------------------------------------------------
@@ -204,141 +183,3 @@ QList<IPlugin::ExternalProgramRequirement> ModelSimGeneratorPlugin::getProgramRe
 {
     return QList<IPlugin::ExternalProgramRequirement>();
 }
-
-//-----------------------------------------------------------------------------
-// Function: ModelSimGeneratorPlugin::componentModelsimGenerate()
-//-----------------------------------------------------------------------------
-/*bool ModelSimGeneratorPlugin::componentModelsimGenerate()
-{
-	if (isModified() && askSaveFile())
-	{
-		save();
-	}
-
-	// select a view to generate the modelsim script for
-	QString viewName = ComboSelector::selectView(component_, this, QString(),
-		tr("Select a view to generate the modelsim script for"));
-	if (viewName.isEmpty()) {
-		return false;
-	}
-
-	QString fileName = libHandler_->getPath(component_->getVlnv());
-	QFileInfo targetInfo(fileName);
-	fileName = targetInfo.absolutePath();
-	fileName += QString("/%1.%2.create_makefile").arg(component_->getVlnv().getName()).arg(viewName);
-
-	// ask user to select a location to save the makefile
-	fileName = QFileDialog::getSaveFileName(this, 
-		tr("Set the file name for the modelsim script."), fileName,
-		tr("Modelsim scripts (*.do);;Shell cripts (*.sh)"));
-
-	// if user clicked cancel
-	if (fileName.isEmpty())
-	{
-		return false;
-	}
-
-	// construct the generator
-	ModelsimGenerator generator(libHandler_, this);
-	connect(&generator, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(&generator, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-
-	// parse the component and view / sub-designs
-	generator.parseFiles(component_, viewName);
-
-	// create the script file
-	generator.generateMakefile(fileName);
-
-	// check if the file already exists in the metadata
-	QString basePath = libHandler_->getPath(component_->getVlnv());
-	QString relativePath = General::getRelativePath(basePath, fileName);
-	if (!component_->hasFile(relativePath))
-	{
-		// ask user if he wants to save the generated modelsim script into 
-		// object metadata
-		QMessageBox::StandardButton button = QMessageBox::question(this, 
-			tr("Save generated modelsim script to metadata?"),
-			tr("Would you like to save the generated modelsim script to IP-Xact"
-			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-		// if the generated file is saved
-		if (button == QMessageBox::Yes)
-		{
-			QString xmlPath = libHandler_->getPath(component_->getVlnv());
-
-			// if the file was successfully added to the library
-			if (generator.addMakefile2IPXact(component_, fileName, xmlPath))
-			{
-				libHandler_->writeModelToFile(component_);
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModelSimGeneratorPlugin::designModelsimGenerate()
-//-----------------------------------------------------------------------------
-void ModelSimGeneratorPlugin::designModelsimGenerate()
-{
-	if (isModified() && askSaveFile())
-	{
-		save();
-	}
-
-	QString fileName = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
-	QFileInfo targetInfo(fileName);
-	fileName = targetInfo.absolutePath();
-	fileName += QString("/%1.%2.compile.do").arg(
-		getEditedComponent()->getVlnv().getName()).arg(getOpenViewName());
-
-	// ask user to select a location to save the makefile
-	fileName = QFileDialog::getSaveFileName(this, 
-		tr("Set the file name for the modelsim script."), fileName,
-		tr("Modelsim scripts (*.do);;Shell cripts (*.sh)"));
-
-	// if user clicked cancel
-	if (fileName.isEmpty())
-	{
-		return;
-	}
-
-	// construct the generator
-	ModelsimGenerator generator(getLibraryInterface(), this);
-	connect(&generator, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(&generator, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-
-	// parse the getEditedComponent() and view / sub-designs
-	generator.parseFiles(getEditedComponent(), getOpenViewName());
-
-	// create the script file
-	generator.generateMakefile(fileName);
-
-	// check if the file already exists in the metadata
-	QString basePath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
-	QString relativePath = General::getRelativePath(basePath, fileName);
-	if (!getEditedComponent()->hasFile(relativePath))
-	{
-		// Ask user if he wants to save the generated modelsim script into object metadata.
-		QMessageBox::StandardButton button = QMessageBox::question(this, 
-			tr("Save generated modelsim script to metadata?"),
-			tr("Would you like to save the generated modelsim script to IP-Xact"
-			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-		if (button == QMessageBox::Yes)
-		{
-			QString xmlPath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
-
-			// if the file was successfully added to the library
-			if (generator.addMakefile2IPXact(getEditedComponent(), fileName, xmlPath))
-			{
-				getLibraryInterface()->writeModelToFile(getEditedComponent());
-			}
-		}
-	}
-}*/

@@ -112,7 +112,7 @@ QSharedPointer<GenerationOutput> OutputControl::changeFileName(int index, QStrin
     }
 
     selection->fileName_ = newName;
-    selection->write();
+    selection->write(outputPath_);
 
     return selection;
 }

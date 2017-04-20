@@ -13,9 +13,6 @@
 #include "GenerationControl.h"
 
 #include <common/KactusColors.h>
-
-#include <Plugins/VerilogImport/VerilogSyntax.h>
-
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QVBoxLayout>
@@ -28,7 +25,7 @@
 // Function: HDLGenerationDialog::HDLGenerationDialog()
 //-----------------------------------------------------------------------------
 HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> configuration,
-	QWidget *parent) : 
+	QString const& targetFileType, QWidget *parent) : 
 	QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint), 
     configuration_(configuration),
     viewSelection_(new ViewSelectionWidget(configuration->getViewSelection())),
@@ -37,7 +34,7 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     previewer_(new QPlainTextEdit(this)),
     console_(new MessageConsole(this))
 {
-    setWindowTitle(tr("File generation for %1").arg(configuration->getViewSelection()->getTargetLanguage()));
+    setWindowTitle(tr("File generation for %1").arg(targetFileType));
 
     // Create font for previewing.
     QFont font("Courier");
@@ -98,6 +95,7 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     // Connect file output.
     connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationOutput>)), 
         this, SLOT(onSelectedFileChanged(QSharedPointer<GenerationOutput>)), Qt::UniqueConnection);
+    connect(fileOutput_, SIGNAL(outputPathChanged()), this, SLOT(onOutputPathChanged()), Qt::UniqueConnection);
 
     // Connect the dialog buttons to their respective functions.
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
@@ -173,23 +171,13 @@ void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput>
 {
     previewer_->setPlainText(newSelection->fileContent_);
 
-    if (configuration_->isDesignGeneration())
-    {
-        return;
-    }
-
-    int implementationStart;
-    int implementationEnd;
+    int higlightStart;
+    int highlightEnd;
     QString error;
 
-    if (!VerilogSyntax::findImplementation(
-        previewer_->toPlainText(), implementationStart, implementationEnd, error))
-    {
-        return;
-    }
+    newSelection->getBodyHighlight(higlightStart, highlightEnd);
 
-    if (implementationStart == -1 || implementationEnd == -1 && implementationEnd
-        > previewer_->toPlainText().length())
+    if (higlightStart < 0 || highlightEnd < 0)
     {
         return;
     }
@@ -197,11 +185,20 @@ void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput>
     QColor const& highlightColor = QColor::fromRgb(183,225,252);
 
     QTextCursor cursor = previewer_->textCursor();
-    cursor.setPosition(implementationStart);
+    cursor.setPosition(higlightStart);
 
     QTextCharFormat highlighFormat = cursor.charFormat();        
     highlighFormat.setBackground(QBrush(highlightColor));
 
-    cursor.setPosition(implementationEnd, QTextCursor::KeepAnchor);        
+    cursor.setPosition(highlightEnd, QTextCursor::KeepAnchor);        
     cursor.setCharFormat(highlighFormat);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::onOutputPathChanged()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::onOutputPathChanged()
+{
+    configuration_->parseDocuments();
+    fileOutput_->onOutputFilesChanged();
 }

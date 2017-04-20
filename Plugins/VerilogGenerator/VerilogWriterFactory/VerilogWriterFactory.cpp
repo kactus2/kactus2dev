@@ -52,30 +52,28 @@ QSharedPointer<GenerationOutput> VerilogWriterFactory::prepareComponent(QString 
     QSharedPointer<MetaComponent> component)
 {
     // If we are not generating based on a design, we must parse the existing implementation.
-    QString implementation;
-    QString postModule;
     QString fileName = component->getModuleName() + ".v";
     QString filePath = outputPath + "/" + fileName;
-    QString error;
 
-    if (!VerilogSyntax::readImplementation(filePath, implementation, postModule, error))
-    {
-        messages_->errorMessage(error);
+    QSharedPointer<VerilogDocument> document = QSharedPointer<VerilogDocument>(new VerilogDocument);
 
-        // If parser says no-go, we dare do nothing.
-        return QSharedPointer<VerilogDocument>();
-    }
-
-    QSharedPointer<VerilogDocument> document = initializeComponentWriters(component);
     document->fileName_ = fileName;
     document->vlnv_ = component->getComponent()->getVlnv().toString();
 
-    // Next comes the implementation.
-    QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(implementation));
+    // Try to find an implementation from the file.
+    if (!readImplementation(document, filePath))
+    {
+        return QSharedPointer<VerilogDocument>();
+    }
+
+    // Create writers for module header etc.
+    initializeComponentWriters(document, component);
+
+    // Create writers.
+    QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(document->implementation_));
     document->topWriter_->setImplementation(implementationWriter);
 
-    // Also write any stuff that comes after the actual module.
-    QSharedPointer<TextBodyWriter> postModuleWriter(new TextBodyWriter(postModule));
+    QSharedPointer<TextBodyWriter> postModuleWriter(new TextBodyWriter(document->postModule_));
     document->topWriter_->setPostModule(postModuleWriter);
 
     return document;
@@ -84,18 +82,25 @@ QSharedPointer<GenerationOutput> VerilogWriterFactory::prepareComponent(QString 
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::prepareDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<GenerationOutput> VerilogWriterFactory::prepareDesign(QSharedPointer<MetaDesign> design)
+QList<QSharedPointer<GenerationOutput> > VerilogWriterFactory::prepareDesign(QList<QSharedPointer<MetaDesign> >& designs)
 {
-    QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->getTopInstance());
-    document->fileName_ = design->getTopInstance()->getModuleName() + ".v";
-    document->vlnv_ = design->getTopInstance()->getComponent()->getVlnv().toString();
+    QList<QSharedPointer<GenerationOutput> > retval;
 
-    initializeDesignWriters(design, document);
+    foreach(QSharedPointer<MetaDesign> mDesign, designs)
+    {
+        QSharedPointer<VerilogDocument> document = QSharedPointer<VerilogDocument>(new VerilogDocument);
+        initializeComponentWriters(document, mDesign->getTopInstance());
+        document->fileName_ = mDesign->getTopInstance()->getModuleName() + ".v";
+        document->vlnv_ = mDesign->getTopInstance()->getComponent()->getVlnv().toString();
 
-    // Finally, add them to the top writer in desired order.
-    addWritersToTopInDesiredOrder(document);
+        initializeDesignWriters(document, mDesign);
 
-    return document;
+        // Finally, add them to the top writer in desired order.
+        addWritersToTopInDesiredOrder(document);
+        retval.append(document);
+    }
+
+    return retval;
 }
 
 //-----------------------------------------------------------------------------
@@ -107,29 +112,75 @@ QString VerilogWriterFactory::getLanguage() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogWriterFactory::readImplementation()
+//-----------------------------------------------------------------------------
+bool VerilogWriterFactory::readImplementation(QSharedPointer<VerilogDocument> document, QString const& outputPath)
+{
+    // This will contain the found implementation, if success.
+    QString implementation;
+    // This may contain the text after the module definition, if success.
+    QString postModule;
+    // This will contain the error message, if not success.
+    QString error;
+
+    // Check if the output file already exists.
+    QFile outputFile(outputPath); 
+
+    // If it does not, there is nothing do here.
+    if (!outputFile.exists())
+    {
+        return true;
+    }
+
+    // Must be able to open it for reading.
+    if (!outputFile.open(QIODevice::ReadOnly))
+    {
+        messages_->errorMessage(QObject::tr("File %1: The output file exists, but could not open it for reading. The path: %2").
+            arg(document->fileName_, outputPath));
+        return false;
+    }
+
+    // Read the content.
+    QTextStream inputStream(&outputFile);
+    QString fileContent = inputStream.readAll();
+    // Remove carriage return.
+    fileContent.remove('\r');
+
+    // The document sub class is supposed to know how to find its implementation.
+    if (!document->selectImplementation(fileContent, implementation, postModule, error))
+    {
+        messages_->errorMessage(QObject::tr("File %1: %2").arg(document->fileName_, error));
+
+        return false;
+    }
+
+    document->implementation_ = implementation;
+    document->postModule_ = postModule;
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::initializeComponentWriters()
 //-----------------------------------------------------------------------------
-QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters(QSharedPointer<MetaComponent> topComponent)
+void VerilogWriterFactory::initializeComponentWriters(QSharedPointer<VerilogDocument> document,
+    QSharedPointer<MetaComponent> component)
 {
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();
-    QString componentXmlPath = library_->getPath(topComponent->getComponent()->getVlnv());
+    QString componentXmlPath = library_->getPath(component->getComponent()->getVlnv());
 
-    QSharedPointer<VerilogDocument> retval(new VerilogDocument);
+    document->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(component->getComponent()->getVlnv(), 
+        componentXmlPath, currentUser, component->getComponent()->getDescription(), kactusVersion_, generatorVersion_));
 
-    retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->getComponent()->getVlnv(), 
-        componentXmlPath, currentUser, topComponent->getComponent()->getDescription(), kactusVersion_, generatorVersion_));
-
-    retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter
-        (topComponent, settings_->generateInterfaces_));
-
-    return retval;
+    document->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter
+        (component, settings_->generateInterfaces_));
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::initializeDesignWriters()
 //-----------------------------------------------------------------------------
-void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> design, QSharedPointer<VerilogDocument> document)
+void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocument> document, QSharedPointer<MetaDesign> design)
 {
     document->instanceWriters_.clear();
 

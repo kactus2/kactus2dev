@@ -8,10 +8,49 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./modelsimgenerator_global.h \
-    ./ModelSimGenerator.h \
-    ./ModelSimParser.h \
-    ./ModelSimGeneratorPlugin.h
-SOURCES += ./ModelSimGenerator.cpp \
-    ./ModelSimGeneratorPlugin.cpp \
-    ./ModelSimParser.cpp
+    ./ModelSimGeneratorPlugin.h \
+    ../common/HDLParser/HDLParserCommon.h \
+    ../common/HDLParser/MetaComponent.h \
+    ../common/HDLParser/MetaDesign.h \
+    ../common/HDLParser/MetaInstance.h \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../PluginSystem/GeneratorPlugin/MessagePasser.h \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
+    ../PluginSystem/GeneratorPlugin/GenerationControl.h \
+    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.h \
+    ../PluginSystem/GeneratorPlugin/IGeneratorPlugin.h \
+    ../PluginSystem/GeneratorPlugin/IWriterFactory.h \
+    ../PluginSystem/GeneratorPlugin/OutputControl.h \
+    ../PluginSystem/GeneratorPlugin/ViewSelection.h \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
+    ../../mainwindow/MessageConsole/messageconsole.h \
+    ./ModelSimWriterFactory/ModelSimDocument.h \
+    ./ModelSimWriterFactory/ModelSimWriterFactory.h \
+    ./ModelSimWriterFactory/ModelSimWriter.h
+SOURCES += ./ModelSimGeneratorPlugin.cpp \
+    ../common/HDLParser/MetaComponent.cpp \
+    ../common/HDLParser/MetaDesign.cpp \
+    ../common/HDLParser/MetaInstance.cpp \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
+    ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
+    ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
+    ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
+    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.cpp \
+    ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
+    ../../mainwindow/MessageConsole/messageconsole.cpp \
+    ./ModelSimWriterFactory/ModelSimDocument.cpp \
+    ./ModelSimWriterFactory/ModelSimWriterFactory.cpp \
+    ./ModelSimWriterFactory/ModelSimWriter.cpp
 RESOURCES += ModelSimGenerator.qrc

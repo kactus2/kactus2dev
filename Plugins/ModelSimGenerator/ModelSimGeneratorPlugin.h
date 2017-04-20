@@ -15,7 +15,7 @@
 #include "modelsimgenerator_global.h"
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 class MODELSIMGENERATOR_EXPORT ModelSimGeneratorPlugin : public QObject, public IGeneratorPlugin
 {
@@ -109,6 +109,17 @@ public:
      //! Returns the external program requirements of the plugin.
      virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
+private:
+     // Disable copying.
+     ModelSimGeneratorPlugin( ModelSimGeneratorPlugin const& rhs);
+     ModelSimGeneratorPlugin& operator=(ModelSimGeneratorPlugin const& rhs);
+
+     //-----------------------------------------------------------------------------
+     // Data.
+     //-----------------------------------------------------------------------------
+
+     //! The last values used by the generation.
+     GenerationSettings settings_;
 };
 
 #endif // MODELSIMGENERATORPLUGIN_H

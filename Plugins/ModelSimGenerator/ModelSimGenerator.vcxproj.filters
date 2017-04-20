@@ -29,15 +29,39 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\Parsing">
+      <UniqueIdentifier>{d3bbdfb7-dff1-4897-b8d3-d49b89c8cb76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parsing">
+      <UniqueIdentifier>{8bfc3890-9aa1-40f3-a4b4-55445b974b81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{ce3d2326-04ea-4b0c-b5fc-12793ca57d5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common">
+      <UniqueIdentifier>{f7decd9b-fb93-4d33-bf86-6a049de37b44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GenerationControl">
+      <UniqueIdentifier>{ebb899ad-7b28-44ae-92f5-a44282cb51fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GenerationControl">
+      <UniqueIdentifier>{62f412f1-2d73-439f-a71f-dd47aa072532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Widgets">
+      <UniqueIdentifier>{041a6a83-8e20-472a-8812-690dc976d657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Widgets">
+      <UniqueIdentifier>{1bc67e41-2988-4b1c-b5cb-ef22743b4c8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ModelSimWriterFactory">
+      <UniqueIdentifier>{22a40d0a-3a8e-4d5d-9e13-749a56b459cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ModelSimWriterFactory">
+      <UniqueIdentifier>{d1f9c4db-5320-4116-92fb-6dd636905c94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ModelSimParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ModelSimGeneratorPlugin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelSimGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_ModelSimGenerator.cpp">
@@ -49,17 +73,95 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ModelSimGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ModelSimGenerator.cpp">
+    <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaDesign.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaInstance.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FileOutputWidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ModelSimGenerator.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_FileOutputWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ModelSimParser.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_HDLGenerationDialog.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ModelSimParser.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_HDLGenerationDialog.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ViewSelectionWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ViewSelectionWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MessagePasser.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MessagePasser.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_messageconsole.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_messageconsole.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelSimWriterFactory\ModelSimWriterFactory.cpp">
+      <Filter>Source Files\ModelSimWriterFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelSimWriterFactory\ModelSimDocument.cpp">
+      <Filter>Source Files\ModelSimWriterFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelSimWriterFactory\ModelSimWriter.cpp">
+      <Filter>Source Files\ModelSimWriterFactory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -69,11 +171,20 @@
     <CustomBuild Include="ModelSimGeneratorPlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="ModelSimGenerator.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
+      <Filter>Header Files\GenerationControl</Filter>
     </CustomBuild>
-    <CustomBuild Include="ModelSimParser.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\mainwindow\MessageConsole\messageconsole.h">
+      <Filter>Header Files\Widgets</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +196,60 @@
   <ItemGroup>
     <ClInclude Include="modelsimgenerator_global.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaComponent.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaDesign.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaInstance.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelSimWriterFactory\ModelSimDocument.h">
+      <Filter>Header Files\ModelSimWriterFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelSimWriterFactory\ModelSimWriterFactory.h">
+      <Filter>Header Files\ModelSimWriterFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelSimWriterFactory\ModelSimWriter.h">
+      <Filter>Header Files\ModelSimWriterFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\IWriterFactory.h">
+      <Filter>Header Files\ModelSimWriterFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h">
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

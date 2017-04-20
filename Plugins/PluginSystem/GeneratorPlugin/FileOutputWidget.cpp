@@ -180,6 +180,8 @@ void FileOutputWidget::onBrowse()
     {
         pathEditor_->setText(selectedPath);
     }
+
+    emit outputPathChanged();
 }
 
 //-----------------------------------------------------------------------------

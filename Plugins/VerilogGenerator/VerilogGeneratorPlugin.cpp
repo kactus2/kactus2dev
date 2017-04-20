@@ -175,7 +175,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         (utility->getLibraryInterface(), &factory, input, &settings_));
 
     // Create the dialog and execute: The user will ultimately accept the configuration.
-    HDLGenerationDialog dialog(configuration, utility->getParentWidget());
+    HDLGenerationDialog dialog(configuration, "Verilog", utility->getParentWidget());
     
     LanguageHighlighter* highlighter = new LanguageHighlighter(0);
     VerilogSourceHighlight style;

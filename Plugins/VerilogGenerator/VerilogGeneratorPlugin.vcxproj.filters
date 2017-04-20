@@ -393,9 +393,6 @@
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
       <Filter>Header Files\GenerationControl</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
-      <Filter>Header Files\Parsing</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\HDLParser\MetaInstance.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
@@ -419,6 +416,9 @@
     </ClInclude>
     <ClInclude Include="VerilogSourceHighlight.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
+      <Filter>Header Files\Parsing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -87,6 +87,12 @@ public:
      *  Returns list of formatted remap states.
      */
     QSharedPointer<QList<QSharedPointer<FormattedRemapState> > > getRemapStates() const { return remapStates_; }
+
+    /*!
+     *  Returns list of culled file sets
+     */
+    QSharedPointer<QList<QSharedPointer<FileSet> > > getFileSets() { return fileSets_; }
+
 protected:
 
     //! The messages.
@@ -96,6 +102,11 @@ private:
 	// Disable copying.
 	MetaComponent(MetaComponent const& rhs);
     MetaComponent& operator=(MetaComponent const& rhs);
+    
+    /*!
+     *  Associates the meta object file sets pointed by the active component instance.
+     */
+    virtual void parsesFileSets();
     
     /*!
      *  Culls and copies parameter declarations of the component and active instantiation if any exists.
@@ -129,6 +140,8 @@ private:
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
     //! The ports of the component keyed with its physical name.
     QSharedPointer<QMap<QString,QSharedPointer<MetaPort> > > ports_;
+    //! The filesets referred by the activeInstantiation_;
+    QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
     //! The module name for HDL.
     QString moduleName_;
     //! The component instantiation referred by the active view.

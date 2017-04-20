@@ -6,7 +6,7 @@
 // Date: 26.01.2017
 //
 // Description:
-// Storage for Verilog writers, logic for calling them.
+// Storage for Verilog writers.
 //-----------------------------------------------------------------------------
 
 #ifndef VERILOGDOCUMENT_H
@@ -25,6 +25,11 @@
 //-----------------------------------------------------------------------------
 struct VerilogDocument : public GenerationOutput
 {
+    //! This will contain the found implementation, if success.
+    QString implementation_;
+    //! This may contain the text after the module definition, if success.
+    QString postModule_;
+
     //! Writer for generating file header.
     QSharedPointer<VerilogHeaderWriter> headerWriter_;
 
@@ -58,10 +63,42 @@ struct VerilogDocument : public GenerationOutput
     //! Writers for Verilog instances.
     QMap<QSharedPointer<ComponentInstanceVerilogWriter>, QSharedPointer<Writer> > instanceHeaderWriters_;
 
+    //! The constructor.
+    VerilogDocument();
+    
     /*!
-     *  Writes the content.
+     *  Writes the content. 
+     *
+     *      @param [in] outputDirectory         The possible output directory.
      */
-	void write();
+	void write(QString const& outputDirectory);
+    
+    /*!
+     *  Finds position for body text highlight in document, if any exists.
+     *
+	 *      @param [out] begin                  The position where the highlight begins, if successful.
+     *      @param [out] end                    The position where the highlight ends, if successful.
+     */
+    void getBodyHighlight(int& begin, int& end) const;
+
+    /*!
+     *  Finds the module implementation in Verilog code.
+     *
+     *      @param [in] code		            The code that will be inspected.
+	 *      @param [out] implementation         The found module implementation, if successful.
+     *      @param [out] postModule		        Anything that exists after the module declaration.
+     *      @param [out] error                  If fails, this will contain an error message.
+     *
+     *      @return True, if a single implementation could be found, else false.
+     */
+	bool selectImplementation(QString const& code, QString& implementation,
+        QString& postModule, QString& error);
+    
+private:
+
+    // Location of the implementation that is detected for document.
+    int implementationStart_;
+    int implementationEnd_;
 };
 
-#endif // VerilogDocument_H
+#endif // VERILOGDOCUMENT_H

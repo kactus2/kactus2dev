@@ -52,8 +52,7 @@ public:
 
 	/*! Writes the Verilog module into a text stream.
 	 *
-	 *      @param [in] output			The text stream to write the module into.
-	 *      @param [in] output			Any text in the file that comes after the module declaration.
+     *      @param [in] output   The output to write to.
 	 */
     virtual void write(QTextStream& outputStream) const;
 

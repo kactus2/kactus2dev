@@ -284,7 +284,9 @@ void tst_VerilogWriterFactory::runGenerator(bool useDesign)
 
 	if (useDesign)
     {
-		document = factory.prepareDesign(design_);
+        QList<QSharedPointer<MetaDesign> > ds;
+        ds.append(design_);
+		document = factory.prepareDesign(ds).first();
 	}
 	else
 	{
@@ -293,7 +295,7 @@ void tst_VerilogWriterFactory::runGenerator(bool useDesign)
 
     generationTime_ =  QDateTime::currentDateTime();
 
-    document->write();
+    document->write(".");
 
     output_ = document->fileContent_;
 }

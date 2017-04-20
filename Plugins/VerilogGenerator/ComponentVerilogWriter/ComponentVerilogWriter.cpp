@@ -77,7 +77,7 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 		
 	writeModuleEnd(outputStream);
 
-	if ( postModule_ )
+	if (postModule_)
 	{
 		postModule_->write(outputStream);
 	}

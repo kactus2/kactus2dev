@@ -15,7 +15,7 @@
 #include <Plugins/common/HDLParser/MetaDesign.h>
 
 //-----------------------------------------------------------------------------
-// Verilog file generator.
+// Common interface for writer factories of generators.
 //-----------------------------------------------------------------------------
 class IWriterFactory
 {
@@ -37,13 +37,13 @@ public:
         QSharedPointer<MetaComponent> component) = 0;
 
     /*!
-     *  Creates writers for the given parsed meta design.
+     *  Creates writers for the given meta designs.
      *
-     *      @param [in] design             The design which is needs writing.
+     *      @param [in] designs             The designs that will yield documents.
      *
      *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
-    virtual QSharedPointer<GenerationOutput> prepareDesign(QSharedPointer<MetaDesign> design) = 0;
+    virtual QList<QSharedPointer<GenerationOutput> > prepareDesign(QList<QSharedPointer<MetaDesign> >& designs) = 0;
     
     /*!
      *  Returns the language of the factory.

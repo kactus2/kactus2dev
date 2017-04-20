@@ -43,7 +43,7 @@ public:
 
 	//! The destructor.
     ~GenerationControl();
-    
+
     /*!
      *  Tries to write documents to file system. Returns true if succeeds, else false.
      */

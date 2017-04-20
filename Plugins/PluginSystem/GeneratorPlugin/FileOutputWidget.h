@@ -32,7 +32,10 @@ public:
 signals:
 	
     // Emitted when the selected file is changed.
-	void selectedFileChanged(QSharedPointer<GenerationOutput> newSelection) const;
+    void selectedFileChanged(QSharedPointer<GenerationOutput> newSelection) const;
+
+    // Emitted when the output path is changed.
+    void outputPathChanged() const;
 
 public slots:
 

@@ -189,33 +189,44 @@ void GenerationControl::parseDocuments()
         QList<QSharedPointer<MetaDesign> > designs =
             MetaDesign::parseHierarchy(library_, input_, viewSelection_->getView());
 
-        input_.messages->sendNotice(QObject::tr("Writing content %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        // No results -> return.
+        if (designs.size() < 1)
+        {
+            input_.messages->errorMessage("No parsed designs in the hierarchy!");
+            return;
+        }
+
+        // Write outputs.
+        input_.messages->sendNotice(QObject::tr("Writing content for preview %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+
+        // Pass the topmost design.
+        QList<QSharedPointer<GenerationOutput> > documents = factory_->prepareDesign(designs);
 
         // Go through the parsed designs.
-        foreach(QSharedPointer<MetaDesign> design, designs)
+        foreach(QSharedPointer<GenerationOutput> output, documents)
         {
-            QSharedPointer<GenerationOutput> output = factory_->prepareDesign(design);
-
             if (!output)
             {
                 continue;
             }
 
-            // Time to write the contents to files
-            output->write();
+            // Write the contents to a file.
+            output->write(outputControl_->getOutputPath());
 
+            // Append to the list of proposed outputs.
             outputControl_->getOutputs()->append(output);
         }
     }
     else
     {
-        // Time to write the contents to files
+        // Parse component metadata.
         input_.messages->sendNotice(QObject::tr("Formatting component %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         QSharedPointer<MetaComponent> componentParser
             (new MetaComponent(input_.messages, input_.component, viewSelection_->getView()));
         componentParser->formatComponent();
 
+        // Form writers from parsed data.
         QSharedPointer<GenerationOutput> output = factory_->prepareComponent(outputControl_->getOutputPath(), componentParser);
 
         if (!output)
@@ -223,10 +234,11 @@ void GenerationControl::parseDocuments()
             return;
         }
 
-        input_.messages->sendNotice(QObject::tr("Writing content %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        // Write outputs.
+        input_.messages->sendNotice(QObject::tr("Writing content for preview %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        output->write(outputControl_->getOutputPath());
 
-        output->write();
-
+        // Append to the list of proposed outputs.
         outputControl_->getOutputs()->append(output);
     }
 }
