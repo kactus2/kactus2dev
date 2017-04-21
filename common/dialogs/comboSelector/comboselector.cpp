@@ -56,7 +56,8 @@ QString ComboSelector::selectGroupType(QWidget* parent /* = 0*/,
 	// add the items to the box
 	QStringList comboItems;
 	comboItems.append(tr("diagnostics"));
-	comboItems.append(tr("documentation"));
+    comboItems.append(tr("documentation"));
+    comboItems.append(tr("generatedFiles"));
 	comboItems.append(tr("projectFiles"));
 	comboItems.append(tr("simulation"));
 	comboItems.append(tr("sourceFiles"));

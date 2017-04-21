@@ -65,6 +65,11 @@ public:
      *  Returns the language of the factory.
      */
     virtual QString getLanguage() const;
+    
+    /*!
+     *  Returns the group identifier suitable for the produced files.
+     */
+    virtual QString getGroupIdentifier() const;
 
 private:
 

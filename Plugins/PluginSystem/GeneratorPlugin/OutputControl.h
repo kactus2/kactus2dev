@@ -98,6 +98,8 @@ private:
 
     //! The base directory for output paths.
     QString outputPath_;
+    //! The directory of the component which may refer to the files.
+    QString componentPath_;
     //! The potential new files.
     QSharedPointer<QList<QSharedPointer<GenerationOutput> > > outputs_;
 };

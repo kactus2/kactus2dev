@@ -92,8 +92,8 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<OutputControl> configuration) 
     // Use red to make it more warny.
     generalWarningLabel_->setStyleSheet("QLabel { color : " + KactusColors::WARNING.name() + "; }");
 
-    connect(pathEditor_, SIGNAL(textChanged(const QString &)), this,
-        SLOT(onPathEdited(const QString &)), Qt::UniqueConnection);
+    connect(pathEditor_, SIGNAL(editingFinished()), this,
+        SLOT(onPathEdited()), Qt::UniqueConnection);
     connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
     connect(fileTable_, SIGNAL(itemChanged(QTableWidgetItem*)),
         this, SLOT(onItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
@@ -157,13 +157,15 @@ void FileOutputWidget::onOutputFilesChanged()
 //-----------------------------------------------------------------------------
 // Function: FileOutputWidget::onPathEdited()
 //-----------------------------------------------------------------------------
-void FileOutputWidget::onPathEdited(const QString &text)
+void FileOutputWidget::onPathEdited()
 {
     // Tell the path to the configuration.
-    model_->setOutputPath(text);
+    model_->setOutputPath(pathEditor_->text());
 
     // Path of of all files changed -> update existence status.
     checkExistence();
+
+    emit outputPathChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -179,9 +181,15 @@ void FileOutputWidget::onBrowse()
     if (!selectedPath.isEmpty())
     {
         pathEditor_->setText(selectedPath);
-    }
 
-    emit outputPathChanged();
+        // Tell the path to the configuration.
+        model_->setOutputPath(pathEditor_->text());
+
+        // Path of of all files changed -> update existence status.
+        checkExistence();
+
+        emit outputPathChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------

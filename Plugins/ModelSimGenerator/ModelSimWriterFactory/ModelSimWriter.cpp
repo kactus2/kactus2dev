@@ -26,7 +26,7 @@ ModelSimWriter::ModelSimWriter()
 void ModelSimWriter::write(QTextStream& output, QString const& outputDirectory) const
 {
     // inform user when executing the script
-    output << "echo " << QObject::tr("\" Adding files to the project\"") << endl;
+    output << "echo " << QObject::tr("\"Adding files to the project\"") << endl;
 
     output << endl;
 
@@ -44,7 +44,7 @@ void ModelSimWriter::write(QTextStream& output, QString const& outputDirectory) 
     output << endl;
 
     // inform user that script has been successfully executed
-    output << "echo " << QObject::tr("\" Script has been executed \"") << endl;
+    output << "echo " << QObject::tr("\"Script has been executed\"") << endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -52,5 +52,8 @@ void ModelSimWriter::write(QTextStream& output, QString const& outputDirectory) 
 //-----------------------------------------------------------------------------
 void ModelSimWriter::addPath(QString const& path)
 {
-    paths_.append(path);
+    if (!paths_.contains(path))
+    {
+        paths_.append(path);
+    }
 }

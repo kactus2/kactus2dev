@@ -112,6 +112,14 @@ QString VerilogWriterFactory::getLanguage() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogWriterFactory::getGroupIdentifier()
+//-----------------------------------------------------------------------------
+QString VerilogWriterFactory::getGroupIdentifier() const
+{
+    return QStringLiteral("generatedFiles");
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::readImplementation()
 //-----------------------------------------------------------------------------
 bool VerilogWriterFactory::readImplementation(QSharedPointer<VerilogDocument> document, QString const& outputPath)

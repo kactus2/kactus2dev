@@ -28,8 +28,8 @@ class ViewSelection
 public:
 
 	//! The constructor.
-	ViewSelection(QString const& targetLanguage, QString const& defaultViewName, QString const& defaultFileSetName,
-        QSharedPointer<QList<QSharedPointer<View> > > views,
+	ViewSelection(QString const& targetLanguage, QString const& targetGroup, QString const& defaultViewName,
+        QString const& defaultFileSetName, QSharedPointer<QList<QSharedPointer<View> > > views,
         QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations,
         QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets);
 
@@ -103,6 +103,20 @@ public:
      *  Gets the name of the selected file set, even if it does not exist.
      */
     QString getFileSetName() const;
+
+    /*!
+     *  Sets whether the output file should be added to top component file sets or not.
+     *
+     *      @param [in] shouldSave   True for saving, false for not saving.
+     */
+    void setSaveToFileset(bool shouldSave);
+
+    /*!
+     *  Checks if the output file should be added to top component file sets.
+     *
+     *      @return True, if file should be saved, false otherwise.
+     */
+    bool getSaveToFileset() const;
 	
     /*!
      *  Gets the target language of the generation.

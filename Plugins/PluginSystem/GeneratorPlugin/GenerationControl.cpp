@@ -48,7 +48,7 @@ GenerationControl::GenerationControl(LibraryInterface* library,
 
     // Initialize model for view selection.
     viewSelection_ = QSharedPointer<ViewSelection>(
-        new ViewSelection(factory->getLanguage(), settings_->lastViewName_, settings_->lastFileSetName_,
+        new ViewSelection(factory->getLanguage(), factory_->getGroupIdentifier(), settings_->lastViewName_, settings_->lastFileSetName_,
         possibleViews, possibleInstantiations, possibleFileSets));
 
     // Set the defaults for convenience.
@@ -76,21 +76,32 @@ bool GenerationControl::writeDocuments()
     }
 
     QSharedPointer<ComponentInstantiation> instantiation = viewSelection_->getInstantiation();
-    QSharedPointer<FileSet> fileSet = viewSelection_->getFileSet();
+    QSharedPointer<FileSet> fileSet;
 
-    // If the file set does not exist, create a new one with the same name.
-    if (!fileSet)
+    if (viewSelection_->getSaveToFileset())
     {
-        fileSet = QSharedPointer<FileSet>(new FileSet);
-        fileSet->setName(viewSelection_->getFileSetName());
-        input_.component->getFileSets()->append(fileSet);
+        fileSet = viewSelection_->getFileSet();
+
+        // If the file set does not exist, create a new one with the same name.
+        if (!fileSet)
+        {
+            fileSet = QSharedPointer<FileSet>(new FileSet(viewSelection_->getFileSetName(), factory_->getGroupIdentifier()));
+            input_.component->getFileSets()->append(fileSet);
+        }
+        else if (!factory_->getGroupIdentifier().isEmpty() &&
+            !fileSet->getGroups()->contains(factory_->getGroupIdentifier()))
+        {
+            fileSet->getGroups()->append(factory_->getGroupIdentifier());
+        }
+
+        // If instantiation exists, make sure that the instantiation refers to the file set.
+        if (instantiation && !instantiation->getFileSetReferences()->contains(fileSet->name()))
+        {
+            instantiation->getFileSetReferences()->append(fileSet->name());
+        }
     }
 
-    // If instantiation exists, make sure that the instantiation refers to the file set.
-    if (instantiation && !instantiation->getFileSetReferences()->contains(fileSet->name()))
-    {
-        instantiation->getFileSetReferences()->append(fileSet->name());
-    }
+    QString componentPath = library_->getPath(input_.component->getVlnv());
 
     bool fails = false;
 
@@ -116,14 +127,17 @@ bool GenerationControl::writeDocuments()
 
         outputFile.close();
 
-        // Need a path for the IP-XACT file: It must be relative to the file path of the document.
-        QString ipFilePath = relativePathFromXmlToFile(absFilePath);
-        // Add the new file to the file set.
-        QSettings settings;
-        QSharedPointer<File> ipFile = fileSet->addFile(ipFilePath, settings);
+        if (viewSelection_->getSaveToFileset())
+        {
+            // Need a path for the IP-XACT file: It must be relative to the file path of the document.
+            QString ipFilePath = General::getRelativePath(componentPath, absFilePath);
+            // Add the new file to the file set.
+            QSettings settings;
+            QSharedPointer<File> ipFile = fileSet->addFile(ipFilePath, settings);
 
-        // Insert the proper description to the IP-XACT file.
-        insertFileDescription(ipFile);
+            // Insert the proper description to the IP-XACT file.
+            insertFileDescription(ipFile);
+        }
     }
 
     // Return false if something fails.
@@ -183,7 +197,8 @@ void GenerationControl::parseDocuments()
     if (isDesignGeneration_)
     {
         // Time to write the contents to files
-        input_.messages->sendNotice(QObject::tr("Parsing hierarchy %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        input_.messages->sendNotice(QObject::tr("Parsing hierarchy %1.").
+            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         // Parse the design hierarchy.
         QList<QSharedPointer<MetaDesign> > designs =
@@ -197,7 +212,8 @@ void GenerationControl::parseDocuments()
         }
 
         // Write outputs.
-        input_.messages->sendNotice(QObject::tr("Writing content for preview %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        input_.messages->sendNotice(QObject::tr("Writing content for preview %1.").
+            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         // Pass the topmost design.
         QList<QSharedPointer<GenerationOutput> > documents = factory_->prepareDesign(designs);
@@ -220,14 +236,16 @@ void GenerationControl::parseDocuments()
     else
     {
         // Parse component metadata.
-        input_.messages->sendNotice(QObject::tr("Formatting component %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        input_.messages->sendNotice(QObject::tr("Formatting component %1.").
+            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         QSharedPointer<MetaComponent> componentParser
             (new MetaComponent(input_.messages, input_.component, viewSelection_->getView()));
         componentParser->formatComponent();
 
         // Form writers from parsed data.
-        QSharedPointer<GenerationOutput> output = factory_->prepareComponent(outputControl_->getOutputPath(), componentParser);
+        QSharedPointer<GenerationOutput> output = factory_->
+            prepareComponent(outputControl_->getOutputPath(), componentParser);
 
         if (!output)
         {
@@ -235,7 +253,8 @@ void GenerationControl::parseDocuments()
         }
 
         // Write outputs.
-        input_.messages->sendNotice(QObject::tr("Writing content for preview %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        input_.messages->sendNotice(QObject::tr("Writing content for preview %1.").
+            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
         output->write(outputControl_->getOutputPath());
 
         // Append to the list of proposed outputs.
@@ -273,6 +292,14 @@ GenerationSettings* GenerationControl::getSettings() const
 bool GenerationControl::isDesignGeneration() const
 {
     return isDesignGeneration_;
+}
+
+bool GenerationControl::isUnder() const
+{
+    QString componentPath = library_->getPath(input_.component->getVlnv());
+    QFileInfo fileInfo = QFileInfo(componentPath);
+
+    return outputControl_->getOutputPath().contains(fileInfo.absolutePath());
 }
 
 //-----------------------------------------------------------------------------

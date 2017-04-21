@@ -54,7 +54,6 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
 	QVBoxLayout* leftLayout = new QVBoxLayout();
     leftLayout->addWidget(viewSelection_);
     leftLayout->addWidget(fileOutput_);
-    leftLayout->addWidget(generalWarningLabel_);
 
     // Layout for things coming to the bottom part of the dialog.
 
@@ -83,8 +82,9 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     rightLayout->addWidget(previewer_);
     rightBox->setLayout(rightLayout);
 
-    grid->addWidget(rightBox, 0, 1, 4, 1);
-    grid->addWidget(dialogButtons, 4, 1, 1, 1);
+    grid->addWidget(rightBox, 0, 1, 4, 2);
+    grid->addWidget(dialogButtons, 4, 2, 1, 1);
+    grid->addWidget(generalWarningLabel_, 4, 1, 1, 1);
 
     // Finally, connect the relevant events to their handler functions.
 
@@ -201,4 +201,5 @@ void HDLGenerationDialog::onOutputPathChanged()
 {
     configuration_->parseDocuments();
     fileOutput_->onOutputFilesChanged();
+    viewSelection_->onFileSetStateChanged(configuration_->isUnder());
 }

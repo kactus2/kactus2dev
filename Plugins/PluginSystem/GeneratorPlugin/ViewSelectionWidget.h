@@ -24,7 +24,7 @@ class ViewSelectionWidget : public QWidget
 public:
 
 	//! The constructor.
-	ViewSelectionWidget(QSharedPointer<ViewSelection> configuration);
+	ViewSelectionWidget(QSharedPointer<ViewSelection> model);
 
 	//! The destructor.
 	~ViewSelectionWidget();
@@ -34,7 +34,10 @@ signals:
     /*!
     *  Emitted when the view is changed.
      */
-	void viewChanged() const;
+    void viewChanged() const;
+
+public slots:
+    void onFileSetStateChanged(bool on);
 
 private slots:
 
@@ -56,10 +59,13 @@ private:
     //-----------------------------------------------------------------------------
 
 	// The "model" for the widget.
-	QSharedPointer<ViewSelection> configuration_;
+	QSharedPointer<ViewSelection> model_;
 
 	// The combobox to select the desired view.
 	QComboBox* viewSelection_;
+
+	// The group box for file set selection
+	QGroupBox* addToFileset_;
 
 	// The combobox to select the desired component instantiation.
 	QLabel* instantiationSelection_;

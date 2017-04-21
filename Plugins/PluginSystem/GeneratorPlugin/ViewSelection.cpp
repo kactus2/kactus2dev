@@ -19,12 +19,13 @@
 // Function: ViewSelection::ViewSelection()
 //-----------------------------------------------------------------------------
 ViewSelection::ViewSelection(QString const& targetLanguage, 
+	QString const& targetGroup, 
 	QString const& defaultViewName, 
 	QString const& defaultFileSetName,
 	QSharedPointer<QList<QSharedPointer<View> > > views, 
 	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) :
-	targetLanguage_(targetLanguage), view_(), saveToFileset_(false)
+	targetLanguage_(targetLanguage), view_(), saveToFileset_(true)
 {
 	// Track the views by name.
 	foreach (QSharedPointer<View> currentView, *views)
@@ -79,12 +80,29 @@ ViewSelection::ViewSelection(QString const& targetLanguage,
     // Also try find a default file set.
     fileSet_ = fileSets_.value(defaultFileSetName);
 
-    // If instantiation exists and it has file set references, but none of them is the default,
-    // pick the first one.
-    if (instantiation_ && instantiation_->getFileSetReferences()->size() > 0 &&
-        (!fileSet_ || !instantiation_->getFileSetReferences()->contains(fileSet_->name())))
+    // If instantiation exists and it has file set references, it may affect the choice.
+    if (instantiation_ && instantiation_->getFileSetReferences()->size() > 0)
     {
-        fileSet_ = fileSets_.value(instantiation_->getFileSetReferences()->first());
+        // If the default file set exists and is referred by the instantiation, it is a valid choice.
+        if (!fileSet_ || !instantiation_->getFileSetReferences()->contains(fileSet_->name()))
+        {
+            // If not, try to first find one with a matching group identifier.
+            foreach (QString fileSetRef, *instantiation_->getFileSetReferences())
+            {
+                QSharedPointer<FileSet> inspect =  fileSets_.value(fileSetRef);
+
+                if (inspect->getGroups()->contains(targetGroup))
+                {
+                    fileSet_ = inspect;
+                }
+            }
+
+            // If none found, pick the first one.
+            if (!fileSet_)
+            {
+                fileSet_ = fileSets_.value(instantiation_->getFileSetReferences()->first());
+            }
+        }
     }
     
     // If no other match, pick the first file set on the mapping.
@@ -112,8 +130,8 @@ ViewSelection::~ViewSelection()
 //-----------------------------------------------------------------------------
 bool ViewSelection::validSelections(QString &warning)
 {
-    // Must have a file set.
-    if (fileSetRef_.isEmpty())
+    // Must have a file set, if going to use it.
+    if (saveToFileset_ && fileSetRef_.isEmpty())
     {
         warning = QLatin1String("<b>Define the file set.</b>");
         return false;
@@ -246,6 +264,22 @@ QSharedPointer<FileSet> ViewSelection::getFileSet() const
 QString ViewSelection::getFileSetName() const
 {
 	return fileSetRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewSelection::getAddToFileset()
+//-----------------------------------------------------------------------------
+bool ViewSelection::getSaveToFileset() const
+{
+    return saveToFileset_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewSelection::setAddToFileset()
+//-----------------------------------------------------------------------------
+void ViewSelection::setSaveToFileset(bool shouldSave)
+{
+   saveToFileset_ = shouldSave;
 }
 
 //-----------------------------------------------------------------------------

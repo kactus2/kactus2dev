@@ -49,6 +49,11 @@ public:
      *  Returns the language of the factory.
      */
     virtual QString getLanguage() const = 0;
+    
+    /*!
+     *  Returns the group identifier suitable for the produced files.
+     */
+    virtual QString getGroupIdentifier() const = 0;
 };
 
 #endif // IWRITERFACTORY_H

@@ -99,3 +99,11 @@ QString ModelSimWriterFactory::getLanguage() const
 {
     return QStringLiteral("");
 }
+
+//-----------------------------------------------------------------------------
+// Function: ModelSimWriterFactory::getGroupIdentifier()
+//-----------------------------------------------------------------------------
+QString ModelSimWriterFactory::getGroupIdentifier() const
+{
+    return QStringLiteral("simulation");
+}

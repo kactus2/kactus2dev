@@ -46,7 +46,7 @@ private slots:
 
     // Informs that the user chosen new output path.
     // Will tell to model and call checkExistence().
-    void onPathEdited(const QString &text);
+    void onPathEdited();
 
     // Received when user click the browse button. Opens a dialog and updates the changes to the path editor.
     void onBrowse();

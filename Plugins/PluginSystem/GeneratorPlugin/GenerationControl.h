@@ -85,6 +85,11 @@ public:
      *  Returns isDesignGeneration_;
      */
     bool isDesignGeneration() const;
+    
+    /*!
+     *  Returns true, if target path is a sub folder of the component path.
+     */
+    bool isUnder() const;
 
 protected:
 
