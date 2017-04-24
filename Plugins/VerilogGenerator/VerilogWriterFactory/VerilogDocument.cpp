@@ -51,22 +51,6 @@ void VerilogDocument::getBodyHighlight(int& begin, int& end) const
 bool VerilogDocument::selectImplementation(QString const& code, QString& implementation,
     QString& postModule, QString& error)
 {
-    if (!VerilogSyntax::findImplementation(code, implementationStart_, implementationEnd_, error))
-    {
-        return false;
-    }
-
-    // Rip the detected implementation.
-    int implementationLength = implementationEnd_ - implementationStart_;
-    implementation = code.mid(implementationStart_,implementationLength);
-
-    // Then take all the text that comes after the module, just in case.
-    int postStart = implementationEnd_ + 9;
-    postModule = code.mid(postStart);
-
-    // Also trim away extra white space.
-    postModule = postModule.trimmed();
-
-    // The destructor shall close the file. All done here.
-    return true;
+    // The Verilog syntax defines how it should be done.
+    return VerilogSyntax::selectImplementation(code, implementation, postModule, error);
 }

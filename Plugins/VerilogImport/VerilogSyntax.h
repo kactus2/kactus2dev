@@ -75,9 +75,21 @@ namespace VerilogSyntax
      *      @return   The position and length of the module declaration.
      */
     QPair<int,int> findModuleDeclaration(QString const& input);
+
+    /*!
+     *  Finds the module implementation in Verilog code.
+     *
+	 *      @param [in] code		            The code that will be inspected.
+	 *      @param [out] implementation	        The module implementation.
+	 *      @param [out] postModule		        Anything that exists after the module.
+	 *
+	 *      @return True, if a single implementation could be found, else false.
+     */
+	bool selectImplementation(QString const& fileContent, QString& implementation,
+        QString& postModule, QString& error);
     
     /*!
-     *  Finds position the module implementation in Verilog code.
+     *  Finds position of the module implementation in Verilog code.
      *
 	 *      @param [in] code		            The code that will be inspected.
 	 *      @param [out] implementationStart    The position where the implementation begins, if successful.

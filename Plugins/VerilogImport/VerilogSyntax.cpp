@@ -97,6 +97,35 @@ QPair<int,int> VerilogSyntax::findModuleDeclaration(QString const& input)
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogSyntax::selectImplementation()
+//-----------------------------------------------------------------------------
+bool VerilogSyntax::selectImplementation(QString const& code, QString& implementation,
+    QString& postModule, QString& error)
+{
+    int implementationStart;
+    int implementationEnd;
+
+    if (!findImplementation(code, implementationStart, implementationEnd, error))
+    {
+        return false;
+    }
+
+    // Rip the implementation once detected.
+    int implementationLength = implementationEnd - implementationStart;
+    implementation = code.mid(implementationStart,implementationLength);
+
+    // Then take all the text that comes after the module, just in case.
+    int postStart = implementationEnd + 9;
+    postModule = code.mid(postStart);
+
+    // Also trim away extra white space.
+    postModule = postModule.trimmed();
+
+    // The destructor shall close the file. All done here.
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogSyntax::findImplementation()
 //-----------------------------------------------------------------------------
 bool VerilogSyntax::findImplementation(QString const& code, int& implementationStart,
