@@ -17,7 +17,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Model.h>
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <library/LibraryInterface.h>
 
@@ -26,6 +26,7 @@
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
 #include <common/KactusColors.h>
+
 
 #include <QBrush>
 #include <QUndoCommand>
@@ -36,7 +37,7 @@
 // Function: SWComponentItem::SWComponentItem()
 //-----------------------------------------------------------------------------
 SWComponentItem::SWComponentItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
-                                 QSharedPointer<SWInstance> instance):
+                                 QSharedPointer<ComponentInstance> instance):
 SystemComponentItem(QRectF(-COMPONENTWIDTH / 2, 0, COMPONENTWIDTH, MIN_HEIGHT), libInterface, instance,
     component, 0),
 oldStack_(0),
@@ -288,7 +289,7 @@ void SWComponentItem::setFileSetRef(QString const& fileSetName)
     if (fileSetRef_ != fileSetName)
     {
         fileSetRef_ = fileSetName;
-		getComponentInstance().dynamicCast<SWInstance>()->setFileSetRef( fileSetRef_ );
+		getComponentInstance()->setFileSetRef( fileSetRef_ );
         emit fileSetRefChanged(fileSetRef_);
     }
 }

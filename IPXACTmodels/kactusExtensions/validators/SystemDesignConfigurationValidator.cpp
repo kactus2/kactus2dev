@@ -20,8 +20,6 @@
 
 #include <IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.h>
 
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
-
 #include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
@@ -61,7 +59,7 @@ bool SystemDesignConfigurationValidator::hasValidViewConfigurations(
                 referencedDesign->getComponentInstances();
 
             getViewConfigurationValidator()->changeComponentInstances(hwInstances);
-            systemViewConfigurationValidator_->changeComponentInstances(referencedDesign->getSWInstances());
+            systemViewConfigurationValidator_->changeComponentInstances(hwInstances);
 
             QVector<QString> instanceNames;
             foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
@@ -134,7 +132,7 @@ void SystemDesignConfigurationValidator::findErrorsInViewConfigurations(QVector<
                 hwInstances = referencedDesign->getComponentInstances();
 
                 getViewConfigurationValidator()->changeComponentInstances(hwInstances);
-                systemViewConfigurationValidator_->changeComponentInstances(referencedDesign->getSWInstances());
+                systemViewConfigurationValidator_->changeComponentInstances(hwInstances);
             }
 
             QVector<QString> instanceNames;

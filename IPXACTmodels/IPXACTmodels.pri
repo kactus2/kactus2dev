@@ -32,7 +32,6 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/Kactus2Value.h \
     ./kactusExtensions/Kactus2Vector.h \
     ./kactusExtensions/KactusAttribute.h \
-    ./kactusExtensions/SWInstance.h \
     ./kactusExtensions/SystemView.h \
     ./kactusExtensions/validators/ApiDefinitionValidator.h \
     ./kactusExtensions/validators/ComDefinitionValidator.h \
@@ -246,9 +245,9 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/RegisterValidator.h \
     ./Component/validators/ViewValidator.h \
     ./Catalog/Catalog.h \
+    ./Catalog/IpxactFile.h \
     ./Catalog/CatalogReader.h \
     ./Catalog/CatalogWriter.h \
-    ./Catalog/IpxactFile.h \
     ./Catalog/validators/CatalogValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
@@ -278,7 +277,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
     ./kactusExtensions/Kactus2Vector.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
-    ./kactusExtensions/SWInstance.cpp \
     ./kactusExtensions/SystemView.cpp \
     ./kactusExtensions/validators/ApiDefinitionValidator.cpp \
     ./kactusExtensions/validators/ComDefinitionValidator.cpp \

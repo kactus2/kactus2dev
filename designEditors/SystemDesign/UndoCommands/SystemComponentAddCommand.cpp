@@ -20,8 +20,6 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
-
 //-----------------------------------------------------------------------------
 // Function: SystemComponentAddCommand::SystemComponentAddCommand()
 //-----------------------------------------------------------------------------
@@ -73,12 +71,10 @@ void SystemComponentAddCommand::undo()
     SWComponentItem* swItem = dynamic_cast<SWComponentItem*>(item_);
     if (swItem)
     {
-        QSharedPointer<SWInstance> swInstance = swItem->getComponentInstance().dynamicCast<SWInstance>();
+        QSharedPointer<ComponentInstance> swInstance = swItem->getComponentInstance();
         if (swInstance)
         {
-            QList<QSharedPointer<SWInstance> > containedSWInstances = containingDesign_->getSWInstances();
-            containedSWInstances.removeAll(swInstance);
-            containingDesign_->setSWInstances(containedSWInstances);
+            containingDesign_->getComponentInstances()->removeAll(swInstance);
 
             if (!newHwComponentId_.isEmpty())
             {
@@ -102,12 +98,10 @@ void SystemComponentAddCommand::redo()
     SWComponentItem* swItem = dynamic_cast<SWComponentItem*>(item_);
     if (swItem)
     {
-        QSharedPointer<SWInstance> swInstance = swItem->getComponentInstance().dynamicCast<SWInstance>();
+        QSharedPointer<ComponentInstance> swInstance = swItem->getComponentInstance();
         if (swInstance)
         {
-            QList<QSharedPointer<SWInstance> > containedSWInstances = containingDesign_->getSWInstances();
-            containedSWInstances.append(swInstance);
-            containingDesign_->setSWInstances(containedSWInstances);
+            containingDesign_->getComponentInstances()->append(swInstance);
 
             if (!newHwComponentId_.isEmpty())
             {

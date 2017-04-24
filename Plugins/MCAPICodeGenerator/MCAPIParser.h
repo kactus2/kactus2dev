@@ -44,7 +44,7 @@ public:
 
     struct NodeData
     {
-        QSharedPointer<SWInstance> instance;
+        QSharedPointer<ComponentInstance> instance;
         QString name;
         QString nodeID;
         QString domainID;
@@ -116,7 +116,7 @@ private:
      *      @param [in] component   The software component of ourInstance.
      *      @param [in] nodeData    Node associated with the instance.
      */
-     void findEndpointDefinitions(QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance,
+     void findEndpointDefinitions(QSharedPointer<const Design> design, QSharedPointer<ComponentInstance> ourInstance,
          QSharedPointer<Component> component, NodeData& nodeData);
 
     /*!
@@ -130,7 +130,7 @@ private:
      *      @return List of "our" interfaces paired with their connected interfaces.
      */
      QList<QPair<QSharedPointer<ComInterface>, PortReference> > findConnectedComInterfaces(
-        QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance, 
+        QSharedPointer<const Design> design, QSharedPointer<ComponentInstance> ourInstance, 
         QSharedPointer<Component> component );
 
      /*!
@@ -143,22 +143,13 @@ private:
       EndPointData parseEndpoint(QSharedPointer<ComInterface> comIf);
 
     /*!
-     *  Search for a software instance by name within a design.
-     *
-     *      @param [in] design   The design where the software instance belongs to.
-     *      @param [in] instanceName   The name of the searched software instance.
-     *      @return The found software instance.
-     */
-     QSharedPointer<SWInstance> searchInstance(QSharedPointer<const Design> design, QString const& instanceName);
-
-    /*!
      *  Warns if all fields of endpoint identifier may be not found in given interface and its instance.
      *
      *      @param [in] targetInterface   Interface, which port ID is to be checked.
      *      @param [in] targetInstance   Instance, which node ID and domain ID are to be checked.
      */
      void checkEndpointIdentifier(QSharedPointer<ComInterface> targetInterface,
-         QSharedPointer<SWInstance> targetInstance);
+         QSharedPointer<ComponentInstance> targetInstance);
 
     /*!
      *  Warns if the transfer types of given interfaces are not compatible.
@@ -168,8 +159,8 @@ private:
      *      @param [in] ourInstance  Instance of connection in "our" end.
      *      @param [in] targetInstance   Instance of connection in "their" end.
      */
-     void checkTransferType(QSharedPointer<SWInstance> ourInstance, QSharedPointer<ComInterface> ourInterface, 
-         QSharedPointer<SWInstance> targetInstance, QSharedPointer<ComInterface> targetInterface);
+     void checkTransferType(QSharedPointer<ComponentInstance> ourInstance, QSharedPointer<ComInterface> ourInterface, 
+         QSharedPointer<ComponentInstance> targetInstance, QSharedPointer<ComInterface> targetInterface);
 
     /*!
      *   Warns if the scalar sizes of given interfaces are not compatible.
@@ -179,8 +170,8 @@ private:
      *      @param [in] ourInstance   Instance of connection in "our" end.
      *      @param [in] targetInstance   Instance of connection in "their" end.
      */
-     void checkScalarSize(QSharedPointer<SWInstance> ourInstance, QSharedPointer<ComInterface> ourInterface, 
-         QSharedPointer<SWInstance> targetInstance, QSharedPointer<ComInterface> targetInterface);
+     void checkScalarSize(QSharedPointer<ComponentInstance> ourInstance, QSharedPointer<ComInterface> ourInterface, 
+         QSharedPointer<ComponentInstance> targetInstance, QSharedPointer<ComInterface> targetInterface);
 
     //-----------------------------------------------------------------------------
     // Data.

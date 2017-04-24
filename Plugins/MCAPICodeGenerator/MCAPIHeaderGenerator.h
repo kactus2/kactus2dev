@@ -64,7 +64,7 @@ private:
      *      @param [in] desgConf   The design configuration associated with the design.
      */
      void addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-        QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> desgConf);
+        QSharedPointer<ComponentInstance> instance, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
      *  Find connections of given software instance and returns a list of pairs, where the first is from the
@@ -76,7 +76,7 @@ private:
      *      @return List of "our" interfaces paired with their connected interfaces.
      */
      QList<QPair<QSharedPointer<ComInterface>, PortReference> > findConnectedComInterfaces(
-        QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance,
+        QSharedPointer<const Design> design, QSharedPointer<ComponentInstance> ourInstance,
         QSharedPointer<Component> component );
 
      /*!

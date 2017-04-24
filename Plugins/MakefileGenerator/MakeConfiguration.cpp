@@ -27,14 +27,14 @@ MakeConfiguration::MakeConfiguration(SWStackParser* parser) :
     outputControl_->getOutputs()->clear();
 
     // Append to the master make file to the list, no VLNV is directly associated with it.
-    QSharedPointer<GenerationOutput> masterFile(new GenerationOutput);
+    QSharedPointer<MakeDocument> masterFile(new MakeDocument);
     masterFile->fileName_ = *parser->masterName_;
     outputControl_->getOutputs()->append(masterFile);
 
     foreach (QSharedPointer<MakeFileData> mfd, *parser->getParsedData())
     {
         // Append reference to the each proposed name of a makefile.
-        QSharedPointer<GenerationOutput> file(new GenerationOutput);
+        QSharedPointer<MakeDocument> file(new MakeDocument);
         file->fileName_ = mfd->makeName;
         outputControl_->getOutputs()->append(file);
 

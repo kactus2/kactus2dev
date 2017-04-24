@@ -21,7 +21,7 @@
 #include <QSharedPointer>
 
 class Component;
-class SWInstance;
+class ComponentInstance;
 class Design;
 class LibraryInterface;
 class IGraphicsItemStack;
@@ -104,7 +104,7 @@ public:
     struct ComponentInstanceCopyData
     {
 		QSharedPointer<Component> component;    //! The referenced component.
-		QSharedPointer<SWInstance> swInstance;  //! The instance.
+		QSharedPointer<ComponentInstance> swInstance;  //! The instance.
 
         ComponentInstanceCopyData():
         component(),
@@ -231,7 +231,7 @@ protected:
     //! Called when an object is dropped to the diagram.
     void dropEvent(QGraphicsSceneDragDropEvent* event);
 
-	QSharedPointer<SWInstance> createSWInstance(QSharedPointer<Component> comp);
+	QSharedPointer<ComponentInstance> createSWInstance(QSharedPointer<Component> comp);
 
     //! Updates the dropAction and highlight according to underlying element.
     virtual void updateDropAction(QGraphicsSceneDragDropEvent* event);

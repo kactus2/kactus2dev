@@ -916,24 +916,6 @@ QVector<VLNV> HierarchyItem::getValidComponentsInDesign()
         }
     }
 
-    foreach(QSharedPointer<SWInstance> instance, design_->getSWInstances())
-    {
-        if (!instance->isDraft())
-        {
-            VLNV componentVLNV = *instance->getComponentRef();
-
-            if (isValidComponentInstanceVLNV(componentVLNV))
-            {
-                componentReferences.append(componentVLNV);
-            }
-            else 
-            {
-                // Mark this object as invalid because not all items were valid.
-                isValid_ = false;
-            }
-        }
-    }
-
     return componentReferences;
 }
 

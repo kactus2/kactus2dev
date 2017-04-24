@@ -24,7 +24,6 @@
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemComponentDeleteCommand::SystemComponentDeleteCommand()
@@ -63,17 +62,7 @@ void SystemComponentDeleteCommand::undo()
     stack_->addItem(item_);
     del_ = false;
 
-    QSharedPointer<SWInstance> swInstance = item_->getComponentInstance().dynamicCast<SWInstance>();
-    if (swInstance)
-    {
-        QList<QSharedPointer<SWInstance> > containedSwInstances = containingDesign_->getSWInstances();
-        containedSwInstances.append(swInstance);
-        containingDesign_->setSWInstances(containedSwInstances);
-    }
-    else
-    {
-        containingDesign_->getComponentInstances()->append(item_->getComponentInstance());
-    }
+    containingDesign_->getComponentInstances()->append(item_->getComponentInstance());
 
     emit componentInstantiated(item_);
 
@@ -133,17 +122,7 @@ void SystemComponentDeleteCommand::redo()
     scene_->removeItem(item_);
     del_ = true;
 
-    QSharedPointer<SWInstance> swInstance = item_->getComponentInstance().dynamicCast<SWInstance>();
-    if (swInstance)
-    {
-        QList<QSharedPointer<SWInstance> > containedSwInstances = containingDesign_->getSWInstances();
-        containedSwInstances.removeAll(swInstance);
-        containingDesign_->setSWInstances(containedSwInstances);
-    }
-    else
-    {
-        containingDesign_->getComponentInstances()->removeAll(item_->getComponentInstance());
-    }
+    containingDesign_->getComponentInstances()->removeAll(item_->getComponentInstance());
 
 
     emit componentInstanceRemoved(item_);

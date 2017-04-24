@@ -566,6 +566,85 @@ ComponentInstance& ComponentInstance::operator=(ComponentInstance const& other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstance::setFileSetRef()
+//-----------------------------------------------------------------------------
+void ComponentInstance::setFileSetRef(QString const& fileSetName)
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type().compare(QLatin1String("kactus2:fileSetRef")) == 0)
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!fileSetName.isEmpty())
+    {
+        QSharedPointer<Kactus2Value> fileSetRefExtension (new Kactus2Value(QStringLiteral("kactus2:fileSetRef"), fileSetName));
+
+        getVendorExtensions()->append(fileSetRefExtension);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::setMapping()
+//-----------------------------------------------------------------------------
+void ComponentInstance::setMapping(QString const& hwRef)
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type().compare(QLatin1String("kactus2:mapping")) == 0)
+        {
+            getVendorExtensions()->removeAll(extension);
+            break;
+        }
+    }
+
+    if (!hwRef.isEmpty())
+    {
+        QSharedPointer<Kactus2Placeholder> mappingExtension (new Kactus2Placeholder(QStringLiteral("kactus2:mapping")));
+        mappingExtension->setAttribute(QStringLiteral("hwRef"), hwRef);
+
+        getVendorExtensions()->append(mappingExtension);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::getFileSetRef()
+//-----------------------------------------------------------------------------
+QString const ComponentInstance::getFileSetRef() const
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type().compare(QLatin1String("kactus2:fileSetRef")) == 0)
+        {
+            QSharedPointer<Kactus2Value> fileSetRefExtension = extension.dynamicCast<Kactus2Value>();
+            return fileSetRefExtension->value();
+        }
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::getMapping()
+//-----------------------------------------------------------------------------
+QString const ComponentInstance::getMapping() const
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type().compare(QLatin1String("kactus2:mapping")) == 0)
+        {
+            QSharedPointer<Kactus2Placeholder> mappingExtension = extension.dynamicCast<Kactus2Placeholder>();
+            return mappingExtension->getAttributeValue(QStringLiteral("hwRef"));
+        }
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstance::parsePropertyValues()
 //-----------------------------------------------------------------------------
 void ComponentInstance::parsePropertyValues(QDomNode& node)

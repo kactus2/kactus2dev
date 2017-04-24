@@ -18,7 +18,7 @@
 
 class IGraphicsItemStack;
 class HWMappingItem;
-class SWInstance;
+class ComponentInstance;
 class Component;
 
 //-----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ public:
      *      @param [in] configurableElementValues   The configurable element values.
      */
 	SWComponentItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
-		QSharedPointer<SWInstance> instance);
+		QSharedPointer<ComponentInstance> instance);
 
     /*!
      *  Destructor.

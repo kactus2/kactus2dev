@@ -18,7 +18,6 @@
 #include <designEditors/SystemDesign/SWComponentItem.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 //-----------------------------------------------------------------------------
 // Function: ItemAddCommand()
@@ -123,7 +122,7 @@ void ItemMoveCommand::undo()
     if (systemItem)
     {
         systemItem->getComponentInstance()->setPosition(oldPos_);
-        QSharedPointer<SWInstance> swInstance = systemItem->getComponentInstance().dynamicCast<SWInstance>();
+        QSharedPointer<ComponentInstance> swInstance = systemItem->getComponentInstance();
         if (swInstance)
         {
             HWMappingItem* hwMapItem = dynamic_cast<HWMappingItem*>(oldStack_);
@@ -156,7 +155,7 @@ void ItemMoveCommand::redo()
     if (systemItem)
     {
         systemItem->getComponentInstance()->setPosition(newPos_);
-        QSharedPointer<SWInstance> swInstance = systemItem->getComponentInstance().dynamicCast<SWInstance>();
+        QSharedPointer<ComponentInstance> swInstance = systemItem->getComponentInstance();
         if (swInstance)
         {
             HWMappingItem* hwMapItem = dynamic_cast<HWMappingItem*>(newStack_);

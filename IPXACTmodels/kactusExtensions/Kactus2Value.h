@@ -25,7 +25,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   The parent object.
+     *      @param [in] name        Corresponds name of XML element.
+     *      @param [in] value       Corresponds the value of XML element.
 	 */
     Kactus2Value(QString name, QString value);
 

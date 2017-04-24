@@ -43,13 +43,6 @@ public:
 
 	//! The destructor.
 	~SystemViewConfigurationValidator();
-    
-    /*!
-     *  Change the currently available sw component instances.
-     *
-     *      @param [in] newInstances    The list of new sw component instances.
-     */
-    virtual void changeComponentInstances(QList<QSharedPointer<SWInstance> > newInstances);
 
     /*!
      *  Check if the view reference is valid.

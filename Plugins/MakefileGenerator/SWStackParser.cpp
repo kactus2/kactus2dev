@@ -87,7 +87,7 @@ void SWStackParser::parse(QString sysViewName)
     // We also need to know if the file exists
     QString launcherDir = basePath + "launcher.sh";
 
-    foreach (QSharedPointer<SWInstance> softInstance, design_->getSWInstances())
+    foreach (QSharedPointer<ComponentInstance> softInstance, *design_->getComponentInstances())
     {
         // The VLNV and the component of the instance are needed.
         QSharedPointer<VLNV> softwareVLNV = softInstance->getComponentRef();
@@ -195,7 +195,7 @@ void SWStackParser::parse(QString sysViewName)
 //-----------------------------------------------------------------------------
 // Function: SWStackParser::isTopOfStack()
 //-----------------------------------------------------------------------------
-bool SWStackParser::isTopOfStack(QSharedPointer<SWInstance> softInstance, QSharedPointer<Component> softComponent)
+bool SWStackParser::isTopOfStack(QSharedPointer<ComponentInstance> softInstance, QSharedPointer<Component> softComponent)
 {
     foreach (QSharedPointer<ApiInterconnection> connection, design_->getApiConnections())
     {
@@ -232,7 +232,7 @@ bool SWStackParser::isTopOfStack(QSharedPointer<SWInstance> softInstance, QShare
 // Function: SWStackParser::parseStackObjects()
 //-----------------------------------------------------------------------------
 void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
-    QSharedPointer<SWInstance> softInstance, QSharedPointer<MakeFileData> makeData, QString& systemViewName)
+    QSharedPointer<ComponentInstance> softInstance, QSharedPointer<MakeFileData> makeData, QString& systemViewName)
 {
     // Skip if already parsed
     if (makeData->parsedInstances.contains( softInstance ))
@@ -324,7 +324,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
     {
         QSharedPointer<ApiInterface> ourInterface;
         QSharedPointer<ApiInterface> theirInterface;
-        QSharedPointer<SWInstance> theirInstance;
+        QSharedPointer<ComponentInstance> theirInstance;
         QSharedPointer<Component> theirComponent;
 
         // We must find the API interfaces of the both ends, and the software instance and component of the
@@ -366,10 +366,10 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
 // Function: SWStackParser::searchSWComponent()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> SWStackParser::searchSWComponent(QString instanceName,
-    QSharedPointer<SWInstance>& targetInstance)
+    QSharedPointer<ComponentInstance>& targetInstance)
 {
     // Go through the software instances of the design, finding the right one.
-    foreach (QSharedPointer<SWInstance> instance, design_->getSWInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
     {
         // If the found instance name is same as target, it is what we seek.
         if (instance->getInstanceName() == instanceName)

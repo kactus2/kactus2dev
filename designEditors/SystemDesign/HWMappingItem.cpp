@@ -25,7 +25,6 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 #include <QBrush>
 #include <QUndoCommand>
@@ -272,7 +271,7 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
     // Check if the item is not overlapping the HW mapping item enough.
     QRectF intersection = sceneBoundingRect().intersected(item->sceneBoundingRect());
 
-    QSharedPointer<SWInstance> swInstance = compItem->getComponentInstance().dynamicCast<SWInstance>();
+    QSharedPointer<ComponentInstance> swInstance = compItem->getComponentInstance();
     if (swInstance)
     {
         swInstance->setMapping(getComponentInstance()->getUuid());

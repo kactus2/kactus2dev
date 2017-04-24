@@ -291,6 +291,30 @@ public:
      */
     void hideAdHocPort(QString const& portName);
 
+    /*!
+     *  Sets the file set reference.
+     *
+     *      @param [in] fileSetName The name of the referenced file set in the top-level component.
+     */
+    void setFileSetRef(QString const& fileSetName);
+
+    /*!
+     *  Sets the HW mapping information for the SW instance.
+     *
+     *      @param [in] hwRef The name of the HW component instance to which the SW instance is mapped.
+     */
+    void setMapping(QString const& hwRef);
+
+    /*!
+     *  Returns the file set reference (i.e. the name of the referenced file set).
+     */
+    QString const getFileSetRef() const;
+
+    /*!
+     *  Returns the name of the referenced HW component instance onto which the SW instance is mapped.
+     */
+    QString const getMapping() const;
+
 private:
     
     /*!

@@ -23,8 +23,6 @@
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 #include <IPXACTmodels/Design/Design.h>
 
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
-
 #include <library/LibraryInterface.h>
 
 #include <QVBoxLayout>
@@ -469,14 +467,14 @@ void SystemDetailsEditor::exportSW()
     // Export only SW instances.
     design->setComponentInstances(QSharedPointer<QList<QSharedPointer<ComponentInstance> > >());
 
-    QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
+    QList<QSharedPointer<ComponentInstance> > swInstances = design->getSWInstances(handler_);
 
     for (int i = 0; i < swInstances.size(); ++i)
     {
         swInstances[i]->setMapping("");
     }
 
-    design->setSWInstances(swInstances);
+    design->getComponentInstances()->append(swInstances);
 
     handler_->writeModelToFile(dialog.getPath(), design);
     handler_->writeModelToFile(dialog.getPath(), desConf);

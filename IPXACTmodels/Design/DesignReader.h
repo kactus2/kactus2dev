@@ -217,6 +217,15 @@ private:
      *      @param [in] design              The new design item.
      */
     void parseSwInstances(QDomNode const& swInstancesNode, QSharedPointer<Design> design) const;
+    
+    /*!
+     *  Reads the a single software instance (Kactus2 extension).
+     *
+     *      @param [in] QDomNode const& node     The XML description of the software instance.
+     *
+     *      @return The parsed software instance.
+     */
+    QSharedPointer<ComponentInstance> parseSwInstance(QDomNode const& node) const;
 
     /*!
      *  Reads the ad-hoc port (Kactus2:extension).

@@ -584,8 +584,6 @@ void DesignReader::parseRoutes(QDomElement const& routesElement, QSharedPointer<
 //-----------------------------------------------------------------------------
 void DesignReader::parseSwInstances(QDomNode const& swInstancesNode, QSharedPointer<Design> design) const
 {
-    QList<QSharedPointer<SWInstance> > swInstanceList;
-
     QDomNodeList swNodeList = swInstancesNode.childNodes();
     
     int swInstanceCount = swNodeList.count();
@@ -594,12 +592,98 @@ void DesignReader::parseSwInstances(QDomNode const& swInstancesNode, QSharedPoin
         QDomNode swNode = swNodeList.at(swIndex);
         if (swNode.nodeName() == QLatin1String("kactus2:swInstance"))
         {
-            QSharedPointer<SWInstance> newSWInstance (new SWInstance(swNode));
-            swInstanceList.append(newSWInstance);
+            QSharedPointer<ComponentInstance> newSWInstance = parseSwInstance(swNode);
+            design->getComponentInstances()->append(newSWInstance);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseSwInstance()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstance> DesignReader::parseSwInstance(QDomNode const& node) const
+{
+    QSharedPointer<ComponentInstance> newSWInstance = QSharedPointer<ComponentInstance>(new ComponentInstance);
+
+    for (int i = 0; i < node.childNodes().count(); ++i)
+    {
+        QDomNode childNode = node.childNodes().at(i);
+
+        if (childNode.isComment())
+        {
+            continue;
+        }
+
+        if (childNode.nodeName() == QLatin1String("kactus2:instanceName"))
+        {
+            newSWInstance->setInstanceName(childNode.firstChild().nodeValue());
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:displayName"))
+        {
+            newSWInstance->setDisplayName(childNode.firstChild().nodeValue());
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:description"))
+        {
+            newSWInstance->setDescription(childNode.firstChild().nodeValue());
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:componentRef"))
+        {
+            QDomNamedNodeMap attributeMap = childNode.attributes();
+
+            QString vendor = attributeMap.namedItem(QStringLiteral("vendor")).nodeValue();
+            QString library = attributeMap.namedItem(QStringLiteral("library")).nodeValue();
+            QString name = attributeMap.namedItem(QStringLiteral("name")).nodeValue();
+            QString version = attributeMap.namedItem(QStringLiteral("version")).nodeValue();
+
+            QSharedPointer<ConfigurableVLNVReference> vlnvReference(
+                new ConfigurableVLNVReference(VLNV::COMPONENT, vendor, library, name, version));
+
+            newSWInstance->setComponentRef(vlnvReference);
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:fileSetRef"))
+        {
+            newSWInstance->setFileSetRef(childNode.firstChild().nodeValue());
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:mapping"))
+        {
+            newSWInstance->setMapping(childNode.attributes().namedItem(QStringLiteral("hwRef")).nodeValue());
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:position"))
+        {
+            int positionX = childNode.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt();
+            int positionY = childNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt();
+            newSWInstance->setPosition(QPointF(positionX, positionY));
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:imported"))
+        {
+            newSWInstance->setImportRef(childNode.attributes().namedItem(QStringLiteral("importRef")).nodeValue());
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:propertyValues"))
+        {
+            QMap<QString, QString> newPropertyValues;
+
+            for (int i = 0; i < childNode.childNodes().count(); ++i)
+            {
+                QDomNode propNode = childNode.childNodes().at(i);
+
+                if (propNode.nodeName() == QLatin1String("kactus2:propertyValue"))
+                {
+                    QString name = propNode.attributes().namedItem(QStringLiteral("name")).nodeValue();
+                    QString value = propNode.attributes().namedItem(QStringLiteral("value")).nodeValue();
+
+                    newPropertyValues.insert(name, value);
+                }
+            }
+
+            newSWInstance->setPropertyValues(newPropertyValues);
+        }
+        else if (childNode.nodeName() == QLatin1String("kactus2:draft"))
+        {
+            newSWInstance->setDraft(true);
         }
     }
 
-    design->setSWInstances(swInstanceList);
+    return newSWInstance;
 }
 
 //-----------------------------------------------------------------------------

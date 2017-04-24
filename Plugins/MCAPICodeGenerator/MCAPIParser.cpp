@@ -19,7 +19,8 @@
 
 #include "common/dialogs/comboSelector/comboselector.h"
 
-#include "IPXACTmodels/kactusExtensions/SystemView.h"
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <IPXACTmodels/Design/PortReference.h>
 
@@ -84,15 +85,18 @@ void MCAPIParser::parseMCAPIForComponent(QSharedPointer<Component> component)
 void MCAPIParser::parseTopLevel(QSharedPointer<Design> design, QSharedPointer<Component> topComponent,
     QSharedPointer<DesignConfiguration const> desgConf)
 {
-    QList<QSharedPointer<SWInstance> > instances = design->getSWInstances();
-
-    foreach (QSharedPointer<SWInstance> instance, instances)
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
         VLNV instanceVLNV = *instance->getComponentRef();
         VLNV designVLNV = design->getVlnv();
 
         QSharedPointer<Document> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
         QSharedPointer<Component> instanceComp = instanceLibComp.dynamicCast<Component>();
+
+        if (instanceComp->getImplementation() != KactusAttribute::SW)
+        {
+            continue;
+        }
 
         // Check if can generate the component, return if cannot
         if (canGenerateMCAPIComponent(instanceComp))
@@ -209,14 +213,14 @@ void MCAPIParser::checkRequiredPropertiesSet(QString componentVLNV, QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: MCAPIParser::findEndpointDefinitions()
 //-----------------------------------------------------------------------------
-void MCAPIParser::findEndpointDefinitions(QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance, 
+void MCAPIParser::findEndpointDefinitions(QSharedPointer<const Design> design, QSharedPointer<ComponentInstance> ourInstance, 
     QSharedPointer<Component> component, NodeData& nodeData)
 {
     QPair<QSharedPointer<ComInterface>, PortReference> conPair(QSharedPointer<ComInterface>(), PortReference(""));
     foreach(conPair, findConnectedComInterfaces(design, ourInstance, component))
     {
         // Search for software instance corresponding theirs.
-        QSharedPointer<SWInstance> targetInstance = searchInstance(design, conPair.second.getComponentRef());
+        QSharedPointer<ComponentInstance> targetInstance = design->findComponentInstance(conPair.second.getComponentRef());
 
         // Obtain the component object corresponding the software instance.
         VLNV instanceVLNV = *targetInstance->getComponentRef();
@@ -259,7 +263,7 @@ void MCAPIParser::findEndpointDefinitions(QSharedPointer<const Design> design, Q
 // Function: MCAPIParser::findConnectedComInterfaces()
 //-----------------------------------------------------------------------------
 QList<QPair<QSharedPointer<ComInterface>, PortReference> > MCAPIParser::findConnectedComInterfaces(
-    QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance, QSharedPointer<Component> component )
+    QSharedPointer<const Design> design, QSharedPointer<ComponentInstance> ourInstance, QSharedPointer<Component> component )
 {
     QList<QPair<QSharedPointer<ComInterface>, PortReference> > connectedInterfaces;
 
@@ -319,28 +323,10 @@ MCAPIParser::EndPointData MCAPIParser::parseEndpoint(QSharedPointer<ComInterface
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPIParser::searchInstance()
-//-----------------------------------------------------------------------------
-QSharedPointer<SWInstance> MCAPIParser::searchInstance(QSharedPointer<const Design> design,
-    QString const& instanceName)
-{
-    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
-    {
-        // If the found instance name is same as target, will generate for it.
-        if ( instance->getInstanceName() == instanceName )
-        {
-            return instance;
-        }
-    }
-
-    return QSharedPointer<SWInstance>();
-}
-
-//-----------------------------------------------------------------------------
 // Function: MCAPIParser::checkEndpointIdentifier()
 //-----------------------------------------------------------------------------
 void MCAPIParser::checkEndpointIdentifier(QSharedPointer<ComInterface> targetInterface,
-    QSharedPointer<SWInstance> targetInstance)
+    QSharedPointer<ComponentInstance> targetInstance)
 {
     QString theirPortID = targetInterface->getPropertyValues().value("port_id").toUpper();
     QString theirDomainID = targetInstance->getPropertyValues().value("Domain ID");
@@ -357,9 +343,9 @@ void MCAPIParser::checkEndpointIdentifier(QSharedPointer<ComInterface> targetInt
 //-----------------------------------------------------------------------------
 // Function: MCAPIParser::checkTransferType()
 //-----------------------------------------------------------------------------
-void MCAPIParser::checkTransferType(QSharedPointer<SWInstance> ourInstance, 
+void MCAPIParser::checkTransferType(QSharedPointer<ComponentInstance> ourInstance, 
     QSharedPointer<ComInterface> ourInterface, 
-    QSharedPointer<SWInstance> targetInstance, QSharedPointer<ComInterface> targetInterface)
+    QSharedPointer<ComponentInstance> targetInstance, QSharedPointer<ComInterface> targetInterface)
 {
     if ( ourInterface->getTransferType() != targetInterface->getTransferType() )
     {
@@ -373,9 +359,9 @@ void MCAPIParser::checkTransferType(QSharedPointer<SWInstance> ourInstance,
 //-----------------------------------------------------------------------------
 // Function: MCAPIParser::checkScalarSize()
 //-----------------------------------------------------------------------------
-void MCAPIParser::checkScalarSize(QSharedPointer<SWInstance> ourInstance,
+void MCAPIParser::checkScalarSize(QSharedPointer<ComponentInstance> ourInstance,
     QSharedPointer<ComInterface> ourInterface, 
-    QSharedPointer<SWInstance> targetInstance, QSharedPointer<ComInterface> targetInterface)
+    QSharedPointer<ComponentInstance> targetInstance, QSharedPointer<ComInterface> targetInterface)
 {
     QString ourScalarSize = ourInterface->getPropertyValues().value("scalar_size");
     QString theirScalarSize = targetInterface->getPropertyValues().value("scalar_size");

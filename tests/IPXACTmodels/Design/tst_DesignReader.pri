@@ -29,6 +29,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.h \
     ../../../IPXACTmodels/Design/HierInterface.h \
     ../../../IPXACTmodels/Design/Interconnection.h \
+    ../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
@@ -41,7 +42,6 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/PartSelect.h \
     ../../../IPXACTmodels/Design/PortReference.h \
     ../../../IPXACTmodels/common/Range.h \
-    ../../../IPXACTmodels/kactusExtensions/SWInstance.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/VendorExtension.h \
@@ -53,8 +53,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/DocumentReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h
+    ../../../IPXACTmodels/validators/namevalidator.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
@@ -81,6 +80,7 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/kactusExtensions/HierComInterconnection.cpp \
     ../../../IPXACTmodels/Design/HierInterface.cpp \
     ../../../IPXACTmodels/Design/Interconnection.cpp \
+    ../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
@@ -95,11 +95,9 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../IPXACTmodels/Design/PortReference.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
-    ../../../IPXACTmodels/kactusExtensions/SWInstance.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/validators/namevalidator.cpp \
-    ./tst_DesignReader.cpp \
-    ../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp
+    ./tst_DesignReader.cpp

@@ -118,7 +118,7 @@ int getInstanceIndexByUUID(QList<QSharedPointer<ComponentInstance> > instances, 
 //-----------------------------------------------------------------------------
 // Function: getInstanceIndex()
 //-----------------------------------------------------------------------------
-int getInstanceIndex(QList<QSharedPointer<SWInstance> > instances, QString const& importRef,
+int getInstanceIndex(QList<QSharedPointer<ComponentInstance> > instances, QString const& importRef,
                      QString const& mapping)
 {
     // Search for a match in the list.
@@ -201,7 +201,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
 //-----------------------------------------------------------------------------
 void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInstance> > elements,
                        QSharedPointer<QList<QSharedPointer<ComponentInstance> > > hwInstances,
-                       QList<QSharedPointer<SWInstance> > swInstances,
+                       QList<QSharedPointer<ComponentInstance> > swInstances,
                        QList<QSharedPointer<ApiInterconnection> > apiDependencies)
 {
     foreach (QSharedPointer<ComponentInstance> element, elements)
@@ -233,7 +233,7 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
                 continue;
             }
 
-            foreach (QSharedPointer<SWInstance> instance, swDesign->getSWInstances())
+            foreach (QSharedPointer<ComponentInstance> instance, swDesign->getSWInstances(lh))
             {
                 instance->setPosition(QPointF());
                 instance->setImported(true);
@@ -261,12 +261,12 @@ void generateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design
     // Add them as instances to the system design.
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > 
         hwInstances(new QList<QSharedPointer<ComponentInstance> >());
-    QList<QSharedPointer<SWInstance> > swInstances;
+    QList<QSharedPointer<ComponentInstance> > swInstances;
     QList<QSharedPointer<ApiInterconnection> > apiDependencies;
     addNewInstancesV2(lh, elements, hwInstances, swInstances, apiDependencies);
 
     sysDesign.setComponentInstances(hwInstances);
-    sysDesign.setSWInstances(swInstances);
+    sysDesign.getComponentInstances()->append(swInstances);
     sysDesign.setApiConnections(apiDependencies);
 }
 
@@ -274,7 +274,7 @@ void generateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design
 // Function: getMatchingApiDependency()
 //-----------------------------------------------------------------------------
 int getMatchingApiDependency(QList<QSharedPointer<ApiInterconnection> > apiDependencies,
-                             QList<QSharedPointer<SWInstance> > swInstances,
+                             QList<QSharedPointer<ComponentInstance> > swInstances,
                              QSharedPointer<ApiInterconnection> dependency, QString const& mapping) 
 {
     int index = -1;
@@ -345,13 +345,18 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
     // Reflect changes in the programmable elements to the system design.
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > 
         hwInstances(new QList<QSharedPointer<ComponentInstance> >());
-    QList<QSharedPointer<SWInstance> > swInstances;
+    QList<QSharedPointer<ComponentInstance> > swInstances;
     QList<QSharedPointer<ApiInterconnection> > apiDependencies;
 
     // 1. PHASE: Check already existing elements against the new list and remove those that
     // are no longer part of the new element list.
     foreach (QSharedPointer<ComponentInstance> hwInstance, *sysDesign.getComponentInstances())
     {
+        if (sysDesign.getSWInstances(lh).contains(hwInstance))
+        {
+            continue;
+        }
+
         // Imported ones should be checked.
         if (hwInstance->isImported())
         {
@@ -393,11 +398,11 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
         hwInstances->append(instance);
     }
 
-    QList<QSharedPointer<SWInstance> > oldSWInstances = sysDesign.getSWInstances();
+    QList<QSharedPointer<ComponentInstance> > oldSWInstances = sysDesign.getSWInstances(lh);
     QList<QSharedPointer<ApiInterconnection> > oldApiDependencies = sysDesign.getApiConnections();
 
     // 3. PHASE: Copy non-imported instances from the old list to the new list.
-    foreach (QSharedPointer<SWInstance> swInstance, oldSWInstances)
+    foreach (QSharedPointer<ComponentInstance> swInstance, oldSWInstances)
     {
         if (!swInstance->isImported())
         {
@@ -430,7 +435,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                 continue;
             }
 
-            foreach (QSharedPointer<SWInstance> swInstance, swDesign->getSWInstances())
+            foreach (QSharedPointer<ComponentInstance> swInstance, swDesign->getSWInstances(lh))
             {
                 // Check if the instance already exists in the old system design.
                 int index = getInstanceIndex(oldSWInstances, swInstance->getInstanceName(), hwInstance->getUuid());
@@ -505,6 +510,6 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
     }
 
     sysDesign.setComponentInstances(hwInstances);
-    sysDesign.setSWInstances(swInstances);
+    sysDesign.getComponentInstances()->append(swInstances);
     sysDesign.setApiConnections(apiDependencies);
 }

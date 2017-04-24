@@ -48,7 +48,6 @@
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
@@ -885,7 +884,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             if (stack != 0)
 			{
 				// Create the diagram component.
-				QSharedPointer<SWInstance> swInstance = createSWInstance(comp);
+				QSharedPointer<ComponentInstance> swInstance = createSWInstance(comp);
 
                 // Create the SW component item.
                 SWComponentItem* item = new SWComponentItem(getLibraryInterface(), comp, swInstance);
@@ -928,7 +927,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             }
 
 			// Create the diagram component.
-			QSharedPointer<SWInstance> swInstance = createSWInstance(comp);
+			QSharedPointer<ComponentInstance> swInstance = createSWInstance(comp);
 
 			// Create the SW component item.
 			SWComponentItem* newCompItem = new SWComponentItem(getLibraryInterface(), comp, swInstance);
@@ -1087,9 +1086,9 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::createSWInstance()
 //-----------------------------------------------------------------------------
-QSharedPointer<SWInstance> SystemDesignDiagram::createSWInstance(QSharedPointer<Component> comp)
+QSharedPointer<ComponentInstance> SystemDesignDiagram::createSWInstance(QSharedPointer<Component> comp)
 {
-	QSharedPointer<SWInstance> swInstance(new SWInstance());
+	QSharedPointer<ComponentInstance> swInstance(new ComponentInstance());
 	QString instanceName = createInstanceName(comp->getVlnv().getName());
 	swInstance->setInstanceName(instanceName);
 	swInstance->setComponentRef( QSharedPointer<ConfigurableVLNVReference>(
@@ -1106,10 +1105,6 @@ QStringList SystemDesignDiagram::getUsedInstanceNames() const
     QStringList usedNames;
 
     foreach (QSharedPointer<ComponentInstance> instance, *getDesign()->getComponentInstances())
-    {
-        usedNames.append(instance->getInstanceName());
-    }
-    foreach (QSharedPointer<SWInstance> instance, getDesign()->getSWInstances())
     {
         usedNames.append(instance->getInstanceName());
     }
@@ -1514,6 +1509,12 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 component->setImplementation(KactusAttribute::HW);
             }
 
+            // Only hardware components are applicable in this loop.
+            if (component->getImplementation() != KactusAttribute::HW)
+            {
+                continue;
+            }
+
             HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance); //instance->getConfigurableElementValues());
             item->setImported(instance->isImported());
             item->setImportRef(instance->getImportRef());
@@ -1549,7 +1550,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
 
     // Create SW instances.
-    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, design->getSWInstances(getLibraryInterface()))
     {
         QSharedPointer<Component> component;
 
@@ -2035,24 +2036,6 @@ SWPortItem* SystemDesignDiagram::createMissingPort(QString const& portName, Conn
         }
     }
 
-    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
-    {
-        if (instance->getInstanceName() == component->name())
-        {
-            if (type == ConnectionEndpoint::ENDPOINT_TYPE_API)
-            {
-                port->setPos(instance->getApiInterfacePositions().value(portName));
-            }
-            else if (type == ConnectionEndpoint::ENDPOINT_TYPE_COM)
-            {
-                port->setPos(instance->getComInterfacePositions().value(portName));
-            }
-
-            component->onMovePort(port);
-            return port;
-        }
-    }
-
     return port;
 }
 
@@ -2066,7 +2049,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     QMap<QString, QString> nameMappings;
 
     // Import SW instances.
-    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, design->getSWInstances(getLibraryInterface()))
     {
         QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
@@ -2567,7 +2550,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 comp->setImplementation(KactusAttribute::SW);
 
 				// Create the corresponding diagram component.
-				QSharedPointer<SWInstance> swInstance(new SWInstance());
+				QSharedPointer<ComponentInstance> swInstance(new ComponentInstance());
 				swInstance->setInstanceName(name);
                 swInstance->setDraft(true);
 
@@ -2647,8 +2630,8 @@ void SystemDesignDiagram::copySWInstances(QList<QGraphicsItem*> const& items,
             // Take a copy of the component model so that we are not influenced by any changes to the original.
             instance.component = QSharedPointer<Component>(new Component(*comp->componentModel()));
 
-            QSharedPointer<SWInstance> copiedSWInstance = comp->getComponentInstance().dynamicCast<SWInstance>();
-            instance.swInstance = QSharedPointer<SWInstance>(new SWInstance(*copiedSWInstance));
+            QSharedPointer<ComponentInstance> copiedSWInstance = comp->getComponentInstance();
+            instance.swInstance = QSharedPointer<ComponentInstance>(new ComponentInstance(*copiedSWInstance));
         }
     }
 }
@@ -2662,7 +2645,7 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const col
     foreach (ComponentInstanceCopyData const instanceCopy, collection.instances)
     {
         // Create unique name for the component instance.
-        QSharedPointer<SWInstance> swInstanceCopy (new SWInstance(*instanceCopy.swInstance.data()));
+        QSharedPointer<ComponentInstance> swInstanceCopy (new ComponentInstance(*instanceCopy.swInstance.data()));
 
         QString instanceName = createInstanceName(instanceCopy.swInstance->getInstanceName());
         swInstanceCopy->setInstanceName(instanceName);

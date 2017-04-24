@@ -887,42 +887,32 @@ void tst_DesignReader::testReadSWInstances()
     DesignReader designReader;
     QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
 
-    QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
+    QCOMPARE(testDesign->getComponentInstances()->size(), 1);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
-    QList<QSharedPointer<SWInstance> > swInstances = testDesign->getSWInstances();
-    QCOMPARE(swInstances.size(), 1);
-    QCOMPARE(swInstances.first()->getInstanceName(), QString("testInstance"));
-    QCOMPARE(swInstances.first()->getDisplayName(), QString("testDisplay"));
-    QCOMPARE(swInstances.first()->getDescription(), QString("testDescription"));
+    QSharedPointer<ComponentInstance> swInstance = testDesign->getComponentInstances()->first();
 
-    QCOMPARE(swInstances.first()->getComponentRef()->getVendor(), QString("TUT"));
-    QCOMPARE(swInstances.first()->getComponentRef()->getLibrary(), QString("TestLibrary"));
-    QCOMPARE(swInstances.first()->getComponentRef()->getName(), QString("refComponent"));
-    QCOMPARE(swInstances.first()->getComponentRef()->getVersion(), QString("1.1"));
+    QCOMPARE(swInstance->getInstanceName(), QString("testInstance"));
+    QCOMPARE(swInstance->getDisplayName(), QString("testDisplay"));
+    QCOMPARE(swInstance->getDescription(), QString("testDescription"));
 
-    QCOMPARE(swInstances.first()->getFileSetRef(), QString("filesetRef"));
-    QCOMPARE(swInstances.first()->getMapping(), QString("hwRef"));
-    QCOMPARE(swInstances.first()->getPosition().x(), qreal(1));
-    QCOMPARE(swInstances.first()->getPosition().y(), qreal(2));
+    QCOMPARE(swInstance->getComponentRef()->getVendor(), QString("TUT"));
+    QCOMPARE(swInstance->getComponentRef()->getLibrary(), QString("TestLibrary"));
+    QCOMPARE(swInstance->getComponentRef()->getName(), QString("refComponent"));
+    QCOMPARE(swInstance->getComponentRef()->getVersion(), QString("1.1"));
+
+    QCOMPARE(swInstance->getFileSetRef(), QString("filesetRef"));
+    QCOMPARE(swInstance->getMapping(), QString("hwRef"));
+    QCOMPARE(swInstance->getPosition().x(), qreal(1));
+    QCOMPARE(swInstance->getPosition().y(), qreal(2));
     
-    QCOMPARE(swInstances.first()->isImported(), true);
-    QCOMPARE(swInstances.first()->getImportRef(), QString("importer"));
+    QCOMPARE(swInstance->isImported(), true);
+    QCOMPARE(swInstance->getImportRef(), QString("importer"));
     
-    QCOMPARE(swInstances.first()->isDraft(), true);
-    QCOMPARE(swInstances.first()->getPropertyValues().count(), 1);
-    QCOMPARE(swInstances.first()->getPropertyValues().firstKey(), QString("testProperty"));
-    QCOMPARE(swInstances.first()->getPropertyValues().first(), QString("value"));
-
-    QCOMPARE(swInstances.first()->getApiInterfacePositions().count(), 1);
-    QCOMPARE(swInstances.first()->getApiInterfacePositions().firstKey(), QString("newApi"));
-    QCOMPARE(swInstances.first()->getApiInterfacePositions().first().x(), qreal(0));
-    QCOMPARE(swInstances.first()->getApiInterfacePositions().first().y(), qreal(1));
-
-    QCOMPARE(swInstances.first()->getComInterfacePositions().count(), 1);
-    QCOMPARE(swInstances.first()->getComInterfacePositions().firstKey(), QString("newCom"));
-    QCOMPARE(swInstances.first()->getComInterfacePositions().first().x(), qreal(1));
-    QCOMPARE(swInstances.first()->getComInterfacePositions().first().y(), qreal(1));
+    QCOMPARE(swInstance->isDraft(), true);
+    QCOMPARE(swInstance->getPropertyValues().count(), 1);
+    QCOMPARE(swInstance->getPropertyValues().firstKey(), QString("testProperty"));
+    QCOMPARE(swInstance->getPropertyValues().first(), QString("value"));
 }
 
 //-----------------------------------------------------------------------------

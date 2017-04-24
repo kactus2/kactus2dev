@@ -92,7 +92,7 @@ struct MakeFileData
 	// The list of all included directories.
 	QStringList includeDirectories;
 	// The list of parsed software instances. Tracked to avoid re-parsing a dependency.
-	QList<QSharedPointer<SWInstance> > parsedInstances;
+	QList<QSharedPointer<ComponentInstance> > parsedInstances;
 	// Header files associated with the topmost component instance.
 	// This is to contain the makefile generated for the instance.
 	QSharedPointer<FileSet> instanceFileSet;

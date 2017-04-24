@@ -25,7 +25,6 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
@@ -43,6 +42,7 @@
 
 class ConnectionRoute;
 class InterfaceGraphicsData;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Implementation for the ipxact:design element.
@@ -118,7 +118,7 @@ public:
      *
      *      @return A list of sw instances.
      */
-    QList <QSharedPointer<SWInstance> > getSWInstances() const;
+    QList <QSharedPointer<ComponentInstance> > getSWInstances(LibraryInterface* library) const;
 
     /*!
      *  Get a list of the interconnections.
@@ -180,13 +180,6 @@ public:
      *      @param [in] newComponentInstances   A list of new component instances.
      */
     void setComponentInstances(QSharedPointer<QList<QSharedPointer<ComponentInstance> > > newComponentInstances);
-
-    /*!
-     *  Sets the SW instances for the design.
-     *
-     *      @param [in] swInstances A list of SW instances.
-     */
-    void setSWInstances(QList<QSharedPointer<SWInstance> > newSWInstances);
 
     /*!
      *  Set the interconnections.

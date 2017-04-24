@@ -53,7 +53,6 @@ private slots:
     void testWriteVendorExtensions();
 
     void testWriteColumns();
-    void testWriteSWInstances();
     void testWritePortAdHocVisibilitiesAndPositions();
     void testWriteApiDependencies();
     void testWriteHierApiDependencies();
@@ -300,6 +299,8 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
     testComponentInstance->updateAdHocPortPosition("adHocPort", QPointF(3,3));
     testComponentInstance->updateApiInterfacePosition("apiInterface", QPointF(2,2));
     testComponentInstance->updateComInterfacePosition("comInterface", QPointF(1,1));
+    testComponentInstance->setFileSetRef("filesetRef");
+    testComponentInstance->setMapping("hwRef");
 
     QSharedPointer<ComponentInstance> otherComponentInstance(new ComponentInstance("otherInstance",
         testComponentReference));
@@ -352,6 +353,8 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
                         "\t\t\t\t<kactus2:comInterfacePositions>\n"
                             "\t\t\t\t\t<kactus2:comInterfacePosition comRef=\"comInterface\" x=\"1\" y=\"1\"/>\n"
                         "\t\t\t\t</kactus2:comInterfacePositions>\n"
+                        "\t\t\t\t<kactus2:fileSetRef>filesetRef</kactus2:fileSetRef>\n"
+                        "\t\t\t\t<kactus2:mapping hwRef=\"hwRef\"/>\n"
                         "\t\t\t\t<kactus2:propertyValues>\n"
                             "\t\t\t\t\t<kactus2:propertyValue name=\"testSWProperty\" value=\"8\"/>\n"
                         "\t\t\t\t</kactus2:propertyValues>\n"
@@ -1009,88 +1012,6 @@ void tst_DesignWriter::testWriteColumns()
     newDesign = otherDesign;
 
     designWriter.writeDesign(xmlStreamWriter, otherDesign);
-    compareOutputToExpected(output, expectedOutput);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_DesignWriter::testWriteSWInstances()
-//-----------------------------------------------------------------------------
-void tst_DesignWriter::testWriteSWInstances()
-{
-    QSharedPointer<ConfigurableVLNVReference> testComponentReference (
-        new ConfigurableVLNVReference(VLNV::COMPONENT, "TUT", "TestLibrary", "refComponent", "1.1"));
-
-    QSharedPointer<SWInstance> testInstance(new SWInstance());
-    testInstance->setInstanceName("testInstance");
-    testInstance->setDisplayName("testDisplay");
-    testInstance->setDescription("testDescription");
-    testInstance->setComponentRef(testComponentReference);
-    testInstance->setFileSetRef("filesetRef");
-    testInstance->setMapping("hwRef");
-    testInstance->setPosition(QPointF(1,2));
-    testInstance->setImportRef("importer");
-    testInstance->setDraft(true);
-    testInstance->updateApiInterfacePosition("newApi", QPointF(0,1));
-    testInstance->updateComInterfacePosition("newCom", QPointF(1,1));
-
-    QMap<QString, QString> propertyValues;
-    propertyValues.insert("testProperty", "value");
-    testInstance->setPropertyValues(propertyValues);
-
-    QList<QSharedPointer<SWInstance> > swInstances;
-    swInstances.append(testInstance);
-
-    testDesign_->setSWInstances(swInstances);
-
-    QString output;
-    QXmlStreamWriter xmlStreamWriter(&output);
-
-    xmlStreamWriter.setAutoFormatting(true);
-    xmlStreamWriter.setAutoFormattingIndent(-1);
-
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign_);
-    
-    QString expectedOutput(
-        "<?xml version=\"1.0\"?>\n"
-        "<ipxact:design "
-        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
-        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
-            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
-            "\t<ipxact:name>TestDesign</ipxact:name>\n"
-            "\t<ipxact:version>0.1</ipxact:version>\n"
-            "\t<ipxact:vendorExtensions>\n"
-                "\t\t<kactus2:swInstances>\n"
-                    "\t\t\t<kactus2:swInstance>\n"
-                        "\t\t\t\t<kactus2:instanceName>testInstance</kactus2:instanceName>\n"
-                        "\t\t\t\t<kactus2:displayName>testDisplay</kactus2:displayName>\n"
-                        "\t\t\t\t<kactus2:description>testDescription</kactus2:description>\n"
-                        "\t\t\t\t<kactus2:componentRef vendor=\"TUT\" library=\"TestLibrary\" "
-                            "name=\"refComponent\" version=\"1.1\"/>\n"
-                        "\t\t\t\t<kactus2:fileSetRef>filesetRef</kactus2:fileSetRef>\n"
-                        "\t\t\t\t<kactus2:mapping hwRef=\"hwRef\"/>\n"
-                        "\t\t\t\t<kactus2:position x=\"1\" y=\"2\"/>\n"
-                        "\t\t\t\t<kactus2:imported importRef=\"importer\"/>\n"
-                        "\t\t\t\t<kactus2:draft/>\n"
-                        "\t\t\t\t<kactus2:propertyValues>\n"
-                            "\t\t\t\t\t<kactus2:propertyValue name=\"testProperty\" value=\"value\"/>\n"
-                        "\t\t\t\t</kactus2:propertyValues>\n"
-                        "\t\t\t\t<kactus2:apiInterfacePositions>\n"
-                            "\t\t\t\t\t<kactus2:apiInterfacePosition apiRef=\"newApi\" x=\"0\" y=\"1\"/>\n"
-                        "\t\t\t\t</kactus2:apiInterfacePositions>\n"
-                        "\t\t\t\t<kactus2:comInterfacePositions>\n"
-                            "\t\t\t\t\t<kactus2:comInterfacePosition comRef=\"newCom\" x=\"1\" y=\"1\"/>\n"
-                        "\t\t\t\t</kactus2:comInterfacePositions>\n"
-                    "\t\t\t</kactus2:swInstance>\n"
-                "\t\t</kactus2:swInstances>\n"
-            "\t</ipxact:vendorExtensions>\n"
-        "</ipxact:design>\n"
-        );
-
     compareOutputToExpected(output, expectedOutput);
 }
 

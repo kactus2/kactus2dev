@@ -112,7 +112,6 @@
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QCoreApplication>

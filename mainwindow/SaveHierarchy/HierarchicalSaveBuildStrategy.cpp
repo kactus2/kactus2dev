@@ -383,15 +383,6 @@ void HierarchicalSaveBuildStrategy::updateDesignReferences(QSharedPointer<Design
             instance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(newChildVLNV)));
         }
     }
-
-    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
-    {
-        if (*instance->getComponentRef() == childVLNV)
-        {
-            instance->setComponentRef(
-                QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(newChildVLNV)));
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------

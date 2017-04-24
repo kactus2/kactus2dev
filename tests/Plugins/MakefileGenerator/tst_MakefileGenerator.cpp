@@ -84,7 +84,7 @@ private:
     void getFile(QSharedPointer<File>& file, QSharedPointer<Component> component, QString fileName);
 
     QSharedPointer<Component> createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softInstaName,
-		 QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<ComponentInstantiation>& softInsta, QString swInstanceName);
+		 QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<ComponentInstantiation>& softInsta, QString ComponentInstanceName);
 
     QSharedPointer<FileSet> addFileSet(QSharedPointer<Component> component, QString fileSetName, QSharedPointer<ComponentInstantiation> insta);
 
@@ -175,10 +175,10 @@ void tst_MakefileGenerator::fileBuildOverride()
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 	addCmd2Insta(hardInsta, "gcc", "cSource", "", false);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softInsta);
@@ -218,10 +218,10 @@ void tst_MakefileGenerator::fileSetBuildOverride()
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 	addCmd2Insta(hardInsta, "gcc", "cSource", "", false);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softInsta);
@@ -261,10 +261,10 @@ void tst_MakefileGenerator::fileFlagReplace()
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 	addCmd2Insta(hardInsta, "gcc", "cSource", "", false);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softInsta);
@@ -304,10 +304,10 @@ void tst_MakefileGenerator::fileSetFlagReplace()
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 	addCmd2Insta(hardInsta, "gcc", "cSource", "", false);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softInsta);
@@ -346,10 +346,10 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 	addCmd2Insta(hardInsta, "gcc", "cSource", "", false);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softInsta);
 
@@ -386,10 +386,10 @@ void tst_MakefileGenerator::hwBuilder()
     QString hardInstaName = "firmware";
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softInsta);
 
@@ -430,10 +430,10 @@ void tst_MakefileGenerator::hwBuilderWithNosoftInsta()
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 	addCmd2Insta(hardInsta, "gcc", "cSource", "", false);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softInsta);
 
@@ -469,10 +469,10 @@ void tst_MakefileGenerator::hwRef()
     QString hardInstaName = "firmware";
     QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QSharedPointer<FileSet> fileSet = addFileSet(hw, "someFileSet", hardInsta);
 
@@ -514,7 +514,7 @@ void tst_MakefileGenerator::hwandswRef()
     QString hardInstaName = "firmware";
     QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
     QSharedPointer<FileSet> hfileSet = addFileSet(hw, "hardFileSet", hardInsta);
@@ -527,7 +527,7 @@ void tst_MakefileGenerator::hwandswRef()
     getFile(hfile, hw, "harray.c");
     setFileBuilder(hfile, "", "-hu", false);
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QString sfileSetName = "softFileSet";
     addFileSet(sw, sfileSetName, softInsta);
@@ -577,10 +577,10 @@ void tst_MakefileGenerator::instanceFiles()
     QString hardInstaName = "firmware";
     createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta, swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta, ComponentInstanceName);
 
     QString fileSetName = "someFileSet";
     addFileSet(sw, fileSetName, softInsta);
@@ -591,7 +591,7 @@ void tst_MakefileGenerator::instanceFiles()
 	QSharedPointer<FileSet> topFileSet = addFileSet(topComponent, topFileSetName, QSharedPointer<ComponentInstantiation>());
     addFileToSet(topFileSet, "array.h", "cSource", true);
 	
-	QSharedPointer<SWInstance> referrringInstance = design->getSWInstances().first();
+	QSharedPointer<ComponentInstance> referrringInstance = design->getComponentInstances()->first();
 	referrringInstance->setFileSetRef( topFileSetName );
 
     QString topFileSetName2 = "testFileSet";
@@ -625,10 +625,10 @@ void tst_MakefileGenerator::multipleFiles()
     QString hardInstaName = "firmware";
     createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QString fileSetName = "someFileSet";
     addFileSet(sw, fileSetName, softInsta);
@@ -683,10 +683,10 @@ void tst_MakefileGenerator::multipleFileSets()
     QString hardInstaName = "firmware";
     createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-    QString swInstanceName = "software_0";
+    QString ComponentInstanceName = "software_0";
     QString softInstaName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
     QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softInsta);
     QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softInsta);
@@ -954,16 +954,16 @@ void tst_MakefileGenerator::multipleInstances()
         "stackware_0");
 
 	QSharedPointer<ConfigurableVLNVReference> swvlvnv( new ConfigurableVLNVReference(sw->getVlnv()) );
-	QSharedPointer<SWInstance> softInstance(new SWInstance);
+	QSharedPointer<ComponentInstance> softInstance(new ComponentInstance);
 	softInstance->setInstanceName("stackware_1");
 	softInstance->setComponentRef(swvlvnv);
 	softInstance->setMapping(hwInstanceName);
 
 	desgconf->addViewConfiguration("stackware_1",sw->getViews()->first()->name());
 
-	QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
-	swInstances.append(softInstance);
-	design->setSWInstances(swInstances);
+	QSharedPointer<QList<QSharedPointer<ComponentInstance> > > ComponentInstances = design->getComponentInstances();
+	ComponentInstances->append(softInstance);
+	design->setComponentInstances(ComponentInstances);
 	library_.writeModelToFile("polku/stackware",sw);
 
 	QSharedPointer<FileSet> fileSet = addFileSet(sw, "FileSet", softInsta);
@@ -1077,10 +1077,10 @@ void tst_MakefileGenerator::noFileType()
 	QString hardInstaName = "firmware";
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-	QString swInstanceName = "software_0";
+	QString ComponentInstanceName = "software_0";
 	QString softInstaName = "default";
 
-	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
 	QString fileSetName = "someFileSet";
 	addFileSet(sw, fileSetName, softInsta);
@@ -1420,10 +1420,10 @@ void tst_MakefileGenerator::sameFileDiffCompiler()
 	QString hardInstaName = "firmware";
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-	QString swInstanceName = "software_0";
+	QString ComponentInstanceName = "software_0";
 	QString softInstaName = "default";
 
-	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,swInstanceName);
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf, softInsta,ComponentInstanceName);
 
 	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softInsta);
 	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softInsta);
@@ -1481,11 +1481,11 @@ void tst_MakefileGenerator::sameFileDiffFlags()
 	QString hardInstaName = "firmware";
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-	QString swInstanceName = "software_0";
+	QString ComponentInstanceName = "software_0";
 	QString softInstaName = "default";
 
 	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf,
-		softInsta,swInstanceName);
+		softInsta,ComponentInstanceName);
 
 	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softInsta);
 	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softInsta);
@@ -1541,11 +1541,11 @@ void tst_MakefileGenerator::sameFile()
 	QString hardInstaName = "firmware";
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-	QString swInstanceName = "software_0";
+	QString ComponentInstanceName = "software_0";
 	QString softInstaName = "default";
 
 	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softInstaName, desgconf,
-		softInsta,swInstanceName);
+		softInsta,ComponentInstanceName);
 
 	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softInsta);
 	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softInsta);
@@ -1835,19 +1835,19 @@ QSharedPointer<File> tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet>
 
 QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QString hwInstanceName,
     QSharedPointer<Design> design, QString softInstaName,  QSharedPointer<DesignConfiguration> desgconf,
-    QSharedPointer<ComponentInstantiation>& softInsta, QString swInstanceName)
+    QSharedPointer<ComponentInstantiation>& softInsta, QString ComponentInstanceName)
 {
     VLNV swvlvnv("","vendor","lib",swName,"1.0");
 	QSharedPointer<ConfigurableVLNVReference> swvlvnv2( new ConfigurableVLNVReference( swvlvnv ) );
     QSharedPointer<Component> swComponent = QSharedPointer<Component>(new Component(swvlvnv));
-    QSharedPointer<SWInstance> softInstance( new SWInstance );
-    softInstance->setInstanceName(swInstanceName);
+    QSharedPointer<ComponentInstance> softInstance( new ComponentInstance );
+    softInstance->setInstanceName(ComponentInstanceName);
     softInstance->setComponentRef(swvlvnv2);
     softInstance->setMapping(hwInstanceName);
 
-    QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
-    swInstances.append(softInstance);
-    design->setSWInstances(swInstances);
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > ComponentInstances = design->getComponentInstances();
+    ComponentInstances->append(softInstance);
+    design->setComponentInstances(ComponentInstances);
     library_.addComponent(swComponent);
     library_.writeModelToFile("polku/" + swName, swComponent);
 
@@ -1860,7 +1860,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QStrin
     softView->setComponentInstantiationRef(softInstaName);
     swComponent->getViews()->append(softView);
 
-	desgconf->addViewConfiguration(swInstanceName, softView->name());
+	desgconf->addViewConfiguration(ComponentInstanceName, softView->name());
 
     return swComponent;
 }

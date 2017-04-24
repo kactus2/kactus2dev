@@ -94,6 +94,12 @@ void ComponentInstanceReader::parseExtensions(const QDomNode& componentInstanceN
     QDomElement propertyNode = extensionsNode.firstChildElement(QStringLiteral("kactus2:propertyValues"));
     parsePropertyValues(propertyNode, instance);
 
+    QDomElement fileSetRefNode = extensionsNode.firstChildElement(QStringLiteral("kactus2:fileSetRef"));
+    parseFileSetRef(fileSetRefNode, instance);
+
+    QDomElement mappingNode = extensionsNode.firstChildElement(QStringLiteral("kactus2:mapping"));
+    parseMapping(mappingNode, instance);
+
     parseVendorExtensions(componentInstanceNode, instance);
 }
 
@@ -258,4 +264,38 @@ QMap<QString, QPointF> ComponentInstanceReader::createMappedPositions(QDomElemen
     }
 
     return positionMap;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceReader::parseFileSetRef()
+//-----------------------------------------------------------------------------
+void ComponentInstanceReader::parseFileSetRef(QDomElement const& fileSetRefElement,
+    QSharedPointer<ComponentInstance> instance) const
+{
+    if (!fileSetRefElement.isNull())
+    {
+        QString fileSetReference = fileSetRefElement.firstChild().nodeValue();
+
+        if (!fileSetReference.isEmpty())
+        {
+            instance->setFileSetRef(fileSetReference);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceReader::parseMapping()
+//-----------------------------------------------------------------------------
+void ComponentInstanceReader::parseMapping(QDomElement const& mappingElement,
+    QSharedPointer<ComponentInstance> instance) const
+{
+    if (!mappingElement.isNull())
+    {
+        QString mapping = mappingElement.attribute(QStringLiteral("hwRef"));
+
+        if (!mapping.isEmpty())
+        {
+            instance->setMapping(mapping);
+        }
+    }
 }

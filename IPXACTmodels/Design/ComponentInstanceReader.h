@@ -139,6 +139,22 @@ private:
      */
     QMap<QString, QPointF> createMappedPositions(QDomElement const& positionElement, QString const& itemIdentifier,
         QString const& referenceIdentifier) const;
+
+    /*!
+     *  Parse file set reference.
+     *
+     *      @param [in] fileSetRefElement       XML description of the file set reference.
+     *      @param [in] instance                The possessing component instance.
+     */
+    void parseFileSetRef(QDomElement const& fileSetRefElement, QSharedPointer<ComponentInstance> instance) const;
+
+    /*!
+     *  Parse hardware mapping.
+     *
+     *      @param [in] mappingElement          XML description of the mapping.
+     *      @param [in] instance                The possessing component instance.
+     */
+    void parseMapping(QDomElement const& mappingElement, QSharedPointer<ComponentInstance> instance) const;
 };
 
 #endif // COMPONENTINSTANCEREADER_H

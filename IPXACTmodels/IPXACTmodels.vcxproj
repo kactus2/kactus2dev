@@ -960,7 +960,6 @@
     <ClCompile Include="kactusExtensions\Kactus2Value.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Vector.cpp" />
     <ClCompile Include="kactusExtensions\KactusAttribute.cpp" />
-    <ClCompile Include="kactusExtensions\SWInstance.cpp" />
     <ClCompile Include="kactusExtensions\SystemView.cpp" />
     <ClCompile Include="kactusExtensions\validators\ApiDefinitionValidator.cpp" />
     <ClCompile Include="kactusExtensions\validators\ComDefinitionValidator.cpp" />
@@ -2284,7 +2283,6 @@
     <ClInclude Include="kactusExtensions\Kactus2Value.h" />
     <ClInclude Include="kactusExtensions\Kactus2Vector.h" />
     <ClInclude Include="kactusExtensions\KactusAttribute.h" />
-    <ClInclude Include="kactusExtensions\SWInstance.h" />
     <ClInclude Include="kactusExtensions\SystemView.h" />
     <CustomBuild Include="validators\namevalidator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

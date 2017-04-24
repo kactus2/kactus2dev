@@ -398,9 +398,6 @@
     <ClCompile Include="kactusExtensions\KactusAttribute.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="kactusExtensions\SWInstance.cpp">
-      <Filter>Source Files\kactusExtensions</Filter>
-    </ClCompile>
     <ClCompile Include="kactusExtensions\SystemView.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
@@ -1439,9 +1436,6 @@
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\KactusAttribute.h">
-      <Filter>Header Files\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusExtensions\SWInstance.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\SystemView.h">

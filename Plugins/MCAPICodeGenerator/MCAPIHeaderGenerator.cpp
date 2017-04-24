@@ -131,7 +131,7 @@ void MCAPIHeaderGenerator::generateInstanceHeader(QString const& directory, MCAP
 // Function: MCAPIHeaderGenerator::addGeneratedMCAPIToFileset()
 //-----------------------------------------------------------------------------
 void MCAPIHeaderGenerator::addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-    QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> desgConf)
+    QSharedPointer<ComponentInstance> instance, QSharedPointer<DesignConfiguration const> desgConf)
 {
     QString sysViewName;
 

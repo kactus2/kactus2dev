@@ -19,7 +19,6 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 #include <QRegularExpression>
 
@@ -40,22 +39,6 @@ availableViews_()
 SystemViewConfigurationValidator::~SystemViewConfigurationValidator()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemViewConfigurationValidator::changeComponentInstances()
-//-----------------------------------------------------------------------------
-void SystemViewConfigurationValidator::changeComponentInstances(QList<QSharedPointer<SWInstance> > newInstances)
-{
-    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > newSWInstances (
-        new QList<QSharedPointer<ComponentInstance> > ());
-
-    foreach (QSharedPointer<SWInstance> instance, newInstances)
-    {
-        newSWInstances->append(instance);
-    }
-
-    ViewConfigurationValidator::changeComponentInstances(newSWInstances);
 }
 
 //-----------------------------------------------------------------------------

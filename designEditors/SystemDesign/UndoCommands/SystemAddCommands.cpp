@@ -20,7 +20,6 @@
 #include <designEditors/SystemDesign/SWInterfaceItem.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
-#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWPortAddCommand()

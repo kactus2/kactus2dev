@@ -24,7 +24,6 @@
 
 #include <QPainter>
 #include <QRectF>
-#include "IPXACTmodels/kactusExtensions/SWInstance.h"
 
 //! The minimum size for the preview box.
 static const int MIN_BOX_HEIGHT = 120;
@@ -128,7 +127,7 @@ void ComponentPreviewBox::updatePreview()
         }
         else if (component_->getImplementation() == KactusAttribute::SW)
 		{
-			QSharedPointer<SWInstance> swInstance(new SWInstance());
+			QSharedPointer<ComponentInstance> swInstance(new ComponentInstance());
 			swInstance->setInstanceName(component_->getVlnv().getName());
 			swInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
 				new ConfigurableVLNVReference(component_->getVlnv())));

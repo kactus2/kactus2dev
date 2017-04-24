@@ -66,7 +66,7 @@ private:
      *
      *      @return True, if the softInstance is the topmost instance in its stack. Otherwise false.
      */
-     bool isTopOfStack(QSharedPointer<SWInstance> softInstance, QSharedPointer<Component> softComponent);
+     bool isTopOfStack(QSharedPointer<ComponentInstance> softInstance, QSharedPointer<Component> softComponent);
 
     /*!
      *  Recursively parses source files for the whole stack for the given software instance.
@@ -76,7 +76,7 @@ private:
 	 *      @param [in] makeData   The make data associated with the makefile as whole.
 	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
      */
-     void parseStackObjects(QSharedPointer<Component> softComponent, QSharedPointer<SWInstance> softInstance,
+     void parseStackObjects(QSharedPointer<Component> softComponent, QSharedPointer<ComponentInstance> softInstance,
          QSharedPointer<MakeFileData> makeData, QString& systemViewName);
 
     /*!
@@ -87,7 +87,7 @@ private:
      *
      *      @return The component of the found instance.
      */
-     QSharedPointer<Component> searchSWComponent(QString instanceName, QSharedPointer<SWInstance>& targetInstance);
+     QSharedPointer<Component> searchSWComponent(QString instanceName, QSharedPointer<ComponentInstance>& targetInstance);
 
 	 //! The library containing all components in the design.
      LibraryInterface* library_;

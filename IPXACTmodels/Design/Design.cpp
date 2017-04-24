@@ -17,6 +17,10 @@
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
+#include <library/LibraryInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
 //-----------------------------------------------------------------------------
@@ -186,19 +190,6 @@ QList<VLNV> Design::getDependentVLNVs() const
             instanceList.append(*componentReference);
         }
 	}
-
-    QList<QSharedPointer<VendorExtension> > swExtensions =
-        getGroupedExtensionsByType(QStringLiteral("kactus2:swInstances"), QStringLiteral("kactus2:swInstance"));
-
-    foreach (QSharedPointer<VendorExtension> extension, swExtensions)
-    {
-        QSharedPointer<SWInstance> swInstance = extension.dynamicCast<SWInstance>();
-
-        if (swInstance->getComponentRef()->isValid() && !instanceList.contains(*swInstance->getComponentRef()))
-        {
-            instanceList.append(*swInstance->getComponentRef());
-        }
-    }
 
 	return instanceList;
 }
@@ -388,46 +379,29 @@ void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newCom
 //-----------------------------------------------------------------------------
 // Function: Design::getSWInstances()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<SWInstance> > Design::getSWInstances() const
+QList <QSharedPointer<ComponentInstance> > Design::getSWInstances(LibraryInterface* library) const
 {
-    QList<QSharedPointer<VendorExtension> > swExtensions =
-        getGroupedExtensionsByType(QStringLiteral("kactus2:swInstances"), QStringLiteral("kactus2:swInstance"));
+    QList<QSharedPointer<ComponentInstance> > swInstanceList;
 
-    QList<QSharedPointer<SWInstance> > swInstanceList;
-
-    foreach (QSharedPointer<VendorExtension> extension, swExtensions)
+    foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
     {
-        swInstanceList.append(extension.dynamicCast<SWInstance>());
+        QSharedPointer<ConfigurableVLNVReference> ref = instance->getComponentRef();
+        
+        if (!ref)
+        {
+            continue;
+        }
+
+        QSharedPointer<Document> componentDoc = library->getModel(*ref.data());
+        QSharedPointer<Component> component = componentDoc.dynamicCast<Component>();
+
+        if (component && component->getImplementation() == KactusAttribute::SW)
+        {
+            swInstanceList.append(instance);
+        }
     }
 
     return swInstanceList;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::setSWInstances()
-//-----------------------------------------------------------------------------
-void Design::setSWInstances(QList<QSharedPointer<SWInstance> > newSWInstances)
-{
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:swInstances"))
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
-
-    if (!newSWInstances.isEmpty())
-    {
-        QSharedPointer<Kactus2Group> newSwGroup (new Kactus2Group(QStringLiteral("kactus2:swInstances")));
-
-        foreach(QSharedPointer<SWInstance> swInstance, newSWInstances)
-        {
-            newSwGroup->addToGroup(swInstance);
-        }
-
-        getVendorExtensions()->append(newSwGroup);
-    }
 }
 
 //-----------------------------------------------------------------------------
