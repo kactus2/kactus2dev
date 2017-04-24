@@ -215,12 +215,18 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
         instance->setUuid(element->getUuid());
         instance->setImported(true);
 
-        // Add the newly created HW component to the list of HW instances.
-        hwInstances->append(instance);
-
         // Import SW components from SW design if found.
         QSharedPointer<Document const> libComp = lh->getModelReadOnly(*instance->getComponentRef());
         QSharedPointer<Component const> component = libComp.staticCast<Component const>();
+
+        // Only hardware components are applicable in this loop.
+        if (component->getImplementation() != KactusAttribute::HW)
+        {
+            continue;
+        }
+
+        // Add the newly created HW component to the list of HW instances.
+        hwInstances->append(instance);
 
         if (component != 0 && component->hasViews())
         {
@@ -233,8 +239,19 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
                 continue;
             }
 
-            foreach (QSharedPointer<ComponentInstance> instance, swDesign->getSWInstances(lh))
+            foreach (QSharedPointer<ComponentInstance> instance, *swDesign->getComponentInstances())
             {
+                QSharedPointer<ConfigurableVLNVReference> ref = instance->getComponentRef();
+
+                QSharedPointer<Document> componentDoc = lh->getModel(*ref.data());
+                QSharedPointer<Component> swComponent = componentDoc.dynamicCast<Component>();
+
+                // Only software components are applicable in this loop.
+                if (!swComponent || swComponent->getImplementation() != KactusAttribute::SW)
+                {
+                    continue;
+                }
+
                 instance->setPosition(QPointF());
                 instance->setImported(true);
                 instance->setMapping(element->getUuid());
@@ -352,7 +369,13 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
     // are no longer part of the new element list.
     foreach (QSharedPointer<ComponentInstance> hwInstance, *sysDesign.getComponentInstances())
     {
-        if (sysDesign.getSWInstances(lh).contains(hwInstance))
+        QSharedPointer<ConfigurableVLNVReference> ref = hwInstance->getComponentRef();
+
+        QSharedPointer<Document> componentDoc = lh->getModel(*ref.data());
+        QSharedPointer<Component> hwComponent = componentDoc.dynamicCast<Component>();
+
+        // Only hardware components are applicable in this loop.
+        if (!hwComponent || hwComponent->getImplementation() != KactusAttribute::HW)
         {
             continue;
         }
@@ -398,16 +421,29 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
         hwInstances->append(instance);
     }
 
-    QList<QSharedPointer<ComponentInstance> > oldSWInstances = sysDesign.getSWInstances(lh);
+    QList<QSharedPointer<ComponentInstance> > oldSWInstances;
     QList<QSharedPointer<ApiInterconnection> > oldApiDependencies = sysDesign.getApiConnections();
 
     // 3. PHASE: Copy non-imported instances from the old list to the new list.
-    foreach (QSharedPointer<ComponentInstance> swInstance, oldSWInstances)
+    foreach (QSharedPointer<ComponentInstance> swInstance, *sysDesign.getComponentInstances())
     {
+        QSharedPointer<ConfigurableVLNVReference> ref = swInstance->getComponentRef();
+
+        QSharedPointer<Document> componentDoc = lh->getModel(*ref.data());
+        QSharedPointer<Component> swComponent = componentDoc.dynamicCast<Component>();
+
+        // Only software components are applicable in this loop.
+        if (!swComponent || swComponent->getImplementation() != KactusAttribute::SW)
+        {
+            continue;
+        }
+
         if (!swInstance->isImported())
         {
             swInstances.append(swInstance);
         }
+
+        oldSWInstances.append(swInstance);
     }
 
     // 4. PHASE: Parse SW designs from active SW views to retrieve the imported SW instances.
@@ -435,8 +471,19 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                 continue;
             }
 
-            foreach (QSharedPointer<ComponentInstance> swInstance, swDesign->getSWInstances(lh))
+            foreach (QSharedPointer<ComponentInstance> swInstance, *swDesign->getComponentInstances())
             {
+                QSharedPointer<ConfigurableVLNVReference> ref = swInstance->getComponentRef();
+
+                QSharedPointer<Document> componentDoc = lh->getModel(*ref.data());
+                QSharedPointer<Component> swComponent = componentDoc.dynamicCast<Component>();
+
+                // Only software components are applicable in this loop.
+                if (!swComponent || swComponent->getImplementation() != KactusAttribute::SW)
+                {
+                    continue;
+                }
+
                 // Check if the instance already exists in the old system design.
                 int index = getInstanceIndex(oldSWInstances, swInstance->getInstanceName(), hwInstance->getUuid());
 

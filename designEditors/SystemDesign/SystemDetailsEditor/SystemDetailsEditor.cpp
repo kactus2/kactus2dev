@@ -467,14 +467,10 @@ void SystemDetailsEditor::exportSW()
     // Export only SW instances.
     design->setComponentInstances(QSharedPointer<QList<QSharedPointer<ComponentInstance> > >());
 
-    QList<QSharedPointer<ComponentInstance> > swInstances = design->getSWInstances(handler_);
-
-    for (int i = 0; i < swInstances.size(); ++i)
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-        swInstances[i]->setMapping("");
+        instance->setMapping("");
     }
-
-    design->getComponentInstances()->append(swInstances);
 
     handler_->writeModelToFile(dialog.getPath(), design);
     handler_->writeModelToFile(dialog.getPath(), desConf);

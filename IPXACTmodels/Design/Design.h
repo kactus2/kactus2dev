@@ -114,13 +114,6 @@ public:
 	QString getHWInstanceDescription(QString const& instanceName) const;
 
     /*!
-     *  Get a list of SW instances.
-     *
-     *      @return A list of sw instances.
-     */
-    QList <QSharedPointer<ComponentInstance> > getSWInstances(LibraryInterface* library) const;
-
-    /*!
      *  Get a list of the interconnections.
      *
      *      @return Pointer to a list of interconnections.

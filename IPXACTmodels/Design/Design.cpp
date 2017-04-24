@@ -17,8 +17,6 @@
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
-#include <IPXACTmodels/Component/Component.h>
-
 #include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
@@ -374,34 +372,6 @@ void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newCom
 
         getVendorExtensions()->append(newComConnectionGroup);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::getSWInstances()
-//-----------------------------------------------------------------------------
-QList <QSharedPointer<ComponentInstance> > Design::getSWInstances(LibraryInterface* library) const
-{
-    QList<QSharedPointer<ComponentInstance> > swInstanceList;
-
-    foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
-    {
-        QSharedPointer<ConfigurableVLNVReference> ref = instance->getComponentRef();
-        
-        if (!ref)
-        {
-            continue;
-        }
-
-        QSharedPointer<Document> componentDoc = library->getModel(*ref.data());
-        QSharedPointer<Component> component = componentDoc.dynamicCast<Component>();
-
-        if (component && component->getImplementation() == KactusAttribute::SW)
-        {
-            swInstanceList.append(instance);
-        }
-    }
-
-    return swInstanceList;
 }
 
 //-----------------------------------------------------------------------------

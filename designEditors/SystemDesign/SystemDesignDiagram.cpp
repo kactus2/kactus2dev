@@ -1550,7 +1550,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
 
     // Create SW instances.
-    foreach (QSharedPointer<ComponentInstance> instance, design->getSWInstances(getLibraryInterface()))
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
         QSharedPointer<Component> component;
 
@@ -1570,6 +1570,12 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             // Create an unpackaged component so that we can still visualize the component instance->
             component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
             component->setImplementation(KactusAttribute::SW);
+        }
+
+        // Only software components are applicable in this loop.
+        if (component->getImplementation() != KactusAttribute::SW)
+        {
+            continue;
         }
 
         SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance);
@@ -2049,7 +2055,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     QMap<QString, QString> nameMappings;
 
     // Import SW instances.
-    foreach (QSharedPointer<ComponentInstance> instance, design->getSWInstances(getLibraryInterface()))
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
         QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
@@ -2062,6 +2068,12 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             // Create an unpackaged component so that we can still visualize the component instance->
             component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
             component->setImplementation(KactusAttribute::SW);
+        }
+
+        // Only software components are applicable in this loop.
+        if (component->getImplementation() != KactusAttribute::SW)
+        {
+            continue;
         }
 
         // Determine a unique name for the instance->
