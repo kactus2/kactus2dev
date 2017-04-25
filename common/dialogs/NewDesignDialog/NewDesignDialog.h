@@ -66,6 +66,11 @@ public:
 	void setVLNV(const VLNV& vlnv);
 
     /*!
+     *  Returns the qualifier name.
+     */
+    QString getQualifierName() const;
+
+    /*!
      *  Returns the view name.
      */
     QString getViewName() const;
@@ -92,6 +97,11 @@ private slots:
     void updateDirectory();
 
     /*!
+     *  Updates the View name based on the current qualifier.
+     */
+    void updateViewName();
+
+    /*!
      *  Updates the VLNV name based on the current view name.
      */
     void updateVlnvName();
@@ -111,6 +121,12 @@ private:
 
     //! The used view names.
     QStringList usedViewNames_;
+
+    //! Label for the view name.
+    QLabel* qualifierLabel_;
+
+    //! Edit box for the view name.
+    LineEditEx* qualifierEdit_;
 
     //! Label for the view name.
     QLabel* viewNameLabel_;

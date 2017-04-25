@@ -26,7 +26,7 @@
 	}
 		
 	//-----------------------------------------------------------------------------
-	// Function: NameGenerationPolicy::systemViewFilesetName()
+	// Function: NameGenerationPolicy::instanceFilesetName()
 	//-----------------------------------------------------------------------------
 	QString NameGenerationPolicy::instanceFilesetName(QString const& systemViewName, QString const& instanceName)
 	{

@@ -27,6 +27,8 @@
 #include <common/widgets/LineEditEx/LineEditEx.h>
 #include <library/LibraryInterface.h>
 
+#include <common/NameGenerationPolicy.h>
+
 //-----------------------------------------------------------------------------
 // Function: NewDesignDialog::NewDesignDialog()
 //-----------------------------------------------------------------------------
@@ -37,6 +39,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     : QDialog(parent), 
       lh_(libInterface),
       component_(component),
+      qualifierLabel_(new QLabel(tr("Qualifier for view and configuration:"), this)),
+      qualifierEdit_(new LineEditEx(this)),
       viewNameLabel_(new QLabel(tr("View name:"), this)),
       viewNameMatcher_(),
       viewNameEdit_(new LineEditEx(this)),
@@ -63,7 +67,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
         {
             viewNameLabel_->setText(tr("Name for a new SW view to component:"));
             viewNameEdit_->setDisallowedInputs(component->getViewNames());
-            viewNameEdit_->setMessageTemplate("SW view name '%1' already exists!");
+            viewNameEdit_->setMessageTemplate("View name '%1' already exists!");
             vlnvEditor_->setTitle("VLNV for new SW design and design configuration");
             designExt_ = ".swdesign";
             designConfExt_ = ".swdesigncfg";
@@ -88,10 +92,13 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
         }
     }
 
+    connect(qualifierEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateViewName()));
+    connect(qualifierEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateVlnvName()));
+    connect(qualifierEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
+
     viewNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
     viewNameEdit_->setContentMatcher(&viewNameMatcher_);
 
-    connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateVlnvName()));
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
 
     vlnvEditor_->addNameExtension(designExt_);
@@ -115,6 +122,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(qualifierLabel_);
+    mainLayout->addWidget(qualifierEdit_);
     mainLayout->addWidget(viewNameLabel_);
     mainLayout->addWidget(viewNameEdit_);
     mainLayout->addWidget(vlnvEditor_);
@@ -135,6 +144,14 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
 void NewDesignDialog::setViewName(QString const& viewName)
 {
     viewNameEdit_->setText(viewName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewDesignDialog::getQualifierName()
+//-----------------------------------------------------------------------------
+QString NewDesignDialog::getQualifierName() const
+{
+    return qualifierEdit_->text();
 }
 
 //-----------------------------------------------------------------------------
@@ -163,7 +180,7 @@ VLNV NewDesignDialog::getDesignConfVLNV() const
 {
     VLNV vlnv = vlnvEditor_->getVLNV();
     vlnv.setType(VLNV::DESIGNCONFIGURATION);
-    vlnv.setName(vlnv.getName().remove(".comp") + designConfExt_);
+    vlnv.setName(vlnv.getName().remove(".comp") + "."  + qualifierEdit_->text() + designConfExt_);
     return vlnv;
 }
 
@@ -181,8 +198,8 @@ QString NewDesignDialog::getPath() const
 void NewDesignDialog::onContentChanged()
 {
     // Enable/disable the ok button if the contents are valid/invalid.
-    okButton_->setEnabled(!viewNameEdit_->text().isEmpty() && viewNameEdit_->isInputValid() &&
-                          directoryEditor_->isValid() && vlnvEditor_->isValid());
+    okButton_->setEnabled(!qualifierEdit_->text().isEmpty() && !viewNameEdit_->text().isEmpty() &&
+        viewNameEdit_->isInputValid() && directoryEditor_->isValid() && vlnvEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------
@@ -252,11 +269,19 @@ void NewDesignDialog::updateDirectory()
 }
 
 //-----------------------------------------------------------------------------
+// Function: NewDesignDialog::updateViewName()
+//-----------------------------------------------------------------------------
+void NewDesignDialog::updateViewName()
+{
+    viewNameEdit_->setText(NameGenerationPolicy::hierarchicalViewName(qualifierEdit_->text()));
+}
+
+//-----------------------------------------------------------------------------
 // Function: NewDesignDialog::updateVlnvName()
 //-----------------------------------------------------------------------------
 void NewDesignDialog::updateVlnvName()
 {
-    vlnvEditor_->setName(component_->getVlnv().getName().remove(".comp") + "." + getViewName());
+    vlnvEditor_->setName(component_->getVlnv().getName().remove(".comp"));
 }
 
 //-----------------------------------------------------------------------------

@@ -2354,7 +2354,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
 
     VLNV designConfigVLNV = dialog.getDesignConfVLNV();
     QSharedPointer<DesignConfigurationInstantiation> hierarchyInstantiation
-        (new DesignConfigurationInstantiation(designConfigVLNV.getName() + "_" + designConfigVLNV.getVersion()));
+        (new DesignConfigurationInstantiation(NameGenerationPolicy::designConfigurationInstantiationName(dialog.getQualifierName())));
 	hierarchyInstantiation->setDesignConfigurationReference(
 		QSharedPointer<ConfigurableVLNVReference>( new ConfigurableVLNVReference( designConfigVLNV ) ) );
 
