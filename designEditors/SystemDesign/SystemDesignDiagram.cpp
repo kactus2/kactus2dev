@@ -30,8 +30,12 @@
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 
 #include <designEditors/common/DiagramUtil.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
+#include <designEditors/common/Association/Association.h>
+
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
+
 #include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemAddCommands.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.h>
@@ -1249,6 +1253,19 @@ bool SystemDesignDiagram::openComponentActionEnabled() const
     }
 
     return openEnabled;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::selectedItemIsCorrectType()
+//-----------------------------------------------------------------------------
+bool SystemDesignDiagram::selectedItemIsCorrectType() const
+{
+    int type = selectedItems().first()->type();
+
+    return type == SystemColumn::Type || type == SWComponentItem::Type || type == SWPortItem::Type ||
+        type == SWInterfaceItem::Type || type == ComGraphicsConnection::Type ||
+        type == ApiGraphicsConnection::Type || type == GraphicsConnection::Type || type == StickyNote::Type ||
+        type == Association::Type;
 }
 
 //-----------------------------------------------------------------------------

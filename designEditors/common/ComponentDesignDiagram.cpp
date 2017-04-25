@@ -48,6 +48,7 @@ ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPoin
       selectAllAction_(tr("Select All"), this),
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
+      deleteAction_(tr("Delete"), this),
       addAction_(tr("Add to Library"), this),
       openComponentAction_(tr("Open Component"), this),
       openDesignMenu_(tr("Open Design")),
@@ -409,6 +410,7 @@ QMenu* ComponentDesignDiagram::createContextMenu(QPointF const& pos)
         menu->addSeparator();
         menu->addAction(&copyAction_);
         menu->addAction(&pasteAction_);
+        menu->addAction(&deleteAction_);
 
         ComponentItem* compItem = dynamic_cast<ComponentItem*>(item);
         if (compItem)
@@ -454,6 +456,15 @@ void ComponentDesignDiagram::prepareContextMenuActions()
 
     copyAction_.setEnabled(copyActionEnabled());
     pasteAction_.setEnabled(pasteActionEnabled());
+    deleteAction_.setEnabled(deleteActionEnabled());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::deleteActionEnabled()
+//-----------------------------------------------------------------------------
+bool ComponentDesignDiagram::deleteActionEnabled() const
+{
+    return !isProtected() && !selectedItems().isEmpty() && selectedItemIsCorrectType();
 }
 
 //-----------------------------------------------------------------------------
@@ -578,6 +589,10 @@ void ComponentDesignDiagram::setupActions()
 
     getParent()->addAction(&openComponentAction_);
     connect(&openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponentAction()), Qt::UniqueConnection);
+
+    getParent()->addAction(&deleteAction_);
+    deleteAction_.setShortcut(QKeySequence::Delete);
+    connect(&deleteAction_, SIGNAL(triggered()), this, SIGNAL(deleteSelectedItems()), Qt::UniqueConnection);
 
     connect(&openDesignMenu_, SIGNAL(triggered(QAction*)),
         this, SLOT(onOpenDesignAction(QAction*)), Qt::UniqueConnection);

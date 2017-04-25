@@ -42,6 +42,8 @@
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagramResolver.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
+#include <designEditors/common/Association/Association.h>
 
 #include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h>
@@ -995,6 +997,19 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
 bool HWDesignDiagram::openComponentActionEnabled() const
 {
     return singleSelection() && selectedItems().first()->type() == componentType() && !draftSelected();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::itemIsCorrectType()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::selectedItemIsCorrectType() const
+{
+    int type = selectedItems().first()->type();
+
+    return type == componentType() || type == BusInterfaceItem::Type || type == BusPortItem::Type ||
+        type == HWConnection::Type || type == AdHocConnectionItem::Type || type == HWColumn::Type ||
+        type == AdHocInterfaceItem::Type || type == AdHocPortItem::Type || type == StickyNote::Type ||
+        type == Association::Type;
 }
 
 //-----------------------------------------------------------------------------

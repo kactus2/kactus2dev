@@ -321,6 +321,13 @@ protected:
     virtual bool openComponentActionEnabled() const;
 
     /*!
+     *  Check if the selected items are of a type used in the HW design.
+     *
+     *      @return True, if the items are used in HW design, false otherwise.
+     */
+    virtual bool selectedItemIsCorrectType() const;
+
+    /*!
      *  Checks if the given item is a hierarchical component.
      *
      *      @param [in] item   The item to check.

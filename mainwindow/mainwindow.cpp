@@ -964,6 +964,13 @@ void MainWindow::setupMenus()
 	libGroup->widgetForAction(actLibrarySearch_)->installEventFilter(ribbon_);
 	libGroup->widgetForAction(actCheckIntegrity_)->installEventFilter(ribbon_);
 
+    // The "protection" group
+    protectGroup_ = ribbon_->addGroup(tr("Protection"));
+    protectGroup_->addAction(actProtect_);
+    protectGroup_->setVisible(false);
+
+    protectGroup_->widgetForAction(actProtect_)->installEventFilter(ribbon_);
+
 	// The "Edit" group.
 	editGroup_ = ribbon_->addGroup(tr("Edit"));	
     editGroup_->addAction(actRefresh_);
@@ -1063,13 +1070,6 @@ void MainWindow::setupMenus()
 	workspacesGroup->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
 	workspacesGroup->widgetForAction(actWorkspaces_)->installEventFilter(ribbon_);
-
-	//! The Protection group.
-	protectGroup_ = ribbon_->addGroup(tr("Protection"));
-	protectGroup_->addAction(actProtect_);
-	protectGroup_->setVisible(false);
-
-	protectGroup_->widgetForAction(actProtect_)->installEventFilter(ribbon_);
 
 	//! The "System" group.
 	RibbonGroup* sysGroup = ribbon_->addGroup(tr("System"));
