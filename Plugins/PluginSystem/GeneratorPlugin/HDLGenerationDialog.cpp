@@ -14,6 +14,7 @@
 
 #include <common/KactusColors.h>
 #include <QDialogButtonBox>
+#include <QPushButton>
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QCheckBox>
@@ -60,7 +61,9 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     // Add Ok and cancel give the dialog results.
     QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Cancel, 
         Qt::Horizontal);
-    dialogButtons->addButton("Write files", QDialogButtonBox::AcceptRole);
+    QPushButton* writeButton = dialogButtons->addButton("Write files", QDialogButtonBox::AcceptRole);
+    writeButton->setDefault(false);
+    writeButton->setAutoDefault(false);
 
     QGridLayout* grid = new QGridLayout(this);
 
@@ -122,6 +125,11 @@ void HDLGenerationDialog::setPreviewHighlighter(QSyntaxHighlighter* highlighter)
 //-----------------------------------------------------------------------------
 void HDLGenerationDialog::accept()
 {
+    if (fileOutput_->pathEditor_->hasFocus())
+    {
+        return;
+    }
+
 	// Check it is sane.
     QString warning;
     if (!configuration_->validSelections(warning))

@@ -29,6 +29,9 @@ public:
 	//! The destructor.
     ~FileOutputWidget();
 
+    //! Editor for the path of the generated file.
+    QLineEdit* pathEditor_;
+
 signals:
 	
     // Emitted when the selected file is changed.
@@ -73,9 +76,6 @@ private:
 
 	// The "model" for the widget.
     QSharedPointer<OutputControl> model_;
-
-    //! Editor for the path of the generated file.
-    QLineEdit* pathEditor_;
 
     //! Warning is display here, namely for an existing file being overwritten.
     QLabel* generalWarningLabel_;
