@@ -2,7 +2,7 @@
 // File: tst_tst_ComponentPortWriter.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Mikko Teuoh
+// Author: Mikko Teuho
 // Date: 09.09.2015
 //
 // Description:
@@ -36,6 +36,7 @@ private slots:
     void writeWirePortVectors();
     void emptyVectorIsNotWritten();
     void writeWireTypeDefinitions();
+    void emptyWireTypeDefinitionIsNotWritten();
     void writeWireDefaultValue();
 
     void writeTransactionalAllLogicalInitiativesAllowed();
@@ -414,6 +415,62 @@ void tst_ComponentPortWriter::writeWireTypeDefinitions()
         );
 
     PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::OUT));
+
+    QSharedPointer<WireTypeDef> testTypeDefinition (new WireTypeDef("testType", "testView"));
+    testTypeDefinition->setConstrained(true);
+    QStringList typeDefinitions;
+    typeDefinitions.append("testTypeDefinition");
+    testTypeDefinition->setTypeDefinitions(typeDefinitions);
+
+    testPort->getWire()->getWireTypeDefs()->append(testTypeDefinition);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:wireTypeDefs>"
+                    "<ipxact:wireTypeDef>"
+                        "<ipxact:typeName constrained=\"true\">testType</ipxact:typeName>"
+                        "<ipxact:typeDefinition>testTypeDefinition</ipxact:typeDefinition>"
+                        "<ipxact:viewRef>testView</ipxact:viewRef>"
+                    "</ipxact:wireTypeDef>"
+                "</ipxact:wireTypeDefs>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+        );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort);
+    QCOMPARE(output, expectedOutput);
+
+    output.clear();
+    QSharedPointer<WireTypeDef> testWireDefinition = testPort->getWire()->getWireTypeDefs()->first();
+    testWireDefinition->setTypeName(QStringLiteral(""));
+    testWireDefinition->setTypeDefinitions(QStringList());
+    testWireDefinition->setViewRefs(QStringList());
+
+    expectedOutput =
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+            "</ipxact:wire>"
+        "</ipxact:port>";
+
     portWriter.writePort(xmlStreamWriter, testPort);
     QCOMPARE(output, expectedOutput);
 }

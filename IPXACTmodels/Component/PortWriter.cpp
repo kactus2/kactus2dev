@@ -112,21 +112,69 @@ void PortWriter::writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> ve
 void PortWriter::writeWireTypeDefinitions(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const
 {
-    if (typeDefinitions && !typeDefinitions->isEmpty())
+    if (typeDefinitions && !typeDefinitions->isEmpty() && !wireTypeDefinitionsAreEmpty(typeDefinitions))
     {
         writer.writeStartElement(QStringLiteral("ipxact:wireTypeDefs"));
 
         foreach(QSharedPointer<WireTypeDef> singleTypeDefinition, *typeDefinitions)
         {
-            writer.writeStartElement(QStringLiteral("ipxact:wireTypeDef"));
+            if (!singleWireTypeDefintionIsEmpty(singleTypeDefinition))
+            {
+                writer.writeStartElement(QStringLiteral("ipxact:wireTypeDef"));
 
-            writeSingleTypeDefinition(writer, singleTypeDefinition, QStringLiteral("constrained"));
+                writeSingleTypeDefinition(writer, singleTypeDefinition, QStringLiteral("constrained"));
 
-            writer.writeEndElement(); // ipxact:wireTypeDef
+                writer.writeEndElement(); // ipxact:wireTypeDef
+            }
         }
 
         writer.writeEndElement(); // ipxact:wireTypeDefs
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortWriter::wireTypeDefinitionsAreEmpty()
+//-----------------------------------------------------------------------------
+bool PortWriter::wireTypeDefinitionsAreEmpty(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions)
+    const
+{
+    foreach (QSharedPointer<WireTypeDef> singleTypeDefinition, *typeDefinitions)
+    {
+        if (!singleWireTypeDefintionIsEmpty(singleTypeDefinition))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortWriter::singleWireTypeDefintionIsEmpty()
+//-----------------------------------------------------------------------------
+bool PortWriter::singleWireTypeDefintionIsEmpty(QSharedPointer<WireTypeDef> typeDefinition) const
+{
+    foreach (QString singleDefinition, typeDefinition->getTypeDefinitions())
+    {
+        if (!singleDefinition.isEmpty())
+        {
+            return false;
+        }
+    }
+    foreach (QString singleViewReference, typeDefinition->getViewRefs())
+    {
+        if (!singleViewReference.isEmpty())
+        {
+            return false;
+        }
+    }
+
+    if (!typeDefinition->getTypeName().isEmpty())
+    {
+        return false;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -150,12 +198,18 @@ void PortWriter::writeSingleTypeDefinition(QXmlStreamWriter& writer, QSharedPoin
 
     foreach (QString definition, typeDefinition->getTypeDefinitions())
     {
-        writer.writeTextElement(QStringLiteral("ipxact:typeDefinition"), definition);
+        if (!definition.isEmpty())
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:typeDefinition"), definition);
+        }
     }
 
     foreach (QString viewReference, typeDefinition->getViewRefs())
     {
-        writer.writeTextElement(QStringLiteral("ipxact:viewRef"), viewReference);
+        if (!viewReference.isEmpty())
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:viewRef"), viewReference);
+        }
     }
 }
 

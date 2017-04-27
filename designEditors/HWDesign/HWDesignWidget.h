@@ -93,6 +93,11 @@ public slots:
 	void onVhdlGenerate();
     QString findEntityName() const;
 
+    /*!
+     *  Handler for item deletion in the design diagram.
+     */
+    virtual void onDeleteSelectedItems();
+
 protected:
     
     /*!
@@ -107,6 +112,48 @@ private:
     //! No mutants allowed.
     HWDesignWidget(const HWDesignWidget &);
     HWDesignWidget &operator=(const HWDesignWidget &);
+
+    /*!
+     *  Delete the selected component items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedComponentItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected bus interface items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected bus port items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedBusPortItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected HW connection items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedHWConnectionItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected ad hoc connection items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedAdHocConnectionItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected HW column items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedHWColumns(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected ad hoc interface items. Only invalid interfaces can be deleted.

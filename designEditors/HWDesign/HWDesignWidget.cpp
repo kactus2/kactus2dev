@@ -379,242 +379,301 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
     // Handle delete events if the document is not protected.
     if (!isProtected() && event->key() == Qt::Key_Delete)
     {
-        QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
-
-        if (selectedItems.empty())
-        {
-            return;
-        }
-
-        int type = getDiagram()->getCommonItemType(selectedItems);
-        if (type == HWComponentItem::Type)
-        {
-            getDiagram()->clearSelection();
-
-            QSharedPointer<QUndoCommand> deleteCommand(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-			    HWComponentItem* component = static_cast<HWComponentItem*>(selected);
-                getDiagram()->clearSelection();
-            
-                ComponentDeleteCommand* componentDeleteCommand = new ComponentDeleteCommand(
-                    getDiagram(), getDiagram()->getLayout()->findColumnAt(component->scenePos()),
-                    component, deleteCommand.data());
-
-			    connect(componentDeleteCommand, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-				    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-			    connect(componentDeleteCommand, SIGNAL(componentInstantiated(ComponentItem*)),
-				    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-
-                componentDeleteCommand->redo();
-
-                foreach(Association* association, component->getAssociations())
-                {
-                    QUndoCommand* associationDeleteCommand = new AssociationRemoveCommand(association,
-                        getDiagram(), componentDeleteCommand);
-                    associationDeleteCommand->redo();
-                }
-            }
-
-            getEditProvider()->addCommand(deleteCommand);
-        }
-        else if (type == BusInterfaceItem::Type)
-        {
-            // Enumerate all ports that are part of the selected bus interfaces.
-            QStringList ports;
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
-
-                foreach(QSharedPointer<Port> port, diagIf->getPorts())
-                {
-                    if (!ports.contains(port->name()))
-                    {
-                        ports.append(port->name());
-                    }
-                }
-            }
-
-            // Ask confirmation for port deletion from the user if there were ports in any of the bus interfaces.
-            bool removePorts = false;
-
-            if (!ports.isEmpty())
-            {
-                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                   tr("Do you want to delete also the ports that are part of the interfaces?"),
-                                   QMessageBox::Yes | QMessageBox::No, this);
-
-                QStringList textList("Interface ports:");
-
-                foreach(QString port, ports)
-                {
-                    textList.append("* " + port);
-                }
-
-                msgBox.setDetailedText(textList.join("\n"));
-                removePorts = (msgBox.exec() == QMessageBox::Yes);
-            }
-
-            // Delete the interfaces.
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
-
-                InterfaceDeleteCommand* childCmd = new InterfaceDeleteCommand(getDiagram(), diagIf, removePorts, cmd.data());
-                connect(childCmd, SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
-
-                childCmd->redo();
-            }
-
-            getEditProvider()->addCommand(cmd);
-        }
-        else if (type == BusPortItem::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                BusPortItem* port = static_cast<BusPortItem*>(selected);
-            
-                // Ports can be removed only if they are temporary.
-                if (port->isTemporary())
-                {
-                    // Delete the port.
-                    QUndoCommand* childCmd = new PortDeleteCommand(getDiagram(), port, cmd.data());
-                    childCmd->redo();
-                }
-            }
-
-            getEditProvider()->addCommand(cmd);
-        }
-        else if (type == HWConnection::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                // Delete the interconnection.
-                HWConnection* conn = static_cast<HWConnection*>(selected);
-                HWConnectionEndpoint* endpoint1 = static_cast<HWConnectionEndpoint*>(conn->endpoint1());
-                HWConnectionEndpoint* endpoint2 = static_cast<HWConnectionEndpoint*>(conn->endpoint2());
-
-                QUndoCommand* childCmd = new ConnectionDeleteCommand(getDiagram(), conn, cmd.data());
-                childCmd->redo();
-
-                // If the bus ports are invalid, delete them too.
-                if (endpoint1->isInvalid())
-                {
-                    QUndoCommand* childCmd = 0;
-
-                    if (endpoint1->type() == BusPortItem::Type)
-                    {
-                        childCmd = new PortDeleteCommand(getDiagram(), endpoint1, cmd.data());
-                    }
-                    else
-                    {
-                        childCmd = new InterfaceDeleteCommand(getDiagram(), static_cast<BusInterfaceItem*>(endpoint1), false, cmd.data());
-                    }
-
-                    childCmd->redo();
-                }
-
-                if (endpoint2->isInvalid())
-                {
-                    QUndoCommand* childCmd = 0;
-
-                    if (endpoint2->type() == BusPortItem::Type)
-                    {
-                        childCmd = new PortDeleteCommand(getDiagram(), endpoint2, cmd.data());
-                    }
-                    else
-                    {
-                        childCmd = new InterfaceDeleteCommand(getDiagram(), static_cast<BusInterfaceItem*>(endpoint2), false, cmd.data());
-                    }
-
-                    childCmd->redo();
-                }
-            }
-
-            getEditProvider()->addCommand(cmd);
-        }
-        else if (type == AdHocConnectionItem::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                AdHocConnectionItem* conn = static_cast<AdHocConnectionItem*>(selected);
-
-                QUndoCommand* childCmd = new AdHocConnectionDeleteCommand(getDiagram(), conn, cmd.data());
-                childCmd->redo();
-            }
-
-            getEditProvider()->addCommand(cmd);
-        }
-        else if (type == HWColumn::Type)
-        {
-            // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                HWColumn* column = static_cast<HWColumn*>(selected);
-                if (!column->isEmpty())
-                {
-                    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                        tr("The columns are not empty. Do you want to delete the columns and all of their contents?"),
-                        QMessageBox::Yes | QMessageBox::No, this);
-
-                    if (msgBox.exec() == QMessageBox::No)
-                    {
-                        return;
-                    }
-
-                    break;
-                }
-            }
-
-            // Delete the columns.
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                HWColumn* column = static_cast<HWColumn*>(selected);
-                QUndoCommand* columnRemoveCommand = new ColumnDeleteCommand(getDiagram(), 
-                    getDiagram()->getLayout().data(), column, parentCommand.data());
-                columnRemoveCommand->redo();
-            }
-
-            getEditProvider()->addCommand(parentCommand);
-        }
-        else if (type == AdHocInterfaceItem::Type)
-        {
-            deleteSelectedAdhocInterfaces(selectedItems);
-        }
-        else if (type == AdHocPortItem::Type)
-        {
-            deleteSelectedAdHocPorts(selectedItems);
-        }
-        else if (type == StickyNote::Type)
-        {
-            removeSelectedNotes();
-        }
-        else if (type == Association::Type)
-        {
-            removeSelectedAssociations();
-        }        
+        onDeleteSelectedItems();
     }
     else
     {
         TabDocument::keyPressEvent(event);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::onDeleteSelectedItems()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::onDeleteSelectedItems()
+{
+    QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
+
+    if (selectedItems.empty())
+    {
+        return;
+    }
+
+    int type = getDiagram()->getCommonItemType(selectedItems);
+    if (type == HWComponentItem::Type)
+    {
+        deleteSelectedComponentItems(selectedItems);
+    }
+    else if (type == BusInterfaceItem::Type)
+    {
+        deleteSelectedBusInterfaceItems(selectedItems);
+    }
+    else if (type == BusPortItem::Type)
+    {
+        deleteSelectedBusPortItems(selectedItems);
+    }
+    else if (type == HWConnection::Type)
+    {
+        deleteSelectedHWConnectionItems(selectedItems);
+    }
+    else if (type == AdHocConnectionItem::Type)
+    {
+        deleteSelectedAdHocConnectionItems(selectedItems);
+    }
+    else if (type == HWColumn::Type)
+    {
+        deleteSelectedHWColumns(selectedItems);
+    }
+    else if (type == AdHocInterfaceItem::Type)
+    {
+        deleteSelectedAdhocInterfaces(selectedItems);
+    }
+    else if (type == AdHocPortItem::Type)
+    {
+        deleteSelectedAdHocPorts(selectedItems);
+    }
+    else if (type == StickyNote::Type)
+    {
+        removeSelectedNotes();
+    }
+    else if (type == Association::Type)
+    {
+        removeSelectedAssociations();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::deleteSelectedComponentItems()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::deleteSelectedComponentItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+
+    QSharedPointer<QUndoCommand> deleteCommand(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        HWComponentItem* component = static_cast<HWComponentItem*>(selected);
+        getDiagram()->clearSelection();
+
+        ComponentDeleteCommand* componentDeleteCommand = new ComponentDeleteCommand(
+            getDiagram(), getDiagram()->getLayout()->findColumnAt(component->scenePos()),
+            component, deleteCommand.data());
+
+        connect(componentDeleteCommand, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+        connect(componentDeleteCommand, SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+
+        componentDeleteCommand->redo();
+
+        foreach(Association* association, component->getAssociations())
+        {
+            QUndoCommand* associationDeleteCommand = new AssociationRemoveCommand(association,
+                getDiagram(), componentDeleteCommand);
+            associationDeleteCommand->redo();
+        }
+    }
+
+    getEditProvider()->addCommand(deleteCommand);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::deleteSelectedBusInterfaceItems()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selectedItems)
+{
+    // Enumerate all ports that are part of the selected bus interfaces.
+    QStringList ports;
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
+
+        foreach(QSharedPointer<Port> port, diagIf->getPorts())
+        {
+            if (!ports.contains(port->name()))
+            {
+                ports.append(port->name());
+            }
+        }
+    }
+
+    // Ask confirmation for port deletion from the user if there were ports in any of the bus interfaces.
+    bool removePorts = false;
+
+    if (!ports.isEmpty())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("Do you want to delete also the ports that are part of the interfaces?"),
+            QMessageBox::Yes | QMessageBox::No, this);
+
+        QStringList textList("Interface ports:");
+
+        foreach(QString port, ports)
+        {
+            textList.append("* " + port);
+        }
+
+        msgBox.setDetailedText(textList.join("\n"));
+        removePorts = (msgBox.exec() == QMessageBox::Yes);
+    }
+
+    // Delete the interfaces.
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
+
+        InterfaceDeleteCommand* childCmd =
+            new InterfaceDeleteCommand(getDiagram(), diagIf, removePorts, cmd.data());
+        connect(childCmd, SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
+
+        childCmd->redo();
+    }
+
+    getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::deleteSelectedBusPortItems()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::deleteSelectedBusPortItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        BusPortItem* port = static_cast<BusPortItem*>(selected);
+
+        // Ports can be removed only if they are temporary.
+        if (port->isTemporary())
+        {
+            // Delete the port.
+            QUndoCommand* childCmd = new PortDeleteCommand(getDiagram(), port, cmd.data());
+            childCmd->redo();
+        }
+    }
+
+    getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::deleteSelectedHWConnectionItems()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::deleteSelectedHWConnectionItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        // Delete the interconnection.
+        HWConnection* conn = static_cast<HWConnection*>(selected);
+        HWConnectionEndpoint* endpoint1 = static_cast<HWConnectionEndpoint*>(conn->endpoint1());
+        HWConnectionEndpoint* endpoint2 = static_cast<HWConnectionEndpoint*>(conn->endpoint2());
+
+        QUndoCommand* childCmd = new ConnectionDeleteCommand(getDiagram(), conn, cmd.data());
+        childCmd->redo();
+
+        // If the bus ports are invalid, delete them too.
+        if (endpoint1->isInvalid())
+        {
+            QUndoCommand* childCmd = 0;
+
+            if (endpoint1->type() == BusPortItem::Type)
+            {
+                childCmd = new PortDeleteCommand(getDiagram(), endpoint1, cmd.data());
+            }
+            else
+            {
+                childCmd = new InterfaceDeleteCommand(
+                    getDiagram(), static_cast<BusInterfaceItem*>(endpoint1), false, cmd.data());
+            }
+
+            childCmd->redo();
+        }
+
+        if (endpoint2->isInvalid())
+        {
+            QUndoCommand* childCmd = 0;
+
+            if (endpoint2->type() == BusPortItem::Type)
+            {
+                childCmd = new PortDeleteCommand(getDiagram(), endpoint2, cmd.data());
+            }
+            else
+            {
+                childCmd = new InterfaceDeleteCommand(
+                    getDiagram(), static_cast<BusInterfaceItem*>(endpoint2), false, cmd.data());
+            }
+
+            childCmd->redo();
+        }
+    }
+
+    getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::deleteSelectedAdHocConnectionItems()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::deleteSelectedAdHocConnectionItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        AdHocConnectionItem* conn = static_cast<AdHocConnectionItem*>(selected);
+
+        QUndoCommand* childCmd = new AdHocConnectionDeleteCommand(getDiagram(), conn, cmd.data());
+        childCmd->redo();
+    }
+
+    getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::deleteSelectedHWColumns()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::deleteSelectedHWColumns(QList<QGraphicsItem*> selectedItems)
+{
+    // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        HWColumn* column = static_cast<HWColumn*>(selected);
+        if (!column->isEmpty())
+        {
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                tr("The columns are not empty. Do you want to delete the columns and all of their contents?"),
+                QMessageBox::Yes | QMessageBox::No, this);
+
+            if (msgBox.exec() == QMessageBox::No)
+            {
+                return;
+            }
+
+            break;
+        }
+    }
+
+    // Delete the columns.
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        HWColumn* column = static_cast<HWColumn*>(selected);
+        QUndoCommand* columnRemoveCommand = new ColumnDeleteCommand(getDiagram(), 
+            getDiagram()->getLayout().data(), column, parentCommand.data());
+        columnRemoveCommand->redo();
+    }
+
+    getEditProvider()->addCommand(parentCommand);
 }
 
 //-----------------------------------------------------------------------------

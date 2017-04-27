@@ -123,6 +123,8 @@ void DesignWidget::setDiagram(DesignDiagram* diagram)
     connect(diagram_, SIGNAL(helpUrlRequested(QString const&)),
         this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
+    connect(diagram_, SIGNAL(deleteSelectedItems()), this, SLOT(onDeleteSelectedItems()), Qt::UniqueConnection);
+
     view_->setScene(diagram_);
     centerViewTo(QPointF(0, 0));
 }

@@ -185,6 +185,11 @@ public slots:
     //! Called when the vertical scrollbar is scrolled.
     void onVerticalScroll(int y);
 
+    /*!
+     *  Delete the selected items.
+     */
+    virtual void onDeleteSelectedItems() = 0;
+
 signals:
 
     //! Emitted when component with given vlnv should be opened in editor.

@@ -65,6 +65,11 @@ public slots:
     //! Saves the design as new object.
     virtual bool saveAs();
 
+    /*!
+     *  Handler for item deletion in the design diagram.
+     */
+    virtual void onDeleteSelectedItems();
+
 protected:
     virtual void keyPressEvent(QKeyEvent* event);
     virtual bool setDesign(QSharedPointer<Component> comp, const QString& viewName);
@@ -73,6 +78,55 @@ private:
     // Disable copying.
     SystemDesignWidget(SystemDesignWidget const& rhs);
     SystemDesignWidget& operator=(SystemDesignWidget const& rhs);
+
+    /*!
+     *  Delete the selected system columns items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedSystemColumns(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected SW component items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedSWComponentItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected SW port items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedSWPortItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected SW interface items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedSWInterfaceItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected COM connection items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedComConnectionItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected API connection items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedApiConnectionItems(QList<QGraphicsItem*> selectedItems);
+
+    /*!
+     *  Delete the selected graphics connection items.
+     *
+     *      @param [in] selectedItems   The selected graphics items.
+     */
+    void deleteSelectedGraphicsConnectionItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the connected end point.

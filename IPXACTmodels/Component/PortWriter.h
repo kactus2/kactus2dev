@@ -98,6 +98,24 @@ private:
         QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const;
 
     /*!
+     *  Check if the wire type definitions are empty.
+     *
+     *      @param [in] typeDefinitions     A list of the wire type definitions to be written.
+     *
+     *      @return True, if the type definitions are empty, false otherwise.
+     */
+    bool wireTypeDefinitionsAreEmpty(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const;
+
+    /*!
+     *  Check a single wire type definition is empty.
+     *
+     *      @param [in] typeDefinition  The selected wire type definition.
+     *
+     *      @return True, if the type definition is empty, false otherwise.
+     */
+    bool singleWireTypeDefintionIsEmpty(QSharedPointer<WireTypeDef> typeDefinition) const;
+
+    /*!
      *  Write a single type definition.
      *
      *      @param [in] writer          Used XML writer.

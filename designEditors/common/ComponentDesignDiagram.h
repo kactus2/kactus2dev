@@ -60,6 +60,13 @@ public:
      */
     bool singleSelection() const;
 
+signals:
+
+    /*!
+     *  Delete the selected graphics items.
+     */
+    void deleteSelectedItems();
+
 public slots:
 
     //! Called when the selection changes in the diagram.
@@ -153,6 +160,20 @@ protected:
      *      @return True, if action should be enabled, otherwise false.
      */
     virtual bool openComponentActionEnabled() const = 0;
+
+    /*!
+     *  Check if the delete action can be enabled.
+     *
+     *      @return True, if the delete action should be enabled, otherwise false.
+     */
+    virtual bool deleteActionEnabled() const;
+
+    /*!
+     *  Check if the selected items are of the correct type for the design diagram.
+     *
+     *      @return True, if the selected items are used in the design, false otherwise.
+     */
+    virtual bool selectedItemIsCorrectType() const = 0;
 
     /*!
      *  Checks if open design action should be enabled.
@@ -529,6 +550,9 @@ private:
 
     //! Context menu action for opening a component.
     QAction openComponentAction_;
+
+    //! Context menu action for deleting an item.
+    QAction deleteAction_;
 
     //! Context menu sub-menu for opening a component design.
     QMenu openDesignMenu_;

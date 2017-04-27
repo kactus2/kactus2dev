@@ -239,207 +239,271 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
     if (event->key() == Qt::Key_Delete)
     {
-        if (getDiagram()->selectedItems().empty())
-        {
-            return;
-        }
-
-        QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
-        int type = getDiagram()->getCommonItemType(selectedItems);
-
-        if (type == SystemColumn::Type)
-        {
-            // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                SystemColumn* column = static_cast<SystemColumn*>(selected);
-
-                if (!column->isEmpty())
-                {
-                    // Column cannot be deleted if it contains HW mapping items.
-                    foreach (QGraphicsItem* childItem, column->getItems())
-                    {
-                        if (childItem->type() == HWMappingItem::Type)
-                        {
-                            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                               tr("The columns cannot be removed because they contain underlying HW. "
-                                                  "Move underlying HW components to another column before deletion."),
-                                               QMessageBox::Ok, this);
-                            msgBox.exec();
-                            return;
-                        }
-                    }
-
-                    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                       tr("The columns are not empty. Do you want to "
-                                          "delete the columns and all of their contents?"),
-                                       QMessageBox::Yes | QMessageBox::No, this);
-
-                    if (msgBox.exec() == QMessageBox::No)
-                    {
-                        return;
-                    }
-
-                    break;
-                }
-            }
-
-            // Delete the columns.
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                SystemColumn* column = static_cast<SystemColumn*>(selected);
-                QUndoCommand* childCmd = new SystemColumnDeleteCommand(
-                    getDiagram()->getLayout().data(), column, getDiagram()->getDesign(), cmd.data());
-                childCmd->redo();
-            }
-
-            getEditProvider()->addCommand(cmd);
-        }
-        else if (type == SWComponentItem::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                SWComponentItem* component = static_cast<SWComponentItem*>(selected);
-
-                // Only non-imported SW component instances can be deleted.
-                if (!component->isImported())
-                {
-                    QSharedPointer<Design> containingDesign = getDiagram()->getDesign();
-
-                    SystemComponentDeleteCommand* childCmd = new SystemComponentDeleteCommand(component,
-                        getDiagram()->getDesign(), cmd.data());
-
-                    connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-                    connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
-                            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-
-                    childCmd->redo();
-
-                    foreach(Association* association, component->getAssociations())
-                    {
-                        QUndoCommand* associationRemoveCmd =
-                            new AssociationRemoveCommand(association, getDiagram(), childCmd);
-                        associationRemoveCmd->redo();
-                    }
-                }
-            }
-
-            getEditProvider()->addCommand(cmd);
-        }
-        else if (type == SWPortItem::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                SWPortItem* port = static_cast<SWPortItem*>(selected);
-
-                // Ports can be removed only if they are temporary.
-                if (port->isTemporary())
-                {
-                    // Delete the port.
-                    QUndoCommand* childCmd = new SWPortDeleteCommand(port, getDiagram()->getDesign(), cmd.data());
-                    childCmd->redo();
-                }
-            }
-
-            getEditProvider()->addCommand(cmd);
-        }
-        else if (type == SWInterfaceItem::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
-
-                QUndoCommand* childCmd = new SWInterfaceDeleteCommand(
-                    interface, getDiagram()->getDesign(), getDiagram()->getEditedComponent(), cmd.data());
-                childCmd->redo();
-            }
-
-            getEditProvider()->addCommand(cmd);
-        }
-        else if (type == ComGraphicsConnection::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                ComGraphicsConnection* comConnection = static_cast<ComGraphicsConnection*>(selected);
-                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint1());
-                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint2());
-
-                QUndoCommand* childCommand =
-                    new ComConnectionDeleteCommand(comConnection, getDiagram()->getDesign(), undoCommand.data());
-                childCommand->redo();
-
-                deleteConnectedEndPoint(endPoint1, undoCommand);
-                deleteConnectedEndPoint(endPoint2, undoCommand);
-            }
-
-            getEditProvider()->addCommand(undoCommand);
-        }
-        else if (type == ApiGraphicsConnection::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                ApiGraphicsConnection* apiConnection = static_cast<ApiGraphicsConnection*>(selected);
-                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint1());
-                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint2());
-
-                QUndoCommand* childCommand =
-                    new ApiConnectionDeleteCommand(apiConnection, getDiagram()->getDesign(), undoCommand.data());
-                childCommand->redo();
-
-                deleteConnectedEndPoint(endPoint1, undoCommand);
-                deleteConnectedEndPoint(endPoint2, undoCommand);
-            }
-
-            getEditProvider()->addCommand(undoCommand);
-        }
-        else if (type == GraphicsConnection::Type)
-        {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                GraphicsConnection* connection = static_cast<GraphicsConnection*>(selected);
-                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(connection->endpoint1());
-                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(connection->endpoint2());
-
-                QUndoCommand* childCommand = new QUndoCommand(undoCommand.data());
-                childCommand->redo();
-
-                deleteConnectedEndPoint(endPoint1, undoCommand);
-                deleteConnectedEndPoint(endPoint2, undoCommand);
-            }
-
-            getEditProvider()->addCommand(undoCommand);
-        }
-        else if (type == StickyNote::Type)
-        {
-            removeSelectedNotes();
-        }
-        else if (type == Association::Type)
-        {
-            removeSelectedAssociations();
-        }   
+        onDeleteSelectedItems();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::onDeleteSelectedItems()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::onDeleteSelectedItems()
+{
+    if (getDiagram()->selectedItems().empty())
+    {
+        return;
+    }
+
+    QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
+    int type = getDiagram()->getCommonItemType(selectedItems);
+
+    if (type == SystemColumn::Type)
+    {
+        deleteSelectedSystemColumns(selectedItems);
+    }
+    else if (type == SWComponentItem::Type)
+    {
+        deleteSelectedSWComponentItems(selectedItems);
+    }
+    else if (type == SWPortItem::Type)
+    {
+        deleteSelectedSWPortItems(selectedItems);
+    }
+    else if (type == SWInterfaceItem::Type)
+    {
+        deleteSelectedSWInterfaceItems(selectedItems);
+    }
+    else if (type == ComGraphicsConnection::Type)
+    {
+        deleteSelectedComConnectionItems(selectedItems);
+    }
+    else if (type == ApiGraphicsConnection::Type)
+    {
+        deleteSelectedApiConnectionItems(selectedItems);
+    }
+    else if (type == GraphicsConnection::Type)
+    {
+        deleteSelectedGraphicsConnectionItems(selectedItems);
+    }
+    else if (type == StickyNote::Type)
+    {
+        removeSelectedNotes();
+    }
+    else if (type == Association::Type)
+    {
+        removeSelectedAssociations();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteSelectedSystemColumns()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteSelectedSystemColumns(QList<QGraphicsItem*> selectedItems)
+{
+    // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        SystemColumn* column = static_cast<SystemColumn*>(selected);
+
+        if (!column->isEmpty())
+        {
+            // Column cannot be deleted if it contains HW mapping items.
+            foreach (QGraphicsItem* childItem, column->getItems())
+            {
+                if (childItem->type() == HWMappingItem::Type)
+                {
+                    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                        tr("The columns cannot be removed because they contain underlying HW. "
+                        "Move underlying HW components to another column before deletion."),
+                        QMessageBox::Ok, this);
+                    msgBox.exec();
+                    return;
+                }
+            }
+
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                tr("The columns are not empty. Do you want to "
+                "delete the columns and all of their contents?"),
+                QMessageBox::Yes | QMessageBox::No, this);
+
+            if (msgBox.exec() == QMessageBox::No)
+            {
+                return;
+            }
+
+            break;
+        }
+    }
+
+    // Delete the columns.
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        SystemColumn* column = static_cast<SystemColumn*>(selected);
+        QUndoCommand* childCmd = new SystemColumnDeleteCommand(
+            getDiagram()->getLayout().data(), column, getDiagram()->getDesign(), cmd.data());
+        childCmd->redo();
+    }
+
+    getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteSelectedSWComponentItems()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteSelectedSWComponentItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        SWComponentItem* component = static_cast<SWComponentItem*>(selected);
+
+        // Only non-imported SW component instances can be deleted.
+        if (!component->isImported())
+        {
+            QSharedPointer<Design> containingDesign = getDiagram()->getDesign();
+
+            SystemComponentDeleteCommand* childCmd = new SystemComponentDeleteCommand(component,
+                getDiagram()->getDesign(), cmd.data());
+
+            connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+            connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+
+            childCmd->redo();
+
+            foreach(Association* association, component->getAssociations())
+            {
+                QUndoCommand* associationRemoveCmd =
+                    new AssociationRemoveCommand(association, getDiagram(), childCmd);
+                associationRemoveCmd->redo();
+            }
+        }
+    }
+
+    getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteSelectedSWPortItems()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteSelectedSWPortItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        SWPortItem* port = static_cast<SWPortItem*>(selected);
+
+        // Ports can be removed only if they are temporary.
+        if (port->isTemporary())
+        {
+            // Delete the port.
+            QUndoCommand* childCmd = new SWPortDeleteCommand(port, getDiagram()->getDesign(), cmd.data());
+            childCmd->redo();
+        }
+    }
+
+    getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteSelectedSWInterfaceItems()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteSelectedSWInterfaceItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
+
+        QUndoCommand* childCmd = new SWInterfaceDeleteCommand(
+            interface, getDiagram()->getDesign(), getDiagram()->getEditedComponent(), cmd.data());
+        childCmd->redo();
+    }
+
+    getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteSelectedComConnectionItems()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteSelectedComConnectionItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        ComGraphicsConnection* comConnection = static_cast<ComGraphicsConnection*>(selected);
+        SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint1());
+        SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint2());
+
+        QUndoCommand* childCommand =
+            new ComConnectionDeleteCommand(comConnection, getDiagram()->getDesign(), undoCommand.data());
+        childCommand->redo();
+
+        deleteConnectedEndPoint(endPoint1, undoCommand);
+        deleteConnectedEndPoint(endPoint2, undoCommand);
+    }
+
+    getEditProvider()->addCommand(undoCommand);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteSelectedApiConnectionItems()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteSelectedApiConnectionItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        ApiGraphicsConnection* apiConnection = static_cast<ApiGraphicsConnection*>(selected);
+        SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint1());
+        SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint2());
+
+        QUndoCommand* childCommand =
+            new ApiConnectionDeleteCommand(apiConnection, getDiagram()->getDesign(), undoCommand.data());
+        childCommand->redo();
+
+        deleteConnectedEndPoint(endPoint1, undoCommand);
+        deleteConnectedEndPoint(endPoint2, undoCommand);
+    }
+
+    getEditProvider()->addCommand(undoCommand);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteSelectedGraphicsConnectionItems()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteSelectedGraphicsConnectionItems(QList<QGraphicsItem*> selectedItems)
+{
+    getDiagram()->clearSelection();
+    QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        GraphicsConnection* connection = static_cast<GraphicsConnection*>(selected);
+        SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(connection->endpoint1());
+        SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(connection->endpoint2());
+
+        QUndoCommand* childCommand = new QUndoCommand(undoCommand.data());
+        childCommand->redo();
+
+        deleteConnectedEndPoint(endPoint1, undoCommand);
+        deleteConnectedEndPoint(endPoint2, undoCommand);
+    }
+
+    getEditProvider()->addCommand(undoCommand);
 }
 
 //-----------------------------------------------------------------------------
