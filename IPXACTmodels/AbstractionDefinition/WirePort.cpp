@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: WirePort.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 11.08.2015
 //
@@ -18,8 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: WirePort::WirePort()
 //-----------------------------------------------------------------------------
-WirePort::WirePort(): 
-systemGroupName_(),
+WirePort::WirePort(General::InterfaceMode mode): 
+    mode_(mode),
+    systemGroupName_(),
     presence_(PresenceTypes::UNKNOWN), 
     width_(),
     direction_(DirectionTypes::DIRECTION_INVALID),
@@ -37,7 +38,8 @@ systemGroupName_(),
 // Function: WirePort::WirePort()
 //-----------------------------------------------------------------------------
 WirePort::WirePort(WirePort const& other): 
-systemGroupName_(other.systemGroupName_),
+    mode_(other.mode_),
+    systemGroupName_(other.systemGroupName_),
     presence_(other.presence_),
     width_(other.width_),
     direction_(other.direction_),
@@ -87,6 +89,22 @@ systemGroupName_(other.systemGroupName_),
 WirePort::~WirePort()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: WirePort::setMode()
+//-----------------------------------------------------------------------------
+void WirePort::setMode(General::InterfaceMode newMode)
+{
+    mode_ = newMode;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WirePort::getMode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode WirePort::getMode() const
+{
+    return mode_;
 }
 
 //-----------------------------------------------------------------------------

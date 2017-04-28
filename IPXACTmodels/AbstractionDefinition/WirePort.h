@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: WirePort.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 11.08.2015
 //
@@ -16,6 +16,7 @@
 #include <QSharedPointer>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
@@ -31,13 +32,23 @@ class IPXACTMODELS_EXPORT WirePort
 public:
 
 	//! The constructor.
-	WirePort();
+	WirePort(General::InterfaceMode mode);
 
     //! Copy constructor.
     WirePort(WirePort const& other);
 
 	//! The destructor.
 	~WirePort();
+    
+    /*!
+     *  Sets the mode of the port
+     */
+    void setMode(General::InterfaceMode newMode);
+    
+    /*!
+     *  Gets the mode of the port
+     */
+    General::InterfaceMode getMode() const;
     
     /*!
      *  Sets the group name for system mode.
@@ -187,6 +198,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The mode of this wire port.
+    General::InterfaceMode mode_;
 
     //! System group name for system interfaces.
     QString systemGroupName_;

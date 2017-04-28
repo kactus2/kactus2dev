@@ -351,10 +351,10 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardBusDefinitionEditorPage::creat
 
     if (busIf_->getInterfaceMode() == General::MASTER || busIf_->getInterfaceMode() == General::MIRROREDMASTER)
     {
-        QSharedPointer<WirePort> masterPort(new WirePort());
+        QSharedPointer<WirePort> masterPort(new WirePort(General::MASTER));
         masterPort->setDirection(portDirection);
 
-        QSharedPointer<WirePort> slavePort(new WirePort());
+        QSharedPointer<WirePort> slavePort(new WirePort(General::SLAVE));
         slavePort->setDirection(DirectionTypes::convert2Mirrored(portDirection));
 
         absPort->getWire()->setMasterPort(masterPort);
@@ -368,10 +368,10 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardBusDefinitionEditorPage::creat
     } 
     else if (busIf_->getInterfaceMode() == General::SLAVE || busIf_->getInterfaceMode() == General::MIRROREDSLAVE)
     {
-        QSharedPointer<WirePort> slavePort(new WirePort());
+        QSharedPointer<WirePort> slavePort(new WirePort(General::SLAVE));
         slavePort->setDirection(portDirection);
 
-        QSharedPointer<WirePort> masterPort(new WirePort());
+        QSharedPointer<WirePort> masterPort(new WirePort(General::MASTER));
         masterPort->setDirection(DirectionTypes::convert2Mirrored(portDirection));
 
         absPort->getWire()->setSlavePort(slavePort);
@@ -386,7 +386,7 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardBusDefinitionEditorPage::creat
     else //if(busIf_->getInterfaceMode() == General::SYSTEM || 
          //busIf_->getInterfaceMode() == General::MIRROREDSYSTEM)
     {
-        QSharedPointer<WirePort> systemPort(new WirePort());
+        QSharedPointer<WirePort> systemPort(new WirePort(General::SYSTEM));
         systemPort->setDirection(portDirection);
 
         absPort->getWire()->addSystemPort(systemPort);

@@ -119,7 +119,7 @@ void WireAbstractionReader::parseSystems(QDomNode const& wireNode,
     {
         QDomNode systemNode = systemNodes.at(i);
 
-        QSharedPointer<WirePort> system = parseWirePort(systemNode);
+        QSharedPointer<WirePort> system = parseWirePort(systemNode, General::SYSTEM);
         system->setSystemGroup(systemNode.firstChildElement(QStringLiteral("ipxact:group")).firstChild().nodeValue());
         wire->addSystemPort(system);
     }
@@ -128,9 +128,9 @@ void WireAbstractionReader::parseSystems(QDomNode const& wireNode,
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::parseWirePort()
 //-----------------------------------------------------------------------------
-QSharedPointer<WirePort> WireAbstractionReader::parseWirePort(QDomNode const& wirePortNode) const
+QSharedPointer<WirePort> WireAbstractionReader::parseWirePort(QDomNode const& wirePortNode, General::InterfaceMode mode) const
 {
-    QSharedPointer<WirePort> wirePort(new WirePort());
+    QSharedPointer<WirePort> wirePort(new WirePort(mode));
 
     QDomNode presenceNode = wirePortNode.firstChildElement(QStringLiteral("ipxact:presence"));
     wirePort->setPresence(PresenceTypes::str2Presence(presenceNode.firstChild().nodeValue(),
@@ -295,7 +295,7 @@ void WireAbstractionReader::parseMaster(QDomNode const& wireNode,
 
     if (!masterNode.isNull())
     {
-        QSharedPointer<WirePort> master = parseWirePort(masterNode);
+        QSharedPointer<WirePort> master = parseWirePort(masterNode, General::MASTER);
         wire->setMasterPort(master);
     }
 }
@@ -309,7 +309,7 @@ void WireAbstractionReader::parseSlave(QDomNode const& wireNode, QSharedPointer<
 
     if (!slaveNode.isNull())
     {
-        QSharedPointer<WirePort> slave = parseWirePort(slaveNode);
+        QSharedPointer<WirePort> slave = parseWirePort(slaveNode, General::SLAVE);
         wire->setSlavePort(slave);
     }
 }

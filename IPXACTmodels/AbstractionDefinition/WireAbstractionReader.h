@@ -16,6 +16,8 @@
 #include <QObject>
 #include <QSharedPointer>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 class WireAbstraction;
 class WirePort;
 class TimingConstraint;
@@ -76,7 +78,7 @@ private:
      *
      *      @return The created wirePort.
      */
-    QSharedPointer<WirePort> parseWirePort(QDomNode const& wirePortNode) const;
+    QSharedPointer<WirePort> parseWirePort(QDomNode const& wirePortNode, General::InterfaceMode mode) const;
 
     /*!
      *  Reads the constraints for a wirePort from XML to a wire.

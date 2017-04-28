@@ -125,12 +125,8 @@ QSharedPointer<PortMap> PortMapTreeModel::getIndexedPortMap(QModelIndex const& p
 {
     QSharedPointer<PortMap> indexedPortMap;
 
-    QString portName = parentIndex.sibling(row, PortMapsColumns::LOGICAL_PORT).data().toString();
-
     for (int portMappingIndex = 0; portMappingIndex < portMappings_.size(); ++portMappingIndex)
     {
-        QString portMappingLogicalPortName = portMappings_.at(portMappingIndex).logicalPort_->name();
-
         if (portMappings_[portMappingIndex].logicalPort_.data() == parentIndex.internalPointer())
         {
             if (row < portMappings_[portMappingIndex].portMaps_.size())

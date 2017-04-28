@@ -189,6 +189,23 @@ public:
      */
     bool hasMode(General::InterfaceMode mode, QString const& systemGroup) const;
 
+    /*!
+     *  Returns the wire port of selected interface mode with selected system group.
+     *
+     *      @param [in] mode            The selected interface mode.
+     *      @param [in] systemGroup     The selected interface system group.
+     *
+     *      @return The mode if it exists, else null.
+     */
+    QSharedPointer<WirePort> getWirePort(General::InterfaceMode mode, QString const& systemGroup) const;
+
+    void removeWirePort(QSharedPointer<WirePort> toRemove);
+        
+    /*!
+     *  Gets the number of wire ports in the wire abstraction.
+     */
+    int getWireCount() const;
+
 private:
 
     //! The qualifier describing the information the wire carries.

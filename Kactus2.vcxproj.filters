@@ -3796,12 +3796,6 @@
     <ClCompile Include="GeneratedFiles\moc_busportsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\absdefgroup.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -3812,12 +3806,6 @@
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\busportsdelegate.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\busportsmodel.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\busportsview.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
@@ -4233,6 +4221,18 @@
     </ClCompile>
     <ClCompile Include="common\NameGenerationPolicy.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbsDefTreeView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbsDefTreeModel.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbsDefTreeView.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbsDefTreeModel.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5628,12 +5628,6 @@
     <CustomBuild Include="editors\BusDefinitionEditor\busportsdelegate.h">
       <Filter>Header Files\editors\BusDefintionEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\busportsmodel.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\busportsview.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
@@ -5825,6 +5819,12 @@
     </CustomBuild>
     <CustomBuild Include="library\VLNVDialer\vlnvdialer.h">
       <Filter>Header Files\library\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\AbsDefTreeView.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\AbsDefTreeModel.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
