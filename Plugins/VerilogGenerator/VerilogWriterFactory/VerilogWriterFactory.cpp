@@ -112,6 +112,14 @@ QString VerilogWriterFactory::getLanguage() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogWriterFactory::getSaveToFileset()
+//-----------------------------------------------------------------------------
+bool VerilogWriterFactory::getSaveToFileset() const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::getGroupIdentifier()
 //-----------------------------------------------------------------------------
 QString VerilogWriterFactory::getGroupIdentifier() const

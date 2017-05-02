@@ -209,5 +209,4 @@ void HDLGenerationDialog::onOutputPathChanged()
 {
     configuration_->parseDocuments();
     fileOutput_->onOutputFilesChanged();
-    viewSelection_->onFileSetStateChanged(configuration_->isUnder());
 }

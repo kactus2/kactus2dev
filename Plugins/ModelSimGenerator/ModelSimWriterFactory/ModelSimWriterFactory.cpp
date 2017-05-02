@@ -101,6 +101,14 @@ QString ModelSimWriterFactory::getLanguage() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModelSimWriterFactory::getSaveToFileset()
+//-----------------------------------------------------------------------------
+bool ModelSimWriterFactory::getSaveToFileset() const
+{
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModelSimWriterFactory::getGroupIdentifier()
 //-----------------------------------------------------------------------------
 QString ModelSimWriterFactory::getGroupIdentifier() const

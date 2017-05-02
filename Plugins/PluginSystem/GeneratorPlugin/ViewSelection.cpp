@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ViewSelection.h"
+#include "GenerationControl.h"
 
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
@@ -19,13 +20,13 @@
 // Function: ViewSelection::ViewSelection()
 //-----------------------------------------------------------------------------
 ViewSelection::ViewSelection(QString const& targetLanguage, 
-	QString const& targetGroup, 
-	QString const& defaultViewName, 
-	QString const& defaultFileSetName,
+    bool saveToFileset, 
+    QString const& targetGroup, 
+	GenerationSettings* settings,
 	QSharedPointer<QList<QSharedPointer<View> > > views, 
 	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) :
-	targetLanguage_(targetLanguage), view_(), saveToFileset_(true)
+	targetLanguage_(targetLanguage), view_(), saveToFileset_(saveToFileset)
 {
 	// Track the views by name.
 	foreach (QSharedPointer<View> currentView, *views)
@@ -46,7 +47,7 @@ ViewSelection::ViewSelection(QString const& targetLanguage,
 	}
 
     // Try to find the default view from the mapping.
-    view_ = views_.value(defaultViewName);
+    view_ = views_.value(settings->lastViewName_);
 
     if (!view_)
     {
@@ -78,7 +79,7 @@ ViewSelection::ViewSelection(QString const& targetLanguage,
     }
 
     // Also try find a default file set.
-    fileSet_ = fileSets_.value(defaultFileSetName);
+    fileSet_ = fileSets_.value(settings->lastFileSetName_);
 
     // If instantiation exists and it has file set references, it may affect the choice.
     if (instantiation_ && instantiation_->getFileSetReferences()->size() > 0)

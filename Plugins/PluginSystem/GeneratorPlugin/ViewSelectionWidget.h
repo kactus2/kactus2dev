@@ -36,10 +36,8 @@ signals:
      */
     void viewChanged() const;
 
-public slots:
-    void onFileSetStateChanged(bool on);
-
 private slots:
+    void onFileSetStateChanged(bool on);
 
 	void onViewChanged(QString const& selectedViewName);
 
