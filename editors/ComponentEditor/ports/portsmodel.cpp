@@ -162,34 +162,6 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
             return KactusColors::REGULAR_FIELD;
         }
     }
-    else if (role == Qt::DecorationRole)
-    {
-        if (index.column() == PortColumns::DIRECTION)
-        {
-            DirectionTypes::Direction direction = port->getDirection();
-
-            if(direction == DirectionTypes::IN)
-            {
-                return QIcon(":icons/common/graphics/input.png");
-            }
-            else if (direction == DirectionTypes::OUT)
-            {
-                return QIcon(":icons/common/graphics/output.png");
-            }
-            else if (direction == DirectionTypes::INOUT)
-            {
-                return QIcon(":icons/common/graphics/inout.png");
-            }
-            else if (direction == DirectionTypes::DIRECTION_PHANTOM)
-            {
-                return QIcon(":icons/common/graphics/phantom.png");
-            }
-            else
-            {
-                return QIcon(":icons/common/graphics/cross.png");
-            }
-        }
-    }
     else if (Qt::CheckStateRole == role)
     {
         if (index.column() == PortColumns::ADHOC_VISIBILITY)
