@@ -10,23 +10,20 @@
 //-----------------------------------------------------------------------------
 
 #include "AdHocBoundsModel.h"
-
 #include "AdHocBoundColumns.h"
 
-#include <designEditors/common/DesignDiagram.h>
-
-#include <designEditors/HWDesign/AdHocConnectionItem.h>
-#include <designEditors/HWDesign/HWConnectionEndpoint.h>
-#include <designEditors/HWDesign/HWChangeCommands.h>
+#include <IPXACTmodels/common/PartSelect.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Design/AdHocConnection.h>
+#include <IPXACTmodels/Design/PortReference.h>
 
 #include <common/IEditProvider.h>
 
-#include <IPXACTmodels/common/PartSelect.h>
-
-#include <IPXACTmodels/Component/Port.h>
-
-#include <IPXACTmodels/Design/AdHocConnection.h>
-#include <IPXACTmodels/Design/PortReference.h>
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/HWDesign/AdHocConnectionItem.h>
+#include <designEditors/HWDesign/HWConnectionEndpoint.h>
+#include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::AdHocBoundsModel()
@@ -200,30 +197,35 @@ bool AdHocBoundsModel::setData(QModelIndex const& index, QVariant const& value, 
     {
         QSharedPointer<PortReference> port = getEndpoint(index.row());
 
+        QString newLeftValue;
+        QString newRightValue;
+
         if (index.column() == AdHocBoundColumns::LEFT_BOUND)
         {
-            QSharedPointer<QUndoCommand> cmd(new AdHocBoundsChangeCommand(port, false, value.toString()));
-            editProvider_->addCommand(cmd);
-            cmd->redo();
+            newLeftValue = value.toString();
 
-            emit dataChanged(index, index);
-            return true;
+            QModelIndex rightSibling = index.sibling(index.row(), AdHocBoundColumns::RIGHT_BOUND);
+            newRightValue = rightSibling.data(Qt::EditRole).toString();
         }
-
         else if (index.column() == AdHocBoundColumns::RIGHT_BOUND)
         {
-            QSharedPointer<QUndoCommand> cmd(new AdHocBoundsChangeCommand(port, true, value.toString()));
-            editProvider_->addCommand(cmd);
-            cmd->redo();
+            newRightValue = value.toString();
 
-            emit dataChanged(index, index);
-            return true;
+            QModelIndex leftSibling = index.sibling(index.row(), AdHocBoundColumns::LEFT_BOUND);
+            newLeftValue = leftSibling.data(Qt::EditRole).toString();
         }
-
         else
         {
             return false;
         }
+
+        QSharedPointer<QUndoCommand> boundsChangeCommand(
+            new AdHocBoundsChangeCommand(port, newLeftValue, newRightValue));
+        editProvider_->addCommand(boundsChangeCommand);
+        boundsChangeCommand->redo();
+
+        emit dataChanged(index, index);
+        return true;
     }
 
     return false;

@@ -4234,6 +4234,15 @@
     <ClCompile Include="common\NameGenerationPolicy.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTiedValueCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6403,6 +6412,15 @@
     </ClInclude>
     <ClInclude Include="common\NameGenerationPolicy.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTiedValueCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

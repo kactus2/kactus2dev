@@ -711,7 +711,10 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1332,5 +1335,8 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.cpp
 RESOURCES += kactus.qrc

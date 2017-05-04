@@ -875,57 +875,5 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! Undo command for changing the ad-hoc bounds of an ad-hoc connection.
-//-----------------------------------------------------------------------------
-class AdHocBoundsChangeCommand : public QUndoCommand
-{
-public:
-
-	/*!
-     *  Constructor.
-	 */
-	AdHocBoundsChangeCommand(QSharedPointer<PortReference> portReference, bool right, QString const& newBound, QUndoCommand* parent = 0);
-
-	/*!
-     *  Destructor.
-     */
-	virtual ~AdHocBoundsChangeCommand();
-
-	/*!
-	 *  Undoes the command.
-	 */
-	virtual void undo();
-
-	/*! 
-	 *  Redoes the command.
-	 */
-	virtual void redo();
-
-private:
-    // Disable copying.
-    AdHocBoundsChangeCommand(AdHocBoundsChangeCommand const& rhs);
-    AdHocBoundsChangeCommand& operator=(AdHocBoundsChangeCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-	//! The internal/external port to change.
-	QSharedPointer<PortReference> port_;
-
-    //! If true, the change concerns the right bound. Otherwise it concerns the left bound.
-    bool right_;
-
-    //! The end point index.
-    int endpointIndex_;
-
-    //! The old bound value.
-    QString oldValue_;
-
-    //! The new bound value.
-    QString newValue_;
-};
-
-//-----------------------------------------------------------------------------
 
 #endif // HWCHANGECOMMANDS_H
