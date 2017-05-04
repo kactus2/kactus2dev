@@ -16,6 +16,7 @@
 #include "ModuleParameterEditor.h"
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 #include <editors/ComponentEditor/itemeditor.h>
 
@@ -135,20 +136,23 @@ private:
 	//! Editor to set the model name element value.
 	QLineEdit modulelNameEditor_;
 
-    //! Editor to set the VHDL architecture name for the model.
+    //! Editor to set the VHDL architecture name.
     QLineEdit architectureEditor_;
 
-    //! Editor to set the configuration name for the model.
+    //! Editor to set the configuration name.
     QLineEdit configurationEditor_;
 
-	//! Editor to set the file set references for the flat view.
+	//! Editor to set the file set references.
 	FileSetRefEditor fileSetRefs_;
 
-    //! Editor to set the default file builders of flat view.
+    //! Editor to set the default file builders.
     FileBuildersEditor fileBuilders_;
 
-    //! Editor to set the module parameters of flat view.
+    //! Editor to set the module parameters
     ModuleParameterEditor moduleParameters_;
+
+    //! Contains the parameters editor.
+    ParameterGroupBox parameters_;
 };
 
 #endif // FLATVIEWGENERALTAB_H

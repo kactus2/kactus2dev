@@ -30,7 +30,10 @@ struct ModelSimWriter
      *      @param [in] output   The output to write to.
      */
     void write(QTextStream& output, QString const& outputDirectory) const;
-
+    
+    /*!
+     *  Adds an absolute path to the list of paths that needs to be referred.
+     */
     void addPath(QString const& path);
     
 private:

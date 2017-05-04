@@ -44,8 +44,8 @@ ComponentEditorItem(model, libHandler, component, parent),
         *component->getDesignConfigurationInstantiations())
     {
         childItems_.append(QSharedPointer<ComponentEditorItem>(
-            new SingleDesignConfigurationInstantiationItem(model, libHandler, component, instantiation, validator,
-            this)));
+            new SingleDesignConfigurationInstantiationItem(model, libHandler, component, referenceCounter_, instantiation, validator,
+            parameterFinder, expressionFormatter, this)));
     }
 }
 
@@ -101,7 +101,7 @@ void DesignConfigurationInstantiationsItem::createChild(int index)
 
     QSharedPointer<SingleDesignConfigurationInstantiationItem> child(
         QSharedPointer<SingleDesignConfigurationInstantiationItem>(new SingleDesignConfigurationInstantiationItem(
-        model_, libHandler_, component_, instantiation, validator_, this)));
+        model_, libHandler_, component_, referenceCounter_, instantiation, validator_, parameterFinder_, expressionFormatter_, this)));
     child->setLocked(locked_);
 
     childItems_.insert(index, child);

@@ -35,15 +35,22 @@ public:
 	 *
 	 *      @param [in] model                   The model that owns the items.
 	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
+     *      @param [in] component               The component being edited.
+     *      @param [in] referenceCounter        The reference counter.
      *      @param [in] instantiation           The instantiation of the item.
+     *      @param [in] validator               Used to validate the instantiation.
+     *      @param [in] parameterFinder         Pointer to the parameter finder.
+     *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  The parent item.
 	 */
 	SingleDesignConfigurationInstantiationItem(ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
         QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<DesignConfigurationInstantiation> instantiation,
         QSharedPointer<InstantiationsValidator> validator,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -91,6 +98,12 @@ private:
 
     //! Validator for the instantiation.
     QSharedPointer<InstantiationsValidator> validator_;
+
+    //! Parameter finder, finds the desired parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! Expression formatter, formats the referencing expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
 };
 
