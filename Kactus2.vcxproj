@@ -463,8 +463,11 @@ CreateHelp
     <ClCompile Include="designEditors\HWDesign\OffPageConnectorItem.cpp" />
     <ClCompile Include="designEditors\HWDesign\PortmapDialog.cpp" />
     <ClCompile Include="designEditors\HWDesign\SelectItemTypeDialog.cpp" />
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.cpp" />
     <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocConnectionAddCommand.cpp" />
     <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.cpp" />
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTiedValueCommand.cpp" />
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.cpp" />
     <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.cpp" />
     <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocVisibilityChangeCommand.cpp" />
     <ClCompile Include="designEditors\HWDesign\undoCommands\ColumnDeleteCommand.cpp" />
@@ -2454,8 +2457,11 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.h" />
     <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocConnectionAddCommand.h" />
     <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.h" />
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTiedValueCommand.h" />
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.h" />
     <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.h" />
     <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocVisibilityChangeCommand.h" />
     <CustomBuild Include="designEditors\HWDesign\undoCommands\ComponentDeleteCommand.h">

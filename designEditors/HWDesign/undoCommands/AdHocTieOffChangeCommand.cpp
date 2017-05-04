@@ -27,10 +27,9 @@ AdHocTieOffChangeCommand::AdHocTieOffChangeCommand(AdHocItem* portItem, QSharedP
     QString const& newTieOffValue, QString newParsedTieOff, QString newFormattedTieOff, int newBase,
     QString const& oldTieOffValue, QString oldParsedTieOff, QString oldFormattedTieOff, int oldBase,
     HWDesignDiagram* designDiagram, QUndoCommand* parent):
+AdHocTiedValueCommand(portItem, connection, designDiagram),
 QUndoCommand(parent),
-tieOffConnection_(connection),
 containingDiagram_(designDiagram),
-containingDesign_(containingDiagram_->getDesign()),
 oldTieOff_(oldTieOffValue),
 parsedOldTieOff_(oldParsedTieOff),
 formattedOldTieOff_(oldFormattedTieOff),
@@ -41,10 +40,7 @@ formattedNewTieOff_(newFormattedTieOff),
 newBase_(newBase),
 valueFormatter_()
 {
-    if (!tieOffConnection_ && !newTieOff_.isEmpty())
-    {
-        tieOffConnection_ = createConnectionForTiedValue(portItem);
-    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -56,66 +52,20 @@ AdHocTieOffChangeCommand::~AdHocTieOffChangeCommand()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocTieOffChangeCommand::createConnectionForTiedValue()
-//-----------------------------------------------------------------------------
-QSharedPointer<AdHocConnection> AdHocTieOffChangeCommand::createConnectionForTiedValue(AdHocItem* portItem) const
-{
-    QString connectionName = createNameForTiedValueConnection(portItem);
-
-    QSharedPointer<AdHocConnection> connection (new AdHocConnection(connectionName));
-
-    QSharedPointer<PortReference> portReference (new PortReference(portItem->name()));
-
-    ComponentItem* containingComponent = portItem->encompassingComp();
-    if (containingComponent)
-    {
-        portReference->setComponentRef(containingComponent->name());
-        connection->getInternalPortReferences()->append(portReference);
-    }
-    else
-    {
-        connection->getExternalPortReferences()->append(portReference);
-    }
-
-    return connection;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocTieOffChangeCommand::createNameForTiedValueConnection()
-//-----------------------------------------------------------------------------
-QString AdHocTieOffChangeCommand::createNameForTiedValueConnection(AdHocItem* portItem) const
-{
-    ComponentItem* containingComponent = portItem->encompassingComp();
-
-    QString instanceName = "";
-
-    if (containingComponent)
-    {
-        instanceName = containingComponent->name();
-        instanceName.append("_");
-    }
-
-    QString portName = portItem->name();
-
-    QString tiedValuePart = "_to_tiedValue";
-
-    return instanceName + portName + tiedValuePart;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AdHocTieOffChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void AdHocTieOffChangeCommand::undo()
 {
     QUndoCommand::undo();
 
-    if (tieOffConnection_)
+    QSharedPointer<AdHocConnection> tieOffConnection = getTiedValueConnection();
+    if (tieOffConnection)
     {
-        tieOffConnection_->setTiedValue(oldTieOff_);
+        tieOffConnection->setTiedValue(oldTieOff_);
 
         changeTieOffSymbolsInConnectedPorts(oldTieOff_, parsedOldTieOff_, formattedOldTieOff_, oldBase_);
 
-        addOrRemoveConnection(oldTieOff_);
+        addOrRemoveTiedValueConnection();
     }
 }
 
@@ -124,13 +74,14 @@ void AdHocTieOffChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void AdHocTieOffChangeCommand::redo()
 {
-    if (tieOffConnection_)
+    QSharedPointer<AdHocConnection> tieOffConnection = getTiedValueConnection();
+    if (tieOffConnection)
     {
-        tieOffConnection_->setTiedValue(newTieOff_);
+        tieOffConnection->setTiedValue(newTieOff_);
 
         changeTieOffSymbolsInConnectedPorts(newTieOff_, parsedNewTieOff_, formattedNewTieOff_, newBase_);
 
-        addOrRemoveConnection(newTieOff_);
+        addOrRemoveTiedValueConnection();
     }
 
     QUndoCommand::redo();
@@ -142,9 +93,11 @@ void AdHocTieOffChangeCommand::redo()
 void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const& tieOffValue,
     QString const& parsedTieOff, QString const& formattedTieOff, int tieOffBase) const
 {
-    if (!tieOffConnection_->getInternalPortReferences()->isEmpty())
+    QSharedPointer<AdHocConnection> tieOffConnection = getTiedValueConnection();
+
+    if (!tieOffConnection->getInternalPortReferences()->isEmpty())
     {
-        foreach (QSharedPointer<PortReference> internalReference, *tieOffConnection_->getInternalPortReferences())
+        foreach (QSharedPointer<PortReference> internalReference, *tieOffConnection->getInternalPortReferences())
         {
             HWComponentItem* componentItem =
                 containingDiagram_->getComponentItem(internalReference->getComponentRef());
@@ -161,9 +114,9 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
         }
     }
 
-    if (!tieOffConnection_->getExternalPortReferences()->isEmpty())
+    if (!tieOffConnection->getExternalPortReferences()->isEmpty())
     {
-        foreach (QSharedPointer<PortReference> externalReference, *tieOffConnection_->getExternalPortReferences())
+        foreach (QSharedPointer<PortReference> externalReference, *tieOffConnection->getExternalPortReferences())
         {
             HWConnectionEndpoint* endPoint =
                 containingDiagram_->getDiagramAdHocPort(externalReference->getPortRef());
@@ -197,20 +150,5 @@ void AdHocTieOffChangeCommand::drawTieOffSymbol(AdHocItem* portItem, QString con
         QString tieOffWithBase = valueFormatter_.format(parsedTieOff, tieOffBase);
 
         portItem->changeTieOffLabel(formattedTieOff, tieOffWithBase, canConvertTieOffToInt);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocTieOffChangeCommand::addOrRemoveConnection()
-//-----------------------------------------------------------------------------
-void AdHocTieOffChangeCommand::addOrRemoveConnection(QString const& tieOffValue)
-{
-    if (tieOffValue.isEmpty() && containingDesign_->getAdHocConnections()->contains(tieOffConnection_))
-    {
-        containingDesign_->getAdHocConnections()->removeAll(tieOffConnection_);
-    }
-    else if (!containingDesign_->getAdHocConnections()->contains(tieOffConnection_))
-    {
-        containingDesign_->getAdHocConnections()->append(tieOffConnection_);
     }
 }

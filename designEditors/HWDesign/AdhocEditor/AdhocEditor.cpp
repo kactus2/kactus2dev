@@ -11,8 +11,6 @@
 
 #include "AdhocEditor.h"
 
-#include <designEditors/common/ConnectionEditor/AdHocBoundColumns.h>
-
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/GenericEditProvider.h>
 
@@ -28,15 +26,14 @@
 #include <designEditors/HWDesign/AdHocInterfaceItem.h>
 #include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h>
+#include <designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h>
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 #include <IPXACTmodels/Design/Design.h>
 
 #include <QFormLayout>
 #include <QVBoxLayout>
-#include <QAbstractItemView>
-#include <QSortFilterProxyModel>
-#include <QHeaderView>
+#include <QGroupBox>
 
 //-----------------------------------------------------------------------------
 // Function: AdhocEditor::AdHocEditor()
@@ -54,10 +51,13 @@ tiedValueEditor_(new ExpressionEditor(componentFinder_, this)),
 containedPortItem_(),
 editProvider_(),
 designDiagram_(),
-adHocBoundsTable_(this),
-adHocBoundsModel_(this)
+tiedValueLeftBoundEditor_(new ExpressionEditor(componentFinder_, this)),
+tiedValueRightBoundEditor_(new ExpressionEditor(componentFinder_, this))
 {
     tiedValueEditor_->setFixedHeight(20);
+
+    tiedValueLeftBoundEditor_->setFixedHeight(20);
+    tiedValueRightBoundEditor_->setFixedHeight(20);
 
     ComponentParameterModel* parameterModel = new ComponentParameterModel(componentFinder_, this);
     parameterModel->setExpressionParser(expressionParser_);
@@ -65,7 +65,16 @@ adHocBoundsModel_(this)
     ParameterCompleter* tiedValueCompleter = new ParameterCompleter(this);
     tiedValueCompleter->setModel(parameterModel);
 
+    ParameterCompleter* tiedValueLeftBoundCompleter = new ParameterCompleter(this);
+    tiedValueLeftBoundCompleter->setModel(parameterModel);
+
+    ParameterCompleter* tiedValueRightBoundCompleter = new ParameterCompleter(this);
+    tiedValueRightBoundCompleter->setModel(parameterModel);
+
     tiedValueEditor_->setAppendingCompleter(tiedValueCompleter);
+
+    tiedValueLeftBoundEditor_->setAppendingCompleter(tiedValueLeftBoundCompleter);
+    tiedValueRightBoundEditor_->setAppendingCompleter(tiedValueRightBoundCompleter);
 
     QStringList reservedWordsForTiedValue;
     reservedWordsForTiedValue << "open" << "default";
@@ -73,24 +82,13 @@ adHocBoundsModel_(this)
 
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
-    // Set settings for the table view.
-    adHocBoundsTable_.setSortingEnabled(true);
-    adHocBoundsTable_.setSelectionMode(QAbstractItemView::SingleSelection);
-    adHocBoundsTable_.verticalHeader()->hide();
-
-    QSortFilterProxyModel* adHocPortProxy = new QSortFilterProxyModel(this);
-    adHocPortProxy->setSourceModel(&adHocBoundsModel_);
-    adHocBoundsTable_.setModel(adHocPortProxy);
-
-    adHocBoundsTable_.setColumnWidth(AdHocBoundColumns::LEFT_BOUND, 70);
-    adHocBoundsTable_.setColumnWidth(AdHocBoundColumns::RIGHT_BOUND, 70);
-    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::LEFT_BOUND, QHeaderView::Fixed);
-    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::RIGHT_BOUND, QHeaderView::Fixed);
-
     setupLayout();
 
-    connect(tiedValueEditor_, SIGNAL(textChanged()), this, SLOT(onTiedValueChanged()), Qt::UniqueConnection);
+    connect(tiedValueEditor_, SIGNAL(editingFinished()), this, SLOT(onTiedValueChanged()), Qt::UniqueConnection);
+    connect(tiedValueLeftBoundEditor_, SIGNAL(editingFinished()),
+        this, SLOT(onTiedValueLeftBoundChanged()), Qt::UniqueConnection);
+    connect(tiedValueRightBoundEditor_, SIGNAL(editingFinished()),
+        this, SLOT(onTiedValueRightBoundChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -113,10 +111,18 @@ void AdHocEditor::setupLayout()
     overallLayout->addRow(tr("Direction:"), portDirection_);
     overallLayout->addRow(tr("Left bound:"), leftBoundValue_);
     overallLayout->addRow(tr("Right bound:"), rightBoundValue_);
-    overallLayout->addRow(tr("Tied value:"), tiedValueEditor_);
 
     topLayout->addLayout(overallLayout);
-    topLayout->addWidget(&adHocBoundsTable_);
+
+    QFormLayout* tiedValueLayout = new QFormLayout();
+    tiedValueLayout->addRow(tr("Tied value:"), tiedValueEditor_);
+    tiedValueLayout->addRow(tr("Tied value left bound:"), tiedValueLeftBoundEditor_);
+    tiedValueLayout->addRow(tr("Tied value right bound:"), tiedValueRightBoundEditor_);
+
+    QGroupBox* tiedValueGroup = new QGroupBox(QStringLiteral("Tied value"));
+    tiedValueGroup->setLayout(tiedValueLayout);
+
+    topLayout->addWidget(tiedValueGroup);
 
     setLayout(topLayout);
 }
@@ -141,7 +147,8 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingD
     leftBoundValue_->show();
     rightBoundValue_->show();
     tiedValueEditor_->show();
-    adHocBoundsTable_.show();
+    tiedValueLeftBoundEditor_->show();
+    tiedValueRightBoundEditor_->show();
 
     AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(containedPortItem_);
     AdHocInterfaceItem* adhocInterfaceItem = dynamic_cast<AdHocInterfaceItem*>(containedPortItem_);
@@ -171,25 +178,33 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingD
 
         QString tiedValue = "";
 
+        QSharedPointer<PartSelect> portPartSelect;
+
         if ((adhocPortItem && direction == DirectionTypes::IN) ||
             (adhocInterfaceItem && direction == DirectionTypes::OUT) ||
             direction == DirectionTypes::INOUT)
         {
-            tiedValue = getTiedValue(containingItemName);
             tiedValueEditor_->setEnabled(!designDiagram_->isProtected());
+            tiedValueLeftBoundEditor_->setEnabled(!designDiagram_->isProtected());
+            tiedValueRightBoundEditor_->setEnabled(!designDiagram_->isProtected());
 
-            updateBoundsTable(containingItemName);
+            QSharedPointer<AdHocConnection> connectionItem = getTiedConnection(containingItemName);
+            tiedValue = getTiedValue(connectionItem);
+            portPartSelect = getEndPointPartSelect(connectionItem);
         }
         else
         {
             tiedValueEditor_->setEnabled(false);
-            adHocBoundsTable_.setEnabled(false);
+            tiedValueLeftBoundEditor_->setEnabled(false);
+            tiedValueRightBoundEditor_->setEnabled(false);
         }
 
         tiedValueEditor_->blockSignals(true);
         tiedValueEditor_->setExpression(tiedValue);
         setTiedValueEditorToolTip(tiedValue);
         tiedValueEditor_->blockSignals(false);
+
+        updateTiedValueBounds(portPartSelect);
 
         parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
     }
@@ -198,12 +213,11 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingD
 //-----------------------------------------------------------------------------
 // Function: AdhocEditor::getTiedValue()
 //-----------------------------------------------------------------------------
-QString AdHocEditor::getTiedValue(QString const& instanceName) const
+QString AdHocEditor::getTiedValue(QSharedPointer<AdHocConnection> connectionItem) const
 {
-    QSharedPointer<AdHocConnection> connection = getTiedConnection(instanceName);
-    if (connection)
+    if (connectionItem)
     {
-        return connection->getTiedValue();
+        return connectionItem->getTiedValue();
     }
 
     return QString();
@@ -224,7 +238,7 @@ QSharedPointer<AdHocConnection> AdHocEditor::getTiedConnection(QString const& in
             {
                 if (internalReference->getPortRef() == containedPortItem_->name() &&
                     internalReference->getComponentRef() == instanceName &&
-                    !connection->getTiedValue().isEmpty())
+                    (!connection->getTiedValue().isEmpty() || internalReference->getPartSelect()))
                 {
                     return connection;
                 }
@@ -235,7 +249,7 @@ QSharedPointer<AdHocConnection> AdHocEditor::getTiedConnection(QString const& in
             foreach (QSharedPointer<PortReference> externalReference, *connection->getExternalPortReferences())
             {
                 if (externalReference->getPortRef() == containedPortItem_->name() &&
-                    !connection->getTiedValue().isEmpty())
+                    (!connection->getTiedValue().isEmpty() || externalReference->getPartSelect()))
                 {
                     return connection;
                 }
@@ -314,27 +328,131 @@ void AdHocEditor::onTiedValueChanged()
     {
         instanceName = containingInstance->name();
     }
-
-    updateBoundsTable(instanceName);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdhocEditor::getParsedTieOffValue()
+// Function: AdhocEditor::onTiedValueLeftBoundChanged()
 //-----------------------------------------------------------------------------
-void AdHocEditor::updateBoundsTable(QString instanceName)
+void AdHocEditor::onTiedValueLeftBoundChanged()
 {
-    QSharedPointer<AdHocConnection> connection = getTiedConnection(instanceName);
-    adHocBoundsModel_.setConnection(connection, designDiagram_->getEditProvider());
-    adHocBoundsTable_.resizeRowsToContents();
+    tiedValueLeftBoundEditor_->finishEditingCurrentWord();
 
-    if (connection)
+    QString newLeftBoundValue = tiedValueLeftBoundEditor_->getExpression();
+
+    QString leftToolTip = formattedValueFor(expressionParser_->parseExpression(newLeftBoundValue));
+    tiedValueLeftBoundEditor_->setToolTip(leftToolTip);
+
+    createTieOffBoundsChangeCommand(newLeftBoundValue, tiedValueRightBoundEditor_->getExpression());
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdhocEditor::onTiedValueRightBoundChanged()
+//-----------------------------------------------------------------------------
+void AdHocEditor::onTiedValueRightBoundChanged()
+{
+    tiedValueRightBoundEditor_->finishEditingCurrentWord();
+
+    QString newRightBoundValue = tiedValueRightBoundEditor_->getExpression();
+
+    QString rightToolTip = formattedValueFor(expressionParser_->parseExpression(newRightBoundValue));
+    tiedValueRightBoundEditor_->setToolTip(rightToolTip);
+
+    createTieOffBoundsChangeCommand(tiedValueLeftBoundEditor_->getExpression(), newRightBoundValue);
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdhocEditor::createTieOffBoundsChangeCommand()
+//-----------------------------------------------------------------------------
+void AdHocEditor::createTieOffBoundsChangeCommand(QString const& newLeftBound, QString const& newRightBound)
+{
+    QString instanceName = "";
+
+    ComponentItem* containingInstance = containedPortItem_->encompassingComp();
+    if (containingInstance)
     {
-        adHocBoundsTable_.setEnabled(!designDiagram_->isProtected());
+        instanceName = containingInstance->name();
+    }
+
+    QSharedPointer<AdHocConnection> connection = getTiedConnection(instanceName);
+
+    QSharedPointer<QUndoCommand> tieOffBoundsCommand(new AdHocTieOffBoundsChangeCommand(
+        containedPortItem_, newLeftBound, newRightBound, connection, designDiagram_));
+
+    editProvider_->addCommand(tieOffBoundsCommand);
+    tieOffBoundsCommand->redo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdhocEditor::updateTiedValueBounds()
+//-----------------------------------------------------------------------------
+void AdHocEditor::updateTiedValueBounds(QSharedPointer<PartSelect> portPartSelect)
+{
+    if (portPartSelect)
+    {
+        QString tiedValueLeftValue = portPartSelect->getLeftRange();
+        QString leftToolTip = formattedValueFor(expressionParser_->parseExpression(tiedValueLeftValue));
+
+        QString tiedValueRightValue = portPartSelect->getRightRange();
+        QString rightToolTip = formattedValueFor(expressionParser_->parseExpression(tiedValueRightValue));
+
+        tiedValueLeftBoundEditor_->blockSignals(true);
+        tiedValueLeftBoundEditor_->setExpression(tiedValueLeftValue);
+        tiedValueLeftBoundEditor_->setToolTip(leftToolTip);
+        tiedValueLeftBoundEditor_->blockSignals(false);
+
+        tiedValueRightBoundEditor_->blockSignals(true);
+        tiedValueRightBoundEditor_->setExpression(tiedValueRightValue);
+        tiedValueRightBoundEditor_->setToolTip(rightToolTip);
+        tiedValueRightBoundEditor_->blockSignals(false);
     }
     else
-    {     
-        adHocBoundsTable_.setEnabled(false);
+    {
+        QString emptyText = QStringLiteral("");
+
+        tiedValueLeftBoundEditor_->blockSignals(true);
+        tiedValueLeftBoundEditor_->setExpression(emptyText);
+        tiedValueLeftBoundEditor_->setToolTip(emptyText);
+        tiedValueLeftBoundEditor_->blockSignals(false);
+
+        tiedValueRightBoundEditor_->blockSignals(true);
+        tiedValueRightBoundEditor_->setExpression(emptyText);
+        tiedValueRightBoundEditor_->setToolTip(emptyText);
+        tiedValueRightBoundEditor_->blockSignals(false);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdhocEditor::getEndPointPartSelect()
+//-----------------------------------------------------------------------------
+QSharedPointer<PartSelect> AdHocEditor::getEndPointPartSelect(QSharedPointer<AdHocConnection> adHocConnection)
+    const
+{
+    if (adHocConnection)
+    {
+        QString adhocPortName = containedPortItem_->name();
+
+        foreach (QSharedPointer<PortReference> internalPort, *adHocConnection->getInternalPortReferences())
+        {
+            if (internalPort->getPortRef().compare(adhocPortName) == 0)
+            {
+                return internalPort->getPartSelect();
+            }
+        }
+
+        foreach (QSharedPointer<PortReference> externalPort, *adHocConnection->getExternalPortReferences())
+        {
+            if (externalPort->getPortRef().compare(adhocPortName) == 0)
+            {
+                return externalPort->getPartSelect();
+            }
+        }
+    }
+
+    return QSharedPointer<PartSelect>();
 }
 
 //-----------------------------------------------------------------------------
@@ -416,7 +534,8 @@ void AdHocEditor::clear()
     leftBoundValue_->hide();
     rightBoundValue_->hide();
     tiedValueEditor_->hide();
-    adHocBoundsTable_.hide();
+    tiedValueLeftBoundEditor_->hide();
+    tiedValueRightBoundEditor_->hide();
 
     parentWidget()->setMaximumHeight(20);
 }

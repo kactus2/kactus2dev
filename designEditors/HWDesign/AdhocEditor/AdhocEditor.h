@@ -18,16 +18,16 @@
 #include <QLabel>
 #include <QTableWidget>
 
+class AdHocItem;
+class AdHocConnection;
+class PartSelect;
 class ExpressionEditor;
 class ExpressionParser;
 class ComponentParameterFinder;
 class Design;
-class AdHocConnection;
-class AdHocItem;
 class IEditProvider;
 class HWDesignDiagram;
 class ExpressionFormatter;
-class AdHocBoundsModel;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of an Ad hoc port in designAd-hoc editor.
@@ -74,6 +74,16 @@ private slots:
      */
     void onTiedValueChanged();
 
+    /*!
+     *  Handles the changes in the left bound of the tied value.
+     */
+    void onTiedValueLeftBoundChanged();
+
+    /*!
+     *  Handles the changes in the right bound of the tied value.
+     */
+    void onTiedValueRightBoundChanged();
+
 signals:
 
     /*!
@@ -104,11 +114,11 @@ private:
     /*!
      *  Get the tied value associated with contained ad hoc port.
      *
-     *      @param [in] instanceName    Name of the instance containing the port. Empty for top level ports.
+     *      @param [in] connectionItem  The tied value connection of the associated ad hoc port.
      *
      *      @return The tied value of the ad hoc port.
      */
-    QString getTiedValue(QString const& instanceName) const;
+    QString getTiedValue(QSharedPointer<AdHocConnection> connectionItem) const;
 
     /*!
      *  Get the ad hoc connection containing this ad hoc ports tied value.
@@ -143,12 +153,28 @@ private:
     void setTiedValueEditorToolTip(QString const& tiedValue);
     
     /*!
-     *  Update table used for the part selection of the tie-off.
-     *  Will also enable or disable the table depending circumstances.
+     *  Update the bounds of the tied value connection.
      *
-     *      @param [in] instanceName    Name of the instance containing the port. Empty for top level ports.
+     *      @param [in] portPartSelect  Part select of the referenced port.
      */
-    void updateBoundsTable(QString instanceName);
+    void updateTiedValueBounds(QSharedPointer<PartSelect> portPartSelect);
+
+    /*!
+     *  Get the part select of the referenced port.
+     *
+     *      @param [in] adHocConnection     Connection containing the ad hoc item.
+     *
+     *      @return The part select of the referenced port.
+     */
+    QSharedPointer<PartSelect> getEndPointPartSelect(QSharedPointer<AdHocConnection> adHocConnection) const;
+
+    /*!
+     *  Create a change command for the tie off bounds.
+     *
+     *      @param [in] newLeftBound    New value for the left bound of the tied value.
+     *      @param [in] newRightBound   New value for the right bounds of the tied value.
+     */
+    void createTieOffBoundsChangeCommand(QString const& newLeftBound, QString const& newRightBound);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -187,11 +213,11 @@ private:
     //! The design diagram containing the ad hoc port item.
     HWDesignDiagram* designDiagram_;
 
-    //! The port ad-hoc bounds table.
-    QTableView adHocBoundsTable_;
+    //! Editor for the left bound value of the tied value.
+    ExpressionEditor* tiedValueLeftBoundEditor_;
 
-    //! The ad-hoc bounds model.
-    AdHocBoundsModel adHocBoundsModel_;
+    //! Editor for the right bound value of the tied value.
+    ExpressionEditor* tiedValueRightBoundEditor_;
 };
 
 #endif // ADHOCEDITOR_H
