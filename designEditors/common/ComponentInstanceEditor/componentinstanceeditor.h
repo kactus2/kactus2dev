@@ -34,6 +34,7 @@ class ParameterFinder;
 class TopComponentParameterFinder;
 class Design;
 class DesignCompletionModel;
+class View;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of a component instance within a design.

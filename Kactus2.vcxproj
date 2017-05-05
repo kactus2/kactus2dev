@@ -619,7 +619,9 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\choices\EnumerationModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\AbstractParameterModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\CompleterPopupTable.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatter.cpp" />
@@ -4373,6 +4375,8 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\channels\ChannelColumns.h" />
     <ClInclude Include="editors\ComponentEditor\addressSpaces\SegmentColumns.h" />
     <ClInclude Include="editors\ComponentEditor\choices\ChoiceColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.h" />
+    <ClInclude Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactory.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h" />

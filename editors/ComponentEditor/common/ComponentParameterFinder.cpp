@@ -12,13 +12,14 @@
 #include "ComponentParameterFinder.h"
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Cpu.h>
+#include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
-#include <IPXACTmodels/Component/View.h>
-#include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 //-----------------------------------------------------------------------------
@@ -104,14 +105,24 @@ QStringList ComponentParameterFinder::getAllParameterIds() const
             allParameterIds.append(parameter->getValueId());
         }
 
-        foreach (QSharedPointer<Parameter> viewParameter, allViewParameters())
+        foreach (QSharedPointer<Parameter> cpuParameter, allCpuParameters())
         {
-            allParameterIds.append(viewParameter->getValueId());
+            allParameterIds.append(cpuParameter->getValueId());
+        }
+
+        foreach (QSharedPointer<Parameter> generatorParameter, allGeneratorParameters())
+        {
+            allParameterIds.append(generatorParameter->getValueId());
         }
 
         foreach (QSharedPointer<Parameter> busInterfaceParameter, allBusInterfaceParameters())
         {
             allParameterIds.append(busInterfaceParameter->getValueId());
+        }
+
+        foreach (QSharedPointer<Parameter> addressSpaceParameter, allAddressSpaceParameters())
+        {
+            allParameterIds.append(addressSpaceParameter->getValueId());
         }
 
         foreach (QSharedPointer<Parameter> registerParameter, allRegisterParameters())
@@ -133,7 +144,9 @@ int ComponentParameterFinder::getNumberOfParameters() const
     if (!component_.isNull())
     {
         parameterCount += component_->getParameters()->count();
-        parameterCount += viewParameterCount();
+        parameterCount += allGeneratorParameters().count();
+        parameterCount += allCpuParameters().count();
+        parameterCount += allAddressSpaceParameters().count();
         parameterCount += busInterfaceParameterCount();
         parameterCount += registerParameterCount();
     }
@@ -146,29 +159,6 @@ int ComponentParameterFinder::getNumberOfParameters() const
 void ComponentParameterFinder::setComponent(QSharedPointer<Component const> component)
 {
     component_ = component;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterFinder::setActiveView()
-//-----------------------------------------------------------------------------
-void ComponentParameterFinder::setActiveView(QSharedPointer<View> view)
-{
-    activeView_ = view;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterFinder::setActiveView()
-//-----------------------------------------------------------------------------
-void ComponentParameterFinder::setActiveView(QString const& viewName)
-{
-    if (component_)
-    {
-        activeView_ = component_->getModel()->findView(viewName);
-    }
-    else
-    {
-        activeView_ = QSharedPointer<View>();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -194,19 +184,35 @@ QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString cons
             }
         }
 
-        foreach (QSharedPointer<Parameter> viewParameter, allViewParameters())
-        {
-            if (viewParameter->getValueId() == parameterId)
-            {
-                return viewParameter;
-            }
-        }
-
         foreach (QSharedPointer<Parameter> busInterfaceParameter, allBusInterfaceParameters())
         {
             if (busInterfaceParameter->getValueId() == parameterId)
             {
                 return busInterfaceParameter;
+            }
+        }
+
+        foreach (QSharedPointer<Parameter> cpuParameter, allCpuParameters())
+        {
+            if (cpuParameter->getValueId() == parameterId)
+            {
+                return cpuParameter;
+            }
+        }
+
+        foreach (QSharedPointer<Parameter> generatorParameter, allGeneratorParameters())
+        {
+            if (generatorParameter->getValueId() == parameterId)
+            {
+                return generatorParameter;
+            }
+        }
+
+        foreach (QSharedPointer<Parameter> addressSpaceParameter, allAddressSpaceParameters())
+        {
+            if (addressSpaceParameter->getValueId() == parameterId)
+            {
+                return addressSpaceParameter;
             }
         }
 
@@ -223,46 +229,6 @@ QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterFinder::allViewParameters()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() const
-{
-    // The parameters found in views.
-    QList<QSharedPointer<Parameter> > viewParameters;
-
-    // The list of views to go through.
-    QSharedPointer<QList<QSharedPointer<View> > > views(new QList<QSharedPointer<View> >);
-
-    // If an active views is set, use it only. Otherwise use all views in the component.
-    if (activeView_)
-    {
-        views->append(activeView_);
-    }
-    else
-    {
-        views = component_->getViews();
-    }
-
-    // Go through the specified views.
-    foreach (QSharedPointer<View> view, *views)
-    {
-        QSharedPointer<ComponentInstantiation> componentInstantiation = component_->getModel()->
-            findComponentInstantiation(view->getComponentInstantiationRef());
-
-        // If a component instantiation exists, append its module parameters to the list.
-        if (componentInstantiation)
-        {
-            foreach (QSharedPointer<ModuleParameter> parameter, *componentInstantiation->getModuleParameters())
-            {
-                viewParameters.append(parameter);
-            }
-        }
-    }
-
-    return viewParameters;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::allBusInterfaceParameters()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allBusInterfaceParameters() const
@@ -274,6 +240,63 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allBusInterfaceParam
     }
 
     return busInterfaceParameters;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::allCpuParameters()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<Parameter> > ComponentParameterFinder::allCpuParameters() const
+{
+    QList<QSharedPointer<Parameter> > cpuParameters;
+    foreach (QSharedPointer<Cpu> cpu, *component_->getCpus())
+    {
+        cpuParameters.append(*cpu->getParameters());
+    }
+
+    return cpuParameters;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::allGeneratorParameters()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<Parameter> > ComponentParameterFinder::allGeneratorParameters() const
+{
+    QList<QSharedPointer<Parameter> > generatorParameters;
+    foreach (QSharedPointer<ComponentGenerator> generator, *component_->getComponentGenerators())
+    {
+        generatorParameters.append(*generator->getParameters());
+    }
+
+    return generatorParameters;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::allAddressSpaceParameters()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<Parameter> > ComponentParameterFinder::allAddressSpaceParameters() const
+{
+    QList<QSharedPointer<Parameter> > parameters;
+    foreach (QSharedPointer<AddressSpace> addressSpace, *component_->getAddressSpaces())
+    {
+        parameters.append(*addressSpace->getParameters());
+
+        if (addressSpace->getLocalMemoryMap())
+        {
+            foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *addressSpace->getLocalMemoryMap()->getMemoryBlocks())
+            {
+                QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
+                if (addressBlock)
+                {
+                    foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+                    {
+                        parameters.append(*registerBase->getParameters());
+                    }
+                }
+            }
+        }
+    }
+
+    return parameters;
 }
 
 //-----------------------------------------------------------------------------
@@ -298,29 +321,6 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allRegisterParameter
     }
 
     return registerParameters;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterFinder::viewParameterCount()
-//-----------------------------------------------------------------------------
-int ComponentParameterFinder::viewParameterCount() const
-{
-    int parameterCount = 0;
-
-    foreach (QSharedPointer<View> view, *component_->getViews())
-    {
-        QSharedPointer<ComponentInstantiation> instantiation = component_->getModel()->
-            findComponentInstantiation(view->getComponentInstantiationRef());
-
-        if (instantiation)
-        {
-            parameterCount += instantiation->getModuleParameters()->count();
-
-            parameterCount += instantiation->getParameters()->count();
-        }
-    }
-
-    return parameterCount;
 }
 
 //-----------------------------------------------------------------------------

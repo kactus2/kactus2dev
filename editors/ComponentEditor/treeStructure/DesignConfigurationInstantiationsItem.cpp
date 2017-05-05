@@ -14,6 +14,11 @@
 #include "SingleDesignConfigurationInstantiationItem.h"
 
 #include <editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsEditor.h>
+#include <editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -43,9 +48,17 @@ ComponentEditorItem(model, libHandler, component, parent),
     foreach(QSharedPointer<DesignConfigurationInstantiation> instantiation,
         *component->getDesignConfigurationInstantiations())
     {
+        QSharedPointer<MultipleParameterFinder> disgFinder = QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
+        disgFinder->addFinder(parameterFinder);
+        disgFinder->addFinder(QSharedPointer<DesignConfigurationInstantiationParameterFinder>
+            (new DesignConfigurationInstantiationParameterFinder(instantiation)));
+
+        QSharedPointer<ParameterReferenceCounter> disgCounter =  QSharedPointer<ParameterReferenceCounter>(new ParameterReferenceCounter(disgFinder));
+        QSharedPointer<ExpressionFormatter> disgFormatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(disgFinder));
+
         childItems_.append(QSharedPointer<ComponentEditorItem>(
-            new SingleDesignConfigurationInstantiationItem(model, libHandler, component, referenceCounter_, instantiation, validator,
-            parameterFinder, expressionFormatter, this)));
+            new SingleDesignConfigurationInstantiationItem(model, libHandler, component, disgCounter, instantiation, validator,
+            disgFinder, disgFormatter, this)));
     }
 }
 

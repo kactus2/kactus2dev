@@ -13,6 +13,11 @@
 #include "SingleComponentInstantiationItem.h"
 
 #include <editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.h>
+#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -41,9 +46,18 @@ ComponentEditorItem(model, libHandler, component, parent),
 
     foreach(QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
     {
+        QSharedPointer<MultipleParameterFinder> cimpFinder = QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
+        cimpFinder->addFinder(parameterFinder);
+        cimpFinder->addFinder(QSharedPointer<ComponentInstantiationParameterFinder>
+            (new ComponentInstantiationParameterFinder(instantiation)));
+
+        QSharedPointer<ParameterReferenceCounter> cimpCounter =  QSharedPointer<ParameterReferenceCounter>(new ParameterReferenceCounter(cimpFinder));
+        QSharedPointer<ExpressionFormatter> cimpFormatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(cimpFinder));
+        QSharedPointer<IPXactSystemVerilogParser> cimpParser = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
+
         QSharedPointer<ComponentEditorItem> componentInstantiationItem (new SingleComponentInstantiationItem(
-            model, libHandler, component, instantiation, validator, referenceCounter, parameterFinder,
-            expressionFormatter, expressionParser, this));
+            model, libHandler, component, instantiation, validator, cimpCounter, cimpFinder,
+            cimpFormatter, cimpParser, this));
 
         childItems_.append(componentInstantiationItem);
 

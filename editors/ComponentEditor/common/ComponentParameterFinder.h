@@ -16,7 +16,6 @@
 
 class AbstractParameterModel;
 class Component;
-class View;
 
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters with the correct ID.
@@ -92,20 +91,6 @@ public:
      *      @param [in] component   The new component.
      */
     virtual void setComponent(QSharedPointer<Component const> component);
-
-    /*!
-     *  Sets the active view to use for the component.
-     *
-     *      @param [in] view   The active view.
-     */
-    void setActiveView(QSharedPointer<View> view);
-
-    /*!
-     *  Sets the active view to use for the component.
-     *
-     *      @param [in] viewName   The name of the active view.
-     */
-    void setActiveView(QString const& viewName);
     
     /*!
      *  Registers a parameter model that can modify parameters for the finder.
@@ -127,11 +112,9 @@ private:
 	QSharedPointer<Parameter> searchParameter(QString const& parameterId) const;
 
     /*!
-     *  Finds all the parameters in component views.
-     *
-     *      @return The parameters in all views.
+     *  Returns all the parameters in component address spaces.
      */
-    QList<QSharedPointer<Parameter> > allViewParameters() const;
+    QList<QSharedPointer<Parameter> > allAddressSpaceParameters() const;
 
     /*!
      *  Finds all the parameters in component bus interfaces.
@@ -139,6 +122,16 @@ private:
      *      @return The parameters in all bus interfaces.
      */
     QList<QSharedPointer<Parameter> > allBusInterfaceParameters() const;
+    
+    /*!
+     *  Returns all the parameters in component cpus.
+     */
+    QList<QSharedPointer<Parameter> > allCpuParameters() const;
+    
+    /*!
+     *  Returns all the parameters in component generators.
+     */
+    QList<QSharedPointer<Parameter> > allGeneratorParameters() const;
 
     /*!
      *  Finds all the parameters in component registers.
@@ -146,11 +139,15 @@ private:
      *      @return The parameters in all registers.
      */
     QList<QSharedPointer<Parameter> > allRegisterParameters() const;
-
-    int viewParameterCount() const;
-
+    
+    /*!
+     *  Returns number of parameters in bus interfaces.
+     */
     int busInterfaceParameterCount() const;
-
+    
+    /*!
+     *  Returns number of parameters in registers.
+     */
     int registerParameterCount() const;
 
     //-----------------------------------------------------------------------------
@@ -159,9 +156,6 @@ private:
 
     //! The parameters are searched from this component.
     QSharedPointer<Component const> component_;
-
-	//! The currently active view of the component, if applicable.
-	QSharedPointer<View> activeView_;
 };
 
 #endif // COMPONENTPARAMETERFINDER_H

@@ -102,10 +102,10 @@ ComponentInstanceEditor::~ComponentInstanceEditor()
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::setComponentInstance()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider,
+void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem, QSharedPointer<IEditProvider> editProvider,
     QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, QString const& activeViewName)
 {
-	Q_ASSERT(component);
+	Q_ASSERT(componentItem);
 
 	parentWidget()->raise();
 
@@ -122,40 +122,36 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
 	}
 
     containingDesign_ = design;
-	component_ = component;
+	component_ = componentItem
+;
+	instanceFinder_->setComponent(componentItem->componentModel());
 
-	instanceFinder_->setComponent(component->componentModel());
-
-    QString instanceView = QString();
-    if (designConfiguration)
-    {
-        instanceView = designConfiguration->getActiveView(component->name());
-	    instanceFinder_->setActiveView(instanceView);
-    }
+    QString instanceViewName = QString();
 
     activeViewLabel_->parentWidget()->show();
-    activeViewLabel_->setText(instanceView);
+
+    activeViewLabel_->setText(instanceViewName);
     
     topFinder_->setActiveView(topComponent_->getModel()->findView(activeViewName));    
 
 	// set the vlnv of the component to be displayed
-	vlnvDisplayer_->setVLNV(component->componentModel()->getVlnv(), true);
+	vlnvDisplayer_->setVLNV(componentItem->componentModel()->getVlnv(), true);
 	vlnvDisplayer_->show();
 
-	nameGroup_->setName(component->name());
-	nameGroup_->setDisplayName(component->displayName());
+	nameGroup_->setName(componentItem->name());
+	nameGroup_->setDisplayName(componentItem->displayName());
 
     disconnect(nameGroup_, SIGNAL(descriptionChanged()),
         this, SLOT(onDescriptionChanged()));
-    nameGroup_->setDescription(component->description());
+    nameGroup_->setDescription(componentItem->description());
     connect(nameGroup_, SIGNAL(descriptionChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 
 	nameGroup_->show();
 
     // Show the file set reference if the component is software.
-    if (dynamic_cast<SWComponentItem*>(component) != 0)
+    if (dynamic_cast<SWComponentItem*>(componentItem) != 0)
     {
-        SWComponentItem* swComponent = static_cast<SWComponentItem*>(component);
+        SWComponentItem* swComponent = static_cast<SWComponentItem*>(componentItem);
 
         fileSetRefCombo_->clear();
         fileSetRefCombo_->addItem("");
@@ -179,9 +175,9 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
     }
 
     // Show the component's property values in case of SW/HW mapping.
-	if (dynamic_cast<SystemComponentItem*>(component) != 0)
+	if (dynamic_cast<SystemComponentItem*>(componentItem) != 0)
     {
-        SystemComponentItem* swComponent = static_cast<SystemComponentItem*>(component);
+        SystemComponentItem* swComponent = static_cast<SystemComponentItem*>(componentItem);
 
         propertyValueEditor_->setData(swComponent->getPropertyValues());
         propertyValueEditor_->setAllowedProperties(*swComponent->componentModel()->getSWProperties());
@@ -199,10 +195,10 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
         if (designConfiguration)
         {
             QSharedPointer<ViewConfiguration> matchingViewConfiguration =
-                designConfiguration->getViewConfiguration(component->getComponentInstance()->getInstanceName());
+                designConfiguration->getViewConfiguration(componentItem->getComponentInstance()->getInstanceName());
 
             // Show the component's configurable elements in case of HW.
-            configurableElements_->setComponent(component->componentModel(), component->getComponentInstance(),
+            configurableElements_->setComponent(componentItem->componentModel(), componentItem->getComponentInstance(),
                 matchingViewConfiguration, editProvider);
         }
 
