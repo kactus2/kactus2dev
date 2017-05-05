@@ -25,7 +25,7 @@
 // Function: activevieweditor::ActiveViewEditor()
 //-----------------------------------------------------------------------------
 ActiveViewEditor::ActiveViewEditor(QWidget *parent):
-QGroupBox(tr("Active views"), parent),
+QGroupBox(tr("View Configuration"), parent),
 view_(this),
 filter_(this),
 model_(this)

@@ -49,13 +49,11 @@ public:
 	 *      @param [in] component   Pointer to the component to create the configuration for.
      *      @param [in] configType  What kind of configuration is to be created.
 	 *      @param [in] parent      Pointer to the owner of this dialog
-	 *      @param [in] f           Specifies the appearance of the dialog.
 	 */
 	CreateConfigurationDialog(LibraryInterface* handler,
 		QSharedPointer<Component> component,
         KactusAttribute::Implementation configType,
-		QWidget *parent, 
-		Qt::WindowFlags f = Qt::Dialog);
+		QWidget *parent);
 	
 	//! The destructor.
 	virtual ~CreateConfigurationDialog();
@@ -113,13 +111,10 @@ private:
 	void setupConnections();
 
 	//! Pointer to the instance that manages the library.
-	LibraryInterface* handler_;
+	LibraryInterface* library_;
 
 	//! Pointer to the component to create the configuration for.
 	QSharedPointer<Component> component_;
-
-    //! Specifies what kind of configuration is created.
-    KactusAttribute::Implementation configType_;
 
     //! Line editor to set the name for the new view.
     LineEditEx* configNameEdit_;
@@ -128,22 +123,13 @@ private:
     BasicLineContentMatcher configNameMatcher_;
 
 	//! Radio button that selects that current design is to be used.
-	QRadioButton* useExistingRadio_;
-
-    //! Description label for use existing radio button.
-    QLabel* useExistingDescLabel_;
+	QRadioButton* useExistingButton_;
 
 	//! Radio button that selects that a new design is to be created.
-	QRadioButton* createNewRadio_;
-
-    //! Description label for create new radio button.
-    QLabel* createNewDescLabel_;
+	QRadioButton* createNewButton_;
 
 	//! Radio button that selects a new design to be copied from the old one.
-	QRadioButton* createCopyRadio_;
-
-    //! Description label for create copy radio button.
-    QLabel* createCopyDescLabel_;
+	QRadioButton* createCopyButton_;
 
 	//! Editor to set the vlnv for the new configuration (and possibly design).
 	VLNVEditor* vlnvEdit_;

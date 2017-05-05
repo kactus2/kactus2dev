@@ -31,110 +31,67 @@
 // Function: createconfigurationdialog::CreateConfigurationDialog()
 //-----------------------------------------------------------------------------
 CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
-													 QSharedPointer<Component> component,
-                                                     KactusAttribute::Implementation configType,
-													 QWidget *parent,
-													 Qt::WindowFlags f):
-QDialog(parent, f),
-handler_(handler),
-component_(component),
-configType_(configType),
-configNameEdit_(new LineEditEx(this)),
-configNameMatcher_(),
-useExistingRadio_(new QRadioButton(tr("Use current design"), this)),
-useExistingDescLabel_(new QLabel(tr("Creates only a new configuration for the current design."), this)),
-createNewRadio_(new QRadioButton(tr("Create new design"), this)),
-createNewDescLabel_(new QLabel(tr("Creates a new empty design and a configuration for it."), this)),
-createCopyRadio_(new QRadioButton(tr("Copy old design to new configuration"), this)),
-createCopyDescLabel_(new QLabel(tr("Duplicates the current design with a new VLNV and creates a configuration for it."), this)),
-vlnvEdit_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, handler, this, this, true)),
-okButton_(new QPushButton(tr("OK"), this)),
-cancelButton_(new QPushButton(tr("Cancel"), this))
+    QSharedPointer<Component> component,
+    KactusAttribute::Implementation configType,
+    QWidget *parent):
+QDialog(parent, Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
+    library_(handler),
+    component_(component),
+    configNameEdit_(new LineEditEx(this)),
+    configNameMatcher_(),
+    useExistingButton_(new QRadioButton(tr("Use current design"), this)),
+    createNewButton_(new QRadioButton(tr("Create new design"), this)),
+    createCopyButton_(new QRadioButton(tr("Copy current design"), this)),
+    vlnvEdit_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, handler, this, this)),
+    okButton_(new QPushButton(tr("OK"), this)),
+    cancelButton_(new QPushButton(tr("Cancel"), this))
 {
-	Q_ASSERT(component);
-	Q_ASSERT(handler);
-
-	configNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
-    configNameEdit_->setContentMatcher(&configNameMatcher_);
+    Q_ASSERT(component);
+    Q_ASSERT(handler);
 
     QSettings settings;
-    QString initialName;
+    QStringList suggestedNames;
+    QStringList reservedNames;
 
     if (configType == KactusAttribute::HW)
     {
-        QStringList suggestions = settings.value("Policies/HWViewNames").toStringList();
-        configNameMatcher_.setItems(suggestions);
-
-        if (!suggestions.isEmpty())
-        {
-            initialName = suggestions.first();
-        }
-       
-        configNameEdit_->setDisallowedInputs(component->getHierViews());
-        configNameEdit_->setMessageTemplate("View '%1' already exists!");
+        suggestedNames = settings.value("Policies/HWViewNames").toStringList(); 
+        reservedNames = component->getHierViews();
     }
     else if (configType == KactusAttribute::SW)
     {
-        QStringList suggestions = settings.value("Policies/SWViewNames").toStringList();
-        configNameMatcher_.setItems(suggestions);
-
-        if (!suggestions.isEmpty())
-        {
-            initialName = suggestions.first();
-        }
-
-        configNameEdit_->setDisallowedInputs(component->getHierViews());
-        configNameEdit_->setMessageTemplate("View '%1' already exists!");
+        suggestedNames = settings.value("Policies/SWViewNames").toStringList();
+        reservedNames = component->getHierViews();
     }
     else if (configType == KactusAttribute::SYSTEM)
     {
-        QStringList suggestions = settings.value("Policies/SysViewNames").toStringList();
-        configNameMatcher_.setItems(suggestions);
-
-        if (!suggestions.isEmpty())
-        {
-            initialName = suggestions.first();
-        }
-
-        configNameEdit_->setDisallowedInputs(component->getSystemViewNames());
-        configNameEdit_->setMessageTemplate("System view '%1' already exists!");
+        suggestedNames = settings.value("Policies/SysViewNames").toStringList();
+        reservedNames = component->getSystemViewNames();
     }
     else
     {
         Q_ASSERT(false);
     }
 
-    if (!initialName.isEmpty())
+    configNameMatcher_.setItems(suggestedNames);
+    if (!suggestedNames.isEmpty())
     {
+        QString initialName = suggestedNames.first();
         configNameEdit_->setText(initialName);
         onConfNameChanged(initialName);
     }
 
-    QFont font = useExistingRadio_->font();
-    font.setBold(true);
-    useExistingRadio_->setFont(font);
-    useExistingRadio_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
-    createNewRadio_->setFont(font);
-    createNewRadio_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
-    createCopyRadio_->setFont(font);
-    createCopyRadio_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
+    configNameEdit_->setContentMatcher(&configNameMatcher_);    
+    configNameEdit_->setDisallowedInputs(reservedNames);
+    configNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
+    configNameEdit_->setMessageTemplate(tr("View '%1' already exists!"));
 
-	// by default an existing design is used.
-	useExistingRadio_->toggle();
-
-    useExistingDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
-    useExistingDescLabel_->setWordWrap(true);
-    createNewDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
-    createNewDescLabel_->setWordWrap(true);
-    createCopyDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
-    createCopyDescLabel_->setWordWrap(true);
-
-	// set the title for vlnv editor
-	vlnvEdit_->setTitle(tr("Configuration VLNV"));
-	VLNV compVLNV = component_->getVlnv();
-	vlnvEdit_->setVendor(compVLNV.getVendor());
-	vlnvEdit_->setLibrary(compVLNV.getLibrary());
-	vlnvEdit_->setVersion(compVLNV.getVersion());
+    VLNV topVLNV = component_->getVlnv();
+	vlnvEdit_->setTitle(tr("Configuration VLNV"));	
+	vlnvEdit_->setVendor(topVLNV.getVendor());
+	vlnvEdit_->setLibrary(topVLNV.getLibrary());
+	vlnvEdit_->setVersion(topVLNV.getVersion());
+    vlnvEdit_->setMandatory(true);
 
     setupLayout();
     setupConnections();
@@ -154,84 +111,13 @@ CreateConfigurationDialog::~CreateConfigurationDialog()
 }
 
 //-----------------------------------------------------------------------------
-// Function: createconfigurationdialog::setupLayout()
-//-----------------------------------------------------------------------------
-void CreateConfigurationDialog::setupLayout()
-{
-    QHBoxLayout* nameLayout = new QHBoxLayout();
-	nameLayout->addWidget(new QLabel(tr("Name:"), this));
-    nameLayout->addWidget(configNameEdit_);
-
-    QGroupBox* radioGroup = new QGroupBox(tr("Action"), this);
-
-	QVBoxLayout* radioLayout = new QVBoxLayout(radioGroup);
-	radioLayout->addWidget(useExistingRadio_);
-    radioLayout->addWidget(useExistingDescLabel_);
-	radioLayout->addWidget(createNewRadio_);
-    radioLayout->addWidget(createNewDescLabel_);
-	radioLayout->addWidget(createCopyRadio_);
-    radioLayout->addWidget(createCopyDescLabel_);
-
-	QHBoxLayout* buttonLayout = new QHBoxLayout();
-	buttonLayout->addStretch();
-	buttonLayout->addWidget(okButton_, 0, Qt::AlignRight);
-	buttonLayout->addWidget(cancelButton_, 0, Qt::AlignRight);
-
-	QVBoxLayout* topLayout = new QVBoxLayout(this);   
-    topLayout->addLayout(nameLayout);
-    topLayout->addWidget(radioGroup);
-	topLayout->addWidget(vlnvEdit_);
-	topLayout->addLayout(buttonLayout);
-}
-
-//-----------------------------------------------------------------------------
-// Function: createconfigurationdialog::setupConnections()
-//-----------------------------------------------------------------------------
-void CreateConfigurationDialog::setupConnections()
-{
-	connect(okButton_, SIGNAL(clicked(bool)), this, SLOT(onOk()), Qt::UniqueConnection);
-	connect(cancelButton_, SIGNAL(clicked(bool)), this, SLOT(reject()), Qt::UniqueConnection);
-	connect(configNameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onConfNameChanged(const QString&)), Qt::UniqueConnection);
-
-    connect(configNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(prevalidate()), Qt::UniqueConnection);
-    connect(vlnvEdit_, SIGNAL(contentChanged()), this, SLOT(prevalidate()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: createconfigurationdialog::onOk()
-//-----------------------------------------------------------------------------
-void CreateConfigurationDialog::onOk()
-{
-    // Make sure that the VLNVs are not already in use.
-    if (handler_->contains(getConfigurationVLNV()))
-    {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("VLNV %1 already exists in the library.").arg(getConfigurationVLNV().toString()),
-                           QMessageBox::Ok, this);
-        msgBox.exec();
-        return;
-    }
-
-    if (!useExistingRadio_->isChecked() && handler_->contains(getDesignVLNV()))
-    {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("VLNV %1 already exists in the library.").arg(getDesignVLNV().toString()),
-                           QMessageBox::Ok, this);
-        msgBox.exec();
-        return;
-    }
-
-    accept();
-}
-
-//-----------------------------------------------------------------------------
 // Function: createconfigurationdialog::getConfigurationVLNV()
 //-----------------------------------------------------------------------------
 VLNV CreateConfigurationDialog::getConfigurationVLNV() const
 {
 	VLNV configVLNV = vlnvEdit_->getVLNV();
 	configVLNV.setType(VLNV::DESIGNCONFIGURATION);
+
 	return configVLNV;
 }
 
@@ -253,11 +139,57 @@ VLNV CreateConfigurationDialog::getDesignVLNV() const
 	designVLNV.setType(VLNV::DESIGN);
 
 	// remove the possible ".designcfg" from the end
-	QString name = designVLNV.getName().remove(QString(".designcfg"));
-    name.append(".design");
+	QString name = designVLNV.getName().remove(QStringLiteral(".designcfg"));
+    name.append(QStringLiteral(".design"));
 
 	designVLNV.setName(name);
 	return designVLNV;
+}
+
+//-----------------------------------------------------------------------------
+// Function: createconfigurationdialog::designSelection()
+//-----------------------------------------------------------------------------
+CreateConfigurationDialog::DesignSelection CreateConfigurationDialog::designSelection() const
+{
+    if (useExistingButton_->isChecked())
+    {
+        return CreateConfigurationDialog::USE_EXISTING;
+    }
+    else if (createNewButton_->isChecked())
+    {
+        return CreateConfigurationDialog::CREATE_EMPTY;
+    }
+    else
+    {
+        return CreateConfigurationDialog::CREATE_COPY;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: createconfigurationdialog::onOk()
+//-----------------------------------------------------------------------------
+void CreateConfigurationDialog::onOk()
+{
+    // Make sure that the VLNVs are not already in use.
+    if (library_->contains(getConfigurationVLNV()))
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("VLNV %1 already exists in the library.").arg(getConfigurationVLNV().toString()),
+            QMessageBox::Ok, this);
+        msgBox.exec();
+        return;
+    }
+
+    if (!useExistingButton_->isChecked() && library_->contains(getDesignVLNV()))
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("VLNV %1 already exists in the library.").arg(getDesignVLNV().toString()),
+            QMessageBox::Ok, this);
+        msgBox.exec();
+        return;
+    }
+
+    accept();
 }
 
 //-----------------------------------------------------------------------------
@@ -269,29 +201,83 @@ void CreateConfigurationDialog::onConfNameChanged(QString const& newName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: createconfigurationdialog::designSelection()
-//-----------------------------------------------------------------------------
-CreateConfigurationDialog::DesignSelection CreateConfigurationDialog::designSelection() const
-{
-	if (useExistingRadio_->isChecked())
-    {
-		return CreateConfigurationDialog::USE_EXISTING;
-    }
-	else if (createNewRadio_->isChecked())
-    {
-		return CreateConfigurationDialog::CREATE_EMPTY;
-    }
-	else
-    {
-		return CreateConfigurationDialog::CREATE_COPY;
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: CreateConfigurationDialog::prevalidate()
 //-----------------------------------------------------------------------------
 void CreateConfigurationDialog::prevalidate()
 {
     okButton_->setEnabled(!configNameEdit_->text().isEmpty() && configNameEdit_->isInputValid() &&
-                          vlnvEdit_->isValid());
+        vlnvEdit_->isValid());
+}
+
+//-----------------------------------------------------------------------------
+// Function: createconfigurationdialog::setupLayout()
+//-----------------------------------------------------------------------------
+void CreateConfigurationDialog::setupLayout()
+{
+    QHBoxLayout* nameLayout = new QHBoxLayout();
+    nameLayout->addWidget(new QLabel(tr("Configuration name:"), this));
+    nameLayout->addWidget(configNameEdit_);
+
+    QGroupBox* radioGroup = new QGroupBox(tr("Select target design"), this);
+
+    QFont buttonFont = useExistingButton_->font();
+    buttonFont.setBold(true);
+    useExistingButton_->setFont(buttonFont);
+    createNewButton_->setFont(buttonFont);
+    createCopyButton_->setFont(buttonFont);
+
+    QString buttonStyle = "QRadioButton::indicator { width: 15px; height: 15px; }";
+    useExistingButton_->setStyleSheet(buttonStyle);
+    createNewButton_->setStyleSheet(buttonStyle);
+    createCopyButton_->setStyleSheet(buttonStyle);
+
+    // by default an existing design is used.
+    useExistingButton_->toggle();
+
+    QString labelStyle = "QLabel { padding-left: 19px; }";
+    QLabel* useExistingLabel(new QLabel(tr("Creates a new configuration for the current design."), this));
+    useExistingLabel->setStyleSheet(labelStyle);
+    useExistingLabel->setWordWrap(true);
+
+    QLabel* createNewLabel(new QLabel(tr("Creates a new empty design and a new configuration."), this));
+    createNewLabel->setStyleSheet(labelStyle);
+    createNewLabel->setWordWrap(true);
+
+    QLabel* createCopyLabel(new QLabel(tr("Duplicates the current design with a new VLNV for "
+        "the new configuration."), this));
+    createCopyLabel->setStyleSheet(labelStyle);
+    createCopyLabel->setWordWrap(true);
+
+    QVBoxLayout* radioLayout = new QVBoxLayout(radioGroup);
+    radioLayout->addWidget(useExistingButton_);
+    radioLayout->addWidget(useExistingLabel);
+    radioLayout->addWidget(createNewButton_);
+    radioLayout->addWidget(createNewLabel);
+    radioLayout->addWidget(createCopyButton_);
+    radioLayout->addWidget(createCopyLabel);
+
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    buttonLayout->addStretch();
+    buttonLayout->addWidget(okButton_, 0, Qt::AlignRight);
+    buttonLayout->addWidget(cancelButton_, 0, Qt::AlignRight);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);   
+    topLayout->addLayout(nameLayout);
+    topLayout->addWidget(vlnvEdit_);
+    topLayout->addWidget(radioGroup);	
+    topLayout->addLayout(buttonLayout);
+}
+
+//-----------------------------------------------------------------------------
+// Function: createconfigurationdialog::setupConnections()
+//-----------------------------------------------------------------------------
+void CreateConfigurationDialog::setupConnections()
+{
+    connect(okButton_, SIGNAL(clicked(bool)), this, SLOT(onOk()), Qt::UniqueConnection);
+    connect(cancelButton_, SIGNAL(clicked(bool)), this, SLOT(reject()), Qt::UniqueConnection);
+    connect(configNameEdit_, SIGNAL(textEdited(const QString&)),
+        this, SLOT(onConfNameChanged(const QString&)), Qt::UniqueConnection);
+
+    connect(configNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(prevalidate()), Qt::UniqueConnection);
+    connect(vlnvEdit_, SIGNAL(contentChanged()), this, SLOT(prevalidate()), Qt::UniqueConnection);
 }

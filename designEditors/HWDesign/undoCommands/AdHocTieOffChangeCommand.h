@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 
+#include <designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h>
+
 #include <QUndoCommand>
 #include <QSharedPointer>
 
@@ -21,11 +23,12 @@ class AdHocItem;
 class AdHocConnection;
 class Design;
 class HWDesignDiagram;
+class PortReference;
 
 //-----------------------------------------------------------------------------
 //! Undo command for changing tie off in ad hoc editor.
 //-----------------------------------------------------------------------------
-class AdHocTieOffChangeCommand : public QUndoCommand
+class AdHocTieOffChangeCommand : public AdHocTiedValueCommand, public QUndoCommand
 {
 public:
 
@@ -72,24 +75,6 @@ private:
     AdHocTieOffChangeCommand& operator=(AdHocTieOffChangeCommand const& rhs);
 
     /*!
-     *  Create an ad hoc connection for the selected port item.
-     *
-     *      @param [in] portItem    The selected port item.
-     *
-     *      @return The ad hoc connection for containing the tie off value.
-     */
-    QSharedPointer<AdHocConnection> createConnectionForTiedValue(AdHocItem* portItem) const;
-
-    /*!
-     *  Create a name for a tied value connection.
-     *
-     *      @param [in] portItem    The port item whose connection is being created.
-     *
-     *      @return <InstanceName>_<portName>_to_tiedValue
-     */
-    QString createNameForTiedValueConnection(AdHocItem* portItem) const;
-
-    /*!
      *  Change the tie off symbols in the connected ports.
      *
      *      @param [in] tieOffValue         The tie off value.
@@ -112,25 +97,12 @@ private:
     void drawTieOffSymbol(AdHocItem* portItem, QString const& tieOffValue, QString parsedTieOff,
         QString formattedTieOff, int tieOffBase) const;
 
-    /*!
-     *  Add or remove the ad hoc connection containing the tie off value from the design.
-     *
-     *      @param [in] tieOffValue     The selected tie off value.
-     */
-    void addOrRemoveConnection(QString const& tieOffValue);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The tie off connection.
-    QSharedPointer<AdHocConnection> tieOffConnection_;
-
     //! The design diagram containing the related ad hoc port item.
     HWDesignDiagram* containingDiagram_;
-
-    //! The containing design.
-    QSharedPointer<Design> containingDesign_;
 
     //! The old value for the tie off.
     QString oldTieOff_;

@@ -40,9 +40,10 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
 QWidget(parent),
     component_(0),
     vlnvDisplayer_(new VLNVDisplayer(this)),
-    nameGroup_(new NameGroupBox(this, tr("Instance name"))),
+    nameGroup_(new NameGroupBox(this, tr("Component instance name"))),
+    activeViewLabel_(new QLabel(this)),
     configurableElements_(0),
-    swGroup_(new QGroupBox(tr("SW"), this)),
+    swGroup_(new QGroupBox(tr("Software"), this)),
     fileSetRefCombo_(new QComboBox(this)),
     propertyValueEditor_(new PropertyValueEditor(this)),
     editProvider_(0),
@@ -75,23 +76,11 @@ QWidget(parent),
     swGroup_->hide();
 	configurableElements_->hide();
     propertyValueEditor_->hide();
-    
-    configurableElements_->setMinimumHeight(230);
 
 	vlnvDisplayer_->setTitle(tr("Component VLNV"));
 	vlnvDisplayer_->setFlat(false);
 
-    QVBoxLayout* swGroupLayout = new QVBoxLayout(swGroup_);
-    swGroupLayout->addWidget(new QLabel(tr("File set reference:"), this));
-    swGroupLayout->addWidget(fileSetRefCombo_);
-
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(vlnvDisplayer_);
-	layout->addWidget(nameGroup_);
-	layout->addWidget(configurableElements_, 1);
-    layout->addWidget(swGroup_);
-    layout->addWidget(propertyValueEditor_);
-	layout->addStretch();
+    setupLayout();
 
     connect(nameGroup_, SIGNAL(nameChanged()), this, SLOT(onNameChanged()), Qt::UniqueConnection);
     connect(nameGroup_, SIGNAL(displayNameChanged()), this, SLOT(onDisplayNameChanged()), Qt::UniqueConnection);
@@ -137,11 +126,15 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
 
 	instanceFinder_->setComponent(component->componentModel());
 
+    QString instanceView = QString();
     if (designConfiguration)
     {
-	    instanceFinder_->setActiveView(designConfiguration->getActiveView(component->name()));
+        instanceView = designConfiguration->getActiveView(component->name());
+	    instanceFinder_->setActiveView(instanceView);
     }
 
+    activeViewLabel_->parentWidget()->show();
+    activeViewLabel_->setText(instanceView);
     
     topFinder_->setActiveView(topComponent_->getModel()->findView(activeViewName));    
 
@@ -296,6 +289,7 @@ void ComponentInstanceEditor::clear()
     propertyValueEditor_->hide();
 	configurableElements_->hide();
 	configurableElements_->clear();
+    activeViewLabel_->parentWidget()->hide();
 
 	parentWidget()->setMaximumHeight(20);
 }
@@ -400,14 +394,29 @@ void ComponentInstanceEditor::onFileSetRefChanged(QString const& fileSetRef)
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::updateFileSetRef(QString const& fileSetRef)
 {
-    int index = fileSetRefCombo_->findText(fileSetRef);
+    int index = qMax(fileSetRefCombo_->findText(fileSetRef), 0);
+    fileSetRefCombo_->setCurrentIndex(index);
+}
 
-    if (index != -1)
-    {
-        fileSetRefCombo_->setCurrentIndex(index);
-    }
-    else
-    {
-        fileSetRefCombo_->setCurrentIndex(0);
-    }
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::setupLayout()
+{
+    QHBoxLayout* swGroupLayout = new QHBoxLayout(swGroup_);
+    swGroupLayout->addWidget(new QLabel(tr("File set reference:"), this));
+    swGroupLayout->addWidget(fileSetRefCombo_, 1);
+
+    QGroupBox* configurationBox = new QGroupBox(tr("Configuration"), this);
+    QFormLayout* configurationLayout = new QFormLayout(configurationBox);
+    configurationLayout->addRow(tr("Active view:"), activeViewLabel_);
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(vlnvDisplayer_);
+    layout->addWidget(nameGroup_);
+    layout->addWidget(configurationBox);
+    layout->addWidget(configurableElements_, 1);
+    layout->addWidget(swGroup_);
+    layout->addWidget(propertyValueEditor_);
+    layout->addStretch();
 }

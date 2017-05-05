@@ -47,6 +47,7 @@
 
 #include <IPXACTmodels/validators/namevalidator.h>
 
+#include <QFormLayout>
 #include <QVBoxLayout>
 #include <QSharedPointer>
 #include <QHeaderView>
@@ -63,8 +64,8 @@ QWidget(parent),
     absType_(this),
     instanceLabel_(tr("Connected interfaces:"), this),
     connectedInstances_(this),
-    separator_(this),
-    nameLabel_(tr("Connection name:"), this),
+    nameGroup_(this),
+    nameLabel_(tr("Name:"), this),
     nameEdit_(this),
     descriptionLabel_(tr("Description:"), this),
     descriptionEdit_(this),
@@ -86,7 +87,7 @@ QWidget(parent),
 	absType_.setTitle(tr("Abstraction type VLNV"));
 	absType_.setFlat(false);
 
-	separator_.setFlat(true);
+	nameGroup_.setTitle(tr("Connection name"));
 
     nameEdit_.setValidator(new NameValidator(&nameEdit_));
 
@@ -157,11 +158,7 @@ void ConnectionEditor::clear()
 	absType_.hide();
 	instanceLabel_.hide();
 	connectedInstances_.hide();
-	separator_.hide();
-	nameLabel_.hide();
-	nameEdit_.hide();
-	descriptionLabel_.hide();
-	descriptionEdit_.hide();
+	nameGroup_.hide();
 	portsLabel_.hide();
 	portWidget_.hide();
     adHocBoundsTable_.hide();
@@ -266,38 +263,27 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
 	connect(connection, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 
     bool locked = diagram_->isProtected();
-	
-    bool isAdHocConnection = connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_ADHOC;
-    bool hideNameAndDescription = connection_->getConnectionType() != ConnectionEndpoint::ENDPOINT_TYPE_ADHOC &&
-        (endpoint1->isHierarchical() || connection->endpoint2()->isHierarchical());
-
-    // name exists for only normal interconnections
-    nameEdit_.setDisabled(hideNameAndDescription || locked);
-    nameLabel_.setHidden(hideNameAndDescription);
-    nameEdit_.setHidden(hideNameAndDescription);
-
-    // if either end point is hierarchical then there is no description to set
-    // description exists only for normal interconnections
-    descriptionEdit_.setDisabled(hideNameAndDescription || locked);
-    descriptionLabel_.setHidden(hideNameAndDescription);
-    descriptionEdit_.setHidden(hideNameAndDescription);
-
+	         
+    nameEdit_.setDisabled(locked);
+    descriptionEdit_.setDisabled(locked);    
     adHocBoundsTable_.setEnabled(!locked);
-    adHocBoundsTable_.setVisible(isAdHocConnection);
 
-	// set the objects visible
+    bool isAdHocConnection = connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_ADHOC;
+    bool isBus = connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS;
+       	
+    nameGroup_.show();    
     instanceLabel_.show();
 	connectedInstances_.show();
-    separator_.show();
 
     type_.setVisible(endpoint1->getType() != ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED &&
                      endpoint2->getType() != ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED &&
                      !isAdHocConnection);
 
-    absType_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
+    absType_.setVisible(isBus);
 
-    portsLabel_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
-    portWidget_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
+    portsLabel_.setVisible(isBus || isAdHocConnection);
+    portWidget_.setVisible(isBus);
+    adHocBoundsTable_.setVisible(isAdHocConnection);
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
@@ -623,17 +609,20 @@ QPair<int, int> ConnectionEditor::calculateMappedLogicalPortBounds(QSharedPointe
 //-----------------------------------------------------------------------------
 void ConnectionEditor::setupLayout()
 {
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&type_);
-    layout->addWidget(&absType_);
-    layout->addWidget(&instanceLabel_);
-    layout->addWidget(&connectedInstances_);
-    layout->addWidget(&separator_);
-    layout->addWidget(&nameLabel_);
-    layout->addWidget(&nameEdit_);
-    layout->addWidget(&descriptionLabel_);
-    layout->addWidget(&descriptionEdit_);
-    layout->addWidget(&portsLabel_);
-    layout->addWidget(&portWidget_, 1);
-    layout->addWidget(&adHocBoundsTable_, 1);
+    QFormLayout* nameLayout = new QFormLayout(&nameGroup_);
+    nameLayout->addRow(&nameLabel_, &nameEdit_);
+    nameLayout->addRow(&descriptionLabel_, &descriptionEdit_);
+
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(&instanceLabel_, 0, 0, 1, 1);
+    layout->addWidget(&connectedInstances_, 0, 1, 1, 1);
+    layout->addWidget(&type_, 1, 0, 1, 2);
+    layout->addWidget(&absType_, 2, 0, 1, 2);
+
+    layout->addWidget(&nameGroup_, 3, 0, 1, 2);
+    layout->addWidget(&portsLabel_, 4, 0, 1, 2);
+    layout->addWidget(&portWidget_, 5, 0, 1, 2);
+    layout->addWidget(&adHocBoundsTable_, 6, 0, 1, 2);
+
+    layout->setColumnStretch(1, 1);
 }

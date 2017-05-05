@@ -130,6 +130,7 @@ private slots:
 private:
 	//! No copying.
 	ComponentInstanceEditor(const ComponentInstanceEditor& other);
+    void setupLayout();
 
 	//! No assignment.
 	ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other);
@@ -142,6 +143,8 @@ private:
 
 	//! The widget to set the instance name, display name and description.
 	NameGroupBox* nameGroup_;
+
+    QLabel* activeViewLabel_;
 
 	//! The widget to set the configurable elements of a component instance.
 	ConfigurableElementEditor* configurableElements_;

@@ -712,6 +712,10 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./editors/BusDefinitionEditor/AbsDefTreeModel.h \
     ./editors/BusDefinitionEditor/AbsDefTreeView.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1333,4 +1337,8 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./editors/BusDefinitionEditor/AbsDefTreeModel.cpp \
     ./editors/BusDefinitionEditor/AbsDefTreeView.cpp
+
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.cpp
 RESOURCES += kactus.qrc

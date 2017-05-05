@@ -34,7 +34,7 @@ QGroupBox(tr("Configurable element values"), parent),
     view_(this),
     model_(parameterFinder, listFinder, configurableElementFormatter, componentInstanceFormatter, expressionParser,
     instanceParser, this),    
-    delegate_(),
+    delegate_(0),
     filterSelection_(new QCheckBox(tr("Show immediate values"), this))
 {    
     ConfigurableElementsFilter* filter (new ConfigurableElementsFilter(this));
