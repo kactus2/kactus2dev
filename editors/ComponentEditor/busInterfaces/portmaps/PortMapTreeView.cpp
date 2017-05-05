@@ -217,7 +217,7 @@ void PortMapTreeView::onRemovePortMap()
 
         for (int i = 0; i < rowCount; ++i)
         {
-            QModelIndex index = removedIndexes.at(i);
+            QModelIndex index = removedIndexes.first();
 
             if (sortProxy != 0)
             {

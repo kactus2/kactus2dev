@@ -541,6 +541,8 @@ HEADERS += ./VersionHelper.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
     ./editors/BusDefinitionEditor/busportsdelegate.h \
+    ./editors/BusDefinitionEditor/busportsmodel.h \
+    ./editors/BusDefinitionEditor/busportsview.h \
     ./editors/CatalogEditor/CatalogFileColumns.h \
     ./editors/CatalogEditor/CatalogEditor.h \
     ./editors/CatalogEditor/CatalogFileModel.h \
@@ -709,9 +711,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/BusDefinitionEditor/AbsDefTreeModel.h \
-    ./editors/BusDefinitionEditor/AbsDefTreeView.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
@@ -1174,6 +1174,8 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/busportsdelegate.cpp \
+    ./editors/BusDefinitionEditor/busportsmodel.cpp \
+    ./editors/BusDefinitionEditor/busportsview.cpp \
     ./editors/CatalogEditor/CatalogEditor.cpp \
     ./editors/CatalogEditor/CatalogFileDelegate.cpp \
     ./editors/CatalogEditor/CatalogFileFilter.cpp \
@@ -1334,9 +1336,7 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./editors/BusDefinitionEditor/AbsDefTreeModel.cpp \
-    ./editors/BusDefinitionEditor/AbsDefTreeView.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 
     ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.cpp \

@@ -224,6 +224,7 @@ bool BusDefinitionEditor::save()
 	// If abstraction definition is being edited, save it.
 	if (absDefGroup_.isEnabled())
     {
+		absDefGroup_.save();
 		libHandler_->writeModelToFile(absDef_);
 	}
 
@@ -272,6 +273,8 @@ bool BusDefinitionEditor::saveAs()
 			return false;
 		}
 
+		absDefGroup_.save();
+
 		absDefVLNV = vlnv;
         absDefVLNV.setType(VLNV::ABSTRACTIONDEFINITION);
 
@@ -290,6 +293,8 @@ bool BusDefinitionEditor::saveAs()
 		// remove the possible .busDef from the end of the name field
 		QString absDefName = busDefVLNV.getName();
 		absDefName = absDefName.remove(".busDef", Qt::CaseInsensitive);
+
+		absDefGroup_.save();
 
 		// create automatically vlnv for the abstraction definition
 		absDefVLNV = VLNV(VLNV::ABSTRACTIONDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),

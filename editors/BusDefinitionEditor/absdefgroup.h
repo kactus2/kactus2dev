@@ -16,9 +16,6 @@
 #include "busportsmodel.h"
 #include "busportsdelegate.h"
 
-#include "AbsDefTreeView.h"
-#include "AbsDefTreeModel.h"
-
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <QGroupBox>
@@ -47,6 +44,9 @@ public:
 	//! The destructor.
 	virtual ~AbsDefGroup();
 
+	//! Saves the changes made in the editor.
+	void save();
+
 	/*! Set the abstraction definition for the editor.
 	 *
 	 *      @param [in] absDef  The Abstraction definition to edit.
@@ -64,13 +64,22 @@ signals:
 	//! Emitted when contents of this editor changes.
 	void contentChanged();
 
+	//! Emitted when an error should be printed to user.
+	void errorMessage(QString const& message);
+
+	//! Emitted when a notification should be printed to user.
+	void noticeMessage(QString const& message);
+
+    //! Inform that a port abstraction has been renamed.
+    void portRenamed(QString const& oldName, QString const& newName);
+
     //! Inform that a port abstraction has been removed.
     void portRemoved(QString const& portName, General::InterfaceMode const mode);
 
 private slots:
 
 	//! Handler for add new signal options button clicks
-    void onAddSignalOptions();
+	void onAddSignalOptions();
 
 private:
 	//! No copying
@@ -83,13 +92,13 @@ private:
 	void setupLayout();
     
 	//! The table view to display the logical signals
-	AbsDefTreeView portView_;
+	BusPortsView portView_;
 
     //! Proxy model for sorting abstract ports.
     QSortFilterProxyModel portProxy_;
 
 	//! The model that contains the logical signals of Abstraction Definition.
-	AbsDefTreeModel portModel_;
+	BusPortsModel portModel_;
 
     //! The item delegate for portView_.
     BusPortsDelegate portDelegate_;
