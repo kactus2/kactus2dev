@@ -14,16 +14,20 @@
 
 #include "activevieweditor.h"
 
-#include <QWidget>
-#include <QPushButton>
+#include <common/dialogs/createConfigurationDialog/createconfigurationdialog.h>
+
 #include <QComboBox>
+#include <QPlainTextEdit>
+#include <QPushButton>
 #include <QSharedPointer>
+#include <QWidget>
 
 class DesignWidget;
 class LibraryInterface;
 class Component;
 class View;
 class DesignConfiguration;
+class VLNVDisplayer;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the design configurations for component.
@@ -37,8 +41,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] parent      Pointer to the owner of this widget.
+	 *      @param [in] handler     The instance that manages the library.
+	 *      @param [in] parent      The owner of this widget.
 	 */
 	ConfigurationEditor(LibraryInterface* handler, QWidget *parent);
 	
@@ -48,7 +52,7 @@ public:
 	/*!
      *  Set the configuration to be displayed.
 	 *
-	 *      @param [in] designWidget    Pointer to the design widget used to edit the design.
+	 *      @param [in] designWidget    The design widget used to edit the design.
 	 */
     void setConfiguration(DesignWidget* designWidget);
 
@@ -79,9 +83,6 @@ private slots:
 	//! Handler for add button clicks.
 	void onAdd();
 
-	//! Handler for remove button clicks.
-	void onRemove();
-
 	/*!
      *  Called when user changes the current configuration.
 	 *
@@ -95,6 +96,30 @@ private:
 
 	//! No assignment.
 	ConfigurationEditor& operator=(const ConfigurationEditor& other);
+    
+    /*!
+     *  Finds the view names possible for the current design.
+     *
+     *      @return The possible view names.
+     */
+    QStringList findPossibleViews();
+ 
+    /*!
+     *  Creates a new design configuration and saves it in the library.
+     *
+     *      @param [in] dialog   The dialog containing the configuration details.
+     */
+    void createAndSaveConfiguration(CreateConfigurationDialog const& dialog);
+
+    /*!
+     *  Creates a reference to the configuration in the top component.
+     *
+     *      @param [in] configurationVLNV       The VLNV of the configuration.
+     *      @param [in] viewName                The name of the view referencing the configuration.
+     *      @param [in] designImplementation    The implementation type of the design.
+     */
+    void createTopLevelReferenceToConfiguration(VLNV const& configurationVLNV, QString const& viewName, 
+        const KactusAttribute::Implementation designImplementation);
 
 	//! Set up the layout of this widget.
 	void setuplayout();
@@ -132,25 +157,24 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the instance that manages the library.
+	//! The instance that manages the library.
 	LibraryInterface* library_;
 
 	//! Button to add new configurations to top component.
-	QPushButton addNewButton_;
-
-	//! Button to remove the selected configuration from the top component.
-	QPushButton removeButton_;
+	QPushButton* addNewButton_;
 
 	//! Combo box to select the current configuration.
-	QComboBox configurationSelector_;
+	QComboBox* configurationSelector_;
+
+    VLNVDisplayer* configurationDisplay_;
 
 	//! Editor to select the active view for each component instance.
-	ActiveViewEditor activeViewEditor_;
+	ActiveViewEditor* activeViewEditor_;
 
-	//! Pointer to the top component being edited.
-	QSharedPointer<Component> component_;
+	//! The top component being edited.
+	QSharedPointer<Component> topComponent_;
 
-	//! Pointer to the design widget that contains the design.
+	//! The design widget that contains the design.
 	DesignWidget* designWidget_;
 };
 

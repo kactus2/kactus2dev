@@ -196,7 +196,7 @@ private:
 	QLabel connectedInstances_;
 
 	//! Used to separate the connected interfaces from name edit
-	QGroupBox separator_;
+	QGroupBox nameGroup_;
 
 	//! Label for connection name.
 	QLabel nameLabel_;

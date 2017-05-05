@@ -179,7 +179,7 @@ private:
     QLineEdit busNameEditor_;
 
     //! The editor for the interface mode.
-    QComboBox modeEdit_;
+    QComboBox modeSelector_;
 
     //! The view for the port mappings.
     EditableTableView portMapsView_;

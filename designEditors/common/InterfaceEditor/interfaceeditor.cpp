@@ -61,7 +61,7 @@ QStackedWidget(parent),
     busType_(this),
     absType_(this),
     busNameEditor_(this),
-    modeEdit_(this),
+    modeSelector_(this),
     portMapsView_(this),
     portMapsModel_(new InterfacePortMapModel(handler, this)),
     busDescriptionEditor_(this),
@@ -146,18 +146,18 @@ void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer
     bool editingEnabled = !locked_ && (interface_->isTemporary() || !interface_->isTypeLocked());
 
     busNameEditor_.setEnabled(editingEnabled);
-    busDescriptionEditor_.setEnabled(editingEnabled);
-    modeEdit_.setEnabled(editingEnabled);
+    busDescriptionEditor_.setReadOnly(!editingEnabled);
+    modeSelector_.setEnabled(editingEnabled);
     portMapsModel_->setLock(locked_);
 
     apiNameEditor_.setEnabled(editingEnabled);
     dependencyDirCombo_.setEnabled(editingEnabled);
     transferTypeCombo_.setEnabled(editingEnabled);
-    apiDescriptionEditor_.setEnabled(editingEnabled);
+    apiDescriptionEditor_.setReadOnly(!editingEnabled);
 
     comNameEditor_.setEnabled(editingEnabled);
     comDirectionCombo_.setEnabled(editingEnabled);
-    comDescriptionEditor_.setEnabled(editingEnabled);
+    comDescriptionEditor_.setReadOnly(!editingEnabled);
     propertyValueEditor_.setLock(locked_);    
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
@@ -339,13 +339,13 @@ void InterfaceEditor::setBusInterface()
     }
 
     // Set selection for mode editor, signal must be disconnected when mode is set to avoid loops.
-    disconnect(&modeEdit_, SIGNAL(currentIndexChanged(QString const&)),
+    disconnect(&modeSelector_, SIGNAL(currentIndexChanged(QString const&)),
         this, SLOT(onInterfaceModeChanged(QString const&)));
 
-    int index = modeEdit_.findText(General::interfaceMode2Str(interface_->getBusInterface()->getInterfaceMode()));
-    modeEdit_.setCurrentIndex(index);
+    int index = modeSelector_.findText(General::interfaceMode2Str(interface_->getBusInterface()->getInterfaceMode()));
+    modeSelector_.setCurrentIndex(index);
 
-    connect(&modeEdit_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(&modeSelector_, SIGNAL(currentIndexChanged(QString const&)),
         this, SLOT(onInterfaceModeChanged(QString const&)), Qt::UniqueConnection);
 
     portMapsModel_->setInterfaceData(interface_, getActiveInterfaces());
@@ -545,7 +545,7 @@ void InterfaceEditor::setupBusEditor()
     // set the possible modes to the mode editor
     for (int i = 0; i <= General::INTERFACE_MODE_COUNT; i++)
     {
-        modeEdit_.addItem(General::INTERFACE_MODE_NAMES[i]);
+        modeSelector_.addItem(General::INTERFACE_MODE_NAMES[i]);
     }
 
     portMapsView_.setSortingEnabled(true);
@@ -566,18 +566,22 @@ void InterfaceEditor::setupBusEditor()
 
     connect(portMapsModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
+    QGroupBox* nameAndModeGroup = new QGroupBox(tr("Bus interface name"), this);
+    QFormLayout* nameLayout = new QFormLayout(nameAndModeGroup);
+    nameLayout->addRow(tr("Name:"), &busNameEditor_);
+    nameLayout->addRow(tr("Interface mode:"), &modeSelector_);
+    nameLayout->addRow(tr("Description:"), &busDescriptionEditor_);
+
+    QGroupBox* portMapGroup = new QGroupBox(tr("Port maps"), this);
+    QVBoxLayout* portMapLayout = new QVBoxLayout(portMapGroup);
+    portMapLayout->addWidget(&portMapsView_);
+
     QWidget* busTypeEditor(new QWidget(this));
     QVBoxLayout* busLayout(new QVBoxLayout(busTypeEditor));
     busLayout->addWidget(&busType_);
     busLayout->addWidget(&absType_);
-    busLayout->addWidget(new QLabel(tr("Bus interface name:"), this));
-    busLayout->addWidget(&busNameEditor_);
-    busLayout->addWidget(new QLabel(tr("Interface mode:"), this));
-    busLayout->addWidget(&modeEdit_);
-    busLayout->addWidget(new QLabel(tr("Description:"), this));
-    busLayout->addWidget(&busDescriptionEditor_, 1);    
-    busLayout->addWidget(new QLabel(tr("Port maps:"), this));
-    busLayout->addWidget(&portMapsView_, 1, Qt::AlignTop);
+    busLayout->addWidget(nameAndModeGroup);
+    busLayout->addWidget(portMapGroup, 1, Qt::AlignTop);
 
     insertWidget(BUS, busTypeEditor);
 }
@@ -596,17 +600,17 @@ void InterfaceEditor::setupComEditor()
     comDirectionCombo_.addItem("out");
     comDirectionCombo_.addItem("inout");
 
+    QGroupBox* nameAndTypeGroup = new QGroupBox(tr("COM interface name"), this);
+    QFormLayout* nameLayout = new QFormLayout(nameAndTypeGroup);
+    nameLayout->addRow(tr("Name:"), &comNameEditor_);
+    nameLayout->addRow(tr("Transfer type:"), &transferTypeCombo_);
+    nameLayout->addRow(tr("Direction:"), &comDirectionCombo_);
+    nameLayout->addRow(tr("Description:"), &comDescriptionEditor_);
+
     QWidget* comTypeEditor = new QWidget(this);
     QVBoxLayout* comLayout = new QVBoxLayout(comTypeEditor);
     comLayout->addWidget(&comType_);
-    comLayout->addWidget(new QLabel(tr("COM interface name:"), this));
-    comLayout->addWidget(&comNameEditor_);
-    comLayout->addWidget(new QLabel(tr("Transfer type:"), this));
-    comLayout->addWidget(&transferTypeCombo_);
-    comLayout->addWidget(new QLabel(tr("Direction:"), this));
-    comLayout->addWidget(&comDirectionCombo_);
-    comLayout->addWidget(new QLabel(tr("Description:"), this));
-    comLayout->addWidget(&comDescriptionEditor_);    
+    comLayout->addWidget(nameAndTypeGroup); 
     comLayout->addWidget(&propertyValueEditor_, 1);
 
     insertWidget(COM, comTypeEditor);
@@ -625,16 +629,16 @@ void InterfaceEditor::setupApiEditor()
     dependencyDirCombo_.addItem("requester");
     dependencyDirCombo_.addItem("provider");
 
+    QGroupBox* nameAndDirectionGroup = new QGroupBox(tr("API interface name"), this);
+    QFormLayout* nameLayout = new QFormLayout(nameAndDirectionGroup);
+    nameLayout->addRow(tr("Name:"), &apiNameEditor_);
+    nameLayout->addRow(tr("Dependency direction:"), &dependencyDirCombo_);
+    nameLayout->addRow(tr("Description:"), &apiDescriptionEditor_);
+
     QWidget* apiTypeEditor = new QWidget(this);
     QVBoxLayout* apiLayout = new QVBoxLayout(apiTypeEditor);
     apiLayout->addWidget(&apiType_);
-    apiLayout->addWidget(new QLabel(tr("API interface name:"), this));
-    apiLayout->addWidget(&apiNameEditor_);
-    apiLayout->addWidget(new QLabel(tr("Dependency direction:"), this));
-    apiLayout->addWidget(&dependencyDirCombo_);
-    apiLayout->addWidget(new QLabel(tr("Description:"), this));
-    apiLayout->addWidget(&apiDescriptionEditor_, 1);   
-    apiLayout->addStretch(1);
+    apiLayout->addWidget(nameAndDirectionGroup);
 
     insertWidget(API, apiTypeEditor);
 }

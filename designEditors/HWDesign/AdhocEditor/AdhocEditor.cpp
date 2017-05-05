@@ -40,19 +40,19 @@
 //-----------------------------------------------------------------------------
 AdHocEditor::AdHocEditor(QWidget* parent):
 QWidget(parent),
-componentFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-expressionParser_(new IPXactSystemVerilogParser(componentFinder_)),
-expressionFormatter_(new ExpressionFormatter(componentFinder_)),
-portName_(new QLabel(this)),
-portDirection_(new QLabel(this)),
-leftBoundValue_(new QLabel(this)),
-rightBoundValue_(new QLabel(this)),
-tiedValueEditor_(new ExpressionEditor(componentFinder_, this)),
-containedPortItem_(),
-editProvider_(),
-designDiagram_(),
-tiedValueLeftBoundEditor_(new ExpressionEditor(componentFinder_, this)),
-tiedValueRightBoundEditor_(new ExpressionEditor(componentFinder_, this))
+    componentFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
+    expressionParser_(new IPXactSystemVerilogParser(componentFinder_)),
+    expressionFormatter_(new ExpressionFormatter(componentFinder_)),
+    portName_(new QLabel(this)),
+    portDirection_(new QLabel(this)),
+    leftBoundValue_(new QLabel(this)),
+    rightBoundValue_(new QLabel(this)),
+    tiedValueEditor_(new ExpressionEditor(componentFinder_, this)),
+    containedPortItem_(),
+    editProvider_(),
+    designDiagram_(),
+    tiedValueLeftBoundEditor_(new ExpressionEditor(componentFinder_, this)),
+    tiedValueRightBoundEditor_(new ExpressionEditor(componentFinder_, this))
 {
     tiedValueEditor_->setFixedHeight(20);
 
@@ -100,34 +100,6 @@ AdHocEditor::~AdHocEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdhocEditor::setupLayout()
-//-----------------------------------------------------------------------------
-void AdHocEditor::setupLayout()
-{
-    QVBoxLayout* topLayout = new QVBoxLayout();
-    QFormLayout* overallLayout = new QFormLayout();
-
-    overallLayout->addRow(tr("Name:"), portName_);
-    overallLayout->addRow(tr("Direction:"), portDirection_);
-    overallLayout->addRow(tr("Left bound:"), leftBoundValue_);
-    overallLayout->addRow(tr("Right bound:"), rightBoundValue_);
-
-    topLayout->addLayout(overallLayout);
-
-    QFormLayout* tiedValueLayout = new QFormLayout();
-    tiedValueLayout->addRow(tr("Tied value:"), tiedValueEditor_);
-    tiedValueLayout->addRow(tr("Tied value left bound:"), tiedValueLeftBoundEditor_);
-    tiedValueLayout->addRow(tr("Tied value right bound:"), tiedValueRightBoundEditor_);
-
-    QGroupBox* tiedValueGroup = new QGroupBox(QStringLiteral("Tied value"));
-    tiedValueGroup->setLayout(tiedValueLayout);
-
-    topLayout->addWidget(tiedValueGroup);
-
-    setLayout(topLayout);
-}
-
-//-----------------------------------------------------------------------------
 // Function: AdhocEditor::setAdhocPort()
 //-----------------------------------------------------------------------------
 void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingDiagram,
@@ -142,13 +114,8 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingD
     editProvider_ = editProvider;
     containedPortItem_ = endPoint;
 
-    portName_->show();
-    portDirection_->show();
-    leftBoundValue_->show();
-    rightBoundValue_->show();
-    tiedValueEditor_->show();
-    tiedValueLeftBoundEditor_->show();
-    tiedValueRightBoundEditor_->show();
+    portName_->parentWidget()->show();
+    tiedValueEditor_->parentWidget()->show();
 
     AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(containedPortItem_);
     AdHocInterfaceItem* adhocInterfaceItem = dynamic_cast<AdHocInterfaceItem*>(containedPortItem_);
@@ -208,6 +175,17 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingD
 
         parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocEditor::clear()
+//-----------------------------------------------------------------------------
+void AdHocEditor::clear()
+{
+    portName_->parentWidget()->hide();
+    tiedValueEditor_->parentWidget()->hide();
+
+    parentWidget()->setMaximumHeight(20);
 }
 
 //-----------------------------------------------------------------------------
@@ -525,17 +503,24 @@ QString AdHocEditor::getParsedTieOffValue(QString const& tieOffValue) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocEditor::clear()
+// Function: AdhocEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void AdHocEditor::clear()
+void AdHocEditor::setupLayout()
 {
-    portName_->hide();
-    portDirection_->hide();
-    leftBoundValue_->hide();
-    rightBoundValue_->hide();
-    tiedValueEditor_->hide();
-    tiedValueLeftBoundEditor_->hide();
-    tiedValueRightBoundEditor_->hide();
+    QGroupBox* detailBox = new QGroupBox(tr("Port information"), this);
+    QFormLayout* overallLayout = new QFormLayout(detailBox);
+    overallLayout->addRow(tr("Name:"), portName_);
+    overallLayout->addRow(tr("Direction:"), portDirection_);
+    overallLayout->addRow(tr("Left bound:"), leftBoundValue_);
+    overallLayout->addRow(tr("Right bound:"), rightBoundValue_);
 
-    parentWidget()->setMaximumHeight(20);
+    QGroupBox* tiedValueGroup = new QGroupBox(tr("Tied value"));
+    QFormLayout* tiedValueLayout = new QFormLayout(tiedValueGroup);
+    tiedValueLayout->addRow(tr("Tied value:"), tiedValueEditor_);
+    tiedValueLayout->addRow(tr("Tied value left bound:"), tiedValueLeftBoundEditor_);
+    tiedValueLayout->addRow(tr("Tied value right bound:"), tiedValueRightBoundEditor_);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addWidget(detailBox);
+    topLayout->addWidget(tiedValueGroup);
 }

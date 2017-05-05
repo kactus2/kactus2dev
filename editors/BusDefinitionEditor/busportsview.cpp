@@ -20,6 +20,7 @@ BusPortsView::BusPortsView(QWidget *parent):
 EditableTableView(parent),
 addOptionsAction_(tr("Add signal options"), this)
 {
+
     connect(&addOptionsAction_, SIGNAL(triggered()), this, SIGNAL(addSignalOptions()), Qt::UniqueConnection);
 }
 

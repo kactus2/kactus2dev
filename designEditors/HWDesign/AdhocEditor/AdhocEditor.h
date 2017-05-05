@@ -98,11 +98,6 @@ private:
 	AdHocEditor& operator=(AdHocEditor const& rhs);
 
     /*!
-     *  Setup the layout.
-     */
-    void setupLayout();
-
-    /*!
      *  Calculate the formatted value for a given expression.
      *
      *      @param [in] expression  The selected expression.
@@ -175,6 +170,11 @@ private:
      *      @param [in] newRightBound   New value for the right bounds of the tied value.
      */
     void createTieOffBoundsChangeCommand(QString const& newLeftBound, QString const& newRightBound);
+    
+    /*!
+     *  Setup the layout.
+     */
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
