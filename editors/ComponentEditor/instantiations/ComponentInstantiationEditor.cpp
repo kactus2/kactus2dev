@@ -44,7 +44,8 @@ fileSetRefs_(component, tr("File set references"), this),
 fileBuilders_(componentInstantiation->getDefaultFileBuilders(), parameterFinder, expressionParser,
               expressionFormatter, this),
 moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
-expressionFormatter, this)
+expressionFormatter, this),
+parameters_(componentInstantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this)
 {
     fileSetRefs_.initialize();
 
@@ -85,6 +86,14 @@ expressionFormatter, this)
     connect(&moduleParameters_, SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
+    connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&parameters_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&parameters_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(&parameters_, SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
     setupLayout();
 }
 
@@ -123,6 +132,8 @@ void ComponentInstantiationEditor::refresh()
     fileBuilders_.refresh();
 
     moduleParameters_.refresh();
+
+    parameters_.refresh();
 
     blockSignals(false);
 }
@@ -256,6 +267,7 @@ void ComponentInstantiationEditor::setupLayout()
     topLayout->addWidget(&fileSetRefs_, 1, 0, 1, 1);
     topLayout->addWidget(&fileBuilders_, 1, 1, 1, 1);
     topLayout->addWidget(&moduleParameters_, 2, 0, 1, 2);
+    topLayout->addWidget(&parameters_, 3, 0, 1, 2);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
     topLayout->setRowStretch(0, 1);

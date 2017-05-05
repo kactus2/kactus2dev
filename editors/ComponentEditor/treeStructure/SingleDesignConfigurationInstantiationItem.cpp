@@ -23,14 +23,20 @@ SingleDesignConfigurationInstantiationItem::SingleDesignConfigurationInstantiati
     ComponentEditorTreeModel* model, 
     LibraryInterface* libHandler,
     QSharedPointer<Component> component, 
+    QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<DesignConfigurationInstantiation> instantiation,
     QSharedPointer<InstantiationsValidator> validator,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
     instantiation_(instantiation),
-    validator_(validator)
+    validator_(validator),
+    parameterFinder_(parameterFinder),
+    expressionFormatter_(expressionFormatter)
 {
     setObjectName(tr("ComponentInstantiationsItem"));
+    setReferenceCounter(referenceCounter);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,11 +78,14 @@ ItemEditor* SingleDesignConfigurationInstantiationItem::editor()
 {
 	if (!editor_)
     {
- 		editor_ = new DesignConfigurationInstantiationEditor(component_, instantiation_, libHandler_, 0);
+ 		editor_ = new DesignConfigurationInstantiationEditor(component_, instantiation_, parameterFinder_,
+            expressionFormatter_, libHandler_, 0);
  		editor_->setProtection(locked_);
  
  		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
- 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+        connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

@@ -13,10 +13,13 @@
 #define DESIGNCONFIGURATIONINSTANTIATIONEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 class DesignConfigurationInstantiation;
 class NameGroupEditor;
 class VLNVEditor;
+class ParameterFinder;
+class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! Editor for design configuration instantiations.
@@ -29,14 +32,19 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component       The component being edited.
-     *      @param [in] instantiation	The instantiation being edited.	
-     *      @param [in] libHandler      The available IP-XACT library.
-     *      @param [in] parent          The parent widget.
+     *      @param [in] component               The component being edited.
+     *      @param [in] instantiation	        The instantiation being edited.	
+     *      @param [in] libHandler              The available IP-XACT library.
+     *      @param [in] parameterFinder         Pointer to the parameter finder.
+     *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] parent                  The parent widget.
      */
 	DesignConfigurationInstantiationEditor(QSharedPointer<Component> component, 
         QSharedPointer<DesignConfigurationInstantiation> instantiation,
-		LibraryInterface* libHandler, QWidget* parent);
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+		LibraryInterface* libHandler,
+        QWidget* parent);
 
     //! Destructor.
     virtual ~DesignConfigurationInstantiationEditor();
@@ -74,6 +82,9 @@ private:
 
     //! VLNV editor for the design configuration reference.
     VLNVEditor* designConfigurationEditor_;
+
+    //! Contains the parameters editor.
+    ParameterGroupBox parameters_;
 };
 
 //-----------------------------------------------------------------------------

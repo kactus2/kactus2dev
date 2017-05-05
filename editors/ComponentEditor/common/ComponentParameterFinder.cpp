@@ -246,18 +246,16 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() 
     // Go through the specified views.
     foreach (QSharedPointer<View> view, *views)
     {
-        QSharedPointer<ComponentInstantiation> instantiation = component_->getModel()->
+        QSharedPointer<ComponentInstantiation> componentInstantiation = component_->getModel()->
             findComponentInstantiation(view->getComponentInstantiationRef());
 
-        // If an instantiation exists, append its module parameters as well as parameters.
-        if (instantiation)
+        // If a component instantiation exists, append its module parameters to the list.
+        if (componentInstantiation)
         {
-            foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
+            foreach (QSharedPointer<ModuleParameter> parameter, *componentInstantiation->getModuleParameters())
             {
                 viewParameters.append(parameter);
             }
-
-            viewParameters.append(*instantiation->getParameters());
         }
     }
 

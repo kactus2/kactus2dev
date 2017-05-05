@@ -19,6 +19,7 @@
 class View;
 class ComponentInstantiation;
 class FileSet;
+class GenerationSettings;
 
 //-----------------------------------------------------------------------------
 //! Container class for view selection.
@@ -28,8 +29,9 @@ class ViewSelection
 public:
 
 	//! The constructor.
-	ViewSelection(QString const& targetLanguage, QString const& targetGroup, QString const& defaultViewName,
-        QString const& defaultFileSetName, QSharedPointer<QList<QSharedPointer<View> > > views,
+    ViewSelection(QString const& targetLanguage,
+        bool saveToFileset, QString const& targetGroup,
+        GenerationSettings* settings, QSharedPointer<QList<QSharedPointer<View> > > views,
         QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations,
         QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets);
 

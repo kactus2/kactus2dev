@@ -48,7 +48,7 @@ GenerationControl::GenerationControl(LibraryInterface* library,
 
     // Initialize model for view selection.
     viewSelection_ = QSharedPointer<ViewSelection>(
-        new ViewSelection(factory->getLanguage(), factory_->getGroupIdentifier(), settings_->lastViewName_, settings_->lastFileSetName_,
+        new ViewSelection(factory->getLanguage(), factory_->getSaveToFileset(), factory_->getGroupIdentifier(), settings_,
         possibleViews, possibleInstantiations, possibleFileSets));
 
     // Set the defaults for convenience.

@@ -51,6 +51,11 @@ public:
     virtual QString getLanguage() const = 0;
     
     /*!
+     *  Returns true, if it is desirable to save the output to file set by default.
+     */
+    virtual bool getSaveToFileset() const = 0;
+    
+    /*!
      *  Returns the group identifier suitable for the produced files.
      */
     virtual QString getGroupIdentifier() const = 0;
