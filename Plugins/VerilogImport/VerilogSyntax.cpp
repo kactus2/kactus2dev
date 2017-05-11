@@ -15,6 +15,18 @@
 #include <QFile>
 
 //-----------------------------------------------------------------------------
+// Function: VerilogSyntax::legalizeName()
+//-----------------------------------------------------------------------------
+QString VerilogSyntax::legalizeName(QString const& name)
+{
+    QRegExp illegalCharacters("[:.-]+");
+    QString legitName = name;
+    legitName = legitName.replace(illegalCharacters, "_");
+
+    return legitName;
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogSyntax::cullStrayComments()
 //-----------------------------------------------------------------------------
 QString VerilogSyntax::cullStrayComments(QString const& input)
@@ -88,10 +100,10 @@ QPair<int,int> VerilogSyntax::findModuleDeclaration(QString const& input)
         return retval;
     }
 
-    // The position for the modue declaration ending = position on the line + stream position before the line.
+    // The position for the module declaration ending = position on the line + stream position before the line.
     moduleDeclarationEndIndex = moduleDeclarationEndIndex + streamPos;
     // Set it as a return value.
-    retval.second = moduleDeclarationEndIndex -  moduleDeclarationBeginIndex;
+    retval.second = moduleDeclarationEndIndex - moduleDeclarationBeginIndex;
 
     return retval;
 }
@@ -112,7 +124,7 @@ bool VerilogSyntax::selectImplementation(QString const& code, QString& implement
 
     // Rip the implementation once detected.
     int implementationLength = implementationEnd - implementationStart;
-    implementation = code.mid(implementationStart,implementationLength);
+    implementation = code.mid(implementationStart, implementationLength);
 
     // Then take all the text that comes after the module, just in case.
     int postStart = implementationEnd + 9;

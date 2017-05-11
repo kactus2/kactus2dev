@@ -59,12 +59,12 @@ public:
 	/*! 
 	 *      Sets implementation module writer that will write the module implementation.
 	 */
-	void setImplementation( QSharedPointer<TextBodyWriter> implementation );
+	void setImplementation(QSharedPointer<TextBodyWriter> implementation);
 	
 	/*! 
 	 *      Sets post module writer that will write the post module.
 	 */
-	void setPostModule( QSharedPointer<TextBodyWriter> postModule );
+    void setPostModule(QSharedPointer<TextBodyWriter> postModule);
 
 private:
 	// Disable copying.
@@ -182,7 +182,7 @@ private:
 	QSharedPointer<TextBodyWriter> implementation_;
 
 	//! The extra stuff that comes after the written module.
-	QSharedPointer<TextBodyWriter> postModule_;
+    QSharedPointer<TextBodyWriter> postModule_;
 };
 
 #endif // COMPONENTVERILOGWRITER_H

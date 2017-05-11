@@ -93,12 +93,6 @@ struct VerilogDocument : public GenerationOutput
      */
 	bool selectImplementation(QString const& code, QString& implementation,
         QString& postModule, QString& error);
-    
-private:
-
-    // Location of the implementation that is detected for document.
-    int implementationStart_;
-    int implementationEnd_;
 };
 
 #endif // VERILOGDOCUMENT_H

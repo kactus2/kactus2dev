@@ -44,6 +44,10 @@ private slots:
 
 private:
 
+    // The ouputs from implementation selection.
+    QString implementation;
+    QString postModule;
+    QString error;
 
     //! The test mock for library interface.
     LibraryMock library_;
@@ -112,9 +116,6 @@ void tst_ImplementationSelection::testImplementationSelection()
 
 	
 
-	QString implementation;
-    QString postModule;
-    QString error;
 
 	VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
@@ -144,12 +145,7 @@ void tst_ImplementationSelection::testImplementationSelectionWithEvilComments()
         "endmodule\n"
         ); 
 
-    QString implementation;
-    QString postModule;
-    QString error;
-
     VerilogSyntax::selectImplementation(content, implementation, postModule, error);
-
     implementation = implementation.trimmed();
 
     QCOMPARE(implementation,QString("foo\nbar"));
@@ -177,10 +173,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithTag()
 		"endmodule\n"
 		); 
 
-	QString implementation;
-    QString postModule;
-    QString error;
-
     VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	implementation = implementation.trimmed();
@@ -207,9 +199,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithoutParameters()
 		"endmodule\n"
 		); 
 
-	QString implementation;
-    QString postModule;
-    QString error;
     VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	implementation = implementation.trimmed();
@@ -228,12 +217,7 @@ void tst_ImplementationSelection::testImplementationSelectionWithoutPorts()
 		"endmodule\n"
 		); 
 
-	QString implementation;
-    QString postModule;
-    QString error;
-
     VerilogSyntax::selectImplementation(content, implementation, postModule, error);
-
 	implementation = implementation.trimmed();
 
 	QCOMPARE(implementation,QString("dataOut <= rst_n & clk"));
@@ -272,8 +256,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithInstantiation()
 		");");
 
 	QString actualImplementation;
-    QString postModule;
-    QString error;
 
 	VerilogSyntax::selectImplementation(content + expectedImplementation + "endmodule",
         actualImplementation, postModule, error);
@@ -313,9 +295,7 @@ void tst_ImplementationSelection::testImplementationSelectionWithPostModule()
 		"bar"
 		); 
 
-	QString implementation;
     QString actualPostModule;
-    QString error;
 
 	VerilogSyntax::selectImplementation(content + "\n" + expectedPostModule,
         implementation, actualPostModule, error);
@@ -361,10 +341,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithTooManyModules(
 		"endmodule"
 		); 
 
-	QString implementation;
-    QString postModule;
-    QString error;
-
     bool success = VerilogSyntax::selectImplementation(content + "\n" + extraModule,
         implementation, postModule, error);
 
@@ -392,10 +368,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderS
 		"endmodule\n"
 		); 
 
-	QString implementation;
-    QString postModule;
-    QString error;
-
     bool success = VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	QVERIFY(!success);
@@ -422,10 +394,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderE
 		"endmodule\n"
 		); 
 	
-	QString implementation;
-    QString postModule;
-    QString error;
-
     bool success =  VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	QVERIFY(!success);
@@ -452,11 +420,7 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleEnd()
 		"bar\n"
 		); 
 
-	QString implementation;
-    QString postModule;
-    QString error;
-
-    bool success = VerilogSyntax::selectImplementation(content, implementation, postModule, error);;
+    bool success = VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	QVERIFY(!success);
 }

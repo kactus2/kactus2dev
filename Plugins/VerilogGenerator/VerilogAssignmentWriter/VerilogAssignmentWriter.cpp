@@ -11,6 +11,8 @@
 
 #include "VerilogAssignmentWriter.h"
 
+#include <Plugins/VerilogImport/VerilogSyntax.h>
+
 //-----------------------------------------------------------------------------
 // Function: VerilogAssignmentWriter::VerilogAssignmentWriter()
 //-----------------------------------------------------------------------------
@@ -100,7 +102,7 @@ QString VerilogAssignmentWriter::assignmentForPort() const
             assignmentString.replace("<logicalRight>", logicalBounds.second);
         }
 
-        assignmentString.replace("<logicalWireName>", mpa_->wire_->name_);
+        assignmentString.replace("<logicalWireName>", VerilogSyntax::legalizeName(mpa_->wire_->name_));
     }
     else if ((!isInHierPort_ && isInPort) || (isInHierPort_ && isOutPort))
     {

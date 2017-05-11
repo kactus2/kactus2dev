@@ -14,7 +14,8 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogWireWriter::VerilogWireWriter()
 //-----------------------------------------------------------------------------
-VerilogWireWriter::VerilogWireWriter(QString name, QPair<QString, QString> bounds) : name_(name), bounds_(bounds)
+VerilogWireWriter::VerilogWireWriter(QString name, QPair<QString, QString> bounds)
+    : name_(name), bounds_(bounds)
 {
 
 }
