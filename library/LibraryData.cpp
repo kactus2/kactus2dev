@@ -77,34 +77,38 @@
 #include <QTimer>
 #include <QWidget>
 
+
 //-----------------------------------------------------------------------------
 // Function: librarydata::()
 //-----------------------------------------------------------------------------
 LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget):
-QObject(parent),
-parentWidget_(parentWidget),
-libraryItems_(),
-handler_(parent),
-progressWidget_(0),
-timerSteps_(0),
-timerStep_(0),
-timer_(0),
-locations_(),
-iterObjects_(),
-failedObjects_(0),
-fileCount_(0),
-urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),
-componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
-componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
-                    handler_),
-designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
-designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
-systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_)
+    QObject(parent),
+    parentWidget_(parentWidget),
+    libraryItems_(),
+    handler_(parent),
+    progressWidget_(0),
+    timerSteps_(0),
+    timerStep_(0),
+    timer_(0),
+    locations_(),
+    iterObjects_(),
+    failedObjects_(0),
+    fileCount_(0),
+    urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),
+    componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
+    componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
+                        handler_),
+    designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+    designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+    systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+    fileWatch_(new QFileSystemWatcher(this))
 {
 	connect(this, SIGNAL(errorMessage(QString const&)),
         parent, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(QString const&)),
 		parent, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+    connect(fileWatch_, SIGNAL(fileChanged(QString const&)),
+            this, SLOT(onFileChanged(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -173,6 +177,7 @@ bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 
 	// add the component to the library
 	libraryItems_.insert(vlnv, path);
+    fileWatch_->addPath(path);
 
 	emit addVLNV(vlnv);
 
@@ -188,31 +193,6 @@ bool LibraryData::contains(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryData::onRemoveVLNV()
-//-----------------------------------------------------------------------------
-void LibraryData::onRemoveVLNV(VLNV const& vlnv)
-{
-	if (!libraryItems_.contains(vlnv))
-    {
-		return;
-	}
-
-    QString documentPath = getPath(vlnv);
-
-    QFile xmlFile(documentPath);
-    if (!xmlFile.exists())
-    {
-        emit errorMessage(tr("File %1 was not found in file system").arg(documentPath));
-    }
-    else if (!xmlFile.remove())
-    {
-        emit errorMessage(tr("Could not remove file %1").arg(documentPath));
-    }
-
-    libraryItems_.remove(vlnv);
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryData::getType()
 //-----------------------------------------------------------------------------
 VLNV::IPXactType LibraryData::getType(VLNV const& vlnv) const
@@ -225,14 +205,6 @@ VLNV::IPXactType LibraryData::getType(VLNV const& vlnv) const
     {
 		return libraryItems_.find(vlnv).key().getType();
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::resetLibrary()
-//-----------------------------------------------------------------------------
-void LibraryData::resetLibrary()
-{
-	emit resetModel();
 }
 
 //-----------------------------------------------------------------------------
@@ -277,7 +249,12 @@ void LibraryData::checkLibraryIntegrity()
 void LibraryData::parseLibrary()
 {
 	// clear the previous items in the library
-	libraryItems_.clear();
+    if (!libraryItems_.isEmpty())
+    {
+        fileWatch_->removePaths(libraryItems_.values());
+    }
+
+    libraryItems_.clear();
 
 	QSettings settings;
 
@@ -390,6 +367,7 @@ void LibraryData::parseFile(QString const& filePath)
 
 	// add the component to the library if parsing was successful
 	libraryItems_.insert(vlnv, filePath);
+    fileWatch_->addPath(filePath);
 }
 
 //-----------------------------------------------------------------------------
@@ -641,6 +619,75 @@ void LibraryData::performIntegrityCheckStep()
 
         delete progressWidget_;
         progressWidget_ = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::onRemoveVLNV()
+//-----------------------------------------------------------------------------
+void LibraryData::onRemoveVLNV(VLNV const& vlnv)
+{
+    if (!libraryItems_.contains(vlnv))
+    {
+        return;
+    }
+
+    QString documentPath = getPath(vlnv);
+
+    fileWatch_->removePath(documentPath);
+
+    QFile xmlFile(documentPath);
+    if (!xmlFile.exists())
+    {
+        emit errorMessage(tr("File %1 was not found in file system").arg(documentPath));
+    }
+    else if (!xmlFile.remove())
+    {
+        emit errorMessage(tr("Could not remove file %1").arg(documentPath));
+    }
+
+
+    libraryItems_.remove(vlnv);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::resetLibrary()
+//-----------------------------------------------------------------------------
+void LibraryData::resetLibrary()
+{
+    emit resetModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::onFileChanged()
+//-----------------------------------------------------------------------------
+void LibraryData::onFileChanged(QString const& path)
+{
+    VLNV changedDocument = libraryItems_.key(path, VLNV());
+
+    // Attempt parsing again, if a known (previously invalid) file has changed.
+    if (changedDocument.isEmpty())
+    {
+        parseFile(path);
+
+        changedDocument = libraryItems_.key(path, VLNV());
+
+        if (!changedDocument.isEmpty())
+        {
+            emit addVLNV(changedDocument);
+        }
+    }
+
+    // Check, if the changed file is still valid XML.
+    QSharedPointer<Document> changedModel = getModel(changedDocument);
+    if (changedModel.isNull())
+    {
+        libraryItems_.remove(changedDocument);
+        emit removeVLNV(changedDocument);
+    }
+    else
+    {
+        emit updatedVLNV(changedDocument);
     }
 }
 

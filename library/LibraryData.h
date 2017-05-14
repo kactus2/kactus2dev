@@ -29,6 +29,7 @@
 #include <QTimer>
 #include <QRegExpValidator>
 #include <QWidget>
+#include <QFileSystemWatcher>
 
 class AbstractionDefinition;
 class BusDefinition;
@@ -163,6 +164,9 @@ signals:
 	//! Inform tree model that a vlnv is to be added to the tree.
 	void addVLNV(VLNV const& vlnv);
 
+    //! Inform that object has been updated.
+    void updatedVLNV(VLNV const& vlnv);
+
 	//! Inform tree model that the model should be reset
 	void resetModel();
 
@@ -179,6 +183,15 @@ public slots:
 
 	//! Reset the library
 	void resetLibrary();
+
+ private slots:
+
+    /*!
+     *  Called when a known IP-XACT file has changed on the disk.
+     *
+     *      @param [in] path    The path to the changed file.
+     */
+    void onFileChanged(QString const& path);
 
 private:
 
@@ -368,6 +381,10 @@ private:
 
     //! The used system design configuration validator.
     SystemDesignConfigurationValidator systemDesignConfigurationValidator_;
+
+    //! Watch for changes in the IP-XACT files.
+    QFileSystemWatcher* fileWatch_;
+
 };
 
 #endif // LIBRARYDATA_H

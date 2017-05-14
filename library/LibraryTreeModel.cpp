@@ -510,9 +510,9 @@ void LibraryTreeModel::onResetModel()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onComponentSaved()
+// Function: LibraryTreeModel::onDocumentUpdated()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onDocumentSaved(VLNV const& vlnv)
+void LibraryTreeModel::onDocumentUpdated(VLNV const& vlnv)
 {
     LibraryItem* item = rootItem_->findHighestUnique(vlnv);
     if (item)

@@ -731,14 +731,14 @@ int HierarchyModel::referenceCount(VLNV const& vlnv) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onComponentSaved()
+// Function: HierarchyModel::onDocumentUpdated()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onDocumentSaved(VLNV const& vlnv)
+void HierarchyModel::onDocumentUpdated(VLNV const& vlnv)
 {
     bool isValid = handler_->isValid(vlnv);
-    foreach (HierarchyItem* savedItem, rootItem_->findItems(vlnv))
+    foreach (HierarchyItem* updatedItem, rootItem_->findItems(vlnv))
     {
-        savedItem->setValidity(isValid);
+        updatedItem->setValidity(isValid);
     }
 }
 

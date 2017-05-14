@@ -219,9 +219,9 @@ public slots:
 	 * 
 	 * Function updates the hierarchical model so that changes made to the document are visible.
 	 * 
-	 *      @param [in] vlnv Identifies the document that was saved.
+     *      @param [in] vlnv Identifies the document that changed.
 	*/
-	void onDocumentSaved(VLNV const& vlnv);
+	void onDocumentUpdated(VLNV const& vlnv);
 
 signals:
 

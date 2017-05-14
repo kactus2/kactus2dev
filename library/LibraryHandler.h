@@ -459,6 +459,9 @@ signals:
 	//! Signal that user wants to open a platform component.
 	void openPlatformComponent(VLNV const& vlnv);
 
+    //! Inform that object has been updated.
+    void updatedVLNV(VLNV const& vlnv);
+
 private slots:
     
 	/*! Create a new abstraction definition for given bus definition.

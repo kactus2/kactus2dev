@@ -248,7 +248,13 @@ public slots:
 	//! Reset the model.
 	void onResetModel();
 
-    void onDocumentSaved(VLNV const& vlnv);
+    /*! This function should be called when an IP-XACT document has changed.
+     *
+     * Function updates the hierarchical model so that changes made to the document are visible.
+     *
+     *      @param [in] vlnv Identifies the document that changed.
+    */
+    void onDocumentUpdated(VLNV const& vlnv);
 
 private:
 

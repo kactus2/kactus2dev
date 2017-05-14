@@ -206,7 +206,6 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 		data_->addVLNV(vlnv, filePath);
 
 		// the hierarchy model must be re-built
-        treeModel_->onDocumentSaved(vlnv);
 		hierarchyModel_->onResetModel();
 	}
 	else
@@ -1028,8 +1027,6 @@ void LibraryHandler::endSave()
     {
         foreach (VLNV const& modifiedVLNV, modifiedItems_)
         {
-            hierarchyModel_->onDocumentSaved(modifiedVLNV);
-            treeModel_->onDocumentSaved(modifiedVLNV);
             objectValidity_.remove(modifiedVLNV);
         }
 
@@ -1242,9 +1239,6 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
     // make sure the model is parsed again next time to make all changes available
     objects_.remove(vlnv);
     objectValidity_.remove(vlnv);
-
-    treeModel_->onDocumentSaved(vlnv);
-    hierarchyModel_->onDocumentSaved(savedItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -1461,6 +1455,13 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(data_.data(), SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)), this, SLOT(onItemSaved(VLNV const&)), Qt::UniqueConnection);
+
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+            treeModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+            hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
