@@ -501,16 +501,6 @@ private:
     // The private functions used by public class methods
     //-----------------------------------------------------------------------------
 
-    /*!
-     *  Writes a document into a file.
-     *
-     *      @param [in] filePath    The path to the file to write.
-     *      @param [in] model       The document to write to the file.
-     *
-     *      @return True, if the file was successfully written, otherwise false.
-     */
-    bool writeFile(QString const& filePath, QSharedPointer<Document> model);
-
 	/*! Copy the files associated with specified IP-Xact object.
 	 *
 	 *      @param [in] target              Directory where the files are copied to

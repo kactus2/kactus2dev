@@ -22,26 +22,17 @@
 #include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
-#include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
 
 #include <IPXACTmodels/Catalog/Catalog.h>
-#include <IPXACTmodels/Catalog/CatalogWriter.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/ComponentWriter.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/Design/DesignWriter.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
-
-#include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
-#include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -149,12 +140,7 @@ QList<VLNV> LibraryHandler::getAllVLNVs() const
 //-----------------------------------------------------------------------------
 bool LibraryHandler::contains(const VLNV& vlnv)
 {
-    if (objects_.contains(vlnv))
-    {
-        return true;
-    }
-
-    return data_->contains(vlnv);
+    return objects_.contains(vlnv) || data_->contains(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -209,7 +195,7 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
     }
 
 	QString filePath = path + "/" + vlnv.getName() + "." + vlnv.getVersion() + ".xml";
-    if (!writeFile(filePath, model))
+    if (!data_->writeFile(model, filePath))
     {
         return false;
     }
@@ -243,15 +229,7 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 	objects_.remove(objectVLNV);
     objectValidity_.remove(objectVLNV);
 
-	QString filePath = data_->getPath(model->getVlnv());
-
-    QFileInfo pathInfo(filePath);
-    if (pathInfo.isSymLink() && pathInfo.exists())
-    {
-        filePath = pathInfo.symLinkTarget();
-    }
-
-    if (!writeFile(filePath, model))
+    if (!data_->writeFile(model))
     {
         return false;
     }
@@ -1006,22 +984,10 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
     objects_.remove(vlnv);
     objectValidity_.remove(vlnv);
 
-    QString documentPath = data_->getPath(vlnv);
-
     // tell each model to remove the object
     treeModel_->onRemoveVLNV(vlnv);
     hierarchyModel_->onRemoveVLNV(vlnv);
     data_->onRemoveVLNV(vlnv);
-
-    QFile xmlFile(documentPath);
-    if (!xmlFile.exists())
-    {
-        emit errorMessage(tr("File %1 was not found in file system").arg(documentPath));
-    }
-    else if (!xmlFile.remove())
-    {
-        emit errorMessage(tr("Could not remove file %1").arg(documentPath));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1288,86 +1254,6 @@ void LibraryHandler::onCloseIntegrityReport()
 {
     integrityWidget_->deleteLater();
     integrityWidget_ = 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::writeFile()
-//-----------------------------------------------------------------------------
-bool LibraryHandler::writeFile(QString const& filePath, QSharedPointer<Document> model)
-{
-    // create a new file
-    QFile targetFile(filePath);
-    if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
-    {
-        emit errorMessage(tr("Could not open file %1 for writing.").arg(filePath));
-        return false;
-    }
-
-    // write the parsed model
-    QXmlStreamWriter xmlWriter(&targetFile);
-    xmlWriter.setAutoFormatting(true);
-    xmlWriter.setAutoFormattingIndent(-1);
-
-    VLNV::IPXactType documentType = model->getVlnv().getType();
-    if (documentType == VLNV::ABSTRACTIONDEFINITION)
-    {
-        AbstractionDefinitionWriter writer;
-        QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
-        writer.writeAbstractionDefinition(xmlWriter, absDef);
-    }
-
-    else if (documentType == VLNV::BUSDEFINITION)
-    {
-        BusDefinitionWriter writer;
-        QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
-        writer.writeBusDefinition(xmlWriter, busDef);
-    }
-    else if (documentType == VLNV::CATALOG)
-    {
-        CatalogWriter writer;
-        QSharedPointer<Catalog> catalog = model.dynamicCast<Catalog>();
-        writer.writeCatalog(xmlWriter, catalog);
-    }
-    else if (documentType == VLNV::COMPONENT)
-    {
-        ComponentWriter writer;
-        QSharedPointer<Component> component = model.dynamicCast<Component>();
-        writer.writeComponent(xmlWriter, component);
-    }
-    else if (documentType == VLNV::DESIGN)
-    {
-        DesignWriter designWriter;
-        QSharedPointer<Design> design = model.dynamicCast<Design>();
-        designWriter.writeDesign(xmlWriter, design);
-    }
-
-    else if (documentType == VLNV::DESIGNCONFIGURATION)
-    {
-        DesignConfigurationWriter designConfigurationWriter;
-        QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
-        designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
-	}
-
-	else if (documentType == VLNV::APIDEFINITION)
-	{
-		ApiDefinitionWriter apiDefinitionWriter;
-		QSharedPointer<ApiDefinition> apiDefinition = model.dynamicCast<ApiDefinition>();
-		apiDefinitionWriter.writeApiDefinition(xmlWriter, apiDefinition);
-	}
-
-	else if (documentType == VLNV::COMDEFINITION)
-	{
-		ComDefinitionWriter comDefinitionWriter;
-		QSharedPointer<ComDefinition> comDefinition = model.dynamicCast<ComDefinition>();
-		comDefinitionWriter.writeComDefinition(xmlWriter, comDefinition);
-	}
-    else
-    {
-        Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");
-    }
-
-    targetFile.close();
-    return true;
 }
 
 //-----------------------------------------------------------------------------

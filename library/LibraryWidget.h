@@ -41,10 +41,22 @@ public:
     //! The destructor.
     virtual ~LibraryWidget();
 
-    LibraryHandler *getLibraryHandler();
+    /*! Gets the handle for library access.
+     *
+     *      @return     The library access handle.
+    */
+    LibraryHandler* getLibraryHandler() const;
 
+    /*! Set filters for the library navigation.
+     *
+     *      @param [in] filters    The filters to set.
+    */
     void setFilters(FilterWidget::FilterOptions filters);
 
+    /*! Get the current filters for the library navigation.
+     *
+     *      @return     The current library filters.
+    */
     FilterWidget::FilterOptions getFilters() const;
 
 signals:
@@ -58,9 +70,18 @@ private:
     //! No assignment
     LibraryWidget& operator=(const LibraryWidget& other);
 
-    void connectLibraryFilter(LibraryFilter *filter) const;
+    /*! Connects the given filter to the filtering widget.
+     *
+     *      @param [in} filter     The filter to connect.
+    */
+    void connectLibraryFilter(LibraryFilter* filter) const;
 
+    //! Sets the widget layout.
     void setupLayout();
+
+    //-----------------------------------------------------------------------------
+    //! Data
+    //-----------------------------------------------------------------------------
 
     //! Widget with filtering options for the library.
     VLNVDialer* dialer_ ;
@@ -68,12 +89,11 @@ private:
     //! The instance to manage library access.
     LibraryHandler* library_;
 
-    //! The widget that contains the GUI items for the hierarchy tab
+    //! The widget that contains the GUI items for the hierarchy tab.
     HierarchyWidget* hierarchyWidget_;
 
+    //! The widget containing the library items in a tree-like view.
     LibraryTreeWidget* treeWidget_;
-
-
 };
 
 #endif // LIBRARYWIDGET_H

@@ -35,15 +35,13 @@ LibraryWidget::LibraryWidget(QWidget *parent): QWidget(parent),
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
 
-    connect(library_, SIGNAL(refreshDialer()),
-        dialer_, SLOT(refreshLibrary()), Qt::UniqueConnection);
+    connect(library_, SIGNAL(refreshDialer()), dialer_, SLOT(refreshLibrary()), Qt::UniqueConnection);
 
     connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
     connect(treeWidget_, SIGNAL(itemSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
-
 
     setupLayout();
 }
@@ -59,7 +57,7 @@ LibraryWidget::~LibraryWidget()
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::getLibraryHandler()
 //-----------------------------------------------------------------------------
-LibraryHandler* LibraryWidget::getLibraryHandler()
+LibraryHandler* LibraryWidget::getLibraryHandler() const
 {
     return library_;
 }

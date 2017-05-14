@@ -118,6 +118,16 @@ public:
 	*/
 	QSharedPointer<Document> getModel(VLNV const& vlnv);
 
+    /*!
+     *  Writes a document into a file.
+     *
+     *      @param [in] model       The document to write to the file.
+     *      @param [in] filePath    The path to the file to write. If empty, current path is used.
+     *
+     *      @return True, if the file was successfully written, otherwise false.
+     */
+    bool writeFile(QSharedPointer<Document> model, QString const& filePath = QString());
+
 	//! Check the integrity of the library.
 	void checkLibraryIntegrity();
 
@@ -137,7 +147,8 @@ public:
 	 *      @return Any errors within the document.
 	*/
 	QVector<QString> findErrorsInDocument(QSharedPointer<Document> document);
-   
+
+
 signals:
 
 	//! Emit an error message to be printed to user.

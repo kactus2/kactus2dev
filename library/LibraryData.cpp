@@ -24,16 +24,21 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h>
 #include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
+#include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
 #include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 
 #include <IPXACTmodels/Catalog/Catalog.h>
 #include <IPXACTmodels/Catalog/CatalogReader.h>
+#include <IPXACTmodels/Catalog/CatalogWriter.h>
 #include <IPXACTmodels/Catalog/validators/CatalogValidator.h>
 
 #include <IPXACTmodels/Design/Design.h>
@@ -41,17 +46,22 @@
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
+#include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentWriter.h>
 #include <IPXACTmodels/Component/ComponentReader.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/Design/DesignWriter.h>
 
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinitionReader.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
+
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionReader.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
 
 #include <QDir>
 #include <QDomDocument>
@@ -186,6 +196,18 @@ void LibraryData::onRemoveVLNV(VLNV const& vlnv)
     {
 		return;
 	}
+
+    QString documentPath = getPath(vlnv);
+
+    QFile xmlFile(documentPath);
+    if (!xmlFile.exists())
+    {
+        emit errorMessage(tr("File %1 was not found in file system").arg(documentPath));
+    }
+    else if (!xmlFile.remove())
+    {
+        emit errorMessage(tr("Could not remove file %1").arg(documentPath));
+    }
 
     libraryItems_.remove(vlnv);
 }
@@ -447,6 +469,98 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
         //emit noticeMessage(tr("Document was not supported type"));
         return QSharedPointer<Document>();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::writeFile()
+//-----------------------------------------------------------------------------
+bool LibraryData::writeFile(QSharedPointer<Document> model, QString const& filePath)
+{
+    QString targetPath = filePath;
+    if (filePath.isEmpty())
+    {
+        targetPath = getPath(model->getVlnv());
+    }
+
+    QFileInfo pathInfo(filePath);
+    if (pathInfo.isSymLink() && pathInfo.exists())
+    {
+        targetPath = pathInfo.symLinkTarget();
+    }
+
+    // create a new file
+    QFile targetFile(targetPath);
+    if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
+    {
+        emit errorMessage(tr("Could not open file %1 for writing.").arg(targetPath));
+        return false;
+    }
+
+    // write the parsed model
+    QXmlStreamWriter xmlWriter(&targetFile);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.setAutoFormattingIndent(-1);
+
+    VLNV::IPXactType documentType = model->getVlnv().getType();
+    if (documentType == VLNV::ABSTRACTIONDEFINITION)
+    {
+        AbstractionDefinitionWriter writer;
+        QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
+        writer.writeAbstractionDefinition(xmlWriter, absDef);
+    }
+
+    else if (documentType == VLNV::BUSDEFINITION)
+    {
+        BusDefinitionWriter writer;
+        QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
+        writer.writeBusDefinition(xmlWriter, busDef);
+    }
+    else if (documentType == VLNV::CATALOG)
+    {
+        CatalogWriter writer;
+        QSharedPointer<Catalog> catalog = model.dynamicCast<Catalog>();
+        writer.writeCatalog(xmlWriter, catalog);
+    }
+    else if (documentType == VLNV::COMPONENT)
+    {
+        ComponentWriter writer;
+        QSharedPointer<Component> component = model.dynamicCast<Component>();
+        writer.writeComponent(xmlWriter, component);
+    }
+    else if (documentType == VLNV::DESIGN)
+    {
+        DesignWriter designWriter;
+        QSharedPointer<Design> design = model.dynamicCast<Design>();
+        designWriter.writeDesign(xmlWriter, design);
+    }
+
+    else if (documentType == VLNV::DESIGNCONFIGURATION)
+    {
+        DesignConfigurationWriter designConfigurationWriter;
+        QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
+        designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
+    }
+
+    else if (documentType == VLNV::APIDEFINITION)
+    {
+        ApiDefinitionWriter apiDefinitionWriter;
+        QSharedPointer<ApiDefinition> apiDefinition = model.dynamicCast<ApiDefinition>();
+        apiDefinitionWriter.writeApiDefinition(xmlWriter, apiDefinition);
+    }
+
+    else if (documentType == VLNV::COMDEFINITION)
+    {
+        ComDefinitionWriter comDefinitionWriter;
+        QSharedPointer<ComDefinition> comDefinition = model.dynamicCast<ComDefinition>();
+        comDefinitionWriter.writeComDefinition(xmlWriter, comDefinition);
+    }
+    else
+    {
+        Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");
+    }
+
+    targetFile.close();
+    return true;
 }
 
 //-----------------------------------------------------------------------------
