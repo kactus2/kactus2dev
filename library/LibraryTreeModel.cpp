@@ -31,9 +31,8 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeModel::LibraryTreeModel()
 //-----------------------------------------------------------------------------
-LibraryTreeModel::LibraryTreeModel(LibraryInterface* handler, LibraryData* sourceModel, QObject* parent):
+LibraryTreeModel::LibraryTreeModel(LibraryInterface* handler, QObject* parent):
 QAbstractItemModel(parent),
-    dataSource_(sourceModel),
     rootItem_(),
     handler_(handler)
 {
@@ -236,7 +235,7 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
 				text += "<br><b>Description:</b><br>" + document->getDescription();
 			}
 
-			text += "<br><b>File Path:</b><br>" + dataSource_->getPath(vlnv);
+            text += "<br><b>File Path:</b><br>" + handler_->getPath(vlnv);
 			return text;
 		}
 
@@ -498,7 +497,7 @@ void LibraryTreeModel::onResetModel()
 	}
 
 	// get the items to be displayed from the data source
-	foreach (VLNV const& item, dataSource_->getItems())
+    foreach (VLNV const& item, handler_->getAllVLNVs())
     {
 		rootItem_->createChild(item, LibraryItem::ROOT);
 	}

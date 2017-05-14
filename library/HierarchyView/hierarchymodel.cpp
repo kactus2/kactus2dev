@@ -12,8 +12,6 @@
 #include "hierarchymodel.h"
 
 #include <library/LibraryInterface.h>
-#include <library/LibraryHandler.h>
-#include <library/LibraryData.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
@@ -21,24 +19,16 @@
 #include <common/KactusColors.h>
 
 #include <QMap>
-
+#include <QIcon>
 //-----------------------------------------------------------------------------
 // Function: HierarchyModel::HierarchyModel()
 //-----------------------------------------------------------------------------
-HierarchyModel::HierarchyModel(LibraryData* sourceModel, LibraryInterface* handler, QObject* parent):
+HierarchyModel::HierarchyModel(LibraryInterface* handler, QObject* parent):
 QAbstractItemModel(parent),
-    dataModel_(sourceModel),
     rootItem_(),
     handler_(handler)
 {
-	// connect the signals that are needed to print messages
-	LibraryHandler* handler2 = static_cast<LibraryHandler*>(handler);
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		handler2, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		handler2, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-	onResetModel();
+    onResetModel();
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +63,7 @@ void HierarchyModel::onResetModel()
 	QList<VLNV> absDefs;
 
 	// add all items to this model
-	foreach (VLNV const& itemVlnv, dataModel_->getItems())
+    foreach (VLNV const& itemVlnv, handler_->getAllVLNVs())
     {
 		// make sure the item can be parsed
 		QSharedPointer<Document const> libComp = handler_->getModelReadOnly(itemVlnv);
@@ -325,7 +315,7 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
             text += "<br><b>Description:</b><br>" + document->getDescription();
         }
 
-        text += QString("<br><b>File Path:</b><br>%1").arg(dataModel_->getPath(vlnv));
+        text += QString("<br><b>File Path:</b><br>%1").arg(handler_->getPath(vlnv));
         return text;
 	}
 	else if (role == Qt::DecorationRole && index.column() == HierarchyModel::OBJECT_COLUMN)

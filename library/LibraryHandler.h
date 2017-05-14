@@ -37,12 +37,11 @@ typedef QVector<QFileInfo> fileList;
 class Document;
 class LibraryItem;
 class TableViewDialog;
-class VLNVDialer;
 
 //-----------------------------------------------------------------------------
 //! LibraryHandler is the class that implements the services to manage the IP-XACT library.
 //-----------------------------------------------------------------------------
-class LibraryHandler : public QTabWidget, public LibraryInterface
+class LibraryHandler : public QObject, public LibraryInterface
 {
     Q_OBJECT
 
@@ -53,7 +52,7 @@ public:
 	 *      @param [in] dialer  The dialer that provides search options.
 	 *      @param [in] parent  The parent widget of this instance.
 	 */
-    LibraryHandler(VLNVDialer* dialer, QWidget* parent);
+    LibraryHandler(QWidget* parentWidget, QObject* parent);
 
 	//! The destructor
     virtual ~LibraryHandler();
@@ -77,7 +76,13 @@ public:
 	 *      @return The model that matches the document.
 	*/
 	virtual QSharedPointer<Document const> getModelReadOnly(VLNV const& vlnv);
-	
+
+    /*! Gets all the VLNVs currently in the library.
+     *
+     *      @return All known VLNVs in the library.
+    */
+    virtual QList<VLNV> getAllVLNVs() const;
+
 	/*! Checks if the library already contains the specified vlnv.
 	 *
 	 *      @param [in] vlnv The vlnv that is searched within the library.
@@ -246,6 +251,10 @@ public:
 	 *      @return bool True if the object was valid. False if invalid or object was not found in library.
 	*/
 	virtual bool isValid(VLNV const& vlnv);
+
+    HierarchyModel *getHierarchyModel();
+
+    LibraryTreeModel *getTreeModel();
 
 public slots:
 
@@ -541,14 +550,7 @@ private:
 	 *
 	*/
 	void syncronizeModels();
-    
-    /*!
-     *  Connects a library view filter to dialer for selecting filter conditions.
-     *
-     *      @param [in] filter   The filter to connect.
-     *      @param [in] dialer   The dialer for selecting filters.
-     */
-    void connectLibraryFilter(LibraryFilter* filter, VLNVDialer* dialer) const;
+
 
 	/*! Clear the empty directories from the disk within given path.
 	 *
@@ -570,21 +572,19 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The data model that contains the library and is model for search view
+    //! Widget to parent open dialogs.
+    QWidget* parentWidget_;
+
+    //! The data model that contains the library and is model for search view
     QSharedPointer<LibraryData> data_;
 
 	//! The model for the tree view
-    QSharedPointer<LibraryTreeModel> treeModel_;
+    LibraryTreeModel* treeModel_;
 
 	//! The model for the hierarchy view
-	QSharedPointer<HierarchyModel> hierarchyModel_;
+    HierarchyModel* hierarchyModel_;
 
-	//! The widget that contains the GUI items for the tree tab
-    LibraryTreeWidget* treeWidget_;
-
-	//! The widget that contains the GUI items for the hierarchy tab
-	HierarchyWidget* hierarchyWidget_;
-
+    //! Widget for showing integrity report on-demand.
     TableViewDialog* integrityWidget_;
 
 	/*! Contains the library objects that have been parsed.
@@ -605,6 +605,7 @@ private:
 
     //! Contains the IP-Xact items that have been saved, but not updated in library views yet.
     QVector<VLNV> modifiedItems_;
+
 };
 
 #endif // LIBRARYHANDLER_H

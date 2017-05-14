@@ -55,6 +55,12 @@ public:
 	*/
 	virtual bool contains(VLNV const& vlnv) = 0;
 
+    /*! Gets all the VLNVs currently in the library.
+     *
+     *      @return All known VLNVs in the library.
+    */
+    virtual QList<VLNV> getAllVLNVs() const = 0;
+
 	/*! Get a path to the specified IP-XACT document.
 	 *
 	 *      @param [in] vlnv    Specifies the wanted IP-XACT document.

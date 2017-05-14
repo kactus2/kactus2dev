@@ -25,6 +25,8 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
+#include <IPXACTmodels/Design/Design.h>
+
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QLabel>

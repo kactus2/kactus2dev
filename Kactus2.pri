@@ -716,7 +716,8 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
-    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h
+    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
+    $$PWD/library/LibraryWidget.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1342,5 +1343,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
-    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp
+    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
+    $$PWD/library/LibraryWidget.cpp
 RESOURCES += kactus.qrc

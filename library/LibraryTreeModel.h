@@ -13,7 +13,6 @@
 #define LIBRARYTREEMODEL_H
 
 #include "LibraryItem.h"
-#include "LibraryData.h"
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -37,11 +36,10 @@ public:
 	/*! The constructor
 	*
 	*      @param [in] handler          The instance that manages the library.
-	*      @param [in] sourceModel      The data model to use as base model.
 	*      @param [in] parent           The owner of this class
 	*
 	*/
-	LibraryTreeModel(LibraryInterface* handler,	LibraryData* sourceModel, QObject* parent = 0);
+    LibraryTreeModel(LibraryInterface* handler, QObject* parent = 0);
 
 	//! The destructor
 	virtual ~LibraryTreeModel();
@@ -278,9 +276,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! The data model that holds the library
-	LibraryData* dataSource_;
 
 	/*! The root of the tree.
 	*
