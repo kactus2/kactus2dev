@@ -24,23 +24,22 @@ namespace KactusColors
 
     //! Colors used in text.
     QColor const REGULAR_TEXT = Qt::black; // Regular text.
-    QColor const DISABLED_TEXT = Qt::lightGray; // Text in disabled elements.
+    QColor const DISABLED_TEXT = Qt::darkGray; // Text in disabled or uneditable elements.
     QColor const REGULAR_MESSAGE = Qt::blue; // Regular console messages.
 
     //! Colors used as field backgrounds.
     QColor const REGULAR_FIELD = Qt::white; // Backgrounds and regular fields.
-    QColor const MANDATORY_FIELD = QColor(QStringLiteral("LemonChiffon")); // Field that must be filled.
-    QColor const DISABLED_FIELD = QColor(QStringLiteral("whiteSmoke")); // The field has no relevance in current context.
-    QColor const INVALID_FIELD = QColor(255, 192, 192); // The value in the field is not valid.
+    QColor const MANDATORY_FIELD = QColor(QStringLiteral("LemonChiffon")); // Must be filled.
+    QColor const DISABLED_FIELD = QColor(QStringLiteral("whiteSmoke")); // Has no relevance in current context.
+    QColor const INVALID_FIELD = QColor(255, 192, 192); // The value is not valid.
+    QColor const STRONG_FIELD = QColor(QStringLiteral("gainsboro")); // Has more weight than others.
+    QColor const LOGICAL_PORT_FIELD = QColor(QStringLiteral("aliceblue")); // Relates to logical ports.
 
-    //! Color for logical port background.
-    QColor const LOGICAL_PORT_BACKGROUND = QColor(QStringLiteral("aliceblue"));
-
-    //! Highlight for body text, eg. logic in source code.
-    QColor const TEXT_BODY_HIGHLIGHT = QColor::fromRgb(183,225,252);
-
-    //! Color for catalog header.
-    QColor const CATALOG_HEADER = QColor(QStringLiteral("gainsboro"));
+    //! Colors for languages and generated texts.
+    QColor const TEXT_BODY_HIGHLIGHT = QColor::fromRgb(183,225,252); // Background for text bodies such as logic.
+    QColor const FUNCTION_HIGHLIGHT = QColor(QStringLiteral("darkviolet")); // Functions().
+    QColor const PREPROCESSOR_HIGHLIGHT = QColor(QStringLiteral("chocolate")); // Preprocessor #macros.
+    QColor const STRING_HIGHLIGHT = QColor(Qt::gray); // "Character strings."
 
     //! Colors used in design diagram interconnections.
     QColor const REGULAR_CONNECTION = Qt::black; // Most connections.
@@ -82,6 +81,11 @@ namespace KactusColors
     QColor const ADDR_BLOCK_COLOR = QColor(194, 214, 244);
     QColor const REGISTER_COLOR = QColor(216, 229, 248);
     QColor const FIELD_COLOR = QColor(235, 241, 251);
+
+    //! Colors used in dependency analysis.
+    QColor const DEPENDECY_ADDED = QColor(0, 222, 0); // Added dependency.
+    QColor const DEPENDECY_COVERAGE = QColor(0, 158, 255); // Used to illustrate the extent of dependencies.
+    QColor const ROW_SEPARATOR = QColor(200, 200, 200); // Used to separate rows on a list.
 }
 
 //-----------------------------------------------------------------------------

@@ -184,7 +184,7 @@ void VerilogImporter::highlightModule(QString const& input)
 	// Paint the text black.
     if (highlighter_)
     {        
-        highlighter_->applyFontColor(input.mid(moduleBegin, moduleEnd  - moduleBegin), QColor("black"));
+        highlighter_->applyFontColor(input.mid(moduleBegin, moduleEnd  - moduleBegin), KactusColors::REGULAR_TEXT);
     }
 }
 

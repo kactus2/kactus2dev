@@ -18,6 +18,8 @@
 
 #include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
+#include <common/KactusColors.h>
+
 #include <QHeaderView>
 #include <QPainter>
 #include <QPaintEvent>
@@ -708,7 +710,7 @@ void FileDependencyGraphView::drawDependencyGraph(QPainter& painter, QRect const
                 if (arrowRect.intersects(rect))
                 {
                     // Choose color for the arrow based on the dependency information and the selected dependency.
-                    QColor color = Qt::black;
+                    QColor color = KactusColors::REGULAR_TEXT;
 
                     if (dep.dependency == selectedDependency_)
                     {
@@ -722,11 +724,11 @@ void FileDependencyGraphView::drawDependencyGraph(QPainter& painter, QRect const
                     {
                         if (dep.dependency->getStatus() == FileDependency::STATUS_ADDED)
                         {
-                            color = QColor(0, 222, 0);
+                            color = KactusColors::DEPENDECY_ADDED;
                         }
                         else if (dep.dependency->getStatus() == FileDependency::STATUS_REMOVED)
                         {
-                            color = Qt::red;
+                            color = KactusColors::ERROR;
                         }
                     }
 
@@ -739,7 +741,7 @@ void FileDependencyGraphView::drawDependencyGraph(QPainter& painter, QRect const
     }
 
     // Draw coverage of the dependencies that are out of sight.
-    painter.setPen(QPen(QColor(0, 158, 255), 2));
+    painter.setPen(QPen(KactusColors::DEPENDECY_COVERAGE, 2));
     painter.setRenderHint(QPainter::Antialiasing, false);
 
     // Left side coverage.
@@ -944,7 +946,7 @@ void FileDependencyGraphView::drawRow(QPainter* painter, QStyleOptionViewItem co
     QRect rowRect = visualRect(index);
 
     painter->save();
-    painter->setPen(QPen(QColor(200, 200, 200), 0));
+    painter->setPen(QPen(KactusColors::ROW_SEPARATOR, 0));
     painter->drawLine(option.rect.left(), rowRect.bottom(), option.rect.right(), rowRect.bottom());
     painter->restore();
 }

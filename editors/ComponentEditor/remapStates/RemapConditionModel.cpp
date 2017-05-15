@@ -115,7 +115,7 @@ QVariant RemapConditionModel::data(QModelIndex const& index, int role) const
         if (index.column() == RemapConditionColumns::LEFT_COLUMN ||
             index.column() == RemapConditionColumns::RIGHT_COLUMN)
         {
-            return QColor(Qt::darkGray);
+            return QColor(KactusColors::DISABLED_TEXT);
         }
         else
         {

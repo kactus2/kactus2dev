@@ -234,7 +234,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
     {
         if (!index.parent().isValid())
         {
-            return KactusColors::CATALOG_HEADER;
+            return KactusColors::STRONG_FIELD;
         }
     }
     else if (role == Qt::DecorationRole)

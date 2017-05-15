@@ -8,6 +8,8 @@
 #include "k2envvarmodel.h"
 #include <Plugins/PluginSystem/IPlugin.h>
 
+#include <common/KactusColors.h>
+
 #include <QColor>
 #include <QStringList>
 
@@ -208,10 +210,10 @@ QVariant K2EnvVarModel::data( const QModelIndex& index, int role /*= Qt::Display
 	else if (Qt::BackgroundRole == role) {
 		switch (index.column()) {
 		case K2EnvVarModel::NAME_COLUMN: {
-			return QColor("LemonChiffon");
+			return KactusColors::MANDATORY_FIELD;
 												}
 		default:
-			return QColor("white");
+			return KactusColors::REGULAR_FIELD;
 		}
 	}
 	else {

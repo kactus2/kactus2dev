@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <common/KactusColors.h>
+
 #include <wizards/common/ComponentComparator/ComponentComparator.h>
 
 //-----------------------------------------------------------------------------
@@ -114,7 +116,7 @@ QTreeWidgetItem* ComponentDiffWidget::createTopLevelItemForElement(QString const
 
     for (int i = 0; i < COLUMN_COUNT; i++)
     {
-        item->setBackgroundColor(i, QColor(230, 230, 230));
+        item->setBackgroundColor(i, KactusColors::STRONG_FIELD);
     }            
     addTopLevelItem(item);
     return item;        
