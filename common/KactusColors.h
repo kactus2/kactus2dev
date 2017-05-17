@@ -60,7 +60,7 @@ namespace KactusColors
     QColor const ENDPOINT_TYPE_API = QColor(0xcb,0xfd,0xfd); // The interface is for API connections.
 
     //! Colors used in component instances.
-    QColor const MISSING_COMPONENT = ERROR; // The component of the instance does not exist.
+    QColor const MISSING_COMPONENT = QColor(240, 180, 180); // The component of the instance does not exist.
     QColor const DRAFT_COMPONENT = QColor(217, 217, 217); // The instance is a draft for a new component.
     QColor const HW_BUS_COMPONENT = QColor(0xce,0xdf,0xff); // The component of the instance is a bus or a bridge.
     QColor const HW_COMPONENT = QColor(0xa5,0xc3,0xef); // The component of the instance is hardware component.

@@ -83,6 +83,13 @@ public:
      */
     void createOverlappingFieldMarkers();
 
+    /*!
+     *  Set a new identifier chain.
+     *
+     *      @param [in] newIdentifiers  A list of strings containing the new memory identifier chain.
+     */
+    virtual void setNewIdentifierChain(QVector<QString> newIdentifiers);
+
 private:
     // Disable copying.
     RegisterGraphicsItem(RegisterGraphicsItem const& rhs);

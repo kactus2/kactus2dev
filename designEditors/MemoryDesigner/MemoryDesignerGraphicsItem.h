@@ -188,7 +188,7 @@ public:
      *
      *      @param [in] newIdentifiers  A list of strings containing the new memory identifier chain.
      */
-    void setNewIdentifierChain(QVector<QString> newIdentifiers);
+    virtual void setNewIdentifierChain(QVector<QString> newIdentifiers);
 
 protected:
 
