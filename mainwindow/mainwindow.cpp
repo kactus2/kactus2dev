@@ -3127,6 +3127,8 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
     }
 
     BusDefinitionEditor* editor = new BusDefinitionEditor(this, libraryHandler_, busDef, absDef, absDef && disableBusDef);
+    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
+        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     designTabs_->addAndOpenDocument(editor);
 }
@@ -3161,6 +3163,8 @@ void MainWindow::openCatalog(const VLNV& vlnv)
     }
 
     CatalogEditor* editor = new CatalogEditor(libraryHandler_, catalog, this);
+    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
+        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     connect(editor, SIGNAL(openCatalog(const VLNV&)),
         this, SLOT(openCatalog(const VLNV&)), Qt::UniqueConnection);
@@ -3194,6 +3198,8 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
 
     DesignWidgetFactoryImplementation factory(libraryHandler_);
     DesignWidget* designWidget = factory.makeHWDesignWidget(this);
+    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
+        designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     // open the design in the designWidget
     designWidget->setDesign(vlnv, viewName);
@@ -3352,6 +3358,9 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
 
     SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this);
 
+    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
+        designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
+
     connect(designWidget, SIGNAL(errorMessage(const QString&)),
         console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(noticeMessage(const QString&)),
@@ -3414,6 +3423,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this);
+    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
+        designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(errorMessage(const QString&)),
         console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
@@ -3495,6 +3506,8 @@ void MainWindow::openComponent(VLNV const& vlnv)
     }
 
     ComponentEditor* editor = new ComponentEditor(libraryHandler_, *pluginMgr_, component, this);
+    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
+        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     editor->setStyleSheet(styleSheet);
@@ -3547,6 +3560,8 @@ void MainWindow::openComDefinition(VLNV const& vlnv)
     }
 
     ComDefinitionEditor* editor = new ComDefinitionEditor(this, libraryHandler_, comDef);
+    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
+        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
     designTabs_->addAndOpenDocument(editor);
 }
 
@@ -3581,6 +3596,8 @@ void MainWindow::openApiDefinition(VLNV const& vlnv)
     }
 
     ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, libraryHandler_, apiDef);
+    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
+        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
     designTabs_->addAndOpenDocument(editor);
 }
 

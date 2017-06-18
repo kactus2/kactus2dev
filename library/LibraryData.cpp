@@ -467,6 +467,7 @@ bool LibraryData::writeFile(QSharedPointer<Document> model, QString const& fileP
     }
 
     // create a new file
+    fileWatch_->removePath(targetPath);
     QFile targetFile(targetPath);
     if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
     {
@@ -538,6 +539,7 @@ bool LibraryData::writeFile(QSharedPointer<Document> model, QString const& fileP
     }
 
     targetFile.close();
+    fileWatch_->addPath(targetPath);
     return true;
 }
 
@@ -665,27 +667,7 @@ void LibraryData::onFileChanged(QString const& path)
 {
     VLNV changedDocument = libraryItems_.key(path, VLNV());
 
-    // Attempt parsing again, if a known (previously invalid) file has changed.
-    if (changedDocument.isEmpty())
-    {
-        parseFile(path);
-
-        changedDocument = libraryItems_.key(path, VLNV());
-
-        if (!changedDocument.isEmpty())
-        {
-            emit addVLNV(changedDocument);
-        }
-    }
-
-    // Check, if the changed file is still valid XML.
-    QSharedPointer<Document> changedModel = getModel(changedDocument);
-    if (changedModel.isNull())
-    {
-        libraryItems_.remove(changedDocument);
-        emit removeVLNV(changedDocument);
-    }
-    else
+    if (QFile(path).exists())
     {
         emit updatedVLNV(changedDocument);
     }
@@ -703,7 +685,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
 
     Q_ASSERT(!documentPath.isEmpty());
 
-    if (!QFileInfo(documentPath).exists())
+    if (documentPath.isEmpty() || !QFileInfo(documentPath).exists())
     {
         return false;
     }

@@ -11,27 +11,30 @@
 
 #include "TabDocument.h"
 
+#include <QApplication>
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QTimer>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 // Function: TabDocument::TabDocument()
 //-----------------------------------------------------------------------------
 TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, int maxZoomLevel) : 
-QWidget(parent),
-supportedWindows_(OUTPUTWINDOW | PREVIEWWINDOW | LIBRARYWINDOW | CONTEXT_HELP_WINDOW),
-flags_(flags), 
-modified_(false),
-locked_(false),
-zoomLevel_(100),
-maxZoomLevel_(maxZoomLevel),
-minZoomLevel_(minZoomLevel),
-title_(""),
-docName_(""), 
-previouslyUnlocked_(false),
-relatedVLNVs_(),
-refreshRequested_(false)
+    QWidget(parent),
+    supportedWindows_(OUTPUTWINDOW | PREVIEWWINDOW | LIBRARYWINDOW | CONTEXT_HELP_WINDOW),
+    flags_(flags),
+    modified_(false),
+    locked_(false),
+    zoomLevel_(100),
+    maxZoomLevel_(maxZoomLevel),
+    minZoomLevel_(minZoomLevel),
+    title_(""),
+    docName_(""),
+    previouslyUnlocked_(false),
+    relatedVLNVs_(),
+    refreshRequested_(false),
+    changedOnDisk_(false)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
 }
@@ -151,7 +154,7 @@ QString TabDocument::getDocumentName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: getZoomLevel()
+// Function: TabDocument::getZoomLevel()
 //-----------------------------------------------------------------------------
 int TabDocument::getZoomLevel() const
 {
@@ -159,7 +162,7 @@ int TabDocument::getZoomLevel() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: getSupportedDrawModes()
+// Function: TabDocument::getSupportedDrawModes()
 //-----------------------------------------------------------------------------
 unsigned int TabDocument::getSupportedDrawModes() const
 {
@@ -167,7 +170,7 @@ unsigned int TabDocument::getSupportedDrawModes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: isProtected()
+// Function: TabDocument::isProtected()
 //-----------------------------------------------------------------------------
 bool TabDocument::isProtected() const
 {
@@ -175,7 +178,7 @@ bool TabDocument::isProtected() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: getFlags()
+// Function: TabDocument::getFlags()
 //-----------------------------------------------------------------------------
 unsigned int TabDocument::getFlags() const
 {
@@ -183,7 +186,7 @@ unsigned int TabDocument::getFlags() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: isModified()
+// Function: TabDocument::isModified()
 //-----------------------------------------------------------------------------
 bool TabDocument::isModified() const
 {
@@ -200,7 +203,7 @@ bool TabDocument::validate(QVector<QString>&)
 }
 
 //-----------------------------------------------------------------------------
-// Function: save()
+// Function: TabDocument::save()
 //-----------------------------------------------------------------------------
 bool TabDocument::save()
 {
@@ -210,7 +213,7 @@ bool TabDocument::save()
 }
 
 //-----------------------------------------------------------------------------
-// Function: saveAs()
+// Function: TabDocument::saveAs()
 //-----------------------------------------------------------------------------
 bool TabDocument::saveAs()
 {
@@ -219,14 +222,14 @@ bool TabDocument::saveAs()
 }
 
 //-----------------------------------------------------------------------------
-// Function: print()
+// Function: TabDocument::print()
 //-----------------------------------------------------------------------------
 void TabDocument::print()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: getMaxZoomLevel()
+// Function: TabDocument::getMaxZoomLevel()
 //-----------------------------------------------------------------------------
 int TabDocument::getMaxZoomLevel() const
 {
@@ -234,7 +237,7 @@ int TabDocument::getMaxZoomLevel() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: getMinZoomLevel()
+// Function: TabDocument::getMinZoomLevel()
 //-----------------------------------------------------------------------------
 int TabDocument::getMinZoomLevel() const
 {
@@ -242,7 +245,7 @@ int TabDocument::getMinZoomLevel() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: askSaveFile()
+// Function: TabDocument::askSaveFile()
 //-----------------------------------------------------------------------------
 bool TabDocument::askSaveFile() const {
 
@@ -256,7 +259,7 @@ bool TabDocument::askSaveFile() const {
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateTabTitle()
+// Function: TabDocument::updateTabTitle()
 //-----------------------------------------------------------------------------
 void TabDocument::updateTabTitle()
 {
@@ -371,16 +374,13 @@ void TabDocument::removeRelatedVLNV(VLNV const& vlnv)
 {
     unsigned int count = relatedVLNVs_.value(vlnv, 0);
 
-    if (count > 0)
+    if (count == 1)
     {
-        if (count == 1)
-        {
-            relatedVLNVs_.remove(vlnv);
-        }
-        else
-        {
-            relatedVLNVs_.insert(vlnv, count - 1);
-        }
+        relatedVLNVs_.remove(vlnv);
+    }
+    else if (count > 0)
+    {
+        relatedVLNVs_.insert(vlnv, count - 1);
     }
 }
 
@@ -409,6 +409,25 @@ void TabDocument::requestRefresh()
 }
 
 //-----------------------------------------------------------------------------
+// Function: TabDocument::onDocumentUpdated()
+//-----------------------------------------------------------------------------
+void TabDocument::onDocumentUpdated(VLNV const& vlnv)
+{
+    if (getDocumentVLNV() == vlnv)
+    {
+        if (!changedOnDisk_ && isVisible())
+        {
+            changedOnDisk_ = true;
+            handleChangeOnDisk();
+        }
+        else
+        {
+            changedOnDisk_ = true;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: TabDocument::showEvent()
 //-----------------------------------------------------------------------------
 void TabDocument::showEvent(QShowEvent* event)
@@ -417,8 +436,12 @@ void TabDocument::showEvent(QShowEvent* event)
 
     if (refreshRequested_)
     {
-        QTimer::singleShot(20, this, SLOT(handleRefreshRequest()));
         refreshRequested_ = false;
+        QTimer::singleShot(20, this, SLOT(handleRefreshRequest()));
+    }
+    else if (changedOnDisk_)
+    {
+        QTimer::singleShot(20, this, SLOT(handleChangeOnDisk()));
     }
 }
 
@@ -451,5 +474,37 @@ void TabDocument::handleRefreshRequest()
     else
     {
         refresh();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::handleChangeOnDisk()
+//-----------------------------------------------------------------------------
+void TabDocument::handleChangeOnDisk()
+{
+    if (isModified())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, tr("File changed on disk"),
+                           tr("The current document has changed outside of Kactus2. "
+                              "Do you want to reload from the disk and lose your changes?"),
+                           QMessageBox::NoButton, this);
+
+        QPushButton* reloadButton = new QPushButton(tr("Reload"), &msgBox);
+        QPushButton* ignoreButton = new QPushButton(tr("Ignore"), &msgBox);
+        msgBox.addButton(reloadButton, QMessageBox::AcceptRole);
+        msgBox.addButton(ignoreButton, QMessageBox::RejectRole);
+
+        msgBox.exec();
+        if (msgBox.clickedButton() == reloadButton)
+        {
+            refresh();
+        }
+
+        changedOnDisk_ = false;
+    }
+    else
+    {
+        refresh();
+        changedOnDisk_ = false;
     }
 }

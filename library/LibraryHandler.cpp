@@ -1463,6 +1463,8 @@ void LibraryHandler::syncronizeModels()
     connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
             hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)), this, SIGNAL(updatedVLNV(VLNV const&)), Qt::UniqueConnection);
+
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
     //-----------------------------------------------------------------------------
