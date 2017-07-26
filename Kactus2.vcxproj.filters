@@ -4249,6 +4249,12 @@
     <ClCompile Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="library\LibraryWidget.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LibraryWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5840,6 +5846,9 @@
     </CustomBuild>
     <CustomBuild Include="library\VLNVDialer\vlnvdialer.h">
       <Filter>Header Files\library\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryWidget.h">
+      <Filter>Header Files\library</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
