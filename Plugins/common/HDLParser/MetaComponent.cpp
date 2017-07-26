@@ -185,7 +185,7 @@ void MetaComponent::formatComponent()
 {
     // Initialize the parameter finder and formatter.
     QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component_));
-    parameterFinder->setActiveView(activeView_);
+   
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter = 
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));

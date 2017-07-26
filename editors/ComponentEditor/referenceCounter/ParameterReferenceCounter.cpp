@@ -37,7 +37,10 @@ void ParameterReferenceCounter::increaseReferenceCount(QString id)
 {
     QSharedPointer<Parameter> targetParameter = parameterFinder_->getParameterWithID(id);
 
-    targetParameter->increaseUsageCount();
+    if (targetParameter)
+    {
+        targetParameter->increaseUsageCount();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -47,5 +50,8 @@ void ParameterReferenceCounter::decreaseReferenceCount(QString id)
 {
     QSharedPointer<Parameter> targetParameter = parameterFinder_->getParameterWithID(id);
 
-    targetParameter->decreaseUsageCount();
+    if (targetParameter)
+    {
+        targetParameter->decreaseUsageCount();
+    }
 }

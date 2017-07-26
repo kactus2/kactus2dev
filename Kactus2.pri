@@ -638,8 +638,11 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/HWDesign/AddressEditor/AddressEditor.h \
     ./designEditors/HWDesign/AddressEditor/AddressModel.h \
     ./designEditors/HWDesign/AddressEditor/AddressTableView.h \
+    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h \
@@ -711,11 +714,10 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h \
-    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
-    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h
+    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
+    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
+    $$PWD/library/LibraryWidget.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1209,8 +1211,11 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressEntry.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressModel.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressTableView.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.cpp \
@@ -1336,9 +1341,8 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
-
-    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.cpp \
-    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.cpp \
-    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
+    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
+    $$PWD/library/LibraryWidget.cpp
 RESOURCES += kactus.qrc

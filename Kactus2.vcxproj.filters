@@ -4243,6 +4243,18 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryWidget.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LibraryWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5835,6 +5847,9 @@
     <CustomBuild Include="library\VLNVDialer\vlnvdialer.h">
       <Filter>Header Files\library\VLNVDialer</Filter>
     </CustomBuild>
+    <CustomBuild Include="library\LibraryWidget.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6421,6 +6436,12 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

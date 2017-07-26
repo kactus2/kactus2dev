@@ -18,6 +18,7 @@
 #include <common/IEditProvider.h>
 
 #include <QWidget>
+#include <QFocusEvent>
 #include <QString>
 #include <QSettings>
 #include <QMap>
@@ -267,6 +268,9 @@ public slots:
      */
     void requestRefresh();
 
+
+    virtual void onDocumentUpdated(VLNV const& vlnv);
+
 signals:
 	//! \brief Emitted when contents of the widget change
 	void contentChanged();
@@ -338,10 +342,12 @@ protected:
 	//! \brief Contains the bit fields that define which windows are supported for this tab.
 	unsigned int supportedWindows_;
 
+
 private slots:
     //! Handles the refresh request.
     void handleRefreshRequest();
 
+    void handleChangeOnDisk();
 private:
     // Disable copying.
     TabDocument(TabDocument const& rhs);
@@ -401,6 +407,8 @@ private:
 
     //! If true, the document must be refreshed when shown the next time.
     bool refreshRequested_;
+
+    bool changedOnDisk_;
 };
 
 //-----------------------------------------------------------------------------

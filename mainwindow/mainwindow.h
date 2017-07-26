@@ -18,8 +18,6 @@
 #include <designEditors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
 
-#include <library/VLNVDialer/vlnvdialer.h>
-
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
@@ -32,6 +30,7 @@
 
 class HWDesignWidget;
 class LibraryHandler;
+class LibraryWidget;
 class ComponentItem;
 class BusPortItem;
 class ComponentPreviewBox;
@@ -41,7 +40,6 @@ class AdHocInterfaceItem;
 class ComponentInstanceEditor;
 class ConfigurationEditor;
 class SystemDetailsEditor;
-//class AddressEditor;
 class InterfaceEditor;
 class ConnectionEditor;
 class AdHocVisibilityEditor;
@@ -806,8 +804,8 @@ private:
 	//! Contains the open documents as each in it's own tab.
 	DrawingBoard* designTabs_;
 
-	//! The widget to set the display rules for library items in library handler.
-	VLNVDialer* dialer_;
+    //! The widget containing library navigation.
+    LibraryWidget* libraryWidget_;
 
 	//! The widget to display a preview of component.
 	ComponentPreviewBox* previewBox_;

@@ -24,16 +24,21 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h>
 #include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
+#include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
 #include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 
 #include <IPXACTmodels/Catalog/Catalog.h>
 #include <IPXACTmodels/Catalog/CatalogReader.h>
+#include <IPXACTmodels/Catalog/CatalogWriter.h>
 #include <IPXACTmodels/Catalog/validators/CatalogValidator.h>
 
 #include <IPXACTmodels/Design/Design.h>
@@ -41,17 +46,22 @@
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
+#include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentWriter.h>
 #include <IPXACTmodels/Component/ComponentReader.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/Design/DesignWriter.h>
 
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinitionReader.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
+
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionReader.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
 
 #include <QDir>
 #include <QDomDocument>
@@ -67,34 +77,38 @@
 #include <QTimer>
 #include <QWidget>
 
+
 //-----------------------------------------------------------------------------
 // Function: librarydata::()
 //-----------------------------------------------------------------------------
 LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget):
-QObject(parent),
-parentWidget_(parentWidget),
-libraryItems_(),
-handler_(parent),
-progressWidget_(0),
-timerSteps_(0),
-timerStep_(0),
-timer_(0),
-locations_(),
-iterObjects_(),
-failedObjects_(0),
-fileCount_(0),
-urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),
-componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
-componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
-                    handler_),
-designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
-designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
-systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_)
+    QObject(parent),
+    parentWidget_(parentWidget),
+    libraryItems_(),
+    handler_(parent),
+    progressWidget_(0),
+    timerSteps_(0),
+    timerStep_(0),
+    timer_(0),
+    locations_(),
+    iterObjects_(),
+    failedObjects_(0),
+    fileCount_(0),
+    urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),
+    componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
+    componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
+                        handler_),
+    designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+    designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+    systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+    fileWatch_(new QFileSystemWatcher(this))
 {
 	connect(this, SIGNAL(errorMessage(QString const&)),
         parent, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(QString const&)),
 		parent, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+    connect(fileWatch_, SIGNAL(fileChanged(QString const&)),
+            this, SLOT(onFileChanged(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -163,6 +177,7 @@ bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 
 	// add the component to the library
 	libraryItems_.insert(vlnv, path);
+    fileWatch_->addPath(path);
 
 	emit addVLNV(vlnv);
 
@@ -178,19 +193,6 @@ bool LibraryData::contains(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryData::onRemoveVLNV()
-//-----------------------------------------------------------------------------
-void LibraryData::onRemoveVLNV(VLNV const& vlnv)
-{
-	if (!libraryItems_.contains(vlnv))
-    {
-		return;
-	}
-
-    libraryItems_.remove(vlnv);
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryData::getType()
 //-----------------------------------------------------------------------------
 VLNV::IPXactType LibraryData::getType(VLNV const& vlnv) const
@@ -203,14 +205,6 @@ VLNV::IPXactType LibraryData::getType(VLNV const& vlnv) const
     {
 		return libraryItems_.find(vlnv).key().getType();
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::resetLibrary()
-//-----------------------------------------------------------------------------
-void LibraryData::resetLibrary()
-{
-	emit resetModel();
 }
 
 //-----------------------------------------------------------------------------
@@ -255,7 +249,12 @@ void LibraryData::checkLibraryIntegrity()
 void LibraryData::parseLibrary()
 {
 	// clear the previous items in the library
-	libraryItems_.clear();
+    if (!libraryItems_.isEmpty())
+    {
+        fileWatch_->removePaths(libraryItems_.values());
+    }
+
+    libraryItems_.clear();
 
 	QSettings settings;
 
@@ -368,6 +367,7 @@ void LibraryData::parseFile(QString const& filePath)
 
 	// add the component to the library if parsing was successful
 	libraryItems_.insert(vlnv, filePath);
+    fileWatch_->addPath(filePath);
 }
 
 //-----------------------------------------------------------------------------
@@ -447,6 +447,100 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
         //emit noticeMessage(tr("Document was not supported type"));
         return QSharedPointer<Document>();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::writeFile()
+//-----------------------------------------------------------------------------
+bool LibraryData::writeFile(QSharedPointer<Document> model, QString const& filePath)
+{
+    QString targetPath = filePath;
+    if (filePath.isEmpty())
+    {
+        targetPath = getPath(model->getVlnv());
+    }
+
+    QFileInfo pathInfo(filePath);
+    if (pathInfo.isSymLink() && pathInfo.exists())
+    {
+        targetPath = pathInfo.symLinkTarget();
+    }
+
+    // create a new file
+    fileWatch_->removePath(targetPath);
+    QFile targetFile(targetPath);
+    if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
+    {
+        emit errorMessage(tr("Could not open file %1 for writing.").arg(targetPath));
+        return false;
+    }
+
+    // write the parsed model
+    QXmlStreamWriter xmlWriter(&targetFile);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.setAutoFormattingIndent(-1);
+
+    VLNV::IPXactType documentType = model->getVlnv().getType();
+    if (documentType == VLNV::ABSTRACTIONDEFINITION)
+    {
+        AbstractionDefinitionWriter writer;
+        QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
+        writer.writeAbstractionDefinition(xmlWriter, absDef);
+    }
+
+    else if (documentType == VLNV::BUSDEFINITION)
+    {
+        BusDefinitionWriter writer;
+        QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
+        writer.writeBusDefinition(xmlWriter, busDef);
+    }
+    else if (documentType == VLNV::CATALOG)
+    {
+        CatalogWriter writer;
+        QSharedPointer<Catalog> catalog = model.dynamicCast<Catalog>();
+        writer.writeCatalog(xmlWriter, catalog);
+    }
+    else if (documentType == VLNV::COMPONENT)
+    {
+        ComponentWriter writer;
+        QSharedPointer<Component> component = model.dynamicCast<Component>();
+        writer.writeComponent(xmlWriter, component);
+    }
+    else if (documentType == VLNV::DESIGN)
+    {
+        DesignWriter designWriter;
+        QSharedPointer<Design> design = model.dynamicCast<Design>();
+        designWriter.writeDesign(xmlWriter, design);
+    }
+
+    else if (documentType == VLNV::DESIGNCONFIGURATION)
+    {
+        DesignConfigurationWriter designConfigurationWriter;
+        QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
+        designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
+    }
+
+    else if (documentType == VLNV::APIDEFINITION)
+    {
+        ApiDefinitionWriter apiDefinitionWriter;
+        QSharedPointer<ApiDefinition> apiDefinition = model.dynamicCast<ApiDefinition>();
+        apiDefinitionWriter.writeApiDefinition(xmlWriter, apiDefinition);
+    }
+
+    else if (documentType == VLNV::COMDEFINITION)
+    {
+        ComDefinitionWriter comDefinitionWriter;
+        QSharedPointer<ComDefinition> comDefinition = model.dynamicCast<ComDefinition>();
+        comDefinitionWriter.writeComDefinition(xmlWriter, comDefinition);
+    }
+    else
+    {
+        Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");
+    }
+
+    targetFile.close();
+    fileWatch_->addPath(targetPath);
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -531,6 +625,55 @@ void LibraryData::performIntegrityCheckStep()
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryData::onRemoveVLNV()
+//-----------------------------------------------------------------------------
+void LibraryData::onRemoveVLNV(VLNV const& vlnv)
+{
+    if (!libraryItems_.contains(vlnv))
+    {
+        return;
+    }
+
+    QString documentPath = getPath(vlnv);
+
+    fileWatch_->removePath(documentPath);
+
+    QFile xmlFile(documentPath);
+    if (!xmlFile.exists())
+    {
+        emit errorMessage(tr("File %1 was not found in file system").arg(documentPath));
+    }
+    else if (!xmlFile.remove())
+    {
+        emit errorMessage(tr("Could not remove file %1").arg(documentPath));
+    }
+
+
+    libraryItems_.remove(vlnv);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::resetLibrary()
+//-----------------------------------------------------------------------------
+void LibraryData::resetLibrary()
+{
+    emit resetModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::onFileChanged()
+//-----------------------------------------------------------------------------
+void LibraryData::onFileChanged(QString const& path)
+{
+    VLNV changedDocument = libraryItems_.key(path, VLNV());
+
+    if (QFile(path).exists())
+    {
+        emit updatedVLNV(changedDocument);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryData::validateDocument()
 //-----------------------------------------------------------------------------
 bool LibraryData::validateDocument(QSharedPointer<Document> document)
@@ -542,7 +685,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
 
     Q_ASSERT(!documentPath.isEmpty());
 
-    if (!QFileInfo(documentPath).exists())
+    if (documentPath.isEmpty() || !QFileInfo(documentPath).exists())
     {
         return false;
     }
