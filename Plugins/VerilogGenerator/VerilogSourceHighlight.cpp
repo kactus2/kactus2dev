@@ -11,6 +11,8 @@
 
 #include "VerilogSourceHighlight.h"
 
+#include <common/KactusColors.h>
+
 //-----------------------------------------------------------------------------
 // Function: VerilogSourceHighlight::VerilogSourceHighlight()
 //-----------------------------------------------------------------------------
@@ -70,17 +72,17 @@ QStringList VerilogSourceHighlight::keywords() const
 void VerilogSourceHighlight::applyLanguageSpecificRules(LanguageHighlighter* highlighter) const
 {
     HighlightStyleDesc stringStyle;
-    stringStyle.color = QColor(Qt::gray);
+    stringStyle.color = KactusColors::STRING_HIGHLIGHT;
 
     highlighter->setStyle(LanguageHighlighter::STRING, stringStyle);
 
     HighlightStyleDesc preprocessorStyle;
-    preprocessorStyle.color = QColor(QStringLiteral("chocolate"));
+    preprocessorStyle.color = KactusColors::PREPROCESSOR_HIGHLIGHT;
 
     highlighter->setStyle(LanguageHighlighter::PREPROCESSOR, preprocessorStyle);
 
     HighlightStyleDesc functionStyle;
-    functionStyle.color = QColor(QStringLiteral("darkviolet"));
+    functionStyle.color = KactusColors::FUNCTION_HIGHLIGHT;
 
     highlighter->setStyle(LanguageHighlighter::LANGUAGE_SPECIFIC, functionStyle);
 

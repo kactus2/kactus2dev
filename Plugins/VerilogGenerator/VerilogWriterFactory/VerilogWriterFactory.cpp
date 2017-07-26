@@ -290,12 +290,12 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
             }
 
             // Determine the name for the connected element: Name of the instance plus port.
-            QString physName = instance->getInstanceName() + "_" +
-                mPort->port_->name();
+            QString physName = VerilogSyntax::legalizeName(instance->getInstanceName() + "_" +
+                mPort->port_->name());
 
             // Create a wire for it.
-            document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
-                new VerilogWireWriter(physName, mPort->vectorBounds_)));
+            document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter
+                (physName, mPort->vectorBounds_)));
 
             // Then create assignments, that connect it to logical wires.
             foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
@@ -334,7 +334,8 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
             if (!hierInout)
             {
                 document->connectionWireWriters_->
-                    add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw->name_, gw->bounds_)));
+                    add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter
+                    (VerilogSyntax::legalizeName(gw->name_), gw->bounds_)));
             }
         }
     }
@@ -365,7 +366,8 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
         if (!hierInout)
         {
             document->adHocWireWriters_->
-                add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(adHoc->name_, adHoc->bounds_)));
+                add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(
+                VerilogSyntax::legalizeName(adHoc->name_), adHoc->bounds_)));
         }
     }
 }

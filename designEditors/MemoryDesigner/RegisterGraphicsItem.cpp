@@ -483,3 +483,19 @@ qreal RegisterGraphicsItem::getItemWidth() const
 
     return itemWidth;
 }
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::setNewIdentifierChain()
+//-----------------------------------------------------------------------------
+void RegisterGraphicsItem::setNewIdentifierChain(QVector<QString> newIdentifiers)
+{
+    MemoryDesignerGraphicsItem::setNewIdentifierChain(newIdentifiers);
+
+    foreach (FieldGraphicsItem* fieldItem, fieldItems_)
+    {
+        QVector<QString> newFieldIdentifierChain = newIdentifiers;
+        newFieldIdentifierChain.append(fieldItem->name());
+
+        fieldItem->setNewIdentifierChain(newFieldIdentifierChain);
+    }
+}

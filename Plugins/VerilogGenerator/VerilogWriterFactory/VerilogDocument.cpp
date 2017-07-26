@@ -21,8 +21,6 @@
 //-----------------------------------------------------------------------------
 VerilogDocument::VerilogDocument()
 {
-    implementationStart_ = -1;
-    implementationEnd_ = -1;
 }
 
 //-----------------------------------------------------------------------------
@@ -41,8 +39,8 @@ void VerilogDocument::write(QString const& outputDirectory)
 //-----------------------------------------------------------------------------
 void VerilogDocument::getBodyHighlight(int& begin, int& end) const
 {
-    begin = implementationStart_;
-    end = implementationEnd_;
+    QString error;
+    VerilogSyntax::findImplementation(fileContent_, begin, end, error);
 }
 
 //-----------------------------------------------------------------------------

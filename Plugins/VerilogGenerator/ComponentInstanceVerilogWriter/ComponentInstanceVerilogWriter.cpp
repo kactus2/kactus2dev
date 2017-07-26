@@ -12,6 +12,8 @@
 #include "ComponentInstanceVerilogWriter.h"
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
+#include <Plugins/VerilogImport/VerilogSyntax.h>
+
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
@@ -46,7 +48,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 {
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
-    instanceString.replace("<component>", instance_->getModuleName());
+    instanceString.replace("<component>", VerilogSyntax::legalizeName(instance_->getModuleName()));
     instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", formattedInstanceName());
     instanceString.replace("<portConnections>", portConnections());
@@ -59,7 +61,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::formattedInstanceName() const
 {
-    QString instanceName = instance_->getComponentInstance()->getInstanceName();
+    QString instanceName = VerilogSyntax::legalizeName(instance_->getComponentInstance()->getInstanceName());
 
     if (!instance_->getParameters()->isEmpty())
     {
@@ -242,7 +244,8 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
         return getInOutAssignment(mPort);
     }
 
-    return instance_->getComponentInstance()->getInstanceName() + "_" + mPort->port_->name();
+    return VerilogSyntax::legalizeName(instance_->getComponentInstance()->getInstanceName() + "_"
+        + mPort->port_->name());
 }
 
 //-----------------------------------------------------------------------------

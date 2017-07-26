@@ -59,6 +59,11 @@ namespace VerilogSyntax
     const QString NAME_VALUE = "\\w+\\s*=(\\s*(" + OPERATION_OR_ALPHANUMERIC + "))+";  
 
     /*!
+     *  Returns the given name in a valid format for Verilog.
+     */
+    QString legalizeName(QString const& name);
+
+    /*!
      *  Culls multi line comments and stray single line comments out of the input text.
      *
      *      @param [in] inspect   The input text to parse.
@@ -81,7 +86,8 @@ namespace VerilogSyntax
      *
 	 *      @param [in] code		            The code that will be inspected.
 	 *      @param [out] implementation	        The module implementation.
-	 *      @param [out] postModule		        Anything that exists after the module.
+     *      @param [out] postModule		        Anything that exists after the module.
+     *      @param [out] error                  If fails, this will contain an error message.
 	 *
 	 *      @return True, if a single implementation could be found, else false.
      */

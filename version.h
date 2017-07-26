@@ -13,8 +13,8 @@
 #define VERSION_FULL           3.4.106.0
 
 #define VERSION_BASEYEAR       0
-#define VERSION_DATE           "2017-07-26"
-#define VERSION_TIME           "11:57:34"
+#define VERSION_DATE           "2017-05-17"
+#define VERSION_TIME           "14:03:07"
 
 #define VERSION_MAJOR          3
 #define VERSION_MINOR          4

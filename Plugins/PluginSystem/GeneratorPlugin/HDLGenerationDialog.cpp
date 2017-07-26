@@ -181,7 +181,6 @@ void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput>
 
     int higlightStart;
     int highlightEnd;
-    QString error;
 
     newSelection->getBodyHighlight(higlightStart, highlightEnd);
 
@@ -190,13 +189,11 @@ void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput>
         return;
     }
 
-    QColor const& highlightColor = QColor::fromRgb(183,225,252);
-
     QTextCursor cursor = previewer_->textCursor();
     cursor.setPosition(higlightStart);
 
     QTextCharFormat highlighFormat = cursor.charFormat();        
-    highlighFormat.setBackground(QBrush(highlightColor));
+    highlighFormat.setBackground(QBrush(KactusColors::TEXT_BODY_HIGHLIGHT));
 
     cursor.setPosition(highlightEnd, QTextCursor::KeepAnchor);        
     cursor.setCharFormat(highlighFormat);

@@ -439,7 +439,7 @@ QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
         }
         else
         {
-            return KactusColors::LOGICAL_PORT_BACKGROUND;
+            return KactusColors::LOGICAL_PORT_FIELD;
         }
     }
     else

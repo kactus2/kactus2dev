@@ -242,7 +242,7 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
         }
         else if (role == Qt::BackgroundRole)
         {
-            return KactusColors::CATALOG_HEADER;
+            return KactusColors::STRONG_FIELD;
         }
         else if (role == Qt::DecorationRole && index.column() == 0)
         {

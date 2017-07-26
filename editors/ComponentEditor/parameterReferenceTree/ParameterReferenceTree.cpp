@@ -26,6 +26,8 @@
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/common/FileBuilder.h>
 
+#include <common/KactusColors.h>
+
 namespace
 {
     const QString VALUENAME = QString("Value");
@@ -1352,6 +1354,6 @@ void ParameterReferenceTree::colourItemGrey(QTreeWidgetItem* item)
 {
     for (int columnIndex = 0; columnIndex < COLUMN_COUNT; ++columnIndex)
     {
-        item->setBackgroundColor(columnIndex, QColor(230, 230, 230));
+        item->setBackgroundColor(columnIndex, KactusColors::STRONG_FIELD);
     }
 }

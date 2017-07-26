@@ -20,6 +20,9 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
@@ -54,9 +57,12 @@ ComponentEditorItem(model, libHandler, component, parent),
         QSharedPointer<ParameterReferenceCounter> cimpCounter =  QSharedPointer<ParameterReferenceCounter>(new ParameterReferenceCounter(cimpFinder));
         QSharedPointer<ExpressionFormatter> cimpFormatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(cimpFinder));
         QSharedPointer<IPXactSystemVerilogParser> cimpParser = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
+        QSharedPointer<InstantiationsValidator> cimpValidator = QSharedPointer<InstantiationsValidator>(
+            new InstantiationsValidator(cimpParser, component->getFileSets(), QSharedPointer<ParameterValidator2014>(
+            new ParameterValidator2014(cimpParser, component->getChoices())), libHandler));
 
         QSharedPointer<ComponentEditorItem> componentInstantiationItem (new SingleComponentInstantiationItem(
-            model, libHandler, component, instantiation, validator, cimpCounter, cimpFinder,
+            model, libHandler, component, instantiation, cimpValidator, cimpCounter, cimpFinder,
             cimpFormatter, cimpParser, this));
 
         childItems_.append(componentInstantiationItem);

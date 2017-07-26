@@ -316,7 +316,7 @@ QVariant FileDependencyModel::data(QModelIndex const& index, int role) const
             item->getType() == FileDependencyItem::ITEM_TYPE_EXTERNAL_LOCATION ||
             item->getType() == FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION)
         {
-            return QColor(230, 230, 230);
+            return KactusColors::STRONG_FIELD;
         }
         else if (item->getParent()->getType() == FileDependencyItem::ITEM_TYPE_FOLDER)
         {
@@ -324,13 +324,13 @@ QVariant FileDependencyModel::data(QModelIndex const& index, int role) const
             
             if (!QFile(absPath).exists())
             {
-                return QColor(255, 215, 215);
+                return KactusColors::INVALID_FIELD;
             }
         }
         
         if (index.column() == FileDependencyColumns::CREATE_DEPENDENCY)
         {
-            return QColor(240, 240, 240);
+            return KactusColors::STRONG_FIELD;
         }
     }
     else if (role == Qt::UserRole)
