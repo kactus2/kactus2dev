@@ -77,10 +77,12 @@ VLNV DesignWidget::getIdentifyingVLNV() const
 {
     const QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
 
-    if (designConf) {
+    if (designConf)
+    {
         return designConf->getDesignRef();
     }
-    else {
+    else
+    {
         return editedComponent_->getHierRef(viewName_);
     }
 }
@@ -185,8 +187,7 @@ void DesignWidget::refresh()
 {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QSharedPointer<Document> libComp = library_->getModel(editedComponent_->getVlnv());
-    QSharedPointer<Component> comp = libComp.staticCast<Component>();
+    QSharedPointer<Component> comp = library_->getModel(editedComponent_->getVlnv()).staticCast<Component>();
 
     setDesign(comp, viewName_);
     setModified(false);
@@ -235,15 +236,6 @@ bool DesignWidget::save()
     // Create the design.
     QSharedPointer<Design> design = getDiagram()->getDesign();
     QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
-
-    /*if (designConf)
-    {
-        design = diagram_->createDesign(designConf->getDesignRef());
-    }
-    else
-    {
-        design = diagram_->createDesign(editedComponent_->getHierRef(viewName_));
-    }*/
 
     if (design == 0)
     {

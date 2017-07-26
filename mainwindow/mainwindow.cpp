@@ -3149,20 +3149,14 @@ void MainWindow::openCatalog(const VLNV& vlnv)
     {
         return;
     }
-
-    // Editor was not yet open so create it.
-    QSharedPointer<Catalog> catalog;
-
-    if (libraryHandler_->contains(vlnv))
-    {
-        catalog = libraryHandler_->getModel(vlnv).dynamicCast<Catalog>();
-    }
-    else
+ 
+    if (!libraryHandler_->contains(vlnv))
     {
         emit errorMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
-        return;
+        return;            
     }
 
+    QSharedPointer<Catalog> catalog = libraryHandler_->getModel(vlnv).dynamicCast<Catalog>();
     if (catalog == 0)
     {
         emit errorMessage(tr("Document type did not match Catalog"));

@@ -30,10 +30,8 @@
       <file>common/graphics/refresh.png</file>
       <file>common/graphics/refresh_16x16.png</file>
       <file>common/graphics/import.png</file>
-      <file>common/graphics/export.png</file>
       <file>common/graphics/checkIntegrity.png</file>
       <file>common/graphics/diagram-add-column.png</file>
-      <file>common/graphics/help.png</file>
       <file>common/graphics/view-zoom_in.png</file>
       <file>common/graphics/view-zoom_out.png</file>
       <file>common/graphics/view-zoom_original.png</file>
@@ -57,18 +55,18 @@
       <file>common/graphics/new-bus.png</file>
       <file>common/graphics/appicon.png</file>
       <file>common/graphics/settings-general.png</file>
-      <file>common/graphics/settings-library.png</file>
       <file>common/graphics/settings-code_editor.png</file>
       <file>common/graphics/settings-file_types.png</file>
       <file>common/graphics/settings-plugins.png</file>
-	  <file>common/graphics/settings-environment_vars.png</file>
+      <file>common/graphics/settings-environment_vars.png</file>
       <file>common/graphics/triangle_arrow_down.png</file>
       <file>common/graphics/triangle_arrow_up.png</file>
-	  <file>common/graphics/triangle_arrow_right.png</file>
+      <file>common/graphics/triangle_arrow_right.png</file>
       <file>common/graphics/protection-locked.png</file>
       <file>common/graphics/protection-unlocked.png</file>
       <file>common/graphics/edit-undo.png</file>
       <file>common/graphics/edit-redo.png</file>
+      <file>common/graphics/edit.png</file>
       <file>common/graphics/configuration.png</file>
       <file>common/graphics/documentation.png</file>
       <file>common/graphics/dockSelect.png</file>
@@ -76,10 +74,7 @@
       <file>common/graphics/visibility.png</file>
       <file>common/graphics/library-refresh.png</file>
       <file>common/graphics/library-config.png</file>
-      <file>common/graphics/generator_plugin.png</file>
       <file>common/graphics/naming-policy.png</file>
-      <file>common/graphics/lock-on.png</file>
-      <file>common/graphics/lock-off.png</file>
       <file>common/graphics/traffic-light_green.png</file>
       <file>common/graphics/traffic-light_red.png</file>
       <file>common/graphics/traffic-light_yellow.png</file>
@@ -100,13 +95,13 @@
       <file>common/graphics/input.png</file>
       <file>common/graphics/inout.png</file>
       <file>common/graphics/phantom.png</file>
-	  <file>common/graphics/cross.png</file>
+      <file>common/graphics/cross.png</file>
       <file>common/graphics/balloon.png</file>
-	  <file>common/graphics/pin--plus.png</file>
+      <file>common/graphics/pin--plus.png</file>
       <file>common/graphics/star.png</file>
       <file>common/graphics/viewConfiguration.png</file>
       <file>common/graphics/compile.png</file>
-	  <file>common/graphics/memoryDesigner.png</file>
+      <file>common/graphics/memoryDesigner.png</file>
       <file>common/graphics/addressSpaceFilter.png</file>	  
       <file>common/graphics/compressMemoryItems.png</file>
       <file>common/graphics/compressFields.png</file>
@@ -116,9 +111,9 @@
       <file>common/graphics/filterRegisters.png</file>
       <file>common/graphics/filterFields.png</file>
       <file>common/graphics/folder-horizontal-open.png</file>
-	  <file>common/graphics/catalog.png</file>
-	  <file>common/graphics/generatorChain.png</file>
-	  <file>common/graphics/exclamation--frame.png</file>
+      <file>common/graphics/catalog.png</file>
+      <file>common/graphics/generatorChain.png</file>
+      <file>common/graphics/exclamation--frame.png</file>
       <file>common/graphics/paginator.png</file>
     </qresource>
     <qresource prefix="/">        

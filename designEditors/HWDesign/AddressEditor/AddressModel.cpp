@@ -187,6 +187,7 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
         {
             QSharedPointer<AddressEntry> entry = addressEntries_.at(index.row());
 
+            /*
             if (entry->isLocked())
             {
                 return QIcon(":icons/common/graphics/lock-on.png");
@@ -195,6 +196,7 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
             {
                 return QIcon(":icons/common/graphics/lock-off.png");
             }
+            */
         }
     }
     else if (role == Qt::ForegroundRole)
