@@ -13,9 +13,9 @@
 #define LIBRARYSETTINGSDIALOG_H
 
 #include <QDialog>
-#include <QSettings>
+#include <QFileIconProvider>
 #include <QPushButton>
-
+#include <QSettings>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 
@@ -102,8 +102,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The settings store.
+     //! The settings store.
 	 QSettings& settings_;
+
+     //! Icon provider for directory folders.
+     QFileIconProvider iconProvider_;
 
 	 //! Library locations table
 	 QTableWidget* libLocationsTable_;

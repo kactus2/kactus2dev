@@ -15,7 +15,7 @@
 #include <QPlainTextEdit>
 #include <QString>
 
-/*! \brief Editor to edit the details of a NameGroup-struct.
+/*! Editor to edit the details of a NameGroup-struct.
  *
  */
 class NameGroupEditor : public QGroupBox {
@@ -23,35 +23,35 @@ class NameGroupEditor : public QGroupBox {
 
 public:
 
-	//! \brief The maximum height for the editor
+	//! The maximum height for the editor
 	static const int MAX_EDITOR_HEIGHT = 130;
 
     NameGroupEditor(QSharedPointer<NameGroup> nameGroup,
         QWidget *parent,
         const QString& title = QString("Names"));
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~NameGroupEditor();
 
-	/*! \brief Get the name of the name group.
+	/*! Get the name of the name group.
 	 *
 	 * \return The contents of the name field.
 	*/
 	QString name() const;
 
-	/*! \brief Get the display name of the name group.
+	/*! Get the display name of the name group.
 	 *
 	 * \return The contents of the display name field.
 	*/
 	QString displayName() const;
 
-	/*! \brief Get the description of the name group.
+	/*! Get the description of the name group.
 	 *
 	 * \return The contents of the description field.
 	*/
 	QString description() const;
 
-	/*! \brief Check if the editor is in valid state.
+	/*! Check if the editor is in valid state.
 	 *
 	 * \return True if the name-field is not empty.
 	*/
@@ -59,14 +59,14 @@ public:
 
 public slots:
 
-	/*! \brief Refresh the edit fields.
+	/*! Refresh the edit fields.
 	 *
 	*/
 	void refresh();
 
 signals:
 
-	//! \brief Emitted when user edits one of the fields.
+	//! Emitted when user edits one of the fields.
 	void contentChanged();
 
     /*!
@@ -76,43 +76,43 @@ signals:
 
 private slots:
 
-	/*! \brief Handler for editing of the name field.
+	/*! Handler for editing of the name field.
 	 *
 	 * \param newName The new name for the name group.
 	 *
 	*/
 	void onNameChanged(const QString& newName);
 
-	/*! \brief Handler for editing of the display name field.
+	/*! Handler for editing of the display name field.
 	 *
 	 * \param newName The new display name for the name group.
 	 *
 	*/
 	void onDisplayNameChanged(const QString& newName);
 
-	/*! \brief Handler for editing of the description field.
+	/*! Handler for editing of the description field.
 	 *
 	*/
 	void onDescriptionChanged();
 
 private:
-	//! \brief No copying
+	//! No copying
 	NameGroupEditor(const NameGroupEditor& other);
     void setupLayout();
 
-	//! \brief No assignment
+	//! No assignment
 	NameGroupEditor& operator=(const NameGroupEditor& other);
 
-	//! \brief The name group to edit.
-	NameGroup& nameGroup_;
+	//! The name group to edit.
+	QSharedPointer<NameGroup> nameGroup_;
 
-	//! \brief Line edit to set the name.
+	//! Line edit to set the name.
 	QLineEdit nameEdit_;
 
-	//! \brief Line edit to set the displayName.
+	//! Line edit to set the displayName.
 	QLineEdit displayNameEdit_;
 
-	//! \brief Editor to write the description.
+	//! Editor to write the description.
 	QPlainTextEdit descriptionEdit_;
 };
 
