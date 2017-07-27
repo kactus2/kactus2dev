@@ -16,7 +16,7 @@
 #include "HierarchyView/hierarchymodel.h"
 #include "HierarchyView/hierarchywidget.h"
 
-#include "VLNVDialer/VLNVDialer.h"
+#include "VLNVDialer/vlnvdialer.h"
 
 #include <QTabWidget>
 #include <QVBoxLayout>
