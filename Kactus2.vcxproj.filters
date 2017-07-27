@@ -946,9 +946,6 @@
     <ClCompile Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.cpp">
       <Filter>Source Files\common\dialogs\LibrarySettingsDialog</Filter>
     </ClCompile>
-    <ClCompile Include="common\validators\AddressValidator.cpp">
-      <Filter>Source Files\common\validators</Filter>
-    </ClCompile>
     <ClCompile Include="common\validators\LibraryPathValidator\librarypathvalidator.cpp">
       <Filter>Source Files\common\validators\LibraryPathValidator</Filter>
     </ClCompile>
@@ -1456,16 +1453,10 @@
     <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PluginListDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="Plugins\PluginSystem\NewPluginsDialog.cpp">
       <Filter>Source Files\Plugins\PluginSystem</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\PluginSystem\PluginInfoWidget.cpp">
-      <Filter>Source Files\Plugins\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\PluginSystem\PluginListDialog.cpp">
       <Filter>Source Files\Plugins\PluginSystem</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\PluginSystem\PluginManager.cpp">
@@ -4539,9 +4530,6 @@
     <CustomBuild Include="Plugins\PluginSystem\NewPluginsDialog.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
-    <CustomBuild Include="Plugins\PluginSystem\PluginListDialog.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardConclusionPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
@@ -5887,9 +5875,6 @@
     </ClInclude>
     <ClInclude Include="common\layouts\VStaticLayout.h">
       <Filter>Header Files\common\layouts</Filter>
-    </ClInclude>
-    <ClInclude Include="common\validators\AddressValidator.h">
-      <Filter>Header Files\common\validators</Filter>
     </ClInclude>
     <ClInclude Include="common\widgets\assistedLineEdit\BasicLineContentMatcher.h">
       <Filter>Header Files\common\widgets\assistedLineEdit</Filter>

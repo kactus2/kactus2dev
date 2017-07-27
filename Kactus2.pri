@@ -62,7 +62,6 @@ HEADERS += ./VersionHelper.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
-    ./common/validators/AddressValidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -186,7 +185,6 @@ HEADERS += ./VersionHelper.h \
     ./Plugins/PluginSystem/PluginInfoWidget.h \
     ./Plugins/PluginSystem/PluginManager.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
-    ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \
     ./Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
     ./Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h \
@@ -210,6 +208,7 @@ HEADERS += ./VersionHelper.h \
     ./library/LibraryTreeModel.h \
     ./library/LibraryTreeWidget.h \
     ./library/LibraryTreeView.h \
+    ./library/LibraryWidget.h \
     ./library/VLNVDialer/dialerwidget.h \
     ./library/VLNVDialer/filterwidget.h \
     ./library/VLNVDialer/firmnessgroup.h \
@@ -472,6 +471,8 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
+    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
+    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
     ./editors/ComponentEditor/common/ExpressionFormatter.h \
     ./editors/ComponentEditor/common/ExpressionFormatterFactory.h \
     ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
@@ -714,10 +715,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
-    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
-    $$PWD/library/LibraryWidget.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -735,7 +733,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
-    ./common/validators/AddressValidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
@@ -870,7 +867,6 @@ SOURCES += ./VersionHelper.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
     ./Plugins/PluginSystem/NewPluginsDialog.cpp \
     ./Plugins/PluginSystem/PluginInfoWidget.cpp \
-    ./Plugins/PluginSystem/PluginListDialog.cpp \
     ./Plugins/PluginSystem/PluginManager.cpp \
     ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
@@ -885,6 +881,7 @@ SOURCES += ./VersionHelper.cpp \
     ./library/LibraryTreeView.cpp \
     ./library/LibraryTreeWidget.cpp \
     ./library/LibraryUtils.cpp \
+    ./library/LibraryWidget.cpp \
     ./library/TableViewDialog.cpp \
     ./library/VLNVDialer/dialerwidget.cpp \
     ./library/VLNVDialer/filterwidget.cpp \
@@ -1120,7 +1117,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
+    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
@@ -1341,8 +1340,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
-    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
-    $$PWD/library/LibraryWidget.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc

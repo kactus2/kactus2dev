@@ -38,7 +38,7 @@ NewPluginsDialog::NewPluginsDialog(QWidget* parent)
       detailsStack_(this),
       buttonBox_(QDialogButtonBox::Ok, Qt::Horizontal, this)
 {
-    setWindowTitle(tr("New plugins"));    
+    setWindowTitle(tr("New plugins found"));    
 
     connect(buttonBox_.button(QDialogButtonBox::Ok), SIGNAL(clicked()),
             this, SLOT(accept()), Qt::UniqueConnection);

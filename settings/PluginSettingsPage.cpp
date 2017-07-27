@@ -15,9 +15,8 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
-#include <Plugins/PluginSystem/PluginListDialog.h>
 #include <Plugins/PluginSystem/PluginInfoWidget.h>
-
+#include <Plugins/PluginSystem/NewPluginsDialog.h>
 
 #include <IPXACTmodels/XmlUtils.h>
 
@@ -25,7 +24,6 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QGroupBox>
-#include <Plugins/PluginSystem/NewPluginsDialog.h>
 
 namespace
 {   
