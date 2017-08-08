@@ -12,7 +12,7 @@
 #ifndef BRIDGESMODEL_H
 #define BRIDGESMODEL_H
 
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TransparentBridge.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -28,10 +28,10 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] slave   The slave interface that contains the bridges.
-	 *      @param [in] parent  The owner of this model.
+	 *      @param [in] bridges     The bridges to show in the model.
+	 *      @param [in] parent      The parent of this model.
 	*/
-	BridgesModel(QSharedPointer<SlaveInterface> slave, QObject *parent);
+	BridgesModel(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges, QObject *parent);
 	
 	//! The destructor
 	virtual ~BridgesModel();
@@ -94,13 +94,7 @@ public:
 	 * 
 	 *      @param [in] slave The slave interface that contains the bridges.
 	*/
-	void refresh(QSharedPointer<SlaveInterface> slave);
-
-	/*! Check if the bridges model is in a valid state.
-	 *
-	 *      @return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid() const;
+	void refresh(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges);
 
 public slots:
 
@@ -128,7 +122,7 @@ private:
 	BridgesModel& operator=(const BridgesModel& other);
 
 	//! Contains the bridges to edit.
-	QSharedPointer<QList<QSharedPointer<SlaveInterface::Bridge> > > bridges_;
+	QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges_;
 };
 
 #endif // BRIDGESMODEL_H

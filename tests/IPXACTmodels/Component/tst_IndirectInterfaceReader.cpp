@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
 // File: tst_IndirectInterfaceReader.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
-// Author: <Name>
-// Date: <Date in the format dd.mm.yyyy>
+// Project: Kactus2
+// Author: Esko Pekkarinen
+// Date: 02.08.2017
 //
 // Description:
 // Unit test for class IndirectInterfaceReader.

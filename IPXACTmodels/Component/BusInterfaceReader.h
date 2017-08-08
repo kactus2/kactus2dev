@@ -143,10 +143,11 @@ private:
 	/*!
 	*  Reads fields for a monitor interface struct from XML-input.
 	*
-	*      @param [in] inpstected			The XML description to parse the information from.
+	*      @param [in] monitorElement       The XML description to parse the information from.
 	*      @param [in] newmode				The interface object, which fields will be assigned.
 	*/
-	void parseMonitorInterface(QDomElement const& monitorElement, QSharedPointer<BusInterface::MonitorInterface> monitorInterface) const;
+	void parseMonitorInterface(QDomElement const& monitorElement, 
+        QSharedPointer<BusInterface::MonitorInterface> monitorInterface) const;
 
     /*!
      *  Read the extensions of the bus interface.

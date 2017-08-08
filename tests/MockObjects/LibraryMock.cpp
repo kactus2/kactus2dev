@@ -210,6 +210,14 @@ bool LibraryMock::isValid(const VLNV& /*vlnv*/)
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryMock::getAllVLNVs()
+//-----------------------------------------------------------------------------
+QList<VLNV> LibraryMock::getAllVLNVs() const
+{
+    return components_.keys();
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryMock::onCheckLibraryIntegrity()
 //-----------------------------------------------------------------------------
 void LibraryMock::onCheckLibraryIntegrity()

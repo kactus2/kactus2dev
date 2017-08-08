@@ -29,7 +29,7 @@ class IPXACTMODELS_EXPORT IndirectInterface : public NameGroup, public Extendabl
 public:
 
 	//! The constructor.
-	IndirectInterface();
+	IndirectInterface(QString const& name = QString());
 
     //! Copy constructor.
     IndirectInterface(IndirectInterface const& other);

@@ -66,6 +66,14 @@ private:
      *      @param [in] newComponent    The new component.
      */
     void parseBusInterfaces(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
+  
+    /*!
+     *  Reads the indirect interfaces.
+     *
+     *      @param [in] componentNode   XML description of the component.
+     *      @param [in] newComponent    The new component.
+     */
+    void parseIndirectInterfaces(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
 
     /*!
      *  Reads the channels.
@@ -260,6 +268,7 @@ private:
      *      @param [in] newComponent    The new component.
      */
     void parseAuthor(QDomNode const& authorNode, QSharedPointer<Component> newComponent) const;
+    
 };
 
 #endif // COMPONENTREADER_H

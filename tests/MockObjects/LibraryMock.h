@@ -215,6 +215,13 @@ public:
     *      @return Description.
     */
     virtual bool isValid(const VLNV& vlnv);
+   
+    /*!
+     *  Gets all the VLVNs currently in the library.
+     *
+     *      @return All current VLNVs.
+     */
+    virtual QList<VLNV> getAllVLNVs() const;
 
 public slots:
 

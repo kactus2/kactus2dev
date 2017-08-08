@@ -11,22 +11,23 @@
 
 #include <IPXACTmodels/Component/ComponentReader.h>
 
-#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/businterface.h>
 #include <IPXACTmodels/Component/channel.h>
-#include <IPXACTmodels/Component/RemapState.h>
-#include <IPXACTmodels/Component/AddressSpace.h>
-#include <IPXACTmodels/Component/MemoryMap.h>
-#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
+#include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
-#include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
@@ -52,6 +53,8 @@ private slots:
     void readXMLNameSpaces();
 
     void readBusInterfaces();
+    void readIndirectInterfaces();
+
     void readChannels();
     void readRemapStates();
     void readAddressSpaces();
@@ -257,6 +260,50 @@ void tst_ComponentReader::readBusInterfaces()
     QCOMPARE(busInterface->getBusType().getName(), QString("busDefinition"));
     QCOMPARE(busInterface->getBusType().getVersion(), QString("0.2"));
     QCOMPARE(busInterface->getInterfaceMode(), General::MASTER);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readIndirectInterfaces()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:indirectInterfaces>"
+                "<ipxact:indirectInterface>"
+                    "<ipxact:name>testInterface</ipxact:name>"
+                    "<ipxact:indirectAddressRef>addressRef</ipxact:indirectAddressRef>"
+                    "<ipxact:indirectDataRef>dataRef</ipxact:indirectDataRef>"        
+                    "<ipxact:memoryMapRef>map1</ipxact:memoryMapRef>"
+                "</ipxact:indirectInterface>"
+            "</ipxact:indirectInterfaces>"
+        "</ipxact:component>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+
+    QCOMPARE(testComponent->getVlnv().getName(), QString("TestComponent"));
+    QCOMPARE(testComponent->getIndirectInterfaces()->size(), 1);
+
+    QSharedPointer<IndirectInterface> indirectInterface = testComponent->getIndirectInterfaces()->first();
+    QCOMPARE(indirectInterface->name(), QString("testInterface"));
+    QCOMPARE(indirectInterface->getIndirectAddressRef(), QString("addressRef"));
+    QCOMPARE(indirectInterface->getIndirectDataRef(), QString("dataRef"));
+    QCOMPARE(indirectInterface->getMemoryMapRef(), QString("map1"));
 }
 
 //-----------------------------------------------------------------------------

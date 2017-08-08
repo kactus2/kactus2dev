@@ -529,9 +529,9 @@ void tst_businterfaceWriter::testWriteSlave()
     QSharedPointer<SlaveInterface> slaveInterface(new SlaveInterface());
     slaveInterface->setMemoryMapRef("ambaAHB");
 
-    QSharedPointer<SlaveInterface::Bridge> bridge(new SlaveInterface::Bridge());
-    bridge->masterRef_ = "masterBus";
-    bridge->isPresent_ = "1";
+    QSharedPointer<TransparentBridge> bridge(new TransparentBridge());
+    bridge->setMasterRef("masterBus");
+    bridge->setIsPresent("1");
 
     slaveInterface->getBridges()->append(bridge);
 

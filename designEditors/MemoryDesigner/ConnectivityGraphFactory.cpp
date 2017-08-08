@@ -730,9 +730,9 @@ void ConnectivityGraphFactory::createInternalConnectionsForBridge(QSharedPointer
         instanceInterfaces);
     startInterface->setBridged();
 
-    foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *busInterface->getSlave()->getBridges())
+    foreach (QSharedPointer<TransparentBridge> bridge, *busInterface->getSlave()->getBridges())
     {
-        QSharedPointer<ConnectivityInterface> endInterface = getInterface(bridge->masterRef_, 
+        QSharedPointer<ConnectivityInterface> endInterface = getInterface(bridge->getMasterRef(), 
             instanceName, instanceInterfaces);
 
         if (endInterface)

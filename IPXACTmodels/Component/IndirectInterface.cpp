@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: IndirectInterface::IndirectInterface()
 //-----------------------------------------------------------------------------
-IndirectInterface::IndirectInterface() : NameGroup(), 
+IndirectInterface::IndirectInterface(QString const& name) : NameGroup(name), 
     Extendable(),
     indirectAddressRef_(), 
     indirectDataRef_(),

@@ -78,7 +78,8 @@ HEADERS += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/AbstractionDefinition/WirePort.h \
     ../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../MockObjects/LibraryMock.h
+    ../../../MockObjects/LibraryMock.h \
+    ../../../../IPXACTmodels/Component/TransparentBridge.h
 SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Design/ActiveInterface.cpp \
@@ -151,4 +152,5 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/AbstractionDefinition/WirePort.cpp \
     ../../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_BusInterfaceValidator.cpp
+    ./tst_BusInterfaceValidator.cpp \
+    ../../../../IPXACTmodels/Component/TransparentBridge.cpp

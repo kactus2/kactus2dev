@@ -13,6 +13,7 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Component/businterface.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/channel.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
@@ -61,6 +62,9 @@ private slots:
     void writeXMLNameSpaces();
 
     void writeBusInterfaces();
+
+    void writeIndirectInterfaces();
+
     void writeChannels();
     void writeRemapStates();
     void writeAddressSpace();
@@ -278,6 +282,52 @@ void tst_ComponentWriter::writeBusInterfaces()
                     "\t\t\t<ipxact:master/>\n"
                 "\t\t</ipxact:busInterface>\n"
             "\t</ipxact:busInterfaces>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeIndirectInterfaces()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<IndirectInterface> testInterface (new IndirectInterface());
+    testInterface->setName("testInterface");
+    testInterface->setIndirectAddressRef("addr_r0");
+    testInterface->setIndirectDataRef("data_r1");
+
+    testComponent_->getIndirectInterfaces()->append(testInterface);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+        "\t<ipxact:name>TestComponent</ipxact:name>\n"
+        "\t<ipxact:version>0.11</ipxact:version>\n"
+        "\t<ipxact:indirectInterfaces>\n"
+        "\t\t<ipxact:indirectInterface>\n"
+        "\t\t\t<ipxact:name>testInterface</ipxact:name>\n"
+        "\t\t\t<ipxact:indirectAddressRef>addr_r0</ipxact:indirectAddressRef>\n"
+        "\t\t\t<ipxact:indirectDataRef>data_r1</ipxact:indirectDataRef>\n"
+        "\t\t</ipxact:indirectInterface>\n"
+        "\t</ipxact:indirectInterfaces>\n"
         "</ipxact:component>\n"
         );
 

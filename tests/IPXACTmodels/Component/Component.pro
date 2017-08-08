@@ -54,5 +54,6 @@ SUBDIRS += validators\tst_ChannelValidator.pro \
 		   tst_OtherClockDriverReader.pro \
 		   tst_OtherClockDriverWriter.pro \
 		   tst_IndirectInterfaceReader.pro \
+		   tst_IndirectInterfaceWriter.pro \
 		   tst_ComponentGeneratorReader.pro \
 		   tst_ComponentGeneratorWriter.pro
