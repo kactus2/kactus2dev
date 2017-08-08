@@ -905,6 +905,12 @@
     <Filter Include="Source Files\library\HierarchyView">
       <UniqueIdentifier>{930d34af-2acf-42ed-a2eb-06f5fcdacf9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\indirectInterfaces">
+      <UniqueIdentifier>{eb1a9347-a208-4b57-b504-2d56bd8075f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\indirectInterfaces">
+      <UniqueIdentifier>{8fba88bc-527a-4d9a-a0f1-543f2a45b28f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4246,6 +4252,42 @@
     <ClCompile Include="GeneratedFiles\moc_LibraryWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_IndirectInterfacesEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_IndirectInterfacesModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_IndirectInterfacesDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfacesEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfacesModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfacesDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentEditorIndirectInterfacesItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorIndirectInterfacesItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleIndirectInterfaceItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\indirectInterfaces\SingleIndirectInterfaceEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleIndirectInterfaceEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5838,6 +5880,24 @@
     <CustomBuild Include="library\LibraryWidget.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfacesEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfacesModel.h">
+      <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfacesDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\ComponentEditorIndirectInterfacesItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\indirectInterfaces\SingleIndirectInterfaceEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6427,6 +6487,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfaceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

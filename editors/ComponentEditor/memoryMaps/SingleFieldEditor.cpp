@@ -61,6 +61,7 @@ readActionEditor_(),
 testableEditor_(),
 testConstrainedEditor_(),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
+fieldIdEditor_(new QLineEdit(this)),
 expressionParser_(expressionParser),
 writeConstraintEditor_(new QComboBox(this)),
 writeConstraintMinLimit_(new ExpressionEditor(parameterFinder, this)),
@@ -143,166 +144,6 @@ SingleFieldEditor::~SingleFieldEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleFieldEditor::setupLayout()
-//-----------------------------------------------------------------------------
-void SingleFieldEditor::setupLayout()
-{
-    QScrollArea* scrollArea = new QScrollArea(this);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-
-    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
-    scrollLayout->addWidget(scrollArea);
-    scrollLayout->setContentsMargins(0, 0, 0, 0);
-
-    QGroupBox* fieldDefinitionGroup = new QGroupBox(tr("Field definition"));
-
-    QFormLayout* fieldDefinitionLayout = new QFormLayout(fieldDefinitionGroup);
-    fieldDefinitionLayout->addRow(tr("Offset [bits], f(x):"), offsetEditor_);
-    fieldDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
-    fieldDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
-    fieldDefinitionLayout->addRow(tr("Reset value, f(x):"), resetValueEditor_);
-    fieldDefinitionLayout->addRow(tr("Reset mask, f(x):"), resetMaskEditor_);
-
-    QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
-
-    QFormLayout* fieldConstraintLayout = new QFormLayout(fieldConstraintGroup);
-    volatileEditor_ = new BooleanComboBox(fieldDefinitionGroup);
-    fieldConstraintLayout->addRow(tr("Volatile:"), volatileEditor_);
-    connect(volatileEditor_, SIGNAL(activated(QString const&)),
-        this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
-
-    accessEditor_ = new AccessComboBox(fieldDefinitionGroup);
-    fieldConstraintLayout->addRow(tr("Access:"), accessEditor_);
-    connect(accessEditor_, SIGNAL(activated(QString const&)),
-        this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
-
-    modifiedWriteValueEditor_ = new ModWriteComboBox(fieldDefinitionGroup);
-    fieldConstraintLayout->addRow(tr("Modified write value:"), modifiedWriteValueEditor_);
-    connect(modifiedWriteValueEditor_, SIGNAL(activated(QString const&)),
-        this, SLOT(onModifiedWriteSelected(QString const&)), Qt::UniqueConnection);
-
-    readActionEditor_ = new ReadActionComboBox(fieldDefinitionGroup);
-    fieldConstraintLayout->addRow(tr("Read action:"), readActionEditor_);
-    connect(readActionEditor_, SIGNAL(activated(QString const&)),
-        this, SLOT(onReadActionSelected(QString const&)), Qt::UniqueConnection);
-
-    testableEditor_ = new BooleanComboBox(fieldDefinitionGroup);
-    fieldConstraintLayout->addRow(tr("Testable:"), testableEditor_);
-    connect(testableEditor_, SIGNAL(activated(QString const&)),
-        this, SLOT(onTestableSelected(QString const&)), Qt::UniqueConnection);
-
-    testConstrainedEditor_ = new TestConstraintComboBox(fieldDefinitionGroup);
-    fieldConstraintLayout->addRow(tr("Test constraint:"), testConstrainedEditor_);
-    connect(testConstrainedEditor_, SIGNAL(activated(QString const&)),
-        this, SLOT(onTestConstrainedSelected(QString const&)), Qt::UniqueConnection);
-
-    fieldConstraintLayout->addRow(tr("Write value constraint:"), writeConstraintEditor_);
-    fieldConstraintLayout->addRow(tr("Write constraint minimum, f(x):"), writeConstraintMinLimit_);
-    fieldConstraintLayout->addRow(tr("Write constraint maximum, f(x):"), writeConstraintMaxLimit_);
-
-    QVBoxLayout* topLeftOfPageLayout = new QVBoxLayout();
-    topLeftOfPageLayout->addWidget(&nameEditor_, 0,Qt::AlignTop);
-    topLeftOfPageLayout->addWidget(fieldDefinitionGroup);
-
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addLayout(topLeftOfPageLayout, 0);
-    topOfPageLayout->addWidget(fieldConstraintGroup, 0);
-
-    QWidget* topOfPageWidget = new QWidget();
-    topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    topOfPageWidget->setLayout(topOfPageLayout);
-    topOfPageWidget->setContentsMargins(0, 0, 0, 0);
-
-    QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
-    verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    verticalSplitter->addWidget(topOfPageWidget);
-    verticalSplitter->addWidget(enumerationsEditor_);
-    verticalSplitter->setStretchFactor(1, 1);
-
-    QSplitterHandle* handle = verticalSplitter->handle(1);
-    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
-    handleLayout->setSpacing(0);
-    handleLayout->setMargin(0);
-
-    QFrame* line = new QFrame(handle);
-    line->setLineWidth(2);
-    line->setMidLineWidth(2);
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-    handleLayout->addWidget(line);
-
-    verticalSplitter->setHandleWidth(10);
-
-    scrollArea->setWidget(verticalSplitter);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleFieldEditor::connectSignals()
-//-----------------------------------------------------------------------------
-void SingleFieldEditor::connectSignals()
-{
-    connect(offsetEditor_, SIGNAL(increaseReference(QString const&)),
-        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(offsetEditor_, SIGNAL(decreaseReference(QString const&)),
-        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(widthEditor_, SIGNAL(increaseReference(QString const&)),
-        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(widthEditor_, SIGNAL(decreaseReference(QString const&)),
-        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(increaseReference(QString const&)),
-        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(decreaseReference(QString const&)),
-        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(writeConstraintMinLimit_, SIGNAL(increaseReference(QString const&)),
-        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(writeConstraintMinLimit_, SIGNAL(decreaseReference(QString const&)),
-        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(writeConstraintMaxLimit_, SIGNAL(increaseReference(QString const&)),
-        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(writeConstraintMaxLimit_, SIGNAL(decreaseReference(QString const&)),
-        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(resetValueEditor_, SIGNAL(increaseReference(QString const&)),
-        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(resetValueEditor_, SIGNAL(decreaseReference(QString const&)),
-        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(increaseReference(QString const&)),
-        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(decreaseReference(QString const&)),
-        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-
-    connect(offsetEditor_, SIGNAL(editingFinished()), this, SLOT(onOffsetEdited()), Qt::UniqueConnection);
-    connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWidthEdited()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
-    connect(writeConstraintMinLimit_, SIGNAL(editingFinished()),
-        this, SLOT(onWriteConstraintMinimumEdited()), Qt::UniqueConnection);
-    connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()),
-        this, SLOT(onWriteConstraintMaximumEdited()), Qt::UniqueConnection);
-    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SLOT(onResetValueEdited()), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SLOT(onResetMaskEdited()), Qt::UniqueConnection);
-
-    connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(enumerationsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(writeConstraintMinLimit_, SIGNAL(editingFinished()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-    connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-
-    connect(writeConstraintEditor_, SIGNAL(activated(int)),
-        this, SLOT(onWriteConstraintSelected(int)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleFieldEditor::refresh()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::refresh()
@@ -320,6 +161,8 @@ void SingleFieldEditor::refresh()
 
     isPresentEditor_->setExpression(field_->getIsPresent());
     isPresentEditor_->setToolTip(formattedValueFor(field_->getIsPresent()));
+
+    fieldIdEditor_->setText(field_->getId());
 
     if (field_->getWriteConstraint())
     {
@@ -352,6 +195,15 @@ void SingleFieldEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::showEvent()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+    emit helpUrlRequested("componenteditor/field.html");
+}
+
+//-----------------------------------------------------------------------------
 // Function: SingleFieldEditor::changeExpressionEditorSignalBlockStatus()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::changeExpressionEditorSignalBlockStatus(bool blockStatus) const
@@ -363,15 +215,6 @@ void SingleFieldEditor::changeExpressionEditorSignalBlockStatus(bool blockStatus
     writeConstraintMaxLimit_->blockSignals(blockStatus);
     resetValueEditor_->blockSignals(blockStatus);
     resetMaskEditor_->blockSignals(blockStatus);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleFieldEditor::showEvent()
-//-----------------------------------------------------------------------------
-void SingleFieldEditor::showEvent(QShowEvent* event)
-{
-    QWidget::showEvent(event);
-    emit helpUrlRequested("componenteditor/field.html");
 }
 
 //-----------------------------------------------------------------------------
@@ -514,6 +357,14 @@ void SingleFieldEditor::onIsPresentEdited()
 }
 
 //-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::onFieldIdChanged()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::onFieldIdChanged()
+{
+    field_->setId(fieldIdEditor_->text());
+}
+
+//-----------------------------------------------------------------------------
 // Function: SingleFieldEditor::setWriteMinMaxConstraintEnableStatus()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::setWriteMinMaxConstraintEnableStatus(int writeConstraintIndex) const
@@ -624,4 +475,168 @@ void SingleFieldEditor::onResetMaskEdited()
 
     field_->setResetMask(newResetMask);
     resetMaskEditor_->setToolTip(formattedValueFor(newResetMask));
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::connectSignals()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::connectSignals()
+{
+    connect(offsetEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(offsetEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(widthEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(widthEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(writeConstraintMinLimit_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(writeConstraintMinLimit_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(writeConstraintMaxLimit_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(writeConstraintMaxLimit_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(resetValueEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(resetValueEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(resetMaskEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(resetMaskEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+
+    connect(offsetEditor_, SIGNAL(editingFinished()), this, SLOT(onOffsetEdited()), Qt::UniqueConnection);
+    connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWidthEdited()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
+    connect(writeConstraintMinLimit_, SIGNAL(editingFinished()),
+        this, SLOT(onWriteConstraintMinimumEdited()), Qt::UniqueConnection);
+    connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()),
+        this, SLOT(onWriteConstraintMaximumEdited()), Qt::UniqueConnection);
+    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SLOT(onResetValueEdited()), Qt::UniqueConnection);
+    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SLOT(onResetMaskEdited()), Qt::UniqueConnection);
+
+    connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    
+    connect(enumerationsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(fieldIdEditor_, SIGNAL(editingFinished()), this, SLOT(onFieldIdChanged()), Qt::UniqueConnection);
+
+    connect(writeConstraintMinLimit_, SIGNAL(editingFinished()),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+
+    connect(writeConstraintEditor_, SIGNAL(activated(int)),
+        this, SLOT(onWriteConstraintSelected(int)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::setupLayout()
+{
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    QGroupBox* fieldDefinitionGroup = new QGroupBox(tr("Field definition"));
+
+    QFormLayout* fieldDefinitionLayout = new QFormLayout(fieldDefinitionGroup);
+    fieldDefinitionLayout->addRow(tr("Offset [bits], f(x):"), offsetEditor_);
+    fieldDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
+    fieldDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+    fieldDefinitionLayout->addRow(tr("Reset value, f(x):"), resetValueEditor_);
+    fieldDefinitionLayout->addRow(tr("Reset mask, f(x):"), resetMaskEditor_);
+    fieldDefinitionLayout->addRow(tr("Field ID:"), fieldIdEditor_);
+
+    QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
+
+    QFormLayout* fieldConstraintLayout = new QFormLayout(fieldConstraintGroup);
+    volatileEditor_ = new BooleanComboBox(fieldDefinitionGroup);
+    fieldConstraintLayout->addRow(tr("Volatile:"), volatileEditor_);
+    connect(volatileEditor_, SIGNAL(activated(QString const&)),
+        this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
+
+    accessEditor_ = new AccessComboBox(fieldDefinitionGroup);
+    fieldConstraintLayout->addRow(tr("Access:"), accessEditor_);
+    connect(accessEditor_, SIGNAL(activated(QString const&)),
+        this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
+
+    modifiedWriteValueEditor_ = new ModWriteComboBox(fieldDefinitionGroup);
+    fieldConstraintLayout->addRow(tr("Modified write value:"), modifiedWriteValueEditor_);
+    connect(modifiedWriteValueEditor_, SIGNAL(activated(QString const&)),
+        this, SLOT(onModifiedWriteSelected(QString const&)), Qt::UniqueConnection);
+
+    readActionEditor_ = new ReadActionComboBox(fieldDefinitionGroup);
+    fieldConstraintLayout->addRow(tr("Read action:"), readActionEditor_);
+    connect(readActionEditor_, SIGNAL(activated(QString const&)),
+        this, SLOT(onReadActionSelected(QString const&)), Qt::UniqueConnection);
+
+    testableEditor_ = new BooleanComboBox(fieldDefinitionGroup);
+    fieldConstraintLayout->addRow(tr("Testable:"), testableEditor_);
+    connect(testableEditor_, SIGNAL(activated(QString const&)),
+        this, SLOT(onTestableSelected(QString const&)), Qt::UniqueConnection);
+
+    testConstrainedEditor_ = new TestConstraintComboBox(fieldDefinitionGroup);
+    fieldConstraintLayout->addRow(tr("Test constraint:"), testConstrainedEditor_);
+    connect(testConstrainedEditor_, SIGNAL(activated(QString const&)),
+        this, SLOT(onTestConstrainedSelected(QString const&)), Qt::UniqueConnection);
+
+    fieldConstraintLayout->addRow(tr("Write value constraint:"), writeConstraintEditor_);
+    fieldConstraintLayout->addRow(tr("Write constraint minimum, f(x):"), writeConstraintMinLimit_);
+    fieldConstraintLayout->addRow(tr("Write constraint maximum, f(x):"), writeConstraintMaxLimit_);
+
+    QVBoxLayout* topLeftOfPageLayout = new QVBoxLayout();
+    topLeftOfPageLayout->addWidget(&nameEditor_, 0,Qt::AlignTop);
+    topLeftOfPageLayout->addWidget(fieldDefinitionGroup);
+
+    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
+    topOfPageLayout->addLayout(topLeftOfPageLayout, 0);
+    topOfPageLayout->addWidget(fieldConstraintGroup, 0);
+
+    QWidget* topOfPageWidget = new QWidget();
+    topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    topOfPageWidget->setLayout(topOfPageLayout);
+    topOfPageWidget->setContentsMargins(0, 0, 0, 0);
+
+    QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
+    verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    verticalSplitter->addWidget(topOfPageWidget);
+    verticalSplitter->addWidget(enumerationsEditor_);
+    verticalSplitter->setStretchFactor(1, 1);
+
+    QSplitterHandle* handle = verticalSplitter->handle(1);
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setMargin(0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    verticalSplitter->setHandleWidth(10);
+
+    scrollArea->setWidget(verticalSplitter);
 }
