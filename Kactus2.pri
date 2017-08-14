@@ -102,6 +102,9 @@ HEADERS += ./VersionHelper.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
+    ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
+    ./common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
+    ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/ExitScreen.h \
     ./mainwindow/NewWorkspaceDialog.h \
@@ -472,6 +475,8 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
+    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
+    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
     ./editors/ComponentEditor/common/ExpressionFormatter.h \
     ./editors/ComponentEditor/common/ExpressionFormatterFactory.h \
     ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
@@ -714,9 +719,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
-    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -734,6 +737,9 @@ SOURCES += ./VersionHelper.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
+    ./common/dialogs/ObjectExportDialog/ObjectExportDialog.cpp \
+    ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.cpp \
+    ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.cpp \
     ./common/validators/AddressValidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
@@ -1119,7 +1125,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
+    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
@@ -1340,7 +1348,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
-    ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc
