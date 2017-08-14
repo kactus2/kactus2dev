@@ -34,7 +34,7 @@ ItemEditor(component, handler, parent),
     buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
     imageTypesEditor_(tr("Image types"), this),
     dependenciesEditor_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this),
-    editButton_(new QPushButton(QIcon(":/icons/common/graphics/settings-code_editor.png"), tr("Edit file"), this)),
+    editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
     runButton_(new QPushButton(QIcon(":/icons/common/graphics/plugin-generator.png"), tr("Run file"), this)),
     openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), 
         tr("Open containing folder"), this))

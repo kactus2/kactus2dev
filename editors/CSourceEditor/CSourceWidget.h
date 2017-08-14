@@ -51,7 +51,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~CSourceWidget();
+    virtual ~CSourceWidget();
 
 	/*! \brief Get the VLNV that can be used to identify the document.
 	 *
@@ -72,7 +72,9 @@ public:
     /*!
      *  Returns the edit provider.
      */
-    virtual IEditProvider* getEditProvider();
+    virtual QSharedPointer<IEditProvider> getEditProvider() const;
+        
+    virtual void refresh();
 
 public slots:
     //! Saves the source file.
@@ -86,8 +88,11 @@ public slots:
 
 private:
     // Disable copying.
-    CSourceWidget(CSourceWidget const& rhs);
+    CSourceWidget(CSourceWidget const& rhs);    
     CSourceWidget& operator=(CSourceWidget const& rhs);
+
+    //! Reads the source file content into the editor.
+    void readFileContentFromDisk();
 
     //-----------------------------------------------------------------------------
     // Data.

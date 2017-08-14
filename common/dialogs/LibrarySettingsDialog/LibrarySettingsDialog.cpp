@@ -12,22 +12,23 @@
 #include "LibrarySettingsDialog.h"
 #include "librarysettingsdelegate.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGroupBox>
+#include <QCheckBox>
+#include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QDialogButtonBox>
-#include <QStringList>
+#include <QGroupBox>
+#include <QHBoxLayout>
 #include <QHeaderView>
-#include <QCheckBox>
+#include <QIcon>
+#include <QStringList>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: LibrarySettingsDialog::LibrarySettingsDialog()
 //-----------------------------------------------------------------------------
-LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* parent)
-    : QDialog(parent),
+LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* parent): QDialog(parent),
       settings_(settings),
+      iconProvider_(),
 	  libLocationsTable_(0),
       addLocationButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
       removeLocationButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
@@ -292,7 +293,7 @@ void LibrarySettingsDialog::createRowForDirectory(QString const& directory, bool
     libLocationsTable_->insertRow(rowNumber);
 
     // Create the item for default column.
-     QTableWidgetItem* defaultItem = new QTableWidgetItem();
+    QTableWidgetItem* defaultItem = new QTableWidgetItem();
     defaultItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 
     if (isDefault)
@@ -323,6 +324,16 @@ void LibrarySettingsDialog::createRowForDirectory(QString const& directory, bool
 
     QTableWidgetItem* pathItem = new QTableWidgetItem(directory);
     pathItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    QFileInfo directoryInfo(directory);
+    if (directoryInfo.exists())
+    {
+         pathItem->setIcon(iconProvider_.icon(directoryInfo));
+    }
+    else
+    {
+        pathItem->setIcon(QIcon(":/icons/common/graphics/exclamation--frame.png"));
+    }
 
     libLocationsTable_->setItem(rowNumber, LibrarySettingsDelegate::PATH_COL, pathItem);
 }

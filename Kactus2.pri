@@ -62,7 +62,6 @@ HEADERS += ./VersionHelper.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
-    ./common/validators/AddressValidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -189,7 +188,6 @@ HEADERS += ./VersionHelper.h \
     ./Plugins/PluginSystem/PluginInfoWidget.h \
     ./Plugins/PluginSystem/PluginManager.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
-    ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \
     ./Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
     ./Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h \
@@ -213,6 +211,7 @@ HEADERS += ./VersionHelper.h \
     ./library/LibraryTreeModel.h \
     ./library/LibraryTreeWidget.h \
     ./library/LibraryTreeView.h \
+    ./library/LibraryWidget.h \
     ./library/VLNVDialer/dialerwidget.h \
     ./library/VLNVDialer/filterwidget.h \
     ./library/VLNVDialer/firmnessgroup.h \
@@ -875,7 +874,6 @@ SOURCES += ./VersionHelper.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
     ./Plugins/PluginSystem/NewPluginsDialog.cpp \
     ./Plugins/PluginSystem/PluginInfoWidget.cpp \
-    ./Plugins/PluginSystem/PluginListDialog.cpp \
     ./Plugins/PluginSystem/PluginManager.cpp \
     ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
@@ -890,6 +888,7 @@ SOURCES += ./VersionHelper.cpp \
     ./library/LibraryTreeView.cpp \
     ./library/LibraryTreeWidget.cpp \
     ./library/LibraryUtils.cpp \
+    ./library/LibraryWidget.cpp \
     ./library/TableViewDialog.cpp \
     ./library/VLNVDialer/dialerwidget.cpp \
     ./library/VLNVDialer/filterwidget.cpp \

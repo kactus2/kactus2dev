@@ -24,29 +24,28 @@
 
 #include <common/TextEditProvider.h>
 
+#include <QApplication>
+#include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
-#include <QTextStream>
 #include <QMessageBox>
 #include <QPrinter>
 #include <QPrintDialog>
-#include <QCoreApplication>
 #include <QSettings>
-#include <QVBoxLayout>
 #include <QSharedPointer>
+#include <QTextStream>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
-// Function: CSourceWidget()
+// Function: CSourceWidget::CSourceWidget()
 //-----------------------------------------------------------------------------
 CSourceWidget::CSourceWidget(QString const& sourceFile, QSharedPointer<Component> ownerComponent,
     LibraryInterface* libInterface, QWidget* mainWnd, QWidget* parent):
 TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
+    textEdit_(new CSourceTextEdit(mainWnd, this)),
     sourceFile_(sourceFile),
-    editProvider_()
+    editProvider_(new TextEditProvider(*textEdit_))
 {
-    textEdit_ = new CSourceTextEdit(mainWnd, this);
-    editProvider_ = QSharedPointer<TextEditProvider>(new TextEditProvider(*textEdit_));
-
     // Initialize content matcher and highlighter for the text editor.
     textEdit_->getMatcher().setOwner(ownerComponent);
 
@@ -81,38 +80,25 @@ TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
     QSettings settings;
     applySettings(settings);
     
-    // Read the contents of the file to the text edit.
-    QFile file(sourceFile);
-
-    bool success = file.open(QIODevice::ReadOnly | QIODevice::Text);
-
-    if (!success)
-    {
-        // TODO: Error checking.
-        return;
-    }
-
-    QTextStream stream(&file);
-    textEdit_->setPlainText(stream.readAll());
+    readFileContentFromDisk();
 
     setDocumentName(QFileInfo(sourceFile).fileName());
     setDocumentType("Code");
 
     connect(textEdit_->document(), SIGNAL(contentsChanged()),
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(this, SIGNAL(contentChanged()),
-        this, SLOT(onContentChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(contentChanged()), this, SLOT(onContentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~CSourceWidget()
+// Function: CSourceWidget::~CSourceWidget()
 //-----------------------------------------------------------------------------
 CSourceWidget::~CSourceWidget()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: loadSettings()
+// Function: CSourceWidget::loadSettings()
 //-----------------------------------------------------------------------------
 void CSourceWidget::applySettings(QSettings& settings)
 {
@@ -141,7 +127,7 @@ void CSourceWidget::applySettings(QSettings& settings)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getSourceFile()
+// Function: CSourceWidget::getSourceFile()
 //-----------------------------------------------------------------------------
 QString const& CSourceWidget::getSourceFile() const
 {
@@ -149,7 +135,7 @@ QString const& CSourceWidget::getSourceFile() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: save()
+// Function: CSourceWidget::save()
 //-----------------------------------------------------------------------------
 bool CSourceWidget::save()
 {
@@ -172,7 +158,7 @@ bool CSourceWidget::save()
 }
 
 //-----------------------------------------------------------------------------
-// Function: print()
+// Function: CSourceWidget::print()
 //-----------------------------------------------------------------------------
 void CSourceWidget::print()
 {
@@ -197,7 +183,7 @@ void CSourceWidget::print()
 }
 
 //-----------------------------------------------------------------------------
-// Function: onContentChanged()
+// Function: CSourceWidget::onContentChanged()
 //-----------------------------------------------------------------------------
 void CSourceWidget::onContentChanged()
 {
@@ -205,13 +191,52 @@ void CSourceWidget::onContentChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getEditProvider()
+// Function: CSourceWidget::getEditProvider()
 //-----------------------------------------------------------------------------
-IEditProvider* CSourceWidget::getEditProvider()
+QSharedPointer<IEditProvider> CSourceWidget::getEditProvider() const
 {
-    return editProvider_.data();
+    return editProvider_;
 }
 
-VLNV CSourceWidget::getIdentifyingVLNV() const {
+//-----------------------------------------------------------------------------
+// Function: CSourceWidget::refresh()
+//-----------------------------------------------------------------------------
+void CSourceWidget::refresh()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+    readFileContentFromDisk();
+    
+    setModified(false);
+    TabDocument::refresh();
+
+    QApplication::restoreOverrideCursor();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CSourceWidget::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV CSourceWidget::getIdentifyingVLNV() const
+{
 	return getDocumentVLNV();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CSourceWidget::readFileContentFromDisk()
+//-----------------------------------------------------------------------------
+void CSourceWidget::readFileContentFromDisk()
+{
+    // Read the contents of the file to the text edit.
+    QFile file(sourceFile_);
+
+    bool success = file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    if (!success)
+    {
+        // TODO: Error checking.
+        return;
+    }
+
+    QTextStream stream(&file);
+    textEdit_->setPlainText(stream.readAll());
 }

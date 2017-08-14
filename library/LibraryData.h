@@ -29,6 +29,7 @@
 #include <QTimer>
 #include <QRegExpValidator>
 #include <QWidget>
+#include <QFileSystemWatcher>
 
 class AbstractionDefinition;
 class BusDefinition;
@@ -118,6 +119,16 @@ public:
 	*/
 	QSharedPointer<Document> getModel(VLNV const& vlnv);
 
+    /*!
+     *  Writes a document into a file.
+     *
+     *      @param [in] model       The document to write to the file.
+     *      @param [in] filePath    The path to the file to write. If empty, current path is used.
+     *
+     *      @return True, if the file was successfully written, otherwise false.
+     */
+    bool writeFile(QSharedPointer<Document> model, QString const& filePath = QString());
+
 	//! Check the integrity of the library.
 	void checkLibraryIntegrity();
 
@@ -137,7 +148,8 @@ public:
 	 *      @return Any errors within the document.
 	*/
 	QVector<QString> findErrorsInDocument(QSharedPointer<Document> document);
-   
+
+
 signals:
 
 	//! Emit an error message to be printed to user.
@@ -151,6 +163,9 @@ signals:
 
 	//! Inform tree model that a vlnv is to be added to the tree.
 	void addVLNV(VLNV const& vlnv);
+
+    //! Inform that object has been updated.
+    void updatedVLNV(VLNV const& vlnv);
 
 	//! Inform tree model that the model should be reset
 	void resetModel();
@@ -168,6 +183,15 @@ public slots:
 
 	//! Reset the library
 	void resetLibrary();
+
+ private slots:
+
+    /*!
+     *  Called when a known IP-XACT file has changed on the disk.
+     *
+     *      @param [in] path    The path to the changed file.
+     */
+    void onFileChanged(QString const& path);
 
 private:
 
@@ -357,6 +381,10 @@ private:
 
     //! The used system design configuration validator.
     SystemDesignConfigurationValidator systemDesignConfigurationValidator_;
+
+    //! Watch for changes in the IP-XACT files.
+    QFileSystemWatcher* fileWatch_;
+
 };
 
 #endif // LIBRARYDATA_H

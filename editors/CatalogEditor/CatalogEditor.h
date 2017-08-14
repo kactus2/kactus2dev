@@ -125,11 +125,12 @@ private:
     //! Editor for catalog description.
     QTextEdit* descriptionEditor_;
 
+    //! Model for catalog files.
+    CatalogFileModel* fileModel_;
+
     //! View for catalog files.
     QTreeView* fileView_;
 
-    //! Model for catalog files.
-    CatalogFileModel* fileModel_;
 };
 
 //-----------------------------------------------------------------------------

@@ -15,8 +15,6 @@
 #include "LibraryErrorModel.h"
 #include "TableViewDialog.h"
 
-#include <library/VLNVDialer/vlnvdialer.h>
-
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovemodel.h>
@@ -26,26 +24,17 @@
 #include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
-#include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
 
 #include <IPXACTmodels/Catalog/Catalog.h>
-#include <IPXACTmodels/Catalog/CatalogWriter.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/ComponentWriter.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/Design/DesignWriter.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
-
-#include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
-#include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -66,13 +55,12 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::LibraryHandler()
 //-----------------------------------------------------------------------------
-LibraryHandler::LibraryHandler(VLNVDialer* dialer, QWidget* parent): 
-QTabWidget(parent), 
-    data_(new LibraryData(this, parent)), 
-    treeModel_(new LibraryTreeModel(this, data_.data(), this)),
-    hierarchyModel_(new HierarchyModel(data_.data(), this, this)),
-    treeWidget_(0),
-    hierarchyWidget_(0),
+LibraryHandler::LibraryHandler(QWidget* parentWidget, QObject *parent):
+QObject(parent),
+    parentWidget_(parentWidget),
+    data_(new LibraryData(this, parentWidget)),
+    treeModel_(new LibraryTreeModel(this, parentWidget)),
+    hierarchyModel_(new HierarchyModel( this, parentWidget)),
     integrityWidget_(0),
     objects_(),
     objectValidity_(),
@@ -80,25 +68,8 @@ QTabWidget(parent),
     itemsToAdd_(),
     modifiedItems_()
 {
-	setWindowTitle(tr("LibraryHandler"));
-
 	// create the connections between models and library handler
 	syncronizeModels();
-
-	treeWidget_ = new LibraryTreeWidget(this, treeModel_.data(), this);
-    connectLibraryFilter(treeWidget_->getFilter(), dialer);
-
-	connect(treeWidget_, SIGNAL(itemSelected(const VLNV&)),
-        this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
-
-	hierarchyWidget_ = new HierarchyWidget(this, hierarchyModel_.data(), this);
-    connectLibraryFilter(hierarchyWidget_->getFilter(), dialer);
-
-	connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
-		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
-
-    addTab(treeWidget_, tr("VLNV Tree"));
-	addTab(hierarchyWidget_, tr("Hierarchy"));
 }
 
 //-----------------------------------------------------------------------------
@@ -159,16 +130,19 @@ QSharedPointer<Document const> LibraryHandler::getModelReadOnly(VLNV const& vlnv
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryHandler::getAllVLNVs()
+//-----------------------------------------------------------------------------
+QList<VLNV> LibraryHandler::getAllVLNVs() const
+{
+    return data_->getItems();
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryHandler::contains()
 //-----------------------------------------------------------------------------
 bool LibraryHandler::contains(const VLNV& vlnv)
 {
-    if (objects_.contains(vlnv))
-    {
-        return true;
-    }
-
-    return data_->contains(vlnv);
+    return objects_.contains(vlnv) || data_->contains(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -223,7 +197,7 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
     }
 
 	QString filePath = path + "/" + vlnv.getName() + "." + vlnv.getVersion() + ".xml";
-    if (!writeFile(filePath, model))
+    if (!data_->writeFile(model, filePath))
     {
         return false;
     }
@@ -234,7 +208,6 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 		data_->addVLNV(vlnv, filePath);
 
 		// the hierarchy model must be re-built
-        treeModel_->onDocumentSaved(vlnv);
 		hierarchyModel_->onResetModel();
 	}
 	else
@@ -257,15 +230,7 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 	objects_.remove(objectVLNV);
     objectValidity_.remove(objectVLNV);
 
-	QString filePath = data_->getPath(model->getVlnv());
-
-    QFileInfo pathInfo(filePath);
-    if (pathInfo.isSymLink() && pathInfo.exists())
-    {
-        filePath = pathInfo.symLinkTarget();
-    }
-
-    if (!writeFile(filePath, model))
+    if (!data_->writeFile(model))
     {
         return false;
     }
@@ -533,6 +498,22 @@ bool LibraryHandler::isValid(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryHandler::getHierarchyModel()
+//-----------------------------------------------------------------------------
+HierarchyModel* LibraryHandler::getHierarchyModel()
+{
+    return hierarchyModel_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::getTreeModel()
+//-----------------------------------------------------------------------------
+LibraryTreeModel* LibraryHandler::getTreeModel()
+{
+    return treeModel_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryHandler::onCheckLibraryIntegrity()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onCheckLibraryIntegrity()
@@ -644,7 +625,7 @@ void LibraryHandler::onExportItem(VLNV const vlnv)
     QString defaultPath = settings.value("Library/DefaultLocation", QDir::homePath()).toString();
 
     // ask the target directory where the package is to be exported
-    QString targetPath = QFileDialog::getExistingDirectory(this, tr("Select the location to export library to"),
+    QString targetPath = QFileDialog::getExistingDirectory(parentWidget_, tr("Select the location to export library to"),
         defaultPath);
 
     if (targetPath.isEmpty())
@@ -675,7 +656,7 @@ void LibraryHandler::onExportItems(const QList<VLNV> vlnvs )
         return;
     }
 
-    ObjectExportDialog* exportDialog = new ObjectExportDialog(QStringLiteral(""), this);
+    ObjectExportDialog* exportDialog = new ObjectExportDialog(QString(), parentWidget_);
     QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     exportDialog->setStyleSheet(styleSheet);
     constructItemsForExportDialog(exportDialog, vlnvs);
@@ -903,7 +884,7 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
     {
 
         // Show error list in a dialog.
-        TableViewDialog* dialog = new TableViewDialog(this);
+        TableViewDialog* dialog = new TableViewDialog(parentWidget_);
         dialog->setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
         dialog->setDescription(tr("The following errors were found:"));
         dialog->resize(700, 350);
@@ -928,7 +909,7 @@ void LibraryHandler::onGenerateIntegrityReport()
 
     if (!integrityWidget_)
     {
-        integrityWidget_ = new TableViewDialog(this);
+        integrityWidget_ = new TableViewDialog(parentWidget_);
         integrityWidget_->setWindowTitle(tr("Library Integrity Report"));
         integrityWidget_->setDescription(tr("The following errors were found:"));
         integrityWidget_->resize(1000, 800);
@@ -959,15 +940,9 @@ void LibraryHandler::onGenerateIntegrityReport()
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onSelectionChanged()
 //-----------------------------------------------------------------------------
-void LibraryHandler::onSelectionChanged(VLNV const& vlnv)
+void LibraryHandler::onSelectionChanged(VLNV const& /*vlnv*/)
 {
-    // if vlnv was invalid
-    if (!vlnv.isValid())
-    {
-        return;
-    }
 
-    treeWidget_->selectItem(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -975,8 +950,7 @@ void LibraryHandler::onSelectionChanged(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onClearSelection()
 {
-    // tell tree widget to select an invalid vlnv
-    treeWidget_->selectItem(VLNV());
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1097,7 +1071,7 @@ void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
     VLNV::IPXactType documentType = vlnv.getType();
 
     bool showAttributes = (documentType == VLNV::COMPONENT);
-    NewObjectDialog newDesignDialog(this, vlnv.getType(), showAttributes, this);
+    NewObjectDialog newDesignDialog(this, vlnv.getType(), showAttributes, parentWidget_);
 
     if (contains(vlnv) && getDocumentType(vlnv) == VLNV::COMPONENT)
     {
@@ -1184,22 +1158,10 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
     objects_.remove(vlnv);
     objectValidity_.remove(vlnv);
 
-    QString documentPath = data_->getPath(vlnv);
-
     // tell each model to remove the object
     treeModel_->onRemoveVLNV(vlnv);
     hierarchyModel_->onRemoveVLNV(vlnv);
     data_->onRemoveVLNV(vlnv);
-
-    QFile xmlFile(documentPath);
-    if (!xmlFile.exists())
-    {
-        emit errorMessage(tr("File %1 was not found in file system").arg(documentPath));
-    }
-    else if (!xmlFile.remove())
-    {
-        emit errorMessage(tr("Could not remove file %1").arg(documentPath));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1240,8 +1202,6 @@ void LibraryHandler::endSave()
     {
         foreach (VLNV const& modifiedVLNV, modifiedItems_)
         {
-            hierarchyModel_->onDocumentSaved(modifiedVLNV);
-            treeModel_->onDocumentSaved(modifiedVLNV);
             objectValidity_.remove(modifiedVLNV);
         }
 
@@ -1285,7 +1245,7 @@ void LibraryHandler::onCreateAbsDef(VLNV const& busDefVLNV)
 void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
 {
     // create the dialog to select which items to remove
-    ObjectRemoveDialog removeDialog(this);
+    ObjectRemoveDialog removeDialog(parentWidget_);
 
     QStringList changedDirectories;
 
@@ -1454,9 +1414,6 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
     // make sure the model is parsed again next time to make all changes available
     objects_.remove(vlnv);
     objectValidity_.remove(vlnv);
-
-    treeModel_->onDocumentSaved(vlnv);
-    hierarchyModel_->onDocumentSaved(savedItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -1466,86 +1423,6 @@ void LibraryHandler::onCloseIntegrityReport()
 {
     integrityWidget_->deleteLater();
     integrityWidget_ = 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::writeFile()
-//-----------------------------------------------------------------------------
-bool LibraryHandler::writeFile(QString const& filePath, QSharedPointer<Document> model)
-{
-    // create a new file
-    QFile targetFile(filePath);
-    if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
-    {
-        emit errorMessage(tr("Could not open file %1 for writing.").arg(filePath));
-        return false;
-    }
-
-    // write the parsed model
-    QXmlStreamWriter xmlWriter(&targetFile);
-    xmlWriter.setAutoFormatting(true);
-    xmlWriter.setAutoFormattingIndent(-1);
-
-    VLNV::IPXactType documentType = model->getVlnv().getType();
-    if (documentType == VLNV::ABSTRACTIONDEFINITION)
-    {
-        AbstractionDefinitionWriter writer;
-        QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
-        writer.writeAbstractionDefinition(xmlWriter, absDef);
-    }
-
-    else if (documentType == VLNV::BUSDEFINITION)
-    {
-        BusDefinitionWriter writer;
-        QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
-        writer.writeBusDefinition(xmlWriter, busDef);
-    }
-    else if (documentType == VLNV::CATALOG)
-    {
-        CatalogWriter writer;
-        QSharedPointer<Catalog> catalog = model.dynamicCast<Catalog>();
-        writer.writeCatalog(xmlWriter, catalog);
-    }
-    else if (documentType == VLNV::COMPONENT)
-    {
-        ComponentWriter writer;
-        QSharedPointer<Component> component = model.dynamicCast<Component>();
-        writer.writeComponent(xmlWriter, component);
-    }
-    else if (documentType == VLNV::DESIGN)
-    {
-        DesignWriter designWriter;
-        QSharedPointer<Design> design = model.dynamicCast<Design>();
-        designWriter.writeDesign(xmlWriter, design);
-    }
-
-    else if (documentType == VLNV::DESIGNCONFIGURATION)
-    {
-        DesignConfigurationWriter designConfigurationWriter;
-        QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
-        designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
-	}
-
-	else if (documentType == VLNV::APIDEFINITION)
-	{
-		ApiDefinitionWriter apiDefinitionWriter;
-		QSharedPointer<ApiDefinition> apiDefinition = model.dynamicCast<ApiDefinition>();
-		apiDefinitionWriter.writeApiDefinition(xmlWriter, apiDefinition);
-	}
-
-	else if (documentType == VLNV::COMDEFINITION)
-	{
-		ComDefinitionWriter comDefinitionWriter;
-		QSharedPointer<ComDefinition> comDefinition = model.dynamicCast<ComDefinition>();
-		comDefinitionWriter.writeComDefinition(xmlWriter, comDefinition);
-	}
-    else
-    {
-        Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");
-    }
-
-    targetFile.close();
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1683,7 +1560,7 @@ bool LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& h
                 "to overwrite the file?");
 
 			// ask the user to overwrite the file, if user says no we quit the function and return false
-			answer = QMessageBox::question(this, title, text, QMessageBox::Yes | QMessageBox::No |
+            answer = QMessageBox::question(parentWidget_, title, text, QMessageBox::Yes | QMessageBox::No |
 				QMessageBox::YesToAll | QMessageBox::NoToAll ,	QMessageBox::No);
 		}
 
@@ -1737,17 +1614,17 @@ void LibraryHandler::syncronizeModels()
 {
     // connect the signals from the data model
     connect(data_.data(), SIGNAL(removeVLNV(const VLNV&)),
-        treeModel_.data(), SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
+        treeModel_, SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
     connect(data_.data(), SIGNAL(removeVLNV(const VLNV&)),
-        hierarchyModel_.data(), SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
+        hierarchyModel_, SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
 
     connect(data_.data(), SIGNAL(resetModel()),
-        hierarchyModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
+        hierarchyModel_, SLOT(onResetModel()), Qt::UniqueConnection);
     connect(data_.data(), SIGNAL(resetModel()),
-        treeModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
+        treeModel_, SLOT(onResetModel()), Qt::UniqueConnection);
 
     connect(data_.data(), SIGNAL(addVLNV(const VLNV&)),
-        treeModel_.data(), SLOT(onAddVLNV(const VLNV&)), Qt::UniqueConnection);
+        treeModel_, SLOT(onAddVLNV(const VLNV&)), Qt::UniqueConnection);
 
     // signals from data model to library handler
     connect(data_.data(), SIGNAL(errorMessage(const QString&)),
@@ -1755,123 +1632,108 @@ void LibraryHandler::syncronizeModels()
     connect(data_.data(), SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)), this, SLOT(onItemSaved(VLNV const&)), Qt::UniqueConnection);
+
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+            treeModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+            hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
+
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)), this, SIGNAL(updatedVLNV(VLNV const&)), Qt::UniqueConnection);
+
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
     //-----------------------------------------------------------------------------
-    connect(treeModel_.data(), SIGNAL(removeVLNV(const QList<VLNV>)),
+    connect(treeModel_, SIGNAL(removeVLNV(const QList<VLNV>)),
         this, SLOT(onRemoveVLNV(const QList<VLNV>)), Qt::UniqueConnection);
 
     // signals from tree model to library handler
-    connect(treeModel_.data(), SIGNAL(errorMessage(const QString&)),
+    connect(treeModel_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(noticeMessage(const QString&)),
+    connect(treeModel_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(openDesign(const VLNV&)),
+    connect(treeModel_, SIGNAL(openDesign(const VLNV&)),
         this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
-         connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&)),
+         connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&)),
              this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&)),
+    connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
+    connect(treeModel_, SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(openSystemDesign(const VLNV&)),
+    connect(treeModel_, SIGNAL(openSystemDesign(const VLNV&)),
         this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(editItem(const VLNV&)),
+    connect(treeModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(createBus(const VLNV&)),
+    connect(treeModel_, SIGNAL(createBus(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(createAbsDef(const VLNV&)),
+    connect(treeModel_, SIGNAL(createAbsDef(const VLNV&)),
         this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(createComDef(const VLNV&)),
+    connect(treeModel_, SIGNAL(createComDef(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(createApiDef(const VLNV&)),
+    connect(treeModel_, SIGNAL(createApiDef(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(createComponent(const VLNV&)),
+    connect(treeModel_, SIGNAL(createComponent(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(createDesign(const VLNV&)),
+    connect(treeModel_, SIGNAL(createDesign(const VLNV&)),
         this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(createSWDesign(const VLNV&)),
+    connect(treeModel_, SIGNAL(createSWDesign(const VLNV&)),
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(createSystemDesign(const VLNV&)),
+    connect(treeModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(exportItems(const QList<VLNV>)),
+    connect(treeModel_, SIGNAL(exportItems(const QList<VLNV>)),
         this, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(refreshDialer()),
+    connect(treeModel_, SIGNAL(refreshDialer()),
         this, SIGNAL(refreshDialer()), Qt::UniqueConnection);
 
-    connect(treeModel_.data(), SIGNAL(showErrors(const VLNV)),
+    connect(treeModel_, SIGNAL(showErrors(const VLNV)),
         this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the hierarchy model
     //-----------------------------------------------------------------------------
 
-    connect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&, const QString&)),
+    connect(hierarchyModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
+    connect(hierarchyModel_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&, const QString&)),
+    connect(hierarchyModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+    connect(hierarchyModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_.data(), SIGNAL(editItem(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_.data(), SIGNAL(createBusDef(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createBusDef(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(createComponent(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createComponent(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(createBus(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createBus(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(createAbsDef(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createAbsDef(const VLNV&)),
         this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(createComDef(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createComDef(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(createApiDef(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createApiDef(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_.data(), SIGNAL(createDesign(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createDesign(const VLNV&)),
         this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(createSWDesign(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createSWDesign(const VLNV&)),
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(createSystemDesign(const VLNV&)),
+    connect(hierarchyModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV)),
+    connect(hierarchyModel_, SIGNAL(exportItem(const VLNV)),
         this, SLOT(onExportItem(const VLNV)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_.data(), SIGNAL(removeVLNV(QList<VLNV>)),
+    connect(hierarchyModel_, SIGNAL(removeVLNV(QList<VLNV>)),
         this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_.data(), SIGNAL(showErrors(const VLNV)),
+    connect(hierarchyModel_, SIGNAL(showErrors(const VLNV)),
         this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::connectVLNVFilter()
-//-----------------------------------------------------------------------------
-void LibraryHandler::connectLibraryFilter(LibraryFilter* filter, VLNVDialer* dialer) const
-{
-    connect(dialer, SIGNAL(vendorChanged(const QString&)),
-        filter, SLOT(onVendorChanged(const QString&)), Qt::UniqueConnection);
-    connect(dialer, SIGNAL(libraryChanged(const QString&)),
-        filter, SLOT(onLibraryChanged(const QString&)), Qt::UniqueConnection);
-    connect(dialer, SIGNAL(nameChanged(const QString&)), 
-        filter, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
-    connect(dialer, SIGNAL(versionChanged(const QString&)),
-        filter, SLOT(onVersionChanged(const QString&)), Qt::UniqueConnection);
-
-    connect(dialer, SIGNAL(firmnessChanged(const Utils::FirmnessOptions&)),
-        filter, SLOT(onFirmnessChanged(const Utils::FirmnessOptions&)), Qt::UniqueConnection);
-    connect(dialer, SIGNAL(implementationChanged(const Utils::ImplementationOptions&)),
-        filter, SLOT(onImplementationChanged(const Utils::ImplementationOptions&)), Qt::UniqueConnection);
-    connect(dialer, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)),
-        filter, SLOT(onHierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
-    connect(dialer, SIGNAL(typeChanged(const Utils::TypeOptions&)),
-        filter, SLOT(onTypeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

@@ -13,7 +13,6 @@
 #define LIBRARYTREEMODEL_H
 
 #include "LibraryItem.h"
-#include "LibraryData.h"
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -37,11 +36,10 @@ public:
 	/*! The constructor
 	*
 	*      @param [in] handler          The instance that manages the library.
-	*      @param [in] sourceModel      The data model to use as base model.
 	*      @param [in] parent           The owner of this class
 	*
 	*/
-	LibraryTreeModel(LibraryInterface* handler,	LibraryData* sourceModel, QObject* parent = 0);
+    LibraryTreeModel(LibraryInterface* handler, QObject* parent = 0);
 
 	//! The destructor
 	virtual ~LibraryTreeModel();
@@ -250,7 +248,13 @@ public slots:
 	//! Reset the model.
 	void onResetModel();
 
-    void onDocumentSaved(VLNV const& vlnv);
+    /*! This function should be called when an IP-XACT document has changed.
+     *
+     * Function updates the hierarchical model so that changes made to the document are visible.
+     *
+     *      @param [in] vlnv Identifies the document that changed.
+    */
+    void onDocumentUpdated(VLNV const& vlnv);
 
 private:
 
@@ -278,9 +282,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! The data model that holds the library
-	LibraryData* dataSource_;
 
 	/*! The root of the tree.
 	*
