@@ -12,16 +12,15 @@
 #include "bridgesmodel.h"
 #include "BridgeColumns.h"
 
-
-
 #include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: BridgesModel::BridgesModel()
 //-----------------------------------------------------------------------------
-BridgesModel::BridgesModel(QSharedPointer<SlaveInterface> slave, QObject *parent):
+BridgesModel::BridgesModel(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
+    QObject *parent):
 QAbstractTableModel(parent),
-    bridges_(slave->getBridges())
+    bridges_(bridges)
 {
 
 }
@@ -107,7 +106,7 @@ QVariant BridgesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == BridgeColumns::MASTER_COLUMN)
         {
-            return bridges_->at(index.row())->masterRef_;
+            return bridges_->at(index.row())->getMasterRef();
         }
         else
         {
@@ -117,7 +116,7 @@ QVariant BridgesModel::data(QModelIndex const& index, int role) const
 	
 	else if (role == Qt::ForegroundRole)
     {
-		if (bridges_->at(index.row())->masterRef_.isEmpty())
+		if (bridges_->at(index.row())->getMasterRef().isEmpty())
         {
 			return KactusColors::ERROR;
 		}
@@ -158,8 +157,7 @@ bool BridgesModel::setData(QModelIndex const& index, const QVariant& value, int 
     {
         if (index.column() == BridgeColumns::MASTER_COLUMN)
         {
-            (*bridges_)[index.row()]->masterRef_ = value.toString();
-
+            bridges_->at(index.row())->setMasterRef(value.toString());
         }
         else
         {
@@ -190,7 +188,7 @@ void BridgesModel::onAddItem(QModelIndex const& index)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	bridges_->insert(row, QSharedPointer<SlaveInterface::Bridge>(new SlaveInterface::Bridge()));
+	bridges_->insert(row, QSharedPointer<TransparentBridge>(new TransparentBridge()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -220,26 +218,10 @@ void BridgesModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: BridgesModel::refresh()
 //-----------------------------------------------------------------------------
-void BridgesModel::refresh(QSharedPointer<SlaveInterface> slave)
+void BridgesModel::refresh(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges)
 {
-	Q_ASSERT(slave);
+	Q_ASSERT(bridges);
 	beginResetModel();
-	bridges_ = slave->getBridges();
+	bridges_ = bridges;
 	endResetModel();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BridgesModel::isValid()
-//-----------------------------------------------------------------------------
-bool BridgesModel::isValid() const
-{
-	// on each bridge the master ref must be non-empty
-	foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *bridges_)
-    {
-		if (bridge->masterRef_.isEmpty())
-        {
-			return false;
-		}
-	}
-	return true;
 }

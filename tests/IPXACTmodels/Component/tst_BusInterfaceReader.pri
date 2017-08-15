@@ -7,10 +7,10 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Component/BusInterface.h \
-    ../../../IPXACTmodels/Component/AbstractionType.h \
+HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
+    ../../../IPXACTmodels/Component/BusInterface.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/common/DirectionTypes.h \
@@ -21,27 +21,30 @@ HEADERS += ../../../IPXACTmodels/Component/BusInterface.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
+    ../../../IPXACTmodels/Component/MasterInterface.h \
+    ../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/PartSelect.h \
     ../../../IPXACTmodels/Component/PortMap.h \
     ../../../IPXACTmodels/common/Range.h \
+    ../../../IPXACTmodels/Component/SlaveInterface.h \
+    ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/Component/MasterInterface.h \
-    ../../../IPXACTmodels/Component/MirroredSlaveInterface.h \
-    ../../../IPXACTmodels/Component/SlaveInterface.h \
-    ../../../IPXACTmodels/common/VLNV.h \
+    ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/Component/BusInterfaceReader.h
+    ../../../IPXACTmodels/Component/TransparentBridge.h
 SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
+    ../../../IPXACTmodels/Component/BusInterface.cpp \
+    ../../../IPXACTmodels/Component/BusInterfaceReader.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
@@ -53,6 +56,8 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ../../../IPXACTmodels/Component/MasterInterface.cpp \
+    ../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/common/NameGroupWriter.cpp \
@@ -62,13 +67,10 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../IPXACTmodels/Component/PortMap.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
+    ../../../IPXACTmodels/Component/SlaveInterface.cpp \
+    ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/Component/BusInterfaceReader.cpp \
-    ../../../IPXACTmodels/Component/BusInterface.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/Component/MasterInterface.cpp \
-    ../../../IPXACTmodels/Component/MirroredSlaveInterface.cpp \
-    ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ./tst_BusInterfaceReader.cpp \
-    ../../../IPXACTmodels/common/VLNV.cpp
+    ../../../IPXACTmodels/Component/TransparentBridge.cpp

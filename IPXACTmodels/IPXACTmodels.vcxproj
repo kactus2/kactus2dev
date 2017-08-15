@@ -243,6 +243,9 @@
     <ClCompile Include="Component\FileSetWriter.cpp" />
     <ClCompile Include="Component\FileWriter.cpp" />
     <ClCompile Include="Component\Function.cpp" />
+    <ClCompile Include="Component\IndirectInterface.cpp" />
+    <ClCompile Include="Component\IndirectInterfaceReader.cpp" />
+    <ClCompile Include="Component\IndirectInterfaceWriter.cpp" />
     <ClCompile Include="Component\InstantiationsReader.cpp" />
     <ClCompile Include="Component\InstantiationsWriter.cpp" />
     <ClCompile Include="Component\MasterInterface.cpp" />
@@ -277,6 +280,7 @@
     <ClCompile Include="Component\Segment.cpp" />
     <ClCompile Include="Component\SlaveInterface.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
+    <ClCompile Include="Component\TransparentBridge.cpp" />
     <ClCompile Include="Component\validators\AddressBlockValidator.cpp" />
     <ClCompile Include="Component\validators\AddressSpaceValidator.cpp" />
     <ClCompile Include="Component\validators\BusInterfaceValidator.cpp" />
@@ -289,6 +293,7 @@
     <ClCompile Include="Component\validators\FieldValidator.cpp" />
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
     <ClCompile Include="Component\validators\FileValidator.cpp" />
+    <ClCompile Include="Component\validators\IndirectInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
     <ClCompile Include="Component\validators\PortMapValidator.cpp" />
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
@@ -1883,6 +1888,9 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_NO_CAST_FROM_ASCII -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
+    <ClInclude Include="Component\IndirectInterface.h" />
+    <ClInclude Include="Component\IndirectInterfaceReader.h" />
+    <ClInclude Include="Component\IndirectInterfaceWriter.h" />
     <ClInclude Include="Component\MasterInterface.h" />
     <ClInclude Include="Component\MemoryBlockBase.h" />
     <ClInclude Include="Component\MemoryMap.h" />
@@ -2119,6 +2127,7 @@
     <ClInclude Include="Component\Segment.h" />
     <ClInclude Include="Component\SlaveInterface.h" />
     <ClInclude Include="Component\Transactional.h" />
+    <ClInclude Include="Component\TransparentBridge.h" />
     <ClInclude Include="Component\validators\AddressBlockValidator.h" />
     <ClInclude Include="Component\validators\AddressSpaceValidator.h" />
     <ClInclude Include="Component\validators\BuildCommandValidator.h" />
@@ -2132,6 +2141,7 @@
     <ClInclude Include="Component\validators\FieldValidator.h" />
     <ClInclude Include="Component\validators\FileSetValidator.h" />
     <ClInclude Include="Component\validators\FileValidator.h" />
+    <ClInclude Include="Component\validators\IndirectInterfaceValidator.h" />
     <ClInclude Include="Component\validators\InstantiationsValidator.h" />
     <ClInclude Include="Component\validators\PortMapValidator.h" />
     <ClInclude Include="Component\validators\OtherClockDriverValidator.h" />

@@ -27,6 +27,7 @@
 #include "FileSet.h"
 #include "Cpu.h"
 #include "OtherClockDriver.h"
+#include "IndirectInterface.h"
 
 #include "File.h"
 
@@ -47,6 +48,7 @@
 Component::Component(const VLNV &vlnv):
 Document(vlnv),
 busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),
+indirectInterfaces_(new QList<QSharedPointer<IndirectInterface> > ()),
 channels_(new QList<QSharedPointer<Channel> > ()),
 remapStates_(new QList<QSharedPointer<RemapState> >()),
 addressSpaces_(new QList<QSharedPointer<AddressSpace> > ()),
@@ -68,6 +70,7 @@ pendingFileDependencies_()
 Component::Component() :
 Document(),
 busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),
+indirectInterfaces_(new QList<QSharedPointer<IndirectInterface> > ()),
 channels_(new QList<QSharedPointer<Channel> > ()),
 remapStates_(new QList<QSharedPointer<RemapState> >()),
 addressSpaces_(new QList<QSharedPointer<AddressSpace> > ()),
@@ -89,6 +92,7 @@ pendingFileDependencies_()
 Component::Component(const Component &other):
 Document(other),
 busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),
+indirectInterfaces_(new QList<QSharedPointer<IndirectInterface> > ()),
 channels_(new QList<QSharedPointer<Channel> > ()),
 remapStates_(new QList<QSharedPointer<RemapState> >()),
 addressSpaces_(new QList<QSharedPointer<AddressSpace> >()),
@@ -102,6 +106,7 @@ otherClockDrivers_(new QList<QSharedPointer<OtherClockDriver> > ()),
 pendingFileDependencies_(other.pendingFileDependencies_)
 {
     copyBusInterfaces(other);
+    copyIndirectInterfaces(other);
     copyChannels(other);
     copyRemapStates(other);
     copyAddressSpaces(other);
@@ -126,6 +131,7 @@ Component& Component::operator=( const Component& other)
         pendingFileDependencies_ = other.pendingFileDependencies_;
 
         busInterfaces_->clear();
+        indirectInterfaces_->clear();
         channels_->clear();
         remapStates_->clear();
         addressSpaces_->clear();
@@ -139,6 +145,7 @@ Component& Component::operator=( const Component& other)
         otherClockDrivers_->clear();
         
         copyBusInterfaces(other);
+        copyIndirectInterfaces(other);
         copyChannels(other);
         copyRemapStates(other);
         copyAddressSpaces(other);
@@ -160,6 +167,7 @@ Component& Component::operator=( const Component& other)
 Component::~Component()
 {
     busInterfaces_.clear();
+    indirectInterfaces_.clear();
     channels_.clear();
     remapStates_.clear();
     addressSpaces_.clear();
@@ -291,6 +299,14 @@ QSharedPointer<QList<QSharedPointer<BusInterface> > > Component::getInterfacesUs
     }
 
     return interfaces;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::getIndirectInterfaces()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<IndirectInterface> > > Component::getIndirectInterfaces() const
+{
+    return indirectInterfaces_;
 }
 
 //-----------------------------------------------------------------------------
@@ -1607,6 +1623,19 @@ void Component::copyBusInterfaces(const Component& other) const
                 QSharedPointer<BusInterface>(new BusInterface(*busInterface.data()));
             busInterfaces_->append(copy);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::copyIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void Component::copyIndirectInterfaces(Component const& other) const
+{
+    foreach (QSharedPointer<IndirectInterface> indirectInterface, *other.indirectInterfaces_)
+    {
+        QSharedPointer<IndirectInterface> copy =
+            QSharedPointer<IndirectInterface>(new IndirectInterface(*indirectInterface.data()));
+        indirectInterfaces_->append(copy);
     }
 }
 

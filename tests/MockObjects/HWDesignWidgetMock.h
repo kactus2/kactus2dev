@@ -86,6 +86,8 @@ public slots:
 	//! \brief Called when user clicks the generate modelsim icon
 	void onModelsimGenerate();
 
+    virtual void onDeleteSelectedItems();
+
 protected:
     void keyPressEvent(QKeyEvent *event);
 

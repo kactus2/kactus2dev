@@ -165,9 +165,9 @@ void tst_businterfaceReader::testReadSlave()
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
 	QCOMPARE(testbusinterface->getSlave()->getMemoryMapRef(), QString("ambaAHB"));
-	QSharedPointer<SlaveInterface::Bridge> bridge = testbusinterface->getSlave()->getBridges()->first();
-	QCOMPARE(bridge->masterRef_, QString("masterBus"));
-	QCOMPARE(bridge->isPresent_, QString("1"));
+	QSharedPointer<TransparentBridge> bridge = testbusinterface->getSlave()->getBridges()->first();
+	QCOMPARE(bridge->getMasterRef(), QString("masterBus"));
+	QCOMPARE(bridge->getIsPresent(), QString("1"));
 
 	QSharedPointer<SlaveInterface::FileSetRefGroup> refg = testbusinterface->getSlave()->getFileSetRefGroup()->first();
 	QCOMPARE(refg->group_, QString("testGroup"));

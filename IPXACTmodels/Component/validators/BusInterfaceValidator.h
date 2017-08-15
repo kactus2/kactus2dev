@@ -279,7 +279,7 @@ private:
      *
      *      @return True, if the master interface reference is valid, otherwise false.
      */
-    bool slaveBridgeReferencesValidMaster(QSharedPointer<SlaveInterface::Bridge> bridge) const;
+    bool slaveBridgeReferencesValidMaster(QSharedPointer<TransparentBridge> bridge) const;
 
     /*!
      *  Check if the slave interface file set reference group is valid.

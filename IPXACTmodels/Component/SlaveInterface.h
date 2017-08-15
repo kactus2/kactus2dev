@@ -12,6 +12,8 @@
 #ifndef SLAVEINTERFACE_H
 #define SLAVEINTERFACE_H
 
+#include "TransparentBridge.h"
+
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
@@ -25,19 +27,6 @@
 class IPXACTMODELS_EXPORT SlaveInterface
 {
 public:
-
-    //! Implementation of ipxact:bridge element.
-	struct Bridge
-	{
-		//! Reference to a master interface.
-		QString masterRef_;
-
-		//! Presence of the Bridge.
-		QString isPresent_;
-
-		//! The default constructor.		 
-		IPXACTMODELS_EXPORT Bridge();
-	};
 
     //! Implementation of ipxact:fileSetRefGroup element.
 	struct FileSetRefGroup
@@ -80,7 +69,7 @@ public:
 	 *
 	 *      @return The bridges for this slave interface.
 	 */
-	QSharedPointer<QList<QSharedPointer<Bridge> > > getBridges() const;
+	QSharedPointer<QList<QSharedPointer<TransparentBridge> > > getBridges() const;
     
 	/*! Check if the slave is connected to a master interface through bridge.
 	 *
@@ -106,7 +95,7 @@ private:
 	QString memoryMapRef_;
 
 	//! The bridges to master interfaces.
-	QSharedPointer<QList<QSharedPointer<Bridge> > > bridges_;
+	QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges_;
 
     //! The file set references for the slave interface.
 	QSharedPointer<QList<QSharedPointer<FileSetRefGroup> > > fileSetRefGroup_;

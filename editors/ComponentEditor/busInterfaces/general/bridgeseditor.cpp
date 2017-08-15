@@ -1,27 +1,33 @@
-/* 
- *  	Created on: 21.6.2012
- *      Author: Antti Kamppi
- * 		filename: bridgeseditor.cpp
- *		Project: Kactus2
- */
+//-----------------------------------------------------------------------------
+// File: bridgeseditor.app
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 21.06.2012
+//
+// Description:
+// Editor to edit the transparent bridge-elements within a slave interface mode or indirect interface.
+//-----------------------------------------------------------------------------
 
 #include "bridgeseditor.h"
 #include "bridgesdelegate.h"
 #include "BridgeColumns.h"
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/TransparentBridge.h>
 
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: BridgesEditor::BridgesEditor()
 //-----------------------------------------------------------------------------
-BridgesEditor::BridgesEditor(QSharedPointer<SlaveInterface> slave, QSharedPointer<Component> component,
+BridgesEditor::BridgesEditor(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
+    QSharedPointer<Component> component,
     QWidget* parent):
 QGroupBox(tr("Transparent bridges"), parent),
     view_(this),
     proxy_(this),
-    model_(slave, this)
+    model_(bridges, this)
 {
     view_.setItemDelegate(new BridgesDelegate(component, this));
 
@@ -50,20 +56,4 @@ QGroupBox(tr("Transparent bridges"), parent),
 //-----------------------------------------------------------------------------
 BridgesEditor::~BridgesEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: BridgesEditor::isValid()
-//-----------------------------------------------------------------------------
-bool BridgesEditor::isValid() const
-{
-	return model_.isValid();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BridgesEditor::refresh()
-//-----------------------------------------------------------------------------
-void BridgesEditor::refresh(QSharedPointer<SlaveInterface> slave)
-{
-	model_.refresh(slave);
 }

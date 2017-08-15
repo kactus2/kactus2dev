@@ -18,6 +18,8 @@
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ParameterReader.h>
 
+#include <IPXACTmodels/Component/TransparentBridge.h>
+
 #include <IPXACTmodels/XmlUtils.h>
 
 #include <QXmlStreamWriter>
@@ -440,13 +442,13 @@ void BusinterfaceReader::readSlaveInterface(QDomElement const& slaveIntefaceElem
     {
         QDomElement bridgeElement = bridgeNodes.at(i).toElement();
   
-        QSharedPointer<SlaveInterface::Bridge> newBridge(new SlaveInterface::Bridge());
-        newBridge->masterRef_ = XmlUtils::removeWhiteSpace(bridgeElement.attribute(QStringLiteral("masterRef")));
+        QSharedPointer<TransparentBridge> newBridge(new TransparentBridge());
+        newBridge->setMasterRef(XmlUtils::removeWhiteSpace(bridgeElement.attribute(QStringLiteral("masterRef"))));
 
         QString bridgePresence = bridgeElement.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
         if (!bridgePresence.isEmpty())
         {
-            newBridge->isPresent_ = bridgePresence;
+            newBridge->setIsPresent(bridgePresence);
         }
 
         // Another bridge is extracted.

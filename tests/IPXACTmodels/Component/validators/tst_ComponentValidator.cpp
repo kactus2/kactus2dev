@@ -37,6 +37,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/RemapState.h>
@@ -56,6 +57,10 @@
 #include <IPXACTmodels/common/ClockUnit.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
+
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -79,6 +84,9 @@ private slots:
 
     void testHasValidBusInterfaces();
     void testHasValidBusInterfaces_data();
+
+    void testHasValidIndirectInterfaces();
+    void testHasValidIndirectInterfaces_data();
 
     void testHasValidChannels();
     void testHasValidChannels_data();
@@ -308,6 +316,72 @@ void tst_ComponentValidator::testHasValidBusInterfaces_data()
         "Wanpan" << true << false <<  false << false;
     QTest::newRow("Empty bus interface is not valid") << "" << false << false << false << false;
     QTest::newRow("Bus interfaces with same name is not valid") << "Wanpan" << true << true << true << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentValidator::testHasValidIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void tst_ComponentValidator::testHasValidIndirectInterfaces()
+{
+    QFETCH(QStringList, interfaceNames);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<Component> testComponent(new Component());
+
+    QSharedPointer<MemoryMap> targetMap(new MemoryMap("targetMap"));
+    testComponent->getMemoryMaps()->append(targetMap);
+
+    QSharedPointer<MemoryMap> accessMap(new MemoryMap("accessMap"));
+    
+    QSharedPointer<AddressBlock> accessBlock(new AddressBlock("accessBlock"));
+    accessMap->getMemoryBlocks()->append(accessBlock);
+
+    QSharedPointer<Register> accessRegister(new Register("accessRegister"));
+    accessBlock->getRegisterData()->append(accessRegister);
+
+    QSharedPointer<Field> addressField(new Field("addr"));
+    addressField->setId("address");
+    accessRegister->getFields()->append(addressField);
+    
+    QSharedPointer<Field> dataField(new Field("dat"));
+    dataField->setId("data");
+    accessRegister->getFields()->append(dataField);        
+
+    testComponent->getMemoryMaps()->append(accessMap);
+
+    LibraryMock* mockLibrary (new LibraryMock(this));
+
+    foreach (QString name, interfaceNames)
+    {
+        QSharedPointer<IndirectInterface> testInterface(new IndirectInterface(name));
+        testInterface->setIndirectAddressRef("address");
+        testInterface->setIndirectDataRef("data");
+        testInterface->setMemoryMapRef("targetMap");
+        
+        testComponent->getIndirectInterfaces()->append(testInterface);
+    }
+
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(mockLibrary);
+    QCOMPARE(validator->hasValidIndirectInterfaces(testComponent), isValid);
+
+    delete mockLibrary;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentValidator::testHasValidIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void tst_ComponentValidator::testHasValidIndirectInterfaces_data()
+{
+    QTest::addColumn<QStringList>("interfaceNames");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Empty indirect interface is not valid") << QStringList("") << false;
+    QTest::newRow("Named indirect interface is valid") << QStringList("testInterface") << true;
+
+    QStringList duplicates;
+    duplicates << "duplicate" << "duplicate";
+
+    QTest::newRow("Duplicate names in indirect interfaces is invalid") << duplicates << false;
 }
 
 //-----------------------------------------------------------------------------

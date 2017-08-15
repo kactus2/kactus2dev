@@ -1422,9 +1422,9 @@ void tst_BusInterfaceValidator::testHasValidSlaveInterface()
 
     if (!bridgeMasterRef.isEmpty())
     {
-        QSharedPointer<SlaveInterface::Bridge> testBridge (new SlaveInterface::Bridge());
-        testBridge->masterRef_ = bridgeMasterRef;
-        testBridge->isPresent_ = bridgeIsPresent;
+        QSharedPointer<TransparentBridge> testBridge (new TransparentBridge());
+        testBridge->setMasterRef(bridgeMasterRef);
+        testBridge->setIsPresent(bridgeIsPresent);
 
         testSlave->getBridges()->append(testBridge);
     }

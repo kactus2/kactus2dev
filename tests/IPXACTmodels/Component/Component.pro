@@ -23,6 +23,7 @@ SUBDIRS += validators\tst_ChannelValidator.pro \
 		   validators\tst_ChoiceValidator.pro \
 		   validators\tst_OtherClockDriverValidator.pro \
 		   validators\tst_ComponentValidator.pro \
+		   validators\tst_IndirectInterfaceValidator.pro \
 		   Model\tst_ViewWriter.pro \
 		   Model\tst_ViewReader.pro \
 		   Model\tst_InstantiationsWriter.pro \
@@ -53,5 +54,7 @@ SUBDIRS += validators\tst_ChannelValidator.pro \
 		   tst_AddressSpaceWriter.pro \
 		   tst_OtherClockDriverReader.pro \
 		   tst_OtherClockDriverWriter.pro \
+		   tst_IndirectInterfaceReader.pro \
+		   tst_IndirectInterfaceWriter.pro \
 		   tst_ComponentGeneratorReader.pro \
 		   tst_ComponentGeneratorWriter.pro

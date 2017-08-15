@@ -27,23 +27,22 @@
 #include <QMultiMap>
 #include <QMap>
 
+class AddressSpace;
 class BusInterface;
 class Channel;
-class RemapState;
-class AddressSpace;
-class MemoryMap;
-
-class View;
+class Choice;
+class ComponentGenerator;
 class ComponentInstantiation;
+class Cpu;
 class DesignInstantiation;
 class DesignConfigurationInstantiation;
-class Port;
-
-class ComponentGenerator;
-class Choice;
 class FileSet;
-class Cpu;
+class MemoryMap;
+class IndirectInterface;
 class OtherClockDriver;
+class Port;
+class RemapState;
+class View;
 
 // Kactus2 extension classes.
 
@@ -137,14 +136,14 @@ public:
 	/*!
      *  Get list of the bus interfaces of a component.
 	 *
-	 *      @return Pointer to a list containing pointers to the bus interfaces.
+	 *      @return A list containing pointers to the bus interfaces.
 	 */
     QSharedPointer<QList<QSharedPointer<BusInterface> > > getBusInterfaces() const;
 
 	/*!
      *  Set the bus interfaces for the component.
 	 *
-	 *      @param [in] newBusInterfaces    Pointer to a list containing the pointers to the new bus interfaces.
+	 *      @param [in] newBusInterfaces    A list containing the pointers to the new bus interfaces.
 	 *
 	 */
     void setBusInterfaces(QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces);
@@ -166,17 +165,25 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<BusInterface> > > getInterfacesUsedByPort(QString const& portName) const;
 
+    
+	/*!
+     *  Get the indirect interfaces of a component.
+	 *
+	 *      @return The indirect interfaces of the component.
+	 */
+    QSharedPointer<QList<QSharedPointer<IndirectInterface> > > getIndirectInterfaces() const;
+
 	/*!
      * Get this component's channels.
 	 *
-	 *      @return Pointer to a list containing component's channels.
+	 *      @return A list containing component's channels.
 	 */
     QSharedPointer<QList<QSharedPointer<Channel> > > getChannels() const;
 
 	/*!
      *  Set this component's channels.
 	 *
-	 *      @param [in] newChannels     Pointer to a list containing the new channels to be set.
+	 *      @param [in] newChannels     A list containing the new channels to be set.
 	 */
 	//void setChannels(const QList<QSharedPointer<Channel> > &channels);
     void setChannels(QSharedPointer<QList<QSharedPointer<Channel> > > newChannels);
@@ -184,42 +191,42 @@ public:
 	/*!
      *  Get this component's remap states.
 	 *
-	 *      @return Pointer to a list containing component's remap states.
+	 *      @return A list containing component's remap states.
 	 */
     QSharedPointer<QList<QSharedPointer<RemapState> > > getRemapStates() const;
 
     /*!
      *  Set the remap states.
      *
-     *      @param [in] newRemapStates  Pointer to a list containing the new remap states.
+     *      @param [in] newRemapStates  A list containing the new remap states.
      */
     void setRemapStates(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates);
 
 	/*!
      *  Get this component's address spaces.
 	 *
-	 *      @return Pointer to a list containing component's address spaces.
+	 *      @return A list containing component's address spaces.
 	 */
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > getAddressSpaces() const;
 
    	/*!
      *  Set this component's address spaces
 	 *
-	 *      @param [in] addressSpaces   Pointer to a list containing the address spaces to be set.
+	 *      @param [in] addressSpaces   A list containing the address spaces to be set.
 	 */
     void setAddressSpaces(QSharedPointer<QList<QSharedPointer<AddressSpace> > > newAddressSpaces);
 
 	/*!
      *  Get this component's memory maps.
 	 *
-	 *      @return Pointer to a list containing component's memory maps.
+	 *      @return A list containing component's memory maps.
 	 */
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > getMemoryMaps() const;
 
 	/*!
      *  Set this components memory maps.
 	 *
-	 *      @param [in] newMemoryMaps   Pointer to a list containing the memory maps to be set.
+	 *      @param [in] newMemoryMaps   A list containing the memory maps to be set.
 	 */
     void setMemoryMaps(QSharedPointer<QList<QSharedPointer<MemoryMap> > > newMemoryMaps);
 
@@ -240,28 +247,28 @@ public:
 	/*!
      *  Get the views of the component.
 	 *
-	 *      @return Pointer to a list containing pointers to the views.
+	 *      @return A list containing pointers to the views.
 	 */
     QSharedPointer<QList<QSharedPointer<View> > > getViews() const;
 
     /*!
      *  Set the views.
      *
-     *      @param [in] newViews    Pointer to a list containing the new views..
+     *      @param [in] newViews    A list containing the new views..
      */
     void setViews(QSharedPointer<QList<QSharedPointer<View> > > newViews);
 
     /*!
      *  Get the component instantiations.
      *
-     *      @return Pointer to a list containing component instantiations.
+     *      @return A list containing component instantiations.
      */
     QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > getComponentInstantiations() const;
 
     /*!
      *  Set the component instantiations.
      *
-     *      @param [in] newInstantiation    Pointer to a list containing the new component instantiations.
+     *      @param [in] newInstantiation    A list containing the new component instantiations.
      */
     void setComponentInstantiations(
         QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > newInstantiation);
@@ -269,21 +276,21 @@ public:
     /*!
      *  Get the design instantiations.
      *
-     *      @return Pointer to a list containing the design instantiations.
+     *      @return A list containing the design instantiations.
      */
     QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > getDesignInstantiations() const;
 
     /*!
      *  Set the design instantiations.
      *
-     *      @param [in] newInstantiations   Pointer to a list containing the new design instantiations.
+     *      @param [in] newInstantiations   A list containing the new design instantiations.
      */
     void setDesignInstantiations(QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > newInstantiations);
 
     /*!
      *  Get the design configuration instantiations.
      *
-     *      @return Pointer to a list containing the design configuration instantiations.
+     *      @return A list containing the design configuration instantiations.
      */
     QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > >
         getDesignConfigurationInstantiations() const;
@@ -291,7 +298,7 @@ public:
     /*!
      *  Set the design configuration instantiations.
      *
-     *      @param [in] newInstantiations   Pointer to a list containing the new design configuration instantiations.
+     *      @param [in] newInstantiations   A list containing the new design configuration instantiations.
      */
     void setDesignConfigurationInstantiations(
         QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > > newInstantiations);
@@ -299,56 +306,56 @@ public:
 	/*!
      *  Get the ports contained in this component.
 	 *
-	 *      @return Pointer to a list containing pointers to the ports.
+	 *      @return A list containing pointers to the ports.
 	 */
     QSharedPointer<QList<QSharedPointer<Port> > > getPorts() const;
 
     /*!
      *  Set the ports.
      *
-     *      @param [in] newPorts    Pointer to a list containing the new ports.
+     *      @param [in] newPorts    A list containing the new ports.
      */
     void setPorts(QSharedPointer<QList<QSharedPointer<Port> > > newPorts);
 
 	/*!
      *  Get this components component generators.
 	 *
-	 *      @return Pointer to a list containing component's component generators.
+	 *      @return A list containing component's component generators.
 	 */
     QSharedPointer<QList<QSharedPointer<ComponentGenerator> > > getComponentGenerators() const;
 
 	/*!
      *  Set this component's component generators.
 	 *
-	 *      @param [in] newGenerators   Pointer to a list containing the component generators to be set.
+	 *      @param [in] newGenerators   A list containing the component generators to be set.
 	 */
     void setComponentGenerators(QSharedPointer<QList<QSharedPointer<ComponentGenerator> > > newGenerators);
 
    	/*!
      *  Get this component's choices.
 	 *
-	 *      @return Pointer to a list containing component's choices.
+	 *      @return A list containing component's choices.
 	 */
 	QSharedPointer<QList<QSharedPointer<Choice> > > getChoices() const;
 
     /*!
      *  Set the choices.
      *
-     *      @param [in] newChoices  Pointer to a list containing the new choices.
+     *      @param [in] newChoices  A list containing the new choices.
      */
     void setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices);
 
 	/*!
      *  Get the file sets of this component.
 	 *
-	 *      @return Pointer to a list containing pointers to the file sets.
+	 *      @return A list containing pointers to the file sets.
 	 */
     QSharedPointer<QList<QSharedPointer<FileSet> > > getFileSets() const;
 
 	/*!
      *  Set this component's file sets.
 	 *
-	 *      @param [in] newFileSets     Pointer to a list containing the file sets to be set.
+	 *      @param [in] newFileSets     A list containing the file sets to be set.
 	 */
     void setFileSets(QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets);
     
@@ -362,21 +369,21 @@ public:
 	/*!
      *  Set this component's cpus.
 	 *
-	 *      @param [in] cpus    Pointer to a list containing the cpus to be set.
+	 *      @param [in] cpus    A list containing the cpus to be set.
 	 */
     void setCpus(QSharedPointer<QList<QSharedPointer<Cpu> > > newCpus);
 
 	/*!
      *  Get this component's other clock drivers.
 	 *
-	 *      @return Pointer to a list containing component's other clock drivers.
+	 *      @return A list containing component's other clock drivers.
 	 */
     QSharedPointer<QList<QSharedPointer<OtherClockDriver> > > getOtherClockDrivers() const;
 
 	/*!
      *  Set other clock drivers for this component.
 	 *
-	 *      @param [in] newOtherClockDrivers    Pointer to a list containing the other clock drivers to be set.
+	 *      @param [in] newOtherClockDrivers    A list containing the other clock drivers to be set.
 	 */
     void setOtherClockDrivers(QSharedPointer<QList<QSharedPointer<OtherClockDriver> > > newOtherClockDrivers);
 
@@ -733,7 +740,7 @@ public:
 	QStringList getBusInterfaceNames() const;
 
 	/*!
-     *  Get a pointer to a bus interface.
+     *  Get a A bus interface.
 	 *
 	 *      @param [in] name    Contains the name of the wanted bus interface.
 	 *
@@ -870,7 +877,14 @@ private:
      *      @param [in] other   The component being copied.
      */
     void copyBusInterfaces(const Component& other) const;
-    
+   
+    /*!
+     *  Copy indirect interfaces.
+     *
+     *      @param [in] other   The component being copied.
+     */ 
+    void copyIndirectInterfaces(Component const& other) const;
+
     /*!
      *  Copy channels.
      *
@@ -940,13 +954,16 @@ private:
      *      @param [in] other   The component being copied.
      */
     void copyOtherClockDrivers(const Component& other) const;
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Specifies all the interfaces for this component.
+    //! Specifies all the bus interfaces for this component.
 	QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces_;
+
+    //! Specifies all the indirect interfaces for this component.
+    QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces_;
 
     //! Specifies the interconnection between interfaces within component.
 	QSharedPointer<QList<QSharedPointer<Channel> > > channels_;

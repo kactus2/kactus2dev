@@ -140,7 +140,9 @@ HEADERS += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/XmlUtils.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
     ../../../MockObjects/LibraryMock.h \
-    ../../../../IPXACTmodels/validators/namevalidator.h
+    ../../../../IPXACTmodels/validators/namevalidator.h \
+    ../../../../IPXACTmodels/Component/TransparentBridge.h \
+    ../../../../IPXACTmodels/Component/IndirectInterface.h
 SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
@@ -272,4 +274,6 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/XmlUtils.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../../IPXACTmodels/validators/namevalidator.cpp \
-    ./tst_ComponentValidator.cpp
+    ./tst_ComponentValidator.cpp \
+    ../../../../IPXACTmodels/Component/TransparentBridge.cpp \
+    ../../../../IPXACTmodels/Component/IndirectInterface.cpp

@@ -33,6 +33,7 @@
 #include <editors/ComponentEditor/treeStructure/RemapStatesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/InstantiationsItem.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 
 #include <editors/ComponentEditor/general/generaleditor.h>
@@ -259,8 +260,8 @@ QStringList ComponentEditor::getHwItemNames()
 
 	itemNames << "File_sets" << "Choices" << "Parameters" << "Memory_maps" << 
 		"Address_spaces" << "Instantiations" << "Views" << "Software_views" << "System_views" << "Ports" <<
-        "Bus_interfaces" << "Channels" << "Remap_states" << "Cpus" << "Other_clock_drivers" << "COM_interfaces" <<
-        "Software_properties";
+        "Bus_interfaces" << "Indirect_interfaces" << "Channels" << "Remap_states" << "Cpus" <<
+        "Other_clock_drivers" << "COM_interfaces" << "Software_properties";
 
 	return itemNames;
 }
@@ -713,6 +714,10 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
         connect(busInterfaceItem.data(), SIGNAL(openReferenceTree(QString)),
             this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
+
+        root->addChildItem(QSharedPointer<ComponentEditorIndirectInterfacesItem>(
+            new ComponentEditorIndirectInterfacesItem(&navigationModel_, libHandler_, component, referenceCounter_,
+            parameterFinder_, expressionFormatter_, expressionParser_, root, parentWidget())));
 
         root->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
             new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, expressionParser_, root)));

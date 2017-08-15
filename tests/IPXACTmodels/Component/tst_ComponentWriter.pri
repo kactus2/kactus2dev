@@ -112,7 +112,10 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/common/ProtocolWriter.h \
     ../../../IPXACTmodels/Component/RegisterWriter.h \
     ../../../IPXACTmodels/Component/RemapStateWriter.h \
-    ../../../IPXACTmodels/Component/ViewWriter.h
+    ../../../IPXACTmodels/Component/ViewWriter.h \
+    ../../../IPXACTmodels/Component/TransparentBridge.h \
+    ../../../IPXACTmodels/Component/IndirectInterface.h \
+    ../../../IPXACTmodels/Component/IndirectInterfaceWriter.h
 SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/AddressBlock.cpp \
@@ -219,4 +222,7 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/choice.cpp \
     ../../../IPXACTmodels/Component/cpu.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_ComponentWriter.cpp
+    ./tst_ComponentWriter.cpp \
+    ../../../IPXACTmodels/Component/TransparentBridge.cpp \
+    ../../../IPXACTmodels/Component/IndirectInterface.cpp \
+    ../../../IPXACTmodels/Component/IndirectInterfaceWriter.cpp

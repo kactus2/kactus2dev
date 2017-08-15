@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TransparentBridge.h>
 
 #include "../XmlUtils.h"
 
@@ -440,16 +441,16 @@ void BusInterfaceWriter::writeSlaveInterface(QXmlStreamWriter& writer, QSharedPo
 		}
 
 		// Write all bridges.
-		foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *slave->getBridges())
+		foreach (QSharedPointer<TransparentBridge> bridge, *slave->getBridges())
 		{
 			// Bridge has a master reference.
 			writer.writeStartElement(QStringLiteral("ipxact:transparentBridge"));
-			writer.writeAttribute(QStringLiteral("masterRef"), bridge->masterRef_);
+			writer.writeAttribute(QStringLiteral("masterRef"), bridge->getMasterRef());
 
 			// Bridge has present.
-			if (!bridge->isPresent_.isEmpty())
+			if (!bridge->getIsPresent().isEmpty())
 			{
-				writer.writeTextElement(QStringLiteral("ipxact:isPresent"), bridge->isPresent_);
+				writer.writeTextElement(QStringLiteral("ipxact:isPresent"), bridge->getIsPresent());
 			}
 
 			writer.writeEndElement();

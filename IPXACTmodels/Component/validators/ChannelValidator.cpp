@@ -19,7 +19,7 @@
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::SystemVerilogValidator()
+// Function: ChannelValidator::ChannelValidator()
 //-----------------------------------------------------------------------------
 ChannelValidator::ChannelValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<QList<QSharedPointer<BusInterface> > > componentBusInterfaces):
@@ -30,7 +30,7 @@ expressionParser_(expressionParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::~SystemVerilogValidator()
+// Function: ChannelValidator::~ChannelValidator()
 //-----------------------------------------------------------------------------
 ChannelValidator::~ChannelValidator()
 {

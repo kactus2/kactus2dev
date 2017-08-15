@@ -26,6 +26,8 @@
 #include <IPXACTmodels/Component/FileSetReader.h>
 #include <IPXACTmodels/Component/CPUReader.h>
 #include <IPXACTmodels/Component/OtherClockDriverReader.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
+#include <IPXACTmodels/Component/IndirectInterfaceReader.h>
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
@@ -69,6 +71,8 @@ QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument cons
     parseVLNVElements(componentNode, newComponent, VLNV::COMPONENT);
 
     parseBusInterfaces(componentNode, newComponent);
+
+    parseIndirectInterfaces(componentNode, newComponent);
 
     parseChannels(componentNode, newComponent);
 
@@ -120,6 +124,28 @@ void ComponentReader::parseBusInterfaces(QDomNode const& componentNode, QSharedP
             QSharedPointer<BusInterface> newBus = busReader.createbusinterfaceFrom(busNode);
 
             newComponent->getBusInterfaces()->append(newBus);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentReader::parseIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void ComponentReader::parseIndirectInterfaces(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
+{
+    QDomElement interfaceElement = componentNode.firstChildElement(QStringLiteral("ipxact:indirectInterfaces"));
+
+    if (!interfaceElement.isNull())
+    {
+        IndirectInterfaceReader interfaceReader;
+
+        QDomNodeList interfaceList = interfaceElement.elementsByTagName(QStringLiteral("ipxact:indirectInterface"));
+        for (int i = 0; i < interfaceList.count(); ++i)
+        {
+            QDomNode interfaceNode = interfaceList.at(i);
+            QSharedPointer<IndirectInterface> newInterface = interfaceReader.createIndirectInterfaceFrom(interfaceNode);
+
+            newComponent->getIndirectInterfaces()->append(newInterface);
         }
     }
 }
@@ -780,3 +806,4 @@ void ComponentReader::parseAuthor(QDomNode const& authorNode, QSharedPointer<Com
 {
     newComponent->setAuthor(authorNode.firstChild().nodeValue());
 }
+

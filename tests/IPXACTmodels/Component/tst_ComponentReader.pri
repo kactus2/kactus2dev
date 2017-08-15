@@ -42,6 +42,8 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/Component/Function.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
+    ../../../IPXACTmodels/Component/IndirectInterface.h \
+    ../../../IPXACTmodels/Component/IndirectInterfaceReader.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
@@ -111,7 +113,8 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/ProtocolReader.h \
     ../../../IPXACTmodels/Component/RegisterReader.h \
     ../../../IPXACTmodels/Component/RemapStateReader.h \
-    ../../../IPXACTmodels/Component/ViewReader.h
+    ../../../IPXACTmodels/Component/ViewReader.h \
+    ../../../IPXACTmodels/Component/TransparentBridge.h
 SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/AddressBlock.cpp \
@@ -162,6 +165,8 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/Component/Function.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/Component/IndirectInterface.cpp \
+    ../../../IPXACTmodels/Component/IndirectInterfaceReader.cpp \
     ../../../IPXACTmodels/Component/InstantiationsReader.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
@@ -218,4 +223,5 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/choice.cpp \
     ../../../IPXACTmodels/Component/cpu.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_ComponentReader.cpp
+    ./tst_ComponentReader.cpp \
+    ../../../IPXACTmodels/Component/TransparentBridge.cpp

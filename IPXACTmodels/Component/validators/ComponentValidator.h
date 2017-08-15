@@ -21,6 +21,7 @@
 class Component;
 
 class BusInterfaceValidator;
+class IndirectInterfaceValidator;
 class ChannelValidator;
 class RemapStateValidator;
 class AddressSpaceValidator;
@@ -83,6 +84,15 @@ public:
      *      @return True, if the bus interfaces are valid, otherwise false.
      */
     bool hasValidBusInterfaces(QSharedPointer<Component> component);
+   
+    /*!
+     *  Check if the contained indirect interfaces are valid.
+     *
+     *      @param [in] component   The selected component.
+     *
+     *      @return True, if the indirect interfaces are valid, otherwise false.
+     */     
+    bool hasValidIndirectInterfaces(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained channels are valid.
@@ -261,6 +271,15 @@ private:
         QString const& context) const;
 
     /*!
+     *  Find errors in indirect interfaces.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] component   The selected component.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInIndirectInterfaces(QVector<QString>& errors, QSharedPointer<Component> component, QString const& context);
+
+    /*!
      *  Find errors in channels.
      *
      *      @param [in] errors      List of found errors.
@@ -426,7 +445,7 @@ private:
      *      @param [in] newComponent    The new component.
      */
     void changeComponent(QSharedPointer<Component> newComponent);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -436,6 +455,9 @@ private:
 
     //! The used bus interface validator.
     QSharedPointer<BusInterfaceValidator> busInterfaceValidator_;
+
+    //! The used indirect interface validator.
+    QSharedPointer<IndirectInterfaceValidator> indirectInterfaceValidator_;
 
     //! The used channel validator.
     QSharedPointer<ChannelValidator> channelValidator_;

@@ -304,6 +304,14 @@ void HWDesignWidgetMock::onModelsimGenerate()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignWidgetMock::onDeleteSelectedItems()
+//-----------------------------------------------------------------------------
+void HWDesignWidgetMock::onDeleteSelectedItems()
+{
+    
+}
+
+//-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
 void HWDesignWidgetMock::addColumn()

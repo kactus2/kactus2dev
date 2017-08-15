@@ -65,6 +65,14 @@ private:
     void writeBusInterfaces(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
 
     /*!
+     *  Write the indirect interfaces.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] component   The component being written.
+     */
+    void writeIndirectInterfaces(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
+
+    /*!
      *  Write the channels.
      *
      *      @param [in] writer      The used XML writer.

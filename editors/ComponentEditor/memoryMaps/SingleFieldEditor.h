@@ -140,6 +140,11 @@ private slots:
     void onIsPresentEdited();
 
     /*!
+     *  Sets the edited field ID value for the field.
+     */
+    void onFieldIdChanged();
+
+    /*!
      *  Sets the selected write constraint value for the field.
      *
      *      @param [in] newIndex    The index of the selected write constraint value.
@@ -183,16 +188,6 @@ private:
     SingleFieldEditor& operator=(const SingleFieldEditor& other);
 
     /*!
-     *  Sets the layout for this editor.
-     */
-    void setupLayout();
-
-    /*!
-     *  Connect the signals of the different editors in this editor.
-     */
-    void connectSignals();
-
-    /*!
      *  Change the signal blocking status of the expression editors in this editor.
      *
      *      @param [in] blockStatus     The new signal blocking status for the expression editors.
@@ -214,6 +209,16 @@ private:
      *      @param [in] writeConstraintIndex    The index of the write constraint value.
      */
     void setWriteMinMaxConstraintEnableStatus(int writeConstraintIndex) const;
+    
+    /*!
+     *  Connect the signals of the different editors in this editor.
+     */
+    void connectSignals();
+
+    /*!
+     *  Sets the layout for this editor.
+     */
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -249,8 +254,11 @@ private:
     //! The test constrained value selector.
     TestConstraintComboBox* testConstrainedEditor_;
 
-    //! The is present editor, accepts expressions..
+    //! The presence editor.
     ExpressionEditor* isPresentEditor_;
+
+    //! The editor for fieldID.
+    QLineEdit* fieldIdEditor_;
 
     //! The expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

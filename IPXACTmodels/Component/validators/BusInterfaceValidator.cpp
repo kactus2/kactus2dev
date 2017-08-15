@@ -527,11 +527,11 @@ bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<Bu
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveInterfaceHasValidBridges(QSharedPointer<SlaveInterface> slave) const
 {
-    foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *slave->getBridges())
+    foreach (QSharedPointer<TransparentBridge> bridge, *slave->getBridges())
     {
         if (slaveBridgeReferencesValidMaster(bridge))
         {
-            return hasValidIsPresent(bridge->isPresent_);
+            return hasValidIsPresent(bridge->getIsPresent());
         }
     }
 
@@ -541,11 +541,11 @@ bool BusInterfaceValidator::slaveInterfaceHasValidBridges(QSharedPointer<SlaveIn
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::slaveBridgeReferencesValidMaster()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::slaveBridgeReferencesValidMaster(QSharedPointer<SlaveInterface::Bridge> bridge) const
+bool BusInterfaceValidator::slaveBridgeReferencesValidMaster(QSharedPointer<TransparentBridge> bridge) const
 {
     foreach (QSharedPointer<BusInterface> busInterface, *availableBusInterfaces_)
     {
-        if (busInterface->getInterfaceMode() == General::MASTER && bridge->masterRef_ == busInterface->name())
+        if (busInterface->getInterfaceMode() == General::MASTER && bridge->getMasterRef() == busInterface->name())
         {
             return true;
         }
@@ -1119,14 +1119,14 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
             .arg(slave->getMemoryMapRef()).arg(context));
     }
 
-    foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *slave->getBridges())
+    foreach (QSharedPointer<TransparentBridge> bridge, *slave->getBridges())
     {
         if (!slaveBridgeReferencesValidMaster(bridge))
         {
             errors.append(QObject::tr("Master bus interface %1 referenced by the %2 was not found")
-                .arg(bridge->masterRef_).arg(context));
+                .arg(bridge->getMasterRef()).arg(context));
         }
-        if (!hasValidIsPresent(bridge->isPresent_))
+        if (!hasValidIsPresent(bridge->getIsPresent()))
         {
             errors.append(QObject::tr("Transparent bridge within the %1 has invalid isPresent")
                 .arg(context));

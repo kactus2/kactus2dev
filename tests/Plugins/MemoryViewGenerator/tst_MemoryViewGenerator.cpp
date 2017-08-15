@@ -29,6 +29,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TransparentBridge.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
@@ -998,8 +999,8 @@ void tst_MemoryViewGenerator::testBridge()
     bridgeSlave->setName("bridgeSlave");
     bridgeSlave->setInterfaceMode(General::SLAVE);
     
-    QSharedPointer<SlaveInterface::Bridge> bridge(new SlaveInterface::Bridge());
-    bridge->masterRef_ = "bridgeMaster";
+    QSharedPointer<TransparentBridge> bridge(new TransparentBridge());
+    bridge->setMasterRef("bridgeMaster");
     bridgeSlave->getSlave()->getBridges()->append(bridge);
 
     bridgeComponent->getBusInterfaces()->append(bridgeSlave);

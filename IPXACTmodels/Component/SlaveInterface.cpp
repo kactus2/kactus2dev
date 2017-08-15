@@ -17,19 +17,12 @@
 #include <QObject>
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::Bridge::Bridge()
-//-----------------------------------------------------------------------------
-SlaveInterface::Bridge::Bridge(): masterRef_(), isPresent_()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: SlaveInterface::SlaveInterface()
 //-----------------------------------------------------------------------------
 SlaveInterface::SlaveInterface():
 memoryMapRef_(), 
-bridges_(new QList<QSharedPointer<Bridge> >()), 
-fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >())
+    bridges_(new QList<QSharedPointer<TransparentBridge> >()), 
+    fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >())
 {
 }
 
@@ -38,12 +31,12 @@ fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >())
 //-----------------------------------------------------------------------------
 SlaveInterface::SlaveInterface(SlaveInterface const& other):
 memoryMapRef_(other.memoryMapRef_),
-bridges_(new QList<QSharedPointer<Bridge> >()),
-fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >()) 
+    bridges_(new QList<QSharedPointer<TransparentBridge> >()),
+    fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >()) 
 {
-    foreach (QSharedPointer<Bridge> bridge, *other.bridges_)
+    foreach (QSharedPointer<TransparentBridge> bridge, *other.bridges_)
     {
-        QSharedPointer<Bridge> copy(new Bridge(*bridge));
+        QSharedPointer<TransparentBridge> copy(new TransparentBridge(*bridge));
         bridges_->append(copy);
     }
 
@@ -64,9 +57,9 @@ SlaveInterface& SlaveInterface::operator=(SlaveInterface const& other)
         memoryMapRef_ = other.memoryMapRef_;
 
         bridges_->clear();
-        foreach (QSharedPointer<Bridge> bridge, *other.bridges_) 
+        foreach (QSharedPointer<TransparentBridge> bridge, *other.bridges_) 
         {
-            QSharedPointer<Bridge> copy(new Bridge(*bridge));
+            QSharedPointer<TransparentBridge> copy(new TransparentBridge(*bridge));
             bridges_->append(copy);
         }
 
@@ -108,7 +101,7 @@ void SlaveInterface::setMemoryMapRef(QString const& memoryMapRef)
 //-----------------------------------------------------------------------------
 // Function: SlaveInterface::getBridges()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<SlaveInterface::Bridge> > > SlaveInterface::getBridges() const
+QSharedPointer<QList<QSharedPointer<TransparentBridge> > > SlaveInterface::getBridges() const
 {
 	return bridges_;
 }
@@ -127,9 +120,9 @@ bool SlaveInterface::hasBridge() const
 QStringList SlaveInterface::getMasterReferences() const 
 {
     QStringList masterNames;
-    foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *bridges_)
+    foreach (QSharedPointer<TransparentBridge> bridge, *bridges_)
     {
-        masterNames.append(bridge->masterRef_);
+        masterNames.append(bridge->getMasterRef());
     }
 
     return masterNames;

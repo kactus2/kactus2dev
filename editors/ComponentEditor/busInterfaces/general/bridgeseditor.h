@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 21.6.2012
- *      Author: Antti Kamppi
- * 		filename: bridgeseditor.h
- *		Project: Kactus2
- */
+//-----------------------------------------------------------------------------
+// File: bridgeseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 21.06.2012
+//
+// Description:
+// Editor to edit the transparent bridge-elements within a slave interface mode or indirect interface.
+//-----------------------------------------------------------------------------
 
 #ifndef BRIDGESEDITOR_H
 #define BRIDGESEDITOR_H
@@ -12,14 +16,14 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <IPXACTmodels/Component/SlaveInterface.h>
-
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
 class Component;
-/*! Editor to edit the bridge-elements within a slave interface mode.
+class TransparentBridge;
+
+/*! Editor to edit the transparent bridge-elements within a slave interface mode or indirect interface.
  *
  */
 class BridgesEditor : public QGroupBox {
@@ -29,25 +33,17 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] slave The slave element being edited.
-	 *      @param [in] component The component that owns the slave interface.
-	 *      @param [in] parent The owner of this editor.
+	 *      @param [in] bridges     The bridges to edit in the editor.
+	 *      @param [in] component   The component that contains the bridges.
+	 *      @param [in] parent      The parent of this editor.
 	 *
 	*/
-	BridgesEditor(QSharedPointer<SlaveInterface> slave,	QSharedPointer<Component> component, QWidget* parent);
+	BridgesEditor(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
+        QSharedPointer<Component> component,
+        QWidget* parent);
 	
 	//! The destructor.
 	virtual ~BridgesEditor();
-
-	//! Check if the editor is in valid state.
-	bool isValid() const;
-
-	/*! Refresh the editor to match the given slave interface.
-	 *
-	 *      @param [in] slave The slave interface being edited.
-	 *
-	*/
-	void refresh(QSharedPointer<SlaveInterface> slave);
 
 signals:
 

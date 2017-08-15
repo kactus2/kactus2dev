@@ -30,7 +30,7 @@ BusIfInterfaceSlave::BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,
 BusIfInterfaceModeEditor(busif, component, tr("Slave"), parent),
 slave_(QSharedPointer<SlaveInterface>(new SlaveInterface())),
 memoryMapReferenceSelector_(this),
-bridges_(slave_, component, this)
+bridges_(slave_->getBridges(), component, this)
 {
 	Q_ASSERT(slave_);
 
@@ -87,7 +87,7 @@ void BusIfInterfaceSlave::refresh()
 	QString memMapRef = slave_->getMemoryMapRef();
 	memoryMapReferenceSelector_.selectItem(memMapRef);
 
-	bridges_.refresh(slave_);
+
 }
 
 //-----------------------------------------------------------------------------

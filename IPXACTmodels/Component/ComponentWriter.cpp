@@ -14,6 +14,7 @@
 #include "Model.h"
 
 #include "BusInterfaceWriter.h"
+#include "IndirectInterfaceWriter.h"
 #include "ChannelWriter.h"
 #include "RemapStateWriter.h"
 #include "AddressSpaceWriter.h"
@@ -65,6 +66,8 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
 
     writeBusInterfaces(writer, component);
 
+    writeIndirectInterfaces(writer, component);
+
     writeChannels(writer, component);
 
     writeRemapStates(writer, component);
@@ -115,6 +118,26 @@ void ComponentWriter::writeBusInterfaces(QXmlStreamWriter& writer, QSharedPointe
         }
 
         writer.writeEndElement(); // ipxact:busInterfaces
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWriter::writeIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void ComponentWriter::writeIndirectInterfaces(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
+{
+    if (!component->getIndirectInterfaces()->isEmpty())
+    {
+        IndirectInterfaceWriter interfaceWriter;
+
+        writer.writeStartElement(QStringLiteral("ipxact:indirectInterfaces"));
+
+        foreach (QSharedPointer<IndirectInterface> indirectInterface, *component->getIndirectInterfaces())
+        {
+            interfaceWriter.writeIndirectInterface(writer, indirectInterface);
+        }
+
+        writer.writeEndElement(); // ipxact:indirectInterfaces
     }
 }
 
