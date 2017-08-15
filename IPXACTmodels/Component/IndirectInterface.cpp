@@ -23,6 +23,7 @@ IndirectInterface::IndirectInterface(QString const& name) : NameGroup(name),
     memoryMapRef_(),
     transparentBridges_(new QList<QSharedPointer<TransparentBridge> >()),
     bitsInLau_(),
+    endianness_(),
     parameters_(new QList<QSharedPointer<Parameter> >())
 {
 
@@ -39,6 +40,7 @@ NameGroup(other),
     memoryMapRef_(other.memoryMapRef_),
     transparentBridges_(new QList<QSharedPointer<TransparentBridge> >()),
     bitsInLau_(other.bitsInLau_),
+    endianness_(other.endianness_),
     parameters_(new QList<QSharedPointer<Parameter> >())
 {
     foreach (QSharedPointer<TransparentBridge> bridge, *other.getTransparentBridges())
