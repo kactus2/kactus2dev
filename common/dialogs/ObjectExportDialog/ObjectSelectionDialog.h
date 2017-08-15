@@ -41,12 +41,13 @@ public:
 	 *
      *      @param [in] okButtonText    QString containing the text for the ok button.
      *      @param [in] iconPath        Path to the icon used by the selection dialog.
+     *      @param [in] okIconPath      Path to the icon used by the ok button.
      *      @param [in] windowTitle     Window title of the selection dialog.
 	 *      @param [in] parent          The parent widget.
 	 *      @param [in] f               Widget flags for the dialog.
 	 */
-    ObjectSelectionDialog(QString const& okButtonText, QString const& iconPath, QString const& windowTitle,
-        QWidget* parent = 0, Qt::WindowFlags f = 0);
+    ObjectSelectionDialog(QString const& okButtonText, QString const& iconPath, QString const& okIconPath,
+        QString const& windowTitle, QWidget* parent = 0, Qt::WindowFlags f = 0);
 
     /*!
 	 *  The destructor.

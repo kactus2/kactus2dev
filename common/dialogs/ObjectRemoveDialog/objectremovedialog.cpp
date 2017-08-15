@@ -1,84 +1,45 @@
-/* 
- *  	Created on: 8.8.2011
- *      Author: Antti Kamppi
- * 		filename: objectremovedialog.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: ObjectRemoveDialog.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 08.08.2011
+//
+// Description:
+// Dialog for selecting items to be removed.
+//-----------------------------------------------------------------------------
 
 #include "objectremovedialog.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QIcon>
-#include <QHeaderView>
-
+//-----------------------------------------------------------------------------
+// Function: objectremovedialog::ObjectRemoveDialog()
+//-----------------------------------------------------------------------------
 ObjectRemoveDialog::ObjectRemoveDialog(QWidget *parent, Qt::WindowFlags f):
-QDialog(parent, f),
-okButton_(tr("OK"), this),
-cancelButton_(tr("Cancel"), this),
-selectionBox_(tr("Select/deselect all"), this),
-view_(this),
-filter_(this),
-model_(this) {
+ObjectSelectionDialog(tr("Delete"), QStringLiteral(":icons/common/graphics/delete.png"),
+    QStringLiteral(":icons/common/graphics/cross.png"), tr("Select items to delete"), parent, f)
+{
+    setupLayout();
+}
 
-	setWindowTitle(tr("Select items to be removed"));
-
-	filter_.setSourceModel(&model_);
-	view_.setModel(&filter_);
-
-	selectionBox_.setChecked(true);
-
-	// set view to be sortable
-	view_.setSortingEnabled(true);
-	view_.horizontalHeader()->setStretchLastSection(true);
-	view_.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-	view_.setSelectionMode(QAbstractItemView::SingleSelection);
-	view_.setAlternatingRowColors(true);
-	view_.verticalHeader()->hide();
-	//view_.setEditTriggers(QAbstractItemView::AllEditTriggers);
-	view_.setWordWrap(true);
-	view_.horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-	view_.setColumnWidth(0, 500);
-	view_.sortByColumn(1, Qt::DescendingOrder);
-
-	QHBoxLayout* buttonLayout = new QHBoxLayout();
-	buttonLayout->addWidget(&selectionBox_, 0, Qt::AlignLeft);
-	buttonLayout->addStretch();
-	buttonLayout->addWidget(&okButton_, 0, Qt::AlignRight);
-	buttonLayout->addWidget(&cancelButton_, 0, Qt::AlignRight);
-
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&view_, 1);
-	layout->addLayout(buttonLayout, 0);
-
-	connect(&cancelButton_, SIGNAL(clicked(bool)),
-		this, SLOT(reject()), Qt::UniqueConnection);
-	connect(&okButton_, SIGNAL(clicked(bool)),
-		this, SLOT(accept()), Qt::UniqueConnection);
-	connect(&selectionBox_, SIGNAL(stateChanged(int)),
-		&model_, SLOT(onSelectionChange(int)), Qt::UniqueConnection);
+//-----------------------------------------------------------------------------
+// Function: objectremovedialog::~ObjectRemoveDialog()
+//-----------------------------------------------------------------------------
+ObjectRemoveDialog::~ObjectRemoveDialog()
+{
 
 }
 
-ObjectRemoveDialog::~ObjectRemoveDialog() {
-}
+//-----------------------------------------------------------------------------
+// Function: objectremovedialog::setupLayout()
+//-----------------------------------------------------------------------------
+void ObjectRemoveDialog::setupLayout()
+{
+    QString introLabel = tr("Delete");
+    QString introText = tr("Delete the selected items. The items will be removed from the library and the hard drive.");
+    QWidget* introWidget = setupIntroWidget(introLabel, introText);
 
-void ObjectRemoveDialog::addItem( const ObjectRemoveModel::Item& item ) {
-	model_.addItem(item);
-}
-
-QSize ObjectRemoveDialog::sizeHint() const {
-	return QSize(700, 700);
-}
-
-QList<ObjectRemoveModel::Item> ObjectRemoveDialog::getItemsToRemove() const {
-	return model_.getItemsToRemove();
-}
-
-void ObjectRemoveDialog::createItem( const VLNV& vlnv, bool locked ) {
-	model_.createItem(vlnv, locked);
-}
-
-void ObjectRemoveDialog::createItem( const QString& filePath ) {
-	model_.createItem(filePath);
+    QVBoxLayout* overallLayout = new QVBoxLayout(this);
+    overallLayout->addWidget(introWidget);
+    overallLayout->addWidget(getItemList(), 1);
+    overallLayout->addLayout(setupButtonLayout());
 }

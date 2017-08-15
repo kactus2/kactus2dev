@@ -93,7 +93,6 @@ HEADERS += ./VersionHelper.h \
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
     ./common/dialogs/newObjectDialog/newobjectdialog.h \
-    ./common/dialogs/ObjectRemoveDialog/objectremovemodel.h \
     ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
@@ -729,7 +728,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageView.cpp \
     ./common/dialogs/newObjectDialog/newobjectdialog.cpp \
     ./common/dialogs/ObjectRemoveDialog/objectremovedialog.cpp \
-    ./common/dialogs/ObjectRemoveDialog/objectremovemodel.cpp \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
@@ -739,7 +737,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/dialogs/ObjectExportDialog/ObjectExportDialog.cpp \
     ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.cpp \
     ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.cpp \
-    ./common/validators/AddressValidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \

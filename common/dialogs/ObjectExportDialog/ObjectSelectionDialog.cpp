@@ -22,7 +22,7 @@
 // Function: ObjectSelectionDialog::ObjectSelectionDialog()
 //-----------------------------------------------------------------------------
 ObjectSelectionDialog::ObjectSelectionDialog(QString const& okButtonText, QString const& iconPath,
-    QString const& windowTitle, QWidget* parent, Qt::WindowFlags f):
+    QString const& okIconPath, QString const& windowTitle, QWidget* parent, Qt::WindowFlags f):
 QDialog(parent, f),
 dialogIconPath_(iconPath),
 okButton_(okButtonText, this),
@@ -41,7 +41,7 @@ comDefinitionIcon_(":icons/common/graphics/new-com_definition.png"),
 apiDefinitionIcon_(":icons/common/graphics/new-api_definition.png"),
 fileIcon_(":icons/common/graphics/settings-file_types.png")
 {
-    okButton_.setIcon(QIcon(dialogIconPath_));
+    okButton_.setIcon(QIcon(okIconPath));
     checkAllBox_.setChecked(true);
 
     setWindowTitle(windowTitle);

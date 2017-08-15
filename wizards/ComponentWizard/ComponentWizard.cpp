@@ -38,6 +38,7 @@ parameterFinder_(new ComponentParameterFinder(workingComponent_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
 {
+    setPixmap(QWizard::LogoPixmap, QPixmap(":icons/common/graphics/hw-component.png"));
 	setWindowTitle(tr("Component Wizard for %1").arg(component->getVlnv().toString()));
     setWizardStyle(ModernStyle);
     resize(800, 1000);

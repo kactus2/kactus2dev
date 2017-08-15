@@ -17,7 +17,6 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
-#include <common/dialogs/ObjectRemoveDialog/objectremovemodel.h>
 #include <common/dialogs/ObjectExportDialog/ObjectExportDialog.h>
 #include <common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h>
 
@@ -656,10 +655,10 @@ void LibraryHandler::onExportItems(const QList<VLNV> vlnvs )
         return;
     }
 
-    ObjectExportDialog* exportDialog = new ObjectExportDialog(QString(), parentWidget_);
+    ObjectExportDialog* exportDialog = new ObjectExportDialog(parentWidget_);
     QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     exportDialog->setStyleSheet(styleSheet);
-    constructItemsForExportDialog(exportDialog, vlnvs);
+    constructItemsForSelectionDialog(exportDialog, vlnvs);
 
     if (exportDialog->exec() == QDialog::Rejected)
     {
@@ -671,48 +670,102 @@ void LibraryHandler::onExportItems(const QList<VLNV> vlnvs )
 
     QString destinationPath = exportDialog->getTargetDirectory();
 
-    // create a QDir instance of the target directory
-    QDir destinationFolder(destinationPath);
+    QPair<int, int> exportCounter = exportSelectedObjects(exportDialog->getSelectedItems(), destinationPath);
 
-    bool yesToAll = false;
-    bool noToAll = false;
-
-    fileList handledFiles;
-
-    int fileCounter = 0;
-    bool fileExported = false;
-
-    foreach (ObjectSelectionListItem* exportedItem, exportDialog->getSelectedItems())
-    {
-        if (exportedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
-        {
-            fileExported = exportSelectedVLNVObject(
-                destinationFolder, exportedItem->getVLNV(), handledFiles, yesToAll, noToAll);
-        }
-        else
-        {
-            fileExported =
-                copyFile(QFileInfo(exportedItem->getPath()), destinationFolder, handledFiles, yesToAll, noToAll);
-        }
-
-        if (!noToAll && fileExported)
-        {
-            fileCounter++;
-        }
-    }
-
-    QString exportMessage =
-            QString("Exported %1 files to %2.").arg(QString::number(fileCounter)).arg(destinationPath);
-
+    QString exportMessage = createExportMessage(exportCounter.first, exportCounter.second, destinationPath);
     emit noticeMessage(exportMessage);
 
     QDir::setCurrent(savedWorkingDirectory.absolutePath());
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryHandler::exportSelectedObjects()
+//-----------------------------------------------------------------------------
+QPair<int, int> LibraryHandler::exportSelectedObjects(QVector<ObjectSelectionListItem*> exportedItems,
+    QString const& destinationPath)
+{
+    fileList handledFiles;
+    QDir destinationFolder(destinationPath);
+
+    bool yesToAll = false;
+    bool noToAll = false;
+    int vlnvCounter = 0;
+    int fileCounter = 0;
+    foreach (ObjectSelectionListItem* exportedItem, exportedItems)
+    {
+        if (noToAll)
+        {
+            break;
+        }
+
+        if (exportedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
+        {
+            if (exportSelectedVLNVObject(
+                destinationFolder, exportedItem->getVLNV(), handledFiles, yesToAll, noToAll))
+            {
+                vlnvCounter++;
+            }
+        }
+        else
+        {
+            if (copyFile(QFileInfo(exportedItem->getPath()), destinationFolder, handledFiles, yesToAll, noToAll))
+            {
+                fileCounter++;
+            }
+        }
+    }
+
+    QPair<int, int> itemCounter;
+    itemCounter.first = vlnvCounter;
+    itemCounter.second = fileCounter;
+    return itemCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::createExportMessage()
+//-----------------------------------------------------------------------------
+QString LibraryHandler::createExportMessage(int vlnvCount, int fileCount, QString const& destinationPath) const
+{
+    QString exportMessage = "Exported ";
+
+    if (vlnvCount > 0 || fileCount > 0)
+    {
+        if (vlnvCount > 0)
+        {
+            exportMessage += QString("%1 VLNV item").arg(QString::number(vlnvCount));
+            if (vlnvCount > 1)
+            {
+                exportMessage.append('s');
+            }
+        }
+        if (fileCount > 0)
+        {
+            if (vlnvCount > 0)
+            {
+                exportMessage += QString(" and ");
+            }
+
+            exportMessage += QString("%1 file").arg(QString::number(fileCount));
+            if (fileCount> 1)
+            {
+                exportMessage.append('s');
+            }
+        }
+    }
+    else
+    {
+        exportMessage += "0 items";
+    }
+
+    exportMessage += QString(" to %1.").arg(destinationPath);
+
+    return exportMessage;
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryHandler::constructItemsForExportDialog()
 //-----------------------------------------------------------------------------
-void LibraryHandler::constructItemsForExportDialog(ObjectExportDialog* exportDialog,
+void LibraryHandler::constructItemsForSelectionDialog(ObjectSelectionDialog* exportDialog,
     const QList<VLNV> exportedVLNVs)
 {
     foreach (VLNV const& exportVLNV, exportedVLNVs)
@@ -1245,144 +1298,44 @@ void LibraryHandler::onCreateAbsDef(VLNV const& busDefVLNV)
 void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
 {
     // create the dialog to select which items to remove
-    ObjectRemoveDialog removeDialog(parentWidget_);
+    ObjectRemoveDialog* removeDialog = new ObjectRemoveDialog(parentWidget_);
 
     QStringList changedDirectories;
 
-    foreach (VLNV const& vlnvToRemove, vlnvs)
-    {
-        if (!vlnvToRemove.isValid())
-        {
-            continue;
-        }
+    constructItemsForSelectionDialog(removeDialog, vlnvs);
 
-        // if the vlnv is not found in the library
-        if (!data_->contains(vlnvToRemove))
-        {
-            objects_.remove(vlnvToRemove);
-            objectValidity_.remove(vlnvToRemove);
-            continue;
-        }
-
-        changedDirectories.append(QFileInfo(data_->getPath(vlnvToRemove)).absolutePath());
-
-        removeDialog.createItem(vlnvToRemove, true);
-
-        VLNV::IPXactType vlnvType = data_->getType(vlnvToRemove);
-        if (vlnvType == VLNV::COMPONENT)
-        {
-            QSharedPointer<const Component> componentToRemove =
-                getModelReadOnly(vlnvToRemove).staticCast<const Component>();
-
-            foreach (VLNV const& ref, componentToRemove->getHierRefs())
-            {
-                if (data_->contains(ref))
-                {
-                    removeDialog.createItem(ref);
-
-                    if (data_->getType(ref) == VLNV::DESIGNCONFIGURATION)
-                    {
-                        QSharedPointer<const DesignConfiguration> desConf =
-                            getModelReadOnly(ref).staticCast<const DesignConfiguration>();
-
-                        VLNV designVLNV = desConf->getDesignRef();
-                        if (data_->contains(designVLNV))
-                        {
-                            removeDialog.createItem(designVLNV);
-                        }
-                    }
-                }
-            }
-
-            // ask the component for all it's file references.
-            QStringList componentFiles;
-            foreach (QSharedPointer<FileSet> fileset, *componentToRemove->getFileSets())
-            {
-                componentFiles.append(fileset->getFileNames());
-            }
-
-            QString componentPath = data_->getPath(vlnvToRemove);
-            foreach (QString const& relativeFilePath, componentFiles)
-            {
-                QString absoluteFilePath = General::getAbsolutePath(componentPath, relativeFilePath);
-                if (!absoluteFilePath.isEmpty())
-                {
-                    removeDialog.createItem(absoluteFilePath);
-                }
-            }
-        }
-
-        else if (vlnvType == VLNV::DESIGNCONFIGURATION)
-        {
-            QSharedPointer<const DesignConfiguration> desConf =
-                getModelReadOnly(vlnvToRemove).staticCast<const DesignConfiguration>();
-
-            VLNV designVLNV = desConf->getDesignRef();
-            if (data_->contains(designVLNV))
-            {
-                removeDialog.createItem(designVLNV);
-            }
-        }
-
-        else if (vlnvType == VLNV::BUSDEFINITION)
-        {
-            QList<VLNV> absDefVLNVs;
-            hierarchyModel_->getChildren(absDefVLNVs, vlnvToRemove);
-
-            // If a bus definition is removed then ask to remove all it's abstraction definitions also.
-            foreach (VLNV const& absDefVLNV, absDefVLNVs)
-            {
-                if (data_->contains(absDefVLNV))
-                {
-                    removeDialog.createItem(absDefVLNV);
-                }
-            }
-        }
-
-        else if (vlnvType == VLNV::ABSTRACTIONDEFINITION)
-        {
-            QSharedPointer<const AbstractionDefinition> absDef =
-                getModelReadOnly(vlnvToRemove).staticCast<const AbstractionDefinition>();
-
-            VLNV busDefVLNV = absDef->getBusType();
-            if (data_->contains(busDefVLNV))
-            {
-                QList<VLNV> absDefVLNVs;
-                hierarchyModel_->getChildren(absDefVLNVs, busDefVLNV);
-
-                // if theres only this abs def for the bus def
-                if (absDefVLNVs.size() == 1 && absDefVLNVs.first() == vlnvToRemove)
-                {
-                    removeDialog.createItem(busDefVLNV);
-                }
-            }
-        }
-    }
-
-    if (removeDialog.exec() == QDialog::Rejected)
+    if (removeDialog->exec() == QDialog::Rejected)
     {
         return;
     }
 
-    foreach (ObjectRemoveModel::Item item, removeDialog.getItemsToRemove())
-    {	
-        // if this is vlnv object, remove it from the library.
-        if (item.type_ == ObjectRemoveModel::VLNVOBJECT)
-        {
-            removeObject(item.vlnv_);
-        }
+    int vlnvCounter = 0;
+    int fileCounter = 0;
 
-        else // If this is file, remove it from file system.
+    foreach (ObjectSelectionListItem* removedItem, removeDialog->getSelectedItems())
+    {
+        if (removedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
         {
-            QFileInfo fileInfo(item.path_);
+            changedDirectories.append(QFileInfo(data_->getPath(removedItem->getVLNV())).absolutePath());
+            removeObject(removedItem->getVLNV());
+            vlnvCounter++;
+        }
+        else if (removedItem->getType() == ObjectSelectionListItem::FILE)
+        {
+            QFileInfo fileInfo(removedItem->getPath());
             if (fileInfo.exists())
             {
                 changedDirectories.append(fileInfo.absolutePath());
 
-                QFile file(item.path_);
+                QFile file(removedItem->getPath());
                 if (!file.remove())
                 {
-                    emit errorMessage(tr("File %1 could not be removed from file system.").arg(item.path_));
+                    emit errorMessage(
+                        tr("File %1 could not be removed from the file system.").arg(removedItem->getPath()));
+                }
+                else
+                {
+                    fileCounter++;
                 }
             }
         }
@@ -1396,6 +1349,32 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
     {
         clearDirectoryStructure(changedDirectory, libraryLocations);
     }
+
+    QString removeMessage = createDeleteMessage(vlnvCounter, fileCounter);
+    emit noticeMessage(removeMessage);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::createDeleteMessage()
+//-----------------------------------------------------------------------------
+QString LibraryHandler::createDeleteMessage(int vlnvCount, int fileCount) const
+{
+    QString removeMessage = QString("Deleted %1 VLNV item").arg(QString::number(vlnvCount));
+    if (vlnvCount > 1)
+    {
+        removeMessage.append('s');
+    }
+    if (fileCount > 0)
+    {
+        removeMessage = removeMessage + QString(" and %1 file").arg(QString::number(fileCount));
+        if (fileCount> 1)
+        {
+            removeMessage.append('s');
+        }
+    }
+    removeMessage.append('.');
+
+    return removeMessage;
 }
 
 //-----------------------------------------------------------------------------
@@ -1745,14 +1724,16 @@ void LibraryHandler::clearDirectoryStructure(QString const& dirPath, QStringList
 	
 	while (containsPath(QDir::cleanPath(dir.absolutePath()), libraryLocations))
     {	
-		// if not possible to move up anymore (the dir could possibly have been destroyed already).
+        QString directoryName = dir.dirName();
+
+        // if not possible to move up anymore (the dir could possibly have been destroyed already).
 		if (!dir.cdUp())
         {
 			return;
 		}
 
 		// if the directory is not empty then it can't be removed and we can stop.
-		if (!dir.rmdir(dir.dirName()))
+        if (!dir.rmdir(directoryName))
         {
 			return;
 		}
