@@ -905,6 +905,12 @@
     <Filter Include="Source Files\library\HierarchyView">
       <UniqueIdentifier>{930d34af-2acf-42ed-a2eb-06f5fcdacf9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\dialogs\ObjectExportDialog">
+      <UniqueIdentifier>{1edb3c26-e974-44f8-a481-b7037350c1ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\dialogs\ObjectExportDialog">
+      <UniqueIdentifier>{46c4c88c-7668-4731-bef9-27f588c8277c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\indirectInterfaces">
       <UniqueIdentifier>{eb1a9347-a208-4b57-b504-2d56bd8075f0}</UniqueIdentifier>
     </Filter>
@@ -4252,6 +4258,21 @@
     <ClCompile Include="GeneratedFiles\moc_LibraryWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ObjectExportDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\dialogs\ObjectExportDialog\ObjectExportDialog.cpp">
+      <Filter>Source Files\common\dialogs\ObjectExportDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="common\dialogs\ObjectExportDialog\ObjectSelectionDialog.cpp">
+      <Filter>Source Files\common\dialogs\ObjectExportDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="common\dialogs\ObjectExportDialog\ObjectSelectionListItem.cpp">
+      <Filter>Source Files\common\dialogs\ObjectExportDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ObjectSelectionDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_IndirectInterfacesEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -5880,6 +5901,12 @@
     <CustomBuild Include="library\LibraryWidget.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\dialogs\ObjectExportDialog\ObjectExportDialog.h">
+      <Filter>Header Files\common\dialogs\ObjectExportDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h">
+      <Filter>Header Files\common\dialogs\ObjectExportDialog</Filter>
+    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfacesEditor.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
     </CustomBuild>
@@ -6487,6 +6514,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\dialogs\ObjectExportDialog\ObjectSelectionListItem.h">
+      <Filter>Header Files\common\dialogs\ObjectExportDialog</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfaceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>

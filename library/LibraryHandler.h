@@ -38,6 +38,8 @@ class Document;
 class LibraryItem;
 class TableViewDialog;
 
+class ObjectExportDialog;
+
 //-----------------------------------------------------------------------------
 //! LibraryHandler is the class that implements the services to manage the IP-XACT library.
 //-----------------------------------------------------------------------------
@@ -528,16 +530,17 @@ private:
 	void copyFiles(const QStringList& files, QDir& sourceDir, QDir& targetDir, fileList& handledFiles, 
         bool& yesToAll, bool& noToAll);
 
-    	/*! Copy a single file
+    /*! Copy a single file
 	 *
-	 *      @param [in] source          The source file to be copied
+	 *      @param [in] source              The source file to be copied
 	 *      @param [in/out] target T        he directory where the file is copied to.
 	 *      @param [in/out] handledFiles    List of files that have been copied
 	 *      @param [in/out] yesToAll        Info if user has selected "yes to all" to overwrite
 	 *      @param [in/out] noToAll         Info is user has selected "No to all" to overwrite
 	 *
-	*/
-	void copyFile(QFileInfo const& source, QDir& target, fileList& handledFiles, bool& yesToAll, bool& noToAll);
+     *      @return True, if the file was copied, false otherwise.
+	 */
+    bool copyFile(QFileInfo const& source, QDir& target, fileList& handledFiles, bool& yesToAll, bool& noToAll);
 
 	/*! Connect the signals and slots that keep the data models synchronized.
 	 *
@@ -561,6 +564,28 @@ private:
 	*/
 	bool containsPath(const QString& path, const QStringList& pathsToSearch) const;
     
+    /*!
+     *  Construct the items for the export dialog.
+     *
+     *      @param [in] exportDialog    The export dialog.
+     *      @param [in] exportedVLNVs   List of VLNVs to be exported.
+     */
+    void constructItemsForExportDialog(ObjectExportDialog* exportDialog, const QList<VLNV> exportedVLNVs);
+
+    /*!
+     *  Export the selected VLNV object.
+     *
+     *      @param [in] destinationFolder   Destination folder for the export.
+     *      @param [in] vlnv                VLNV of the exported item.
+     *      @param [in] handledFiles        List of the files that have been handled.
+     *      @param [in] yesToAll            Container for yes to all status.
+     *      @param [in] noToAll             Container for no to all status.
+     *
+     *      @return True, if the selected VLNV object was exported, false otherwise.
+     */
+    bool exportSelectedVLNVObject(QDir const& destinationFolder, VLNV const& vlnv, fileList& handledFiles,
+        bool& yesToAll, bool& noToAll);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -115,6 +115,7 @@
       <file>common/graphics/generatorChain.png</file>
       <file>common/graphics/exclamation--frame.png</file>
       <file>common/graphics/paginator.png</file>
+      <file>common/graphics/export.png</file>
     </qresource>
     <qresource prefix="/">        
       <file>common/graphics/splash.png</file>

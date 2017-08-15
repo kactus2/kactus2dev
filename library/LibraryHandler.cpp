@@ -18,6 +18,8 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovemodel.h>
+#include <common/dialogs/ObjectExportDialog/ObjectExportDialog.h>
+#include <common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h>
 
 #include <IPXACTmodels/common/Document.h>
 
@@ -654,42 +656,215 @@ void LibraryHandler::onExportItems(const QList<VLNV> vlnvs )
         return;
     }
 
-    // get the current working directory and save it to be restored in the end of the function
-    QDir savedWorkingDirectory = QDir::current();
+    ObjectExportDialog* exportDialog = new ObjectExportDialog(QString(), parentWidget_);
+    QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
+    exportDialog->setStyleSheet(styleSheet);
+    constructItemsForExportDialog(exportDialog, vlnvs);
 
-    QSettings settings;
-    QString defaultPath = settings.value("Library/DefaultLocation", QDir::homePath()).toString();
-
-    // ask the target directory where the package is to be exported
-    QString targetPath = QFileDialog::getExistingDirectory(parentWidget_, tr("Select the location to export library to"),
-        defaultPath);
-
-    // if no target path was specified
-    if (targetPath.isEmpty())
+    if (exportDialog->exec() == QDialog::Rejected)
     {
         return;
     }
 
-    // create a QDir instance of the target directory
-    QDir target(targetPath);
+    // get the current working directory and save it to be restored in the end of the function
+    QDir savedWorkingDirectory = QDir::current();
 
-    // The user hasn't chosen "yes to all" or "no to all" yet
+    QString destinationPath = exportDialog->getTargetDirectory();
+
+    // create a QDir instance of the target directory
+    QDir destinationFolder(destinationPath);
+
     bool yesToAll = false;
     bool noToAll = false;
 
-    // info of copied files is stored so same file is not copied multiple times
     fileList handledFiles;
 
-    foreach (VLNV const& vlnv, vlnvs)
+    int fileCounter = 0;
+    bool fileExported = false;
+
+    foreach (ObjectSelectionListItem* exportedItem, exportDialog->getSelectedItems())
     {
-        // invalid vlnvs are not exported
-        if (vlnv.isValid())
+        if (exportedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
         {
-            copyFiles(target, vlnv, handledFiles, yesToAll, noToAll);
+            fileExported = exportSelectedVLNVObject(
+                destinationFolder, exportedItem->getVLNV(), handledFiles, yesToAll, noToAll);
+        }
+        else
+        {
+            fileExported =
+                copyFile(QFileInfo(exportedItem->getPath()), destinationFolder, handledFiles, yesToAll, noToAll);
+        }
+
+        if (!noToAll && fileExported)
+        {
+            fileCounter++;
         }
     }
 
+    QString exportMessage =
+            QString("Exported %1 files to %2.").arg(QString::number(fileCounter)).arg(destinationPath);
+
+    emit noticeMessage(exportMessage);
+
     QDir::setCurrent(savedWorkingDirectory.absolutePath());
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::constructItemsForExportDialog()
+//-----------------------------------------------------------------------------
+void LibraryHandler::constructItemsForExportDialog(ObjectExportDialog* exportDialog,
+    const QList<VLNV> exportedVLNVs)
+{
+    foreach (VLNV const& exportVLNV, exportedVLNVs)
+    {
+        if (!exportVLNV.isValid())
+        {
+            continue;
+        }
+
+        // if the vlnv is not found in the library
+        if (!data_->contains(exportVLNV))
+        {
+            objects_.remove(exportVLNV);
+            objectValidity_.remove(exportVLNV);
+            continue;
+        }
+
+        exportDialog->createItem(exportVLNV.toString(), exportVLNV, true);
+
+        VLNV::IPXactType vlnvType = data_->getType(exportVLNV);
+        if (vlnvType == VLNV::COMPONENT)
+        {
+            QSharedPointer<const Component> componentToRemove =
+                getModelReadOnly(exportVLNV).staticCast<const Component>();
+
+            foreach (VLNV const& ref, componentToRemove->getHierRefs())
+            {
+                if (data_->contains(ref))
+                {
+                    exportDialog->createItem(ref.toString(), ref);
+
+                    if (data_->getType(ref) == VLNV::DESIGNCONFIGURATION)
+                    {
+                        QSharedPointer<const DesignConfiguration> desConf =
+                            getModelReadOnly(ref).staticCast<const DesignConfiguration>();
+
+                        VLNV designVLNV = desConf->getDesignRef();
+                        if (data_->contains(designVLNV))
+                        {
+                            exportDialog->createItem(designVLNV.toString(), designVLNV);
+                        }
+                    }
+                }
+            }
+
+            // ask the component for all it's file references.
+            QStringList componentFiles;
+            foreach (QSharedPointer<FileSet> fileset, *componentToRemove->getFileSets())
+            {
+                componentFiles.append(fileset->getFileNames());
+            }
+
+            QString componentPath = data_->getPath(exportVLNV);
+            foreach (QString const& relativeFilePath, componentFiles)
+            {
+                QString absoluteFilePath = General::getAbsolutePath(componentPath, relativeFilePath);
+                if (!absoluteFilePath.isEmpty())
+                {
+                    exportDialog->createItem(absoluteFilePath);
+                }
+            }
+        }
+
+        else if (vlnvType == VLNV::DESIGNCONFIGURATION)
+        {
+            QSharedPointer<const DesignConfiguration> desConf =
+                getModelReadOnly(exportVLNV).staticCast<const DesignConfiguration>();
+
+            VLNV designVLNV = desConf->getDesignRef();
+            if (data_->contains(designVLNV))
+            {
+                exportDialog->createItem(designVLNV.toString(), designVLNV);
+            }
+        }
+
+        else if (vlnvType == VLNV::BUSDEFINITION)
+        {
+            QList<VLNV> absDefVLNVs;
+            hierarchyModel_->getChildren(absDefVLNVs, exportVLNV);
+
+            // If a bus definition is removed then ask to remove all it's abstraction definitions also.
+            foreach (VLNV const& absDefVLNV, absDefVLNVs)
+            {
+                if (data_->contains(absDefVLNV))
+                {
+                    exportDialog->createItem(absDefVLNV.toString(), absDefVLNV);
+                }
+            }
+        }
+
+        else if (vlnvType == VLNV::ABSTRACTIONDEFINITION)
+        {
+            QSharedPointer<const AbstractionDefinition> absDef =
+                getModelReadOnly(exportVLNV).staticCast<const AbstractionDefinition>();
+
+            VLNV busDefVLNV = absDef->getBusType();
+            if (data_->contains(busDefVLNV))
+            {
+                QList<VLNV> absDefVLNVs;
+                hierarchyModel_->getChildren(absDefVLNVs, busDefVLNV);
+
+                // if theres only this abs def for the bus def
+                if (absDefVLNVs.size() == 1 && absDefVLNVs.first() == exportVLNV)
+                {
+                    exportDialog->createItem(busDefVLNV.toString(), busDefVLNV);
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::exportSelectedVLNVObject()
+//-----------------------------------------------------------------------------
+bool LibraryHandler::exportSelectedVLNVObject(QDir const& destinationFolder, VLNV const& vlnv,
+    fileList& handledFiles, bool& yesToAll, bool& noToAll)
+{
+    QSharedPointer<Document> document = getModel(vlnv);
+    if (!document)
+    {
+        return false;
+    }
+
+    QDir savedWorkingDir = QDir::current();
+
+    QDir::setCurrent(destinationFolder.absolutePath());
+    QDir vlnvTargetDirectory;
+
+    QString directoryPath = vlnv.toString("/");
+    if (!vlnvTargetDirectory.mkpath(directoryPath))
+    {
+        emit errorMessage(tr("Could not create directory structure, aborting."));
+        QDir::setCurrent(savedWorkingDir.absolutePath());
+        return false;
+    }
+
+    vlnvTargetDirectory.setPath(directoryPath);
+
+    QString documentPath = data_->getPath(vlnv);
+    if (documentPath.isEmpty())
+    {
+        QDir::setCurrent(savedWorkingDir.absolutePath());
+        return false;
+    }
+    QFileInfo documentFileInfo(documentPath);
+
+    QDir sourceDirectory(documentFileInfo.absoluteDir());
+
+    bool fileWasExported = copyFile(documentFileInfo, vlnvTargetDirectory, handledFiles, yesToAll, noToAll);
+
+    QDir::setCurrent(savedWorkingDir.absolutePath());
+    return fileWasExported;
 }
 
 //-----------------------------------------------------------------------------
@@ -1348,20 +1523,19 @@ void LibraryHandler::copyFiles(QStringList const& files, QDir& sourceDir, QDir& 
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::copyFile()
 //-----------------------------------------------------------------------------
-void LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& handledFiles, bool& yesToAll,
+bool LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& handledFiles, bool& yesToAll,
     bool& noToAll)
 {
-	// if the source file has already been handled previously within this copy operation.
 	if (handledFiles.contains(source))
     {
-		return;
+        return false;
 	}
 
 	// if the source doesn't exist
 	if (!source.exists())
     {
 		emit errorMessage(tr("Could not find file: %1").arg(source.fileName()));
-		return;
+        return false;
 	}
 
 	// save the current directory to be restored at the end of the function
@@ -1397,7 +1571,7 @@ void LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& h
         {
 			// restore the current directory to the state it was before this function
 			QDir::setCurrent(savedCurrentDir.absolutePath());
-			return;
+            return false;
 		}
 
 		else if (answer == QMessageBox::YesToAll)
@@ -1413,7 +1587,7 @@ void LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& h
 
 			// restore the current directory to the state it was before this function
 			QDir::setCurrent(savedCurrentDir.absolutePath());
-			return;
+            return false;
 		}
 
 		if (answer == QMessageBox::Yes || answer == QMessageBox::YesToAll)
@@ -1432,6 +1606,8 @@ void LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& h
 
 	// restore the current directory to the state it was before this function
 	QDir::setCurrent(savedCurrentDir.absolutePath());
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

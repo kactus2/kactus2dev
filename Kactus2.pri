@@ -101,6 +101,9 @@ HEADERS += ./VersionHelper.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
+    ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
+    ./common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
+    ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/ExitScreen.h \
     ./mainwindow/NewWorkspaceDialog.h \
@@ -733,6 +736,10 @@ SOURCES += ./VersionHelper.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
+    ./common/dialogs/ObjectExportDialog/ObjectExportDialog.cpp \
+    ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.cpp \
+    ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.cpp \
+    ./common/validators/AddressValidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
