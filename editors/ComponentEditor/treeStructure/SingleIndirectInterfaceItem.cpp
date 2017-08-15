@@ -9,7 +9,8 @@
 #include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
-//#include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
+
+#include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: SingleIndirectInterfaceItem::SingleIndirectInterfaceItem()
@@ -20,13 +21,13 @@ SingleIndirectInterfaceItem::SingleIndirectInterfaceItem(QSharedPointer<Indirect
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser,
-  //  QSharedPointer<IndirectInterfaceValidator> validator,
+    QSharedPointer<IndirectInterfaceValidator> validator,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
-    busif_(busif),
+    indirectInterface_(busif),
     parentWnd_(parentWnd),
-    expressionParser_(expressionParser)
-//    validator_(validator)
+    expressionParser_(expressionParser),
+    validator_(validator)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -45,7 +46,7 @@ SingleIndirectInterfaceItem::~SingleIndirectInterfaceItem()
 //-----------------------------------------------------------------------------
 QString SingleIndirectInterfaceItem::text() const
 {
-	return busif_->name();
+	return indirectInterface_->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -53,8 +54,7 @@ QString SingleIndirectInterfaceItem::text() const
 //-----------------------------------------------------------------------------
 bool SingleIndirectInterfaceItem::isValid() const
 {
- 
-	return true;
+	return validator_->validate(indirectInterface_);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +64,8 @@ ItemEditor* SingleIndirectInterfaceItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new SingleIndirectInterfaceEditor(busif_, component_, libHandler_, parentWnd_);
+		editor_ = new SingleIndirectInterfaceEditor(indirectInterface_, validator_, component_, libHandler_, 
+            parameterFinder_, expressionFormatter_,  parentWnd_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

@@ -26,7 +26,7 @@ LibraryItem::LibraryItem(QObject* parent): QObject(parent),
     childItems_(),
     parentItem_(0),
     vlnv_(),
-    valid_(false)
+    valid_(true)
 {
 }
 
@@ -40,7 +40,7 @@ QObject(parent),
     childItems_(), 
     parentItem_(parent),
     vlnv_(),
-    valid_(false)
+    valid_(true)
 {
 	// Choose name for the item in the tree.
 	if (level == VENDOR)

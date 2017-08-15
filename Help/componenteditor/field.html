@@ -23,6 +23,8 @@
     <p>
         <b>Description</b> is an optional field for textual description of the <i>field</i>.
     </p>
+
+    <h3>Field definition</h3>
     <p>
         <b>Offset</b> is mandatory and describes the starting bit of the <i>field</i> within
         the containing <i>register</i>.
@@ -49,6 +51,12 @@
         values e.g. 'b1011, 4'b1011, and 4'b10_11 are all valid values. The number of bits
         must be equal to the <i>field</i> size.
     </p>
+    <p>
+        <b>Field ID</b> is optional identifier for the <i>field</i>. Fields can be referenced
+        in <i>indirect interfaces</i> using this identifier.
+    </p>
+
+    <h3>Field constraints</h3>
     <p>
         <b>Volatile</b> is optional and indicates that the <i>field</i> may change its value
         without write operations.

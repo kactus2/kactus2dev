@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
@@ -32,6 +33,7 @@
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
 
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/Component/validators/ChannelValidator.h>
 #include <IPXACTmodels/Component/validators/RemapStateValidator.h>
@@ -61,6 +63,7 @@
 ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library):
 component_(),
 busInterfaceValidator_(),
+indirectInterfaceValidator_(),
 channelValidator_(),
 remapStateValidator_(),
 addressSpaceValidator_(),
@@ -89,6 +92,9 @@ assertionValidator_()
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
         QSharedPointer<QList<QSharedPointer<RemapState> > > (), portMapvalidator, parameterValidator_, library));
+
+    indirectInterfaceValidator_ = QSharedPointer<IndirectInterfaceValidator>(
+        new IndirectInterfaceValidator(component_, parser, parameterValidator_));
 
     channelValidator_ = QSharedPointer<ChannelValidator>(
         new ChannelValidator(parser, QSharedPointer<QList<QSharedPointer<BusInterface> > > ()));
@@ -151,7 +157,8 @@ bool ComponentValidator::validate(QSharedPointer<Component> component)
 {
     changeComponent(component);
 
-    return hasValidVLNV(component) && hasValidBusInterfaces(component) && hasValidChannels(component) &&
+    return hasValidVLNV(component) && hasValidBusInterfaces(component) && 
+        hasValidIndirectInterfaces(component) && hasValidChannels(component) &&
         hasValidRemapStates(component) && hasValidAddressSpaces(component) && hasValidMemoryMaps(component) &&
         hasValidViews(component) && hasValidComponentInstantiations(component) &&
         hasValidDesignInstantiations(component) && hasValidDesignConfigurationInstantiations(component) &&
@@ -175,20 +182,38 @@ bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> compone
 {
     changeComponent(component);
 
-    if (!component->getBusInterfaces()->isEmpty())
+    QVector<QString> busInterfaceNames;
+    foreach (QSharedPointer<BusInterface> bus, *component->getBusInterfaces())
     {
-        QVector<QString> busInterfaceNames;
-        foreach (QSharedPointer<BusInterface> bus, *component->getBusInterfaces())
+        if (busInterfaceNames.contains(bus->name()) || !busInterfaceValidator_->validate(bus))
         {
-            if (busInterfaceNames.contains(bus->name()) || !busInterfaceValidator_->validate(bus))
-            {
-                return false;
-            }
-            else
-            {
-                busInterfaceNames.append(bus->name());
-            }
+            return false;
         }
+        
+        busInterfaceNames.append(bus->name());
+    }
+
+    return true;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidIndirectInterfaces()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidIndirectInterfaces(QSharedPointer<Component> component)
+{
+    changeComponent(component);
+
+    QVector<QString> interfaceNames;
+    foreach (QSharedPointer<IndirectInterface> indirectInterface, *component->getIndirectInterfaces())
+    {
+        if (interfaceNames.contains(indirectInterface->name()) || 
+            !indirectInterfaceValidator_->validate(indirectInterface))
+        {
+            return false;
+        }
+
+        interfaceNames.append(indirectInterface->name());
     }
 
     return true;
@@ -621,6 +646,7 @@ void ComponentValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<C
 
     findErrorsInVLNV(errors, component);
     findErrorsInBusInterface(errors, component, context);
+    findErrorsInIndirectInterfaces(errors, component, context);
     findErrorsInChannels(errors, component, context);
     findErrorsInRemapStates(errors, component, context);
     findErrorsInAddressSpaces(errors, component, context);
@@ -669,6 +695,27 @@ void ComponentValidator::findErrorsInBusInterface(QVector<QString>& errors, QSha
             busInterfaceNames.append(bus->name());
             busInterfaceValidator_->findErrorsIn(errors, bus, context);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInIndirectInterfaces(QVector<QString>& errors, QSharedPointer<Component> component, QString const& context)
+{
+    QVector<QString> interfaceNames;
+    QVector<QString> duplicateNames;
+    foreach (QSharedPointer<IndirectInterface> indirectInterface, *component->getIndirectInterfaces())
+    {
+        if (interfaceNames.contains(indirectInterface->name()) && !duplicateNames.contains(indirectInterface->name()))
+        {
+            errors.append(QObject::tr("Indirect interface name '%1' within %2 is not unique.").arg(
+                indirectInterface->name()).arg(context));
+            duplicateNames.append(indirectInterface->name());
+        }
+
+        interfaceNames.append(indirectInterface->name());
+        indirectInterfaceValidator_->findErrorsIn(errors, indirectInterface, context);
     }
 }
 
@@ -1084,6 +1131,7 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         busInterfaceValidator_->componentChange(newComponent->getChoices(), newComponent->getViews(),
             newComponent->getPorts(), newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
             newComponent->getBusInterfaces(), newComponent->getFileSets(), newComponent->getRemapStates());
+        indirectInterfaceValidator_->componentChange(newComponent);
         parameterValidator_->componentChange(newComponent->getChoices());
         channelValidator_->componentChange(newComponent->getBusInterfaces());
         remapStateValidator_->componentChange(newComponent->getPorts());

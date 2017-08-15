@@ -34,6 +34,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TransparentBridge.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
@@ -2212,8 +2213,8 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestBridgeComponen
         bridgeSlaveInterface->setMemoryMapRef(bridgeReference);
     }
 
-    QSharedPointer<SlaveInterface::Bridge> bridge(new SlaveInterface::Bridge());
-    bridge->masterRef_ = bridgeMasterBus->name();
+    QSharedPointer<TransparentBridge> bridge(new TransparentBridge());
+    bridge->setMasterRef(bridgeMasterBus->name());
     //bridge->opaque_ = bridgeIsOpaque;
 
     bridgeSlaveInterface->getBridges()->append(bridge); // setBridges(slaveInterfaceBridges);

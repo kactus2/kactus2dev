@@ -31,6 +31,13 @@ public:
 	//! The destructor.
 	virtual ~ReferenceSelector();
 
+    /*!
+     *  Sets the color of the text of the current text.
+     *
+     *      @param [in] color   The color to set.
+     */
+    void setTextColor(QColor const& color);
+
 public slots:
 
 	//! Refresh the items to be selected in the combo box.
@@ -70,12 +77,6 @@ private:
 	//! No assignment
 	ReferenceSelector& operator=(const ReferenceSelector& other);
 
-    /*!
-     *  Sets the color of the text of the current text.
-     *
-     *      @param [in] color   The color to set.
-     */
-    void setTextColor(QColor const& color);
 };
 
 #endif // REFERENCESELECTOR_H

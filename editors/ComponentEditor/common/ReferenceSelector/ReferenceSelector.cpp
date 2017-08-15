@@ -32,6 +32,16 @@ ReferenceSelector::~ReferenceSelector()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ReferenceSelector::setTextColor()
+//-----------------------------------------------------------------------------
+void ReferenceSelector::setTextColor(QColor const& color)
+{
+    QPalette coloredPalette = palette();
+    coloredPalette.setColor(QPalette::Text, color);
+    setPalette(coloredPalette);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ReferenceSelector::refresh()
 //-----------------------------------------------------------------------------
 void ReferenceSelector::refresh(QStringList const& itemNames)
@@ -97,16 +107,6 @@ void ReferenceSelector::onIndexChange(int newIndex)
 	// find the text for the index
 	QString text = itemText(newIndex);
 	emit itemSelected(text);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ReferenceSelector::setTextColor()
-//-----------------------------------------------------------------------------
-void ReferenceSelector::setTextColor(QColor const& color)
-{
-    QPalette coloredPalette = palette();
-    coloredPalette.setColor(QPalette::Text, color);
-    setPalette(coloredPalette);
 }
 
 //-----------------------------------------------------------------------------

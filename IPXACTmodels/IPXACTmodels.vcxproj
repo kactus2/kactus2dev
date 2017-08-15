@@ -293,6 +293,7 @@
     <ClCompile Include="Component\validators\FieldValidator.cpp" />
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
     <ClCompile Include="Component\validators\FileValidator.cpp" />
+    <ClCompile Include="Component\validators\IndirectInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
     <ClCompile Include="Component\validators\PortMapValidator.cpp" />
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
@@ -2140,6 +2141,7 @@
     <ClInclude Include="Component\validators\FieldValidator.h" />
     <ClInclude Include="Component\validators\FileSetValidator.h" />
     <ClInclude Include="Component\validators\FileValidator.h" />
+    <ClInclude Include="Component\validators\IndirectInterfaceValidator.h" />
     <ClInclude Include="Component\validators\InstantiationsValidator.h" />
     <ClInclude Include="Component\validators\PortMapValidator.h" />
     <ClInclude Include="Component\validators\OtherClockDriverValidator.h" />

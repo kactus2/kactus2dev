@@ -55,9 +55,7 @@
 	  <p>
 	
 	  <b>Description</b> is an optional field for textual description of the memory map.
-	 <br />
-      <img src="../images/mem_map.png" alt="mem map's idea">
-    </p>
+
     <h3>Memory remap</h3>
     <p>
       <b>Name</b> is a mandatory identifier for the memory remap.</p><p>
@@ -78,11 +76,21 @@
       <li>Remove memory map (Remove row)</li>
       <li>Clear the selected cells</li>
       <li>Copy the contents of the selected cells to clipboard</li>
-      <li>Paste the contents of the clipboard to the selected cells</li>
-	  <li>Copy selected element to clipboard (Copy elements)</li>
-	  <li>Paste the element from the clipboard along with its sub-elements (Paste elements)</li>	  
+      <li>Paste the contents of the clipboard to the selected cells</li> 
+      <li>Copy selected element to clipboard (Copy elements)</li>
+      <li>Paste the element from the clipboard along with its sub-elements (Paste elements)</li>	  
       <li>Import a csv-file to the editor</li>
       <li>Export the contents of the editor to a csv-file</li>
-    </ul>
+    </ul>  
+
+    <hr>
+    <p> 
+      EXAMPLE. Component AccelA has two memory maps MM0 and MM1 that are accessible through
+      bus interface RegsIF. MM0 defines the hardware registers for read/write operations and
+      MM1 provides a random-access memory block.
+    </p>
+    <p>
+      <img src="../images/mem_map.png" alt="mem map's idea">
+    </p>
   </body>
 </html>

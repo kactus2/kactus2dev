@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="../style.css" rel="Stylesheet" type="text/css" />
+    <title>Field editor</title>
+</head>
+<body>
+    <h2>Indirect interfaces editor</h2>
+
+    <p>
+      Indirect interfaces editor contains the summary of the <i>indirect interfaces</i>
+      of the component. An <i>indirect interface</i> is used to define access to
+      <i>memory maps</i> that are not directly accessible through a <i>bus interface</i>.
+      This editor can be used to add and remove indirect interfaces to the containing component. 
+    </p>
+
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>indirect interface</i>. The name must be unique
+        within all the <i>indirect interface</i> of the containing <i>component</i>.
+    </p>
+    <p>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+        <b>Indirect address field</b> is mandatory and defines the bit field used for
+        addressing in the <i>indirect interface</i>.
+    </p>
+    <p>
+        <b>Indirect data field</b> is mandatory and defines the bit field used for
+        data in read/write operations in the <i>indirect interface</i>.
+    </p>
+    <p>
+        <b>Memory map</b> defines the indirectly accessible <i>memory map</i> for     
+        the <i>indirect interface</i>. If a <i>memory map</i> has been defined,
+        <i>transparent bridges</i> must be left empty.
+    </p>
+    <p>
+        <b>Transparent bridges</b> define the master <i>bus interface(s)</i> that
+        all transactions through this <i>indirect interface</i> are directed out of. 
+        If <i>transparent bridges</i> have been defined, <i>memory map</i> must be left empty.
+        <i>Transparent bridges</i> are shown here, but must be edited in the 
+        editor of the respective <i>indirect interface</i>.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>indirect interface</i>.
+    </p>
+    <hr>
+    <p>
+    EXAMPLE 1. The memory map MM0 is accessible through slave bus interface accessIF.
+    Indirect interface II0 identifies bitfields data and address in registers r0 and
+    r1 which are used to access memory map MM1. The access to memory map
+    MM1 occurs at the memory location defined by the content of the address field and
+    the content of the field data is either written into register r6 in a write operation
+    or read from r6 into field data in a read operation. 
+    <br>
+    <img src="../images/indirectMemoryMap.png" alt="addr space's idea">
+  </p>
+
+  <p>
+    EXAMPLE 2. The memory map MM0 is accessible through slave bus interface accessIF.
+    Indirect interface II0 identifies bitfields data and address in registers r0 and
+    r1 which are used to access other components through master bus interface outIF.       
+    <br>
+    <img src="../images/indirectBridge.png" alt="addr space's idea">
+  </p>
+  
+</body>
+</html>

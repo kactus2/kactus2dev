@@ -42,7 +42,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
-        //QSharedPointer<IndirectInterfaceValidator> validator,
+        QSharedPointer<IndirectInterfaceValidator> validator,
 		ComponentEditorItem* parent,
         QWidget* parentWnd);
 
@@ -81,7 +81,7 @@ private:
 	SingleIndirectInterfaceItem& operator=(const SingleIndirectInterfaceItem& other);
 
 	//! The bus interface being edited.
-	QSharedPointer<IndirectInterface> busif_;
+	QSharedPointer<IndirectInterface> indirectInterface_;
 
 	//! The parent window.
 	QWidget* parentWnd_;
@@ -89,7 +89,8 @@ private:
     //! The expression parse used to form the results of the expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-  //  QSharedPointer<IndirectInterfaceValidator> validator_;
+    //! The validator for indirect interfaces.
+    QSharedPointer<IndirectInterfaceValidator> validator_;
 };
 
 #endif // SingleIndirectInterfaceItem_H

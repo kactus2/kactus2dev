@@ -11,6 +11,9 @@
 
 #include "SingleIndirectInterfaceEditor.h"
 
+#include <common/KactusColors.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
+
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 #include <editors/ComponentEditor/busInterfaces/general/bridgeseditor.h>
 
@@ -31,13 +34,21 @@
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Field.h>
 
+#include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor()
 //-----------------------------------------------------------------------------
 SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor(
-    QSharedPointer<IndirectInterface> indirectInterface, QSharedPointer<Component> component,
-    LibraryInterface* library, QWidget* parent): ItemEditor(component, library, parent),
+    QSharedPointer<IndirectInterface> indirectInterface,
+    QSharedPointer<IndirectInterfaceValidator> validator,
+    QSharedPointer<Component> component,
+    LibraryInterface* library,
+    QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionFormatter> formatter,
+    QWidget* parent):
+ItemEditor(component, library, parent),
     indirectInterface_(indirectInterface),
+    validator_(validator),
     component_(component),
     nameEditor_(new NameGroupEditor(indirectInterface, this, tr("Indirect interface name and description"))),   
     addressSelector_(new ReferenceSelector(this)),
@@ -45,7 +56,9 @@ SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor(
     bitsInLauEditor_(new QLineEdit(this)),
     endiannessSelector_(new QComboBox(this)),
     memoryMapSelector_(new ReferenceSelector(this)),
-    transparentBridgesEditor_(new BridgesEditor(indirectInterface->getTransparentBridges(), component, this))
+    transparentBridgesEditor_(new BridgesEditor(indirectInterface->getTransparentBridges(), component, this)),
+    parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), component->getChoices(),
+        finder, formatter, this))
 {    
     addressSelector_->setProperty("mandatoryField", true);
     dataSelector_->setProperty("mandatoryField", true);
@@ -64,6 +77,7 @@ SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor(
     
     connect(nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));   
     connect(transparentBridgesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+    connect(parametersEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 }
 
 //-----------------------------------------------------------------------------
@@ -85,10 +99,12 @@ void SingleIndirectInterfaceEditor::refresh()
 
     addressSelector_->refresh(referenceList);
     addressSelector_->selectItem(indirectInterface_->getIndirectAddressRef());
+    setAddressReferenceColorByValidity();
 
     dataSelector_->refresh(referenceList);
     dataSelector_->selectItem(indirectInterface_->getIndirectDataRef());
-    
+    setDataReferenceColorByValidity();
+
     bitsInLauEditor_->setText(indirectInterface_->getBitsInLau());
     
     endiannessSelector_->setCurrentIndex(endiannessSelector_->findText(indirectInterface_->getEndianness()));
@@ -112,6 +128,8 @@ void SingleIndirectInterfaceEditor::showEvent(QShowEvent* event)
 void SingleIndirectInterfaceEditor::onIndirectAddressChanged()
 {
     indirectInterface_->setIndirectAddressRef(addressSelector_->currentText());
+    setAddressReferenceColorByValidity();
+
     emit contentChanged();
 }
 
@@ -121,6 +139,8 @@ void SingleIndirectInterfaceEditor::onIndirectAddressChanged()
 void SingleIndirectInterfaceEditor::onIndirectDataChanged()
 {
     indirectInterface_->setIndirectDataRef(dataSelector_->currentText());
+    setDataReferenceColorByValidity();
+
     emit contentChanged();
 }
 
@@ -148,7 +168,54 @@ void SingleIndirectInterfaceEditor::onEndiannessChanged()
 void SingleIndirectInterfaceEditor::onMemoryMapChanged()
 {
     indirectInterface_->setMemoryMapRef(memoryMapSelector_->currentText());
+    setMemoryMapColorByValidity();
+
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleIndirectInterfaceEditor::setAddressReferenceColorByValidity()
+//-----------------------------------------------------------------------------
+void SingleIndirectInterfaceEditor::setAddressReferenceColorByValidity()
+{
+    if (validator_->hasValidAddressReference(indirectInterface_))
+    {
+        addressSelector_->setTextColor(KactusColors::REGULAR_TEXT);
+    }
+    else
+    {
+        addressSelector_->setTextColor(KactusColors::ERROR);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleIndirectInterfaceEditor::setDataReferenceColorByValidity()
+//-----------------------------------------------------------------------------
+void SingleIndirectInterfaceEditor::setDataReferenceColorByValidity()
+{
+    if (validator_->hasValidDataReference(indirectInterface_))
+    {
+        dataSelector_->setTextColor(KactusColors::REGULAR_TEXT);
+    }
+    else
+    {
+        dataSelector_->setTextColor(KactusColors::ERROR);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleIndirectInterfaceEditor::setMemoryMapColorByValidity()
+//-----------------------------------------------------------------------------
+void SingleIndirectInterfaceEditor::setMemoryMapColorByValidity()
+{
+    if (validator_->hasValidMemoryMapReference(indirectInterface_))
+    {
+        memoryMapSelector_->setTextColor(KactusColors::REGULAR_TEXT);
+    }
+    else
+    {
+        memoryMapSelector_->setTextColor(KactusColors::ERROR);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -220,6 +287,7 @@ void SingleIndirectInterfaceEditor::setupLayout()
     topLayout->addWidget(nameEditor_, 0, 0, 1, 1);
     topLayout->addWidget(detailsGroup, 1, 0, 1, 1);
     topLayout->addWidget(memoryBox, 0, 1, 2, 1);
+    topLayout->addWidget(parametersEditor_, 2, 0, 1, 2);
     topLayout->setRowStretch(2, 10);
     scrollArea->setWidget(topWidget);
 }

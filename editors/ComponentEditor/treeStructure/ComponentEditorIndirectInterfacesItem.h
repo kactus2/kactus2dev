@@ -111,7 +111,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! Validator for bus interfaces.
-    //QSharedPointer<IndirectInterfaceValidator> validator_;
+    QSharedPointer<IndirectInterfaceValidator> validator_;
 };
 
 #endif // COMPONENTEDITOR_INDIRECT_INTERFACES_ITEM_H

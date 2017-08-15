@@ -252,7 +252,8 @@ HEADERS += ./XmlUtils.h \
     ./Component/IndirectInterface.h \
     ./Component/IndirectInterfaceReader.h \
     ./Component/TransparentBridge.h \
-    ./Component/IndirectInterfaceWriter.h
+    ./Component/IndirectInterfaceWriter.h \
+    ./Component/validators/IndirectInterfaceValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -495,4 +496,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/IndirectInterface.cpp \
     ./Component/IndirectInterfaceReader.cpp \
     ./Component/TransparentBridge.cpp \
-    ./Component/IndirectInterfaceWriter.cpp
+    ./Component/IndirectInterfaceWriter.cpp \
+    ./Component/validators/IndirectInterfaceValidator.cpp

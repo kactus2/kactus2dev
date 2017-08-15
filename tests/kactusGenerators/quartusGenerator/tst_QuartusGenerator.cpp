@@ -13,8 +13,9 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
@@ -33,12 +34,22 @@ namespace
     const QString SETTINGSFILE = ".qsf";
 };
 
-class tst_QuartusGenerator : public QObject
+class tst_QuartusGenerator : public QObject, public IPluginUtility
 {
     Q_OBJECT
 
 public:
     tst_QuartusGenerator();
+
+    virtual void printError(QString const& message);
+
+    virtual void printInfo(QString const& message);
+
+    virtual LibraryInterface* getLibraryInterface();
+
+    virtual QWidget* getParentWidget();
+
+    virtual QString getKactusVersion() const;
 
 private slots:
 
@@ -54,6 +65,7 @@ private slots:
 
     void testGeneratorWithConfiguredViews();
     void testGeneratorInInstancesWithoutActiveViews();
+
 
 private:
 
@@ -79,7 +91,7 @@ private:
         QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances);
 
     void setFileTypesForFileSet(QSharedPointer<FileSet> selectedFileset, QSharedPointer<QStringList> fileTypes);
-
+ 
     QSharedPointer<Component> topComponent_;
 
     LibraryMock library_;
@@ -108,6 +120,46 @@ tst_QuartusGenerator::tst_QuartusGenerator():
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_QuartusGenerator::printError()
+//-----------------------------------------------------------------------------
+void tst_QuartusGenerator::printError(QString const& message)
+{
+        // TODO.
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_QuartusGenerator::printInfo()
+//-----------------------------------------------------------------------------
+void tst_QuartusGenerator::printInfo(QString const& message)
+{
+    // TODO.
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_QuartusGenerator::getLibraryInterface()
+//-----------------------------------------------------------------------------
+LibraryInterface* tst_QuartusGenerator::getLibraryInterface()
+{
+    return &library_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_QuartusGenerator::getParentWidget()
+//-----------------------------------------------------------------------------
+QWidget* tst_QuartusGenerator::getParentWidget()
+{
+    return generatorParentWidget_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_QuartusGenerator::getKactusVersion()
+//-----------------------------------------------------------------------------
+QString tst_QuartusGenerator::getKactusVersion() const
+{
+    return QString();
+}
+
+    //-----------------------------------------------------------------------------
 // Function: tst_QuartusGenerator::initTestCase()
 //-----------------------------------------------------------------------------
 void tst_QuartusGenerator::initTestCase()
@@ -130,7 +182,7 @@ void tst_QuartusGenerator::init()
 {
     library_.clear();
 
-    quartusGenerator_ = new QuartusGenerator(&library_, generatorParentWidget_);
+    quartusGenerator_ = new QuartusGenerator(targetPath_, this);
 
     topComponent_ = createTestComponent("topComponent");
 

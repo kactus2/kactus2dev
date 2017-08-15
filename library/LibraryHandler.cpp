@@ -1239,6 +1239,9 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
     // make sure the model is parsed again next time to make all changes available
     objects_.remove(vlnv);
     objectValidity_.remove(vlnv);
+    
+    treeModel_->onDocumentUpdated(vlnv);
+    hierarchyModel_->onDocumentUpdated(vlnv);
 }
 
 //-----------------------------------------------------------------------------

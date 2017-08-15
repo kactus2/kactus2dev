@@ -9,8 +9,8 @@
 // Validator for ipxact:Channel.
 //-----------------------------------------------------------------------------
 
-#ifndef ChannelVALIDATOR_H
-#define ChannelVALIDATOR_H
+#ifndef CHANNELVALIDATOR_H
+#define CHANNELVALIDATOR_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -108,4 +108,4 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 };
 
-#endif // SYSTEMVERILOGVALIDATOR_H
+#endif // CHANNELVALIDATOR_H

@@ -22,10 +22,17 @@
 
 class BridgesEditor;
 class Component;
+class ExpressionFormatter;
 class LibraryInterface;
 class IndirectInterface;
+class IndirectInterfaceValidator;
 class ReferenceSelector;
+class ParameterGroupBox;
+class ParameterFinder;
 
+//-----------------------------------------------------------------------------
+//! 
+//-----------------------------------------------------------------------------
 class SingleIndirectInterfaceEditor : public ItemEditor
 {
     Q_OBJECT
@@ -33,7 +40,10 @@ public:
 
 	//! The constructor.
     SingleIndirectInterfaceEditor(QSharedPointer<IndirectInterface> indirectInterface,
-        QSharedPointer<Component> component, LibraryInterface* library, QWidget* parent);
+        QSharedPointer<IndirectInterfaceValidator> validator,
+        QSharedPointer<Component> component, LibraryInterface* library, 
+            QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionFormatter> formatter,
+            QWidget* parent);
 
 	//! The destructor.
 	virtual ~SingleIndirectInterfaceEditor();
@@ -47,7 +57,6 @@ protected:
 private slots:
 
     void onIndirectAddressChanged();
-
     void onIndirectDataChanged();
 
     void onBitsInLauChanged();
@@ -62,7 +71,12 @@ private:
 	SingleIndirectInterfaceEditor(SingleIndirectInterfaceEditor const& rhs);    
     SingleIndirectInterfaceEditor& operator=(SingleIndirectInterfaceEditor const& rhs);
 
-   
+    void setAddressReferenceColorByValidity();
+
+    void setDataReferenceColorByValidity();
+
+    void setMemoryMapColorByValidity();
+
     QStringList findAvailableReferences() const;
 
     void setupLayout();
@@ -73,6 +87,8 @@ private:
 
     QSharedPointer<IndirectInterface> indirectInterface_;
     
+    QSharedPointer<IndirectInterfaceValidator> validator_;
+
     QSharedPointer<Component> component_;
 
     NameGroupEditor* nameEditor_;
@@ -88,6 +104,8 @@ private:
     ReferenceSelector* memoryMapSelector_;
 
     BridgesEditor* transparentBridgesEditor_;
+
+    ParameterGroupBox* parametersEditor_;
 };
 
 #endif // SINGLEINDRECTINTERFACEEDITOR_H
