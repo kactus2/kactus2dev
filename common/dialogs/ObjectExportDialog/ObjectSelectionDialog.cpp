@@ -39,7 +39,7 @@ abstractorIcon_(":icons/common/graphics/connect.png"),
 catalogIcon_(":icons/common/graphics/catalog.png"),
 comDefinitionIcon_(":icons/common/graphics/new-com_definition.png"),
 apiDefinitionIcon_(":icons/common/graphics/new-api_definition.png"),
-fileIcon_(":icons/common/graphics/settings-file_types.png")
+fileIcon_(":icons/common/graphics/file.png")
 {
     okButton_.setIcon(QIcon(okIconPath));
     checkAllBox_.setChecked(true);
