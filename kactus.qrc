@@ -116,6 +116,9 @@
       <file>common/graphics/exclamation--frame.png</file>
       <file>common/graphics/paginator.png</file>
       <file>common/graphics/export.png</file>
+      <file>common/graphics/export_small.png</file>
+      <file>common/graphics/delete.png</file>
+      <file>common/graphics/file.png</file>
     </qresource>
     <qresource prefix="/">        
       <file>common/graphics/splash.png</file>

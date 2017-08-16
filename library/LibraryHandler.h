@@ -38,7 +38,8 @@ class Document;
 class LibraryItem;
 class TableViewDialog;
 
-class ObjectExportDialog;
+class ObjectSelectionDialog;
+class ObjectSelectionListItem;
 
 //-----------------------------------------------------------------------------
 //! LibraryHandler is the class that implements the services to manage the IP-XACT library.
@@ -565,12 +566,12 @@ private:
 	bool containsPath(const QString& path, const QStringList& pathsToSearch) const;
     
     /*!
-     *  Construct the items for the export dialog.
+     *  Construct the items for the selection dialog.
      *
-     *      @param [in] exportDialog    The export dialog.
-     *      @param [in] exportedVLNVs   List of VLNVs to be exported.
+     *      @param [in] exportDialog    The selection dialog.
+     *      @param [in] exportedVLNVs   List of selectable VLNVs.
      */
-    void constructItemsForExportDialog(ObjectExportDialog* exportDialog, const QList<VLNV> exportedVLNVs);
+    void constructItemsForSelectionDialog(ObjectSelectionDialog* exportDialog, const QList<VLNV> exportedVLNVs);
 
     /*!
      *  Export the selected VLNV object.
@@ -585,6 +586,38 @@ private:
      */
     bool exportSelectedVLNVObject(QDir const& destinationFolder, VLNV const& vlnv, fileList& handledFiles,
         bool& yesToAll, bool& noToAll);
+
+    /*!
+     *  Export the selected objects.
+     *
+     *      @param [in] exportedItems       The selected items to be exported.
+     *      @param [in] destinationPath     The export destination path.
+     *
+     *      @return The count of the exported items in a pair of 1. VLNVs and 2. files.
+     */
+    QPair<int, int> exportSelectedObjects(QVector<ObjectSelectionListItem*> exportedItems,
+        QString const& destinationPath);
+
+    /*!
+     *  Create the export message.
+     *
+     *      @param [in] vlnvCount           The amount of exported VLNV items.
+     *      @param [in] fileCount           The amount of exported files.
+     *      @param [in] destinationPath     The export destination.
+     *
+     *      @return The constructed export message.
+     */
+    QString createExportMessage(int vlnvCount, int fileCount, QString const& destinationPath) const;
+
+    /*!
+     *  Create the delete message.
+     *
+     *      @param [in] vlnvCount   The amount of deleted VLNV items.
+     *      @param [in] fileCount   The amount of deleted files.
+     *
+     *      @return The constructed delete message.
+     */
+    QString createDeleteMessage(int vlnvCount, int fileCount) const;
 
     //-----------------------------------------------------------------------------
     // Data.

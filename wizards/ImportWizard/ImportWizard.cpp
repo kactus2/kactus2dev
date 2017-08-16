@@ -38,6 +38,7 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     multiFinder->addFinder(notImportedFinder);
     multiFinder->addFinder(updatingFinder_);
 
+    setPixmap(QWizard::LogoPixmap, QPixmap(":icons/common/graphics/import.png"));
 	setWindowTitle(tr("Import Wizard for %1").arg(component->getVlnv().toString()));
     setWizardStyle(ModernStyle);
     resize(800, 1000);

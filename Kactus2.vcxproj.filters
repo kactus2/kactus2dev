@@ -943,9 +943,6 @@
     <ClCompile Include="common\dialogs\ObjectRemoveDialog\objectremovedialog.cpp">
       <Filter>Source Files\common\dialogs\ObjectRemoveDialog</Filter>
     </ClCompile>
-    <ClCompile Include="common\dialogs\ObjectRemoveDialog\objectremovemodel.cpp">
-      <Filter>Source Files\common\dialogs\ObjectRemoveDialog</Filter>
-    </ClCompile>
     <ClCompile Include="common\dialogs\createConfigurationDialog\createconfigurationdialog.cpp">
       <Filter>Source Files\common\dialogs\createConfigurationDialog</Filter>
     </ClCompile>
@@ -1187,9 +1184,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PropertyPageDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_objectremovemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_objectremovedialog.cpp">
@@ -4366,9 +4360,6 @@
       <Filter>Header Files\common\dialogs\newObjectDialog</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\ObjectRemoveDialog\objectremovedialog.h">
-      <Filter>Header Files\common\dialogs\ObjectRemoveDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\ObjectRemoveDialog\objectremovemodel.h">
       <Filter>Header Files\common\dialogs\ObjectRemoveDialog</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\propertyPageDialog\PropertyPageDialog.h">

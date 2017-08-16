@@ -17,18 +17,14 @@
 //-----------------------------------------------------------------------------
 // Function: ObjectExportDialog::ObjectExportDialog()
 //-----------------------------------------------------------------------------
-ObjectExportDialog::ObjectExportDialog(QString const& initialPath, QWidget* parent, Qt::WindowFlags f):
+ObjectExportDialog::ObjectExportDialog(QWidget* parent, Qt::WindowFlags f):
 ObjectSelectionDialog(tr("Export"), QStringLiteral(":icons/common/graphics/export.png"),
-    tr("Select items to be exported"), parent, f),
-folderPathEditor_(initialPath, this),
+    QStringLiteral(":icons/common/graphics/export_small.png"), tr("Select items to be exported"), parent, f),
+folderPathEditor_(QString(), this),
 folderBrowseButton_(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this),
-currentPath_(initialPath)
+currentPath_(QString())
 {
-    if (initialPath.isEmpty())
-    {
-        disableOkButton();
-    }
-
+    disableOkButton();
     setupLayout();
     connectSignals();
 }
