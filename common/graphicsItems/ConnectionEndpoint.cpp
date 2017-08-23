@@ -323,7 +323,7 @@ bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) cons
 {
     // Invalid endpoints cannot be connected to.
     // Two hierarchical endpoints cannot be connected.
-    if (isInvalid() || (isHierarchical() && other->isHierarchical()))
+    if (isInvalid() || (!isAdHoc() && isHierarchical() && other->isHierarchical()))
     {
         return false;
     }
