@@ -268,7 +268,7 @@ public slots:
     *
     *      @return Description.
     */
-    virtual void onOpenDesign(const VLNV& vlnv);
+    virtual void onOpenDesign(const VLNV& vlnv, QString const& viewName);
 
     /*!
     *  Method description.

@@ -39,7 +39,8 @@ QTreeView(parent),
     filter_(filter),
     startPos_(),
     dragIndex_(),
-    openDesignAction_(new QAction(tr("Open HW Design"), this)),
+    openHWDesignAction_(new QAction(tr("Open HW Design"), this)),
+    openHWDesignMenu_(new QMenu(tr("Open HW Design"), this)),
     openSWDesignAction_(new QAction(tr("Open SW Design"), this)),
     openMemoryDesignAction_(new QAction(tr("Open Memory Design"), this)),
     openComponentAction_(new QAction(tr("Open Component"), this)),
@@ -134,9 +135,27 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 
                 if (component->getImplementation() == KactusAttribute::HW)
                 {
-                    if (!component->getHierViews().isEmpty())
+                    QStringList hierarchicalViewNames = component->getHierViews();
+                    if (!hierarchicalViewNames.isEmpty())
                     {
-                        menu.addAction(openDesignAction_);
+                        openHWDesignMenu_->clear();
+                        
+                        foreach(QString const& viewName, hierarchicalViewNames)
+                        {
+                            openHWDesignMenu_->addAction(new QAction(viewName, openHWDesignMenu_));
+                        }
+
+                        if (hierarchicalViewNames.count() == 1)
+                        {
+                            menu.addAction(openHWDesignAction_);
+                            connect(openHWDesignAction_, SIGNAL(triggered()), 
+                                openHWDesignMenu_->actions().first(), SLOT(trigger()));
+                        }
+                        else
+                        {
+                            menu.addMenu(openHWDesignMenu_);
+                        }
+                        
                         menu.addAction(openMemoryDesignAction_);
                     }
 
@@ -369,9 +388,9 @@ void LibraryTreeView::setCurrentIndex(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeView::onOpenDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeView::onOpenDesign()
+void LibraryTreeView::onOpenDesign(QAction* viewAction)
 {
-	emit openDesign(filter_->mapToSource(currentIndex()));
+	emit openDesign(filter_->mapToSource(currentIndex()), viewAction->text());
 }
 
 //-----------------------------------------------------------------------------
@@ -590,9 +609,9 @@ void LibraryTreeView::setChildrenExpandStates(QModelIndex index, bool expanded)
 //-----------------------------------------------------------------------------
 void LibraryTreeView::setupActions()
 {
-    openDesignAction_->setStatusTip(tr("Open a HW design"));
-    openDesignAction_->setToolTip(tr("Open a HW design"));
-    connect(openDesignAction_, SIGNAL(triggered()),	this, SLOT(onOpenDesign()), Qt::UniqueConnection);
+    openHWDesignMenu_->setStatusTip(tr("Open a HW design"));
+    openHWDesignMenu_->setToolTip(tr("Open a HW design"));
+    connect(openHWDesignMenu_, SIGNAL(triggered(QAction*)),	this, SLOT(onOpenDesign(QAction*)), Qt::UniqueConnection);
 
     openSWDesignAction_->setStatusTip(tr("Open a SW design"));
     openSWDesignAction_->setToolTip(tr("Open a SW design"));

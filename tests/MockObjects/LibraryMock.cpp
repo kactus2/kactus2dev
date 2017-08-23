@@ -252,7 +252,7 @@ void LibraryMock::onEditItem(const VLNV& /*vlnv*/)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::onOpenDesign()
 //-----------------------------------------------------------------------------
-void LibraryMock::onOpenDesign(const VLNV& /*vlnv*/)
+void LibraryMock::onOpenDesign(const VLNV& /*vlnv*/,  QString const& /*viewName*/)
 {
     Q_ASSERT(false);
 }

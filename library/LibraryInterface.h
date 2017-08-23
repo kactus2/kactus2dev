@@ -239,9 +239,10 @@ public slots:
 
 	/*! Open the specified component design
 	 *
-	 *      @param [in] vlnv Identifies the component that's design is wanted
+	 *      @param [in] vlnv 		Identifies the component that's design is wanted
+	 *      @param [in] viewName 	Identifies the view for the design.
 	*/
-	virtual void onOpenDesign(VLNV const& vlnv) = 0;
+	virtual void onOpenDesign(VLNV const& vlnv, QString const& viewName) = 0;
 
 	/*! Create a new item for given vlnv.
 	 * 

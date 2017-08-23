@@ -136,7 +136,7 @@ signals:
 	void noticeMessage(const QString& message);
 
 	//! Open the design of a component.
-	void openDesign(VLNV const& vlnv);
+	void openDesign(VLNV const& vlnv, QString const& viewName);
 
 	//! Open the SW design of a component.
 	void openSWDesign(VLNV const& vlnv);
@@ -192,7 +192,7 @@ signals:
 public slots:
 
 	//! Open the selected hierarchical design
-	void onOpenDesign(QModelIndex const& index);
+	void onOpenDesign(QModelIndex const& index, QString const& viewName);
 
     //! Open the selected memory design.
     void onOpenMemoryDesign(QModelIndex const& index);
