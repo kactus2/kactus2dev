@@ -25,23 +25,25 @@
 // Function: BusIfInterfaceSlave::BusIfInterfaceSlave()
 //-----------------------------------------------------------------------------
 BusIfInterfaceSlave::BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,
-										 QSharedPointer<Component> component,
-										 QWidget *parent):
+    QSharedPointer<Component> component,
+    QWidget *parent):
 BusIfInterfaceModeEditor(busif, component, tr("Slave"), parent),
-slave_(QSharedPointer<SlaveInterface>(new SlaveInterface())),
-memoryMapReferenceSelector_(this),
-bridges_(slave_->getBridges(), component, this)
+    slave_(QSharedPointer<SlaveInterface>(new SlaveInterface())),
+    memoryMapBox_(new QGroupBox(tr("Memory map"), this)),
+    memoryMapReferenceSelector_(this),
+    bridges_(slave_->getBridges(), component, this)
 {
-	Q_ASSERT(slave_);
+    Q_ASSERT(slave_);
 
-	QHBoxLayout* memRefLayout = new QHBoxLayout();
-    memRefLayout->addWidget(new QLabel(tr("Memory map:")));
-    memRefLayout->addWidget(&memoryMapReferenceSelector_, 1);
+    memoryMapBox_->setCheckable(true);
+    bridges_.setCheckable(true);
 
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addLayout(memRefLayout);
-	topLayout->addWidget(&bridges_);
-    topLayout->addStretch();
+    setupLayout();
+
+    connect(memoryMapBox_, SIGNAL(clicked(bool)),
+        this, SLOT(onMemoryMapSelected(bool)), Qt::UniqueConnection);
+    connect(&bridges_, SIGNAL(clicked(bool)),
+        this, SLOT(onTransparentBridgeSelected(bool)), Qt::UniqueConnection);
 
 	connect(&memoryMapReferenceSelector_, SIGNAL(itemSelected(QString const&)),
 		this, SLOT(onMemoryMapChange(QString const&)), Qt::UniqueConnection);
@@ -80,14 +82,12 @@ void BusIfInterfaceSlave::refresh()
 		slave_ = QSharedPointer<SlaveInterface>(new SlaveInterface());
 	}
 
-	// update the selectable items
 	memoryMapReferenceSelector_.refresh(component_->getMemoryMapNames());
+	memoryMapReferenceSelector_.selectItem(slave_->getMemoryMapRef());
+    memoryMapBox_->setChecked(!slave_->getMemoryMapRef().isEmpty());
 
-	// select the correct memory map in the combo box
-	QString memMapRef = slave_->getMemoryMapRef();
-	memoryMapReferenceSelector_.selectItem(memMapRef);
-
-
+    bridges_.refresh(slave_->getBridges());
+    bridges_.setChecked(!slave_->getBridges()->isEmpty());
 }
 
 //-----------------------------------------------------------------------------
@@ -108,9 +108,68 @@ void BusIfInterfaceSlave::onMemoryMapChange(QString const& newMemoryMapName)
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSlave::onMemoryMapSelected()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceSlave::onMemoryMapSelected(bool checked)
+{
+    if (checked)
+    {
+        if (!slave_->getBridges()->isEmpty())
+        {
+            memoryMapBox_->setChecked(false);
+        }
+        else
+        {
+            bridges_.setChecked(false);
+        }
+    }
+    else if (!checked && !slave_->getMemoryMapRef().isEmpty())
+    {
+        memoryMapBox_->setChecked(true);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSlave::onTransparentBridgeSelected()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
+{
+    if (checked)
+    {
+        if (!slave_->getMemoryMapRef().isEmpty())
+        {
+            bridges_.setChecked(false);
+        }
+        else
+        {
+            memoryMapBox_->setChecked(false);
+        }
+    }
+    else if (!checked && !slave_->getBridges()->isEmpty())
+    {
+        bridges_.setChecked(true);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusIfInterfaceSlave::saveModeSpecific()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::saveModeSpecific()
 {
 	busif_->setSlave(slave_);
 }
+
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSlave::setupLayout()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceSlave::setupLayout()
+{
+    QHBoxLayout* memRefLayout = new QHBoxLayout(memoryMapBox_);
+    memRefLayout->addWidget(&memoryMapReferenceSelector_, 1);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addWidget(memoryMapBox_);
+    topLayout->addWidget(&bridges_);
+    topLayout->addStretch();
+}
+

@@ -630,7 +630,7 @@ void LibraryTreeModel::onOpenDocument(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeModel::onOpenDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onOpenDesign(QModelIndex const& index)
+void LibraryTreeModel::onOpenDesign(QModelIndex const& index, QString const& viewName)
 {
 	if (!index.isValid())
     {
@@ -642,7 +642,7 @@ void LibraryTreeModel::onOpenDesign(QModelIndex const& index)
 
 	if (vlnv.isValid())
     {
-		emit openDesign(vlnv);
+		emit openDesign(vlnv, viewName);
 	}
 }
 

@@ -70,16 +70,29 @@ private slots:
 	//! Handler for changes in the memory map reference.
 	void onMemoryMapChange(QString const& newMemoryMapName);
 
+    void onMemoryMapSelected(bool checked);
+
+    void onTransparentBridgeSelected(bool checked);
+
 private:
 
 	//! No copying
-	BusIfInterfaceSlave(const BusIfInterfaceSlave& other);
+	BusIfInterfaceSlave(const BusIfInterfaceSlave& other);    
 
 	//! No assignment
 	BusIfInterfaceSlave& operator=(const BusIfInterfaceSlave& other);
 
+    //! Sets the editor layout.
+    void setupLayout();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! The slave interface mode being edited.
 	QSharedPointer<SlaveInterface> slave_;
+
+    QGroupBox* memoryMapBox_;
 
 	//! The editor to select a memory map from the component.
 	ReferenceSelector memoryMapReferenceSelector_;

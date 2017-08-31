@@ -45,6 +45,13 @@ public:
 	//! The destructor.
 	virtual ~BridgesEditor();
 
+    /*!
+     *  Refresh the bridges in the editor.
+     *
+     *      @param [in] transparentBridges   The bridges to edit.
+     */
+    void refresh(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > transparentBridges);
+
 signals:
 
 	//! Emitted when the contents of the bridges change.

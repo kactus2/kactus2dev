@@ -1009,7 +1009,7 @@ void LibraryHandler::onClearSelection()
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onOpenDesign()
 //-----------------------------------------------------------------------------
-void LibraryHandler::onOpenDesign(VLNV const& vlnv)
+void LibraryHandler::onOpenDesign(VLNV const& vlnv, QString const& viewName)
 {
     QSharedPointer<const Document> document = getModelReadOnly(vlnv);
     if (!document)
@@ -1020,13 +1020,7 @@ void LibraryHandler::onOpenDesign(VLNV const& vlnv)
 
     if (document->getVlnv().getType() == VLNV::COMPONENT)
     {
-        QSharedPointer<const Component> component = document.staticCast<const Component>();
-
-        QStringList views = component->getHierViews();
-        if (!views.isEmpty())
-        {
-            emit openDesign(vlnv, views.first());
-        }
+         emit openDesign(vlnv, viewName);
     }
 }
 
@@ -1634,8 +1628,8 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(openDesign(const VLNV&)),
-        this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)),
+        this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
          connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&)),
              this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&)),

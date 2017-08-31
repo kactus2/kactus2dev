@@ -47,7 +47,7 @@ public:
 signals:
 
 	//! Open the selected hierarchical design
-	void openDesign(QModelIndex const& index);
+	void openDesign(QModelIndex const& index, QString const& viewName);
 
 	//! Open the SW design of a component
 	void openSWDesign(QModelIndex const& index);
@@ -121,7 +121,7 @@ signals:
 public slots:
 
     //! Open a hierarchical component
-    void onOpenDesign();
+    void onOpenDesign(QAction* viewAction);
 
     //! Open the SW design of a component
     void onOpenSWDesign();
@@ -249,8 +249,9 @@ private:
 	/**********************************************************************/
 	// The actions for the contextMenu
 
-	//! Open the hierarchical design of a component
-	QAction* openDesignAction_;
+	//! Open the hierarchical design of a component. Single action if only one view available, otherwise a menu.
+    QAction* openHWDesignAction_;
+	QMenu* openHWDesignMenu_;
 
 	//! Open the SW design of a component
 	QAction* openSWDesignAction_;

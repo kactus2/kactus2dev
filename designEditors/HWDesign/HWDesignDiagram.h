@@ -707,6 +707,15 @@ private:
     void createAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
 
     /*!
+     *  Finds the graphical item for the given port reference.
+     *
+     *      @param [in] portReference   The port reference whose graphical item to find.
+     *
+     *      @return The port item or 0 if port cannot be found.
+     */
+    AdHocPortItem* findAdhocPort(QSharedPointer<PortReference> portReference);
+
+    /*!
      *  Create a symbol for an ad hoc tie off value.
      *
      *      @param [in] connection  The selected ad hoc connection.
@@ -717,11 +726,12 @@ private:
      *  Creates a graphics item for an ad-hoc interconnection between two ports and adds it to the diagram.
      *
      *      @param [in] adHocConnection     The ad-hoc connection containing the ports.
-     *      @param [in] internalPort        The connected internal port on a component instance.
+     *      @param [in] secondaryPort       The connected internal/hierarchical port.
      *      @param [in] primaryPort         The connected hierarchical port or component instance port.
      *      @param [in] primaryPortItem     The port item for the primary port.
      */
-    void createConnectionForAdHocPorts(QSharedPointer<AdHocConnection> adHocConnection, QSharedPointer<PortReference> internalPort, 
+    void createConnectionForAdHocPorts(QSharedPointer<AdHocConnection> adHocConnection,
+        QSharedPointer<PortReference> secondaryPort, 
         QSharedPointer<PortReference> primaryPort, ConnectionEndpoint* primaryPortItem);
     /*!
      *  Copies component instances in a format which can be saved to clipboard.

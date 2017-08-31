@@ -807,25 +807,28 @@ QString GraphicsConnection::createDefaultName() const
     Q_ASSERT(endpoint2_ != 0);
 
     // Determine one of the end points as the starting point in a way that its
-    // encompassing component is defined.
+    // encompassing component is defined, if available.
     ConnectionEndpoint* start = endpoint1_;
     ConnectionEndpoint* end = endpoint2_;
 
     if (start->encompassingComp() == 0)
     {
         std::swap(start, end);
-        Q_ASSERT(start->encompassingComp() != 0);
     }
 
-    // Update the name string.
-    QString endCompName = "";
+    QString startCompName;
+    if (start->encompassingComp() != 0)
+    {
+        startCompName = start->encompassingComp()->name() + "_";
+    }
 
+    QString endCompName = "";
     if (end->encompassingComp() != 0)
     {
         endCompName = end->encompassingComp()->name() + "_";
     }
 
-    return start->encompassingComp()->name() + "_" + start->name() + "_to_" + endCompName + end->name();
+    return startCompName + start->name() + "_to_" + endCompName + end->name();
 }
 
 //-----------------------------------------------------------------------------

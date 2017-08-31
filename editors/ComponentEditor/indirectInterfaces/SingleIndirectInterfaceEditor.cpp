@@ -6,7 +6,7 @@
 // Date: 03.08.2017
 //
 // Description:
-// <Short description of the class/file contents>
+// Editor for a single indirect interface within a component.
 //-----------------------------------------------------------------------------
 
 #include "SingleIndirectInterfaceEditor.h"
@@ -15,9 +15,8 @@
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/busInterfaces/general/bridgeseditor.h>
-
-#include <IPXACTmodels/Component/IndirectInterface.h>
 
 #include <QGroupBox>
 #include <QGridLayout>
@@ -33,6 +32,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 
@@ -55,6 +55,7 @@ ItemEditor(component, library, parent),
     dataSelector_(new ReferenceSelector(this)),
     bitsInLauEditor_(new QLineEdit(this)),
     endiannessSelector_(new QComboBox(this)),
+    memoryMapBox_(new QGroupBox(tr("Indirect memory map"), this)),
     memoryMapSelector_(new ReferenceSelector(this)),
     transparentBridgesEditor_(new BridgesEditor(indirectInterface->getTransparentBridges(), component, this)),
     parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), component->getChoices(),
@@ -67,6 +68,9 @@ ItemEditor(component, library, parent),
     endiannessSelector_->addItem(QString("big"));
     endiannessSelector_->addItem(QString(""));
 
+    memoryMapBox_->setCheckable(true);
+    transparentBridgesEditor_->setCheckable(true);
+
     setupLayout();
 
     connect(addressSelector_, SIGNAL(itemSelected(QString const&)), this, SLOT(onIndirectAddressChanged()));
@@ -74,7 +78,10 @@ ItemEditor(component, library, parent),
     connect(bitsInLauEditor_, SIGNAL(editingFinished()), this, SLOT(onBitsInLauChanged()));
     connect(endiannessSelector_, SIGNAL(activated(QString const&)), this, SLOT(onEndiannessChanged()));
     connect(memoryMapSelector_, SIGNAL(itemSelected(QString const&)), this, SLOT(onMemoryMapChanged()));
-    
+ 
+    connect(memoryMapBox_, SIGNAL(clicked(bool)), this, SLOT(onMemoryMapSelected(bool)));
+    connect(transparentBridgesEditor_, SIGNAL(clicked(bool)), this, SLOT(onTransparentBridgeSelected(bool)));
+
     connect(nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));   
     connect(transparentBridgesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     connect(parametersEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -109,8 +116,11 @@ void SingleIndirectInterfaceEditor::refresh()
     
     endiannessSelector_->setCurrentIndex(endiannessSelector_->findText(indirectInterface_->getEndianness()));
 
+    memoryMapBox_->setChecked(!indirectInterface_->getMemoryMapRef().isEmpty());
     memoryMapSelector_->refresh(component_->getMemoryMapNames());
     memoryMapSelector_->selectItem(indirectInterface_->getMemoryMapRef());
+
+    transparentBridgesEditor_->setChecked(!indirectInterface_->getTransparentBridges()->isEmpty());
 }
 
 //-----------------------------------------------------------------------------
@@ -171,6 +181,41 @@ void SingleIndirectInterfaceEditor::onMemoryMapChanged()
     setMemoryMapColorByValidity();
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleIndirectInterfaceEditor::onMemorySelectionChanged()
+//-----------------------------------------------------------------------------
+void SingleIndirectInterfaceEditor::onMemoryMapSelected(bool checked)
+{
+    bool canChange = checked && indirectInterface_->getTransparentBridges()->isEmpty();
+    if (canChange)
+    {
+        memoryMapBox_->setChecked(true);
+        transparentBridgesEditor_->setChecked(false);
+        
+    }
+    else
+    {
+        memoryMapBox_->setChecked(!checked);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleIndirectInterfaceEditor::onTransparentBridgeSelected()
+//-----------------------------------------------------------------------------
+void SingleIndirectInterfaceEditor::onTransparentBridgeSelected(bool checked)
+{
+    bool canChange = checked && indirectInterface_->getMemoryMapRef().isEmpty();
+    if (canChange)
+    {
+        transparentBridgesEditor_->setChecked(true);
+        memoryMapBox_->setChecked(false);
+    }
+    else
+    {
+        transparentBridgesEditor_->setChecked(!checked);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -270,16 +315,18 @@ void SingleIndirectInterfaceEditor::setupLayout()
     QGroupBox* detailsGroup = new QGroupBox(tr("General"), this);
 
     QFormLayout* detailsLayout = new QFormLayout(detailsGroup);
-    detailsLayout->addRow(tr("Indirect address reference:"), addressSelector_);
-    detailsLayout->addRow(tr("Indirect data reference:"), dataSelector_);
+    detailsLayout->addRow(tr("Indirect address field:"), addressSelector_);
+    detailsLayout->addRow(tr("Indirect data field:"), dataSelector_);
     detailsLayout->addRow(tr("Bits in Lau:"), bitsInLauEditor_);
     detailsLayout->addRow(tr("Endianness:"), endiannessSelector_);
 
-    QGroupBox* memoryBox = new QGroupBox(tr("Indirect access"), this);
+    QGroupBox* memoryBox = new QGroupBox(tr("Indirect access target"), this);
+
+    QHBoxLayout* mapLayout = new QHBoxLayout(memoryMapBox_);
+    mapLayout->addWidget(memoryMapSelector_);
 
     QGridLayout* memoryLayout = new QGridLayout(memoryBox);
-    memoryLayout->addWidget(new QLabel(tr("Memory map:")), 0, 0, 1, 1);
-    memoryLayout->addWidget(memoryMapSelector_, 0, 1, 1, 1);
+    memoryLayout->addWidget(memoryMapBox_, 0, 0, 1, 2);
     memoryLayout->addWidget(transparentBridgesEditor_, 1, 0, 1, 2);
     memoryLayout->setColumnStretch(1, 1);
 

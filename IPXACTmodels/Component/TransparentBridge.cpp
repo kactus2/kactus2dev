@@ -14,7 +14,9 @@
 //-----------------------------------------------------------------------------
 // Function: TransparentBridge::TransparentBridge()
 //-----------------------------------------------------------------------------
-TransparentBridge::TransparentBridge(QString const& masterInterfaceRef): masterRef_(masterInterfaceRef)
+TransparentBridge::TransparentBridge(QString const& masterInterfaceRef):
+masterRef_(masterInterfaceRef), 
+    isPresent_()
 {
 
 }

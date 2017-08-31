@@ -30,11 +30,11 @@
     <h3>General</h3>
 
     <p>
-      <b>Indirect address reference</b> is mandatory and defines the bit field used for
+      <b>Indirect address field</b> is mandatory and defines the bit field used for
       addressing in the <i>indirect interface</i>.
     </p>
     <p>
-        <b>Indirect data reference</b> is mandatory and defines the bit field used for
+        <b>Indirect data field</b> is mandatory and defines the bit field used for
         data in read/write operations in the <i>indirect interface</i>.
     </p>
     <p>
@@ -46,14 +46,14 @@
       'little-endian' (default).
     </p>
 
-    <h3>Indirect access</h3>
+    <h3>Indirect access target</h3>
     <p>
         <b>Memory map</b> defines the indirectly accessible <i>memory map</i> for     
         the <i>indirect interface</i>. If a <i>memory map</i> has been defined,
         <i>transparent bridges</i> must be left empty.
     </p>
     <p>
-        <b>Transparent bridges</b> define the master <i>bus interface(s)</i> that
+        <b>Transparent bridge(s)</b> define the master <i>bus interface(s)</i> that
         all transactions through this <i>indirect interface</i> are directed out of. 
         If <i>transparent bridges</i> have been defined, <i>memory map</i> must be left empty.
     </p>

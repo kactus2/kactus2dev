@@ -24,7 +24,7 @@
 BridgesEditor::BridgesEditor(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
     QSharedPointer<Component> component,
     QWidget* parent):
-QGroupBox(tr("Transparent bridges"), parent),
+QGroupBox(tr("Transparent bridge(s)"), parent),
     view_(this),
     proxy_(this),
     model_(bridges, this)
@@ -47,8 +47,7 @@ QGroupBox(tr("Transparent bridges"), parent),
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -56,4 +55,13 @@ QGroupBox(tr("Transparent bridges"), parent),
 //-----------------------------------------------------------------------------
 BridgesEditor::~BridgesEditor()
 {
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::refresh()
+//-----------------------------------------------------------------------------
+void BridgesEditor::refresh(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > transparentBridges)
+{
+    model_.refresh(transparentBridges);
 }
