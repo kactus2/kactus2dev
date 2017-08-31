@@ -1285,9 +1285,9 @@ void MainWindow::setupConfigurationEditor()
     connect(configurationEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
     //connect(configurationEditor_, SIGNAL(configurationChanged(QString const&)),
     //    instanceEditor_, SLOT(setTopComponentActiveView(QString const&)), Qt::UniqueConnection);
-    connect(configurationEditor_, SIGNAL(designConfigurationChanged(QSharedPointer<DesignConfiguration>)),
-        instanceEditor_, SLOT(changeDesignConfiguration(QSharedPointer<DesignConfiguration>)),
-        Qt::UniqueConnection);
+//     connect(configurationEditor_, SIGNAL(designConfigurationChanged(QSharedPointer<DesignConfiguration>)),
+//         instanceEditor_, SLOT(changeDesignConfiguration(QSharedPointer<DesignConfiguration>)),
+//         Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

@@ -12,28 +12,22 @@
 #ifndef CONFIGURABLEELEMENTSMODEL_H
 #define CONFIGURABLEELEMENTSMODEL_H
 
-#include <common/GenericEditProvider.h>
-
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
+
+#include <designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-
-#include <QAbstractTableModel>
-#include <QMap>
+#include <QAbstractItemModel>
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
 
 class Parameter;
-class ModuleParameter;
 class Choice;
-
-class ComponentInstance;
-class Component;
+class ConfigurableElementValue;
 
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
@@ -44,24 +38,32 @@ class ConfigurableElementsModel : public QAbstractItemModel, public Parameteriza
 
 public:
 
+    //! The different user roles for data.
+    enum configurableElementsRoles
+    {
+        deletableElementCheckRole = Qt::UserRole,                   //! Checks if an item can be deleted.
+        parameterIDRole = Qt::UserRole + 1,                         //! Gets the ID of the referenced parameter.
+        getItemConfigurableElementValuesRole = Qt::UserRole + 2,    //! Gets the stored configurable elements.
+        getConfigurableElementsFromTableRole = Qt::UserRole + 3     //! Gets the elements from the table.
+    };
+
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parameterFinder         Finds parameters in configurable elements and top component.
-	 *      @param [in] listParameterFinder     Finds parameters in configurable elements.
-	 *      @param [in] expressionFormatter     Formatter for referencing expressions in configurable elements.
-	 *      @param [in] instanceFormatter       Formatter for referencing expressions in default value.
-	 *      @param [in] expressionParser        Parses expressions in configurable element values.
-	 *      @param [in] instanceParser          Parses expressions in default values.
-	 *      @param [in] parent                  Pointer to the owner of this model.
+	 *      @param [in] parameterFinder                         Finds parameters.
+	 *      @param [in] elementFinder                           Finds configurable elements.
+	 *      @param [in] configurableElementExpressionFormatter  Formatter for configurable elements.
+	 *      @param [in] defaultValueFormatter                   Formatter for default values.
+	 *      @param [in] configurableElementExpressionParser     Parses expressions in configurable element values.
+	 *      @param [in] defaultValueParser                      Parses expressions in default values.
+	 *      @param [in] parent                                  Pointer to the owner of this model.
 	 */
 	ConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder, 
-        QSharedPointer<ListParameterFinder> listParameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionFormatter> instanceFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionParser> instanceParser,
-        QObject *parent);
+        QSharedPointer<ConfigurableElementFinder> elementFinder,
+        QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter,
+        QSharedPointer<ExpressionFormatter> defaultValueFormatter,
+        QSharedPointer<ExpressionParser> configurableElementExpressionParser,
+        QSharedPointer<ExpressionParser> defaultValueParser, QObject *parent);
 	
 	/*!
 	 *  The destructor.
@@ -69,15 +71,17 @@ public:
 	virtual ~ConfigurableElementsModel();
 
 	/*!
-	 *  Set the component being edited.
+	 *  Set the parameters for configurable element values.
 	 *
-	 *      @param [in] component           Pointer to the component referenced by the component instance.
-     *      @param [in] instance            Pointer to the component instance being edited.
-     *      @param [in] viewConfiguration   Pointer to the active view of the instanced component.
-     *      @param [in] editProvider        Pointer to the edit provider.
+     *      @param [in] containingItemName          Name of the item containing the configurable element values.
+     *      @param [in] parameters                  The configurable parameters.
+     *      @param [in] choices                     List of choices available to the configurable element values.
+     *      @param [in] storedConfigurableElements  List of previously set configurable element values.
 	 */
-    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
-        QSharedPointer<ViewConfiguration> viewConfiguration, QSharedPointer<IEditProvider> editProvider);
+    void setParameters(QString const& containingItemName,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedConfigurableElements);
 
 	/*!
 	 *  Get the number of rows to be displayed.
@@ -139,13 +143,6 @@ public:
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
     /*!
-     *  Set the design configuration model.
-     *
-     *      @param [in] designConfiguration     The design configuration model to be set.
-     */
-    void setDesignConfigurationModel(QSharedPointer<DesignConfiguration> designConfiguration);
-
-    /*!
      *  Get the model index of the specified object.
      *
      *      @param [in] row     Row number of the object.
@@ -165,6 +162,14 @@ public:
      */
     QModelIndex parent(const QModelIndex& child) const;
 
+    /*!
+     *  Sends a data change signal for the selected configurable element.
+     *
+     *      @param [in] parameterID     ID of the parameter referenced by the configurable element.
+     *      @param [in] newValue        The new value of the configurable element.
+     */
+    void emitDataChangeForID(QString const& parameterID, QString const& newValue);
+
 public slots:
 
 	/*!
@@ -172,23 +177,44 @@ public slots:
 	 */
 	void clear();
 
-    /*!
-     *  Change the configurable elements of this model.
-     *
-     *      @param [in] confElements    The new configurable elements.
-     */
-    void changeElements(const QMap<QString, QString>& confElements);
-
 	/*!
-	 *  An item should be removed from the model.
+	 *  Handles item removal.
 	 *
-	 *      @param [in] index   Identifies the item that should be removed.
+     *      @param [in] elementID   ID of the referenced parameter.
+     *      @param [in] elementRow  Index row of the removed element.
 	 */
-	void onRemoveItem(const QModelIndex& index);
+    void onRemoveItem(QString const& elementID, int elementRow);
+
+    /*!
+     *  Handles the addition of new configurable elements.
+     *
+     *      @param [in] elementID       ID of the referenced parameter.
+     *      @param [in] elementValue    The new configurable value.
+     *      @param [in] elementRow      Index row for the new item.
+     */
+    void onAddItem(QString const& elementID, QString const& elementValue, int elementRow);
+
+    /*!
+     *  Check if the given index is valid.
+     *
+     *      @param [in] index   The index to be checked.
+     *
+     *      @return True, if the given index is valid, false otherwise.
+     */
+    bool isIndexValid(QModelIndex const& index) const;
+
+    /*!
+     *  Get the configurable elements from the table.
+     *
+     *      @return The configurable elements from the table.
+     */
+    QList<QSharedPointer<EditorConfigurableElement> > getConfigurableElements() const;
 
 signals:
 
-	//! \brief Emitted when contents of the model changes.
+	/*!
+     *  Emitted when contents of the model changes.
+     */
 	void contentChanged();
 
 protected:
@@ -230,10 +256,8 @@ protected:
     virtual bool validateIndex(QModelIndex const& index) const;
 
 private:
-	//! No copying
+    //! No copying. //! No assignment.
 	ConfigurableElementsModel(const ConfigurableElementsModel& other);
-
-	//! No assignment
 	ConfigurableElementsModel& operator=(const ConfigurableElementsModel& other);
 
     /*!
@@ -253,16 +277,6 @@ private:
      *      @return     The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Get the configurable element at the given index.
-     *
-     *      @param [in] parentIndex     The index of the parent of the given object.
-     *      @param [in] row             The row number of the configurable element.
-     *
-     *      @return The correct configurable element.
-     */
-    QSharedPointer<Parameter> getIndexedConfigurableElement(QModelIndex const& parentIndex, int row) const;
 
     /*!
      *  Evaluate the value for the given index.
@@ -313,53 +327,28 @@ private:
      */
     QString tooltipForIndex(QModelIndex const& index) const;
 
-	//! Save the elements from the table to values_ map.
-	void save();
-
-	/*!
-	 *  Read the configurable elements from the component and from the saved values.
-	 */
-	void setupConfigurableElements();
-
-    /*!
-     *  Read the configurable elements from the component.
-     */
-    void readComponentConfigurableElements();
-
-    /*!
-     *  Read the configurable elements from the active view.
-     */
-    void readActiveViewParameters();
-
-    /*!
-     *  Set the parameter into the configurable elements.
-     *
-     *      @param [in] parameterPointer    The pointer to the parameter to be set to configurable elements.
-     *      @param [in] rootItemName        The root item of the configurable element.
-     */
-    void addParameterToConfigurableElements(QSharedPointer <Parameter> parameterPointer,
-        QString const& rootItemName, bool addToInstance);
-
     /*!
      *  Restore the previously saved configurable element values to their correct element.
      */
     void restoreStoredConfigurableElements();
 
     /*!
-     *  Get the configurable element that was saved previously.
+     *  Get the selected configurable element.
      *
-     *      @param [in] elementName     The id of the element to be searched for.
+     *      @param [in] elementID   The id of the element to be searched for.
+     *
+     *      @return The selected configurable element.
      */
-    QSharedPointer<Parameter> getStoredConfigurableElement(QString const& elementID);
+    QSharedPointer<EditorConfigurableElement> getStoredConfigurableElement(QString const& elementID);
 
     /*!
-     *  Check if the given index is valid.
+     *  Create an unknown parameter.
      *
-     *      @param [in] index   The index to be checked.
+     *      @param [in] parameterID     ID of the unknown parameter.
      *
-     *      @return True, if the given index is valid, false otherwise.
+     *      @return The created unknown parameter.
      */
-    bool isIndexValid(QModelIndex const& index) const;
+    QSharedPointer<Parameter> createUnknownParameter(QString const& parameterID);
 
     /*!
      *  Checks if it is possible to delete the element in the given index.
@@ -370,48 +359,56 @@ private:
      */
     bool isElementDeletable(QModelIndex const& index) const;
 
+    /*!
+     *  Get the referenced parameter ID of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return Parameter ID of the selected index.
+     */
+    QString parameterIDForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the configurable elements contained in the model.
+     *
+     *      @return The configurable elements contained within the model
+     */
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > getItemConfigurableElementValues() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Pointer to the component referenced by the component instance.
-    QSharedPointer<Component> component_;
+    //! A list of the configurable elements of the model.
+    QList<QSharedPointer<EditorConfigurableElement> > configurableElements_;
 
-	//! Pointer to the component instance being edited.
-    QSharedPointer<ComponentInstance> componentInstance_;
+    //! A list of the available choices.
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 
-    //! Pointer to the active view of the instanced component.
-    QSharedPointer<ViewConfiguration> viewConfiguration_;
-
-	//! Reference to the map containing the actual configurable elements.
-	QMap<QString, QString> currentElementValues_;
-
-    //! The list that is used to display the elements in a table form.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > configurableElements_;
-
-    //! In which list the parameter belongs to.
-    QMap<QSharedPointer<Parameter>, bool> parameterMapping_;
-
-	//! The edit provider that manages the undo/redo stack.
-	QSharedPointer<IEditProvider> editProvider_;
+    //! Name of the containing item.
+    QString containingItemName_;
 
     //! The formatter for referencing expressions in values.
     QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter_;
 
     //! The formatter for referencing expressions in default values.
-    QSharedPointer<ExpressionFormatter> componentInstanceExpressionFormatter_;
+    QSharedPointer<ExpressionFormatter> defaultValueFormatter_;
 
     //! The expression parser for default values.
-    QSharedPointer<ExpressionParser> componentInstanceExpressionParser_;
+    QSharedPointer<ExpressionParser> defaultValueParser_;
 
     //! Validator for parameters.
     QSharedPointer<ParameterValidator2014> validator_;
 
-    //! The design configuration model used to find the currently active view of the component instance.
-    QSharedPointer<DesignConfiguration> designConfiguration_;
+    //! Configurable element values contained within the containing item.
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElementValues_;
 
-    //! The list containing all the root items in the model.
-    QList<QString*> rootItems_;
+    //! Parameters from which the configurable element values are constructed from.
+    QSharedPointer<QList<QSharedPointer<Parameter> > > referableParameters_;
 };
+
+//! Meta types for QVariants.
+Q_DECLARE_METATYPE(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >)
+Q_DECLARE_METATYPE(QList<QSharedPointer<EditorConfigurableElement> >)
 
 #endif // CONFIGURABLEELEMENTSMODEL_H

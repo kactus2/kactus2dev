@@ -4303,6 +4303,42 @@
     <ClCompile Include="GeneratedFiles\moc_SingleIndirectInterfaceEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsModel.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceConfigurableElementsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\ConfigurableElementChangeCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceConfigurableElementsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsFilter.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\MissingConfigurableElementsFilter.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MissingConfigurableElementsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementChangeCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\ConfigurableElementRemoveCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementRemoveCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ConfigurableElementFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\EditorConfigurableElement.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5916,6 +5952,24 @@
     <CustomBuild Include="editors\ComponentEditor\indirectInterfaces\SingleIndirectInterfaceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsModel.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\ConfigurableElementChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsFilter.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\MissingConfigurableElementsFilter.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\ConfigurableElementRemoveCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\EditorConfigurableElement.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6511,6 +6565,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfaceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ConfigurableElementFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

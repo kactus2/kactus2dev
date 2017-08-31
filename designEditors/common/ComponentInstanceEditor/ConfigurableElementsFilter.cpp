@@ -11,14 +11,14 @@
 
 #include "ConfigurableElementsFilter.h"
 
-#include "ConfigurableElementsColumns.h"
+#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsFilter::ConfigurableElementsFilter()
 //-----------------------------------------------------------------------------
 ConfigurableElementsFilter::ConfigurableElementsFilter(QObject* parent):
 QSortFilterProxyModel(parent),
-    showImmediateValues_(false)
+showImmediateValues_(false)
 {
 
 }
@@ -53,15 +53,36 @@ void ConfigurableElementsFilter::onRemoveItem(QModelIndex const& filterIndex)
 //-----------------------------------------------------------------------------
 bool ConfigurableElementsFilter::filterAcceptsRow(int source_row, QModelIndex const& source_parent) const
 {
-    if (!source_parent.isValid())
-    {
-        QModelIndex categoryIndex = sourceModel()->index(source_row, 0, QModelIndex());
-        return sourceModel()->rowCount(categoryIndex) != 0;
-    }
+    bool itemIsEditable = itemAtIndexIsEditable(source_row, source_parent);
+    bool itemDefaultIsEmpty = isIndexedDefaultValueEmpty(source_row);
 
-    else
-    {
-        QModelIndex itemIndex = sourceModel()->index(source_row, ConfigurableElementsColumns::VALUE, source_parent);
-        return (showImmediateValues_ || itemIndex.flags().testFlag(Qt::ItemIsEditable));
-    }
+    return (showImmediateValues_  || itemIsEditable) && !itemDefaultIsEmpty;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsFilter::itemAtIndexIsEditable()
+//-----------------------------------------------------------------------------
+bool ConfigurableElementsFilter::itemAtIndexIsEditable(int sourceRow, QModelIndex const& sourceParent) const
+{
+    QModelIndex itemIndex = sourceModel()->index(sourceRow, ConfigurableElementsColumns::VALUE, sourceParent);
+    return itemIndex.flags().testFlag(Qt::ItemIsEditable);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsFilter::isIndexedDefaultValueEmpty()
+//-----------------------------------------------------------------------------
+bool ConfigurableElementsFilter::isIndexedDefaultValueEmpty(int sourceRow) const
+{
+    QModelIndex defaultValueIndex = sourceModel()->index(sourceRow, ConfigurableElementsColumns::DEFAULT_VALUE);
+    QString defaultValue = sourceModel()->data(defaultValueIndex, Qt::DisplayRole).toString();
+
+    return defaultValue.isEmpty();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsFilter::immediateValuesAreVisible()
+//-----------------------------------------------------------------------------
+bool ConfigurableElementsFilter::immediateValuesAreVisible() const
+{
+    return showImmediateValues_;
 }

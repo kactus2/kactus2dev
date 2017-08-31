@@ -34,7 +34,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~ConfigurableElementsFilter();
+    virtual ~ConfigurableElementsFilter();
 
    
 signals:
@@ -58,8 +58,39 @@ protected:
      */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 
+    /*!
+     *  Check if the immediate values are visible.
+     *
+     *      @return True, if the immediate values are visible, false otherwise.
+     */
+    bool immediateValuesAreVisible() const;
+
+    /*!
+     *  Check if the item at the selected index is visible.
+     *
+     *      @param [in] sourceRow       Row of the selected index.
+     *      @param [in] sourceParent    Parent index of the selected item.
+     *
+     *      @return True, if the indexed item is visible, false otherwise.
+     */
+    bool itemAtIndexIsEditable(int sourceRow, QModelIndex const& sourceParent) const;
+
+    /*!
+     *  Check if the default value of the indexed item is empty.
+     *
+     *      @param [in] sourceRow   Row of the indexed item.
+     *
+     *      @return True, if the default value of the indexed item is empty, false otherwise.
+     */
+    bool isIndexedDefaultValueEmpty(int sourceRow) const;
+
 public slots:
    
+     /*!
+      *  Set the flag for displaying the immediate values.
+      *
+      *      @param [in] show   Flag for displaying the immediate values.
+      */
      void setShowImmediateValues(bool show);
 
     /*!
@@ -75,6 +106,11 @@ private:
     ConfigurableElementsFilter(ConfigurableElementsFilter const& rhs);
     ConfigurableElementsFilter& operator=(ConfigurableElementsFilter const& rhs);
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Flag for displaying the immediate values.
     bool showImmediateValues_;
 };
 

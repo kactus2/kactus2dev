@@ -22,7 +22,8 @@
 ConfigurableElementsView::ConfigurableElementsView(QWidget* parent):
 QTreeView(parent),
 contextMenuIndex_(QModelIndex()),
-removeAction_(new QAction("Remove configurable element", this))
+removeAction_(new QAction("Remove configurable element", this)),
+removeAllAction_(new QAction("Remove all unknown configurable elements", this))
 {
     setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -31,6 +32,7 @@ removeAction_(new QAction("Remove configurable element", this))
     setIndentation(10);
 
     connect(removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveItem()), Qt::UniqueConnection);
+    connect(removeAllAction_, SIGNAL(triggered()), this, SLOT(onRemoveAllSubItems()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -47,6 +49,14 @@ ConfigurableElementsView::~ConfigurableElementsView()
 void ConfigurableElementsView::onRemoveItem()
 {
     emit removeItem(contextMenuIndex_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsView::onRemoveAllSubItems()
+//-----------------------------------------------------------------------------
+void ConfigurableElementsView::onRemoveAllSubItems()
+{
+    emit removeAllSubItems(contextMenuIndex_);
 }
 
 //-----------------------------------------------------------------------------
@@ -81,6 +91,17 @@ void ConfigurableElementsView::contextMenuEvent(QContextMenuEvent* event)
 
         QMenu contextMenu;
         contextMenu.addAction(removeAction_);
+
+        contextMenu.exec(event->globalPos());
+        event->accept();
+    }
+    else if (!contextMenuIndex_.parent().isValid() &&
+        model()->data(contextMenuIndex_, Qt::ForegroundRole) == KactusColors::ERROR)
+    {
+        removeAllAction_->setEnabled(true);
+
+        QMenu contextMenu;
+        contextMenu.addAction(removeAllAction_);
 
         contextMenu.exec(event->globalPos());
         event->accept();

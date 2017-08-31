@@ -12,14 +12,19 @@
 #ifndef CONFIGURABLEELEMENTDELEGATE_H
 #define CONFIGURABLEELEMENTDELEGATE_H
 
+#include <common/IEditProvider.h>
+
 #include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QWidget>
 #include <QSize>
+#include <QModelIndex>
 
 class Choice;
+class ConfigurableElementValue;
+class ConfigurableElementRemoveCommand;
 
 //-----------------------------------------------------------------------------
 //! Delegate that provides editors to edit the configurable element values.
@@ -38,13 +43,20 @@ public:
      *      @param [in] expressionFormatter     Expression formatter, used to change parameter ids to names.
 	 *      @param [in] parent                  Pointer to the owner of this delegate.
 	 */
-	ConfigurableElementDelegate(QCompleter* parameterCompleter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QObject *parent);
+	ConfigurableElementDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent);
 	
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~ConfigurableElementDelegate();
+
+    /*!
+     *  Set a new edit provider.
+     *
+     *      @param [in] newEditProvider     The new edit provider.
+     */
+    void setEditProvider(QSharedPointer<IEditProvider> newEditProvider);
 
     /*!
      *  Create a new editor for the given item.
@@ -110,6 +122,52 @@ public:
      *      @return The size needed by the delegate to display the item in index.
      */
     virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+public slots:
+
+    /*!
+     *  Handles the creation of a configurable element remove command.
+     *
+     *      @param [in] index   Index of the selected configurable element.
+     */
+    void onCreateRemoveElementCommand(QModelIndex const& index);
+
+    /*!
+     *  Create remove commands for the sub items of the selected index.
+     *
+     *      @param [in] index   Index of the selected configurable element.
+     */
+    void onCreateMultipleElementRemoveCommands(QModelIndex const& index);
+
+signals:
+
+    /*!
+     *  Informs the model to emit a data change signal for the selected configurable element.
+     *
+     *      @param [in] parameterID     ID of the parameter referenced by the selected configurable element.
+     *      @param [in] newDataValue    The new configurable element value.
+     */
+    void dataChangedInID(QString const& parameterID, QString const& newDataValue);
+
+    /*!
+     *  Informs the model that a new configurable element should be added.
+     *
+     *      @param [in] elementID       ID of the parameter referenced by the new configurable element.
+     *      @param [in] elementValue    New value for the configurable element.
+     *      @param [in] parentName      Name of the parent item of the configurable element.
+     *      @param [in] elementRow      Index row of the new configurable element.
+     */
+    void addConfigurableElement(QString const& elementID, QString const& elementValue, QString const& parentName,
+        int elementRow);
+
+    /*!
+     *  Informs the model that a configurable element should be removed.
+     *
+     *      @param [in] elementID   ID of the parameter referenced by the removed configurable element.
+     *      @param [in] parentName  Name of the parent item of the selected configurable element.
+     *      @param [in] elementRow  Index row of the selected configurable element.
+     */
+    void removeConfigurableElement(QString const& elementID, QString const& parentName, int elementRow);
 
 protected:
 
@@ -186,8 +244,81 @@ private:
     void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index)
         const;
 
+    /*!
+     *  Create an undo command for configurable element value change.
+     *
+     *      @param [in] oldValue    Old value of the configurable element.
+     *      @param [in] newValue    New value of the configurable element.
+     *      @param [in] index       Index of the changed configurable element.
+     *      @param [in] cevModel    Model containing the configurable element.
+     */
+    void createElementChangeCommand(QString const& oldValue, QString const& newValue, QModelIndex const& index,
+        QAbstractItemModel* cevModel) const;
+
+    /*!
+     *  Create an element remove command for the selected configurable element.
+     *
+     *      @param [in] index           Index of the selected configurable element.
+     *      @param [in] parentCommand   The parent command.
+     *
+     *      @return Pointer to the created configurable element remove command.
+     */
+    QSharedPointer<ConfigurableElementRemoveCommand> createElementRemoveCommand(QModelIndex const& index,
+        QUndoCommand* parentCommand = 0);
+
+    /*!
+     *  Get the filtered index row of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The filtered index row of the selected index.
+     */
+    int getFilteredIndexRow(QModelIndex const& index) const;
+
+    /*!
+     *  Get the name of the parent item of the selected configurable element.
+     *
+     *      @param [in] parentIndex     Parent index of the selected configurable element.
+     *
+     *      @return Name of the parent item of the selected configurable element.
+     */
+    QString getIndexedParentName(QModelIndex const& parentIndex) const;
+
+    /*!
+     *  Get a list of configurable element values contained within the item of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return A list of configurable element values.
+     */
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > getIndexedConfigurableElements(
+        QModelIndex const& index) const;
+
+    /*!
+     *  Get the ID of the parameter referenced in the indexed item.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return ID of the referenced parameter.
+     */
+    QString getIndexedElementID(QModelIndex const& index) const;
+
+    /*!
+     *  Connect the selected configurable element remove command.
+     *
+     *      @param [in] removeCommand   The selected configurable element remove command.
+     */
+    void connectElementRemoveCommand(QSharedPointer<ConfigurableElementRemoveCommand> removeCommand);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Expression formatter, used in expressions to change parameter ids into names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! Edit provider for stacking undo commands.
+    QSharedPointer<IEditProvider> editProvider_;
 };
 
 #endif // CONFIGURABLEELEMENTDELEGATE_H

@@ -48,6 +48,13 @@ signals:
      */
     void removeItem(QModelIndex const& index);
 
+    /*!
+     *  Emitted when the user attempts to remove all sub items.
+     *
+     *      @param [in] index   The index of the item whose sub items are removed.
+     */
+    void removeAllSubItems(QModelIndex const& index);
+
 protected:
     
     /*!
@@ -80,6 +87,11 @@ private slots:
      */
     virtual void onRemoveItem();
 
+    /*!
+     *  Handles the removal of all sub items of the selected index.
+     */
+    virtual void onRemoveAllSubItems();
+
 private:
    
     // Disable copying.
@@ -95,6 +107,9 @@ private:
 
     //! Action for removing mappings.
     QAction* removeAction_;
+
+    //! Action for removing all sub items.
+    QAction* removeAllAction_;
 };
 
 //-----------------------------------------------------------------------------

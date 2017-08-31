@@ -16,11 +16,11 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
-#include "ConfigurableElementsModel.h"
-#include "configurableelementdelegate.h"
-#include "ConfigurableElementsView.h"
+#include <designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h>
+#include <designEditors/common/ComponentInstanceEditor/configurableelementdelegate.h>
+#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h>
 
 #include <QAbstractItemModel>
 #include <QGroupBox>
@@ -29,7 +29,6 @@
 
 class ExpressionParser;
 class ParameterFinder;
-
 class Component;
 class ComponentInstance;
 //-----------------------------------------------------------------------------
@@ -44,7 +43,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] listFinder                      The finder for the configurable element values.
+	 *      @param [in] elementFinder                   The finder for the configurable element values.
 	 *      @param [in] parameterFinder                 The finder for configurable elements and top parameters.
 	 *      @param [in] configurableElementFormatter    Formats referencing expressions in configurable elements.
 	 *      @param [in] instanceExpressionFormatter     Formats referencing expressions in component instance.
@@ -53,14 +52,12 @@ public:
 	 *      @param [in] completionModel                 The completion model for selecting parameter references.
 	 *      @param [in] parent                          The parent widget.
 	 */
-	ConfigurableElementEditor(QSharedPointer<ListParameterFinder> listFinder,
+    ConfigurableElementEditor(QSharedPointer<ConfigurableElementFinder> elementFinder,
         QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionFormatter> configurableElementFormatter,
         QSharedPointer<ExpressionFormatter> instanceExpressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionParser> instanceParser,
-        QAbstractItemModel* completionModel,
-        QWidget *parent);
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionParser> instanceParser,
+        QAbstractItemModel* completionModel, QWidget *parent);
 	
 	//! The destructor.
 	virtual ~ConfigurableElementEditor();
@@ -68,24 +65,18 @@ public:
 	/*!
      *  Set the component instance to be edited.
 	 *
-	 *      @param [in] component       Pointer to the component referenced by the component instance.
-     *      @param [in] instance        Pointer to the component instance to edit.
-     *      @param [in] editProvider    Pointer to the editing capabilities.
+	 *      @param [in] component           Pointer to the component referenced by the component instance.
+     *      @param [in] instance            Pointer to the component instance to edit.
+     *      @param [in] viewConfiguration   Pointer to the view configuration of the component instance.
+     *      @param [in] editProvider        Pointer to the editing capabilities.
 	 */
-    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance, QSharedPointer<ViewConfiguration> viewConfiguration,
-        QSharedPointer<IEditProvider> editProvider);
+    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<ViewConfiguration> viewConfiguration, QSharedPointer<IEditProvider> editProvider);
 
 	/*!
      *  Clear the editor from all data.
 	 */
 	void clear();
-
-    /*!
-     *  Set the design configuration model for the configurable element model.
-     *
-     *      @param [in] designConfiguration     The design configuration to be set.
-     */
-    void setDesignConfigurationToModel(QSharedPointer<DesignConfiguration> designConfiguration);
 
 signals:
 
@@ -103,7 +94,7 @@ private:
     ConfigurableElementsView view_;
 
 	//! The model to edit the configurable elements of a component instance.
-	ConfigurableElementsModel model_;
+    ComponentInstanceConfigurableElementsModel model_;
 
     //! The delegate used in the display widget.
     ConfigurableElementDelegate* delegate_;

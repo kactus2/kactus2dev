@@ -48,14 +48,14 @@ QWidget(parent),
     propertyValueEditor_(new PropertyValueEditor(this)),
     editProvider_(0),
     instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-    listFinder_(new ListParameterFinder()),
+    elementFinder_(new ConfigurableElementFinder()),
     topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0))),
     completionModel_(0),
     topComponent_(),
     containingDesign_()
 {
     QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-    multiFinder->addFinder(listFinder_);
+    multiFinder->addFinder(elementFinder_);
     multiFinder->addFinder(topFinder_);
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(multiFinder));
@@ -64,7 +64,7 @@ QWidget(parent),
     completionModel_ = new DesignCompletionModel(topFinder_, multiFinder, this); 
     completionModel_->setExpressionParser(expressionParser);
 
-    configurableElements_ = new ConfigurableElementEditor(listFinder_, multiFinder, 
+    configurableElements_ = new ConfigurableElementEditor(elementFinder_, multiFinder, 
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instanceFinder_)),
         expressionParser, instanceParser, completionModel_, this);
@@ -82,6 +82,7 @@ QWidget(parent),
 
     setupLayout();
 
+    connect(configurableElements_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(nameGroup_, SIGNAL(nameChanged()), this, SLOT(onNameChanged()), Qt::UniqueConnection);
     connect(nameGroup_, SIGNAL(displayNameChanged()), this, SLOT(onDisplayNameChanged()), Qt::UniqueConnection);
     connect(nameGroup_, SIGNAL(descriptionChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
@@ -227,7 +228,6 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 void ComponentInstanceEditor::setContext(QSharedPointer<Component> topComponent,
     QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<IEditProvider> editProvider)
 {
-    configurableElements_->setDesignConfigurationToModel(designConfiguration);
     topFinder_->setComponent(topComponent);
     editProvider_ = editProvider;
     topComponent_ = topComponent;
@@ -250,14 +250,6 @@ void ComponentInstanceEditor::setProtection(bool locked)
 void ComponentInstanceEditor::setTopComponentActiveView(QSharedPointer<View> activeView)
 {
 	topFinder_->setActiveView(activeView);
-}
-
-//-----------------------------------------------------------------------------
-// Function: componentinstanceeditor::changeDesignConfiguration()
-//-----------------------------------------------------------------------------
-void ComponentInstanceEditor::changeDesignConfiguration(QSharedPointer<DesignConfiguration> newDesignConfiguration)
-{
-    configurableElements_->setDesignConfigurationToModel(newDesignConfiguration);
 }
 
 //-----------------------------------------------------------------------------

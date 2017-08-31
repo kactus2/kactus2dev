@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./VersionHelper.h \
+HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+    ./VersionHelper.h \
     ./common/NameGenerationPolicy.h \
     ./common/Global.h \
     ./common/KactusColors.h \
@@ -432,6 +433,7 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.h \
     ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.h \
     ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.h \
+    ./editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
@@ -530,6 +532,11 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.h \
+    ./editors/ComponentEditor/indirectInterfaces/IndirectInterfaceColumns.h \
+    ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesEditor.h \
+    ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesModel.h \
+    ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesDelegate.h \
+    ./editors/ComponentEditor/indirectInterfaces/SingleIndirectInterfaceEditor.h \
     ./editors/CSourceEditor/CSourceHighlight.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
@@ -717,7 +724,14 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h \
+    ./designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.h \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.h \
+    ./designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.h \
+    ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.h \
+    ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
+    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1086,6 +1100,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorfilesetsitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorgeneralitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorgroupslot.cpp \
+    ./editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoritem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditormemmapitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditormemmapsitem.cpp \
@@ -1111,6 +1126,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.cpp \
+    ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ./editors/ComponentEditor/visualization/memorygapitem.cpp \
@@ -1168,6 +1184,10 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
+    ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesDelegate.cpp \
+    ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesEditor.cpp \
+    ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesModel.cpp \
+    ./editors/ComponentEditor/indirectInterfaces/SingleIndirectInterfaceEditor.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlight.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
@@ -1344,5 +1364,12 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.cpp \
+    ./designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.cpp \
+    ./designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.cpp \
+    ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.cpp \
+    ./editors/ComponentEditor/common/ConfigurableElementFinder.cpp \
+    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.cpp
 RESOURCES += kactus.qrc

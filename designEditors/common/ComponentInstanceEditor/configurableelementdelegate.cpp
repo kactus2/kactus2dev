@@ -10,24 +10,28 @@
 //-----------------------------------------------------------------------------
 
 #include "configurableelementdelegate.h"
-#include "ConfigurableElementsColumns.h"
+
+#include <common/KactusColors.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayView.h>
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
 
+#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
+#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.h>
+#include <designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.h>
+#include <designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.h>
+
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 
-#include <common/KactusColors.h>
-
-#include <QScrollArea>
-#include <QComboBox>
-
 #include <QPen>
 #include <QPainter>
-
+#include <QComboBox>
+#include <QScrollArea>
+#include <QSharedPointer>
+#include <QSortFilterProxyModel>
 
 //-----------------------------------------------------------------------------
 // Function: configurableelementdelegate::ConfigurableElemenetDelegate()
@@ -36,7 +40,8 @@ ConfigurableElementDelegate::ConfigurableElementDelegate(QCompleter* parameterCo
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
 ChoiceCreatorDelegate(parameterCompleter, parameterFinder, parent),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+editProvider_(0)
 {
 
 }
@@ -47,6 +52,14 @@ expressionFormatter_(expressionFormatter)
 ConfigurableElementDelegate::~ConfigurableElementDelegate() 
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::setEditProvider()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::setEditProvider(QSharedPointer<IEditProvider> newEditProvider)
+{
+    editProvider_ = newEditProvider;
 }
 
 //-----------------------------------------------------------------------------
@@ -95,6 +108,8 @@ void ConfigurableElementDelegate::setEditorData(QWidget* editor, QModelIndex con
 void ConfigurableElementDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
     QModelIndex const& index) const
 {
+    QString oldData = model->data(index, Qt::EditRole).toString();
+
     if (index.column() == valueColumn() && valueIsArray(index))
     {
         QScrollArea* scrollWidget = qobject_cast<QScrollArea*>(editor);
@@ -108,6 +123,176 @@ void ConfigurableElementDelegate::setModelData(QWidget* editor, QAbstractItemMod
     else
     {
         ChoiceCreatorDelegate::setModelData(editor, model, index);
+    }
+
+    QString newData = model->data(index, Qt::EditRole).toString();
+    if (oldData != newData)
+    {
+        createElementChangeCommand(oldData, newData, index, model);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::createElementChangeCommand()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::createElementChangeCommand(QString const& oldValue, QString const& newValue,
+    QModelIndex const& index, QAbstractItemModel* cevModel) const
+{
+    QVariant configurableElements =
+        cevModel->data(index, ConfigurableElementsModel::getItemConfigurableElementValuesRole);
+
+    if (configurableElements.canConvert<QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > > ())
+    {
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElements =
+            configurableElements.value<QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > >();
+
+        QString elementID = cevModel->data(index, ConfigurableElementsModel::parameterIDRole).toString();
+
+        QModelIndex defaultValueIndex = index.sibling(index.row(), ConfigurableElementsColumns::DEFAULT_VALUE);
+        QString defaultValue = cevModel->data(defaultValueIndex, Qt::EditRole).toString();
+
+        QSharedPointer<ConfigurableElementChangeCommand> elementChangeCommand(new ConfigurableElementChangeCommand(
+            elementID, oldValue, newValue, defaultValue, itemConfigurableElements));
+
+        connect(elementChangeCommand.data(), SIGNAL(dataChangedInID(QString const&, QString const&)),
+            this, SIGNAL(dataChangedInID(QString const&, QString const&)), Qt::UniqueConnection);
+
+        editProvider_->addCommand(elementChangeCommand);
+        elementChangeCommand->redo();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::onCreateRemoveElementCommand()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::onCreateRemoveElementCommand(QModelIndex const& index)
+{
+    if (index.parent().isValid())
+    {
+        QSharedPointer<ConfigurableElementRemoveCommand> elementRemoveCommand = createElementRemoveCommand(index);
+
+        editProvider_->addCommand(elementRemoveCommand);
+        elementRemoveCommand->redo();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::createElementRemoveCommand()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConfigurableElementRemoveCommand> ConfigurableElementDelegate::createElementRemoveCommand(
+    QModelIndex const& index, QUndoCommand* parentCommand)
+{
+    int filteredRow = getFilteredIndexRow(index);
+    QString parentName = getIndexedParentName(index.parent());
+
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElements =
+        getIndexedConfigurableElements(index);
+
+    QString elementID = index.data(ConfigurableElementsModel::parameterIDRole).toString();
+
+    QSharedPointer<ConfigurableElementRemoveCommand> elementRemoveCommand(new ConfigurableElementRemoveCommand(
+        elementID, filteredRow, parentName, itemConfigurableElements, parentCommand));
+
+    connectElementRemoveCommand(elementRemoveCommand);
+
+    return elementRemoveCommand;
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::getFilteredIndexRow()
+//-----------------------------------------------------------------------------
+int ConfigurableElementDelegate::getFilteredIndexRow(QModelIndex const& index) const
+{
+    QModelIndex modelIndex = index;
+
+    const QSortFilterProxyModel* filter = dynamic_cast<const QSortFilterProxyModel*>(index.model());
+    if (filter)
+    {
+        modelIndex = filter->mapToSource(index);
+    }
+
+    return modelIndex.row();
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::getIndexedParentName()
+//-----------------------------------------------------------------------------
+QString ConfigurableElementDelegate::getIndexedParentName(QModelIndex const& parentIndex) const
+{
+    QModelIndex parentNameIndex = parentIndex.sibling(parentIndex.row(), ConfigurableElementsColumns::NAME);
+    return parentNameIndex.data().toString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::getIndexedConfigurableElements()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > ConfigurableElementDelegate::
+    getIndexedConfigurableElements(QModelIndex const& index) const
+{
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElements(0);
+
+    QVariant configurableElements = index.data(ConfigurableElementsModel::getItemConfigurableElementValuesRole);
+    if (configurableElements.canConvert<QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > > ())
+    {
+        itemConfigurableElements = configurableElements.value
+            <QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > > ();
+    }
+
+    return itemConfigurableElements;
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::connectElementRemoveCommand()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::connectElementRemoveCommand(
+    QSharedPointer<ConfigurableElementRemoveCommand> removeCommand)
+{
+    connect(removeCommand.data(), SIGNAL(addConfigurableElement(QString const&, QString const&, QString const&,
+        int)), this, SIGNAL(addConfigurableElement(QString const&, QString const&, QString const&, int)),
+        Qt::UniqueConnection);
+    connect(removeCommand.data(), SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
+        this, SIGNAL(removeConfigurableElement(QString const&, QString const&, int)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::onCreateMultipleElementRemoveCommands()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::onCreateMultipleElementRemoveCommands(QModelIndex const& index)
+{
+    if (index.isValid() && !index.parent().isValid())
+    {
+        QSharedPointer<QUndoCommand> multipleRemoveCommand(new QUndoCommand());
+        int rowCount = index.model()->rowCount(index);
+
+        for (int i = rowCount - 1; i >= 0; i = i - 1)
+        {
+            QModelIndex elementIndex = index.child(i, index.column());
+
+            if (elementIndex.data(ConfigurableElementsModel::deletableElementCheckRole).toBool())
+            {
+                int filteredRow = getFilteredIndexRow(elementIndex);
+                QString parentName = getIndexedParentName(elementIndex.parent());
+
+                QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElements =
+                    getIndexedConfigurableElements(elementIndex);
+
+                QString elementID = elementIndex.data(ConfigurableElementsModel::parameterIDRole).toString();
+
+                ConfigurableElementRemoveCommand* elementRemoveCommand(
+                    new ConfigurableElementRemoveCommand(
+                    elementID, filteredRow, parentName, itemConfigurableElements, multipleRemoveCommand.data()));
+
+                connect(elementRemoveCommand, SIGNAL(addConfigurableElement(QString const&, QString const&,
+                    QString const&, int)), this, SIGNAL(addConfigurableElement(QString const&, QString const&,
+                    QString const&, int)), Qt::UniqueConnection);
+                connect(elementRemoveCommand, SIGNAL(removeConfigurableElement(QString const&, QString const&,
+                    int)), this, SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
+                    Qt::UniqueConnection);
+            }
+        }
+
+        editProvider_->addCommand(multipleRemoveCommand);
+        multipleRemoveCommand->redo();
     }
 }
 

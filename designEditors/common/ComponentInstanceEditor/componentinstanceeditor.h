@@ -12,17 +12,15 @@
 #ifndef COMPONENTINSTANCEEDITOR_H
 #define COMPONENTINSTANCEEDITOR_H
 
-#include <editors/ComponentEditor/software/PropertyValueEditor.h>
-
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include "configurableelementeditor.h"
 
 #include <common/IEditProvider.h>
-
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
 
-#include "configurableelementeditor.h"
+#include <editors/ComponentEditor/software/PropertyValueEditor.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
 #include <QWidget>
 #include <QComboBox>
@@ -90,13 +88,6 @@ public slots:
      *      @param [in] activeView   The name of the active view.
      */
     void setTopComponentActiveView(QSharedPointer<View> activeView);
-
-    /*!
-     *  Change the used design configuration.
-     *
-     *      @param [in] newDesignConfiguration  The new design configuration.
-     */
-    void changeDesignConfiguration(QSharedPointer<DesignConfiguration> newDesignConfiguration);
 
 	/*!
      *  Clear the editor so no instance details are shown
@@ -166,7 +157,7 @@ private:
     QSharedPointer<ComponentParameterFinder> instanceFinder_;
 
     //! The parameter finder for configurable element values.
-    QSharedPointer<ListParameterFinder> listFinder_;
+    QSharedPointer<ConfigurableElementFinder> elementFinder_;
 
     //! The parameter finder for component instances.
     QSharedPointer<TopComponentParameterFinder> topFinder_;

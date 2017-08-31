@@ -10,34 +10,32 @@
 //-----------------------------------------------------------------------------
 
 #include "configurableelementeditor.h"
-#include "ConfigurableElementsColumns.h"
-#include "ConfigurableElementsFilter.h"
 
-#include <designEditors/HWDesign/HWComponentItem.h>
+#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
+#include <designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementEditor::ConfigurableElementEditor()
 //-----------------------------------------------------------------------------
-ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ListParameterFinder> listFinder,
-                                                  QSharedPointer<ParameterFinder> parameterFinder, 
-                                                  QSharedPointer<ExpressionFormatter> configurableElementFormatter,
-                                                  QSharedPointer<ExpressionFormatter> componentInstanceFormatter,
-                                                  QSharedPointer<ExpressionParser> expressionParser,
-                                                  QSharedPointer<ExpressionParser> instanceParser,
-                                                  QAbstractItemModel* completionModel,
-                                                  QWidget *parent):
+ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ConfigurableElementFinder> elementFinder,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> configurableElementFormatter,
+    QSharedPointer<ExpressionFormatter> instanceExpressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionParser> instanceParser,
+    QAbstractItemModel* completionModel, QWidget *parent):
 QGroupBox(tr("Configurable element values"), parent),
-    view_(this),
-    model_(parameterFinder, listFinder, configurableElementFormatter, componentInstanceFormatter, expressionParser,
-    instanceParser, this),    
-    delegate_(0),
-    filterSelection_(new QCheckBox(tr("Show immediate values"), this))
+view_(this),
+model_(parameterFinder, elementFinder, configurableElementFormatter, instanceExpressionFormatter, expressionParser,
+    instanceParser, this),
+delegate_(0),
+filterSelection_(new QCheckBox(tr("Show immediate values"), this))
 {    
-    ConfigurableElementsFilter* filter (new ConfigurableElementsFilter(this));
+    ComponentInstanceConfigurableElementsFilter* filter (new ComponentInstanceConfigurableElementsFilter(this));
 	filter->setSourceModel(&model_);
     filter->setSortCaseSensitivity(Qt::CaseInsensitive);
 	view_.setModel(filter);
@@ -66,10 +64,20 @@ QGroupBox(tr("Configurable element values"), parent),
 
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-        filter, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-    connect(filter, SIGNAL(removeItem(const QModelIndex&)),
-        &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-    connect(filterSelection_, SIGNAL(clicked(bool)), filter, SLOT(setShowImmediateValues(bool)), Qt::UniqueConnection);
+        delegate_, SLOT(onCreateRemoveElementCommand(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(removeAllSubItems(QModelIndex const&)),
+        delegate_, SLOT(onCreateMultipleElementRemoveCommands(QModelIndex const&)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(addConfigurableElement(QString const&, QString const&, QString const&, int)),
+        &model_, SLOT(onAddElement(QString const&, QString const&, QString const&, int)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
+        &model_, SLOT(onRemoveElement(QString const&, QString const&, int)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(dataChangedInID(QString const&, QString const&)),
+        &model_, SLOT(onDataChangedInID(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(filterSelection_, SIGNAL(clicked(bool)),
+        &model_, SIGNAL(showImmediateValuesInModels(bool)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(invalidateFilter()), filter, SLOT(onInvalidateFilter()), Qt::UniqueConnection);
+    connect(filterSelection_, SIGNAL(clicked(bool)),
+        filter, SLOT(setShowImmediateValues(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -87,8 +95,9 @@ void ConfigurableElementEditor::setComponent(QSharedPointer<Component> component
     QSharedPointer<ComponentInstance> instance, QSharedPointer<ViewConfiguration> viewConfiguration,
     QSharedPointer<IEditProvider> editProvider)
 {
-    model_.setComponent(component, instance, viewConfiguration, editProvider);
+    model_.setParameters(component, instance, viewConfiguration);
     delegate_->setChoices(component->getChoices());
+    delegate_->setEditProvider(editProvider);
 
     view_.expandAll();
 }
@@ -99,13 +108,4 @@ void ConfigurableElementEditor::setComponent(QSharedPointer<Component> component
 void ConfigurableElementEditor::clear() 
 {
 	model_.clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurableelementeditor::setDesignConfigurationToModel()
-//-----------------------------------------------------------------------------
-void ConfigurableElementEditor::setDesignConfigurationToModel(
-    QSharedPointer<DesignConfiguration> designConfiguration)
-{
-    model_.setDesignConfigurationModel(designConfiguration);
 }
