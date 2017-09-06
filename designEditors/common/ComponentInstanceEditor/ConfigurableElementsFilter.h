@@ -75,15 +75,6 @@ protected:
      */
     bool itemAtIndexIsEditable(int sourceRow, QModelIndex const& sourceParent) const;
 
-    /*!
-     *  Check if the default value of the indexed item is empty.
-     *
-     *      @param [in] sourceRow   Row of the indexed item.
-     *
-     *      @return True, if the default value of the indexed item is empty, false otherwise.
-     */
-    bool isIndexedDefaultValueEmpty(int sourceRow) const;
-
 public slots:
    
      /*!

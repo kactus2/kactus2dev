@@ -17,6 +17,7 @@
 // Function: ConfigurableElementFinder::ConfigurableElementFinder()
 //-----------------------------------------------------------------------------
 ConfigurableElementFinder::ConfigurableElementFinder():
+ParameterFinder(),
 elementList_()
 {
 

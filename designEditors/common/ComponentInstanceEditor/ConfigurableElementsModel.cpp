@@ -28,7 +28,6 @@
 // Function: ConfigurableElementsModel::ConfigurableElementsModel()
 //-----------------------------------------------------------------------------
 ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ConfigurableElementFinder> elementFinder,
     QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter,
     QSharedPointer<ExpressionFormatter> defaultValueFormatter,
     QSharedPointer<ExpressionParser> configurableElementExpressionParser,

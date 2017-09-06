@@ -15,6 +15,7 @@
 // Function: ListParameterFinder::ListParameterFinder()
 //-----------------------------------------------------------------------------
 ListParameterFinder::ListParameterFinder():
+ParameterFinder(),
 parameterList_(new QList<QSharedPointer<Parameter> > ())
 {
 
@@ -33,11 +34,14 @@ ListParameterFinder::~ListParameterFinder()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ListParameterFinder::getParameterWithID(QString const& parameterId) const
 {
-    foreach (QSharedPointer<Parameter> parameter, *parameterList_)
+    if (parameterList_)
     {
-        if (parameter->getValueId() == parameterId)
+        foreach (QSharedPointer<Parameter> parameter, *parameterList_)
         {
-            return parameter;
+            if (parameter->getValueId() == parameterId)
+            {
+                return parameter;
+            }
         }
     }
 
@@ -49,11 +53,14 @@ QSharedPointer<Parameter> ListParameterFinder::getParameterWithID(QString const&
 //-----------------------------------------------------------------------------
 bool ListParameterFinder::hasId(QString const& id) const
 {
-    foreach (QSharedPointer<Parameter> parameter, *parameterList_)
+    if (parameterList_)
     {
-        if (parameter->getValueId() == id)
+        foreach (QSharedPointer<Parameter> parameter, *parameterList_)
         {
-            return true;
+            if (parameter->getValueId() == id)
+            {
+                return true;
+            }
         }
     }
 
@@ -66,8 +73,14 @@ bool ListParameterFinder::hasId(QString const& id) const
 QString ListParameterFinder::nameForId(QString const& id) const
 {
     QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
-
-    return targetParameter->name();
+    if (targetParameter)
+    {
+        return targetParameter->name();
+    }
+    else
+    {
+        return QString();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -76,8 +89,14 @@ QString ListParameterFinder::nameForId(QString const& id) const
 QString ListParameterFinder::valueForId(QString const& id) const
 {
     QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
-
-    return targetParameter->getValue();
+    if (targetParameter)
+    {
+        return targetParameter->getValue();
+    }
+    else
+    {
+        return QString();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -87,9 +106,12 @@ QStringList ListParameterFinder::getAllParameterIds() const
 {
     QStringList allParameterIds;
 
-    foreach (QSharedPointer<Parameter> parameter, *parameterList_)
+    if (parameterList_)
     {
-        allParameterIds.append(parameter->getValueId());
+        foreach (QSharedPointer<Parameter> parameter, *parameterList_)
+        {
+            allParameterIds.append(parameter->getValueId());
+        }
     }
 
     allParameterIds.removeAll("");

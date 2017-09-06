@@ -731,7 +731,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.h \
     ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.h \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
-    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.h
+    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.h \
+    ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.h \
+    ./designEditors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1371,5 +1374,8 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.cpp \
     ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.cpp \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.cpp \
-    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.cpp
+    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.cpp \
+    ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.cpp
 RESOURCES += kactus.qrc

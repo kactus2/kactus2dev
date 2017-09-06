@@ -3175,9 +3175,6 @@
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsView.cpp">
       <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsFilter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsFilter.cpp">
       <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
@@ -4338,6 +4335,27 @@
     </ClCompile>
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\EditorConfigurableElement.cpp">
       <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsEditor.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceConfigurableElementsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\ParameterConfigurableElementsFilter.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterConfigurableElementsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InstantiationConfigurableElementEditor.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5968,6 +5986,15 @@
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentInstanceEditor\EditorConfigurableElement.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsEditor.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ParameterConfigurableElementsFilter.h">
       <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
   </ItemGroup>

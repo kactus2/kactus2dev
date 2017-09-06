@@ -157,8 +157,7 @@ void ConfigurableElementDelegate::createElementChangeCommand(QString const& oldV
         connect(elementChangeCommand.data(), SIGNAL(dataChangedInID(QString const&, QString const&)),
             this, SIGNAL(dataChangedInID(QString const&, QString const&)), Qt::UniqueConnection);
 
-        editProvider_->addCommand(elementChangeCommand);
-        elementChangeCommand->redo();
+        addCommandToStackAndRedo(elementChangeCommand);
     }
 }
 
@@ -167,12 +166,11 @@ void ConfigurableElementDelegate::createElementChangeCommand(QString const& oldV
 //-----------------------------------------------------------------------------
 void ConfigurableElementDelegate::onCreateRemoveElementCommand(QModelIndex const& index)
 {
-    if (index.parent().isValid())
+    int indexRowCount = index.model()->rowCount(index);
+    if (index.parent().isValid() || (!index.parent().isValid() && indexRowCount == 0))
     {
         QSharedPointer<ConfigurableElementRemoveCommand> elementRemoveCommand = createElementRemoveCommand(index);
-
-        editProvider_->addCommand(elementRemoveCommand);
-        elementRemoveCommand->redo();
+        addCommandToStackAndRedo(elementRemoveCommand);
     }
 }
 
@@ -291,9 +289,21 @@ void ConfigurableElementDelegate::onCreateMultipleElementRemoveCommands(QModelIn
             }
         }
 
-        editProvider_->addCommand(multipleRemoveCommand);
-        multipleRemoveCommand->redo();
+        addCommandToStackAndRedo(multipleRemoveCommand);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::addCommandToStackAndRedo()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::addCommandToStackAndRedo(QSharedPointer<QUndoCommand> newCommand) const
+{
+    if (editProvider_)
+    {
+        editProvider_->addCommand(newCommand);
+    }
+
+    newCommand->redo();
 }
 
 //-----------------------------------------------------------------------------
@@ -474,6 +484,12 @@ int ConfigurableElementDelegate::getArraySize(int arrayLeft, int arrayRight) con
 void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     const QModelIndex &index) const
 {
+    int indexRowCount = index.model()->rowCount(index);
+    if (!index.parent().isValid() && indexRowCount > 0)
+    {
+        painter->fillRect(option.rect, KactusColors::STRONG_FIELD);
+    }
+
     QStyleOptionViewItemV4 overrideOptions(option);
     overrideOptions.decorationPosition = QStyleOptionViewItem::Right;
 
@@ -484,7 +500,7 @@ void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionVie
     newPen.setWidth(1);
     painter->setPen(newPen);
     
-    if (index.parent().isValid())
+    if (index.parent().isValid() || (!index.parent().isValid() && indexRowCount == 0))
     {
         painter->drawLine(overrideOptions.rect.topRight(), overrideOptions.rect.bottomRight());
     }

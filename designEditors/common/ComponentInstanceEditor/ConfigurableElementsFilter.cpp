@@ -54,9 +54,8 @@ void ConfigurableElementsFilter::onRemoveItem(QModelIndex const& filterIndex)
 bool ConfigurableElementsFilter::filterAcceptsRow(int source_row, QModelIndex const& source_parent) const
 {
     bool itemIsEditable = itemAtIndexIsEditable(source_row, source_parent);
-    bool itemDefaultIsEmpty = isIndexedDefaultValueEmpty(source_row);
 
-    return (showImmediateValues_  || itemIsEditable) && !itemDefaultIsEmpty;
+    return showImmediateValues_ || itemIsEditable;
 }
 
 //-----------------------------------------------------------------------------
@@ -66,17 +65,6 @@ bool ConfigurableElementsFilter::itemAtIndexIsEditable(int sourceRow, QModelInde
 {
     QModelIndex itemIndex = sourceModel()->index(sourceRow, ConfigurableElementsColumns::VALUE, sourceParent);
     return itemIndex.flags().testFlag(Qt::ItemIsEditable);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementsFilter::isIndexedDefaultValueEmpty()
-//-----------------------------------------------------------------------------
-bool ConfigurableElementsFilter::isIndexedDefaultValueEmpty(int sourceRow) const
-{
-    QModelIndex defaultValueIndex = sourceModel()->index(sourceRow, ConfigurableElementsColumns::DEFAULT_VALUE);
-    QString defaultValue = sourceModel()->data(defaultValueIndex, Qt::DisplayRole).toString();
-
-    return defaultValue.isEmpty();
 }
 
 //-----------------------------------------------------------------------------

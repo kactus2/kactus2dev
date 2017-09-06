@@ -32,18 +32,20 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-     *      @param [in] instantiation           The instantiation of the item.
-	 *      @param [in] parent                  The parent item.
+	 *      @param [in] model                       The model that owns the items.
+	 *      @param [in] libHandler                  The instance that manages the library.
+	 *      @param [in] component                   The component being edited.
+     *      @param [in] instantiation               The instantiation of the item.
+     *      @param [in] validator                   Handles the validation of the design instantiation.
+     *      @param [in] componentParameterFinder    Finder for component parameters.
+     *      @param [in] referenceCounter            Handles the usage count of parameters.
+	 *      @param [in] parent                      The parent item.
 	 */
-	SingleDesignInstantiationItem(ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<DesignInstantiation> instantiation,
+	SingleDesignInstantiationItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+        QSharedPointer<Component> component, QSharedPointer<DesignInstantiation> instantiation,
         QSharedPointer<InstantiationsValidator> validator,
-        ComponentEditorItem* parent);
+        QSharedPointer<ParameterFinder> componentParameterFinder,
+        QSharedPointer<ReferenceCounter> referenceCounter, ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~SingleDesignInstantiationItem();
@@ -91,8 +93,8 @@ private:
     //! Validator for the instantiation.
     QSharedPointer<InstantiationsValidator> validator_;
 
-    //! The used expression parser.
-    QSharedPointer<ExpressionParser> expressionParser_;
+    //! Finder for component parameters.
+    QSharedPointer<ParameterFinder> componentParameterFinder_;
 };
 
 #endif // SINGLEDESIGNINSTANTIATIONITEM_H
