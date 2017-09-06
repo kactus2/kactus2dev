@@ -13,13 +13,14 @@
 
 #include <library/LibraryItem.h>
 
+#include <QCompleter>
+#include <QFormLayout>
 #include <QGridLayout>
+#include <QGroupBox>
 #include <QLabel>
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QStringList>
-#include <QFormLayout>
-#include <QGroupBox>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -41,6 +42,11 @@ QWidget(parent),
 	libraryBox_.setEditable(true);
 	nameBox_.setEditable(true);
 	versionBox_.setEditable(true);
+
+    vendorBox_.completer()->setCompletionMode(QCompleter::PopupCompletion);
+    libraryBox_.completer()->setCompletionMode(QCompleter::PopupCompletion);
+    nameBox_.completer()->setCompletionMode(QCompleter::PopupCompletion);
+    versionBox_.completer()->setCompletionMode(QCompleter::PopupCompletion);
 
 	// set validator to accept only valid names and special characters '?' and '*'
 	QRegExp regExp(QString("[a-zA-Z0-9:_\\-\\.\\*\\?]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
