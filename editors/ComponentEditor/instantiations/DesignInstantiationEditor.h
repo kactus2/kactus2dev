@@ -94,9 +94,6 @@ private:
 
     //! Finder for design parameters.
     QSharedPointer<ListParameterFinder> designParameterFinder_;
-
-    //! The library interface.
-    LibraryInterface* libraryHandler_;
 };
 
 //-----------------------------------------------------------------------------

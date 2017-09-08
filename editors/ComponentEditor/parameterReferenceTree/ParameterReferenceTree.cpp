@@ -454,7 +454,8 @@ bool ParameterReferenceTree::referenceExistsInSingleSegment(QSharedPointer<Segme
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::referenceExistsInInstantiations() const
 {
-    return referenceExistsInComponentInstantiations() || referenceExistsInDesignInstantiations();
+    return referenceExistsInComponentInstantiations() || referenceExistsInDesignConfigurationInstantiations() ||
+        referenceExistsInDesignInstantiations();
 }
 
 //-----------------------------------------------------------------------------
@@ -482,6 +483,34 @@ bool ParameterReferenceTree::referenceExistsInSingleComponentInstantiation(
     return referenceExistsInModuleParameters(instantiation->getModuleParameters()) ||
         referenceExistsInParameters(instantiation->getParameters()) ||
         referenceExistsInFileBuilders(instantiation->getDefaultFileBuilders());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInDesignConfigurationInstantiations()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInDesignConfigurationInstantiations() const
+{
+    foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        *component_->getDesignConfigurationInstantiations())
+    {
+        if (referenceExistsInSingleDesignConfigurationInstantiation(instantiation))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInSingleDesignConfigurationInstantiation()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInSingleDesignConfigurationInstantiation(
+    QSharedPointer<DesignConfigurationInstantiation> instantiation) const
+{
+    return referenceExistsInParameters(instantiation->getParameters()) ||
+        referenceExistsInConfigurableElementValues(
+        instantiation->getDesignConfigurationReference()->getConfigurableElementValues());
 }
 
 //-----------------------------------------------------------------------------
@@ -551,6 +580,10 @@ void ParameterReferenceTree::createReferencesForInstantiations()
     {
         createReferencesForComponentInstantiations(topInstantiationsItem);
     }
+    if (referenceExistsInDesignConfigurationInstantiations())
+    {
+        createReferencesForDesignConfigurationInstantiations(topInstantiationsItem);
+    }
     if (referenceExistsInDesignInstantiations())
     {
         createReferencesForDesignInstantiations(topInstantiationsItem);
@@ -590,6 +623,39 @@ void ParameterReferenceTree::createReferencesForComponentInstantiations(QTreeWid
             if (referenceExistsInFileBuilders(instantiation->getDefaultFileBuilders()))
             {
                 createReferencesForFileBuilders(instantiation->getDefaultFileBuilders(), instantiationItem);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForDesignConfigurationInstantiations()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForDesignConfigurationInstantiations(
+    QTreeWidgetItem* topInstantiationsItem)
+{
+    QTreeWidgetItem* designConfigurationInstantiationsItem =
+        createMiddleItem("Design Configuration Instantiations", topInstantiationsItem);
+
+    foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        *component_->getDesignConfigurationInstantiations())
+    {
+        if (referenceExistsInSingleDesignConfigurationInstantiation(instantiation))
+        {
+            QTreeWidgetItem* instantiationItem = createMiddleItem(instantiation->name(),
+                designConfigurationInstantiationsItem);
+            if (referenceExistsInParameters(instantiation->getParameters()))
+            {
+                QTreeWidgetItem* parametersItem = createMiddleItem(QLatin1String("Parameters"), instantiationItem);
+                colourItemGrey(parametersItem);
+                createParameterReferences(instantiation->getParameters(), parametersItem);
+            }
+
+            QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > elements =
+                instantiation->getDesignConfigurationReference()->getConfigurableElementValues();
+            if (referenceExistsInConfigurableElementValues(elements))
+            {
+                createReferencesForConfigurableElementValues(elements, instantiationItem);
             }
         }
     }

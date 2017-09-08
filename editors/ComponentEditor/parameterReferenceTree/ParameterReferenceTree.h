@@ -279,6 +279,23 @@ private:
     bool referenceExistsInSingleComponentInstantiation(QSharedPointer<ComponentInstantiation> instantiation) const;
 
     /*!
+     *  Check if a reference exists in a design configuration instantiations.
+     *
+     *      @return True, if a reference is found, false otherwise.
+     */
+    bool referenceExistsInDesignConfigurationInstantiations() const;
+
+    /*!
+     *  Check if a reference exists in a single design configuration instantiation.
+     *
+     *      @param [in] instantiation   The selected design configuration instantiation.
+     *
+     *      @return True, if a reference is found, false otherwise.
+     */
+    bool referenceExistsInSingleDesignConfigurationInstantiation(
+        QSharedPointer<DesignConfigurationInstantiation> instantiation) const;
+
+    /*!
      *  Check if a reference exists in design instantiations.
      *
      *      @return True, if there is a reference to this parameter in the design instantiations , otherwise false.
@@ -326,6 +343,13 @@ private:
      *      @param [in] topInstantiationsItem   The parent tree item.
      */
     void createReferencesForComponentInstantiations(QTreeWidgetItem* topInstantiationsItem);
+
+    /*!
+     *  Create references for design configuration instantiations.
+     *
+     *      @param [in] topInstantiationsItem   The parent tree item.
+     */
+    void createReferencesForDesignConfigurationInstantiations(QTreeWidgetItem* topInstantiationsItem);
 
     /*!
      *  Create references for design instantiations.

@@ -92,9 +92,6 @@ private:
 
     //! The validator for design configuration instantiations.
     QSharedPointer<InstantiationsValidator> validator_;
-
-    //! The used expression parser.
-    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // DESIGNCONFIGURATIONINSTANTIATIONSITEM_H

@@ -42,8 +42,7 @@ instantiation_(instantiation),
 nameGroupEditor_(new NameGroupEditor(instantiation, this, tr("Design instance name and description"))),
 designEditor_(0),
 elementEditor_(0),
-designParameterFinder_(new ListParameterFinder()),
-libraryHandler_(libHandler)
+designParameterFinder_(new ListParameterFinder())
 {
     // find the main window for VLNV editor.
     QWidget* parentW = NULL;
@@ -129,10 +128,15 @@ void DesignInstantiationEditor::setupParametersAsConfigurableElements()
     QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters;
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > newElements;
 
-    QSharedPointer<Design> currentDesign = libraryHandler_->getDesign(designEditor_->getVLNV());
-    if (currentDesign)
+    QSharedPointer<const Design> currentDesign;
+    QSharedPointer<const Document> designDocument = handler()->getModel(designEditor_->getVLNV());
+    if (designDocument)
     {
-        newParameters = currentDesign->getParameters();
+        currentDesign = designDocument.staticCast<const Design>();
+        if (currentDesign)
+        {
+            newParameters = currentDesign->getParameters();
+        }
     }
     if (instantiation_->getDesignReference())
     {

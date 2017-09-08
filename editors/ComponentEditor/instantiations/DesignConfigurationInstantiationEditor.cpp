@@ -16,8 +16,18 @@
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <mainwindow/mainwindow.h>
+
+#include <library/LibraryInterface.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QApplication>
 #include <QScrollArea>
@@ -32,11 +42,13 @@ DesignConfigurationInstantiationEditor::DesignConfigurationInstantiationEditor(Q
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     LibraryInterface* libHandler, QWidget* parent):
 ItemEditor(component, libHandler, parent), 
-    instantiation_(instantiation),
-    nameGroupEditor_(new NameGroupEditor(instantiation, this, 
+instantiation_(instantiation),
+nameGroupEditor_(new NameGroupEditor(instantiation, this,
     tr("Design configuration instance name and description"))),
-    parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
-    designConfigurationEditor_(0)
+parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
+designConfigurationEditor_(0),
+elementEditor_(0),
+designConfigurationParameterFinder_(new ListParameterFinder())
 {
     // find the main window for VLNV editor.
     QWidget* parentW = NULL;
@@ -49,6 +61,8 @@ ItemEditor(component, libHandler, parent),
             break;
         }
     }
+
+    createConfigurableElementEditor(parameterFinder);
 
     designConfigurationEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
     designConfigurationEditor_->setTitle(tr("Design configuration reference"));
@@ -66,6 +80,12 @@ ItemEditor(component, libHandler, parent),
     connect(nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(designConfigurationEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHierRefChange()), Qt::UniqueConnection);
    
+    connect(elementEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(elementEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(elementEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
     refresh();
 
     setupLayout();
@@ -79,6 +99,32 @@ DesignConfigurationInstantiationEditor::~DesignConfigurationInstantiationEditor(
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignConfigurationInstantiationEditor::createConfigurableElementEditor()
+//-----------------------------------------------------------------------------
+void DesignConfigurationInstantiationEditor::createConfigurableElementEditor(
+    QSharedPointer<ParameterFinder> parameterFinder)
+{
+    QSharedPointer<ConfigurableElementFinder> elementFinder(new ConfigurableElementFinder());
+
+    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
+    multiFinder->addFinder(elementFinder);
+    multiFinder->addFinder(parameterFinder);
+
+    QSharedPointer<IPXactSystemVerilogParser> multiParser(new IPXactSystemVerilogParser(multiFinder));
+    QSharedPointer<IPXactSystemVerilogParser> configurationParameterParser(
+        new IPXactSystemVerilogParser(designConfigurationParameterFinder_));
+
+    QSharedPointer<IPXactSystemVerilogParser> referenceParser(new IPXactSystemVerilogParser(parameterFinder));
+    ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
+    completionModel->setExpressionParser(referenceParser);
+
+    elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder, multiFinder,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designConfigurationParameterFinder_)),
+        multiParser, configurationParameterParser, completionModel, this);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationEditor::refresh()
 //-----------------------------------------------------------------------------
 void DesignConfigurationInstantiationEditor::refresh()
@@ -86,6 +132,8 @@ void DesignConfigurationInstantiationEditor::refresh()
 	nameGroupEditor_->refresh();
     designConfigurationEditor_->setVLNV(*instantiation_->getDesignConfigurationReference());
     parameters_.refresh();
+
+    setupParametersAsConfigurableElements();
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +142,46 @@ void DesignConfigurationInstantiationEditor::refresh()
 void DesignConfigurationInstantiationEditor::onHierRefChange()
 {
 	instantiation_->getDesignConfigurationReference()->setVLNV(designConfigurationEditor_->getVLNV());
+    setupParametersAsConfigurableElements();
+
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignConfigurationInstantiationEditor::setupParametersAsConfigurableElements()
+//-----------------------------------------------------------------------------
+void DesignConfigurationInstantiationEditor::setupParametersAsConfigurableElements()
+{
+    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters;
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > newElements;
+
+    QSharedPointer<const Document> configurationDocument = handler()->getModelReadOnly(
+        designConfigurationEditor_->getVLNV());
+    QSharedPointer<const DesignConfiguration> designConfiguration(0);
+    if (configurationDocument)
+    {
+        designConfiguration = configurationDocument.staticCast<const DesignConfiguration>();
+        if (designConfiguration)
+        {
+            newParameters = designConfiguration->getParameters();
+        }
+    }
+
+    if (instantiation_->getDesignConfigurationReference())
+    {
+        newElements = instantiation_->getDesignConfigurationReference()->getConfigurableElementValues();
+    }
+
+    designConfigurationParameterFinder_->setParameterList(newParameters);
+
+    if (designConfiguration && instantiation_->getDesignConfigurationReference())
+    {
+        elementEditor_->setParameters(designConfiguration->getVlnv().toString(), newParameters, newElements);
+    }
+    else
+    {
+        elementEditor_->clear();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -127,9 +214,13 @@ void DesignConfigurationInstantiationEditor::setupLayout()
     topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea->setWidget(topWidget);
 
+    QHBoxLayout* editableItemsLayout = new QHBoxLayout();
+    editableItemsLayout->addWidget(&parameters_);
+    editableItemsLayout->addWidget(elementEditor_);
+
     QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
     topLayout->addLayout(editorLayout);
-    topLayout->addWidget(&parameters_);
+    topLayout->addLayout(editableItemsLayout);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
 }
