@@ -135,8 +135,12 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 
     QString instanceViewName = QString();
 
-    activeViewLabel_->parentWidget()->show();
+    if (designConfiguration)
+    {
+        instanceViewName = designConfiguration->getActiveView(componentItem->name());
+    }
 
+    activeViewLabel_->parentWidget()->show();
     activeViewLabel_->setText(instanceViewName);
     
     topFinder_->setActiveView(topComponent_->getModel()->findView(activeViewName));    
