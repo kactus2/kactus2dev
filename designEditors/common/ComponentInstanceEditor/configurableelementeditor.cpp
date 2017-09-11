@@ -22,24 +22,14 @@
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementEditor::ConfigurableElementEditor()
 //-----------------------------------------------------------------------------
-ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ConfigurableElementFinder> elementFinder,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> configurableElementFormatter,
-    QSharedPointer<ExpressionFormatter> instanceExpressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionParser> instanceParser,
-    QAbstractItemModel* completionModel, QWidget *parent):
+ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> configurableElementFormatter, QAbstractItemModel* completionModel,
+    QWidget *parent):
 QGroupBox(tr("Configurable element values"), parent),
 view_(this),
-model_(parameterFinder, elementFinder, configurableElementFormatter, instanceExpressionFormatter, expressionParser,
-    instanceParser, this),
 delegate_(0),
 filterSelection_(new QCheckBox(tr("Show immediate values"), this))
-{    
-    ComponentInstanceConfigurableElementsFilter* filter (new ComponentInstanceConfigurableElementsFilter(this));
-	filter->setSourceModel(&model_);
-    filter->setSortCaseSensitivity(Qt::CaseInsensitive);
-	view_.setModel(filter);
-
+{
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(completionModel);
 
@@ -49,35 +39,16 @@ filterSelection_(new QCheckBox(tr("Show immediate values"), this))
     view_.setSelectionMode(QAbstractItemView::SingleSelection);
 
     delegate_ = new ConfigurableElementDelegate(parameterCompleter, parameterFinder, configurableElementFormatter, this);
-
     view_.setItemDelegate(delegate_);
-
-    view_.setAlternatingRowColors(false);
-    view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
-    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_LEFT, true);
-    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_RIGHT, true);
-    view_.setColumnHidden(ConfigurableElementsColumns::TYPE, true);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&view_);
     topLayout->addWidget(filterSelection_);
 
-	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
         delegate_, SLOT(onCreateRemoveElementCommand(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeAllSubItems(QModelIndex const&)),
         delegate_, SLOT(onCreateMultipleElementRemoveCommands(QModelIndex const&)), Qt::UniqueConnection);
-    connect(delegate_, SIGNAL(addConfigurableElement(QString const&, QString const&, QString const&, int)),
-        &model_, SLOT(onAddElement(QString const&, QString const&, QString const&, int)), Qt::UniqueConnection);
-    connect(delegate_, SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
-        &model_, SLOT(onRemoveElement(QString const&, QString const&, int)), Qt::UniqueConnection);
-    connect(delegate_, SIGNAL(dataChangedInID(QString const&, QString const&)),
-        &model_, SLOT(onDataChangedInID(QString const&, QString const&)), Qt::UniqueConnection);
-    connect(filterSelection_, SIGNAL(clicked(bool)),
-        &model_, SIGNAL(showImmediateValuesInModels(bool)), Qt::UniqueConnection);
-    connect(&model_, SIGNAL(invalidateFilter()), filter, SLOT(onInvalidateFilter()), Qt::UniqueConnection);
-    connect(filterSelection_, SIGNAL(clicked(bool)),
-        filter, SLOT(setShowImmediateValues(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,23 +60,59 @@ ConfigurableElementEditor::~ConfigurableElementEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConfigurableElementEditor::setComponent()
+// Function: configurableelementeditor::expandView()
 //-----------------------------------------------------------------------------
-void ConfigurableElementEditor::setComponent(QSharedPointer<Component> component,
-    QSharedPointer<ComponentInstance> instance, QSharedPointer<ViewConfiguration> viewConfiguration,
-    QSharedPointer<IEditProvider> editProvider)
+void ConfigurableElementEditor::expandView()
 {
-    model_.setParameters(component, instance, viewConfiguration);
-    delegate_->setChoices(component->getChoices());
-    delegate_->setEditProvider(editProvider);
-
     view_.expandAll();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConfigurableElementEditor::clear()
+// Function: configurableelementeditor::setFirstParentColumnsSpannable()
 //-----------------------------------------------------------------------------
-void ConfigurableElementEditor::clear() 
+void ConfigurableElementEditor::setFirstParentColumnsSpannable()
 {
-	model_.clear();
+    int rowCount = view_.model()->rowCount();
+    for (int i = 0; i < rowCount; ++i)
+    {
+        view_.setFirstColumnSpanned(i, QModelIndex(), true);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementeditor::setModel()
+//-----------------------------------------------------------------------------
+void ConfigurableElementEditor::setModel(QAbstractItemModel* newModel, QSortFilterProxyModel* newFilter)
+{
+    newFilter->setSourceModel(newModel);
+    newFilter->setSortCaseSensitivity(Qt::CaseInsensitive);
+    view_.setModel(newFilter);
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementeditor::getDelegate()
+//-----------------------------------------------------------------------------
+ConfigurableElementDelegate* ConfigurableElementEditor::getDelegate() const
+{
+    return delegate_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementeditor::getFilterSelectionBox()
+//-----------------------------------------------------------------------------
+QCheckBox* ConfigurableElementEditor::getFilterSelectionBox() const
+{
+    return filterSelection_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementeditor::hideUnnecessaryColumns()
+//-----------------------------------------------------------------------------
+void ConfigurableElementEditor::hideUnnecessaryColumns()
+{
+    view_.setAlternatingRowColors(false);
+    view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_LEFT, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_RIGHT, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::TYPE, true);
 }

@@ -11,9 +11,21 @@
 
 #include "DesignInstantiationEditor.h"
 
+#include <mainwindow/mainwindow.h>
+
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <mainwindow/mainwindow.h>
+#include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
+#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
+#include <library/LibraryInterface.h>
+
+#include <IPXACTmodels/Design/Design.h>
 
 #include <QApplication>
 #include <QScrollArea>
@@ -22,13 +34,15 @@
 //-----------------------------------------------------------------------------
 // Function: DesignInstantiationEditor::DesignInstantiationEditor()
 //-----------------------------------------------------------------------------
-DesignInstantiationEditor::DesignInstantiationEditor(QSharedPointer<Component> component, 
-    QSharedPointer<DesignInstantiation> instantiation,
-    LibraryInterface* libHandler, QWidget* parent):
-ItemEditor(component, libHandler, parent), 
-    instantiation_(instantiation),
-    nameGroupEditor_(new NameGroupEditor(instantiation, this, tr("Design instance name and description"))),
-    designEditor_(0)
+DesignInstantiationEditor::DesignInstantiationEditor(QSharedPointer<Component> component,
+    QSharedPointer<DesignInstantiation> instantiation, LibraryInterface* libHandler,
+    QSharedPointer<ParameterFinder> componentParameterFinder, QWidget* parent):
+ItemEditor(component, libHandler, parent),
+instantiation_(instantiation),
+nameGroupEditor_(new NameGroupEditor(instantiation, this, tr("Design instance name and description"))),
+designEditor_(0),
+elementEditor_(0),
+designParameterFinder_(new ListParameterFinder())
 {
     // find the main window for VLNV editor.
     QWidget* parentW = NULL;
@@ -42,6 +56,24 @@ ItemEditor(component, libHandler, parent),
         }
     }
 
+    QSharedPointer<ConfigurableElementFinder> elementFinder(new ConfigurableElementFinder());
+
+    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
+    multiFinder->addFinder(componentParameterFinder);
+    multiFinder->addFinder(elementFinder);
+
+    QSharedPointer<IPXactSystemVerilogParser> multiParser(new IPXactSystemVerilogParser(multiFinder));
+    QSharedPointer<IPXactSystemVerilogParser> designParameterParser(
+        new IPXactSystemVerilogParser(designParameterFinder_));
+
+    ComponentParameterModel* designParametersModel = new ComponentParameterModel(componentParameterFinder, this);
+    designParametersModel->setExpressionParser(designParameterParser);
+
+    elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder, multiFinder,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designParameterFinder_)), multiParser,
+        designParameterParser, designParametersModel, this);
+
     designEditor_ = new VLNVEditor(VLNV::DESIGN, libHandler, parentW, this);
     designEditor_->setTitle(tr("Design reference"));
     designEditor_->setMandatory(true);
@@ -50,8 +82,13 @@ ItemEditor(component, libHandler, parent),
     connect(nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(designEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHierRefChange()), Qt::UniqueConnection);
    
-    refresh();
+    connect(elementEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(elementEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(elementEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    refresh();
     setupLayout();
 }
 
@@ -69,6 +106,7 @@ void DesignInstantiationEditor::refresh()
 {
 	nameGroupEditor_->refresh();
 	designEditor_->setVLNV(*instantiation_->getDesignReference());
+    setupParametersAsConfigurableElements();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +115,44 @@ void DesignInstantiationEditor::refresh()
 void DesignInstantiationEditor::onHierRefChange()
 {
 	instantiation_->getDesignReference()->setVLNV(designEditor_->getVLNV());
-	emit contentChanged();
+    setupParametersAsConfigurableElements();
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignInstantiationEditor::setupParametersAsConfigurableElements()
+//-----------------------------------------------------------------------------
+void DesignInstantiationEditor::setupParametersAsConfigurableElements()
+{
+    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters;
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > newElements;
+
+    QSharedPointer<const Design> currentDesign;
+    QSharedPointer<const Document> designDocument = handler()->getModel(designEditor_->getVLNV());
+    if (designDocument)
+    {
+        currentDesign = designDocument.staticCast<const Design>();
+        if (currentDesign)
+        {
+            newParameters = currentDesign->getParameters();
+        }
+    }
+    if (instantiation_->getDesignReference())
+    {
+        newElements = instantiation_->getDesignReference()->getConfigurableElementValues();
+    }
+
+    designParameterFinder_->setParameterList(newParameters);
+
+    if (currentDesign && instantiation_->getDesignReference())
+    {
+        elementEditor_->setParameters(currentDesign->getVlnv().toString(), newParameters, newElements);
+    }
+    else
+    {
+        elementEditor_->clear();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -102,16 +177,14 @@ void DesignInstantiationEditor::setupLayout()
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    QHBoxLayout* editorLayout = new QHBoxLayout();
-    editorLayout->addWidget(nameGroupEditor_);
-    editorLayout->addWidget(designEditor_, 0, Qt::AlignTop);
-
     QWidget* topWidget = new QWidget(scrollArea);
     topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea->setWidget(topWidget);
 
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->addLayout(editorLayout);
-    topLayout->addStretch();
+    QGridLayout* topLayout = new QGridLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
+    topLayout->addWidget(nameGroupEditor_, 0, 0, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(designEditor_, 0, 1, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(elementEditor_, 1, 0, 2, 1);
+    topLayout->setRowStretch(1, 3);
 }

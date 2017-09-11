@@ -15,7 +15,7 @@
 
 #include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
 #include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.h>
-#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h>
+#include <designEditors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.h>
 #include <designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.h>
 #include <designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.h>
 
@@ -45,9 +45,9 @@ missingParametersRoot_(new rootModel()),
 unknownParametersRoot_(new rootModel()),
 elementFinder_(elementFinder)
 {
-    ConfigurableElementsModel* parametersModel (new ConfigurableElementsModel(parameterFinder, elementFinder,
+    ConfigurableElementsModel* parametersModel (new ConfigurableElementsModel(parameterFinder,
         elementExpressionFormatter, defaultValueFormatter, elementExpressionParser, defaultValueParser, this));
-    ConfigurableElementsFilter* parameterFilter (new ConfigurableElementsFilter(this));
+    ParameterConfigurableElementsFilter* parameterFilter (new ParameterConfigurableElementsFilter(this));
     parameterFilter->setSourceModel(parametersModel);
 
     parametersRoot_->elementModel_ = parametersModel;
@@ -55,8 +55,7 @@ elementFinder_(elementFinder)
     parametersRoot_->name_ = QStringLiteral("Parameters");
 
     ConfigurableElementsModel* missingParametersModel (new ConfigurableElementsModel(parameterFinder,
-        elementFinder, elementExpressionFormatter, defaultValueFormatter, elementExpressionParser,
-        defaultValueParser, this));
+        elementExpressionFormatter, defaultValueFormatter, elementExpressionParser, defaultValueParser, this));
     MissingConfigurableElementsFilter* missingParametersFilter(new MissingConfigurableElementsFilter(this));
     missingParametersFilter->setSourceModel(missingParametersModel);
 
@@ -65,9 +64,8 @@ elementFinder_(elementFinder)
     missingParametersRoot_->name_ = QStringLiteral("Missing parameters");
 
     ConfigurableElementsModel* moduleParametersModel (new ConfigurableElementsModel(parameterFinder,
-        elementFinder, elementExpressionFormatter, defaultValueFormatter, elementExpressionParser,
-        defaultValueParser, this));
-    ConfigurableElementsFilter* moduleParameterFilter (new ConfigurableElementsFilter(this));
+        elementExpressionFormatter, defaultValueFormatter, elementExpressionParser, defaultValueParser, this));
+    ParameterConfigurableElementsFilter* moduleParameterFilter (new ParameterConfigurableElementsFilter(this));
     moduleParameterFilter->setSourceModel(moduleParametersModel);
 
     moduleParametersRoot_->elementModel_ = moduleParametersModel;
@@ -75,8 +73,7 @@ elementFinder_(elementFinder)
     moduleParametersRoot_->name_ = QStringLiteral("Module parameters");
 
     ConfigurableElementsModel* unkownParametersModel (new ConfigurableElementsModel(parameterFinder,
-        elementFinder, elementExpressionFormatter, defaultValueFormatter, elementExpressionParser,
-        defaultValueParser, this));
+        elementExpressionFormatter, defaultValueFormatter, elementExpressionParser, defaultValueParser, this));
     MissingConfigurableElementsFilter* unknownParametersFilter(new MissingConfigurableElementsFilter(this));
     unknownParametersFilter->setSourceModel(unkownParametersModel);
 

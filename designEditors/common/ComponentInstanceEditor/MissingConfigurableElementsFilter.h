@@ -12,7 +12,7 @@
 #ifndef MISSINGCONFIGURABLESELEMENTFILTER_H
 #define MISSINGCONFIGURABLESELEMENTFILTER_H
 
-#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h>
+#include <designEditors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.h>
 
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 //! A filter class for displaying unknown configurable elements.
 //-----------------------------------------------------------------------------
-class MissingConfigurableElementsFilter : public ConfigurableElementsFilter
+class MissingConfigurableElementsFilter : public ParameterConfigurableElementsFilter
 {
     Q_OBJECT
 

@@ -51,7 +51,6 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] parameterFinder                         Finds parameters.
-	 *      @param [in] elementFinder                           Finds configurable elements.
 	 *      @param [in] configurableElementExpressionFormatter  Formatter for configurable elements.
 	 *      @param [in] defaultValueFormatter                   Formatter for default values.
 	 *      @param [in] configurableElementExpressionParser     Parses expressions in configurable element values.
@@ -59,7 +58,6 @@ public:
 	 *      @param [in] parent                                  Pointer to the owner of this model.
 	 */
 	ConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder, 
-        QSharedPointer<ConfigurableElementFinder> elementFinder,
         QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter,
         QSharedPointer<ExpressionFormatter> defaultValueFormatter,
         QSharedPointer<ExpressionParser> configurableElementExpressionParser,

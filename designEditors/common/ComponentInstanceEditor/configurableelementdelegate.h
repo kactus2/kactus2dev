@@ -310,6 +310,13 @@ private:
      */
     void connectElementRemoveCommand(QSharedPointer<ConfigurableElementRemoveCommand> removeCommand);
 
+    /*!
+     *  Add the selected command to the command stack and redo the command.
+     *
+     *      @param [in] newCommand  The selected command.
+     */
+    void addCommandToStackAndRedo(QSharedPointer<QUndoCommand> newCommand) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

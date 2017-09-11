@@ -32,15 +32,18 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-     *      @param [in] validator               The validator for design instantiation.
-	 *      @param [in] parent                  The parent item.
+	 *      @param [in] model                       The model that owns the items.
+	 *      @param [in] libHandler                  The instance that manages the library.
+	 *      @param [in] component                   The component being edited.
+     *      @param [in] validator                   The validator for design instantiation.
+     *      @param [in] componentParameterFinder    Finder for component parameters.
+     *      @param [in] referenceCounter            Handles the usage count of parameters.
+	 *      @param [in] parent                      The parent item.
 	 */
 	DesignInstantiationsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
         QSharedPointer<Component> component, QSharedPointer<InstantiationsValidator> validator,
-        ComponentEditorItem* parent);
+        QSharedPointer<ParameterFinder> componentParameterFinder,
+        QSharedPointer<ReferenceCounter> referenceCounter, ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~DesignInstantiationsItem();
@@ -81,6 +84,9 @@ private:
 
     //! Validator for design instantiations.
     QSharedPointer<InstantiationsValidator> validator_;
+
+    //! The finder for component parameters.
+    QSharedPointer<ParameterFinder> componentParameterFinder_;
 };
 
 #endif // DESIGNINSTANTIATIONSITEM_H

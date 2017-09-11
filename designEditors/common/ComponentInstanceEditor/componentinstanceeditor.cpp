@@ -14,6 +14,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include <designEditors/common/DesignCompletionModel.h>
 #include <designEditors/common/TopComponentParameterFinder.h>
@@ -27,6 +28,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 #include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
 
@@ -50,24 +52,27 @@ QWidget(parent),
     instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
     elementFinder_(new ConfigurableElementFinder()),
     topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0))),
-    completionModel_(0),
+    designParameterFinder_(new ListParameterFinder()),
     topComponent_(),
     containingDesign_()
 {
     QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
     multiFinder->addFinder(elementFinder_);
-    multiFinder->addFinder(topFinder_);
+    multiFinder->addFinder(designParameterFinder_);
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(multiFinder));
     QSharedPointer<IPXactSystemVerilogParser> instanceParser (new IPXactSystemVerilogParser(instanceFinder_));
 
-    completionModel_ = new DesignCompletionModel(topFinder_, multiFinder, this); 
-    completionModel_->setExpressionParser(expressionParser);
+    QSharedPointer<IPXactSystemVerilogParser> designParameterParser(
+        new IPXactSystemVerilogParser(designParameterFinder_));
 
-    configurableElements_ = new ConfigurableElementEditor(elementFinder_, multiFinder, 
+    ComponentParameterModel* completionModel = new ComponentParameterModel(designParameterFinder_, this);
+    completionModel->setExpressionParser(designParameterParser);
+
+    configurableElements_ = new ComponentInstanceConfigurableElementsEditor(elementFinder_, multiFinder, 
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instanceFinder_)),
-        expressionParser, instanceParser, completionModel_, this);
+        expressionParser, instanceParser, completionModel, this);
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
@@ -103,8 +108,9 @@ ComponentInstanceEditor::~ComponentInstanceEditor()
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::setComponentInstance()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem, QSharedPointer<IEditProvider> editProvider,
-    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, QString const& activeViewName)
+void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
+    QSharedPointer<IEditProvider> editProvider, QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration, QString const& activeViewName)
 {
 	Q_ASSERT(componentItem);
 
@@ -122,9 +128,9 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
                    this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
+    designParameterFinder_->setParameterList(design->getParameters());
     containingDesign_ = design;
-	component_ = componentItem
-;
+	component_ = componentItem;
 	instanceFinder_->setComponent(componentItem->componentModel());
 
     QString instanceViewName = QString();

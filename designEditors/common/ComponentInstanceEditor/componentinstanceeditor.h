@@ -12,8 +12,6 @@
 #ifndef COMPONENTINSTANCEEDITOR_H
 #define COMPONENTINSTANCEEDITOR_H
 
-#include "configurableelementeditor.h"
-
 #include <common/IEditProvider.h>
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
@@ -21,6 +19,8 @@
 #include <editors/ComponentEditor/software/PropertyValueEditor.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
+
+#include <designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.h>
 
 #include <QWidget>
 #include <QComboBox>
@@ -33,6 +33,7 @@ class TopComponentParameterFinder;
 class Design;
 class DesignCompletionModel;
 class View;
+class ListParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of a component instance within a design.
@@ -139,7 +140,7 @@ private:
     QLabel* activeViewLabel_;
 
 	//! The widget to set the configurable elements of a component instance.
-	ConfigurableElementEditor* configurableElements_;
+    ComponentInstanceConfigurableElementsEditor* configurableElements_;
 
     //! SW group.
     QGroupBox* swGroup_;
@@ -162,7 +163,8 @@ private:
     //! The parameter finder for component instances.
     QSharedPointer<TopComponentParameterFinder> topFinder_;
 
-    DesignCompletionModel* completionModel_;
+    //! The parameter finder for design.
+    QSharedPointer<ListParameterFinder> designParameterFinder_;
 
     //! The current top component.
     QSharedPointer<Component> topComponent_;

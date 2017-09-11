@@ -19,20 +19,20 @@
 //-----------------------------------------------------------------------------
 // Function: DesignInstantiationsItem::DesignInstantiationsItem()
 //-----------------------------------------------------------------------------
-DesignInstantiationsItem::DesignInstantiationsItem(ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component, 
-    QSharedPointer<InstantiationsValidator> validator,
+DesignInstantiationsItem::DesignInstantiationsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+    QSharedPointer<Component> component, QSharedPointer<InstantiationsValidator> validator,
+    QSharedPointer<ParameterFinder> componentParameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    validator_(validator)
+validator_(validator),
+componentParameterFinder_(componentParameterFinder)
 {
     setObjectName(tr("DesignInstantiationsItem"));
 
     foreach(QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
     {
         childItems_.append(QSharedPointer<SingleDesignInstantiationItem>(new SingleDesignInstantiationItem(model,
-            libHandler, component, instantiation, validator,this)));
+            libHandler, component, instantiation, validator, componentParameterFinder, referenceCounter, this)));
     }
 }
 
@@ -86,8 +86,8 @@ void DesignInstantiationsItem::createChild(int index)
     QSharedPointer<DesignInstantiation> instantiation = component_->getDesignInstantiations()->at(index);
 
     QSharedPointer<SingleDesignInstantiationItem> child(QSharedPointer<SingleDesignInstantiationItem>(
-        new SingleDesignInstantiationItem(model_,
-        libHandler_, component_, instantiation, validator_, this)));
+        new SingleDesignInstantiationItem(model_, libHandler_, component_, instantiation, validator_,
+        componentParameterFinder_, referenceCounter_, this)));
     child->setLocked(locked_);
 
     childItems_.insert(index, child);

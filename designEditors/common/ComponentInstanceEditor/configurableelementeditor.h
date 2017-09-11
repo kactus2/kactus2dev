@@ -26,6 +26,7 @@
 #include <QGroupBox>
 #include <QSharedPointer>
 #include <QCheckBox>
+#include <QSortFilterProxyModel>
 
 class ExpressionParser;
 class ParameterFinder;
@@ -43,62 +44,81 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] elementFinder                   The finder for the configurable element values.
 	 *      @param [in] parameterFinder                 The finder for configurable elements and top parameters.
 	 *      @param [in] configurableElementFormatter    Formats referencing expressions in configurable elements.
-	 *      @param [in] instanceExpressionFormatter     Formats referencing expressions in component instance.
-	 *      @param [in] expressionParser                Solves expressions in configurable elements.
-	 *      @param [in] instanceParser                  Solves expressions in default values (component instance).
 	 *      @param [in] completionModel                 The completion model for selecting parameter references.
 	 *      @param [in] parent                          The parent widget.
 	 */
-    ConfigurableElementEditor(QSharedPointer<ConfigurableElementFinder> elementFinder,
-        QSharedPointer<ParameterFinder> parameterFinder, 
-        QSharedPointer<ExpressionFormatter> configurableElementFormatter,
-        QSharedPointer<ExpressionFormatter> instanceExpressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionParser> instanceParser,
-        QAbstractItemModel* completionModel, QWidget *parent);
+    ConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> configurableElementFormatter, QAbstractItemModel* completionModel,
+        QWidget *parent);
 	
 	//! The destructor.
 	virtual ~ConfigurableElementEditor();
 
 	/*!
-     *  Set the component instance to be edited.
-	 *
-	 *      @param [in] component           Pointer to the component referenced by the component instance.
-     *      @param [in] instance            Pointer to the component instance to edit.
-     *      @param [in] viewConfiguration   Pointer to the view configuration of the component instance.
-     *      @param [in] editProvider        Pointer to the editing capabilities.
-	 */
-    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
-        QSharedPointer<ViewConfiguration> viewConfiguration, QSharedPointer<IEditProvider> editProvider);
-
-	/*!
      *  Clear the editor from all data.
 	 */
-	void clear();
+	virtual void clear() = 0;
 
 signals:
 
 	//! Emitted when contents of the editor changes.
 	void contentChanged();
 
-private:
-	//! No copying.
-	ConfigurableElementEditor(const ConfigurableElementEditor& other);
+protected:
 
-	//! No assignment.
+    /*!
+     *  Set the model and filter for the view.
+     *
+     *      @param [in] newModel    The new model.
+     *      @param [in] newFilter   The new filter.
+     */
+    virtual void setModel(QAbstractItemModel* newModel, QSortFilterProxyModel* newFilter);
+
+    /*!
+     *  Expand all of the items contained the view.
+     */
+    void expandView();
+
+    /*!
+     *  Get the configurable element delegate.
+     *
+     *      @return The configurable element delegate.
+     */
+    ConfigurableElementDelegate* getDelegate() const;
+
+    /*!
+     *  Get the immediate filter selection box.
+     *
+     *      @return The selection box determining the visibility of immediate configurable element values.
+     */
+    QCheckBox* getFilterSelectionBox() const;
+
+    /*!
+     *  Hide the columns that should not be seen in the configurable elements editor.
+     */
+    void hideUnnecessaryColumns();
+
+protected slots:
+
+    /*!
+     *  Set the first column for the parent items to span the entire table.
+     */
+    void setFirstParentColumnsSpannable();
+
+private:
+    //! No copying. //! No assignment.
+	ConfigurableElementEditor(const ConfigurableElementEditor& other);
 	ConfigurableElementEditor& operator=(const ConfigurableElementEditor& other);
 
 	//! The widget to display the contents of the model.
     ConfigurableElementsView view_;
 
-	//! The model to edit the configurable elements of a component instance.
-    ComponentInstanceConfigurableElementsModel model_;
-
     //! The delegate used in the display widget.
     ConfigurableElementDelegate* delegate_;
 
+    //! The immediate configurable element values filter check box.
     QCheckBox* filterSelection_;
 };
 

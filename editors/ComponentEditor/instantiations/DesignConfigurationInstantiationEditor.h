@@ -15,11 +15,13 @@
 #include <editors/ComponentEditor/itemeditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
-class DesignConfigurationInstantiation;
-class NameGroupEditor;
 class VLNVEditor;
+class NameGroupEditor;
 class ParameterFinder;
 class ExpressionFormatter;
+class ListParameterFinder;
+class DesignConfigurationInstantiation;
+class InstantiationConfigurableElementEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for design configuration instantiations.
@@ -70,6 +72,18 @@ private:
     //! Setup the layout.
     void setupLayout();
 
+    /*!
+     *  Setup the design configuration parameters as configurable element values.
+     */
+    void setupParametersAsConfigurableElements();
+
+    /*!
+     *  Create configurable element editor.
+     *
+     *      @param [in] parameterFinder     The component parameter finder.
+     */
+    void createConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -85,6 +99,12 @@ private:
 
     //! Contains the parameters editor.
     ParameterGroupBox parameters_;
+
+    //! Contains the configurable element values editor.
+    InstantiationConfigurableElementEditor* elementEditor_;
+
+    //! Parameter finder for the referenced design configuration.
+    QSharedPointer<ListParameterFinder> designConfigurationParameterFinder_;
 };
 
 //-----------------------------------------------------------------------------

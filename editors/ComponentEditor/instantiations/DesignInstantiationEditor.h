@@ -16,8 +16,14 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
-class DesignInstantiation;
 class NameGroupEditor;
+class ParameterFinder;
+class ExpressionParser;
+class DesignInstantiation;
+class ListParameterFinder;
+class ExpressionFormatter;
+class DesignCompletionModel;
+class InstantiationConfigurableElementEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for design configuration instantiation.
@@ -31,14 +37,15 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component       The component being edited.
-     *      @param [in] instantiation	The instantiation being edited.	
-     *      @param [in] libHandler      The available IP-XACT library.
-     *      @param [in] parent          The parent widget.
+     *      @param [in] component                   The component being edited.
+     *      @param [in] instantiation	            The instantiation being edited.	
+     *      @param [in] libHandler                  The available IP-XACT library.
+     *      @param [in] componentParameterFinder    Finds the parameters contained within the component.
+     *      @param [in] parent                      The parent widget.
      */
-	DesignInstantiationEditor(QSharedPointer<Component> component, 
-        QSharedPointer<DesignInstantiation> instantiation,
-		LibraryInterface* libHandler, QWidget* parent);
+	DesignInstantiationEditor(QSharedPointer<Component> component,
+        QSharedPointer<DesignInstantiation> instantiation, LibraryInterface* libHandler,
+        QSharedPointer<ParameterFinder> componentParameterFinder, QWidget* parent);
 
     //! Destructor.
     virtual ~DesignInstantiationEditor();
@@ -64,6 +71,11 @@ private:
     //! Setup the layout.
     void setupLayout();
 
+    /*!
+     *  Setup the parameters as configurable element values.
+     */
+    void setupParametersAsConfigurableElements();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -76,6 +88,12 @@ private:
 
     //! VLNV editor for the hierarchy reference.
     VLNVEditor* designEditor_;
+
+    //! The configurable element value editor.
+    InstantiationConfigurableElementEditor* elementEditor_;
+
+    //! Finder for design parameters.
+    QSharedPointer<ListParameterFinder> designParameterFinder_;
 };
 
 //-----------------------------------------------------------------------------

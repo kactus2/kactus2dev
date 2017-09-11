@@ -15,7 +15,7 @@
 // Function: MissingConfigurableElementsFilter::MissingConfigurableElementsFilter()
 //-----------------------------------------------------------------------------
 MissingConfigurableElementsFilter::MissingConfigurableElementsFilter(QObject* parent):
-ConfigurableElementsFilter(parent)
+ParameterConfigurableElementsFilter(parent)
 {
 
 }

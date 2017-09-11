@@ -256,6 +256,13 @@ private:
     bool referenceExistsInSingleSegment(QSharedPointer<Segment> segment) const;
 
     /*!
+     *  Check if a reference exists in instantiations.
+     *
+     *      @return True, if there is a reference in the instantiations to this parameter, otherwise false.
+     */
+    bool referenceExistsInInstantiations() const;
+
+    /*!
      *  Check if a reference exists in component instantiations.
      *
      *      @return True, if a reference is found, false otherwise.
@@ -272,9 +279,93 @@ private:
     bool referenceExistsInSingleComponentInstantiation(QSharedPointer<ComponentInstantiation> instantiation) const;
 
     /*!
-     *  Create references for component instantiations.
+     *  Check if a reference exists in a design configuration instantiations.
+     *
+     *      @return True, if a reference is found, false otherwise.
      */
-    void createReferencesForComponentInstantiations();
+    bool referenceExistsInDesignConfigurationInstantiations() const;
+
+    /*!
+     *  Check if a reference exists in a single design configuration instantiation.
+     *
+     *      @param [in] instantiation   The selected design configuration instantiation.
+     *
+     *      @return True, if a reference is found, false otherwise.
+     */
+    bool referenceExistsInSingleDesignConfigurationInstantiation(
+        QSharedPointer<DesignConfigurationInstantiation> instantiation) const;
+
+    /*!
+     *  Check if a reference exists in design instantiations.
+     *
+     *      @return True, if there is a reference to this parameter in the design instantiations , otherwise false.
+     */
+    bool referenceExistsInDesignInstantiations() const;
+
+    /*!
+     *  Check if a reference exists in a single design instantiation.
+     *
+     *      @param [in] instantiation   The selected design instantiation.
+     *
+     *      @return True, if there is a reference to this parameter in the design instantiation, otherwise false.
+     */
+    bool referenceExistsInSingleDesignInstantiation(QSharedPointer<DesignInstantiation> instantiation) const;
+
+    /*!
+     *  Check if a reference exists in configurable element values.
+     *
+     *      @param [in] elementValues   List of the configurable element values.
+     *
+     *      @return True, if there is a reference to this parameter in the configurable element values, otherwise
+     *              false.
+     */
+    bool referenceExistsInConfigurableElementValues(
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > elementValues) const;
+
+    /*!
+     *  Check if a reference exists in a single configurable element value.
+     *
+     *      @param [ib] element     The selected configurable element value.
+     *
+     *      @return True, if there is a reference to this parameter in the configurable element value, otherwise
+     *              false.
+     */
+    bool referenceExistsInSingleConfigurableElementValue(QSharedPointer<ConfigurableElementValue> element) const;
+
+    /*!
+     *  Create references for instantiations.
+     */
+    void createReferencesForInstantiations();
+
+    /*!
+     *  Create references for component instantiations.
+     *
+     *      @param [in] topInstantiationsItem   The parent tree item.
+     */
+    void createReferencesForComponentInstantiations(QTreeWidgetItem* topInstantiationsItem);
+
+    /*!
+     *  Create references for design configuration instantiations.
+     *
+     *      @param [in] topInstantiationsItem   The parent tree item.
+     */
+    void createReferencesForDesignConfigurationInstantiations(QTreeWidgetItem* topInstantiationsItem);
+
+    /*!
+     *  Create references for design instantiations.
+     *
+     *      @param [in] topInstantiationsItem   The parent tree item.
+     */
+    void createReferencesForDesignInstantiations(QTreeWidgetItem* topInstantiationsItem);
+
+    /*!
+     *  Create references for configurable element values.
+     *
+     *      @param [in] elements    List of the configurable element values.
+     *      @param [in] parent      The parent tree item.
+     */
+    void createReferencesForConfigurableElementValues(
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > elements, QTreeWidgetItem* parent);
 
     /*!
      *  Check if a reference exists in ports.
