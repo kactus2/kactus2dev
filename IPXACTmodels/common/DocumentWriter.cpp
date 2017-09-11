@@ -77,7 +77,7 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
 
     // Also write the schema location.
     writer.writeAttribute(QStringLiteral("xsi:schemaLocation"), 
-        QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd"));
+        QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd"));
 }
 
 //-----------------------------------------------------------------------------
