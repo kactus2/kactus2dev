@@ -32,7 +32,9 @@
         <li>
             <b>Auto connect.</b> Creates a single port map for each logical signal that does not have a port map.
             A suitable physical port is selected by matching the direction, size and the name of the logical signal
-            to physical ports.
+            to physical ports. If <b>Physical port prefix</b> has been set, physical ports starting with the
+            given string will be prioritized in the connections. For example using prefix "master" will connect
+            logical port 'CLK' to physical port 'master_clk' over ports 'clk', 'slave_clk' etc.
         </li>
     </ul>
 
@@ -53,15 +55,15 @@
     <h3>Physical port filters</h3>
     <ul>
         <li>
-            <b>Port name</b> allows regular expressions to filter ports not matching the given expression.
+            <b>Name</b> allows regular expressions to filter ports not matching the given expression.
         </li>
         <li>
             <b>Direction</b> allows the selection of a port direction and filtering all the other ports with
             different directions.
         </li>
         <li>
-            Connected ports can also be hidden through <b>Hide connected ports</b>. By default, this filter is on,
-            but can be removed.
+            Connected ports can also be hidden through option <b>Hide connected</b>. By default, this filter is on,
+            but can be changed.
         </li>
     </ul>
 	

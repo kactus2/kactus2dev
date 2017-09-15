@@ -21,11 +21,11 @@ double JaroWinklerAlgorithm::calculateJaroDistance(QString const& firstString, Q
     QString firstMatch = Details::findMatchingCharacters(firstString, secondString);
     QString secondMatch = Details::findMatchingCharacters(secondString, firstString);
 
-    double matchingCharacters = firstMatch.size();
+    double matchingCharacters = qMin(firstMatch.length(), secondMatch.length());
     
     double jaroDistance = 0;
 
-    if (matchingCharacters != 0 && firstMatch.size() == secondMatch.size())
+    if (matchingCharacters != 0)
     {
         double transpositions = Details::getTranspositions(firstMatch, secondMatch);
 
@@ -62,10 +62,10 @@ QString JaroWinklerAlgorithm::Details::findMatchingCharacters(QString const& sea
 
     QString matchingCharacters = "";
 
-    for (int i = 0; i < searched.size(); ++i)
+    for (int i = 0; i < searched.length(); ++i)
     {
         int startPosition = qMax(0, i - matchingDistance);
-        int endPosition = qMin(i + matchingDistance, reference.size() - 1);
+        int endPosition = qMin(i + matchingDistance, reference.length() - 1);
 
         int sectionLength = endPosition - startPosition + 1;
 
@@ -85,13 +85,19 @@ QString JaroWinklerAlgorithm::Details::findMatchingCharacters(QString const& sea
 int JaroWinklerAlgorithm::Details::getTranspositions(QString const& firstMatch, QString const& secondMatch)
 {
     int transpositions = 0;
-    for (int i = 0; i < firstMatch.size(); i++)
+
+    int minLenght = qMin(firstMatch.length(), secondMatch.length());
+    
+    for (int i = 0; i < minLenght; i++)
     {
         if (firstMatch.at(i) != secondMatch.at(i))
         {
             transpositions++;
         }
     }
+
+    int maxLenght = qMax(firstMatch.length(), secondMatch.length());
+    transpositions += maxLenght - minLenght;
 
     return transpositions;
 }

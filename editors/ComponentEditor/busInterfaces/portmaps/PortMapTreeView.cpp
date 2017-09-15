@@ -22,7 +22,6 @@
 #include <QApplication>
 #include <QDropEvent>
 #include <QMimeData>
-#include <QSortFilterProxyModel>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeView::PortMapTreeView()
@@ -168,14 +167,8 @@ void PortMapTreeView::onRemoveAllPortMaps()
 
         clearSelection();
 
-        QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
         foreach (QModelIndex index, indexList)
         {
-            if (sortProxy != 0)
-            {
-                index = sortProxy->mapToSource(index);
-            }
-
             if (!index.parent().isValid())
             {
                 emit removeAllChildItemsFromIndex(index);
@@ -213,16 +206,9 @@ void PortMapTreeView::onRemovePortMap()
             previousRow = index.row();
         }
 
-        QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
-
         for (int i = 0; i < rowCount; ++i)
         {
             QModelIndex index = removedIndexes.first();
-
-            if (sortProxy != 0)
-            {
-                index = sortProxy->mapToSource(index);
-            }
 
             if (index.parent().isValid())
             {
@@ -243,37 +229,11 @@ void PortMapTreeView::onRemovePortMap()
 void PortMapTreeView::onAddPortMap()
 {
     QModelIndexList indexes = selectedIndexes();
-    QModelIndex positionToAdd;
 
-    int rowCount = 1;
-
-    if (!indexes.isEmpty())
+    foreach (QModelIndex index, indexes)
     {
-        qSort(indexes);
-
-        positionToAdd = indexes.first();
-
-        QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
-        if (sortProxy)
-        {
-            positionToAdd = sortProxy->mapToSource(positionToAdd);
-        }
-
-        int previousRow = indexes.first().row();
-        foreach (QModelIndex index, indexes)
-        {
-            if (index.row() != previousRow)
-            {
-                ++rowCount;
-            }
-
-            previousRow = index.row();
-        }
-    }
-
-    for (int i = 0; i < rowCount; ++i)
-    {
-        emit (addItem(positionToAdd));
+        emit addItem(index);
+        expand(index);
     }
 }
 
