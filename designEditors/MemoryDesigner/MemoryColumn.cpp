@@ -158,7 +158,7 @@ qreal MemoryColumn::getMaximumNeededChangeInWidth() const
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::compressGraphicsItems()
 //-----------------------------------------------------------------------------
-void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPlacement, MemoryColumn* spaceColumn,
+void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, qreal& spaceYPlacement, MemoryColumn* spaceColumn,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
     QSharedPointer<QVector<MemoryConnectionItem*> > movedConnectionItems)
 {
@@ -260,7 +260,7 @@ MainMemoryGraphicsItem* MemoryColumn::getFirstConnectedAddressSpaceItem(MainMemo
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::extendMemoryItem()
 //-----------------------------------------------------------------------------
-void MemoryColumn::extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, int& spacePlacementY)
+void MemoryColumn::extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, qreal& spacePlacementY)
 {
     MemoryConnectionItem* firstConnection = graphicsItem->getFirstConnection();
     MemoryConnectionItem* lastConnection = graphicsItem->getLastConnection();
@@ -318,14 +318,17 @@ void MemoryColumn::extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, int& s
 //-----------------------------------------------------------------------------
 void MemoryColumn::moveUnconnectedMemoryItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems)
 {
-    int firstPosition = getUnconnectedItemPosition(placedItems);
+    qreal currentPosition = getUnconnectedItemPosition(placedItems);
 
     foreach (QGraphicsItem* graphicsItem, getItems())
     {
         MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
         if (memoryItem && memoryItem->isVisible() && !placedItems->contains(memoryItem))
         {
-            moveGraphicsItem(memoryItem, firstPosition, MemoryDesignerConstants::UNCONNECTED_ITEM_INTERVAL);
+            setGraphicsItemPosition(memoryItem, currentPosition);
+
+            currentPosition +=
+                memoryItem->getHeightWithSubItems() + MemoryDesignerConstants::UNCONNECTED_ITEM_INTERVAL;
         }
     }
 }
@@ -372,13 +375,11 @@ quint64 MemoryColumn::getUnconnectedItemPosition(QSharedPointer<QVector<MainMemo
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryColumn::moveGraphicsItem()
+// Function: MemoryColumn::setGraphicsItemPosition()
 //-----------------------------------------------------------------------------
-void MemoryColumn::moveGraphicsItem(MainMemoryGraphicsItem* memoryItem, int& placementY, const qreal itemInterval)
+void MemoryColumn::setGraphicsItemPosition(MainMemoryGraphicsItem* memoryItem, qreal currentPosition)
 {
-    memoryItem->setY(placementY);
-
-    placementY += memoryItem->getHeightWithSubItems() + itemInterval;
+    memoryItem->setY(currentPosition);
 }
 
 //-----------------------------------------------------------------------------

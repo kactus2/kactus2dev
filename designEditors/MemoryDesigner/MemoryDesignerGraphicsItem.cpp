@@ -444,6 +444,43 @@ void MemoryDesignerGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCut
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::compressToUnCutCoordinates()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::compressToUnCutCoordinates(QVector<qreal> unCutCoordinates,
+    const qreal CUTMODIFIER)
+{
+    qreal cutArea = 0;
+
+    qreal itemTop = sceneBoundingRect().top();
+    qreal itemLow = sceneBoundingRect().bottom();
+
+    qreal beginArea = unCutCoordinates.first();
+    foreach (qreal endArea, unCutCoordinates)
+    {
+        if (beginArea >= itemTop && endArea <= itemLow)
+        {
+            qreal areaDifference = endArea - beginArea - CUTMODIFIER;
+            if (areaDifference > 0)
+            {
+                cutArea += areaDifference;
+            }
+        }
+        else if (endArea > itemLow)
+        {
+            break;
+        }
+
+        beginArea = endArea;
+    }
+
+    if (cutArea > 0)
+    {
+        qreal condensedHeight = boundingRect().height() - cutArea;
+        condense(condensedHeight);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::contextMenuEvent()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)

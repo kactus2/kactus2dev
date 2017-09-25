@@ -193,7 +193,6 @@ void MemoryConnectionItem::condenseToUnCutAddresses(
     if (cutArea > 0)
     {
         qreal condensedHeight = boundingRect().height() - (cutArea * MemoryDesignerConstants::RANGEINTERVAL);
-
         setCondensedHeight(condensedHeight);
     }
 
@@ -216,6 +215,65 @@ void MemoryConnectionItem::compressEndItem(QSharedPointer<QVector<MainMemoryGrap
     {
         condensedItems->append(startItem_);
         startItem_->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::condenseToUnCutCoordinates()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::condenseToUnCutCoordinates(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems, QVector<qreal> unCutCoordinates,
+    const qreal CUTMODIFIER)
+{
+    qreal cutArea = 0;
+    qreal connectionTop = sceneBoundingRect().top();
+    qreal connectionLow = sceneBoundingRect().bottom();
+    qreal previousCoordinate = connectionTop;
+    foreach (qreal coordinate, unCutCoordinates)
+    {
+        if (coordinate > connectionTop && coordinate <= connectionLow)
+        {
+            qreal singleCut = coordinate - previousCoordinate - CUTMODIFIER;
+            if (singleCut > 0)
+            {
+                cutArea += singleCut;
+            }
+
+            previousCoordinate = coordinate;
+        }
+
+        if (coordinate > connectionLow)
+        {
+            break;
+        }
+    }
+
+    if (cutArea > 0)
+    {
+        qreal condensedHeight = boundingRect().height() - cutArea;
+        setCondensedHeight(condensedHeight);
+    }
+
+    compressEndItemToCoordinates(condensedItems, unCutCoordinates, CUTMODIFIER);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::compressEndItemToCoordinates()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::compressEndItemToCoordinates(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems, QVector<qreal> unCutCoordinates,
+    const qreal CUTMODIFIER)
+{
+    if (!condensedItems->contains(endItem_))
+    {
+        condensedItems->append(endItem_);
+        endItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+    }
+
+    if (!condensedItems->contains(startItem_))
+    {
+        condensedItems->append(startItem_);
+        startItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
     }
 }
 
@@ -286,6 +344,70 @@ void MemoryConnectionItem::moveCutConnectedItemWithoutConnections(
         if (itemBaseAddress >= cutAreaEnd)
         {
             connectedItem->moveBy(0, transferY);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getMovementValuesForItems()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::modifyMovementValuesForItems(
+    QSharedPointer<QMap<MainMemoryGraphicsItem*, qreal> > itemMovementValues,
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems, MainMemoryGraphicsItem* movementOrigin,
+    qreal cutAreaBegin, qreal cutAreaEnd, qreal transferY)
+{
+    qreal connectionTop = sceneBoundingRect().top();
+
+    MainMemoryGraphicsItem* connectionStartItem = getConnectionStartItem();
+    MainMemoryGraphicsItem* connectionEndItem = getConnectionEndItem();
+    if (connectionStartItem && connectionEndItem)
+    {
+        qreal startItemTop = connectionStartItem->sceneBoundingRect().top();
+        qreal endItemTop = connectionEndItem->sceneBoundingRect().top();
+
+        if (connectionTop >= cutAreaEnd)
+        {
+            if (cutAreaBegin >= startItemTop)
+            {
+                moveConnectionWithoutConnectedItemsInY(transferY);
+            }
+
+            modifySingleItemMovementValue(itemMovementValues, movedItems, movementOrigin, connectionStartItem,
+                startItemTop, transferY, cutAreaEnd);
+            modifySingleItemMovementValue(itemMovementValues, movedItems, movementOrigin, connectionEndItem,
+                endItemTop, transferY, cutAreaEnd);
+        }
+        else
+        {
+            if (startItemTop >= cutAreaBegin)
+            {
+                modifySingleItemMovementValue(itemMovementValues, movedItems, movementOrigin, connectionStartItem,
+                    startItemTop, transferY, cutAreaEnd);
+            }
+            if (endItemTop >= cutAreaEnd)
+            {
+                modifySingleItemMovementValue(itemMovementValues, movedItems, movementOrigin, connectionEndItem,
+                    endItemTop, transferY, cutAreaEnd);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::modifySingleItemMovementValue()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::modifySingleItemMovementValue(
+    QSharedPointer<QMap<MainMemoryGraphicsItem*, qreal> > itemMovementValues,
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems, MainMemoryGraphicsItem* movementOrigin,
+    MainMemoryGraphicsItem* connectedItem, qreal itemTop, qreal transferY, qreal cutAreaEnd)
+{
+    if (connectedItem != movementOrigin && !movedItems->contains(connectedItem))
+    {
+        if (itemTop >= cutAreaEnd)
+        {
+            movedItems->append(connectedItem);
+            qreal newMovementValue = itemMovementValues->value(connectedItem, 0) + transferY;
+            itemMovementValues->insert(connectedItem, newMovementValue);
         }
     }
 }

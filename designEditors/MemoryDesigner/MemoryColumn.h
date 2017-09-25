@@ -102,7 +102,7 @@ public:
      *      @param [in] placedSpaceItems        List of the placed address space graphics items.
      *      @param [in] movedConnectionItems    List of already moved connections.
      */
-    void compressGraphicsItems(bool condenseMemoryItems, int& spaceYPlacement, MemoryColumn* spaceColumn,
+    void compressGraphicsItems(bool condenseMemoryItems, qreal& spaceYPlacement, MemoryColumn* spaceColumn,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
         QSharedPointer<QVector<MemoryConnectionItem*> > movedConnectionItems);
 
@@ -116,11 +116,10 @@ public:
     /*!
      *  Move a memory graphics item.
      *
-     *      @param [in] memoryItem      The selected memory graphics item.
-     *      @param [in] placementY      Y-coordinate for the graphics item.
-     *      @param [in] itemInterval    Interval between the graphics items.
+     *      @param [in] memoryItem          The selected memory graphics item.
+     *      @param [in] currentPosition     The new y-coordinate for the graphics item.
      */
-    void moveGraphicsItem(MainMemoryGraphicsItem* memoryItem, int& placementY, const qreal itemInterval);
+    void setGraphicsItemPosition(MainMemoryGraphicsItem* memoryItem, qreal currentPosition);
 
     /*!
      *  Check if a memory map overlaps within this column.
@@ -187,7 +186,7 @@ private:
      *      @param [in] graphicsItem        The selected memory graphics item.
      *      @param [in] spaceYPlacement     Y-coordinate of the graphics item.
      */
-    void extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, int& spacePlacementY);
+    void extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, qreal& spacePlacementY);
 
     /*!
      *  Get the position for the unconnected memory items.

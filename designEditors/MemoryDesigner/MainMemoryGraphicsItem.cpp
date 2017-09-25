@@ -414,6 +414,20 @@ void MainMemoryGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCutAddr
 }
 
 //-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::compressToUnCutCoordinates()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER)
+{
+    if (!subItemsAreFiltered())
+    {
+        compressSubItemsToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+    }
+
+    MemoryDesignerGraphicsItem::compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+    setCompressed(true);
+}
+
+//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::changeAddressRange()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::changeAddressRange(quint64 offsetChange)

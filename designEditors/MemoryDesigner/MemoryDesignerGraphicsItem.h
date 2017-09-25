@@ -177,6 +177,14 @@ public:
     virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
     
     /*!
+     *  Compress this item to contain the selected coordinates.
+     *
+     *      @param [in] unCutCoordinates    Coordinates that remain after the compression.
+     *      @param [in] CUTMODIFIER         Modifier for the cut area.
+     */
+    virtual void compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
+
+    /*!
      *  Get the identifying information of the memory item.
      *
      *      @return The identifying information.

@@ -111,7 +111,7 @@ public:
         const MainMemoryGraphicsItem* connectedItem) const;
 
     /*!
-     *  Condense this connection to contain the selected addresses.
+     *  Condense this connection and the connected items to contain the selected addresses.
      *
      *      @param [in] condensedItems  List of all the items that have already been condensed.
      *      @param [in] uncutAddresses  The addresses that remain after the compression.
@@ -119,6 +119,16 @@ public:
      */
     void condenseToUnCutAddresses(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
         QVector<quint64> uncutAddresses, const int CUTMODIFIER);
+
+    /*!
+     *  Condense this connection and the connected items to contain the selected coordinates.
+     *
+     *      @param [in] condensedItems      List of all the items that have already been condensed.
+     *      @param [in] unCutCoordinates    The coordinates that remain after the compression.
+     *      @param [in] CUTMODIFIER         Modifier for the cut areas.
+     */
+    void condenseToUnCutCoordinates(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
+        QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
 
     /*!
      *  Move condensed connection and the connected memory items.
@@ -131,6 +141,20 @@ public:
      */
     void moveCutConnectionAndConnectedItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems,
         MainMemoryGraphicsItem* movementOrigin, quint64 cutAreaBegin, quint64 cutAreaEnd, qreal transferY);
+
+    /*!
+     *  Modify the required movement values for the connected memory items.
+     *
+     *      @param [in] itemMovementValues  Map containing the items and their movement values.
+     *      @param [in] movedItems          Memory items that have already been moved.
+     *      @param [in] movementOrigin      Origin of the movement recalculation.
+     *      @param [in] cutAreaBegin        The start of the cut area.
+     *      @param [in] cutAreaEnd          The end of the cut area.
+     *      @param [in] transferY           The amount to move in y-coordinate.
+     */
+    void modifyMovementValuesForItems(QSharedPointer<QMap<MainMemoryGraphicsItem*, qreal> > itemMovementValues,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems, MainMemoryGraphicsItem* movementOrigin,
+        qreal cutAreaBegin, qreal cutAreaEnd, qreal transferY);
 
     /*!
      *  Move the connected memory items.
@@ -155,7 +179,7 @@ private:
     MemoryConnectionItem& operator=(MemoryConnectionItem const& rhs);
 
     /*!
-     *  Compress the contained end item.
+     *  Compress the contained end item using addresses.
      *
      *      @param [in] condensedItems  Memory items that have already been condensed.
      *      @param [in] unCutAddresses  The addresses that remain after the compression.
@@ -163,6 +187,16 @@ private:
      */
     void compressEndItem(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
         QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+
+    /*!
+     *  Compress the contained end item using coordinates.
+     *
+     *      @param [in] condensedItems      Memory items that have already been condensed.
+     *      @param [in] unCutCoordinates    The addresses tha remain after the compression.
+     *      @param [in] CUTMODIFIER         Modifier for the cut areas.
+     */
+    void compressEndItemToCoordinates(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
+        QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
 
     /*!
      *  Set a new height for the memory connection.
@@ -254,6 +288,21 @@ private:
     void moveCutConnectedItemWithoutConnections(QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems,
         MainMemoryGraphicsItem* movementOrigin, MainMemoryGraphicsItem* connectedItem, quint64 itemBaseAddress,
         qreal transferY, quint64 cutAreaEnd);
+
+    /*!
+     *  Modify the movement value for a single connected memory item.
+     *
+     *      @param [in] itemMovementValues  Memory items and their current movement values.
+     *      @param [in] movedItems          The memory items that have already been moved.
+     *      @param [in] movementOrigin      Origin of the movement recalculation.
+     *      @param [in] connectedItem       The memory item to be moved.
+     *      @param [in] itemTop             Top y-coordinate of the selected memory item.
+     *      @param [in] transferY           The amount to move in y-coordinate.
+     *      @param [in] cutAreaEnd          End of the cut area.
+     */
+    void modifySingleItemMovementValue(QSharedPointer<QMap<MainMemoryGraphicsItem*, qreal> > itemMovementValues,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems, MainMemoryGraphicsItem* movementOrigin,
+        MainMemoryGraphicsItem* connectedItem, qreal itemTop, qreal transferY, qreal cutAreaEnd);
 
     /*!
      *  Move the connected items without moving connected memory connections.

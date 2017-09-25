@@ -43,6 +43,7 @@ QTreeView(parent),
     openHWDesignMenu_(new QMenu(tr("Open HW Design"), this)),
     openSWDesignAction_(new QAction(tr("Open SW Design"), this)),
     openMemoryDesignAction_(new QAction(tr("Open Memory Design"), this)),
+    openMemoryDesignMenu_(new QMenu(tr("Open Memory Design"), this)),
     openComponentAction_(new QAction(tr("Open Component"), this)),
     createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
     createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
@@ -139,10 +140,12 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                     if (!hierarchicalViewNames.isEmpty())
                     {
                         openHWDesignMenu_->clear();
+                        openMemoryDesignMenu_->clear();
                         
                         foreach(QString const& viewName, hierarchicalViewNames)
                         {
                             openHWDesignMenu_->addAction(new QAction(viewName, openHWDesignMenu_));
+                            openMemoryDesignMenu_->addAction(new QAction(viewName, openMemoryDesignMenu_));
                         }
 
                         if (hierarchicalViewNames.count() == 1)
@@ -150,13 +153,16 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                             menu.addAction(openHWDesignAction_);
                             connect(openHWDesignAction_, SIGNAL(triggered()), 
                                 openHWDesignMenu_->actions().first(), SLOT(trigger()));
+
+                            menu.addAction(openMemoryDesignAction_);
+                            connect(openMemoryDesignAction_, SIGNAL(triggered()),
+                                openMemoryDesignMenu_->actions().first(), SLOT(trigger()));
                         }
                         else
                         {
                             menu.addMenu(openHWDesignMenu_);
+                            menu.addMenu(openMemoryDesignMenu_);
                         }
-                        
-                        menu.addAction(openMemoryDesignAction_);
                     }
 
                     if (component->hasSystemViews())
@@ -404,12 +410,9 @@ void LibraryTreeView::onOpenSWDesign()
 //-----------------------------------------------------------------------------
 // Function: librarytreeview::onOpenMemoryDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeView::onOpenMemoryDesign()
+void LibraryTreeView::onOpenMemoryDesign(QAction* viewAction)
 {
-    foreach (QModelIndex const& index, selectedIndexes())
-    {
-        emit openMemoryDesign(filter_->mapToSource(index));
-    }
+    emit openMemoryDesign(filter_->mapToSource(currentIndex()), viewAction->text());
 }
 
 //-----------------------------------------------------------------------------
@@ -617,9 +620,10 @@ void LibraryTreeView::setupActions()
     openSWDesignAction_->setToolTip(tr("Open a SW design"));
     connect(openSWDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
 
-    openMemoryDesignAction_->setStatusTip(tr("Open a memory design"));
-    openMemoryDesignAction_->setToolTip(tr("Open a memory design"));
-    connect(openMemoryDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenMemoryDesign()), Qt::UniqueConnection);
+    openMemoryDesignMenu_->setStatusTip(tr("Open a Memory design"));
+    openMemoryDesignMenu_->setToolTip(tr("Open a Memory design"));
+    connect(openMemoryDesignMenu_, SIGNAL(triggered(QAction*)),	this, SLOT(onOpenMemoryDesign(QAction*)),
+        Qt::UniqueConnection);
 
     openComponentAction_->setStatusTip(tr("Open component editor"));
     openComponentAction_->setToolTip(tr("Open component editor"));

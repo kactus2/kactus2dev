@@ -462,6 +462,54 @@ QVector<quint64> SubMemoryLayout::getUnCutAddresses() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::getUnCutCoordinates()
+//-----------------------------------------------------------------------------
+QVector<qreal> SubMemoryLayout::getUnCutCoordinates() const
+{
+    QVector<qreal> unCutCoordinates;
+
+    qreal itemTop = mainGraphicsItem_->sceneBoundingRect().top();
+    unCutCoordinates.append(itemTop);
+    qreal itemLow = mainGraphicsItem_->sceneBoundingRect().bottom();
+    if (itemTop != itemLow)
+    {
+        unCutCoordinates.append(itemLow);
+    }
+
+    if (!subItemsAreFiltered())
+    {
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        while (subItemIterator.hasNext())
+        {
+            subItemIterator.next();
+            MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+            qreal subItemTop = subItem->sceneBoundingRect().top();
+            if (!unCutCoordinates.contains(subItemTop))
+            {
+                unCutCoordinates.append(subItemTop);
+            }
+
+            qreal subItemLow = subItem->sceneBoundingRect().bottom();
+            if (!unCutCoordinates.contains(subItemLow))
+            {
+                unCutCoordinates.append(subItemLow);
+            }
+
+            SubMemoryLayout* subItemLayout = dynamic_cast<SubMemoryLayout*>(subItem);
+            if (subItemLayout && !subItemLayout->subItemsAreFiltered())
+            {
+                foreach (qreal coordinate, subItemLayout->getUnCutCoordinates())
+                {
+                    unCutCoordinates.append(coordinate);
+                }
+            }
+        }
+    }
+
+    return unCutCoordinates;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::compressSubItemsToUnCutAddresses()
 //-----------------------------------------------------------------------------
 void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER)
@@ -520,5 +568,78 @@ void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAdd
         }
 
         areaBegin = areaEnd;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::compressSubItemsToUnCutCoordinates()
+//-----------------------------------------------------------------------------
+void SubMemoryLayout::compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER)
+{
+    qreal lastCoordinate = mainGraphicsItem_->sceneBoundingRect().bottom();
+
+    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+    while (subItemIterator.hasNext())
+    {
+        subItemIterator.next();
+        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+
+        SubMemoryLayout* subItemLayout = dynamic_cast<SubMemoryLayout*>(subItem);
+        if (subItemLayout)
+        {
+            subItemLayout->compressSubItemsToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+        }
+
+        subItem->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+
+        qreal subItemLow = subItem->sceneBoundingRect().bottom();
+        if (subItemLow > lastCoordinate)
+        {
+            lastCoordinate = subItemLow;
+        }
+    }
+
+    QMap<MemoryDesignerChildGraphicsItem*, qreal> subItemTransferValues;
+
+    qreal itemTop = mainGraphicsItem_->sceneBoundingRect().top();
+    qreal areaBegin = itemTop;
+    foreach (qreal areaEnd, unCutCoordinates)
+    {
+        if (areaBegin < lastCoordinate && areaEnd > itemTop)
+        {
+            qreal areaDifference = areaEnd - areaBegin - CUTMODIFIER;
+            if (areaDifference > 0)
+            {
+                qreal transferY = -areaDifference;
+
+                subItemIterator.toFront();
+                while (subItemIterator.hasNext())
+                {
+                    subItemIterator.next();
+                    MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+
+                    qreal subItemTop = subItem->sceneBoundingRect().top();
+                    if (subItemTop > areaBegin)
+                    {
+                        qreal newSubItemTransferValue = subItemTransferValues.value(subItem, 0) + transferY;
+                        subItemTransferValues.insert(subItem, newSubItemTransferValue);
+                    }
+                }
+            }
+        }
+        else if (areaBegin >= lastCoordinate)
+        {
+            break;
+        }
+
+        areaBegin = areaEnd;
+    }
+
+    QMapIterator<MemoryDesignerChildGraphicsItem*, qreal> subItemTransferIterator(subItemTransferValues);
+    while (subItemTransferIterator.hasNext())
+    {
+        subItemTransferIterator.next();
+        MemoryDesignerChildGraphicsItem* subItem = subItemTransferIterator.key();
+        subItem->moveBy(0, subItemTransferIterator.value());
     }
 }

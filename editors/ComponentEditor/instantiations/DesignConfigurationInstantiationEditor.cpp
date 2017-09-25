@@ -206,21 +206,15 @@ void DesignConfigurationInstantiationEditor::setupLayout()
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    QHBoxLayout* editorLayout = new QHBoxLayout();
-    editorLayout->addWidget(nameGroupEditor_);
-    editorLayout->addWidget(designConfigurationEditor_, 0, Qt::AlignTop);
-
     QWidget* topWidget = new QWidget(scrollArea);
     topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea->setWidget(topWidget);
 
-    QHBoxLayout* editableItemsLayout = new QHBoxLayout();
-    editableItemsLayout->addWidget(&parameters_);
-    editableItemsLayout->addWidget(elementEditor_);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->addLayout(editorLayout);
-    topLayout->addLayout(editableItemsLayout);
+    QGridLayout* topLayout = new QGridLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
-
+    topLayout->addWidget(nameGroupEditor_, 0, 0, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(designConfigurationEditor_, 0, 1, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(elementEditor_, 1, 0, 1, 1);
+    topLayout->addWidget(&parameters_, 2, 0, 2, 2);
+    topLayout->setRowStretch(2, 3);
 }

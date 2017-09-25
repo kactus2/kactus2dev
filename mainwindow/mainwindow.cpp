@@ -3244,7 +3244,12 @@ void MainWindow::openMemoryDesign()
 
     if (doc)
     {
-        libraryHandler_->onOpenMemoryDesign(doc->getDocumentVLNV());
+        DesignWidget* currentDesignWidget = static_cast<DesignWidget*>(doc);
+        if (currentDesignWidget)
+        {
+            QString activeView = currentDesignWidget->getOpenViewName();
+            libraryHandler_->onOpenMemoryDesign(doc->getDocumentVLNV(), activeView);
+        }
     }
 }
 

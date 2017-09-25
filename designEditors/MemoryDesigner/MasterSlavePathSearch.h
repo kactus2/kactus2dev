@@ -73,6 +73,28 @@ private:
         QVector<QSharedPointer<ConnectivityInterface> > existingPath, 
         QSharedPointer<const ConnectivityGraph> graph);
 
+    /*!
+     *  Find the interface connected to the selected interface.
+     *
+     *      @param [in] startInterface  The selected interface.
+     *      @param [in] edge            The connection between the two interfaces.
+     *
+     *      @return The interface connected to the selected interface.
+     */
+    QSharedPointer<ConnectivityInterface> findConnectedInterface(
+        QSharedPointer<ConnectivityInterface> startInterface, QSharedPointer<ConnectivityConnection> edge) const;
+
+    /*!
+     *  Check if the selected interfaces can be connected.
+     *
+     *      @param [in] startVertex     The starting interface.
+     *      @param [in] endVertex       The end interface.
+     *
+     *      @return True, if the interfaces can be connected, false otherwise.
+     */
+    bool canConnectInterfaces(QSharedPointer<ConnectivityInterface> startVertex,
+        QSharedPointer<ConnectivityInterface> endVertex) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
