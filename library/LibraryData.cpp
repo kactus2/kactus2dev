@@ -298,22 +298,21 @@ void LibraryData::parseDirectory(QString const& directoryPath)
 	}
 
 	QDir dirHandler(directoryPath);
+    dirHandler.setNameFilters(QStringList(QLatin1String("*.xml")));
 
 	// get list of files and folders
-	foreach (QFileInfo const& entryInfo, dirHandler.entryInfoList(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files))
+	foreach (QFileInfo const& entryInfo, 
+        dirHandler.entryInfoList(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files | QDir::Readable))
     {
-		if (entryInfo.exists())
+        if (entryInfo.isFile())
         {
-            if (entryInfo.isFile() && (entryInfo.suffix().compare(QLatin1String("xml"), Qt::CaseInsensitive) == 0))
-            {
-                parseFile(entryInfo.absoluteFilePath());
-            }
-            else if (entryInfo.isDir())
-            {
-                parseDirectory(entryInfo.absoluteFilePath());
-            }
-		}
-	}
+            parseFile(entryInfo.absoluteFilePath());
+        }
+        else if (entryInfo.isDir())
+        {
+            parseDirectory(entryInfo.absoluteFilePath());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -321,41 +320,19 @@ void LibraryData::parseDirectory(QString const& directoryPath)
 //-----------------------------------------------------------------------------
 void LibraryData::parseFile(QString const& filePath)
 {
-	if (filePath.isEmpty())
-    {
-		return;
-	}
-
 	QFile docFile(filePath);
 	if (!docFile.open(QFile::ReadOnly))
     {
-		//emit errorMessage(tr("Could not open file %1 for reading.").arg(filePath));
-		return;
+        emit errorMessage(tr("File %1 was not valid xml and could not be read.").arg(filePath));
+        docFile.close();
+        return;
 	}
 	
-	VLNV vlnv;
-
-	QDomDocument doc;
-	if (doc.setContent(&docFile))
-    {		
-		docFile.close();
-		vlnv = getDocumentVLNV(doc);
-	}
-	else // content could not be read.
-    {
-		emit errorMessage(tr("File %1 was not valid xml and could not be read.").arg(filePath));
-		docFile.close();
-		return;
-	}
+    VLNV vlnv = getDocumentVLNV(docFile);
+    docFile.close();
 
 	if (!vlnv.isValid())
     {
-        if (doc.documentElement().nodeName().startsWith(QStringLiteral("spirit:")))
-        {
-            emit noticeMessage(tr("File %1 contains an IP-XACT description not compatible with the 1685-2014 "
-                "standard and could not be read.").arg(filePath));
-        }
-
 		return;
 	}
 	
@@ -382,9 +359,9 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
 	}
 
 	VLNV toCreate = vlnv;
-	toCreate.setType(libraryItems_.find(vlnv).key().getType());
+	toCreate.setType(getType(vlnv));
 	
-	QString path = libraryItems_.value(toCreate);
+	QString path = getPath(toCreate);
 	if (path.isEmpty())
     {
 		return QSharedPointer<Document>();
@@ -395,6 +372,7 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
 	QDomDocument doc;
     if (!doc.setContent(&file))
     {
+        file.close();
 		//emit errorMessage(tr("The document %1 in file %2 could not be opened.").arg(toCreate.toString(), path));
 		return QSharedPointer<Document>();
     }
@@ -648,7 +626,6 @@ void LibraryData::onRemoveVLNV(VLNV const& vlnv)
         emit errorMessage(tr("Could not remove file %1").arg(documentPath));
     }
 
-
     libraryItems_.remove(vlnv);
 }
 
@@ -665,10 +642,9 @@ void LibraryData::resetLibrary()
 //-----------------------------------------------------------------------------
 void LibraryData::onFileChanged(QString const& path)
 {
-    VLNV changedDocument = libraryItems_.key(path, VLNV());
-
-    if (QFile(path).exists())
+    if (QFileInfo(path).exists())
     {
+        VLNV changedDocument = libraryItems_.key(path, VLNV());
         emit updatedVLNV(changedDocument);
     }
 }
@@ -690,7 +666,8 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
         return false;
     }
 
-    if (getType(documentVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    VLNV::IPXactType documentType = getType(documentVLNV);
+    if (documentType == VLNV::ABSTRACTIONDEFINITION)
     {
         AbstractionDefinitionValidator validator(handler_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
         if (!validator.validate(document.dynamicCast<AbstractionDefinition>()))
@@ -698,7 +675,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
             return false;
         }
     }
-    else if (getType(documentVLNV) == VLNV::BUSDEFINITION)
+    else if (documentType == VLNV::BUSDEFINITION)
     {
         BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
         if (!validator.validate(document.dynamicCast<BusDefinition>()))
@@ -706,7 +683,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
             return false;
         }
     } 
-    else if (getType(documentVLNV) == VLNV::CATALOG)
+    else if (documentType == VLNV::CATALOG)
     {
         CatalogValidator validator;
         if (!validator.validate(document.dynamicCast<Catalog>()))
@@ -714,7 +691,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
             return false;
         }
     }
-	else if (getType(documentVLNV) == VLNV::COMPONENT)
+	else if (documentType == VLNV::COMPONENT)
     {
         QSharedPointer<Component> currentComponent = document.dynamicCast<Component>();
 
@@ -725,14 +702,14 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
             return false;
         }
     }
-    else if (getType(documentVLNV) == VLNV::DESIGN)
+    else if (documentType == VLNV::DESIGN)
     {
         if (!designValidator_.validate(document.dynamicCast<Design>()))
         {
             return false;
         }
     }
-    else if (getType(documentVLNV) == VLNV::DESIGNCONFIGURATION)
+    else if (documentType == VLNV::DESIGNCONFIGURATION)
     {
         QSharedPointer<DesignConfiguration> configuration = document.dynamicCast<DesignConfiguration>();
 
@@ -781,23 +758,24 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> docu
 	}
 
 	// Check if the document xml is valid and if not then print errors of the document.
-	if (getType(document->getVlnv()) == VLNV::BUSDEFINITION)
+    VLNV::IPXactType documentType = getType(document->getVlnv());
+	if (documentType == VLNV::BUSDEFINITION)
     {
         findErrorsInBusDefinition(document.dynamicCast<BusDefinition>(), errorList);
     }
-    else if (getType(document->getVlnv()) == VLNV::ABSTRACTIONDEFINITION)
+    else if (documentType == VLNV::ABSTRACTIONDEFINITION)
     {
         findErrorsInAbstractionDefinition(document.dynamicCast<AbstractionDefinition>(), errorList);
     }
-    else if (getType(document->getVlnv()) == VLNV::COMPONENT)
+    else if (documentType == VLNV::COMPONENT)
     {
         findErrorsInComponent(document.dynamicCast<Component>(), errorList);
     }
-    else if (getType(document->getVlnv()) == VLNV::DESIGN)
+    else if (documentType == VLNV::DESIGN)
     {
         findErrorsInDesign(document.dynamicCast<Design>(), errorList);
     }
-    else if (getType(document->getVlnv()) == VLNV::DESIGNCONFIGURATION)
+    else if (documentType == VLNV::DESIGNCONFIGURATION)
     {
         findErrorsInDesignConfiguration(document.dynamicCast<DesignConfiguration>(), errorList);
     }
@@ -999,15 +977,36 @@ void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> docu
 //-----------------------------------------------------------------------------
 // Function: LibraryData::getVLNV()
 //-----------------------------------------------------------------------------
-VLNV LibraryData::getDocumentVLNV(QDomDocument& doc)
+VLNV LibraryData::getDocumentVLNV(QFile& file)
 {
-    QDomElement documentElement = doc.documentElement();
-    QString type = documentElement.nodeName();
+    QXmlStreamReader documentReader(&file);
+    documentReader.readNextStartElement();
 
-    QString vendor = documentElement.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-    QString library = documentElement.firstChildElement("ipxact:library").firstChild().nodeValue();
-    QString name = documentElement.firstChildElement("ipxact:name").firstChild().nodeValue();
-    QString version = documentElement.firstChildElement("ipxact:version").firstChild().nodeValue();
+    QString type = documentReader.qualifiedName().toString();
+    if (type.startsWith(QLatin1String("spirit:")))
+    {
+        emit noticeMessage(tr("File %1 contains an IP-XACT description not compatible with the 1685-2014 "
+            "standard and could not be read.").arg(QFileInfo(file).absoluteFilePath()));
+        return VLNV();
+    }
+
+    // Find the first element of the VLVN.
+    while(documentReader.readNextStartElement() && 
+        documentReader.qualifiedName().compare(QLatin1String("ipxact:vendor")) != 0)
+    {
+        // Empty loop.
+    }
+
+    QString vendor = documentReader.readElementText();
+
+    documentReader.readNextStartElement();
+    QString library = documentReader.readElementText();
+
+    documentReader.readNextStartElement();
+    QString name = documentReader.readElementText();
+
+    documentReader.readNextStartElement();
+    QString version = documentReader.readElementText();
 
     return VLNV(type, vendor, library, name, version);
 }

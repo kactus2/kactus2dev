@@ -309,7 +309,7 @@ void MainWindow::restoreSettings()
     {
         settings.endGroup();
 
-        FilterWidget::FilterOptions defaultOptions;
+        Utils::FilterOptions defaultOptions;
         defaultOptions.type.advanced_ = false;
 
         libraryWidget_->setFilters(defaultOptions);
@@ -380,7 +380,7 @@ void MainWindow::createNewWorkspace(QString workspaceName)
 
     QString workspacePath = "Workspaces/" + workspaceName;
 
-    FilterWidget::FilterOptions filters = libraryWidget_->getFilters();
+    Utils::FilterOptions filters = libraryWidget_->getFilters();
 
     // Save the geometry and state of windows.
     settings.beginGroup(workspacePath);
@@ -582,7 +582,7 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     updateWindows();
 
     // Load filter settings.
-    FilterWidget::FilterOptions filters;
+    Utils::FilterOptions filters;
     settings.beginGroup("LibraryFilters");
     settings.beginGroup("Type");
     filters.type.components_ = settings.value("ShowComponents", true).toBool();
@@ -624,7 +624,7 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     // Create the registry group name.
     QString keyName = "Workspaces/" + workspaceName;
 
-    FilterWidget::FilterOptions filters = libraryWidget_->getFilters();
+    Utils::FilterOptions filters = libraryWidget_->getFilters();
 
     // Save the geometry and state of windows.
     settings.beginGroup(keyName);
@@ -2023,7 +2023,7 @@ void MainWindow::onDocumentChanged(int index)
             instanceEditor_->setTopComponentActiveView(topComponent->getModel()->findView(designwidget->getOpenViewName()));
             instanceEditor_->setProtection(designwidget->isProtected());
         }
-
+        
         if (doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
         {
             systemDetailsEditor_->setSystem(designwidget);

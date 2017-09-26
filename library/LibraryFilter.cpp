@@ -109,6 +109,18 @@ void LibraryFilter::onVersionChanged(QString const& versionText)
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryFilter::onFiltersChanged()
+//-----------------------------------------------------------------------------
+void LibraryFilter::onFiltersChanged(Utils::FilterOptions const& filters)
+{
+    firmness_ = filters.firmness;
+    implementation_ = filters.implementation;
+    type_ = filters.type;
+    hierarchy_ = filters.hierarchy;
+    invalidateFilter();
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryFilter::onFirmnessChanged()
 //-----------------------------------------------------------------------------
 void LibraryFilter::onFirmnessChanged(Utils::FirmnessOptions const& options)

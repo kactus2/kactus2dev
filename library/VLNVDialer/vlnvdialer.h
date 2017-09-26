@@ -12,6 +12,8 @@
 #ifndef VLNVDIALER_H
 #define VLNVDIALER_H
 
+#include <common/utils.h>
+
 #include "dialerwidget.h"
 #include "filterwidget.h"
 
@@ -49,9 +51,9 @@ public:
 	*/
 	void setRootItem(LibraryItem const* rootItem);
 
-    void setFilters(FilterWidget::FilterOptions options);
+    void setFilters(Utils::FilterOptions options);
 
-    FilterWidget::FilterOptions getFilters() const;
+    Utils::FilterOptions getFilters() const;
 
 signals:
 
@@ -78,6 +80,9 @@ signals:
 
 	//! Emitted when hierarchy options change.
 	void hierarchyChanged(Utils::HierarchyOptions const& options);
+
+    //! Emitted when all options change.
+    void filtersChanged(Utils::FilterOptions const&);
 
 public slots:
 
