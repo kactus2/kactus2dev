@@ -39,7 +39,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     : QDialog(parent), 
       lh_(libInterface),
       component_(component),
-      qualifierLabel_(new QLabel(tr("Qualifier for view and configuration:"), this)),
+      qualifierLabel_(new QLabel(tr("Qualifier for view and configuration (optional):"), this)),
       qualifierEdit_(new LineEditEx(this)),
       viewNameLabel_(new QLabel(tr("View name:"), this)),
       viewNameMatcher_(),
@@ -180,7 +180,15 @@ VLNV NewDesignDialog::getDesignConfVLNV() const
 {
     VLNV vlnv = vlnvEditor_->getVLNV();
     vlnv.setType(VLNV::DESIGNCONFIGURATION);
-    vlnv.setName(vlnv.getName().remove(".comp") + "."  + qualifierEdit_->text() + designConfExt_);
+
+    QString name = vlnv.getName().remove(".comp");
+    if (!qualifierEdit_->text().isEmpty())
+    {
+        name.append("."  + qualifierEdit_->text());
+    }
+    name.append(designConfExt_);
+
+    vlnv.setName(name);
     return vlnv;
 }
 
@@ -198,7 +206,7 @@ QString NewDesignDialog::getPath() const
 void NewDesignDialog::onContentChanged()
 {
     // Enable/disable the ok button if the contents are valid/invalid.
-    okButton_->setEnabled(!qualifierEdit_->text().isEmpty() && !viewNameEdit_->text().isEmpty() &&
+    okButton_->setEnabled(!viewNameEdit_->text().isEmpty() &&
         viewNameEdit_->isInputValid() && directoryEditor_->isValid() && vlnvEditor_->isValid());
 }
 

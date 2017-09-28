@@ -4357,6 +4357,9 @@
     <ClCompile Include="GeneratedFiles\moc_InstantiationConfigurableElementEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\DefaultRouting.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6595,6 +6598,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ConfigurableElementFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\DefaultRouting.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

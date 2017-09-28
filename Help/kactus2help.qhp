@@ -79,7 +79,9 @@
             <section title="Bus interface" ref="componenteditor/businterfacegeneral.html" />
             <section title="Portmaps" ref="componenteditor/portmaps.html" />
           </section>
-          <section title="Indirect interfaces" ref="componenteditor/indirectInterfaces.html" />
+          <section title="Indirect interfaces" ref="componenteditor/indirectInterfaces.html">     
+            <section title="Single indirect interface" ref="componenteditor/singleIndirectInterface.html" />
+          </section>
           <section title="Channels" ref="componenteditor/channels.html" />
           <section title="Remap states" ref="componenteditor/remapStates.html">
             <section title="Single remap state" ref="componenteditor/singleRemapState.html" />
