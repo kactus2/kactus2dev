@@ -649,7 +649,7 @@ void LibraryTreeModel::onOpenDesign(QModelIndex const& index, QString const& vie
 //-----------------------------------------------------------------------------
 // Function: librarytreemodel::onOpenMemoryDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onOpenMemoryDesign(QModelIndex const& index)
+void LibraryTreeModel::onOpenMemoryDesign(QModelIndex const& index, QString const& viewName)
 {
     if (!index.isValid())
     {
@@ -663,7 +663,7 @@ void LibraryTreeModel::onOpenMemoryDesign(QModelIndex const& index)
 
         if (vlnv.isValid())
         {
-            emit openMemoryDesign(vlnv);
+            emit openMemoryDesign(vlnv, viewName);
         }
     }
 }

@@ -102,27 +102,76 @@ void MasterSlavePathSearch::findPaths(QSharedPointer<ConnectivityInterface> star
     }
     else
     {
-        QSharedPointer<ConnectivityComponent> startInstance = startVertex->getInstance();
-        bool startVertexIsMirroredSlave =
-            startVertex->getMode().compare("mirroredSlave", Qt::CaseInsensitive) == 0;
+
+        bool connectionFound = false;
 
         foreach (QSharedPointer<ConnectivityConnection> nextEdge, connections)
         {
-            QSharedPointer<ConnectivityInterface> firstInterface = nextEdge->getFirstInterface();
-            QSharedPointer<ConnectivityInterface> secondInterface = nextEdge->getSecondInterface();
-
-            if (!existingPath.contains(firstInterface) &&
-                (!startVertexIsMirroredSlave ||
-                (startVertexIsMirroredSlave && startInstance != firstInterface->getInstance())))
+            QSharedPointer<ConnectivityInterface> endVertex = findConnectedInterface(startVertex, nextEdge);
+            if (!existingPath.contains(endVertex) && canConnectInterfaces(startVertex, endVertex))
             {
-                findPaths(firstInterface, nextEdge, existingPath, graph);
-            }
-            else if (!existingPath.contains(secondInterface) &&
-                (!startVertexIsMirroredSlave ||
-                (startVertexIsMirroredSlave && startInstance != secondInterface->getInstance())))
-            {
-                findPaths(secondInterface, nextEdge, existingPath, graph);
+                findPaths(endVertex, nextEdge, existingPath, graph);
+                connectionFound = true;
             }
         }
+
+        if (!connectionFound && existingPath.size() > 1)
+        {
+            masterPaths_.append(existingPath);
+        }
     }
-} 
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::findConnectedInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConnectivityInterface> MasterSlavePathSearch::findConnectedInterface(
+    QSharedPointer<ConnectivityInterface> startInterface, QSharedPointer<ConnectivityConnection> edge) const
+{
+    QSharedPointer<ConnectivityInterface> firstInterface = edge->getFirstInterface();
+    QSharedPointer<ConnectivityInterface> secondInterface = edge->getSecondInterface();
+
+    if (startInterface == firstInterface)
+    {
+        return secondInterface;
+    }
+    else
+    {
+        return firstInterface;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::canConnectInterfaces()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::canConnectInterfaces(QSharedPointer<ConnectivityInterface> startVertex,
+    QSharedPointer<ConnectivityInterface> endVertex) const
+{
+    if (startVertex == endVertex)
+    {
+        return false;
+    }
+
+    QString startMode = startVertex->getMode();
+    QSharedPointer<ConnectivityComponent> startInstance = startVertex->getInstance();
+    bool startIsMaster = startMode.compare(QLatin1String("master"), Qt::CaseInsensitive) == 0;
+    bool startIsSlave = startMode.compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0;
+    bool startIsMirroredMaster = startMode.compare(QLatin1String("mirroredMaster"), Qt::CaseInsensitive) == 0;
+    bool startIsMirroredSlave = startMode.compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0;
+
+    QString endMode = endVertex->getMode();
+    QSharedPointer<ConnectivityComponent> endInstance = endVertex->getInstance();
+    bool endIsMaster = endMode.compare(QLatin1String("master"), Qt::CaseInsensitive) == 0;
+    bool endIsSlave = endMode.compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0;
+    bool endIsMirroredMaster = endMode.compare(QLatin1String("mirroredMaster"), Qt::CaseInsensitive) == 0;
+    bool endIsMirroredSlave = endMode.compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0;
+
+    return (startVertex->getMode() == endVertex->getMode() &&
+        ((startVertex->isHierarchical() && !endVertex->isHierarchical()) ||
+        (!startVertex->isHierarchical() && endVertex->isHierarchical()))) ||
+        (startIsMaster && (endIsSlave || endIsMirroredMaster)) ||
+        (startIsSlave && (endIsMirroredSlave ||
+            (endIsMaster && startVertex->isBridged() && endVertex->isBridged() && startInstance == endInstance))) ||
+        (startIsMirroredMaster && endIsMirroredSlave && startInstance == endInstance) ||
+        (startIsMirroredSlave && (endIsSlave || (endIsMirroredMaster && startInstance == endInstance)));
+}

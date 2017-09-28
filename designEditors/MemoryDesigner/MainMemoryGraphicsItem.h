@@ -184,6 +184,14 @@ public:
     virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
 
     /*!
+     *  Compress this item to the uncut coordinates.
+     *
+     *      @param [in] unCutCoordinates    List of the coordinates that are retained after compression.
+     *      @param [in] CUTMODIFIER         The modifier for the size of the cut area.
+     */
+    virtual void compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
+
+    /*!
      *  Change the address range of this item and its sub items.
      *
      *      @param [in] offsetChange    The offset change of the item.

@@ -1027,7 +1027,7 @@ void LibraryHandler::onOpenDesign(VLNV const& vlnv, QString const& viewName)
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onOpenMemoryDesign()
 //-----------------------------------------------------------------------------
-void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv)
+void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv, QString const& activeView)
 {
     QSharedPointer<const Document> document = getModelReadOnly(vlnv);
     if (!document)
@@ -1041,9 +1041,9 @@ void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv)
         QSharedPointer<const Component> component = document.staticCast<const Component>();
 
         QStringList views = component->getHierViews();
-        if (!views.isEmpty())
+        if (views.contains(activeView))
         {
-            emit openMemoryDesign(vlnv, views.first());
+            emit openMemoryDesign(vlnv, activeView);
         }
     }
 }
@@ -1630,8 +1630,8 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)),
         this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-         connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&)),
-             this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)),
+        this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openSWDesign(const VLNV&)),
@@ -1672,7 +1672,7 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
     connect(hierarchyModel_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
-        this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
+        this, SLOT(onOpenMemoryDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
     connect(hierarchyModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);

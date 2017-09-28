@@ -107,6 +107,19 @@ private:
     quint64 getFilteredCompressedHeight();
 
     /*!
+     *  Get the compressed height of an address space graphics item using coordinate positions of the connected
+     *  items.
+     *
+     *      @param [in] visitedMemoryItems  List of handled memory items.
+     *      @param [in] connectionIterator  Iterator that goes through the memory connections.
+     *
+     *      @return The compressed height of an address space graphics item.
+     */
+    qreal getFilteredCompressedHeightByCoordinates(
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems,
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator);
+
+    /*!
      *  Get the address space items connected to the selected memory item.
      *
      *      @param [in] memoryItem          The selected memory graphics item.
@@ -131,6 +144,25 @@ private:
      */
     QVector<quint64> getUnCutAddressesFromConnections(
         QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
+
+    /*!
+     *  Get the list of coordinates that must be retained after compression.
+     *
+     *      @param [in] connectionIterator  Iterator holding all the connected memory connections.
+     *
+     *      @return All the coordinates that are retained after compression.
+     */
+    QVector<qreal> getUnCutCoordinatesFromConnections(
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
+
+    /*!
+     *  Check if an address space has connections pointing to the same memory item with different address ranges.
+     *
+     *      @param [in] connectionIterator  Iterator holding all the connected memory connections.
+     *
+     *      @return True, if a problem connection is found, false otherwise.
+     */
+    bool hasProblemConnection(QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
 
     //-----------------------------------------------------------------------------
     // Data.

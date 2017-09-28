@@ -53,7 +53,7 @@ signals:
 	void openSWDesign(QModelIndex const& index);
 
     //! Open the Memory design of a HW design.
-    void openMemoryDesign(QModelIndex const& index);
+    void openMemoryDesign(QModelIndex const& index, QString const& viewName);
 
 	//! Open the system design of a component
 	void openSystemDesign(QModelIndex const& index);
@@ -126,8 +126,8 @@ public slots:
     //! Open the SW design of a component
     void onOpenSWDesign();
 
-    //! Open the Memor design of a HW design.
-    void onOpenMemoryDesign();
+    //! Open the Memory design of a HW design.
+    void onOpenMemoryDesign(QAction* viewAction);
 
     //! Open the system design of a component
     void onOpenSystemDesign();
@@ -256,8 +256,9 @@ private:
 	//! Open the SW design of a component
 	QAction* openSWDesignAction_;
 
-    //! Action for opening a memory design.
+    //! Action for opening a memory design. Single action if only one view is available, otherwise a menu.
     QAction* openMemoryDesignAction_;
+    QMenu* openMemoryDesignMenu_;
 
 	//! Open the component editor
 	QAction* openComponentAction_;

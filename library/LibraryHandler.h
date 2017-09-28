@@ -323,9 +323,10 @@ public slots:
     /*!
      *  Opens the memory design of the given HW design.
      *  
-     *      @param [in] vlnv    The vlnv of the HW design.
+     *      @param [in] vlnv        The vlnv of the HW design.
+     *      @param [in] activeView  The active view of the selected HW design.
      */
-    virtual void onOpenMemoryDesign(VLNV const& vlnv);
+    virtual void onOpenMemoryDesign(VLNV const& vlnv, QString const& activeView);
 
     /*! Open the specified component SW design
 	 *

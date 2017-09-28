@@ -99,12 +99,27 @@ public:
     QVector<quint64> getUnCutAddresses() const;
 
     /*!
-     *  Compress the contained sub memory items to contain the remaining addresses.
+     *  Get the coordinates that are retained after item compression.
+     *
+     *       @return Coordinates that are retained after compressing the item.
+     */
+    QVector<qreal> getUnCutCoordinates() const;
+
+    /*!
+     *  Compress the contained sub memory items to contain the retained addresses.
      *
      *      @param [in] unCutAddresses  The retained addresses.
      *      @param [in] CUTMODIFIER     Modifier for the cut area.
      */
     void compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+
+    /*!
+     *  Compress the contained sub memory items to contain the retained coordinates.
+     *
+     *      @param [in] unCutCoordinates    The retained coordinates.
+     *      @param [in] CUTMODIFIER         Modifier for the cut area.
+     */
+    void compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
 
     /*!
      *  Get layout height modified by the height of the out of bounds sub memory items.

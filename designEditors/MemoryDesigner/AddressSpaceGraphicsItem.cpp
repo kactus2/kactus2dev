@@ -167,12 +167,19 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
     QMap<quint64, MemoryConnectionItem*> allConnectedConnections =
         getAllConnectionsFromConnectedItems(visitedMemoryItems);
     QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(allConnectedConnections);
-
-    QVector<quint64> unCutAddresses = getUnCutAddressesFromConnections(connectionIterator);
-    qSort(unCutAddresses);
+    connectionIterator.toFront();
 
     visitedMemoryItems->clear();
     visitedMemoryItems->append(this);
+
+    if (hasProblemConnection(connectionIterator))
+    {
+        return getFilteredCompressedHeightByCoordinates(visitedMemoryItems, connectionIterator);
+    }
+
+    connectionIterator.toFront();
+    QVector<quint64> unCutAddresses = getUnCutAddressesFromConnections(connectionIterator);
+    qSort(unCutAddresses);
 
     connectionIterator.toFront();
     while (connectionIterator.hasNext())
@@ -228,6 +235,95 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
     qreal originalHeight = boundingRect().height();
     qreal cutAreaHeight = spaceCutArea * MemoryDesignerConstants::RANGEINTERVAL;
     qreal condensedHeight = originalHeight - cutAreaHeight;
+
+    return qMin(originalHeight, condensedHeight);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates()
+//-----------------------------------------------------------------------------
+qreal AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems,
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator)
+{
+    const qreal CUTMODIFIER = 3 * MemoryDesignerConstants::RANGEINTERVAL;
+
+    connectionIterator.toFront();
+    QVector<qreal> unCutCoordinates = getUnCutCoordinatesFromConnections(connectionIterator);
+    qSort(unCutCoordinates);
+
+    connectionIterator.toFront();
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+        connectionItem->condenseToUnCutCoordinates(visitedMemoryItems, unCutCoordinates, CUTMODIFIER);
+    }
+
+    connectionIterator.toFront();
+    qreal cutAreaBegin = sceneBoundingRect().top();
+    qreal itemLow = sceneBoundingRect().bottom();
+    qreal spaceCutArea = 0;
+
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems(new QVector<MainMemoryGraphicsItem*> ());
+
+    QSharedPointer<QMap<MainMemoryGraphicsItem*, qreal> > itemMovementValues(
+        new QMap<MainMemoryGraphicsItem*, qreal> ());
+
+    foreach (qreal cutAreaEnd, unCutCoordinates)
+    {
+        qreal areaDifference = cutAreaEnd - cutAreaBegin;
+        if (areaDifference > CUTMODIFIER)
+        {
+            areaDifference = areaDifference - CUTMODIFIER;
+
+            if (cutAreaBegin < itemLow)
+            {
+                spaceCutArea += areaDifference;
+            }
+
+            qreal cutTransfer = areaDifference;
+            cutTransfer = -cutTransfer;
+
+            while (connectionIterator.hasNext())
+            {
+                connectionIterator.next();
+
+                MemoryConnectionItem* connectionItem = connectionIterator.value();
+                connectionItem->modifyMovementValuesForItems(
+                    itemMovementValues, movedItems, this, cutAreaBegin, cutAreaEnd, cutTransfer);
+            }
+
+            connectionIterator.toFront();
+            movedItems->clear();
+        }
+
+        cutAreaBegin = cutAreaEnd;
+    }
+
+    QMapIterator<MainMemoryGraphicsItem*, qreal> itemMovementIterator(*itemMovementValues);
+    while (itemMovementIterator.hasNext())
+    {
+        itemMovementIterator.next();
+        MainMemoryGraphicsItem* movedItem = itemMovementIterator.key();
+        qreal movementValue = itemMovementIterator.value();
+        movedItem->moveBy(0, movementValue);
+    }
+
+    connectionIterator.toFront();
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+        connectionIterator.value()->reDrawConnection();
+    }
+
+    if (!subItemsAreFiltered())
+    {
+        compressSubItemsToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+    }
+
+    qreal originalHeight = boundingRect().height();
+    qreal condensedHeight = originalHeight - spaceCutArea;
 
     return qMin(originalHeight, condensedHeight);
 }
@@ -333,6 +429,55 @@ QVector<quint64> AddressSpaceGraphicsItem::getUnCutAddressesFromConnections(
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getUnCutCoordinatesFromConnections()
+//-----------------------------------------------------------------------------
+QVector<qreal> AddressSpaceGraphicsItem::getUnCutCoordinatesFromConnections(
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
+{
+    QVector<qreal> unCutCoordinates = getUnCutCoordinates();
+
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+
+        qreal connectionTop = connectionItem->sceneBoundingRect().top();
+        if (!unCutCoordinates.contains(connectionTop))
+        {
+            unCutCoordinates.append(connectionTop);
+        }
+        qreal connectionLow = connectionItem->sceneBoundingRect().bottom();
+        if (!unCutCoordinates.contains(connectionLow))
+        {
+            unCutCoordinates.append(connectionLow);
+        }
+
+        MainMemoryGraphicsItem* connectionStart = connectionItem->getConnectionStartItem();
+        if (connectionStart != this)
+        {
+            foreach (qreal coordinate, connectionStart->getUnCutCoordinates())
+            {
+                if (!unCutCoordinates.contains(coordinate))
+                {
+                    unCutCoordinates.append(coordinate);
+                }
+            }
+        }
+
+        MainMemoryGraphicsItem* connectionEnd = connectionItem->getConnectionEndItem();
+        foreach (qreal coordinate, connectionEnd->getUnCutCoordinates())
+        {
+            if (!unCutCoordinates.contains(coordinate))
+            {
+                unCutCoordinates.append(coordinate);
+            }
+        }
+    }
+
+    return unCutCoordinates;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::getAllConnectedSpaceItems()
 //-----------------------------------------------------------------------------
 QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getAllConnectedSpaceItems() const
@@ -385,4 +530,33 @@ QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getSpaceItemsConnecte
     }
 
     return connectedSpaceItems;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::hasProblemConnection()
+//-----------------------------------------------------------------------------
+bool AddressSpaceGraphicsItem::hasProblemConnection(
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
+{
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+
+        QMapIterator<quint64, MemoryConnectionItem*> comparisonIterator(connectionIterator);
+        while (comparisonIterator.hasNext())
+        {
+            comparisonIterator.next();
+            MemoryConnectionItem* comparisonConnection = comparisonIterator.value();
+
+            if (connectionItem->getConnectionEndItem() == comparisonConnection->getConnectionEndItem() &&
+                connectionItem->getRangeStartValue() != comparisonConnection->getRangeStartValue() &&
+                connectionItem->sceneBoundingRect().top() == comparisonConnection->sceneBoundingRect().top())
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
