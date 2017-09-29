@@ -34,7 +34,7 @@ public:
     VerilogParameterParser();
 
     //! The destructor.
-    ~VerilogParameterParser();
+    virtual ~VerilogParameterParser();
 
     /*!
      *  Runs the port parsing for the given input and adds the parsed ports to the given component.
@@ -172,7 +172,18 @@ private:
       *
       *      @param [in] targetComponent   The component whose model parameter values to replace.
       */
-     void replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
+     void replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent,
+         QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
+
+     /*!
+      *  Finds an existing parameter within a component.
+      *
+      *      @param [in] name       The name of the parameter to find.
+      *      @param [in] component  The component to search for the parameter.
+      *
+      *      @return The found parameter.
+      */
+     QSharedPointer<Parameter> findParameter(QString const& name, QSharedPointer<Component> component) const;
 
      /*!
       *  Replaces macro uses in parameter with corresponding id references.
@@ -180,7 +191,7 @@ private:
       *      @param [in] parameter          The parameter whose macro uses to replace.
       *      @param [in] targetComponent    The containing component.
       */
-     void replaceMacroUsesWithParameterIds(QSharedPointer<ModuleParameter> parameter, 
+     void replaceNameReferencesWithParameterIds(QSharedPointer<Parameter> parameter, 
          QSharedPointer<Component> targetComponent) const;
 
      /*!
@@ -195,15 +206,6 @@ private:
       */
      QString replaceNameWithId(QString const& expression, QRegularExpression& namePattern, 
          QSharedPointer<Parameter> referenced) const;
-     
-     /*!
-      *  Replaces name references uses in parameter with corresponding id references.
-      *
-      *      @param [in] parameter          The parameter whose name references to replace.
-      *      @param [in] targetComponent    The containing component.
-      */
-     void replaceNameReferencesWithModelParameterIds(QSharedPointer<ModuleParameter> parameter, 
-         QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
      //-----------------------------------------------------------------------------
      // Data.

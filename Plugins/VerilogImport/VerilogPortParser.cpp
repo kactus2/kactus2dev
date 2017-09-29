@@ -247,7 +247,7 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
 
     QString description = parseDescription(portDeclaration);
 
-    foreach(QString name, portNames)
+    foreach(QString const& name, portNames)
     {
         QSharedPointer<Port> port;
         if (targetComponent->hasPort(name))
@@ -335,12 +335,12 @@ QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& boun
 
         if (!parser_->isValidExpression(leftBound))
         {
-            leftBound = replaceModelParameterNamesWithIds(leftBound, targetComponent, targetComponentInstantiation);
+            leftBound = replaceNameReferencesWithIds(leftBound, targetComponent, targetComponentInstantiation);
         }
 
         if (!parser_->isValidExpression(rightBound))
         {
-            rightBound = replaceModelParameterNamesWithIds(rightBound, targetComponent, targetComponentInstantiation);
+            rightBound = replaceNameReferencesWithIds(rightBound, targetComponent, targetComponentInstantiation);
         }
     }
 
@@ -359,18 +359,17 @@ QPair<QString, QString> VerilogPortParser::parseVectorBounds(QString const& port
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogPortParser::replaceModelParameterNamesWithIds()
+// Function: VerilogPortParser::replaceNameReferencesWithIds()
 //-----------------------------------------------------------------------------
-QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expression, 
+QString VerilogPortParser::replaceNameReferencesWithIds(QString const& expression, 
     QSharedPointer<Component> targetComponent, 
     QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     QString result = expression;
-    if (expression.contains('`'))
-    {
+
         foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
         {
-            QRegularExpression macroUsage("`" + define->name());
+            QRegularExpression macroUsage("`?\\b" + define->name() + "\\b");
             if (macroUsage.match(result).hasMatch())
             {
                 result.replace(macroUsage, define->getValueId());
@@ -381,21 +380,6 @@ QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expr
                 }
             }
         }
-    }
-    
-    foreach (QSharedPointer<ModuleParameter> modelParameter, *targetComponentInstantiation->getModuleParameters())
-    {
-        QRegularExpression nameReference("\\b" + modelParameter->name() + "\\b");
-        if (nameReference.match(result).hasMatch())
-        {
-            result.replace(nameReference, modelParameter->getValueId());
-
-            for(int i = 0; i < expression.count(nameReference); i++)
-            {
-                modelParameter->increaseUsageCount();
-            }
-        }
-    }
 
     return result;
 }

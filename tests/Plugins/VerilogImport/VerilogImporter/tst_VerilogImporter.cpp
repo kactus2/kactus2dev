@@ -68,7 +68,8 @@ private slots:
     
     void testParameterNotFoundInFileIsRemoved();
     void testExistingModelParameterIdDoesNotChange();
-    
+    void testExistingParameterIsUpdated();
+
     void testExistingPortIsSetAsPhantom();
     void testExistingPortIsOverriden();
 
@@ -546,7 +547,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration()
     QRegularExpression rightRule(expectedRightBoundExpression);
     QVERIFY(rightRule.match(createdPort->getRightBound()).hasMatch());
 
-    QCOMPARE(importComponentInstantiation->getModuleParameters()->last()->getUsageCount(), 1);
+    QCOMPARE(importComponent_->getParameters()->last()->getUsageCount(), 2);
 }
 
 //-----------------------------------------------------------------------------
@@ -632,8 +633,17 @@ void tst_VerilogImporter::testParameterInParameterDeclaration()
     QSharedPointer<ModuleParameter> first = importComponentInstantiation->getModuleParameters()->first();
     QSharedPointer<ModuleParameter> second = importComponentInstantiation->getModuleParameters()->last();
 
-    QCOMPARE(second->getValue(), first->getValueId());
-    QCOMPARE(first->getUsageCount(), 1);
+    QSharedPointer<Parameter> firstParameter = importComponent_->getParameters()->first();
+    QSharedPointer<Parameter> secondParameter = importComponent_->getParameters()->last();
+
+    QCOMPARE(first->getValue(), firstParameter->getValueId());
+    QCOMPARE(second->getValue(), secondParameter->getValueId());
+
+    QCOMPARE(secondParameter->getValue(), firstParameter->getValueId());
+    QCOMPARE(firstParameter->getValue(), QString("4"));
+
+    QCOMPARE(firstParameter->getUsageCount(), 2);
+    QCOMPARE(secondParameter->getUsageCount(), 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -656,12 +666,15 @@ void tst_VerilogImporter::testParameterInParameterArray()
     QSharedPointer<ModuleParameter> second = importComponentInstantiation->getModuleParameters()->at(1);
     QSharedPointer<ModuleParameter> last = importComponentInstantiation->getModuleParameters()->last();
 
-    QCOMPARE(last->getArrayLeft(), first->getValueId() + "-1");
-    QCOMPARE(last->getArrayRight(), second->getValueId());
+    QSharedPointer<Parameter> firstParameter = importComponent_->getParameters()->first();
+    QSharedPointer<Parameter> secondParameter = importComponent_->getParameters()->at(1);
+
+    QCOMPARE(last->getArrayLeft(), firstParameter->getValueId() + "-1");
+    QCOMPARE(last->getArrayRight(), secondParameter->getValueId());
     QCOMPARE(last->getVectorLeft(), QString("7"));
     QCOMPARE(last->getVectorRight(), QString("0"));
-    QCOMPARE(first->getUsageCount(), 1);
-    QCOMPARE(second->getUsageCount(), 1);
+    QCOMPARE(firstParameter->getUsageCount(), 3);
+    QCOMPARE(secondParameter->getUsageCount(), 3);
 }
 
 //-----------------------------------------------------------------------------
@@ -684,13 +697,16 @@ void tst_VerilogImporter::testParameterInParameterBitWidth()
     QSharedPointer<ModuleParameter> second = importComponentInstantiation->getModuleParameters()->at(1);
     QSharedPointer<ModuleParameter> last = importComponentInstantiation->getModuleParameters()->last();
 
+    QSharedPointer<Parameter> firstParameter = importComponent_->getParameters()->first();
+    QSharedPointer<Parameter> secondParameter = importComponent_->getParameters()->at(1);
+
     QCOMPARE(last->getArrayLeft(), QString(""));
     QCOMPARE(last->getArrayRight(), QString(""));
-    QCOMPARE(last->getVectorLeft(), first->getValueId() + "-1");
-    QCOMPARE(last->getVectorRight(), second->getValueId());
+    QCOMPARE(last->getVectorLeft(), firstParameter->getValueId() + "-1");
+    QCOMPARE(last->getVectorRight(), secondParameter->getValueId());
 
-    QCOMPARE(first->getUsageCount(), 1);
-    QCOMPARE(second->getUsageCount(), 1);
+    QCOMPARE(firstParameter->getUsageCount(), 3);
+    QCOMPARE(secondParameter->getUsageCount(), 3);
 }
 
 //-----------------------------------------------------------------------------
@@ -725,8 +741,8 @@ void tst_VerilogImporter::testMacroInParameterArray()
     QCOMPARE(parameter->getVectorLeft(), QString("7"));
     QCOMPARE(parameter->getVectorRight(), QString("0"));
 
-    QCOMPARE(sizeMacro->getUsageCount(), 1);
-    QCOMPARE(offsetMacro->getUsageCount(), 1);
+    QCOMPARE(sizeMacro->getUsageCount(), 2);
+    QCOMPARE(offsetMacro->getUsageCount(), 2);
 }
 
 //-----------------------------------------------------------------------------
@@ -761,8 +777,8 @@ void tst_VerilogImporter::testMacroInParameterBitWidth()
     QCOMPARE(parameter->getVectorLeft(), leftMacro->getValueId());
     QCOMPARE(parameter->getVectorRight(), rightMacro->getValueId());
 
-    QCOMPARE(leftMacro->getUsageCount(), 1);
-    QCOMPARE(rightMacro->getUsageCount(), 1);
+    QCOMPARE(leftMacro->getUsageCount(), 2);
+    QCOMPARE(rightMacro->getUsageCount(), 2);
 }
 
 //-----------------------------------------------------------------------------
@@ -790,8 +806,11 @@ void tst_VerilogImporter::testMacroInParameterValue()
 	QSharedPointer<ComponentInstantiation> importComponentInstantiation =
 		importComponent_->getModel()->getComponentInstantiations()->first();
 
-    QSharedPointer<ModuleParameter> parameter = importComponentInstantiation->getModuleParameters()->first();
+    QSharedPointer<ModuleParameter> moduleParameter = importComponentInstantiation->getModuleParameters()->first();
 
+    QSharedPointer<Parameter> parameter = importComponent_->getParameters()->last();
+
+    QCOMPARE(moduleParameter->getValue(), parameter->getValueId());
     QCOMPARE(parameter->getValue(), valueMacro->getValueId());
 
     QCOMPARE(valueMacro->getUsageCount(), 1);
@@ -858,9 +877,10 @@ void tst_VerilogImporter::testExistingModelParameterIdDoesNotChange()
 	existingParameter->setValueId("existingId");
 
 	QSharedPointer<View> importView = QSharedPointer<View>(new View);
-	QSharedPointer<ComponentInstantiation> importComponentInstantiation( new ComponentInstantiation );
+	QSharedPointer<ComponentInstantiation> importComponentInstantiation(new ComponentInstantiation());
 	importComponentInstantiation->setName(NameGenerationPolicy::componentInstantiationName("verilog"));
 	importComponentInstantiation->getModuleParameters()->append(existingParameter);
+
 	importComponent_->getModel()->getComponentInstantiations()->append(importComponentInstantiation);
 	importView->setComponentInstantiationRef(importComponentInstantiation->name());
 	importComponent_->getViews()->append(importView);
@@ -875,7 +895,32 @@ void tst_VerilogImporter::testExistingModelParameterIdDoesNotChange()
 
     QSharedPointer<ModuleParameter> importedParameter = importComponentInstantiation->getModuleParameters()->first();
     QCOMPARE(importedParameter->getValueId(), QString("existingId"));
-    QCOMPARE(importedParameter->getValue(), QString("8"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testExistingParameterIsUpdated()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testExistingParameterIsUpdated()
+{
+    QSharedPointer<Parameter> existingParameter(new ModuleParameter());
+    existingParameter->setName("data_width");
+    existingParameter->setValue("0");
+    importComponent_->getParameters()->append(existingParameter);
+
+    QString fileContent = 
+        "module test #(\n"
+        "   parameter data_width = 8\n"
+        "   )();\n"
+        "endmodule";
+
+    runParser(fileContent);
+
+    QSharedPointer<ComponentInstantiation> importComponentInstantiation =
+        importComponent_->getModel()->getComponentInstantiations()->first();
+    
+    QCOMPARE(importComponentInstantiation->getModuleParameters()->count(), 1);
+    QCOMPARE(importComponent_->getParameters()->count(), 1);
+    QCOMPARE(importComponent_->getParameters()->first()->getValue(), QString("8"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1109,7 +1154,6 @@ void tst_VerilogImporter::testComponentInstantiationAndViewExistsAfterImport()
     QCOMPARE(importedView->getComponentInstantiationRef(), importedInstantiation->name());
     QCOMPARE(importedInstantiation->getModuleParameters()->size(), 1);
     QCOMPARE(importedInstantiation->getModuleParameters()->first()->name(), QString("dataWidth_g"));
-    QCOMPARE(importedInstantiation->getModuleParameters()->first()->getValue(), QString("8"));
 }
 
 //-----------------------------------------------------------------------------
