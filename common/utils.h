@@ -109,6 +109,28 @@ namespace Utils {
 		TypeOptions();
 	};
 
+    struct FilterOptions
+    {
+	    //! Contains Type settings.
+        Utils::TypeOptions type;
+
+	    //! Contains Implementation settings.
+        Utils::ImplementationOptions implementation;
+
+	    //! Contains Hierarchy settings.
+        Utils::HierarchyOptions hierarchy;
+
+	    //! Contains Firmness settings.
+        Utils::FirmnessOptions firmness;
+
+		/*! The default constructor
+		 *
+		 * Constructs struct with all options set to true.
+		*/
+        FilterOptions() : type(), implementation(), hierarchy(), firmness() {};
+    };
+
+
 	/*! Convert a string to unsigned int format.
 	 * 
 	 * The multiples in the string are converted as following:

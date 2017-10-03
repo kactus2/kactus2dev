@@ -65,7 +65,7 @@ LibraryHandler* LibraryWidget::getLibraryHandler() const
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::setFilters()
 //-----------------------------------------------------------------------------
-void LibraryWidget::setFilters(FilterWidget::FilterOptions filters)
+void LibraryWidget::setFilters(Utils::FilterOptions filters)
 {
     dialer_->setFilters(filters);
 }
@@ -73,7 +73,7 @@ void LibraryWidget::setFilters(FilterWidget::FilterOptions filters)
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::getFilters()
 //-----------------------------------------------------------------------------
-FilterWidget::FilterOptions LibraryWidget::getFilters() const
+Utils::FilterOptions LibraryWidget::getFilters() const
 {
     return dialer_->getFilters();
 }
@@ -100,6 +100,8 @@ void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
         filter, SLOT(onHierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
     connect(dialer_, SIGNAL(typeChanged(const Utils::TypeOptions&)),
         filter, SLOT(onTypeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
+    connect(dialer_, SIGNAL(filtersChanged(Utils::FilterOptions const&)),
+        filter, SLOT(onFiltersChanged(Utils::FilterOptions const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

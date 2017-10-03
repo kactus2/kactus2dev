@@ -60,6 +60,8 @@ QWidget(parent),
 		this, SIGNAL(typeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
 	connect(&filters_, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)),
 		this, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
+    connect(&filters_, SIGNAL(optionsChanged(Utils::FilterOptions const&)),
+        this, SIGNAL(filtersChanged(Utils::FilterOptions const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +77,7 @@ VLNVDialer::~VLNVDialer()
 //-----------------------------------------------------------------------------
 // Function: VLNVDialer::setFilters()
 //-----------------------------------------------------------------------------
-void VLNVDialer::setFilters(FilterWidget::FilterOptions options)
+void VLNVDialer::setFilters(Utils::FilterOptions options)
 {
     filters_.setFilters(options);
 }
@@ -83,7 +85,7 @@ void VLNVDialer::setFilters(FilterWidget::FilterOptions options)
 //-----------------------------------------------------------------------------
 // Function: VLNVDialer::getFilters()
 //-----------------------------------------------------------------------------
-FilterWidget::FilterOptions VLNVDialer::getFilters() const
+Utils::FilterOptions VLNVDialer::getFilters() const
 {
     return filters_.getFilters();
 }

@@ -38,7 +38,8 @@ QObject(parent),
     busInterface_(busInterface),
     absDef_(),
     parser_(parser),
-    libraryHandler_(libraryHandler)
+    libraryHandler_(libraryHandler),
+    physicalPrefix_()
 {
 
 }
@@ -84,6 +85,31 @@ void PortMapAutoConnector::onAutoConnect()
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortMapAutoConnector::onAutoConnectLogicalSignals()
+//-----------------------------------------------------------------------------
+void PortMapAutoConnector::onAutoConnectLogicalSignals(QStringList const& logicalSignals)
+{
+    if (absDef_)
+    {
+        QList<QSharedPointer<PortAbstraction> > selectedLogicalSignals;
+        foreach (QString const& logicalName, logicalSignals)
+        {
+            selectedLogicalSignals.append(getLogicalPort(logicalName));
+        }
+
+        connectSelectedLogicalPorts(selectedLogicalSignals);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapAutoConnector::setPrefix()
+//-----------------------------------------------------------------------------
+void PortMapAutoConnector::setPrefix(QString const& prefix)
+{
+    physicalPrefix_ = prefix;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::connectSelectedLogicalPorts()
 //-----------------------------------------------------------------------------
 void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<PortAbstraction> > logicalPorts)
@@ -117,6 +143,65 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<Port
             connectPorts(logicalPort, physicalPort);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapAutoConnector::logicalPortHasReferencingPortMap()
+//-----------------------------------------------------------------------------
+bool PortMapAutoConnector::logicalPortHasReferencingPortMap(QString const& logicalName) const
+{
+    foreach (QSharedPointer<PortMap> portMap, *busInterface_->getPortMaps())
+    {
+        if (portMap->getLogicalPort() && portMap->getLogicalPort()->name_.compare(logicalName) == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapAutoConnector::getWeightedPhysicalPorts()
+//-----------------------------------------------------------------------------
+QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(QSharedPointer<PortAbstraction> logicalPort)
+    const
+{
+    QMap<double, QString> weightedPhysicalPorts;
+
+    DirectionTypes::Direction logicalDirection = absDef_->getPortDirection(logicalPort->name(), interfaceMode_, systemGroup_);
+
+    QMap<QSharedPointer<Port>, double> availablePorts = getPortsByDirection(logicalDirection);
+    if (!availablePorts.isEmpty())
+    {
+        QMap<QString, double> availableWeightedPorts;
+
+        QString logicalWidth = getLogicalPortWidth(logicalPort);
+        if (!logicalWidth.isEmpty() && parser_->isValidExpression(logicalWidth))
+        {
+            int logicalWidthInt = parser_->parseExpression(logicalWidth).toInt();
+            availableWeightedPorts = getPortsByLogicalWidth(logicalWidthInt, availablePorts);
+        }
+        else
+        {
+            availableWeightedPorts = getPortNames(availablePorts);
+        }
+
+        if (!availableWeightedPorts.isEmpty())
+        {
+            availableWeightedPorts = weightPortsByLogicalName(logicalPort->name(), availableWeightedPorts);
+        }
+
+        QMapIterator<QString, double> weightIterator(availableWeightedPorts);
+        while (weightIterator.hasNext())
+        {
+            weightIterator.next();
+
+            weightedPhysicalPorts.insertMulti(weightIterator.value(), weightIterator.key());
+        }
+    }
+
+    return weightedPhysicalPorts;
 }
 
 //-----------------------------------------------------------------------------
@@ -155,64 +240,6 @@ QString PortMapAutoConnector::getBestMatchingPhysicalPort(int logicalIndex,
     return QString();
 }
 
-//-----------------------------------------------------------------------------
-// Function: PortMapAutoConnector::logicalPortHasReferencingPortMap()
-//-----------------------------------------------------------------------------
-bool PortMapAutoConnector::logicalPortHasReferencingPortMap(QString const& logicalName) const
-{
-    foreach (QSharedPointer<PortMap> portMap, *busInterface_->getPortMaps())
-    {
-        if (portMap->getLogicalPort() && portMap->getLogicalPort()->name_.compare(logicalName) == 0)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapAutoConnector::getWeightedPhysicalPorts()
-//-----------------------------------------------------------------------------
-QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(QSharedPointer<PortAbstraction> logicalPort)
-    const
-{
-    QMap<double, QString> weightedPhysicalPorts;
-
-    DirectionTypes::Direction logicalDirection = absDef_->getPortDirection(logicalPort->name(), interfaceMode_, systemGroup_);
-    
-    QMap<QSharedPointer<Port>, double> availablePorts = getPortsByDirection(logicalDirection);
-    if (!availablePorts.isEmpty())
-    {
-        QMap<QString, double> availableWeightedPorts;
-
-        QString logicalWidth = getLogicalPortWidth(logicalPort);
-        if (!logicalWidth.isEmpty() && parser_->isValidExpression(logicalWidth))
-        {
-            int logicalWidthInt = parser_->parseExpression(logicalWidth).toInt();
-            availableWeightedPorts = getPortsByLogicalWidth(logicalWidthInt, availablePorts);
-        }
-        else
-        {
-            availableWeightedPorts = getPortNames(availablePorts);
-        }
-
-        if (!availableWeightedPorts.isEmpty())
-        {
-            availableWeightedPorts = weightPortsByLogicalName(logicalPort->name(), availableWeightedPorts);
-        }
-
-        QMapIterator<QString, double> weightIterator(availableWeightedPorts);
-        while (weightIterator.hasNext())
-        {
-            weightIterator.next();
-
-            weightedPhysicalPorts.insertMulti(weightIterator.value(), weightIterator.key());
-        }
-    }
-
-    return weightedPhysicalPorts;
-}
 
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::getPortsByDirection()
@@ -284,7 +311,7 @@ QMap<QString, double> PortMapAutoConnector::getPortsByLogicalWidth(double logica
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::getPortsByLogicalName()
 //-----------------------------------------------------------------------------
-QMap<QString, double> PortMapAutoConnector::weightPortsByLogicalName(QString logicalName,
+QMap<QString, double> PortMapAutoConnector::weightPortsByLogicalName(QString const& logicalName,
     QMap<QString, double> portList) const
 {
     const double JARO_WINKLER_THRESHOLD = 0.75;
@@ -297,8 +324,8 @@ QMap<QString, double> PortMapAutoConnector::weightPortsByLogicalName(QString log
         portIterator.next();        
         QString physicalName = portIterator.key();
 
-        double jaroDistance = JaroWinklerAlgorithm::calculateJaroWinklerDistance(physicalName, logicalName);
-        
+        double jaroDistance = JaroWinklerAlgorithm::calculateJaroWinklerDistance(physicalName, physicalPrefix_ + logicalName);
+
         if (jaroDistance >= JARO_WINKLER_THRESHOLD)
         {
             jaroDistancedPorts.insert(portIterator.key(), jaroDistance + portIterator.value());
@@ -370,9 +397,9 @@ void PortMapAutoConnector::connectPorts(QSharedPointer<PortAbstraction> portAbst
     if (portAbstraction && componentPort)
     {
         QSharedPointer<PortMap::PhysicalPort> newMappedPhysical(new PortMap::PhysicalPort(componentPort->name()));
-        
+
         QSharedPointer<PortMap::LogicalPort> newMappedLogical(new PortMap::LogicalPort(portAbstraction->name()));
-        
+
         QSharedPointer<WireAbstraction> logicalWire = portAbstraction->getWire();
         if (logicalWire && !logicalWire->getWidth(interfaceMode_, systemGroup_).isEmpty())
         {
@@ -415,23 +442,6 @@ void PortMapAutoConnector::connectPorts(QSharedPointer<PortAbstraction> portAbst
         newPortMap->setPhysicalPort(newMappedPhysical);
 
         emit portMapCreated(newPortMap);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapAutoConnector::onAutoConnectLogicalSignals()
-//-----------------------------------------------------------------------------
-void PortMapAutoConnector::onAutoConnectLogicalSignals(QStringList const& logicalSignals)
-{
-    if (absDef_)
-    {
-        QList<QSharedPointer<PortAbstraction> > selectedLogicalSignals;
-        foreach (QString const& logicalName, logicalSignals)
-        {
-            selectedLogicalSignals.append(getLogicalPort(logicalName));
-        }
-
-        connectSelectedLogicalPorts(selectedLogicalSignals);
     }
 }
 

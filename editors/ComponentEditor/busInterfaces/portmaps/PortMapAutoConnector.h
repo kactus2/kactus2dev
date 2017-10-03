@@ -80,6 +80,13 @@ public slots:
      */
     void onAutoConnectLogicalSignals(QStringList const& logicalSignals);
 
+    /*!
+     *  Sets a prefix for matching physical names to logical ports.
+     *
+     *      @param [in] prefix   The prefix to set.
+     */
+    void setPrefix(QString const& prefix);
+
 signals:
 
     /*!
@@ -179,7 +186,7 @@ private:
      *
      *      @return A list of physical ports weighted by the name of the logical port.
      */
-    QMap<QString, double> weightPortsByLogicalName(QString logicalName, QMap<QString, double> portList) const;
+    QMap<QString, double> weightPortsByLogicalName(QString const& logicalName, QMap<QString, double> portList) const;
 
     /*!
      *  Get the port names.
@@ -240,6 +247,9 @@ private:
 
     //! The system group name in case of system mode.
     QString systemGroup_;
+
+    //! Prefix for physical ports.
+    QString physicalPrefix_;
 };
 
 //-----------------------------------------------------------------------------

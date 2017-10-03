@@ -45,7 +45,8 @@ public:
      */
     GraphicsConnection(ConnectionEndpoint *endpoint1, ConnectionEndpoint *endpoint2,
                        bool autoConnect, QString const& name, 
-                       QString const& displayName, QString const& description,
+                       QString const& displayName,
+                       QString const& description,
                        DesignDiagram* parent);
 
     /*!
@@ -274,11 +275,6 @@ private:
     void setItemSettings();
 
     /*!
-     *  Creates an optimal route from point p1 to point p2, considering the given start and exit directions.
-     */
-    void createRoute(QPointF p1, QPointF p2, QVector2D const& dir1, QVector2D const& dir2);
-
-    /*!
      *  Paints the current path of the connection.     
      */
     void paintConnectionPath();
@@ -287,11 +283,6 @@ private:
      *  Creates an optimal route between the given endpoints.
      */
     void createRoute(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2);
-
-    /*!
-     *  Simplifies the path by removing parallel consecutive segments.
-     */
-    void simplifyPath();
 
     /*!
      *  Sets the default color based on the routing mode.
@@ -304,6 +295,40 @@ private:
      *      @param [in] painter The painter.
      */
     void drawOverlapGraphics(QPainter* painter);
+
+    /*!
+     *  Draws overlapping graphics with another connection.
+     *
+     *      @param [in] painter     The painter to use.
+     *      @param [in] connection  The connection who overlaps with this.
+     */
+    void drawOverlapWithConnection(QPainter* painter, GraphicsConnection* connection);
+
+    /*!
+     *  Draws an undercrossing with another connection.
+     *
+     *      @param [in] painter                 The painter to use.
+     *      @param [in] path                    The segment of the connection intersecting with other connection.
+     *      @param [in] crossingPoint           The point where the connections intersect.
+     *      @param [in] crossConnectionWidth    The withd of the intersecting connection.
+     */
+    void drawUndercrossing(QPainter* painter, QLineF const& path, QPointF const& crossingPoint, int crossConnectionWidth);
+
+    /*!
+     *  Draws a junction point on the connection.
+     *
+     *      @param [in] painter             The painter to use.
+     *      @param [in] intersectionPoint   The point where the connections intersect.
+     */
+    void drawJunctionPoint(QPainter* painter, QPointF const& intersectionPoint);
+
+    /*!
+     *  Draws overlapping with a component item.
+     *
+     *      @param [in] painter     The painter to use.
+     *      @param [in] item        The component item overlapping the connection.     
+     */
+    void drawOverlapWithComponent(QPainter* painter, QGraphicsItem* item);
 
     /*!
      *  Draws a "gap" to a line with the currently selected pen.
@@ -343,24 +368,39 @@ private:
      *      @param [out] horizontalBounds  The list of horizontal bounds.
      */
     void createSegmentBounds(QList<SegmentBound>& verBounds, QList<SegmentBound>& horizontalBounds);
+       
+    /*!
+     *  Sort operator for sorting segment bounds by X coordinate.
+     */
+    static bool sortBoundsByX(SegmentBound const& lhs, SegmentBound const& rhs);
+
+    /*!
+     *  Sort operator for sorting segment bounds by Y coordinate.
+     */
+    static bool sortBoundsByY(SegmentBound const& lhs, SegmentBound const& rhs);
+
+    /*!
+     *  Simplifies the current path.
+     */
+    void simplifyPath();
 
     /*!
      *  Retrieves the minimum and maximum X coordinates for the horizontal segment identified by index i.
      *
      *      @param [in]  i      The segment index.
-     *      @param [out] minY   The minimum X coordinate.
-     *      @param [out] maxY   The maximum X coordinate.
+     *
+     *      @return The <min, max> limits for the segment.
      */
-    void getSegmentLimitsX(int i, qreal& minX, qreal& maxX);
+    QPair<qreal, qreal> getSegmentLimitsX(int i) const;
 
     /*!
      *  Retrieves the minimum and maximum Y coordinates for the vertical segment identified by index i.
      *
      *      @param [in]  i      The segment index.
-     *      @param [out] minY   The minimum Y coordinate.
-     *      @param [out] maxY   The maximum Y coordinate.
+     *
+     *      @return The <min, max> limits for the segment.
      */
-    void getSegmentLimitsY(int i, qreal& minY, qreal& maxY);
+    QPair<qreal, qreal> GraphicsConnection::getSegmentLimitsY(int i) const;
 
     /*!
      *  Searches for a vertical segment overlap.
@@ -410,7 +450,7 @@ private:
      *
      *      @return True if the bounds overlap by X coordinate.
      */
-    static bool testSegmentOverlapX(SegmentBound const& bound1, SegmentBound const& bound2);
+    bool testSegmentOverlapX(SegmentBound const& bound1, SegmentBound const& bound2) const;
 
     /*!
      *  Tests for vertical overlap between two segment bounds.
@@ -420,29 +460,15 @@ private:
      *
      *      @return True if the bounds overlap by Y coordinate.
      */
-    static bool testSegmentOverlapY(SegmentBound const& bound1, SegmentBound const& bound2);
-
-    /*!
-     *  Sort operator for sorting segment bounds by X coordinate.
-     */
-    static bool sortBoundsByX(SegmentBound const& lhs, SegmentBound const& rhs);
-
-    /*!
-     *  Sort operator for sorting segment bounds by Y coordinate.
-     */
-    static bool sortBoundsByY(SegmentBound const& lhs, SegmentBound const& rhs);
-   
+    bool testSegmentOverlapY(SegmentBound const& bound1, SegmentBound const& bound2) const;
 
     /*!
      *  Updates the endpoint direction to given direction.
      *
      *      @param [in] endpoint   The endpoint to update.
      *      @param [in] dir        The direction to change to.
-     *
-     *      @return 
      */
     void updateEndpointDirection(ConnectionEndpoint* endpoint, QVector2D dir);
-
 
     /*!
      *  Finds the point closest to the given point from a set of points.
@@ -453,6 +479,15 @@ private:
      *      @return The point closest to destination.
      */
     QPointF findClosestPoint(QList<QPointF> const& sourcePoints, QPointF const& destination) const;
+
+    /*!
+     *  Creates lines connecting the given points.
+     *
+     *      @param [in] points   The line endpoints.
+     *
+     *      @return The lines connecting the given points.
+     */
+    QList<QLineF> pointsToLines(QList<QPointF> points) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -476,6 +511,9 @@ private:
     //! The route path points.
     QList<QPointF> pathPoints_;
 
+    //! The lines connecting the path points.
+    QList<QLineF> pathLines_;
+
     //! The index of the segment that is currently selected.
     int selected_;
 
@@ -493,6 +531,9 @@ private:
 
     //! The default color.
     bool invalid_;
+
+    //! If true, connection is being moved.
+    bool positionUpdateInProcess_;
 };
 
 //-----------------------------------------------------------------------------

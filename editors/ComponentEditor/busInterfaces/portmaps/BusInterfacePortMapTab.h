@@ -21,6 +21,8 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include "PortMapTreeSortProxyModel.h"
+
 #include <QCheckBox>
 #include <QWidget>
 #include <QPushButton>
@@ -202,8 +204,14 @@ private:
     //! The connected ports filter.
     QCheckBox hideConnectedPortsBox_;
 
+    //! Editor for physical port prefix for auto connect.
+    QLineEdit* physicalPrefixEditor_;
+
     //! Model for the constructed port maps.
     PortMapTreeModel portMapsModel_;
+
+    //! Proxy for filtering/sorting port maps.
+    PortMapTreeSortProxyModel portMapsSorter_;
 
     //! View for the constructed port maps.
     PortMapTreeView portMapsView_;

@@ -737,6 +737,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./designEditors/common/DefaultRouting.h
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
@@ -1383,5 +1384,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./designEditors/common/DefaultRouting.cpp
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.cpp
 RESOURCES += kactus.qrc

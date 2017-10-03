@@ -22,6 +22,7 @@
 
 #include <IPXACTmodels/kactusExtensions/validators/SystemDesignConfigurationValidator.h>
 
+#include <QFile>
 #include <QObject>
 #include <QList>
 #include <QMap>
@@ -321,7 +322,7 @@ private:
      *
      *      @return The VLNV identifier for the document.
      */
-    VLNV getDocumentVLNV(QDomDocument& doc);
+    VLNV getDocumentVLNV(QFile& doc);
 
     //-----------------------------------------------------------------------------
     // Data.

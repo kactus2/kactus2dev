@@ -12,6 +12,8 @@
 #include "VerilogParameterParser.h"
 #include "VerilogSyntax.h"
 
+#include <IPXACTmodels/common/Parameter.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/Model.h>
@@ -408,23 +410,64 @@ void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<
 void VerilogParameterParser::replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
+    foreach (QSharedPointer<ModuleParameter> moduleParameter, *targetComponentInstantiation->getModuleParameters())
+    {
+        QSharedPointer<Parameter> targetParameter = findParameter(moduleParameter->name(), targetComponent);
+        if (targetParameter.isNull())
+        {
+            targetParameter = QSharedPointer<Parameter>(new Parameter());
+            targetParameter->setName(moduleParameter->name());
+            targetComponent->getParameters()->append(targetParameter);
+        }
+        
+        targetParameter->setValue(moduleParameter->getValue());
+        targetParameter->setArrayLeft(moduleParameter->getArrayLeft());
+        targetParameter->setArrayRight(moduleParameter->getArrayRight());
+        targetParameter->setVectorLeft(moduleParameter->getVectorLeft());
+        targetParameter->setVectorRight(moduleParameter->getVectorRight());
+        targetParameter->setDescription(moduleParameter->description());
+        targetParameter->increaseUsageCount();
+
+        moduleParameter->setValue(targetParameter->getValueId());
+    }
+    
+    foreach (QSharedPointer<Parameter> parameter, *targetComponent->getParameters())
+    {
+        replaceNameReferencesWithParameterIds(parameter, targetComponent);
+    }
+
     foreach (QSharedPointer<ModuleParameter> parameter, *targetComponentInstantiation->getModuleParameters())
     {
-        replaceMacroUsesWithParameterIds(parameter, targetComponent);
-
-        replaceNameReferencesWithModelParameterIds(parameter, targetComponentInstantiation);
+        replaceNameReferencesWithParameterIds(parameter, targetComponent);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::findParameter()
+//-----------------------------------------------------------------------------
+QSharedPointer<Parameter> VerilogParameterParser::findParameter(QString const& name, 
+    QSharedPointer<Component> component) const
+{
+    foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
+    {
+        if (parameter->name().compare(name) == 0)
+        {
+            return parameter;
+        }
+    }
+
+    return QSharedPointer<Parameter>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::replaceParameterNamesWithIds()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::replaceMacroUsesWithParameterIds(QSharedPointer<ModuleParameter> parameter,
+void VerilogParameterParser::replaceNameReferencesWithParameterIds(QSharedPointer<Parameter> parameter,
     QSharedPointer<Component> targetComponent) const
 {
     foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
     {
-        QRegularExpression macroUsage("`" + define->name() + "\\b");
+        QRegularExpression macroUsage("`?\\b" + define->name() + "\\b");
 
         QString parameterValue = replaceNameWithId(parameter->getValue(), macroUsage, define);
         parameter->setValue(parameterValue);
@@ -450,43 +493,17 @@ QString VerilogParameterParser::replaceNameWithId(QString const& expression, QRe
     QSharedPointer<Parameter> referenced) const
 {
     QString replaced = expression;
-    if (namePattern.match(expression).hasMatch())
+    QRegularExpressionMatch match = namePattern.match(expression);
+    if (match.hasMatch())
     {
-        int matchCount = expression.count(namePattern);
-        for (int i = 0; i < matchCount; ++i)
+        replaced.replace(namePattern, referenced->getValueId());
+
+        int count = match.capturedTexts().count();
+        for (int i = 0; i < count; i++)
         {
             referenced->increaseUsageCount();
         }
-
-        replaced.replace(namePattern, referenced->getValueId());
     }
 
     return replaced;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::replaceModelParameterNamesWithIds()
-//-----------------------------------------------------------------------------
-void VerilogParameterParser::replaceNameReferencesWithModelParameterIds(QSharedPointer<ModuleParameter> parameter, 
-    QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
-{
-    foreach (QSharedPointer<ModuleParameter> referencedParameter, *targetComponentInstantiation->getModuleParameters())
-    {
-        QRegularExpression nameReference("\\b" + referencedParameter->name() + "\\b");
-
-        QString parameterValue = replaceNameWithId(parameter->getValue(), nameReference, referencedParameter);
-        parameter->setValue(parameterValue);
-
-        QString bitWidthLeft = replaceNameWithId(parameter->getVectorLeft(), nameReference, referencedParameter);
-        parameter->setVectorLeft(bitWidthLeft);
-
-        QString bitWidthRight = replaceNameWithId(parameter->getVectorRight(), nameReference, referencedParameter);
-        parameter->setVectorRight(bitWidthRight);
-
-        QString arrayLeft = replaceNameWithId(parameter->getArrayLeft(), nameReference, referencedParameter);
-        parameter->setArrayLeft(arrayLeft);
-
-        QString arrayRight = replaceNameWithId(parameter->getArrayRight(), nameReference, referencedParameter);
-        parameter->setArrayRight(arrayRight);
-    }
 }

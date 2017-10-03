@@ -30,27 +30,6 @@ class FilterWidget : public QWidget
 
 public:
 
-    struct FilterOptions
-    {
-	    //! Contains Type settings.
-        Utils::TypeOptions type;
-
-	    //! Contains Implementation settings.
-        Utils::ImplementationOptions implementation;
-
-	    //! Contains Hierarchy settings.
-        Utils::HierarchyOptions hierarchy;
-
-	    //! Contains Firmness settings.
-        Utils::FirmnessOptions firmness;
-
-		/*! The default constructor
-		 *
-		 * Constructs struct with all options set to true.
-		*/
-        FilterOptions() : type(), implementation(), hierarchy(), firmness() {};
-    };
-
 	/*! The constructor
 	 *
 	 *      @param [in] parent The owner of this widget.
@@ -61,9 +40,9 @@ public:
 	//! The destructor
 	virtual ~FilterWidget();
 
-    void setFilters(FilterOptions options);
+    void setFilters(Utils::FilterOptions options);
 
-    FilterOptions getFilters() const;
+    Utils::FilterOptions getFilters() const;
 
 signals:
 
@@ -78,6 +57,9 @@ signals:
 
 	//! Emitted when hierarchy options change.
 	void hierarchyChanged(const Utils::HierarchyOptions& options);
+
+    //! Emitted when all options change.
+    void optionsChanged(Utils::FilterOptions const& options);
 
 private:
 	//! No copying

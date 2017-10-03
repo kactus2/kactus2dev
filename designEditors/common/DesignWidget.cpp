@@ -32,7 +32,6 @@
 #include <QApplication>
 #include <QGraphicsItem>
 
-
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::DesignWidget()
 //-----------------------------------------------------------------------------
@@ -46,9 +45,9 @@ DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
       editProvider_(new GenericEditProvider(EDIT_HISTORY_SIZE)),
       diagram_(0)
 {
-
-    view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    view_->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     view_->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+  
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);

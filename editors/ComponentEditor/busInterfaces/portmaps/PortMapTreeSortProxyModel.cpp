@@ -88,6 +88,30 @@ bool PortMapTreeSortProxyModel::lessThan(const QModelIndex &left, const QModelIn
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortMapTreeSortProxyModel::onAddItem()
+//-----------------------------------------------------------------------------
+void PortMapTreeSortProxyModel::onAddItem(QModelIndex const& index)
+{
+    emit addItem(mapToSource(index));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeSortProxyModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void PortMapTreeSortProxyModel::onRemoveItem(QModelIndex const& index)
+{
+    emit removeItem(mapToSource(index));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeSortProxyModel::onRemoveAllChildItemsFrom()
+//-----------------------------------------------------------------------------
+void PortMapTreeSortProxyModel::onRemoveAllChildItemsFrom(QModelIndex const& index)
+{
+    emit removeAllChildItemsFromIndex(mapToSource(index));
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortMapTreeSortProxyModel::indexIsValid()
 //-----------------------------------------------------------------------------
 bool PortMapTreeSortProxyModel::indexIsValid(QModelIndex const& index) const

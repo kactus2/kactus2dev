@@ -4363,6 +4363,9 @@
     <ClCompile Include="GeneratedFiles\moc_InstantiationConfigurableElementEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\DefaultRouting.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameterReferenceTree\ComponentParameterReferenceTree.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameterReferenceTree</Filter>
     </ClCompile>
@@ -6628,6 +6631,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ConfigurableElementFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\DefaultRouting.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

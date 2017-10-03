@@ -52,20 +52,24 @@ FilterWidget::~FilterWidget()
 //-----------------------------------------------------------------------------
 // Function: FilterWidget::setFilters()
 //-----------------------------------------------------------------------------
-void FilterWidget::setFilters(FilterOptions options)
+void FilterWidget::setFilters(Utils::FilterOptions options)
 {
+    blockSignals(true);
     type_.setTypes(options.type);  
     implementation_.setImplementation(options.implementation);  
     hierarchy_.setHierarchy(options.hierarchy);  
     firmness_.setFirmness(options.firmness);    
+    blockSignals(false);
+
+    emit optionsChanged(options);
 }
 
 //-----------------------------------------------------------------------------
 // Function: FilterWidget::getFilters()
 //-----------------------------------------------------------------------------
-FilterWidget::FilterOptions FilterWidget::getFilters() const
+Utils::FilterOptions FilterWidget::getFilters() const
 {
-    FilterOptions options;
+    Utils::FilterOptions options;
     options.type = type_.getTypes();
     options.implementation = implementation_.getImplementation();
     options.hierarchy = hierarchy_.getHierarchy();

@@ -34,7 +34,7 @@ public:
     VerilogPortParser();
 
     //! The destructor.
-    ~VerilogPortParser();
+    virtual ~VerilogPortParser();
 
     /*!
      *  Runs the port parsing for the given input and adds the parsed ports to the given component.
@@ -202,7 +202,7 @@ private:
      *
      *      @return The expression where the names have been replaced with corresponding ids.
      */
-    QString replaceModelParameterNamesWithIds(QString const& expression, 
+    QString replaceNameReferencesWithIds(QString const& expression, 
         QSharedPointer<Component> targetComponent, 
         QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 

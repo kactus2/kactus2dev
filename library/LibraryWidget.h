@@ -14,7 +14,7 @@
 
 #include <QWidget>
 
-#include <library/VLNVDialer/filterwidget.h>
+#include <common/utils.h>
 
 class LibraryHandler;
 
@@ -51,17 +51,13 @@ public:
      *
      *      @param [in] filters    The filters to set.
     */
-    void setFilters(FilterWidget::FilterOptions filters);
+    void setFilters(Utils::FilterOptions filters);
 
     /*! Get the current filters for the library navigation.
      *
      *      @return     The current library filters.
     */
-    FilterWidget::FilterOptions getFilters() const;
-
-signals:
-
-public slots:
+    Utils::FilterOptions getFilters() const;
 
 private:
     //! No copying

@@ -58,6 +58,9 @@ public slots:
 	//! Handler for when the text in version combobox is changed.
 	void onVersionChanged(QString const& versionText);
 
+    //! Handler for when all options are changed.
+    void onFiltersChanged(Utils::FilterOptions const& filters);
+
 	//! Handler for when firmness options change.
 	void onFirmnessChanged(Utils::FirmnessOptions const& options);
 
