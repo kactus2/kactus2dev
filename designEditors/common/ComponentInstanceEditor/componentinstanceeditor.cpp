@@ -94,6 +94,11 @@ QWidget(parent),
     connect(propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
 
+    connect(configurableElements_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(configurableElements_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
     clear();
 }
 

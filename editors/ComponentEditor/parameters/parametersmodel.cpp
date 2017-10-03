@@ -44,7 +44,7 @@ ParametersModel::~ParametersModel()
 //-----------------------------------------------------------------------------
 int ParametersModel::rowCount(QModelIndex const& parent /*= QModelIndex() */ ) const
 {
-	if (parent.isValid())
+	if (parent.isValid() || !parameters_)
     {
 		return 0;
 	}
@@ -63,6 +63,18 @@ int ParametersModel::columnCount(QModelIndex const& parent) const
 	}
 
 	return ParameterColumns::COLUMN_COUNT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: parametersmodel::setNewParameters()
+//-----------------------------------------------------------------------------
+void ParametersModel::setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
+{
+    beginResetModel();
+
+    parameters_ = newParameters;
+
+    endResetModel();
 }
 
 //-----------------------------------------------------------------------------

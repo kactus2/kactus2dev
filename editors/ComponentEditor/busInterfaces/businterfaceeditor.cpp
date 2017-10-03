@@ -66,8 +66,8 @@ portmapsEditor_(libHandler, component, busif, expressionParser, expressionFormat
         SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(&generalEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(&generalEditor_, SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(&generalEditor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 	connect(&tabs_, SIGNAL(currentChanged(int)), this, SLOT(onTabChange(int)), Qt::UniqueConnection);
 

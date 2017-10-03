@@ -87,9 +87,8 @@ QGroupBox(tr("Module parameters"), parent),
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(view->itemDelegate(), SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
-
+    connect(view->itemDelegate(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     view->setSortingEnabled(true);
     view->setItemsDraggable(false);

@@ -47,6 +47,14 @@ void MultipleParameterFinder::removeFinder(QSharedPointer<ParameterFinder> finde
 }
 
 //-----------------------------------------------------------------------------
+// Function: MultipleParameterFinder::removeAllFinders()
+//-----------------------------------------------------------------------------
+void MultipleParameterFinder::removeAllFinders()
+{
+    finders_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MultipleParameterFinder::getParameterWithID()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> MultipleParameterFinder::getParameterWithID(QString const& parameterId) const

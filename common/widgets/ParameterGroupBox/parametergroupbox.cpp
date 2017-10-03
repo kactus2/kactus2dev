@@ -24,6 +24,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
@@ -39,9 +40,10 @@ ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Paramet
                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
-    view_(new EditableTableView(this)), 
-    proxy_(new QSortFilterProxyModel(this)),
-    model_(0)
+view_(new EditableTableView(this)),
+proxy_(new QSortFilterProxyModel(this)),
+model_(0),
+parameterFinder_(parameterFinder)
 {
     ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
     view_->setHorizontalHeader(parameterHorizontalHeader);
@@ -95,8 +97,8 @@ QGroupBox(tr("Parameters"), parent),
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 	// set source model for proxy
 	proxy_->setSourceModel(model_);
@@ -127,4 +129,18 @@ void ParameterGroupBox::refresh()
 {
     proxy_->invalidate();
 	view_->update();
+}
+
+//-----------------------------------------------------------------------------
+// Function: parametergroupbox::setNewParameters()
+//-----------------------------------------------------------------------------
+void ParameterGroupBox::setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
+{
+    model_->setNewParameters(newParameters);
+    
+    QSharedPointer<ListParameterFinder> listFinder = parameterFinder_.dynamicCast<ListParameterFinder>();
+    if (listFinder)
+    {
+        listFinder->setParameterList(newParameters);
+    }
 }

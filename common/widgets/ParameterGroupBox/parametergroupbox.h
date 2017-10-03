@@ -56,6 +56,13 @@ public:
 	//! Restore the changes made in the editor back to ones in parameter models.
 	virtual void refresh();
 
+    /*!
+     *  Setup a list of new parameters.
+     *
+     *      @param [in] newParameters   New parameter list.
+     */
+    void setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
+
 signals:
 
 	//! Emitted when contents of the editor change.
@@ -84,9 +91,10 @@ signals:
     /*!
      *  Open the reference tree of the parameter with the id.
      *
-     *      @param [in] id      The id of the parameter.
+     *      @param [in] id              The id of the parameter.
+     *      @param [in] parameterName   Name of the selected parameter.
      */
-    void openReferenceTree(QString const& id) const;
+    void openReferenceTree(QString const& id, QString const& parameterName) const;
 
 private:
 	//! No copying
@@ -107,6 +115,9 @@ private:
 
 	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;
+
+    //! The parameter finder for locating the contained parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // PARAMETERGROUPBOX_H

@@ -95,8 +95,8 @@ ItemEditor(component, handler, parent),
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 	// set proxy to do the sorting automatically
 	QSortFilterProxyModel* sortingProxy = new QSortFilterProxyModel(this);

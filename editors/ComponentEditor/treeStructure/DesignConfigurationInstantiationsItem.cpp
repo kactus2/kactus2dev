@@ -60,9 +60,13 @@ validator_(validator)
         QSharedPointer<ExpressionFormatter> instantiationFormatter =
             QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instantiationMultiFinder));
 
-        childItems_.append(QSharedPointer<ComponentEditorItem>(new SingleDesignConfigurationInstantiationItem(
-            model, libHandler, component, instantiationReferenceCounter, instantiation, validator,
-            instantiationMultiFinder, instantiationFormatter, this)));
+        QSharedPointer<ComponentEditorItem> childItem(new SingleDesignConfigurationInstantiationItem(model,
+            libHandler, component, instantiationReferenceCounter, instantiation, validator,
+            instantiationMultiFinder, instantiationFormatter, this));
+        childItems_.append(childItem);
+
+        connect(childItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+            this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
     }
 }
 
@@ -132,6 +136,9 @@ void DesignConfigurationInstantiationsItem::createChild(int index)
         model_, libHandler_, component_, instantiationCounter, instantiation, validator_, instantiationMultiFinder,
         instantiationFormatter, this)));
     child->setLocked(locked_);
+
+    connect(child.data(), SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
     childItems_.insert(index, child);
 }

@@ -476,6 +476,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
     ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
+    ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
     ./editors/ComponentEditor/common/ExpressionFormatter.h \
     ./editors/ComponentEditor/common/ExpressionFormatterFactory.h \
@@ -493,6 +494,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/CompleterPopupTable.h \
     ./editors/ComponentEditor/common/ExpressionDelegate.h \
     ./editors/ComponentEditor/common/ExpressionEditor.h \
+    ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
     ./editors/ComponentEditor/common/ParameterCache.h \
     ./editors/ComponentEditor/common/ParameterCompleter.h \
@@ -502,6 +504,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
+    ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h \
     ./editors/ComponentEditor/remapStates/RemapConditionColumns.h \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.h \
     ./editors/ComponentEditor/remapStates/RemapStatesModel.h \
@@ -662,6 +665,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/HWDesign/undoCommands/PortDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.h \
+    ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.h \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h \
     ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h \
@@ -687,8 +692,14 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/common/ComponentDesignDiagram.h \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.h \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.h \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.h \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h \
+    ./designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.h \
+    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.h \
+    ./designEditors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.h \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.h \
@@ -712,6 +723,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/common/Association/AssociationRemoveCommand.h \
     ./designEditors/common/Association/AssociationAddCommand.h \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
+    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h \
     ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
@@ -725,16 +737,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h \
-    ./designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.h \
-    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.h \
-    ./designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.h \
-    ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.h \
-    ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
-    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.h \
-    ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h \
-    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.h \
-    ./designEditors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.h
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1142,11 +1145,13 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ./editors/ComponentEditor/common/ConfigurableElementFinder.cpp \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
+    ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ./editors/ComponentEditor/common/ListParameterFinder.cpp \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
@@ -1159,6 +1164,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
+    ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \
     ./editors/ComponentEditor/remapStates/RemapConditionDelegate.cpp \
     ./editors/ComponentEditor/remapStates/RemapConditionEditor.cpp \
@@ -1248,6 +1254,8 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.cpp \
@@ -1329,12 +1337,18 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/DesignWidgetFactoryImplementation.cpp \
     ./designEditors/common/NamelabelWidth.cpp \
     ./designEditors/common/TopComponentParameterFinder.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.cpp \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.cpp \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.cpp \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.cpp \
+    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.cpp \
+    ./designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.cpp \
     ./designEditors/common/ConnectionEditor/AdHocBoundsModel.cpp \
     ./designEditors/common/ConnectionEditor/connectioneditor.cpp \
     ./designEditors/common/InterfaceEditor/interfaceeditor.cpp \
@@ -1355,6 +1369,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/Association/AssociationAddCommand.cpp \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.cpp \
     ./designEditors/common/Association/AssociationRemoveCommand.cpp \
+    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp \
@@ -1368,14 +1383,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.cpp \
-    ./designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.cpp \
-    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.cpp \
-    ./designEditors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.cpp \
-    ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.cpp \
-    ./editors/ComponentEditor/common/ConfigurableElementFinder.cpp \
-    ./designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.cpp \
-    ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
-    ./designEditors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.cpp \
-    ./designEditors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.cpp
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.cpp
 RESOURCES += kactus.qrc

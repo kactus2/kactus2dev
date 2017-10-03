@@ -90,8 +90,10 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     else if (index.column() == usageCountColumn())
     {
         QModelIndex valueIdIndex = index.sibling(index.row(), idColumn());
+        QModelIndex nameIndex = index.sibling(index.row(), nameColumn());
         QString targetId = valueIdIndex.data(Qt::DisplayRole).toString();
-        emit(openReferenceTree(targetId));
+        QString parameterName = nameIndex.data(Qt::DisplayRole).toString();
+        emit(openReferenceTree(targetId, parameterName));
 
         return 0;
     }
@@ -414,9 +416,14 @@ QWidget* ParameterDelegate::createChoiceSelector(QWidget* parent) const
 {
     QComboBox* combo = new QComboBox(parent);
     combo->addItem(QString("<none>"));
-    foreach (QSharedPointer<Choice> choice, *getChoices())
+
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices = getChoices();
+    if (choices)
     {
-        combo->addItem(choice->name());
+        foreach (QSharedPointer<Choice> choice, *getChoices())
+        {
+            combo->addItem(choice->name());
+        }
     }
 
     return combo;

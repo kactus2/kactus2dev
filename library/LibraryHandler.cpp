@@ -1632,8 +1632,6 @@ void LibraryHandler::syncronizeModels()
         this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&)),
-        this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openSystemDesign(const VLNV&)),

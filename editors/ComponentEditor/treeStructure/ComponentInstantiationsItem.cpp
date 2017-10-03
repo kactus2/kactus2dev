@@ -67,8 +67,8 @@ ComponentEditorItem(model, libHandler, component, parent),
 
         childItems_.append(componentInstantiationItem);
 
-        connect(componentInstantiationItem.data(), SIGNAL(openReferenceTree(QString)),
-            this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+        connect(componentInstantiationItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+            this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
     }
 }
 
@@ -129,8 +129,8 @@ void ComponentInstantiationsItem::createChild( int index )
 
     childItem->setLocked(locked_);
 
-    connect(childItem.data(), SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(childItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     childItems_.append(childItem);
 }

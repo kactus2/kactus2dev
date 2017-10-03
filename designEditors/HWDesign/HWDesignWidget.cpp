@@ -72,15 +72,16 @@
 //-----------------------------------------------------------------------------
 // Function: HWDesignWidget::HWDesignWidget()
 //-----------------------------------------------------------------------------
-HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent):
+HWDesignWidget::HWDesignWidget(LibraryInterface *lh,
+    QSharedPointer<MultipleParameterFinder> designParameterReferenceFinder, QWidget *parent):
 DesignWidget(lh, parent),
 expressionParser_()
 {
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW | CONNECTIONWINDOW | INTERFACEWINDOW |
-        INSTANCEWINDOW | ADHOCVISIBILITY_WINDOW | ADHOC_WINDOW | ADDRESS_WINDOW);
+        INSTANCEWINDOW | ADHOCVISIBILITY_WINDOW | ADHOC_WINDOW | ADDRESS_WINDOW | DESIGNPARAMETERSWINDOW);
 
-    setDiagram(new HWDesignDiagram(lh, getEditProvider(), this));
+    setDiagram(new HWDesignDiagram(lh, getEditProvider(), designParameterReferenceFinder, this));
     getDiagram()->setProtection(false);
     getDiagram()->setMode(MODE_SELECT);
     

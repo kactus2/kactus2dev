@@ -29,6 +29,7 @@ class HWComponentItem;
 class BusPortItem;
 class DesignConfiguration;
 class ExpressionParser;
+class MultipleParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! HWDesignWidget is used to edit and view one design
@@ -42,10 +43,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] lh      The library interface.
-     *      @param [in] parent  Owner of this object.
+     *      @param [in] lh                              The library interface.
+     *      @param [in] designParameterReferenceFinder  Parameter finder for design parameter references.
+     *      @param [in] parent                          Owner of this object.
      */
-    HWDesignWidget(LibraryInterface *lh, QWidget *parent = 0);
+    HWDesignWidget(LibraryInterface *lh, QSharedPointer<MultipleParameterFinder> designParameterReferenceFinder,
+        QWidget *parent = 0);
 
 	/*!
      *  The destructor.

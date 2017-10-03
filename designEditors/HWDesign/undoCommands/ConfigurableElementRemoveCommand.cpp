@@ -68,6 +68,8 @@ void ConfigurableElementRemoveCommand::undo()
 
             emit addConfigurableElement(
                 removedElement_->getReferenceId(), removedElement_->getConfigurableValue(), parentName_, itemRow_);
+
+            emit increaseReferencesInNewValue(removedElement_->getConfigurableValue());
         }
     }
 
@@ -90,6 +92,8 @@ void ConfigurableElementRemoveCommand::redo()
             configurableElements_->removeOne(removedElement_);
 
             emit removeConfigurableElement(removedElement_->getReferenceId(), parentName_, itemRow_);
+
+            emit decreaseReferencesInOldValue(removedElement_->getConfigurableValue());
         }
     }
 }

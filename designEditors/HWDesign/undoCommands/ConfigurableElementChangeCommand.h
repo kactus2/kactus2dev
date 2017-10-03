@@ -67,6 +67,20 @@ signals:
      */
     void dataChangedInID(QString const& parameterID, QString const& newDataValue);
 
+    /*!
+     *  Increase the amount of references in the new value.
+     *
+     *      @param [in] newValue    The new value for the configurable element.
+     */
+    void increaseReferencesInNewValue(QString const& newValue);
+
+    /*!
+     *  Decrease the amount of references in the old value.
+     *
+     *      @param [in] oldValue    The old value for the configurable element.
+     */
+    void decreaseReferencesInOldValue(QString const& oldValue);
+
 private:
 
     //! No copying. No assignment.

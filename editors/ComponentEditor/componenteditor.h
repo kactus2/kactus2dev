@@ -31,8 +31,9 @@
 class LibraryInterface;
 class PluginManager;
 class Component;
-
 class ExpressionParser;
+class ParameterReferenceTreeWindow;
+
 //-----------------------------------------------------------------------------
 //! The editor to edit/packet IP-Xact components.
 //-----------------------------------------------------------------------------
@@ -141,13 +142,6 @@ public slots:
 	 *  Set the visibility of rows in tree view.
 	 */
 	void setRowVisibility(QSettings& settings);
-    
-    /*!
-     *  Open the reference tree of the selected parameter.
-     *
-     *      @param [in] parameterId     The id of the parameter.
-     */
-    void openReferenceTree(QString const& parameterId);
 
 private slots:
 
@@ -289,6 +283,9 @@ private:
 
     //! The used component validator.
     ComponentValidator validator_;
+
+    //! Window for the parameter reference tree.
+    ParameterReferenceTreeWindow* parameterReferenceWindow_;
 };
 
 #endif // COMPONENTEDITOR_H
