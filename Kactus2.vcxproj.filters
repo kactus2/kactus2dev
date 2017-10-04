@@ -872,9 +872,6 @@
     <Filter Include="Source Files\designEditors\HWDesign\AdhocEditor">
       <UniqueIdentifier>{5367a917-9157-4218-9be2-292e41d3556f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\BusDefintionEditor">
-      <UniqueIdentifier>{cde09ff6-5bc5-4b7e-9974-552b151c81b8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\editors\BusDefinitionEditor">
       <UniqueIdentifier>{259357d4-028a-437b-b212-8514a8af1434}</UniqueIdentifier>
     </Filter>
@@ -922,6 +919,9 @@
     </Filter>
     <Filter Include="Header Files\designEditors\common\DesignParameterReferenceTree">
       <UniqueIdentifier>{9c0d3c9f-1011-4f98-818d-93ae0cd6bdd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\BusDefinitionEditor">
+      <UniqueIdentifier>{cde09ff6-5bc5-4b7e-9974-552b151c81b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -5761,22 +5761,22 @@
       <Filter>Header Files\mainwindow\NewPages</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\absdefgroup.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\busdefgroup.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\BusDefinitionEditor.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\busportsdelegate.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\busportsmodel.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\busportsview.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
@@ -6528,7 +6528,7 @@
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\LogicalPortColumns.h">
-      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\ConnectivityGraph.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>

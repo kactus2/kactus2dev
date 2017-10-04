@@ -302,20 +302,22 @@ void ComponentInstanceEditor::clear()
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::onNameChanged()
 {
-    QString newName = nameGroup_->name();
+    if (component_)
+    {
+        QString newName = nameGroup_->name();
 
-	// create command to the undo/redo stack
-	QSharedPointer<ComponentChangeNameCommand> cmd(
-        new ComponentChangeNameCommand(component_, newName, containingDesign_));
+        QSharedPointer<ComponentChangeNameCommand> cmd(
+            new ComponentChangeNameCommand(component_, newName, containingDesign_));
 
-	disconnect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
-		       nameGroup_, SLOT(setName(QString const&)));
+        disconnect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
+            nameGroup_, SLOT(setName(QString const&)));
 
-	editProvider_->addCommand(cmd);
-    cmd->redo();
+        editProvider_->addCommand(cmd);
+        cmd->redo();
 
-	connect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
-		    nameGroup_, SLOT(setName(QString const&)), Qt::UniqueConnection);
+        connect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
+            nameGroup_, SLOT(setName(QString const&)), Qt::UniqueConnection);
+    }	
 }
 
 //-----------------------------------------------------------------------------
@@ -347,17 +349,20 @@ void ComponentInstanceEditor::onDisplayNameChanged()
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::onDescriptionChanged()
 {
-    QString newDescription = nameGroup_->description();
-	// create command to the undo/redo stack
-	QSharedPointer<ComponentChangeDescriptionNameCommand> cmd(new ComponentChangeDescriptionNameCommand(component_,
-        newDescription));
+    if (component_)
+    {
+        QString newDescription = nameGroup_->description();
 
-	disconnect(component_, SIGNAL(descriptionChanged(QString const&)),
-		nameGroup_, SLOT(setDescription(QString const&)));
-	editProvider_->addCommand(cmd);
-    cmd->redo();
-	connect(component_, SIGNAL(descriptionChanged(QString const&)),
-		nameGroup_, SLOT(setDescription(QString const&)), Qt::UniqueConnection);
+        QSharedPointer<ComponentChangeDescriptionNameCommand> cmd(new ComponentChangeDescriptionNameCommand(
+            component_, newDescription));
+
+        disconnect(component_, SIGNAL(descriptionChanged(QString const&)),
+            nameGroup_, SLOT(setDescription(QString const&)));
+        editProvider_->addCommand(cmd);
+        cmd->redo();
+        connect(component_, SIGNAL(descriptionChanged(QString const&)),
+            nameGroup_, SLOT(setDescription(QString const&)), Qt::UniqueConnection);
+    }
 }
 
 //-----------------------------------------------------------------------------
