@@ -11,131 +11,119 @@
 
 #include "NewDesignDialog.h"
 
+#include <QCoreApplication>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QDialogButtonBox>
-#include <QDialog>
-#include <QFileDialog>
-#include <QHBoxLayout>
 #include <QMessageBox>
-#include <QCoreApplication>
+#include <QVBoxLayout>
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
-#include <common/widgets/LineEditEx/LineEditEx.h>
 #include <library/LibraryInterface.h>
 
+#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
+#include <common/widgets/LineEditEx/LineEditEx.h>
 #include <common/NameGenerationPolicy.h>
 
 //-----------------------------------------------------------------------------
 // Function: NewDesignDialog::NewDesignDialog()
 //-----------------------------------------------------------------------------
-NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
-                                 QSharedPointer<Component> component,
-                                 KactusAttribute::Implementation designType,
-                                 QWidget *parent)
-    : QDialog(parent), 
-      lh_(libInterface),
+NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
+    KactusAttribute::Implementation designType, QWidget *parent):
+QDialog(parent), 
+      library_(libInterface),
       component_(component),
-      qualifierLabel_(new QLabel(tr("Qualifier for view and configuration (optional):"), this)),
+      introLabel_(new QLabel(this)),
+      qualifierLabel_(new QLabel(tr("Qualifier:"), this)),
       qualifierEdit_(new LineEditEx(this)),
       viewNameLabel_(new QLabel(tr("View name:"), this)),
       viewNameMatcher_(),
       viewNameEdit_(new LineEditEx(this)),
+      designIcon_(new QLabel(this)),
       vlnvEditor_(new VLNVEditor(VLNV::DESIGN, libInterface, this, this, true)),
       directoryEditor_(new LibrarySelectorWidget(this)), 
       okButton_(new QPushButton(tr("&OK"))),
       designExt_(),
       designConfExt_()
 {
-    switch (designType)
+    setWindowFlags(windowFlags() &= ~Qt::WindowContextHelpButtonHint);
+
+    setStyleSheet(QString("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }"));
+
+    introLabel_->setWordWrap(true);
+    introLabel_->setText(tr("<b>Create a new design for the component.</b><br>"
+        "A new view will be added for the design in the component. An optional qualifier can be "
+        "used for differentiating the designs and views e.g. structural_rtl vs. structural_tlm. "
+        "The given VLNV will be used for identifying the new design within the library."));
+
+    if (designType == KactusAttribute::HW)
     {
-    case KactusAttribute::HW:
-        {
-            viewNameLabel_->setText(tr("Name for a new view to HW component:"));
-            viewNameEdit_->setDisallowedInputs(component->getViewNames());
-            viewNameEdit_->setMessageTemplate("View name '%1' already exists!");
-            vlnvEditor_->setTitle("VLNV for new HW design and design configuration");
-            designExt_ = ".design";
-            designConfExt_ = ".designcfg";
-            break;
-        }
-
-    case KactusAttribute::SW:
-        {
-            viewNameLabel_->setText(tr("Name for a new SW view to component:"));
-            viewNameEdit_->setDisallowedInputs(component->getViewNames());
-            viewNameEdit_->setMessageTemplate("View name '%1' already exists!");
-            vlnvEditor_->setTitle("VLNV for new SW design and design configuration");
-            designExt_ = ".swdesign";
-            designConfExt_ = ".swdesigncfg";
-            break;
-        }
-
-    case KactusAttribute::SYSTEM:
-        {
-            viewNameLabel_->setText(tr("Name for a new system view to HW component:"));
-            viewNameEdit_->setDisallowedInputs(component->getSystemViewNames());
-            viewNameEdit_->setMessageTemplate("System view name '%1' already exists!");
-            vlnvEditor_->setTitle("VLNV for new system design and design configuration");
-            designExt_ = ".sysdesign";
-            designConfExt_ = ".sysdesigncfg";
-            break;
-        }
-
-    default:
-        {
-            Q_ASSERT(false);
-            break;
-        }
+        setWindowTitle("New HW Design");
+        viewNameLabel_->setText(tr("View name:"));
+        viewNameEdit_->setDisallowedInputs(component->getViewNames());
+        viewNameEdit_->setMessageTemplate("View name '%1' already exists!");
+        vlnvEditor_->setTitle("VLNV for new HW design and design configuration");
+        designExt_ = ".design";
+        designConfExt_ = ".designcfg";
+        designIcon_->setPixmap(QPixmap(":/icons/common/graphics/hw-design.png"));
     }
+    else if (designType == KactusAttribute::SW)
+    {
+        setWindowTitle(tr("New SW Design"));
+        viewNameLabel_->setText(tr("View name:"));
+        viewNameEdit_->setDisallowedInputs(component->getViewNames());
+        viewNameEdit_->setMessageTemplate("View name '%1' already exists!");
+        vlnvEditor_->setTitle("VLNV for new SW design and design configuration");
+        designExt_ = ".swdesign";
+        designConfExt_ = ".swdesigncfg";
+        designIcon_->setPixmap(QPixmap(":/icons/common/graphics/sw-design48x48.png"));
+    }
+    else if (designType == KactusAttribute::SYSTEM)
+    {
+        setWindowTitle(tr("New System Design"));
+        viewNameLabel_->setText(tr("System view name:"));
+        viewNameEdit_->setDisallowedInputs(component->getSystemViewNames());
+        viewNameEdit_->setMessageTemplate("System view name '%1' already exists!");
+        vlnvEditor_->setTitle("VLNV for new system design and design configuration");
+        designExt_ = ".sysdesign";
+        designConfExt_ = ".sysdesigncfg";
+        designIcon_->setPixmap(QPixmap(":/icons/common/graphics/system-design.png"));
+    }
+    else
+    {
+        Q_ASSERT(false);
+    }
+
+    qualifierEdit_->setPlaceholderText(tr("optional category for the view and configuration"));
+
+    viewNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
+    viewNameEdit_->setContentMatcher(&viewNameMatcher_);
+    viewNameEdit_->setProperty("mandatoryField", true);
+
+    vlnvEditor_->addNameExtension(designExt_);
+    vlnvEditor_->addNameExtension(designConfExt_);
+    vlnvEditor_->addContentType(VLNV::DESIGNCONFIGURATION);
+    vlnvEditor_->setMandatory(true);
+
+    okButton_->setDefault(true);
+    okButton_->setEnabled(false);
 
     connect(qualifierEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateViewName()));
     connect(qualifierEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateVlnvName()));
     connect(qualifierEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
 
-    viewNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
-    viewNameEdit_->setContentMatcher(&viewNameMatcher_);
-
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
-
-    vlnvEditor_->addNameExtension(designExt_);
-    vlnvEditor_->addNameExtension(designConfExt_);
-    vlnvEditor_->addContentType(VLNV::DESIGNCONFIGURATION);
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
-        
-    directoryEditor_->layout()->setContentsMargins(0,11,0,11);
-	connect(directoryEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
 
-    okButton_->setEnabled(false);
-    connect(okButton_, SIGNAL(released()), this, SLOT(accept()));
+    connect(directoryEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
 
-    QPushButton *cancelButton = new QPushButton(tr("&Cancel"));
-    connect(cancelButton, SIGNAL(released()), this, SLOT(reject()));
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
-    buttonBox->addButton(okButton_, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(qualifierLabel_);
-    mainLayout->addWidget(qualifierEdit_);
-    mainLayout->addWidget(viewNameLabel_);
-    mainLayout->addWidget(viewNameEdit_);
-    mainLayout->addWidget(vlnvEditor_);
-    mainLayout->addWidget(directoryEditor_);
-    mainLayout->addWidget(buttonBox);
-    mainLayout->addStretch(1);
-    setLayout(mainLayout);
-
-    setWindowTitle("New HW Design");
-    setFixedHeight(sizeHint().height());
-    resize(400, sizeHint().height());
-    okButton_->setDefault(true);
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -201,51 +189,49 @@ QString NewDesignDialog::getPath() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: onContentChanged()
+// Function: NewDesignDialog::onContentChanged()
 //-----------------------------------------------------------------------------
 void NewDesignDialog::onContentChanged()
 {
-    // Enable/disable the ok button if the contents are valid/invalid.
     okButton_->setEnabled(!viewNameEdit_->text().isEmpty() &&
         viewNameEdit_->isInputValid() && directoryEditor_->isValid() && vlnvEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------
-// Function: accept()
+// Function: NewDesignDialog::accept()
 //-----------------------------------------------------------------------------
 void NewDesignDialog::accept()
 {
-    // Make sure that the VLNVs are not already in use.
-    if (lh_->contains(getDesignVLNV()))
+    if (library_->contains(getDesignVLNV()))
     {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("VLNV %1 already exists in the library.").arg(getDesignVLNV().toString()),
-                           QMessageBox::Ok, this);
-        
-        msgBox.exec();
+        QMessageBox::warning(this, QCoreApplication::applicationName(),
+            tr("VLNV %1 already exists in the library.").arg(getDesignVLNV().toString()));
+
         return;
     }
 
-    if (lh_->contains(getDesignConfVLNV()))
+    if (library_->contains(getDesignConfVLNV()))
     {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("VLNV %1 already exists in the library.").arg(getDesignConfVLNV().toString()),
-                           QMessageBox::Ok, this);
+        QMessageBox::warning(this, QCoreApplication::applicationName(),
+            tr("VLNV %1 already exists in the library.").arg(getDesignConfVLNV().toString()));
 
-        msgBox.exec();
         return;
     }
 
     QDialog::accept();
 }
 
-void NewDesignDialog::setVLNV( const VLNV& vlnv ) {
+//-----------------------------------------------------------------------------
+// Function: NewDesignDialog::setVLNV()
+//-----------------------------------------------------------------------------
+void NewDesignDialog::setVLNV( const VLNV& vlnv )
+{
 	vlnvEditor_->setVLNV(vlnv);
     updateDirectory();
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateDirectory()
+// Function: NewDesignDialog::updateDirectory()
 //-----------------------------------------------------------------------------
 void NewDesignDialog::updateDirectory()
 {
@@ -289,7 +275,13 @@ void NewDesignDialog::updateViewName()
 //-----------------------------------------------------------------------------
 void NewDesignDialog::updateVlnvName()
 {
-    vlnvEditor_->setName(component_->getVlnv().getName().remove(".comp"));
+    QString name = component_->getVlnv().getName().remove(".comp");
+    if (!qualifierEdit_->text().isEmpty())
+    {
+        name.append("." + qualifierEdit_->text());
+    }
+
+    vlnvEditor_->setName(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -298,4 +290,44 @@ void NewDesignDialog::updateVlnvName()
 void NewDesignDialog::setViewNameSuggestions(QStringList const& suggestions)
 {
     viewNameMatcher_.setItems(suggestions);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewDesignDialog::setupLayout()
+//-----------------------------------------------------------------------------
+void NewDesignDialog::setupLayout()
+{
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal);
+    buttonBox->addButton(okButton_, QDialogButtonBox::AcceptRole);
+    buttonBox->addButton(new QPushButton(tr("&Cancel")), QDialogButtonBox::RejectRole);
+
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QWidget* introWidget = new QWidget(this);
+    QHBoxLayout* introLayout = new QHBoxLayout(introWidget);
+    introLayout->addWidget(introLabel_, 9);
+    introLayout->addWidget(designIcon_, 1);    
+    
+    QPalette introPalette = introWidget->palette();
+    introPalette.setColor(QPalette::Background, Qt::white);
+    introWidget->setPalette(introPalette);
+    introWidget->setAutoFillBackground(true);
+    
+    QGroupBox* viewSettingsBox = new QGroupBox(tr("View settings"), this);    
+    QFormLayout* viewLayout = new QFormLayout(viewSettingsBox);
+    viewLayout->addRow(qualifierLabel_, qualifierEdit_);
+    viewLayout->addRow(viewNameLabel_, viewNameEdit_);
+
+    directoryEditor_->layout()->setContentsMargins(0, 4, 0, 4);
+
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(introWidget);
+    mainLayout->addWidget(viewSettingsBox);
+    mainLayout->addWidget(vlnvEditor_);
+    mainLayout->addWidget(directoryEditor_);
+    mainLayout->addWidget(buttonBox);    
+
+    setFixedHeight(sizeHint().height());
+    resize(400, sizeHint().height());
 }

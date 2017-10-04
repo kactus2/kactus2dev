@@ -53,6 +53,9 @@ private:
     TableViewDialog(TableViewDialog const& rhs);
     TableViewDialog& operator=(TableViewDialog const& rhs);
 
+    //! Setup widget layout.
+    void setupLayout();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -24,6 +24,11 @@ folderPathEditor_(QString(), this),
 folderBrowseButton_(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this),
 currentPath_(QString())
 {
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
+    setStyleSheet(styleSheet);
+
     disableOkButton();
     setupLayout();
     connectSignals();
@@ -35,37 +40,6 @@ currentPath_(QString())
 ObjectExportDialog::~ObjectExportDialog()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ObjectExportDialog::setupLayout()
-//-----------------------------------------------------------------------------
-void ObjectExportDialog::setupLayout()
-{
-    QString introLabel = tr("Export");
-    QString introText = tr("Export the selected items to the destination folder. ") +
-        tr(" The original files will be retained in their containing folders.");
-    QWidget* introWidget = setupIntroWidget(introLabel, introText);
-
-    QString folderToolTip(tr("The destination folder for the export."));
-    QLabel* folderLabel = new QLabel(tr("Destination folder:"), this);
-    folderLabel->setToolTip(folderToolTip);
-    folderPathEditor_.setToolTip(folderToolTip);
-    folderPathEditor_.setProperty("mandatoryField", true);
-    folderBrowseButton_.setToolTip("Browse.");
-
-    QHBoxLayout* folderBrowseLayout = new QHBoxLayout();
-    folderBrowseLayout->addWidget(folderLabel);
-    folderBrowseLayout->addWidget(&folderPathEditor_);
-    folderBrowseLayout->addWidget(&folderBrowseButton_);
-
-    QHBoxLayout* buttonLayout = setupButtonLayout();
-
-    QVBoxLayout* overallLayout = new QVBoxLayout(this);
-    overallLayout->addWidget(introWidget);
-    overallLayout->addLayout(folderBrowseLayout, 0);
-    overallLayout->addWidget(getItemList(), 1);
-    overallLayout->addLayout(buttonLayout, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -129,4 +103,35 @@ void ObjectExportDialog::onDestinationFolderChanged(const QString& newDestinatio
 QString ObjectExportDialog::getTargetDirectory() const
 {
     return currentPath_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ObjectExportDialog::setupLayout()
+//-----------------------------------------------------------------------------
+void ObjectExportDialog::setupLayout()
+{
+    QString introLabel = tr("Export");
+    QString introText = tr("Export the selected items to the destination folder. ") +
+        tr(" The original files will be retained in their containing folders.");
+    QWidget* introWidget = setupIntroWidget(introLabel, introText);
+
+    QString folderToolTip(tr("The destination folder for the export."));
+    QLabel* folderLabel = new QLabel(tr("Destination folder:"), this);
+    folderLabel->setToolTip(folderToolTip);
+    folderPathEditor_.setToolTip(folderToolTip);
+    folderPathEditor_.setProperty("mandatoryField", true);
+    folderBrowseButton_.setToolTip("Browse.");
+
+    QHBoxLayout* folderBrowseLayout = new QHBoxLayout();
+    folderBrowseLayout->addWidget(folderLabel);
+    folderBrowseLayout->addWidget(&folderPathEditor_);
+    folderBrowseLayout->addWidget(&folderBrowseButton_);
+
+    QHBoxLayout* buttonLayout = setupButtonLayout();
+
+    QVBoxLayout* overallLayout = new QVBoxLayout(this);
+    overallLayout->addWidget(introWidget);
+    overallLayout->addLayout(folderBrowseLayout, 0);
+    overallLayout->addWidget(getItemList(), 1);
+    overallLayout->addLayout(buttonLayout, 0);
 }

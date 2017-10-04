@@ -45,6 +45,7 @@ public:
      */
     NewDesignDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
                     KactusAttribute::Implementation designType, QWidget *parent = 0);
+    
 
     /*!
      *  Sets the pre-filled view name.
@@ -113,14 +114,25 @@ private slots:
      */
     virtual void accept();
 private:
+
+    //! No copying
+    NewDesignDialog(NewDesignDialog const& other);
+    NewDesignDialog& operator=(NewDesignDialog const& other);
+
+    //! Sets the dialog layout.
+    void setupLayout();
+    
     //! The library interface.
-    LibraryInterface* lh_;
+    LibraryInterface* library_;
 
     //! The component for which the design will be created.
     QSharedPointer<Component> component_;
 
     //! The used view names.
     QStringList usedViewNames_;
+
+    //! Informational label at the top of the dialog.
+    QLabel* introLabel_; 
 
     //! Label for the view name.
     QLabel* qualifierLabel_;
@@ -136,6 +148,9 @@ private:
 
     //! Edit box for the view name.
     LineEditEx* viewNameEdit_;
+
+    //! Icon for different design types.
+    QLabel* designIcon_; 
 
     //! The VLNV editor.
     VLNVEditor* vlnvEditor_;

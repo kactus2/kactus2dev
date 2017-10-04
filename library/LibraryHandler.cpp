@@ -110,21 +110,19 @@ QSharedPointer<Document> LibraryHandler::getModel(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 QSharedPointer<Document const> LibraryHandler::getModelReadOnly(VLNV const& vlnv)
 {
-    // if object has already been previously parsed
     if (objects_.contains(vlnv))
     {
         return objects_.value(vlnv);
     }
     else
     { 
-        QSharedPointer<Document> libComp = data_->getModel(vlnv);
-        if (libComp)
+        QSharedPointer<Document> document = data_->getModel(vlnv);
+        if (document)
         {
-            // save the parsed item to the map and return pointer to it
-            objects_.insert(vlnv, libComp);
+            objects_.insert(vlnv, document);
         }
 
-        return libComp;
+        return document;
     }
 }
 
@@ -188,10 +186,8 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
     // Create the path if it does not exist.
     if (!QDir(path).exists() && !QDir().mkpath(path))
     {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("Could not create directory \"%1\".").arg(path));
-        msgBox.exec();
-
+        QMessageBox::critical(parentWidget_, QCoreApplication::applicationName(),
+            tr("Could not create directory \"%1\".").arg(path));        
         return false;
     }
 
@@ -333,10 +329,8 @@ void LibraryHandler::getHierarchicalDependencyFiles(VLNV const& vlnv, QStringLis
     // first get files of the top component
     getDependencyFiles(vlnv, list);
 
-    // create the model of the vlnv
-    QSharedPointer<Document> document = getModel(vlnv);
-
     // ask the dependencies of the object and call function recursively for children
+    QSharedPointer<Document> document = getModel(vlnv);
     foreach (VLNV const& dependency, document->getDependentVLNVs())
     {
         getHierarchicalDependencyFiles(dependency, list);
@@ -474,10 +468,7 @@ bool LibraryHandler::isValid(VLNV const& vlnv)
         return objectValidity_.value(vlnv);
     }
 
-    
     QSharedPointer<Document> document;
-
-    // if object has already been parsed before
     if (objects_.contains(vlnv))
     {
         document = objects_.value(vlnv);
@@ -485,10 +476,6 @@ bool LibraryHandler::isValid(VLNV const& vlnv)
     else 
     {
         document = getModel(vlnv);
-        if (!document)
-        {
-            return false;
-        }
     }
 
     bool valid = data_->validateDocument(document);
@@ -656,8 +643,6 @@ void LibraryHandler::onExportItems(const QList<VLNV> vlnvs )
     }
 
     ObjectExportDialog* exportDialog = new ObjectExportDialog(parentWidget_);
-    QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
-    exportDialog->setStyleSheet(styleSheet);
     constructItemsForSelectionDialog(exportDialog, vlnvs);
 
     if (exportDialog->exec() == QDialog::Rejected)
@@ -715,10 +700,7 @@ QPair<int, int> LibraryHandler::exportSelectedObjects(QVector<ObjectSelectionLis
         }
     }
 
-    QPair<int, int> itemCounter;
-    itemCounter.first = vlnvCounter;
-    itemCounter.second = fileCounter;
-    return itemCounter;
+    return qMakePair(vlnvCounter, fileCounter);
 }
 
 //-----------------------------------------------------------------------------
@@ -930,16 +912,13 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
         return;
     }
 
-    // Retrieve the model.
     QSharedPointer<Document> document = getModel(vlnv);
-
     if (document != 0)
     {
-
         // Show error list in a dialog.
         TableViewDialog* dialog = new TableViewDialog(parentWidget_);
         dialog->setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
-        dialog->setDescription(tr("The following errors were found:"));
+        dialog->setDescription(tr("<b>Integrity check</b><br>The following errors were found."));
         dialog->resize(700, 350);
 
         LibraryErrorModel* model = new LibraryErrorModel(dialog);
@@ -964,7 +943,7 @@ void LibraryHandler::onGenerateIntegrityReport()
     {
         integrityWidget_ = new TableViewDialog(parentWidget_);
         integrityWidget_->setWindowTitle(tr("Library Integrity Report"));
-        integrityWidget_->setDescription(tr("The following errors were found:"));
+        integrityWidget_->setDescription(tr("<b>Integrity check</b><br>The following errors were found."));
         integrityWidget_->resize(1000, 800);
 
         LibraryErrorModel* model = new LibraryErrorModel(integrityWidget_);
@@ -1293,9 +1272,6 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
 {
     // create the dialog to select which items to remove
     ObjectRemoveDialog* removeDialog = new ObjectRemoveDialog(parentWidget_);
-
-    QStringList changedDirectories;
-
     constructItemsForSelectionDialog(removeDialog, vlnvs);
 
     if (removeDialog->exec() == QDialog::Rejected)
@@ -1306,6 +1282,7 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
     int vlnvCounter = 0;
     int fileCounter = 0;
 
+    QStringList changedDirectories;
     foreach (ObjectSelectionListItem* removedItem, removeDialog->getSelectedItems())
     {
         if (removedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
@@ -1504,7 +1481,6 @@ bool LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& h
         return false;
 	}
 
-	// if the source doesn't exist
 	if (!source.exists())
     {
 		emit errorMessage(tr("Could not find file: %1").arg(source.fileName()));
@@ -1632,8 +1608,6 @@ void LibraryHandler::syncronizeModels()
         this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&)),
-        this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openSystemDesign(const VLNV&)),
