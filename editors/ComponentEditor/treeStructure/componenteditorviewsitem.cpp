@@ -45,8 +45,8 @@ viewValidator_(new ViewValidator(expressionParser, component->getModel()))
 
         viewItem->setReferenceCounter(referenceCounter);
 
-        connect(viewItem.data(), SIGNAL(openReferenceTree(QString)),
-            this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+        connect(viewItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+            this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 		childItems_.append(viewItem);
 	}

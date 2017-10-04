@@ -38,18 +38,19 @@
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/listSelectDialog/ListSelectDialog.h>
-#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 
-#include <common/NameGenerationPolicy.h>
+#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
-#include <designEditors/MemoryDesigner/MemoryDesignDocument.h>
+#include <common/NameGenerationPolicy.h>
 
 #include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
 #include <designEditors/common/ConfigurationEditor/configurationeditor.h>
 #include <designEditors/common/InterfaceEditor/interfaceeditor.h>
 #include <designEditors/common/ConnectionEditor/connectioneditor.h>
 #include <designEditors/common/DesignWidgetFactoryImplementation.h>
+#include <designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h>
 
 #include <designEditors/HWDesign/HWDesignWidget.h>
 #include <designEditors/HWDesign/HWDesignDiagram.h>
@@ -64,6 +65,8 @@
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>
 
+#include <designEditors/MemoryDesigner/MemoryDesignDocument.h>
+
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <editors/BusDefinitionEditor/BusDefinitionEditor.h>
 #include <editors/ComDefinitionEditor/ComDefinitionEditor.h>
@@ -72,6 +75,10 @@
 #include <editors/CSourceEditor/CSourceWidget.h>
 #include <editors/CSourceEditor/CSourceContentMatcher.h>
 #include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+#include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
 #include <editors/ConfigurationTools/ViewConfigurer.h>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
@@ -148,6 +155,11 @@ console_(0),
 consoleDock_(0),
 contextHelpBrowser_(0),
 contextHelpDock_(0),
+designParameterReferenceCounter_(0),
+designParametersEditor_(0),
+designParameterDock_(0),
+designParameterTree_(0),
+designParameterFinder_(new MultipleParameterFinder()),
 instanceEditor_(0),
 instanceDock_(0),
 adHocVisibilityEditor_(0),
@@ -244,6 +256,7 @@ visibilities_()
     setupContextHelp();
     setupDrawBoard();
     setupLibraryDock();
+    setupDesignParametersEditor();
     setupInstanceEditor();
     setupAdHocVisibilityEditor();
     setupAdHocEditor();
@@ -399,6 +412,7 @@ void MainWindow::createNewWorkspace(QString workspaceName)
     settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
     settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
     settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
+    settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
 
     // Save filters.
     settings.beginGroup("LibraryFilters");
@@ -534,6 +548,10 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
         restoreState(settings.value("WindowState").toByteArray());
     }
 
+    const bool designParametersVisible = settings.value("DesignParameterVisibility", true).toBool();
+    visibilities_.insert(TabDocument::DESIGNPARAMETERSWINDOW, designParametersVisible);
+    designParameterDock_->toggleViewAction()->setChecked(designParametersVisible);
+
     const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
     visibilities_.insert(TabDocument::CONFIGURATIONWINDOW, configurationVisible);
     configurationDock_->toggleViewAction()->setChecked(configurationVisible);
@@ -643,6 +661,7 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
     settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
     settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
+    settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
 
     // Save filters.
     settings.beginGroup("LibraryFilters");
@@ -1090,6 +1109,7 @@ void MainWindow::setupMenus()
     windowsMenu_.addAction(adhocDock_->toggleViewAction());
     windowsMenu_.addAction(connectionDock_->toggleViewAction());
     windowsMenu_.addAction(contextHelpDock_->toggleViewAction());
+    windowsMenu_.addAction(designParameterDock_->toggleViewAction());
     windowsMenu_.addAction(instanceDock_->toggleViewAction());
     windowsMenu_.addAction(previewDock_->toggleViewAction());
     windowsMenu_.addAction(configurationDock_->toggleViewAction());
@@ -1307,6 +1327,46 @@ void MainWindow::setupSystemDetailsEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: mainwindow::setupDesignParametersEditor()
+//-----------------------------------------------------------------------------
+void MainWindow::setupDesignParametersEditor()
+{
+    designParameterDock_ = new QDockWidget(tr("Design Parameters"), this);
+    designParameterDock_->setObjectName(tr("Design Parameters dock"));
+    designParameterDock_->setAllowedAreas(Qt::BottomDockWidgetArea);
+    designParameterDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+    QSharedPointer<ListParameterFinder> listFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionFormatter> formatter(new ExpressionFormatter(listFinder));
+    QSharedPointer<ExpressionFormatter> referenceTreeFormatter(new ExpressionFormatter(designParameterFinder_));
+    designParameterFinder_->addFinder(listFinder);
+
+    designParameterReferenceCounter_ = new ParameterReferenceCounter(listFinder);
+
+    designParameterTree_ = new DesignParameterReferenceTree(referenceTreeFormatter, this);
+
+    designParametersEditor_ = new ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > >(),
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), listFinder, formatter, this);
+
+    ParameterReferenceTreeWindow* designParameterReferenceWindow =
+        new ParameterReferenceTreeWindow(designParameterTree_, designParametersEditor_);
+
+    designParameterDock_->setWidget(designParametersEditor_);
+    addDockWidget(Qt::BottomDockWidgetArea, designParameterDock_);
+
+    connect(designParametersEditor_, SIGNAL(contentChanged()),
+        this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+
+    connect(designParametersEditor_, SIGNAL(increaseReferences(QString)), 
+        designParameterReferenceCounter_, SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+    connect(designParametersEditor_, SIGNAL(decreaseReferences(QString)),
+        designParameterReferenceCounter_, SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
+    connect(designParametersEditor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        designParameterReferenceWindow, SLOT(openReferenceTree(QString const&, QString const&)),
+        Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::setupInstanceEditor()
 //-----------------------------------------------------------------------------
 void MainWindow::setupInstanceEditor()
@@ -1321,6 +1381,10 @@ void MainWindow::setupInstanceEditor()
     addDockWidget(Qt::RightDockWidgetArea, instanceDock_);
 
     connect(instanceEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+    connect(instanceEditor_, SIGNAL(increaseReferences(QString)),
+        designParameterReferenceCounter_, SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+    connect(instanceEditor_, SIGNAL(decreaseReferences(QString)),
+        designParameterReferenceCounter_, SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1854,7 +1918,7 @@ void MainWindow::generateDoc()
     }
     QTextStream stream(&targetFile);
 
-    DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_);
+    DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_, designParameterFinder_);
 
     ExpressionFormatterFactoryImplementation expressionFormatterFactory;
 
@@ -2021,6 +2085,13 @@ void MainWindow::onDocumentChanged(int index)
                 designwidget->getDiagram()->getEditProvider());
             instanceEditor_->setTopComponentActiveView(topComponent->getModel()->findView(designwidget->getOpenViewName()));
             instanceEditor_->setProtection(designwidget->isProtected());
+
+            QSharedPointer<Design> design = designwidget->getDiagram()->getDesign();
+            designParametersEditor_->setDisabled(designwidget->isProtected());
+            designParametersEditor_->setNewParameters(design->getParameters());
+            designParameterTree_->setDesign(design);
+
+            setupDesignParameterFinder(design);
         }
         
         if (doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
@@ -2056,6 +2127,42 @@ void MainWindow::onDocumentChanged(int index)
 
     // Update the menu strip.
     updateMenuStrip();
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupDesignParameterFinder()
+//-----------------------------------------------------------------------------
+void MainWindow::setupDesignParameterFinder(QSharedPointer<Design> newDesign)
+{
+    QSharedPointer<ListParameterFinder> designListFinder(new ListParameterFinder());
+    designListFinder->setParameterList(newDesign->getParameters());
+
+    designParameterFinder_->removeAllFinders();
+    designParameterFinder_->addFinder(designListFinder);
+
+    if (!newDesign->getComponentInstances()->isEmpty())
+    {
+        QList<QSharedPointer<const Component> > componentsWithFinders;
+
+        foreach (QSharedPointer<ComponentInstance> instance, *newDesign->getComponentInstances())
+        {
+            QSharedPointer<const Document> referencedDocument =
+                libraryHandler_->getModelReadOnly(*instance->getComponentRef().data());
+            if (referencedDocument)
+            {
+                QSharedPointer<const Component> instancedComponent =
+                    referencedDocument.dynamicCast<const Component>();
+                if (instancedComponent && !componentsWithFinders.contains(instancedComponent))
+                {
+                    QSharedPointer<ComponentParameterFinder> instanceFinder(
+                        new ComponentParameterFinder(instancedComponent));
+                    designParameterFinder_->addFinder(instanceFinder);
+
+                    componentsWithFinders.append(instancedComponent);
+                }
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -3187,7 +3294,7 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
         return;
     }
 
-    DesignWidgetFactoryImplementation factory(libraryHandler_);
+    DesignWidgetFactoryImplementation factory(libraryHandler_, designParameterFinder_);
     DesignWidget* designWidget = factory.makeHWDesignWidget(this);
     connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
         designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
@@ -3650,6 +3757,7 @@ void MainWindow::updateWindows()
     updateWindowAndControlVisibility(TabDocument::OUTPUTWINDOW, consoleDock_);
     updateWindowAndControlVisibility(TabDocument::CONTEXT_HELP_WINDOW, contextHelpDock_);
     updateWindowAndControlVisibility(TabDocument::PREVIEWWINDOW, previewDock_);
+    updateWindowAndControlVisibility(TabDocument::DESIGNPARAMETERSWINDOW, designParameterDock_);
     updateWindowAndControlVisibility(TabDocument::CONFIGURATIONWINDOW, configurationDock_);
     updateWindowAndControlVisibility(TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsDock_);
     updateWindowAndControlVisibility(TabDocument::CONNECTIONWINDOW, connectionDock_);
@@ -3770,6 +3878,10 @@ void MainWindow::connectVisibilityControls()
     connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
 
+    // Action to show/hide design parameter editor.
+    connect(designParameterDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        this, SLOT(onDesignParametersAction(bool)), Qt::UniqueConnection);
+
     // Action to show/hide the ad-hoc visibility editor.
     connect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onAdHocVisibilityAction(bool)), Qt::UniqueConnection);
@@ -3802,6 +3914,9 @@ void MainWindow::disconnectVisibilityControls()
     disconnect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onInterfaceAction(bool)));
 
     disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onInstanceAction(bool)));
+
+    disconnect(designParameterDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        this, SLOT(onDesignParametersAction(bool)));
 
     disconnect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onAdHocVisibilityAction(bool)));
@@ -4059,6 +4174,7 @@ void MainWindow::changeProtection(bool locked)
         // update the editors to match the locked state
         configurationEditor_->setLocked(locked);
         instanceEditor_->setProtection(locked);
+        designParametersEditor_->setDisabled(locked);
 
         if (designwidget->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
         {
@@ -4376,6 +4492,14 @@ void MainWindow::onAddressAction(bool show)
 void MainWindow::onInstanceAction( bool show )
 {
     setWindowVisibilityForSupportedWindow(TabDocument::INSTANCEWINDOW, show);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onDesignParametersAction()
+//-----------------------------------------------------------------------------
+void MainWindow::onDesignParametersAction(bool show)
+{
+    setWindowVisibilityForSupportedWindow(TabDocument::DESIGNPARAMETERSWINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -4724,6 +4848,12 @@ void MainWindow::onDesignDocumentRefreshed()
 
         instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getDesignConfiguration(),
             designWidget->getDiagram()->getEditProvider());
+
+        QSharedPointer<Design> design = designWidget->getDiagram()->getDesign();
+        designParametersEditor_->setNewParameters(design->getParameters());
+        designParameterTree_->setDesign(design);
+
+        setupDesignParameterFinder(design);
     }
 }
 

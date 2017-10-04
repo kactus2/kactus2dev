@@ -56,6 +56,7 @@ class InterfaceGraphicsData;
 class Kactus2Placeholder;
 class DesignDiagramResolver;
 class AdHocItem;
+class MultipleParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! HWDesignDiagram is a graphical view to a design.
@@ -179,11 +180,19 @@ public:
     };
     
     /*!
-     *  Constructor.
+     *  The constructor.
+     *
+     *      @param [in] lh                              Enables access to the library.
+     *      @param [in] editProvider                    The edit provider.
+     *      @param [in] designReferenceParameterFinder  Parameter finder for design parameter reference tree.
+     *      @param [in] parent                          Owner of this diagram.
      */
-    HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent = 0);
+    HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider,
+        QSharedPointer<MultipleParameterFinder> designReferenceParameterFinder, DesignWidget* parent = 0);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~HWDesignDiagram();
 
     /*!
@@ -814,6 +823,15 @@ private:
      */
     QStringList getTopLevelInterfaceNames() const;
 
+    /*!
+     *  Check if the design parameter reference finder contains a component finder for the selected component.
+     *
+     *      @param [in] component   The selected component.
+     *
+     *      @return True, if the design parameter reference finder contains the selected component, otherwise
+     *              false.
+     */
+    bool referenceFinderContainsComponent(QSharedPointer<Component> component);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -830,6 +848,9 @@ private:
 
     //! Handler for design diagram calculation.
     QSharedPointer<DesignDiagramResolver> diagramResolver_;
+
+    //! Parameter finder for design parameter reference tree
+    QSharedPointer<MultipleParameterFinder> designReferenceParameterFinder_;
 };
 
 #endif // HWDESIGNDIAGRAM_H

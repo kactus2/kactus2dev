@@ -55,6 +55,17 @@ signals:
      */
     void removeAllSubItems(QModelIndex const& index);
 
+    /*!
+     *  Emitted when a configurable element change command should be created.
+     *
+     *      @param [in] oldValue    Old value of the indexed element.
+     *      @param [in] newValue    New value of the indexed element.
+     *      @param [in] index       The selected index.
+     *      @param [in] cevModel    Model containing the configurable elements.
+     */
+    void createElementChangeCommand(QString const& oldValue, QString const& newValue, QModelIndex const& index,
+        QAbstractItemModel* cevModel) const;
+
 protected:
     
     /*!
@@ -92,6 +103,11 @@ private slots:
      */
     virtual void onRemoveAllSubItems();
 
+    /*!
+     *  Handles the deleting of the selected cell.
+     */
+    void onClearAction();
+
 private:
    
     // Disable copying.
@@ -110,6 +126,9 @@ private:
 
     //! Action for removing all sub items.
     QAction* removeAllAction_;
+
+    //! Action for clearing a cell.
+    QAction* clearAction_;
 };
 
 //-----------------------------------------------------------------------------

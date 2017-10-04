@@ -467,6 +467,6 @@ void ComponentEditorItem::connectItemEditorToReferenceCounter()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::connectReferenceTree()
 {
-    connect(editor_, SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(editor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 }

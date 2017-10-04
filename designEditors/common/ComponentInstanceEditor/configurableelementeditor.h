@@ -66,6 +66,20 @@ signals:
 	//! Emitted when contents of the editor changes.
 	void contentChanged();
 
+    /*!
+     *  Increase the amount of references to a parameter corresponding to the ID.
+     *
+     *      @param [in] id      The ID of the parameter being searched for.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to a parameter corresponding to the ID.
+     *
+     *      @param [in] id      The ID of the parameter being searched for.
+     */
+    void decreaseReferences(QString id);
+
 protected:
 
     /*!

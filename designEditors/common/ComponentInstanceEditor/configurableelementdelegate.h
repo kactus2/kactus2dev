@@ -139,6 +139,17 @@ public slots:
      */
     void onCreateMultipleElementRemoveCommands(QModelIndex const& index);
 
+    /*!
+     *  Create an undo command for configurable element value change.
+     *
+     *      @param [in] oldValue    Old value of the configurable element.
+     *      @param [in] newValue    New value of the configurable element.
+     *      @param [in] index       Index of the changed configurable element.
+     *      @param [in] cevModel    Model containing the configurable element.
+     */
+    void createElementChangeCommand(QString const& oldValue, QString const& newValue, QModelIndex const& index,
+        QAbstractItemModel* cevModel) const;
+
 signals:
 
     /*!
@@ -199,11 +210,26 @@ protected:
     //! Gets the description column.
     virtual int descriptionColumn() const;
 
-private:
-	//! No copying.
-	ConfigurableElementDelegate(const ConfigurableElementDelegate& other);
+private slots:
 
-	//! No assignment.
+    /*!
+     *  Increase the amount of references to parameters made in the selected value.
+     *
+     *      @param [in] newValue    The selected value.
+     */
+    void increaseReferencesInNewValue(QString const& newValue);
+
+    /*!
+     *  Decrease the amount of references to parameters made in the selected value.
+     *
+     *      @param [in] oldValue    The selected value.
+     */
+    void decreaseReferencesInOldValue(QString const& oldValue);
+
+private:
+
+	//! No copying. No assignment.
+	ConfigurableElementDelegate(const ConfigurableElementDelegate& other);
 	ConfigurableElementDelegate& operator=(const ConfigurableElementDelegate& other);
 
     /*!
@@ -243,17 +269,6 @@ private:
      */
     void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index)
         const;
-
-    /*!
-     *  Create an undo command for configurable element value change.
-     *
-     *      @param [in] oldValue    Old value of the configurable element.
-     *      @param [in] newValue    New value of the configurable element.
-     *      @param [in] index       Index of the changed configurable element.
-     *      @param [in] cevModel    Model containing the configurable element.
-     */
-    void createElementChangeCommand(QString const& oldValue, QString const& newValue, QModelIndex const& index,
-        QAbstractItemModel* cevModel) const;
 
     /*!
      *  Create an element remove command for the selected configurable element.

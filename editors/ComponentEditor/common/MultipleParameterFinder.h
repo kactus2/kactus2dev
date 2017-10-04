@@ -50,6 +50,11 @@ public:
       */
      void removeFinder(QSharedPointer<ParameterFinder> finder);
 
+     /*!
+      *  Remove all attached parameter finders.
+      */
+     void removeAllFinders();
+
     /*!
      *  Get the parameter with the given id.
      *

@@ -39,6 +39,9 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagramResolver.h>
@@ -97,12 +100,13 @@ Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
 // Function: HWDesignDiagram::HWDesignDiagram()
 //-----------------------------------------------------------------------------
 HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider,
-DesignWidget* parent):
+    QSharedPointer<MultipleParameterFinder> designReferenceParameterFinder, DesignWidget* parent):
 ComponentDesignDiagram(lh, editProvider, parent),
-    dragCompType_(ColumnTypes::NONE),
-    dragBus_(false),
-    dragEndPoint_(0),
-    diagramResolver_(new DesignDiagramResolver())
+dragCompType_(ColumnTypes::NONE),
+dragBus_(false),
+dragEndPoint_(0),
+diagramResolver_(new DesignDiagramResolver()),
+designReferenceParameterFinder_(designReferenceParameterFinder)
 {
 
 }
@@ -1929,6 +1933,12 @@ HWComponentItem* HWDesignDiagram::createComponentItem(QSharedPointer<Component> 
     
     if (column != 0)
     {
+        if (!referenceFinderContainsComponent(comp))
+        {
+            QSharedPointer<ComponentParameterFinder> componentFinder(new ComponentParameterFinder(comp));
+            designReferenceParameterFinder_->addFinder(componentFinder);
+        }
+
         // Create the diagram component.                            
         QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
         componentInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
@@ -1952,6 +1962,31 @@ HWComponentItem* HWDesignDiagram::createComponentItem(QSharedPointer<Component> 
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::referenceFinderContainsComponent()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::referenceFinderContainsComponent(QSharedPointer<Component> component)
+{
+    foreach (QSharedPointer<ComponentInstance> instance, *getDesign()->getComponentInstances())
+    {
+        if (instance->getComponentRef())
+        {
+            QSharedPointer<Document> componentDocument =
+                getLibraryInterface()->getModel(*instance->getComponentRef().data());
+            if (componentDocument)
+            {
+                QSharedPointer<Component> instancedComponent = componentDocument.dynamicCast<Component>();
+                if (instancedComponent && instancedComponent->getVlnv() == component->getVlnv())
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

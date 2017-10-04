@@ -46,8 +46,8 @@ validator_()
             new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, referenceCounter_,
             parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd));
 
-        connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),
-            this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+        connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+            this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 		childItems_.append(busifItem);
 	}
@@ -133,8 +133,8 @@ void ComponentEditorBusInterfacesItem::createChild(int index)
         parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
-    connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 	childItems_.insert(index, busifItem);
 }

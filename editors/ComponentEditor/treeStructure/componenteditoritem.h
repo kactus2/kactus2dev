@@ -363,9 +363,10 @@ signals:
     /*!
      *  Open the reference tree of the selected parameter.
      *
-     *      @param [in] id   The id of the parameter.
+     *      @param [in] id              The ID of the parameter.
+     *      @param [in] parameterName   Name of the selected parameter.
      */
-    void openReferenceTree(QString const& id) const;
+    void openReferenceTree(QString const& id, QString const& parameterName) const;
 
 protected:
 

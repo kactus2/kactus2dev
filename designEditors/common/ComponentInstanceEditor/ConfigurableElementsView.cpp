@@ -23,7 +23,8 @@ ConfigurableElementsView::ConfigurableElementsView(QWidget* parent):
 QTreeView(parent),
 contextMenuIndex_(QModelIndex()),
 removeAction_(new QAction("Remove configurable element", this)),
-removeAllAction_(new QAction("Remove all unknown configurable elements", this))
+removeAllAction_(new QAction("Remove all unknown configurable elements", this)),
+clearAction_(new QAction(tr("Clear"), this))
 {
     setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -33,6 +34,11 @@ removeAllAction_(new QAction("Remove all unknown configurable elements", this))
 
     connect(removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveItem()), Qt::UniqueConnection);
     connect(removeAllAction_, SIGNAL(triggered()), this, SLOT(onRemoveAllSubItems()), Qt::UniqueConnection);
+
+    addAction(clearAction_);
+    clearAction_->setShortcut(QKeySequence::Delete);
+    clearAction_->setShortcutContext(Qt::WidgetShortcut);
+    connect(clearAction_, SIGNAL(triggered()), this, SLOT(onClearAction()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -114,4 +120,21 @@ void ConfigurableElementsView::contextMenuEvent(QContextMenuEvent* event)
 QAction* ConfigurableElementsView::getRemoveAction() const
 {
     return removeAction_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsView::onClearAction()
+//-----------------------------------------------------------------------------
+void ConfigurableElementsView::onClearAction()
+{
+    QModelIndex selectedIndex = currentIndex();
+
+    QString oldValue = model()->data(selectedIndex, Qt::EditRole).toString();
+    QString newValue("");
+    model()->setData(selectedIndex, newValue, Qt::EditRole);
+
+    if (selectedIndex.parent().isValid())
+    {
+        emit createElementChangeCommand(oldValue, newValue, selectedIndex, model());
+    }
 }

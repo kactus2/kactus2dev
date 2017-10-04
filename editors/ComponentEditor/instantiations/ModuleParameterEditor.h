@@ -84,11 +84,12 @@ signals:
     void decreaseReferences(QString id);
 
     /*!
-     *  Open the reference tree of the parameter with the id.
+     *  Open the reference tree of the parameter with the ID.
      *
-     *      @param [in] id      The id of the parameter.
+     *      @param [in] id              The ID of the parameter.
+     *      @param [in] parameterName   Name of the selected parameter.
      */
-    void openReferenceTree(QString const& id) const;
+    void openReferenceTree(QString const& id, QString const& parameterName) const;
 
 private:
 

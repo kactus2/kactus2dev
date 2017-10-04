@@ -97,8 +97,24 @@ public slots:
 
 signals:
 
-	//! Emitted when contents of the editor changes.
+	/*!
+     *  Emitted when contents of the editor changes.
+     */
 	void contentChanged();
+    
+    /*!
+     *  Increase the amount of references to a parameter with the matching ID.
+     *
+     *      @param [in] id  ID of the parameter, whose references are being increased.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to a parameter with a matching ID.
+     *
+     *      @param [in] id  ID of the parameter, whose references are being decreased.
+     */
+    void decreaseReferences(QString id);
 
 private slots:
 

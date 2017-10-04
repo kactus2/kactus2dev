@@ -38,10 +38,6 @@ filter_(new ConfigurableElementsFilter(this))
 
     connect(getDelegate(), SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
         this, SLOT(sendSignalForElementRemoval(QString const&, QString const&, int)), Qt::UniqueConnection);
-    connect(getDelegate(), SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(getDelegate(), SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }

@@ -62,6 +62,9 @@ QSharedPointer<ConfigurableElementValue> ConfigurableElementChangeCommand::setup
 void ConfigurableElementChangeCommand::undo()
 {
     changeConfigurableElement(oldValue_);
+
+    emit increaseReferencesInNewValue(oldValue_);
+    emit decreaseReferencesInOldValue(newValue_);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,6 +73,9 @@ void ConfigurableElementChangeCommand::undo()
 void ConfigurableElementChangeCommand::redo()
 {
     changeConfigurableElement(newValue_);
+
+    emit increaseReferencesInNewValue(newValue_);
+    emit decreaseReferencesInOldValue(oldValue_);
 }
 
 //-----------------------------------------------------------------------------

@@ -138,6 +138,18 @@ void ConfigurableElementDelegate::setModelData(QWidget* editor, QAbstractItemMod
 void ConfigurableElementDelegate::createElementChangeCommand(QString const& oldValue, QString const& newValue,
     QModelIndex const& index, QAbstractItemModel* cevModel) const
 {
+    QString modifiedNewValue = newValue;
+    if (newValue.isEmpty())
+    {
+        QModelIndex defaultValueIndex = index.sibling(index.row(), ConfigurableElementsColumns::DEFAULT_VALUE);
+        modifiedNewValue = defaultValueIndex.data(Qt::EditRole).toString();
+
+        if (modifiedNewValue == oldValue)
+        {
+            return;
+        }
+    }
+
     QVariant configurableElements =
         cevModel->data(index, ConfigurableElementsModel::getItemConfigurableElementValuesRole);
 
@@ -152,12 +164,28 @@ void ConfigurableElementDelegate::createElementChangeCommand(QString const& oldV
         QString defaultValue = cevModel->data(defaultValueIndex, Qt::EditRole).toString();
 
         QSharedPointer<ConfigurableElementChangeCommand> elementChangeCommand(new ConfigurableElementChangeCommand(
-            elementID, oldValue, newValue, defaultValue, itemConfigurableElements));
+            elementID, oldValue, modifiedNewValue, defaultValue, itemConfigurableElements));
 
         connect(elementChangeCommand.data(), SIGNAL(dataChangedInID(QString const&, QString const&)),
             this, SIGNAL(dataChangedInID(QString const&, QString const&)), Qt::UniqueConnection);
 
+        if (newValue.isEmpty())
+        {
+            connect(elementChangeCommand.data(), SIGNAL(increaseReferencesInNewValue(QString const&)),
+                this, SLOT(increaseReferencesInNewValue(QString const&)), Qt::UniqueConnection);
+            connect(elementChangeCommand.data(), SIGNAL(decreaseReferencesInOldValue(QString const&)),
+                this, SLOT(decreaseReferencesInOldValue(QString const&)), Qt::UniqueConnection);
+        }
+
         addCommandToStackAndRedo(elementChangeCommand);
+
+        if (!newValue.isEmpty())
+        {
+            connect(elementChangeCommand.data(), SIGNAL(increaseReferencesInNewValue(QString const&)),
+                this, SLOT(increaseReferencesInNewValue(QString const&)), Qt::UniqueConnection);
+            connect(elementChangeCommand.data(), SIGNAL(decreaseReferencesInOldValue(QString const&)),
+                this, SLOT(decreaseReferencesInOldValue(QString const&)), Qt::UniqueConnection);
+        }
     }
 }
 
@@ -171,6 +199,11 @@ void ConfigurableElementDelegate::onCreateRemoveElementCommand(QModelIndex const
     {
         QSharedPointer<ConfigurableElementRemoveCommand> elementRemoveCommand = createElementRemoveCommand(index);
         addCommandToStackAndRedo(elementRemoveCommand);
+
+        connect(elementRemoveCommand.data(), SIGNAL(increaseReferencesInNewValue(QString const&)),
+            this, SLOT(increaseReferencesInNewValue(QString const&)), Qt::UniqueConnection);
+        connect(elementRemoveCommand.data(), SIGNAL(decreaseReferencesInOldValue(QString const&)),
+            this, SLOT(decreaseReferencesInOldValue(QString const&)), Qt::UniqueConnection);
     }
 }
 
@@ -290,6 +323,19 @@ void ConfigurableElementDelegate::onCreateMultipleElementRemoveCommands(QModelIn
         }
 
         addCommandToStackAndRedo(multipleRemoveCommand);
+
+        for (int i = 0; i < multipleRemoveCommand->childCount(); ++i)
+        {
+            const ConfigurableElementRemoveCommand* removeCommand =
+                dynamic_cast<const ConfigurableElementRemoveCommand*>(multipleRemoveCommand->child(i));
+            if (removeCommand)
+            {
+                connect(removeCommand, SIGNAL(increaseReferencesInNewValue(QString const&)),
+                    this, SLOT(increaseReferencesInNewValue(QString const&)), Qt::UniqueConnection);
+                connect(removeCommand, SIGNAL(decreaseReferencesInOldValue(QString const&)),
+                    this, SLOT(decreaseReferencesInOldValue(QString const&)), Qt::UniqueConnection);
+            }
+        }
     }
 }
 
@@ -304,6 +350,38 @@ void ConfigurableElementDelegate::addCommandToStackAndRedo(QSharedPointer<QUndoC
     }
 
     newCommand->redo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::increaseReferencesInNewValue()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::increaseReferencesInNewValue(QString const& newValue)
+{
+    QStringList allParameterIDs = getParameterFinder()->getAllParameterIds();
+    foreach (QString valueID, allParameterIDs)
+    {
+        int referencesToId = newValue.count(valueID);
+        for (int i =  0; i < referencesToId; ++i)
+        {
+            emit increaseReferences(valueID);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::decreaseReferencesInOldValue()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::decreaseReferencesInOldValue(QString const& oldValue)
+{
+    QStringList allParameterIDs = getParameterFinder()->getAllParameterIds();
+    foreach (QString valueID, allParameterIDs)
+    {
+        int referencesToId = oldValue.count(valueID);
+        for (int i =  0; i < referencesToId; ++i)
+        {
+            emit decreaseReferences(valueID);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

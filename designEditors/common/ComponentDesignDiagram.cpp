@@ -592,6 +592,7 @@ void ComponentDesignDiagram::setupActions()
 
     getParent()->addAction(&deleteAction_);
     deleteAction_.setShortcut(QKeySequence::Delete);
+    deleteAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&deleteAction_, SIGNAL(triggered()), this, SIGNAL(deleteSelectedItems()), Qt::UniqueConnection);
 
     connect(&openDesignMenu_, SIGNAL(triggered(QAction*)),

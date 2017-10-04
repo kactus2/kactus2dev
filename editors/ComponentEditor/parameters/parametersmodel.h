@@ -75,6 +75,13 @@ public:
 	*/
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
+    /*!
+     *  Set new parameters for the model.
+     *
+     *      @param [in] newParameters   The list of new parameters.
+     */
+    void setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
+
 public slots:
 
 	/*! A new item should be added to given index.

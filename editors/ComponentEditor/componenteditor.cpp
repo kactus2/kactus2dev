@@ -35,9 +35,14 @@
 #include <editors/ComponentEditor/treeStructure/InstantiationsItem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
+
+#include <editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h>
+#include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
 
 #include <editors/ComponentEditor/general/generaleditor.h>
 
+#include <editors/ComponentEditor/common/ParameterCache.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
@@ -47,18 +52,10 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/itemvisualizer.h>
-#include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
-
-#include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
-
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
-
-#include <editors/ComponentEditor/common/ParameterCache.h>
-
-#include <QDialog>
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -88,7 +85,9 @@ parameterFinder_(new ParameterCache(component_)),
 referenceCounter_(new ParameterReferenceCounter(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
-validator_(expressionParser_, libHandler_)
+validator_(expressionParser_, libHandler_),
+parameterReferenceWindow_(new ParameterReferenceTreeWindow(
+    new ComponentParameterReferenceTree(component, expressionFormatter_), this))
 {
     // these can be used when debugging to identify the objects
 	setObjectName(tr("ComponentEditor"));
@@ -612,28 +611,6 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditor::openReferenceTree()
-//-----------------------------------------------------------------------------
-void ComponentEditor::openReferenceTree(QString const& parameterId)
-{
-    QDialog* referenceTreeWindow(new QDialog(this));
-
-    referenceTreeWindow->setWindowTitle("References to " + parameterFinder_->nameForId(parameterId));
-
-    referenceTreeWindow->setMinimumWidth(600);
-    referenceTreeWindow->setMinimumHeight(400);
-
-    ParameterReferenceTree* referenceTree(new ParameterReferenceTree(
-        component_, expressionFormatter_, parameterId, referenceTreeWindow));
-
-    QHBoxLayout* treeWindowLayout(new QHBoxLayout);
-    treeWindowLayout->addWidget(referenceTree);
-    referenceTreeWindow->setLayout(treeWindowLayout);
-
-    referenceTreeWindow->show();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentEditor::createNavigationRootForComponent()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootForComponent(
@@ -663,8 +640,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
         root->addChildItem(parametersItem);
 
-        connect(parametersItem.data(), SIGNAL(openReferenceTree(QString)),
-            this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
+        connect(parametersItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+            parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const)),
+            Qt::UniqueConnection);
 
         root->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(new ComponentEditorMemMapsItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
@@ -681,16 +659,16 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
     root->addChildItem(instantiationsItem);
 
-    connect(instantiationsItem.data(), SIGNAL(openReferenceTree(QString)),
-        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(instantiationsItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, libHandler_,
         component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, root));
 
     root->addChildItem(viewsItem);
 
-    connect(viewsItem.data(), SIGNAL(openReferenceTree(QString)),
-        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(viewsItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     if (component->getImplementation() != KactusAttribute::SW)
     {
@@ -712,8 +690,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
         root->addChildItem(busInterfaceItem);
 
-        connect(busInterfaceItem.data(), SIGNAL(openReferenceTree(QString)),
-            this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
+        connect(busInterfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+            parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)),
+            Qt::UniqueConnection);
 
         root->addChildItem(QSharedPointer<ComponentEditorIndirectInterfacesItem>(
             new ComponentEditorIndirectInterfacesItem(&navigationModel_, libHandler_, component, referenceCounter_,

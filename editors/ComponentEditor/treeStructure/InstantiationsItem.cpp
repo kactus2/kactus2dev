@@ -48,8 +48,11 @@ designInstantiationsItem_(new DesignInstantiationsItem(model, libHandler, compon
 
     setReferenceCounter(referenceCounter);
 
-    connect(componentInstantiationsItem_.data(), SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(componentInstantiationsItem_.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(designConfigurationInstantiationsItem_.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     childItems_.append(componentInstantiationsItem_);
     childItems_.append(designConfigurationInstantiationsItem_);

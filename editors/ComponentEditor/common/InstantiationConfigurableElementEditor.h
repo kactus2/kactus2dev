@@ -73,22 +73,6 @@ public:
     void setParameters(QString const& containerName, QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedElements);
 
-signals:
-    
-    /*!
-    *  Increase the amount of references to a parameter corresponding to the id.
-    *
-    *      @param [in] id      The id of the parameter being searched for.
-    */
-    void increaseReferences(QString id);
-
-    /*!
-    *  Decrease the amount of references to a parameter corresponding to the id.
-    *
-    *      @param [in] id      The id of the parameter being searched for.
-    */
-    void decreaseReferences(QString id);
-
 private slots:
 
     /*!

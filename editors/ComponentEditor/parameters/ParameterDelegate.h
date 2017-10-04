@@ -98,9 +98,10 @@ signals:
     /*!
      *  Open the reference tree of the selected parameter.
      *
-     *      @param [in] id      The id of the parameter.
+     *      @param [in] id      The ID of the selected parameter.
+     *      @param [in] name    Name of the selected parameter.
      */
-    void openReferenceTree(QString const& id) const;
+    void openReferenceTree(QString const& id, QString const& name) const;
 
     //! Emitted when the values of the array change.
     void contentChanged();

@@ -917,6 +917,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\indirectInterfaces">
       <UniqueIdentifier>{8fba88bc-527a-4d9a-a0f1-543f2a45b28f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\designEditors\common\DesignParameterReferenceTree">
+      <UniqueIdentifier>{11e3f636-7793-4caf-8d3d-bd64d520e264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\common\DesignParameterReferenceTree">
+      <UniqueIdentifier>{9c0d3c9f-1011-4f98-818d-93ae0cd6bdd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4360,6 +4366,24 @@
     <ClCompile Include="designEditors\common\DefaultRouting.cpp">
       <Filter>Source Files\designEditors\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameterReferenceTree\ComponentParameterReferenceTree.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameterReferenceTree</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentParameterReferenceTree.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\DesignParameterReferenceTree\DesignParameterReferenceTree.cpp">
+      <Filter>Source Files\designEditors\common\DesignParameterReferenceTree</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignParameterReferenceTree.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameterReferenceTree\ParameterReferenceTreeWindow.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameterReferenceTree</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterReferenceTreeWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5999,6 +6023,15 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ParameterConfigurableElementsFilter.h">
       <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameterReferenceTree\ComponentParameterReferenceTree.h">
+      <Filter>Header Files\editors\ComponentEditor\parameterReferenceTree</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\DesignParameterReferenceTree\DesignParameterReferenceTree.h">
+      <Filter>Header Files\designEditors\common\DesignParameterReferenceTree</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameterReferenceTree\ParameterReferenceTreeWindow.h">
+      <Filter>Header Files\editors\ComponentEditor\parameterReferenceTree</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

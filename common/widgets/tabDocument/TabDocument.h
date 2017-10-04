@@ -57,6 +57,7 @@ public:
         CONTEXT_HELP_WINDOW     = 0x200,
         ADDRESS_WINDOW          = 0x400,
         ADHOC_WINDOW            = 0x800,
+        DESIGNPARAMETERSWINDOW  = 0x1000
 	};
 
     /*!
