@@ -20,19 +20,15 @@
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
 //-----------------------------------------------------------------------------
 SingleComponentInstantiationItem::SingleComponentInstantiationItem(ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component, 
-    QSharedPointer<ComponentInstantiation> instantiation,
-    QSharedPointer<InstantiationsValidator> validator,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+    LibraryInterface* libHandler, QSharedPointer<Component> component, 
+    QSharedPointer<ComponentInstantiation> instantiation, QSharedPointer<InstantiationsValidator> validator,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent),
-    instantiation_(instantiation),
-    validator_(validator),
-    expressionParser_(expressionParser)
+ParameterizableItem(model, libHandler, component, parent),
+instantiation_(instantiation),
+validator_(validator),
+expressionParser_(expressionParser)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);

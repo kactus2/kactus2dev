@@ -1,8 +1,18 @@
+//-----------------------------------------------------------------------------
+// File: SingleIndirectInterfaceItem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// The item for single bus interface in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef SingleIndirectInterfaceItem_H
 #define SingleIndirectInterfaceItem_H
 
-#include "componenteditoritem.h"
+#include <editors/ComponentEditor/treeStructure/ParameterizableItem.h>
 
 #include <QSharedPointer>
 
@@ -13,7 +23,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The item for single bus interface in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
-class SingleIndirectInterfaceItem : public ComponentEditorItem
+class SingleIndirectInterfaceItem : public ParameterizableItem
 {
 	Q_OBJECT
 

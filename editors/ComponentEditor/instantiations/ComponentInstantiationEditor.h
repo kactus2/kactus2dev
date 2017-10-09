@@ -18,8 +18,7 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
-#include <editors/ComponentEditor/itemeditor.h>
-
+#include <editors/ComponentEditor/ParameterItemEditor.h>
 #include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
 
 #include <QWidget>
@@ -37,7 +36,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Contains the GUI items to edit the general settings of non-hierarchical view.
 //-----------------------------------------------------------------------------
-class ComponentInstantiationEditor : public ItemEditor
+class ComponentInstantiationEditor : public ParameterItemEditor
 {
 	Q_OBJECT
 

@@ -51,6 +51,7 @@
 #include <designEditors/common/ConnectionEditor/connectioneditor.h>
 #include <designEditors/common/DesignWidgetFactoryImplementation.h>
 #include <designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h>
+#include <designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h>
 
 #include <designEditors/HWDesign/HWDesignWidget.h>
 #include <designEditors/HWDesign/HWDesignDiagram.h>
@@ -77,7 +78,6 @@
 #include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
 #include <editors/ConfigurationTools/ViewConfigurer.h>
 
@@ -1342,9 +1342,11 @@ void MainWindow::setupDesignParametersEditor()
     QSharedPointer<ExpressionFormatter> referenceTreeFormatter(new ExpressionFormatter(designParameterFinder_));
     designParameterFinder_->addFinder(listFinder);
 
-    designParameterReferenceCounter_ = new ParameterReferenceCounter(listFinder);
+    designParameterReferenceCounter_ =
+        QSharedPointer<DesignParameterReferenceCounter>(new DesignParameterReferenceCounter(listFinder));
 
-    designParameterTree_ = new DesignParameterReferenceTree(referenceTreeFormatter, this);
+    designParameterTree_ =
+        new DesignParameterReferenceTree(referenceTreeFormatter, designParameterReferenceCounter_, this);
 
     designParametersEditor_ = new ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > >(),
         QSharedPointer<QList<QSharedPointer<Choice> > >(), listFinder, formatter, this);
@@ -1359,12 +1361,17 @@ void MainWindow::setupDesignParametersEditor()
         this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 
     connect(designParametersEditor_, SIGNAL(increaseReferences(QString)), 
-        designParameterReferenceCounter_, SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+        designParameterReferenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
     connect(designParametersEditor_, SIGNAL(decreaseReferences(QString)),
-        designParameterReferenceCounter_, SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
+        designParameterReferenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
     connect(designParametersEditor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         designParameterReferenceWindow, SLOT(openReferenceTree(QString const&, QString const&)),
         Qt::UniqueConnection);
+
+    connect(designParametersEditor_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        designParameterReferenceCounter_.data(),
+        SLOT(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1383,9 +1390,9 @@ void MainWindow::setupInstanceEditor()
 
     connect(instanceEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
     connect(instanceEditor_, SIGNAL(increaseReferences(QString)),
-        designParameterReferenceCounter_, SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+        designParameterReferenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
     connect(instanceEditor_, SIGNAL(decreaseReferences(QString)),
-        designParameterReferenceCounter_, SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
+        designParameterReferenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -2091,6 +2098,7 @@ void MainWindow::onDocumentChanged(int index)
             designParametersEditor_->setDisabled(designwidget->isProtected());
             designParametersEditor_->setNewParameters(design->getParameters());
             designParameterTree_->setDesign(design);
+            designParameterReferenceCounter_->setDesign(design);
 
             setupDesignParameterFinder(design);
         }
@@ -4855,6 +4863,7 @@ void MainWindow::onDesignDocumentRefreshed()
         QSharedPointer<Design> design = designWidget->getDiagram()->getDesign();
         designParametersEditor_->setNewParameters(design->getParameters());
         designParameterTree_->setDesign(design);
+        designParameterReferenceCounter_->setDesign(design);
 
         setupDesignParameterFinder(design);
     }

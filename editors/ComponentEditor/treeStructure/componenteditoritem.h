@@ -373,12 +373,7 @@ protected:
     /*!
      *  Connects this component editor items item editor to its reference counter.
      */
-    void connectItemEditorToReferenceCounter();
-
-    /*!
-     *  Connect the signals related to a reference tree.
-     */
-    void connectReferenceTree();
+    virtual void connectItemEditorToReferenceCounter();
 
     //! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;

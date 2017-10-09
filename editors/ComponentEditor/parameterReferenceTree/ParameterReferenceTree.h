@@ -19,6 +19,7 @@
 
 class Parameter;
 class ConfigurableElementValue;
+class ParameterReferenceCounter;
 
 //-----------------------------------------------------------------------------
 //! Tree widget for displaying references to a parameter.
@@ -66,24 +67,6 @@ protected:
     QString getTargetID() const;
 
     /*!
-     *  Check if a reference exists in a list of parameters.
-     *
-     *      @param[in] parameterList    The list of parameters being looked at.
-     *
-     *      @return True, if a reference exists in the parameter list, false otherwise.
-     */
-    bool referenceExistsInParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList) const;
-
-    /*!
-     *  Check if a reference exists in a single parameter.
-     *
-     *      @param [in] parameter   The parameter being studied.
-     *
-     *      @return True, if a reference exists in the selected parameter, false otherwise.
-     */
-    bool parameterHasReference(QSharedPointer<Parameter> parameter) const;
-
-    /*!
      *  Create the references for parameters.
      *
      *      @param [in] parameters      List of parameters containing a reference.
@@ -91,25 +74,6 @@ protected:
      */
     void createParameterReferences(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         QTreeWidgetItem* parentItem);
-
-    /*!
-     *  Check if a reference exists in configurable element values.
-     *
-     *      @param [in] elementValues   List of the configurable element values.
-     *
-     *      @return True, if a reference exists in the configurable element values, otherwise false.
-     */
-    bool referenceExistsInConfigurableElementValues(
-        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > elementValues) const;
-
-    /*!
-     *  Check if a reference exists in a single configurable element value.
-     *
-     *      @param [in] element     The selected configurable element value.
-     *
-     *      @return True, if a reference exists in the selected configurable element value, otherwise false.
-     */
-    bool referenceExistsInSingleConfigurableElementValue(QSharedPointer<ConfigurableElementValue> element) const;
 
     /*!
      *  Create references for configurable element values.
@@ -173,6 +137,11 @@ private:
      *  Setup the reference tree.
      */
     virtual void setupTree() = 0;
+
+    /*!
+     *  Get the parameter reference calculator.
+     */
+    virtual QSharedPointer<ParameterReferenceCounter> getReferenceCounter() const = 0;
 
     //-----------------------------------------------------------------------------
     // Data.

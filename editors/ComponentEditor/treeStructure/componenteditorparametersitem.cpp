@@ -27,9 +27,9 @@ ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTree
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent),
-    expressionParser_(expressionParser),
-    validator_(new ParameterValidator2014(expressionParser, component->getChoices()))
+ParameterizableItem(model, libHandler, component, parent),
+expressionParser_(expressionParser),
+validator_(new ParameterValidator2014(expressionParser, component->getChoices()))
 {
     setReferenceCounter(refCounter);
     setParameterFinder(parameterFinder);

@@ -20,6 +20,7 @@ class ModuleParameter;
 class ModuleParameterModel;
 class ParameterFinder;
 class ExpressionFormatter;
+class Parameter;
 
 //-----------------------------------------------------------------------------
 //! Editor for module parameters.
@@ -90,6 +91,13 @@ signals:
      *      @param [in] parameterName   Name of the selected parameter.
      */
     void openReferenceTree(QString const& id, QString const& parameterName) const;
+
+    /*!
+     *  Recalculate references made to the selected parameters.
+     *
+     *      @param [in] parameters  The selected parameters.
+     */
+    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
 
 private:
 

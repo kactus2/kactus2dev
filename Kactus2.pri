@@ -505,6 +505,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
     ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h \
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h \
     ./editors/ComponentEditor/remapStates/RemapConditionColumns.h \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.h \
     ./editors/ComponentEditor/remapStates/RemapStatesModel.h \
@@ -676,6 +677,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.h \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h \
     ./designEditors/HWDesign/AdhocEditor/AdhocEditor.h \
+    ./designEditors/common/DefaultRouting.h \
     ./designEditors/common/DesignDiagramResolver.h \
     ./designEditors/common/DesignWidgetFactory.h \
     ./designEditors/common/DesignWidgetFactoryImplementation.h \
@@ -737,8 +739,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/common/DefaultRouting.h
-    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h
+    ./editors/ComponentEditor/parameters/ParametersView.h \
+    ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h \
+    ./editors/ComponentEditor/ParameterItemEditor.h \
+    ./editors/ComponentEditor/treeStructure/ParameterizableItem.h \
+    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1167,6 +1172,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.cpp \
     ./editors/ComponentEditor/remapStates/RemapConditionDelegate.cpp \
     ./editors/ComponentEditor/remapStates/RemapConditionEditor.cpp \
     ./editors/ComponentEditor/remapStates/RemapConditionModel.cpp \
@@ -1331,6 +1337,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ./designEditors/common/ComponentDesignDiagram.cpp \
     ./designEditors/common/ComponentInstanceParameterFinder.cpp \
+    ./designEditors/common/DefaultRouting.cpp \
     ./designEditors/common/DesignCompletionModel.cpp \
     ./designEditors/common/DesignDiagram.cpp \
     ./designEditors/common/DesignDiagramResolver.cpp \
@@ -1384,6 +1391,9 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./designEditors/common/DefaultRouting.cpp
-    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.cpp
+    ./editors/ComponentEditor/parameters/ParametersView.cpp \
+    ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.cpp \
+    ./editors/ComponentEditor/ParameterItemEditor.cpp \
+    ./editors/ComponentEditor/treeStructure/ParameterizableItem.cpp \
+    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.cpp
 RESOURCES += kactus.qrc

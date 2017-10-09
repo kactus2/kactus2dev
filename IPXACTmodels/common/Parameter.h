@@ -153,6 +153,13 @@ public:
      int getUsageCount() const;
 
      /*!
+      *  Set a new reference count.
+      *
+      *      @param [in] newUsageCount  The new reference count.
+      */
+     void setUsageCount(int const& newUsageCount);
+
+     /*!
       *  Increase the amount of references to this parameter.
       */
      void increaseUsageCount();

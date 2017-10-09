@@ -12,7 +12,7 @@
 #ifndef BUSINTERFACEEDITOR_H
 #define BUSINTERFACEEDITOR_H
 
-#include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/ParameterItemEditor.h>
 #include <editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h>
 
@@ -32,7 +32,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! Container for editors to edit a bus interface.
 //-----------------------------------------------------------------------------
-class BusInterfaceEditor : public ItemEditor
+class BusInterfaceEditor : public ParameterItemEditor
 {
 	Q_OBJECT
 

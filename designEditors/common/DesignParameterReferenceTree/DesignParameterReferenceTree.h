@@ -18,6 +18,7 @@
 
 class Design;
 class ComponentInstance;
+class DesignParameterReferenceCounter;
 
 //-----------------------------------------------------------------------------
 //! Tree widget for displaying references to a parameter within a design.
@@ -30,10 +31,12 @@ public:
     /*!
      *   The constructor.
      *
-     *      @param [in] formatter   Formatter for expressions.
-     *      @param [in] parent      The parent widget.
+     *      @param [in] formatter           Formatter for expressions.
+     *      @param [in] referenceCounter    Calculates parameter references.
+     *      @param [in] parent              The parent widget.
      */
-    DesignParameterReferenceTree(QSharedPointer<ExpressionFormatter> formatter, QWidget* parent = 0);
+    DesignParameterReferenceTree(QSharedPointer<ExpressionFormatter> formatter,
+        QSharedPointer<DesignParameterReferenceCounter> referenceCounter, QWidget* parent = 0);
 
 	/*!
      *  The destructor.
@@ -57,6 +60,13 @@ private:
      *  Setup the reference tree.
      */
     void setupTree();
+
+    /*!
+     *  Get the used parameter reference counter.
+     *
+     *      @return The design parameter reference calculator.
+     */
+    QSharedPointer<ParameterReferenceCounter> getReferenceCounter() const;
 
     /*!
      *  Check if a reference exists in the contained component instances.
@@ -94,6 +104,9 @@ private:
 
     //! The component in which this id is situated.
     QSharedPointer<Design> design_;
+
+    //! The design parameter reference calculator.
+    QSharedPointer<DesignParameterReferenceCounter> referenceCounter_;
 };
 
 #endif // COMPONENTPARAMETERREFERENCETREE_H

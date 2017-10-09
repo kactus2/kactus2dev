@@ -17,6 +17,8 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
+class ConfigurableElementValue;
+
 //-----------------------------------------------------------------------------
 //! ParameterReferenceCounter class. 
 //-----------------------------------------------------------------------------
@@ -27,14 +29,61 @@ class ParameterReferenceCounter : public ReferenceCounter
 public:
 
     /*!
-     *  Constructor.
+     *  The constructor.
+     *
+     *      @param [in] parameterFinder     The parameter finder.
      */
     ParameterReferenceCounter(QSharedPointer<ParameterFinder> parameterFinder);
 
     /*!
-     *  Destructor.
+     *  The destructor.
      */
     ~ParameterReferenceCounter();
+
+    /*!
+     *  Count the references made to the selected parameter in the selected parameters.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] parameters      The selected parameters.
+     *
+     *      @return The amount of references made to the selected parameter in the selected parameters.
+     */
+    virtual int countReferencesInParameters(QString const& parameterID,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected parameter.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] parameter       The selected parameter.
+     *
+     *      @return The amount of references made to the selected parameter in the selected parameter.
+     */
+    int countReferencesInSingleParameter(QString const& parameterID, QSharedPointer<Parameter> parameter) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected configurable element values.
+     *
+     *      @param [in] parameterID             ID of the selected parameter.
+     *      @param [in] configurableElements    The selected configurable element values.
+     *
+     *      @return The amount of references made to the selected parameter in the selected configurable element
+     *              values.
+     */
+    int countReferencesInConfigurableElementValues(QString const& parameterId,
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElements) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected configurable element value.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] element         The selected configurable element value.
+     *
+     *      @return The amount of references made to the selected parameter in the selected configurable element
+     *              value.
+     */
+    int countReferencesInSingleConfigurableElementValue(QString const& parameterID,
+        QSharedPointer<ConfigurableElementValue> element) const;
 
 public slots:
 
@@ -52,12 +101,34 @@ public slots:
      */
     virtual void decreaseReferenceCount(QString id);
 
+    /*!
+     *  Recalculate references made to the selected parameters.
+     *
+     *      @param [in] parameterList   The selected parameters.
+     */
+    virtual void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameterList);
+
+protected:
+
+    /*!
+     *  Count the references made to the selected parameter in the selected expression.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] expression      The selected expression.
+     *
+     *      @return The amount of references made to the selected parameter in the selected expression.
+     */
+    int countReferencesInExpression(QString const& parameterID, QString const& expression) const;
+
 private:
 
-	//! No copying
+	//! No copying. No assignment.
     ParameterReferenceCounter(const ParameterReferenceCounter& other);
-	//! No assignment
     ParameterReferenceCounter& operator=(const ParameterReferenceCounter& other);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! Object for finding parameters with the correct id.
     QSharedPointer<ParameterFinder> parameterFinder_;

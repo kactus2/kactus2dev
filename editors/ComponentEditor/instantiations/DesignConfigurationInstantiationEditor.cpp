@@ -41,7 +41,7 @@ DesignConfigurationInstantiationEditor::DesignConfigurationInstantiationEditor(Q
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     LibraryInterface* libHandler, QWidget* parent):
-ItemEditor(component, libHandler, parent), 
+ParameterItemEditor(component, libHandler, parent), 
 instantiation_(instantiation),
 nameGroupEditor_(new NameGroupEditor(instantiation, this,
     tr("Design configuration instance name and description"))),
@@ -75,6 +75,10 @@ designConfigurationParameterFinder_(new ListParameterFinder())
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     connect(&parameters_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(&parameters_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+
     connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

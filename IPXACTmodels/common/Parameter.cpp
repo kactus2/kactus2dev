@@ -203,6 +203,14 @@ int Parameter::getUsageCount() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::setUsageCount()
+//-----------------------------------------------------------------------------
+void Parameter::setUsageCount(int const& newUsageCount)
+{
+    attributes_.insert(QStringLiteral("usageCount"), QString::number(newUsageCount));
+}
+
+//-----------------------------------------------------------------------------
 // Function: parameter::increaseUsageCount()
 //-----------------------------------------------------------------------------
 void Parameter::increaseUsageCount()

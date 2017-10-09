@@ -1,3 +1,13 @@
+//-----------------------------------------------------------------------------
+// File: SingleIndirectInterfaceItem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// The item for single bus interface in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "SingleIndirectInterfaceitem.h"
 
@@ -23,7 +33,7 @@ SingleIndirectInterfaceItem::SingleIndirectInterfaceItem(QSharedPointer<Indirect
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<IndirectInterfaceValidator> validator,
     ComponentEditorItem* parent, QWidget* parentWnd):
-ComponentEditorItem(model, libHandler, component, parent),
+ParameterizableItem(model, libHandler, component, parent),
     indirectInterface_(busif),
     parentWnd_(parentWnd),
     expressionParser_(expressionParser),

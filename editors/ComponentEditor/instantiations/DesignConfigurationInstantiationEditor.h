@@ -12,7 +12,7 @@
 #ifndef DESIGNCONFIGURATIONINSTANTIATIONEDITOR_H
 #define DESIGNCONFIGURATIONINSTANTIATIONEDITOR_H
 
-#include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/ParameterItemEditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 class VLNVEditor;
@@ -26,7 +26,7 @@ class InstantiationConfigurableElementEditor;
 //-----------------------------------------------------------------------------
 //! Editor for design configuration instantiations.
 //-----------------------------------------------------------------------------
-class DesignConfigurationInstantiationEditor : public ItemEditor
+class DesignConfigurationInstantiationEditor : public ParameterItemEditor
 {
     Q_OBJECT
 

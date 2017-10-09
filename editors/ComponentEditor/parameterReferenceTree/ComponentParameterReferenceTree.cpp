@@ -11,6 +11,8 @@
 
 #include "ComponentParameterReferenceTree.h"
 
+#include <editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h>
+
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/common/FileBuilder.h>
 
@@ -42,9 +44,11 @@
 // Function: ComponentParameterReferenceTree::ComponentParameterReferenceTree()
 //-----------------------------------------------------------------------------
 ComponentParameterReferenceTree::ComponentParameterReferenceTree(QSharedPointer<Component> component,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ComponentParameterReferenceCounter> referenceCounter, QWidget *parent):
 ParameterReferenceTree(expressionFormatter, parent),
-component_(component)
+component_(component),
+referenceCounter_(referenceCounter)
 {
 
 }
@@ -58,49 +62,57 @@ ComponentParameterReferenceTree::~ComponentParameterReferenceTree()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::setComponent()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::setComponent(QSharedPointer<Component> newComponent)
+{
+    component_ = newComponent;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceTree::setupTree()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceTree::setupTree()
 {
     if (!component_.isNull())
     {
-        if (referenceExistsInFileSets())
+        if (referenceCounter_->countReferencesInFileSets(getTargetID()) > 0)
         {
             createReferencesForFileSets();
         }
 
-        if (referenceExistsInParameters(component_->getParameters()))
+        if (referenceCounter_->countReferencesInParameters(getTargetID(), component_->getParameters()) > 0)
         {
             QTreeWidgetItem* topParametersItem = createTopItem("Parameters");
             createParameterReferences(component_->getParameters(), topParametersItem);
         }
 
-        if (referenceExistsInMemoryMaps())
+        if (referenceCounter_->countReferencesInMemoryMaps(getTargetID()) > 0)
         {
             createReferencesForMemoryMaps();
         }
 
-        if (referenceExistsInAddressSpaces())
+        if (referenceCounter_->countReferencesInAddressSpaces(getTargetID()) > 0)
         {
             createReferencesForAddressSpaces();
         }
 
-        if (referenceExistsInInstantiations())
+        if (referenceCounter_->countReferencesInInstantiations(getTargetID()) > 0)
         {
             createReferencesForInstantiations();
         }
 
-        if (referenceExistsInPorts())
+        if (referenceCounter_->countReferencesInPorts(getTargetID()) > 0)
         {
             createReferencesForPorts();
         }
 
-        if (referenceExistsInBusInterfaces())
+        if (referenceCounter_->countReferencesInBusInterfaces(getTargetID()) > 0)
         {
             createReferencesForBusInterfaces();
         }
 
-        if (referenceExistsInRemapStates())
+        if (referenceCounter_->countReferencesInRemapStates(getTargetID()) > 0)
         {
             createReferencesForRemapStates();
         }
@@ -117,94 +129,11 @@ void ComponentParameterReferenceTree::setupTree()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInFileSets()
+// Function: ComponentParameterReferenceTree::getReferenceCounter()
 //-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInFileSets() const
+QSharedPointer<ParameterReferenceCounter> ComponentParameterReferenceTree::getReferenceCounter() const
 {
-    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
-    {
-        if (fileSetHasReference(fileSet))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::fileSetHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::fileSetHasReference(QSharedPointer<FileSet> fileSet) const
-{
-    return referenceExistsInFileBuilders(fileSet->getDefaultFileBuilders()) ||
-        referenceExistsInFiles(fileSet->getFiles());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInFileBuilders()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInFileBuilders(
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders) const
-{
-    foreach (QSharedPointer<FileBuilder> builder, *fileBuilders)
-    {
-        if (fileBuilderHasReference(builder))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::fileBuilderHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::fileBuilderHasReference(QSharedPointer<FileBuilder> fileBuilder) const
-{
-    return fileBuilder->getReplaceDefaultFlags().contains(getTargetID());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInFiles()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInFiles(
-    QSharedPointer<QList<QSharedPointer<File> > > fileList) const
-{
-    foreach (QSharedPointer<File> currentFile, *fileList)
-    {
-        if (fileHasReference(currentFile))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::fileHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::fileHasReference(QSharedPointer<File> file) const
-{
-    if (file->getBuildCommand())
-    {
-        if (buildCommandHasReference(file->getBuildCommand()))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::buildCommandHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::buildCommandHasReference(QSharedPointer<BuildCommand> fileBuildCommand) const
-{
-    return fileBuildCommand->getReplaceDefaultFlags().contains(getTargetID());
+    return referenceCounter_;
 }
 
 //-----------------------------------------------------------------------------
@@ -214,18 +143,20 @@ void ComponentParameterReferenceTree::createReferencesForFileSets()
 {
     QTreeWidgetItem* topFileSetsItem = createTopItem("File sets");
 
+    QString targetID = getTargetID();
+
     foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
     {
-        if (fileSetHasReference(fileSet))
+        if (referenceCounter_->countReferencesInSingleFileSet(targetID, fileSet) > 0)
         {
             QTreeWidgetItem* fileSetItem = createMiddleItem(fileSet->name(), topFileSetsItem);
 
-            if (referenceExistsInFileBuilders(fileSet->getDefaultFileBuilders()))
+            if (referenceCounter_->countReferencesInFileBuilders(targetID, fileSet->getDefaultFileBuilders()) > 0)
             {
                 createReferencesForFileBuilders(fileSet->getDefaultFileBuilders(), fileSetItem);
             }
 
-            if (referenceExistsInFiles(fileSet->getFiles()))
+            if (referenceCounter_->countReferencesInFiles(targetID, fileSet->getFiles()) > 0)
             {
                 createReferencesForFiles(fileSet->getFiles(), fileSetItem);
             }
@@ -244,7 +175,7 @@ void ComponentParameterReferenceTree::createReferencesForFileBuilders(
 
     foreach (QSharedPointer<FileBuilder> builder, *fileBuilders)
     {
-        if (fileBuilderHasReference(builder))
+        if (referenceCounter_->countReferencesInSingleFileBuilder(getTargetID(), builder) > 0)
         {
             createReferencesForSingleFileBuilder(builder, buildCommandsItem);
         }
@@ -281,7 +212,7 @@ void ComponentParameterReferenceTree::createReferencesForFiles(QSharedPointer<QL
 
     foreach (QSharedPointer<File> currentFile, *fileList)
     {
-        if (fileHasReference(currentFile))
+        if (referenceCounter_->countReferencesInSingleFile(getTargetID(), currentFile) > 0)
         {
             createReferencesForSingleFile(currentFile, filesItem);
         }
@@ -298,29 +229,12 @@ void ComponentParameterReferenceTree::createReferencesForSingleFile(QSharedPoint
 
     QSharedPointer<BuildCommand> buildCommand = selectedFile->getBuildCommand();
 
-    if (buildCommand && buildCommandHasReference(buildCommand))
+    if (buildCommand && referenceCounter_->countReferencesInBuildCommand(getTargetID(), buildCommand) > 0)
     {
         QTreeWidgetItem* buildCommandItem = createMiddleItem("Build command", fileItem);
 
         createItem("Replace default flags", buildCommand->getReplaceDefaultFlags(), buildCommandItem);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInModuleParameters()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInModuleParameters(
-    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parameters) const
-{
-    foreach(QSharedPointer<Parameter> moduleParameter, *parameters)
-    {
-        if (parameterHasReference(moduleParameter))
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -331,7 +245,7 @@ void ComponentParameterReferenceTree::createReferencesForModuleParameters(
 {
     foreach (QSharedPointer<ModuleParameter> moduleParameter, *parameters)
     {
-        if (parameterHasReference(moduleParameter))
+        if (referenceCounter_->countReferencesInSingleParameter(getTargetID(), moduleParameter) > 0)
         {
             QTreeWidgetItem* moduleParameterItem = createMiddleItem(moduleParameter->name(), parentItem);
             createItemsForParameter(moduleParameter, moduleParameterItem);
@@ -340,172 +254,25 @@ void ComponentParameterReferenceTree::createReferencesForModuleParameters(
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInAddressSpaces()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInAddressSpaces() const
-{
-    foreach(QSharedPointer<AddressSpace> addressSpace, *component_->getAddressSpaces())
-    {
-        if (referenceExistsInSingleAddressSpace(addressSpace))
-        {
-            return true;
-        }
-
-        if (referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap()))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInAddressSpace()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleAddressSpace(
-    QSharedPointer<AddressSpace> addressSpace) const
-{
-    return addressSpace->getWidth().contains(getTargetID()) ||
-        addressSpace->getRange().contains(getTargetID()) ||
-        referenceExistsInSegments(addressSpace) || 
-        referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSegments()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSegments(QSharedPointer<AddressSpace> addressSpace) const
-{
-    foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
-    {
-        if (referenceExistsInSingleSegment(segment))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleSegment()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleSegment(QSharedPointer<Segment> segment) const
-{
-    return segment->getAddressOffset().contains(getTargetID()) || segment->getRange().contains(getTargetID());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInInstantiations() const
-{
-    return referenceExistsInComponentInstantiations() || referenceExistsInDesignConfigurationInstantiations() ||
-        referenceExistsInDesignInstantiations();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInComponentInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInComponentInstantiations() const
-{
-    foreach (QSharedPointer<ComponentInstantiation> instantiation, *component_->getComponentInstantiations())
-    {
-        if (referenceExistsInSingleComponentInstantiation(instantiation))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleComponentInstantiation()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleComponentInstantiation(
-    QSharedPointer<ComponentInstantiation> instantiation) const
-{
-    return referenceExistsInModuleParameters(instantiation->getModuleParameters()) ||
-        referenceExistsInParameters(instantiation->getParameters()) ||
-        referenceExistsInFileBuilders(instantiation->getDefaultFileBuilders());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInDesignConfigurationInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInDesignConfigurationInstantiations() const
-{
-    foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
-        *component_->getDesignConfigurationInstantiations())
-    {
-        if (referenceExistsInSingleDesignConfigurationInstantiation(instantiation))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleDesignConfigurationInstantiation()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleDesignConfigurationInstantiation(
-    QSharedPointer<DesignConfigurationInstantiation> instantiation) const
-{
-    return referenceExistsInParameters(instantiation->getParameters()) ||
-        referenceExistsInConfigurableElementValues(
-        instantiation->getDesignConfigurationReference()->getConfigurableElementValues());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInDesignInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInDesignInstantiations() const
-{
-    foreach (QSharedPointer<DesignInstantiation> instantiation, *component_->getDesignInstantiations())
-    {
-        if (referenceExistsInSingleDesignInstantiation(instantiation))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleDesignInstantiation()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleDesignInstantiation(
-    QSharedPointer<DesignInstantiation> instantiation) const
-{
-    if (instantiation->getDesignReference())
-    {
-        return referenceExistsInConfigurableElementValues(
-            instantiation->getDesignReference()->getConfigurableElementValues());
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceTree::createReferencesForInstantiations()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceTree::createReferencesForInstantiations()
 {
     QTreeWidgetItem* topInstantiationsItem = createTopItem("Instantiations");
-    if (referenceExistsInComponentInstantiations())
+    QString targetID = getTargetID();
+
+    if (referenceCounter_->countReferencesInComponentInstantiations(
+        targetID, component_->getComponentInstantiations()) > 0)
     {
         createReferencesForComponentInstantiations(topInstantiationsItem);
     }
-    if (referenceExistsInDesignConfigurationInstantiations())
+    if (referenceCounter_->countReferencesInDesignConfigurationInstantiations(
+        targetID, component_->getDesignConfigurationInstantiations()) > 0)
     {
         createReferencesForDesignConfigurationInstantiations(topInstantiationsItem);
     }
-    if (referenceExistsInDesignInstantiations())
+    if (referenceCounter_->countReferencesInDesignInstantiations(
+        targetID, component_->getDesignInstantiations()) > 0)
     {
         createReferencesForDesignInstantiations(topInstantiationsItem);
     }
@@ -519,21 +286,24 @@ void ComponentParameterReferenceTree::createReferencesForComponentInstantiations
     QTreeWidgetItem* componentInstantiationsItem =
         createMiddleItem("Component instantiations", topInstantiationsItem);
 
+    QString targetID = getTargetID();
+
     foreach (QSharedPointer<ComponentInstantiation> instantiation, *component_->getComponentInstantiations())
     {
-        if (referenceExistsInSingleComponentInstantiation(instantiation))
+        if (referenceCounter_->countReferencesInSingleComponentInstantiation(targetID, instantiation) > 0)
         {
             QTreeWidgetItem* instantiationItem =
                 createMiddleItem(instantiation->name(), componentInstantiationsItem);
 
-            if (referenceExistsInParameters(instantiation->getParameters()))
+            if (referenceCounter_->countReferencesInParameters(targetID, instantiation->getParameters()) > 0)
             {
                 QTreeWidgetItem* parametersItem = createMiddleItem(QLatin1String("Parameters"), instantiationItem);
                 colourItemGrey(parametersItem);
                 createParameterReferences(instantiation->getParameters(), parametersItem);
             }
 
-            if (referenceExistsInModuleParameters(instantiation->getModuleParameters()))
+            if (referenceCounter_->countReferencesInModuleParameters(
+                targetID, instantiation->getModuleParameters()) > 0)
             {
                 QTreeWidgetItem* moduleParametersItem =
                     createMiddleItem(QLatin1String("Module Parameters"), instantiationItem);
@@ -541,7 +311,8 @@ void ComponentParameterReferenceTree::createReferencesForComponentInstantiations
                 createReferencesForModuleParameters(instantiation->getModuleParameters(), moduleParametersItem);
             }
 
-            if (referenceExistsInFileBuilders(instantiation->getDefaultFileBuilders()))
+            if (referenceCounter_->countReferencesInFileBuilders(
+                targetID, instantiation->getDefaultFileBuilders()) > 0)
             {
                 createReferencesForFileBuilders(instantiation->getDefaultFileBuilders(), instantiationItem);
             }
@@ -558,14 +329,17 @@ void ComponentParameterReferenceTree::createReferencesForDesignConfigurationInst
     QTreeWidgetItem* designConfigurationInstantiationsItem =
         createMiddleItem("Design Configuration Instantiations", topInstantiationsItem);
 
+    QString targetID = getTargetID();
+
     foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
         *component_->getDesignConfigurationInstantiations())
     {
-        if (referenceExistsInSingleDesignConfigurationInstantiation(instantiation))
+        if (referenceCounter_->countReferencesInSingleDesignConfigurationInstantiation(
+            targetID, instantiation) > 0)
         {
             QTreeWidgetItem* instantiationItem = createMiddleItem(instantiation->name(),
                 designConfigurationInstantiationsItem);
-            if (referenceExistsInParameters(instantiation->getParameters()))
+            if (referenceCounter_->countReferencesInParameters(targetID, instantiation->getParameters()) > 0)
             {
                 QTreeWidgetItem* parametersItem = createMiddleItem(QLatin1String("Parameters"), instantiationItem);
                 colourItemGrey(parametersItem);
@@ -574,7 +348,7 @@ void ComponentParameterReferenceTree::createReferencesForDesignConfigurationInst
 
             QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > elements =
                 instantiation->getDesignConfigurationReference()->getConfigurableElementValues();
-            if (referenceExistsInConfigurableElementValues(elements))
+            if (referenceCounter_->countReferencesInConfigurableElementValues(targetID, elements) > 0)
             {
                 createReferencesForConfigurableElementValues(elements, instantiationItem);
             }
@@ -588,48 +362,22 @@ void ComponentParameterReferenceTree::createReferencesForDesignConfigurationInst
 void ComponentParameterReferenceTree::createReferencesForDesignInstantiations(QTreeWidgetItem* topInstantiationsItem)
 {
     QTreeWidgetItem* designInstantiationsItem = createMiddleItem("Design instantiations", topInstantiationsItem);
+    QString targetID = getTargetID();
+
     foreach (QSharedPointer<DesignInstantiation> instantiation, *component_->getDesignInstantiations())
     {
-        if (referenceExistsInSingleDesignInstantiation(instantiation))
+        if (referenceCounter_->countReferencesInSingleDesigninstantiation(targetID, instantiation) > 0)
         {
             QTreeWidgetItem* instantiationItem = createMiddleItem(instantiation->name(), designInstantiationsItem);
 
             QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > elements =
                 instantiation->getDesignReference()->getConfigurableElementValues();
-            if (referenceExistsInConfigurableElementValues(elements))
+            if (referenceCounter_->countReferencesInConfigurableElementValues(targetID, elements) > 0)
             {
                 createReferencesForConfigurableElementValues(elements, instantiationItem);
             }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInPorts()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInPorts()
-{
-    foreach(QSharedPointer<Port> port, *component_->getPorts())
-    {
-        if (portHasreference(port))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::portHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::portHasreference(QSharedPointer<Port> port)
-{
-    QString targetID = getTargetID();
-
-    return port->getLeftBound().contains(targetID) || port->getRightBound().contains(targetID) ||
-        port->getArrayLeft().contains(targetID) || port->getArrayRight().contains(targetID) ||
-        port->getDefaultValue().contains(targetID);
 }
 
 //-----------------------------------------------------------------------------
@@ -641,7 +389,7 @@ void ComponentParameterReferenceTree::createReferencesForPorts()
 
     foreach (QSharedPointer<Port> port, *component_->getPorts())
     {
-        if (portHasreference(port))
+        if (referenceCounter_->countReferencesInSinglePort(getTargetID(), port) > 0)
         {
             QTreeWidgetItem* portItem = createMiddleItem(port->name(), topPortsItem);
             createItemsForPort(port, portItem);
@@ -650,207 +398,25 @@ void ComponentParameterReferenceTree::createReferencesForPorts()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInMemoryMaps()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInMemoryMaps()
-{
-    foreach (QSharedPointer<MemoryMap> memoryMap, *component_->getMemoryMaps())
-    {
-        if (referenceExistsInSingleMemoryMap(memoryMap))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleMemoryMap()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleMemoryMap(QSharedPointer<MemoryMap> memoryMap)
-{
-    if (referenceExistsInDefaultMemoryRemap(memoryMap))
-    {
-        return true;
-    }
-
-    foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
-    {
-        if (referenceExistsInSingleMemoryRemap(memoryRemap))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleMemoryMap()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInDefaultMemoryRemap(QSharedPointer<MemoryMapBase> memoryMap) const
-{
-    if (memoryMap)
-    {
-        foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
-        {
-            QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
-
-            if (addressBlock)
-            {
-                if (referenceExistsInAddressBlock(addressBlock))
-                {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleMemoryRemap()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleMemoryRemap(QSharedPointer<MemoryRemap> memoryRemap)
-{
-    foreach(QSharedPointer<MemoryBlockBase> memoryBlock, *memoryRemap->getMemoryBlocks())
-    {
-        QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
-
-        if (addressBlock)
-        {
-            if (referenceExistsInAddressBlock(addressBlock))
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInAddressBlock()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInAddressBlock(QSharedPointer<AddressBlock> addressBlock)
-    const
-{
-    if (referenceExistsInAddressBlockValues(addressBlock))
-    {
-        return true;
-    }
-
-    return referenceExistsInRegisters(addressBlock->getRegisterData());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInAddressBlockValues()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInAddressBlockValues(
-    QSharedPointer<AddressBlock> addressBlock) const
-{
-    QString targetID = getTargetID();
-
-    return addressBlock->getBaseAddress().contains(targetID) || addressBlock->getRange().contains(targetID) ||
-        addressBlock->getWidth().contains(targetID);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInRegisters()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInRegisters(
-    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerList) const
-{
-    foreach (QSharedPointer<RegisterBase> registerItem, *registerList)
-    {
-        QSharedPointer<Register> targetRegister = registerItem.dynamicCast<Register>();
-
-        if (targetRegister)
-        {
-            if (registerHasReference(targetRegister))
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::registerHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::registerHasReference(QSharedPointer<Register> targetRegister) const
-{
-    QString targetID = getTargetID();
-
-    if (targetRegister->getAddressOffset().contains(targetID) ||
-        targetRegister->getDimension().contains(targetID) || targetRegister->getSize().contains(targetID) ||
-        targetRegister->getIsPresent().contains(targetID))
-    {
-        return true;
-    }
-
-    if (referenceExistsInRegisterFields(targetRegister))
-    {
-        return true;
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInRegisterFields()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInRegisterFields(QSharedPointer<Register> targetRegister) const
-{
-    foreach (QSharedPointer<Field> registerField, *targetRegister->getFields())
-    {
-        if (registerFieldHasReference(registerField))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::registerFieldHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::registerFieldHasReference(QSharedPointer<Field> targetField) const
-{
-    QString targetID = getTargetID();
-
-    return targetField->getBitOffset().contains(targetID) || targetField->getBitWidth().contains(targetID) ||
-        targetField->getIsPresent().contains(targetID) || targetField->getResetValue().contains(targetID) ||
-        targetField->getResetMask().contains(targetID) ||
-        (targetField->getWriteConstraint() &&
-        (targetField->getWriteConstraint()->getMinimum().contains(targetID) ||
-        targetField->getWriteConstraint()->getMaximum().contains(targetID)));
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceTree::createReferencesForAddressSpaces()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceTree::createReferencesForAddressSpaces()
 {
     QTreeWidgetItem* topAddressSpaceItem = createTopItem("Address Spaces");
+    QString targetID = getTargetID();
 
     foreach (QSharedPointer<AddressSpace> addressSpace, *component_->getAddressSpaces())
     {
-        if (referenceExistsInSingleAddressSpace(addressSpace))
+        if (referenceCounter_->countReferencesInSingleAddressSpace(targetID, addressSpace) > 0)
         {
             QTreeWidgetItem* addressSpaceItem = createMiddleItem(addressSpace->name(), topAddressSpaceItem);
 
-            if (referenceExistsInSingleAddressSpace(addressSpace))
+            if (referenceCounter_->countReferencesInSingleAddressSpaceItems(targetID, addressSpace) > 0)
             {
                 createItemsForAddressSpace(addressSpace, addressSpaceItem);
             }
 
-            if (referenceExistsInSegments(addressSpace))
+            if (referenceCounter_->countReferencesInSegments(targetID, addressSpace->getSegments()) > 0)
             {
                 QTreeWidgetItem* segmentsItem = createMiddleItem("Segments", addressSpaceItem);
                 colourItemGrey(segmentsItem);
@@ -859,7 +425,7 @@ void ComponentParameterReferenceTree::createReferencesForAddressSpaces()
             }
 
             if (addressSpace->hasLocalMemoryMap() &&
-                referenceExistsInDefaultMemoryRemap(addressSpace->getLocalMemoryMap()))
+                referenceCounter_->countReferencesInBaseMemoryMap(targetID, addressSpace->getLocalMemoryMap()) > 0)
             {
                 QSharedPointer <MemoryMapBase> localMemoryMap = addressSpace->getLocalMemoryMap();
                 QTreeWidgetItem* memoryMapItem = createMiddleItem(localMemoryMap->name(), addressSpaceItem);
@@ -894,7 +460,7 @@ void ComponentParameterReferenceTree::createReferencesForSegments(QSharedPointer
 {
     foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
     {
-        if (referenceExistsInSingleSegment(segment))
+        if (referenceCounter_->countReferencesInSingleSegment(getTargetID(), segment) > 0)
         {
             createItemsForSegment(segment, parent);
         }
@@ -926,17 +492,18 @@ void ComponentParameterReferenceTree::createItemsForSegment(QSharedPointer<Segme
 void ComponentParameterReferenceTree::createReferencesForMemoryMaps()
 {
     QTreeWidgetItem* topMemoryMapItem = createTopItem("Memory maps");
+    QString targetID = getTargetID();
 
     foreach (QSharedPointer<MemoryMap> memoryMap, *component_->getMemoryMaps())
     {
-        if (referenceExistsInSingleMemoryMap(memoryMap))
+        if (referenceCounter_->countReferencesInSingleMemoryMap(targetID, memoryMap) > 0)
         {
             QTreeWidgetItem* memoryMapTreeItem = createMiddleItem(memoryMap->name(), topMemoryMapItem);
 
             QTreeWidgetItem* memoryRemapsTreeItem = createMiddleItem("Memory remaps", memoryMapTreeItem);
             colourItemGrey(memoryRemapsTreeItem);
 
-            if (referenceExistsInDefaultMemoryRemap(memoryMap))
+            if (referenceCounter_->countReferencesInBaseMemoryMap(targetID, memoryMap) > 0)
             {
                 QTreeWidgetItem* defaultMemoryRemapItem = createMiddleItem("Default", memoryRemapsTreeItem);
                 createReferencesForSingleMemoryMap(memoryMap, defaultMemoryRemapItem);
@@ -944,7 +511,7 @@ void ComponentParameterReferenceTree::createReferencesForMemoryMaps()
 
             foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
             {
-                if (referenceExistsInSingleMemoryRemap(memoryRemap))
+                if (referenceCounter_->countReferencesInBaseMemoryMap(targetID, memoryRemap) > 0)
                 {
                     QTreeWidgetItem* memoryRemapItem = createMiddleItem(memoryRemap->name(), memoryRemapsTreeItem);
                     createReferencesForSingleMemoryMap(memoryRemap, memoryRemapItem);
@@ -970,7 +537,7 @@ void ComponentParameterReferenceTree::createReferencesForSingleMemoryMap(QShared
 
         if (addressBlock)
         {
-            if (referenceExistsInAddressBlock(addressBlock))
+            if (referenceCounter_->countReferenceInAddressBlock(getTargetID(), addressBlock) > 0)
             {
                 createReferencesForSingleAddressBlock(addressBlock, middleAddressBlocksItem);
 
@@ -987,13 +554,14 @@ void ComponentParameterReferenceTree::createReferencesForSingleAddressBlock(
 {
     QTreeWidgetItem* addressBlockItem = createMiddleItem(addressBlock->name(),
         middleAddressBlocksItem);
+    QString targetID = getTargetID();
 
-    if (referenceExistsInAddressBlockValues(addressBlock))
+    if (referenceCounter_->countReferencesInAddressBlockValues(targetID, addressBlock) > 0)
     {
         createItemsForAddressBlock(addressBlock, addressBlockItem);
     }
 
-    if (referenceExistsInRegisters(addressBlock->getRegisterData()))
+    if (referenceCounter_->countReferencesInRegisters(targetID, addressBlock->getRegisterData()) > 0)
     {
         QTreeWidgetItem* registersItem = createMiddleItem("Registers", addressBlockItem);
         colourItemGrey(registersItem);
@@ -1004,7 +572,7 @@ void ComponentParameterReferenceTree::createReferencesForSingleAddressBlock(
 
             if (targetRegister)
             {
-                if (registerHasReference(targetRegister))
+                if (referenceCounter_->countReferencesInSingleRegister(targetID, targetRegister) > 0)
                 {
                     createReferencesForSingleRegister(targetRegister, registersItem);
                 }
@@ -1020,16 +588,18 @@ void ComponentParameterReferenceTree::createReferencesForSingleRegister(QSharedP
     QTreeWidgetItem* parentItem)
 {
     QTreeWidgetItem* registerItem = createMiddleItem(targetRegister->name(), parentItem);
+    QString targetID = getTargetID();
+
     createItemsForRegister(targetRegister, registerItem);
 
-    if (referenceExistsInRegisterFields(targetRegister))
+    if (referenceCounter_->countReferencesInFields(targetID, targetRegister->getFields()) > 0)
     {
         QTreeWidgetItem* fieldsItem = createMiddleItem("Fields", registerItem);
         colourItemGrey(fieldsItem);
 
         foreach (QSharedPointer<Field> registerField, *targetRegister->getFields())
         {
-            if (registerFieldHasReference(registerField))
+            if (referenceCounter_->countReferencesInSingleField(targetID, registerField) > 0)
             {
                 QTreeWidgetItem* singleFieldItem = createMiddleItem(registerField->name(), fieldsItem);
                 createItemsForField(registerField, singleFieldItem);
@@ -1039,108 +609,16 @@ void ComponentParameterReferenceTree::createReferencesForSingleRegister(QSharedP
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInBusInterfaces()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInBusInterfaces() const
-{
-    foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
-    {
-        if (referenceExistsInSingleBusInterface(busInterface))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleBusInterface()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleBusInterface(
-    QSharedPointer<BusInterface> busInterface) const
-{
-    foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
-    {
-        if (parameterHasReference(parameter))
-        {
-            return true;
-        }
-    }
-
-    if (busInterface->getMirroredSlave())
-    {
-        if (referenceExistsInMirroredSlave(busInterface->getMirroredSlave()))
-        {
-            return true;
-        }
-    }
-
-    if (busInterface->getMaster())
-    {
-        if (referenceExistsInMasterInterface(busInterface->getMaster()))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInMirroredSlave()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInMirroredSlave(
-    QSharedPointer<MirroredSlaveInterface> mirrorSlave) const
-{
-    return (mirroredSlaveRemapAddressHasReference(mirrorSlave) ||mirroredSlaveRangeHasReference(mirrorSlave));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::mirroredSlaveRemapAddressHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::mirroredSlaveRemapAddressHasReference(
-    QSharedPointer<MirroredSlaveInterface> mirrorSlave) const
-{
-    foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress, *mirrorSlave->getRemapAddresses())
-    {
-        if (remapAddress->remapAddress_.contains(getTargetID()))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::mirroredSlaveRangeHasReference()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::mirroredSlaveRangeHasReference(
-    QSharedPointer<MirroredSlaveInterface> mirrorSlave) const
-{
-    return mirrorSlave->getRange().contains(getTargetID());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInMasterInterface()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInMasterInterface(
-    QSharedPointer<MasterInterface> masterInterface) const
-{
-    return masterInterface->getBaseAddress().contains(getTargetID());
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceTree::createReferencesForBusInterfaces()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
 {
     QTreeWidgetItem* topBusInterfaceItem = createTopItem("Bus Interfaces");
+    QString targetID = getTargetID();
 
     foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
     {
-        if (referenceExistsInSingleBusInterface(busInterface))
+        if (referenceCounter_->countReferencesInSingleBusInterface(targetID, busInterface) > 0)
         {
             QTreeWidgetItem* busInterfaceItem = createMiddleItem(busInterface->name(), topBusInterfaceItem);
 
@@ -1148,21 +626,22 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
             {
                 QSharedPointer<MirroredSlaveInterface> mirrorSlave(busInterface->getMirroredSlave());
 
-                if (referenceExistsInMirroredSlave(mirrorSlave))
+                if (referenceCounter_->countReferencesInMirroredSlaveInterface(targetID, mirrorSlave) > 0)
                 {
                     QTreeWidgetItem* mirroredInterfaceItem =
                         createMiddleItem("Mirrored Slave Interface", busInterfaceItem);
                     colourItemGrey(mirroredInterfaceItem);
 
-                    if (mirroredSlaveRemapAddressHasReference(mirrorSlave))
+                    foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress,
+                        *mirrorSlave->getRemapAddresses())
                     {
-                        foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress,
-                            *mirrorSlave->getRemapAddresses())
+                        if (referenceCounter_->countReferencesInRemapAddress(targetID, remapAddress) > 0)
                         {
                             createItem("Remap Address", remapAddress->remapAddress_, mirroredInterfaceItem);
                         }
                     }
-                    if (mirroredSlaveRangeHasReference(mirrorSlave))
+
+                    if (mirrorSlave->getRange().contains(targetID))
                     {
                         createItem("Range", mirrorSlave->getRange(), mirroredInterfaceItem);
                     }
@@ -1173,7 +652,7 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
             {
                 QSharedPointer<MasterInterface> master(busInterface->getMaster());
 
-                if (referenceExistsInMasterInterface(master))
+                if (referenceCounter_->countReferencesInMasterInterface(targetID, master) > 0)
                 {
                     if (busInterface->getInterfaceMode() == General::MASTER)
                     {
@@ -1194,7 +673,7 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
                 }
             }
 
-            if (referenceExistsInParameters(busInterface->getParameters()))
+            if (referenceCounter_->countReferencesInParameters(targetID, busInterface->getParameters()) > 0)
             {
                 QTreeWidgetItem* parametersItem = createMiddleItem(QString("Parameters"), busInterfaceItem);
                 colourItemGrey(parametersItem);
@@ -1205,63 +684,16 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInRemapStates()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInRemapStates() const
-{
-    foreach(QSharedPointer<RemapState> remapState, *component_->getRemapStates())
-    {
-        if (referenceExistsInSingleRemapState(remapState))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleRemapState()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleRemapState(QSharedPointer<RemapState> remapState)
-    const
-{
-    foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
-    {
-        if (referenceExistsInSingleRemapPort(remapPort))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::referenceExistsInSingleRemapPort()
-//-----------------------------------------------------------------------------
-bool ComponentParameterReferenceTree::referenceExistsInSingleRemapPort(QSharedPointer<RemapPort> remapPort) const
-{
-    if (remapPort->getValue().contains(getTargetID()))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceTree::createReferencesForRemapStates()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceTree::createReferencesForRemapStates()
 {
     QTreeWidgetItem* topRemapStatesItem = createTopItem("Remap States");
+    QString targetID = getTargetID();
 
     foreach (QSharedPointer<RemapState> remapState, *component_->getRemapStates())
     {
-        if (referenceExistsInSingleRemapState(remapState))
+        if (referenceCounter_->countReferencesInSingleRemapState(targetID, remapState) > 0)
         {
             QTreeWidgetItem* remapStateItem = createMiddleItem(remapState->name(), topRemapStatesItem);
 
@@ -1270,7 +702,7 @@ void ComponentParameterReferenceTree::createReferencesForRemapStates()
 
             foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
             {
-                if (referenceExistsInSingleRemapPort(remapPort))
+                if (referenceCounter_->countReferencesInSingleRemapPort(targetID, remapPort) > 0)
                 {
                     QString itemName = remapPort->getPortNameRef();
 
@@ -1359,6 +791,10 @@ void ComponentParameterReferenceTree::createItemsForAddressBlock(QSharedPointer<
     if (targetAddressBlock->getWidth().contains(targetID))
     {
         createItem("Width", targetAddressBlock->getWidth(), parent);
+    }
+    if (targetAddressBlock->getIsPresent().contains(targetID))
+    {
+        createItem("Is Present", targetAddressBlock->getIsPresent(), parent);
     }
 }
 

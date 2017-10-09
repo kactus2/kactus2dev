@@ -11,10 +11,12 @@
 
 #include "ParameterReferenceTree.h"
 
+#include <common/KactusColors.h>
+
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 #include <IPXACTmodels/common/Parameter.h>
-
-#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::ParameterReferenceTree()
@@ -60,38 +62,6 @@ void ParameterReferenceTree::openReferenceTree(QString const& parameterID)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::referenceExistsInParameters()
-//-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInParameters(
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList) const
-{
-    foreach (QSharedPointer<Parameter> parameter, *parameterList)
-    {
-        if (parameterHasReference(parameter))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::parameterHasReference()
-//-----------------------------------------------------------------------------
-bool ParameterReferenceTree::parameterHasReference(QSharedPointer<Parameter> parameter) const
-{
-    if (parameter->getValue().contains(targetID_) ||
-        parameter->getVectorLeft().contains(targetID_) || parameter->getVectorRight().contains(targetID_) ||
-        parameter->getAttribute("kactus2:arrayLeft").contains(targetID_) ||
-        parameter->getAttribute("kactus2:arrayRight").contains(targetID_))
-    {
-        return true;
-    }
-    return false;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::createParameterReferences()
 //-----------------------------------------------------------------------------
 void ParameterReferenceTree::createParameterReferences(
@@ -99,38 +69,12 @@ void ParameterReferenceTree::createParameterReferences(
 {
     foreach (QSharedPointer<Parameter> parameter, *parameters)
     {
-        if (parameterHasReference(parameter))
+        if (getReferenceCounter()->countReferencesInSingleParameter(targetID_, parameter) > 0)
         {
             QTreeWidgetItem* parameterItem = createMiddleItem(parameter->name(), parentItem);
             createItemsForParameter(parameter, parameterItem);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::referenceExistsInConfigurableElementValues()
-//-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInConfigurableElementValues(
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > elementValues) const
-{
-    foreach (QSharedPointer<ConfigurableElementValue> element, *elementValues)
-    {
-        if (referenceExistsInSingleConfigurableElementValue(element))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::referenceExistsInSingleConfigurableElementValue()
-//-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInSingleConfigurableElementValue(
-    QSharedPointer<ConfigurableElementValue> element) const
-{
-    return element->getConfigurableValue().contains(targetID_);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,7 +88,7 @@ void ParameterReferenceTree::createReferencesForConfigurableElementValues(
 
     foreach (QSharedPointer<ConfigurableElementValue> element, *elements)
     {
-        if (referenceExistsInSingleConfigurableElementValue(element))
+        if (getReferenceCounter()->countReferencesInSingleConfigurableElementValue(targetID_, element) > 0)
         {
             createItem(QString("Configurable Element"), element->getConfigurableValue(), elementsItem);
         }

@@ -46,7 +46,7 @@ SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor(
     LibraryInterface* library,
     QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionFormatter> formatter,
     QWidget* parent):
-ItemEditor(component, library, parent),
+ParameterItemEditor(component, library, parent),
     indirectInterface_(indirectInterface),
     validator_(validator),
     component_(component),
@@ -85,6 +85,16 @@ ItemEditor(component, library, parent),
     connect(nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));   
     connect(transparentBridgesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     connect(parametersEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+    connect(parametersEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(parametersEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(parametersEditor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(parametersEditor_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

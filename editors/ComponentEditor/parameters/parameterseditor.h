@@ -12,7 +12,7 @@
 #ifndef PARAMETERSEDITOR_H
 #define PARAMETERSEDITOR_H
 
-#include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/ParameterItemEditor.h>
 #include <editors/ComponentEditor/parameters/parametersmodel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
@@ -21,12 +21,13 @@
 #include <QSharedPointer>
 
 class LibraryInterface;
-class EditableTableView;
 class Component;
+class ParametersView;
+
 //-----------------------------------------------------------------------------
 //! Editor to add/edit/remove parameters of a component.
 //-----------------------------------------------------------------------------
-class ParametersEditor : public ItemEditor
+class ParametersEditor : public ParameterItemEditor
 {
 	Q_OBJECT
 
@@ -72,8 +73,12 @@ private:
 	//! No assignment.
 	ParametersEditor& operator=(const ParametersEditor& other);
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The view that displays the parameters.
-    EditableTableView* view_;
+    ParametersView* view_;
 
 	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;

@@ -29,7 +29,7 @@ ComponentInstantiationEditor::ComponentInstantiationEditor(QSharedPointer<Compon
         LibraryInterface* library, QSharedPointer<ComponentInstantiation> componentInstantiation,
         QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
-ItemEditor(component, library, parent),
+ParameterItemEditor(component, library, parent),
 component_(component),
 componentInstantiation_(componentInstantiation),
 nameGroupEditor_(componentInstantiation, this, tr("Component instance name and description")),
@@ -86,6 +86,9 @@ parameters_(componentInstantiation->getParameters(), component->getChoices(), pa
     connect(&moduleParameters_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
+    connect(&moduleParameters_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+
     connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&parameters_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -93,6 +96,9 @@ parameters_(componentInstantiation->getParameters(), component->getChoices(), pa
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     connect(&parameters_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(&parameters_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
 
     setupLayout();
 }

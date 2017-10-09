@@ -29,7 +29,7 @@ SingleDesignConfigurationInstantiationItem::SingleDesignConfigurationInstantiati
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent),
+ParameterizableItem(model, libHandler, component, parent),
     instantiation_(instantiation),
     validator_(validator),
     parameterFinder_(parameterFinder),

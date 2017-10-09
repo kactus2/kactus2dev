@@ -11,6 +11,8 @@
 
 #include "DesignParameterReferenceTree.h"
 
+#include <designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h>
+
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
@@ -18,9 +20,10 @@
 // Function: DesignParameterReferenceTree::DesignParameterReferenceTree()
 //-----------------------------------------------------------------------------
 DesignParameterReferenceTree::DesignParameterReferenceTree(QSharedPointer<ExpressionFormatter> formatter,
-    QWidget* parent):
+    QSharedPointer<DesignParameterReferenceCounter> referenceCounter, QWidget* parent):
 ParameterReferenceTree(formatter, parent),
-design_(0)
+design_(0),
+referenceCounter_(referenceCounter)
 {
 
 }
@@ -48,7 +51,7 @@ void DesignParameterReferenceTree::setupTree()
 {
     if (design_)
     {
-        if (referenceExistsInParameters(design_->getParameters()))
+        if (referenceCounter_->countReferencesInParameters(getTargetID(), design_->getParameters()) > 0)
         {
             QTreeWidgetItem* topParametersItem = createTopItem("Parameters");
             createParameterReferences(design_->getParameters(), topParametersItem);
@@ -68,6 +71,14 @@ void DesignParameterReferenceTree::setupTree()
     {
         createTopItem("Design does not exist.");
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceTree::getReferenceCounter()
+//-----------------------------------------------------------------------------
+QSharedPointer<ParameterReferenceCounter> DesignParameterReferenceTree::getReferenceCounter() const
+{
+    return referenceCounter_;
 }
 
 //-----------------------------------------------------------------------------
@@ -92,7 +103,8 @@ bool DesignParameterReferenceTree::referenceExistsInComponentInstances() const
 bool DesignParameterReferenceTree::referenceExistsInSingleComponentInstance(
     QSharedPointer<ComponentInstance> instance) const
 {
-    return referenceExistsInConfigurableElementValues(instance->getConfigurableElementValues());
+    return referenceCounter_->countReferencesInConfigurableElementValues(
+        getTargetID(), instance->getConfigurableElementValues()) > 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +131,8 @@ void DesignParameterReferenceTree::createReferencesForSingleComponentInstance(
 {
     QTreeWidgetItem* singleInstanceItem = createMiddleItem(instance->getInstanceName(), instancesItem);
 
-    if (referenceExistsInConfigurableElementValues(instance->getConfigurableElementValues()))
+    if (referenceCounter_->countReferencesInConfigurableElementValues(
+        getTargetID(), instance->getConfigurableElementValues()) > 0)
     {
         createReferencesForConfigurableElementValues(instance->getConfigurableElementValues(), singleInstanceItem);
     }

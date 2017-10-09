@@ -741,3 +741,26 @@ int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QStr
 
     return totalReferencesToParameter;
 }
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::onGetParametersMachingIndexes()
+//-----------------------------------------------------------------------------
+void AbstractParameterModel::onGetParametersMachingIndexes(QModelIndexList indexes)
+{
+    QVector<QSharedPointer<Parameter> > selectedParameters;
+    foreach (QModelIndex index, indexes)
+    {
+        QSharedPointer<Parameter> indexedParameter = getParameterOnRow(index.row());
+        selectedParameters.append(indexedParameter);
+    }
+
+    QList<QSharedPointer<Parameter> > parameterList = selectedParameters.toList();
+
+    beginResetModel();
+
+    emit recalculateReferencesToParameters(selectedParameters);
+
+    endResetModel();
+
+    emit contentChanged();
+}

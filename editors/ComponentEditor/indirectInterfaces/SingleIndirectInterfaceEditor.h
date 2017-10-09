@@ -12,7 +12,7 @@
 #ifndef SINGLEINDRECTINTERFACEEDITOR_H
 #define SINGLEINDRECTINTERFACEEDITOR_H
 
-#include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/ParameterItemEditor.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
@@ -32,7 +32,7 @@ class ParameterFinder;
 //-----------------------------------------------------------------------------
 //! Editor for a single indirect interface within a component.
 //-----------------------------------------------------------------------------
-class SingleIndirectInterfaceEditor : public ItemEditor
+class SingleIndirectInterfaceEditor : public ParameterItemEditor
 {
     Q_OBJECT
 public:
@@ -49,10 +49,9 @@ public:
      *      @param [in] parent              The parent widget.
      */
     SingleIndirectInterfaceEditor(QSharedPointer<IndirectInterface> indirectInterface,
-        QSharedPointer<IndirectInterfaceValidator> validator,
-        QSharedPointer<Component> component, LibraryInterface* library, 
-            QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionFormatter> formatter,
-            QWidget* parent);
+        QSharedPointer<IndirectInterfaceValidator> validator, QSharedPointer<Component> component,
+        LibraryInterface* library, QSharedPointer<ParameterFinder> finder,
+        QSharedPointer<ExpressionFormatter> formatter, QWidget* parent);
 
 	//! The destructor.
 	virtual ~SingleIndirectInterfaceEditor();

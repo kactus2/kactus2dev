@@ -51,8 +51,8 @@ class GraphicsConnection;
 class ContextHelpBrowser;
 class HelpWindow;
 class ParameterGroupBox;
-class ReferenceCounter;
 class DesignParameterReferenceTree;
+class DesignParameterReferenceCounter;
 class MultipleParameterFinder;
 class Design;
 
@@ -850,7 +850,7 @@ private:
     QDockWidget* contextHelpDock_;
 
     //! Reference counter for design parameters.
-    ReferenceCounter* designParameterReferenceCounter_;
+    QSharedPointer<DesignParameterReferenceCounter> designParameterReferenceCounter_;
 
     //! Editor for design parameters.
     ParameterGroupBox* designParametersEditor_;
