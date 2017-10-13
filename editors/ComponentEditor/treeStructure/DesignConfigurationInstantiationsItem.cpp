@@ -137,8 +137,8 @@ void DesignConfigurationInstantiationsItem::createChild(int index)
         instantiationFormatter, this)));
     child->setLocked(locked_);
 
-    connect(child.data(), SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(child.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     childItems_.insert(index, child);
 }

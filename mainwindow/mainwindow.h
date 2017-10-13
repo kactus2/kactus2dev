@@ -13,13 +13,10 @@
 #define MAINWINDOW_H
 
 #include <Plugins/PluginSystem/PluginManager.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
 
 #include <designEditors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
 
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QMainWindow>
@@ -28,36 +25,17 @@
 #include <QShowEvent>
 #include <QHideEvent>
 
-class HWDesignWidget;
+class Component;
+class VLNV;
+
 class LibraryHandler;
-class LibraryWidget;
 class ComponentItem;
-class BusPortItem;
-class ComponentPreviewBox;
-class MessageConsole;
-class AdHocPortItem;
-class AdHocInterfaceItem;
-class ComponentInstanceEditor;
-class ConfigurationEditor;
-class SystemDetailsEditor;
-class InterfaceEditor;
-class ConnectionEditor;
-class AdHocVisibilityEditor;
-class AdHocEditor;
-class HWConnection;
 class DrawingBoard;
 class ConnectionEndpoint;
 class GraphicsConnection;
-class ContextHelpBrowser;
-class HelpWindow;
-class ParameterGroupBox;
-class DesignParameterReferenceTree;
-class DesignParameterReferenceCounter;
-class MultipleParameterFinder;
-class Design;
-
 class Ribbon;
 class RibbonGroup;
+class DockWidgetHandler;
 
 //-----------------------------------------------------------------------------
 //! The main window of Kactus2.
@@ -75,7 +53,9 @@ public:
      */
     MainWindow(QWidget *parent = 0);
     
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~MainWindow();
 
 public slots:
@@ -388,11 +368,6 @@ public slots:
      */
     void showAbout();
 
-    /*!
-     *  Shows the help window.
-     */
-    void showHelp();
-
 signals:
 
 	//! Print a notice message to the user.
@@ -449,49 +424,6 @@ private slots:
      *  Deletes a workspace, asking the user which workspace to delete using a dialog.
      */
     void onDeleteWorkspace();
-
-	//! Handler for output action's trigger.
-	void onOutputAction(bool show);
-
-    //! Handler for context help action's trigger.
-    void onContextHelpAction(bool show);
-
-	//! Handler for preview box action's trigger.
-	void onPreviewAction(bool show);
-
-	//! Handler for library action's trigger.
-	void onLibraryAction(bool show);
-
-	//! Handler for configuration action's trigger.
-	void onConfigurationAction(bool show);
-
-    //! Handler for system details action's trigger.
-    void onSystemDetailsAction(bool show);
-
-	//! Handler for connection action's trigger.
-	void onConnectionAction(bool show);
-
-	//! Handler for interface action's trigger.
-	void onInterfaceAction(bool show);
-
-	//! Handler for instance action's trigger.
-	void onInstanceAction(bool show);
-
-    /*!
-     *  Handler for design parameters widget visibility trigger.
-     *
-     *      @param [in] show    The new visibility status for the design parameters widget.
-     */
-    void onDesignParametersAction(bool show);
-
-    //! Handler for ad-hoc visibility action's trigger.
-    void onAdHocVisibilityAction(bool show);
-
-    //! Handler for ad hoc editor action's trigger.
-    void onAdHocEditorAction(bool show);
-
-    //! Handler for address action's trigger.
-    void onAddressAction(bool show);
 
     /*!
      *  Handles the toggling of visibility controls.
@@ -573,6 +505,14 @@ private slots:
      *      @param [in] identifierChain     List of string identifying the selected component item.
      */
     void onOpenComponentItem(const VLNV& componentVLNV, QVector<QString> identifierChain);
+
+    /*!
+     *  Adjust the visibility of the selected dock widget.
+     *
+     *      @param [in] type    Type of the selected dock widget.
+     *      @param [in] show    New value for the visibility of the dock widget.
+     */
+    void onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show);
 
 private:
 	// Disable copying.
@@ -667,51 +607,15 @@ private:
 	 */
 	void setupDrawBoard();
 
-	/*!
-     *  Set up the dock for the LibraryHandler
-	 */
-	void setupLibraryDock();
-
-	//! Set up the message console.
-	void setupMessageConsole();
+    /*!
+     *  Connect the necessary signals of the dock widget handler.
+     */
+    void connectDockHandler();
 
     /*!
-     *  Sets up the context help system.
+     *  Get the library handler from the dock widget handler and connected the necessary signals.
      */
-    void setupContextHelp();
-
-    /*!
-     *  Setup the design parameters editor and the related widgets.
-     */
-    void setupDesignParametersEditor();
-
-	//! Sets up the component instance editor.
-	void setupInstanceEditor();
-
-    //! Sets up the ad-hoc visibility editor.
-    void setupAdHocVisibilityEditor();
-
-    /*!
-     *  Setup the ad hoc editor.
-     */
-    void setupAdHocEditor();
-
-    //! Sets up the address editor.
-    void setupAddressEditor();
-
-	//! Set up the configuration editor.
-	void setupConfigurationEditor();
-
-    /*!
-     *  Sets up the system details editor.
-     */
-    void setupSystemDetailsEditor();
-
-	//! Set up the interface editor.
-	void setupInterfaceEditor();
-
-	//! Set up the connection editor.
-	void setupConnectionEditor();
+    void setupAndConnectLibraryHandler();
 
 	/*!
      *  Check if a document with the given vlnv is already open.
@@ -724,58 +628,10 @@ private:
 	 */
 	bool isOpen(const VLNV& vlnv) const;
 
-    /*!
-     *  Sets the visibility for a given window type if it is supported in the current document.
-     *
-     *      @param [in] windowType   The window type whose visibility to set.
-     *      @param [in] show         Should the window be visible.
-     */
-    void setWindowVisibilityForSupportedWindow(TabDocument::SupportedWindows type, bool show);
-
-    /*!
-     *  Sets the window visibility for a given window type.
-     *
-     *      @param [in] windowType   The window type whose visibility to set.
-     *      @param [in] show         Should the window be visible.
-     */
-    void setWindowVisibility(TabDocument::SupportedWindows windowType, bool show);
-
 	/*!
 	 *  Update the windows menu to contain the supported windows and visibility of the windows.
 	 */
     void updateWindows();
-
-    /*!
-     *  Sets the visibility for the windows visibility control and its associated window.
-     *
-     *      @param [in] windowType         The type of the window to set.
-     *      @param [in] dock               The window whose visibility to update.
-     */
-    void updateWindowAndControlVisibility(TabDocument::SupportedWindows windowType, QDockWidget* dock);
-
-    /*!
-     *  Checks if a given window type is supported in current document or by default.
-     *
-     *      @param [in] windowType   The window type to check.
-     *
-     *      @return True, if the type is supported, otherwise false.
-     */
-    bool isSupportedWindowType(TabDocument::SupportedWindows windowType);
-
-    /*!
-     *  Returns the supported windows of the current document. If no document is open, default windows are
-     *  returned.
-     *     
-     *      @return The currently supported window types.
-     */
-    unsigned int currentlySupportedWindows();
-
-    /*!
-     *  Returns the default windows which are visible even if no document is open.
-     *
-     *      @return The default windows.
-     */
-    unsigned int defaultWindows();
 
     /*!
      *  Updates the visibility control menu according to the open document.
@@ -808,103 +664,18 @@ private:
 	 */
 	void setPluginVisibilities();
 
-    /*!
-     *  Setup the design parameter reference finder.
-     *
-     *      @param [in] newDesign   New design for the finder.
-     */
-    void setupDesignParameterFinder(QSharedPointer<Design> newDesign);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
 	//! The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
-
-	//! The dock widget that contains the library widgets.
-	QDockWidget* libraryDock_;
     
 	//! Contains the open documents as each in it's own tab.
 	DrawingBoard* designTabs_;
 
-    //! The widget containing library navigation.
-    LibraryWidget* libraryWidget_;
-
-	//! The widget to display a preview of component.
-	ComponentPreviewBox* previewBox_;
-
-	//! The dock widget that contains the preview box.
-	QDockWidget* previewDock_;
-
-	//! The widget to print errors and notifications to user.
-	MessageConsole* console_;
-
-	//! The dock widget that contains the console.
-	QDockWidget* consoleDock_;
-
-    //! Context help browser.
-    ContextHelpBrowser* contextHelpBrowser_;
-
-    //! The dock widget for the context help browser.
-    QDockWidget* contextHelpDock_;
-
-    //! Reference counter for design parameters.
-    QSharedPointer<DesignParameterReferenceCounter> designParameterReferenceCounter_;
-
-    //! Editor for design parameters.
-    ParameterGroupBox* designParametersEditor_;
-
-    //! Dock widget for the design parameters editor.
-    QDockWidget* designParameterDock_;
-
-    //! Reference tree containing the design parameter references.
-    DesignParameterReferenceTree* designParameterTree_;
-
-    //! Parameter finder for design parameter references.
-    QSharedPointer<MultipleParameterFinder> designParameterFinder_;
-
-	//! The widget to edit the settings of a component instance.
-	ComponentInstanceEditor* instanceEditor_;
-
-	//! The dock widget that contains the instance editor.
-	QDockWidget* instanceDock_;
-
-    //! The ad-hoc visibility editor and its dock widget.
-    AdHocVisibilityEditor* adHocVisibilityEditor_;
-    QDockWidget* adHocVisibilityDock_;
-
-    //! Ad hoc editor and its dock widget.
-    AdHocEditor* adhocEditor_;
-    QDockWidget* adhocDock_;
-
-    //! Address editor for HW designs and its dock widget.
-    //AddressEditor* addressEditor_;
-    //QDockWidget* addressDock_;
-
-	//! The widget to edit the configuration of designs.
-	ConfigurationEditor* configurationEditor_;
-
-    //! The dock widget that contains the configuration editor.
-    QDockWidget* configurationDock_;
-
-    //! The widget to edit system details.
-    SystemDetailsEditor* systemDetailsEditor_;
-
-    //! The dock widget for the system details editor.
-    QDockWidget* systemDetailsDock_;
-
-	//! The widget to edit the interfaces
-	InterfaceEditor* interfaceEditor_;
-
-	//! The dock widget that contains the interface editor.
-	QDockWidget* interfaceDock_;
-
-	//! The widget to edit the connection
-	ConnectionEditor* connectionEditor_;
-
-	//! The dock widget that contains the connection editor.
-	QDockWidget* connectionDock_;
+    //! The dock widget handler.
+    DockWidgetHandler* dockHandler_;
 
 	/*******************************************************************/
 	// the actions in the menus
@@ -1079,14 +850,6 @@ private:
 
     //! The plugin manager.
     QSharedPointer<PluginManager> pluginMgr_;
-
-    //! The help window.
-    HelpWindow* helpWnd_;
-
-	//! Contains the visibility for the windows.
-    //! Used to maintain the visibility information when windows are hidden by change of the active document.
-	QMap<TabDocument::SupportedWindows, bool> visibilities_;
-
 };
 
 #endif // MAINWINDOW_H

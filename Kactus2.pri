@@ -743,7 +743,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h \
     ./editors/ComponentEditor/ParameterItemEditor.h \
     ./editors/ComponentEditor/treeStructure/ParameterizableItem.h \
-    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h
+    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h \
+    ./mainwindow/DockWidgetHandler.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1395,5 +1396,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/ParameterItemEditor.cpp \
     ./editors/ComponentEditor/treeStructure/ParameterizableItem.cpp \
-    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.cpp
+    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.cpp \
+    ./mainwindow/DockWidgetHandler.cpp
 RESOURCES += kactus.qrc

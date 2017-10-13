@@ -4414,6 +4414,12 @@
     <ClCompile Include="designEditors\common\DesignParameterReferenceTree\DesignParameterReferenceCounter.cpp">
       <Filter>Source Files\designEditors\common\DesignParameterReferenceTree</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\DockWidgetHandler.cpp">
+      <Filter>Source Files\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DockWidgetHandler.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6077,6 +6083,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\DesignParameterReferenceTree\DesignParameterReferenceCounter.h">
       <Filter>Header Files\designEditors\common\DesignParameterReferenceTree</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\DockWidgetHandler.h">
+      <Filter>Header Files\mainwindow</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
