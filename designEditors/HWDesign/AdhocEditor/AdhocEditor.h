@@ -23,11 +23,11 @@ class AdHocConnection;
 class PartSelect;
 class ExpressionEditor;
 class ExpressionParser;
-class ComponentParameterFinder;
 class Design;
 class IEditProvider;
 class HWDesignDiagram;
 class ExpressionFormatter;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of an Ad hoc port in designAd-hoc editor.
@@ -41,9 +41,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent The parent widget.
+     *      @param [in] designParameterFinder   Parameter finder for design parameters.
+     *      @param [in] parent                  The parent widget.
      */
-	AdHocEditor(QWidget* parent);
+	AdHocEditor(QSharedPointer<ParameterFinder> designParameterFinder, QWidget* parent);
 
 	/*!
      *  The destructor.
@@ -84,12 +85,45 @@ private slots:
      */
     void onTiedValueRightBoundChanged();
 
+    /*!
+     *  Handles the increasing of parameter reference counts in the selected expression.
+     *
+     *      @param [in] expression  The selected expression.
+     */
+    void onIncreaseReferencesInExpression(QString const& expression);
+
+    /*!
+     *  Handles the decreasing of parameter reference counts in the selected expression.
+     *
+     *      @param [in] expression  The selected expression.
+     */
+    void onDecreaseReferencesInExpression(QString const& expression);
+
+    /*!
+     *  Handles the refreshing of ad hoc tied value editors.
+     */
+    void refreshEditors();
+
 signals:
 
     /*!
      *  Informs of a change in the contents.
      */
     void contentChanged();
+
+    /*!
+     *  Informs of new references made to the parameter with the selected ID.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     */
+    void increaseReferences(QString const& parameterID);
+
+    /*!
+     *  Informs of removing references from the parameter with the selected ID.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     */
+    void decreaseReferences(QString const& parameterID);
 
 private:
 
@@ -118,11 +152,9 @@ private:
     /*!
      *  Get the ad hoc connection containing this ad hoc ports tied value.
      *
-     *      @param [in] instanceName    Name of the instance containing the port. Empty for top level ports.
-     *
      *      @return The selected ad hoc connection, or an empty pointer if no connection was found.
      */
-    QSharedPointer<AdHocConnection> getTiedConnection(QString const& instanceName) const;
+    QSharedPointer<AdHocConnection> getTiedConnection() const;
 
     /*!
      *  Create a tie off change command.
@@ -172,16 +204,32 @@ private:
     void createTieOffBoundsChangeCommand(QString const& newLeftBound, QString const& newRightBound);
     
     /*!
+     *  Check if the new tie off bounds values differ from the current values.
+     *
+     *      @param [in] newLeftBound    New tie off left bound.
+     *      @param [in] newRightBound   New tie off right bound.
+     *      @param [in] connection      The selected ad hoc connection.
+     *
+     *      @return True, if the tie off values have changed, false otherwise.
+     */
+    bool tieOffBoundsHaveChanged(QString const& newLeftBound, QString const& newRightBound,
+        QSharedPointer<AdHocConnection> connection) const;
+
+    /*!
      *  Setup the layout.
      */
     void setupLayout();
 
+    /*!
+     *  Change the signal block status of the expression editors.
+     *
+     *      @param [in] block   New block status for the expression editor signals.
+     */
+    void blockExpressionEditorSignals(bool block);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The used component parameter finder. Allows the changing of the target component.
-    QSharedPointer<ComponentParameterFinder> componentFinder_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
@@ -218,6 +266,9 @@ private:
 
     //! Editor for the right bound value of the tied value.
     ExpressionEditor* tiedValueRightBoundEditor_;
+
+    //! The used design parameter finder.
+    QSharedPointer<ParameterFinder> designParameterFinder_;
 };
 
 #endif // ADHOCEDITOR_H

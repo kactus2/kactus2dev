@@ -51,15 +51,22 @@ void DesignParameterReferenceTree::setupTree()
 {
     if (design_)
     {
-        if (referenceCounter_->countReferencesInParameters(getTargetID(), design_->getParameters()) > 0)
+        QString targetID = getTargetID();
+
+        if (referenceCounter_->countReferencesInParameters(targetID, design_->getParameters()) > 0)
         {
             QTreeWidgetItem* topParametersItem = createTopItem("Parameters");
             createParameterReferences(design_->getParameters(), topParametersItem);
         }
 
-        if (referenceExistsInComponentInstances())
+        if (referenceCounter_->countReferencesInComponentInstances(targetID) > 0)
         {
             createReferencesForComponentInstances();
+        }
+
+        if (referenceCounter_->countReferencesInAdHocConnections(targetID, design_->getAdHocConnections()) > 0)
+        {
+            createReferencesForAdHocConnections();
         }
 
         if (topLevelItemCount() == 0)
@@ -82,32 +89,6 @@ QSharedPointer<ParameterReferenceCounter> DesignParameterReferenceTree::getRefer
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignParameterReferenceTree::referenceExistsInComponentInstances()
-//-----------------------------------------------------------------------------
-bool DesignParameterReferenceTree::referenceExistsInComponentInstances() const
-{
-    foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
-    {
-        if (referenceExistsInSingleComponentInstance(instance))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignParameterReferenceTree::referenceExistsInSingleComponentInstance()
-//-----------------------------------------------------------------------------
-bool DesignParameterReferenceTree::referenceExistsInSingleComponentInstance(
-    QSharedPointer<ComponentInstance> instance) const
-{
-    return referenceCounter_->countReferencesInConfigurableElementValues(
-        getTargetID(), instance->getConfigurableElementValues()) > 0;
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignParameterReferenceTree::createReferencesForComponentInstances()
 //-----------------------------------------------------------------------------
 void DesignParameterReferenceTree::createReferencesForComponentInstances()
@@ -116,7 +97,7 @@ void DesignParameterReferenceTree::createReferencesForComponentInstances()
 
     foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
     {
-        if (referenceExistsInSingleComponentInstance(instance))
+        if (referenceCounter_->countReferencesInSingleComponentInstance(getTargetID(), instance) > 0)
         {
             createReferencesForSingleComponentInstance(instance, instancesItem);
         }
@@ -136,4 +117,134 @@ void DesignParameterReferenceTree::createReferencesForSingleComponentInstance(
     {
         createReferencesForConfigurableElementValues(instance->getConfigurableElementValues(), singleInstanceItem);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceTree::createReferencesForAdHocConnections()
+//-----------------------------------------------------------------------------
+void DesignParameterReferenceTree::createReferencesForAdHocConnections()
+{
+    QTreeWidgetItem* connectionsItem = createTopItem(QString("Ad Hoc Connections"));
+
+    QString topComponentName("Top Component");
+
+    QMap<QString, QSharedPointer<AdHocConnection> > connectionsInOrder =
+        getAdHocConnectionsInComponentOrder(topComponentName);
+
+    QSharedPointer<QList<QSharedPointer<AdHocConnection> > > topComponentConnections(
+        new QList<QSharedPointer<AdHocConnection> >(connectionsInOrder.values(topComponentName)));
+    connectionsInOrder.remove(topComponentName);
+
+    QString targetID = getTargetID();
+
+    createAdHocItemsForComponent(topComponentName, topComponentConnections, connectionsItem);
+
+    QStringList referencedInstanceList = connectionsInOrder.keys();
+    referencedInstanceList.removeDuplicates();
+    foreach (QString componentName, referencedInstanceList)
+    {
+        QSharedPointer<QList<QSharedPointer<AdHocConnection> > > connections(
+            new QList<QSharedPointer<AdHocConnection> > (connectionsInOrder.values(componentName)));
+        if (!connections->isEmpty())
+        {
+            createAdHocItemsForComponent(componentName, connections, connectionsItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceTree::createAdHocItemsForComponent()
+//-----------------------------------------------------------------------------
+void DesignParameterReferenceTree::createAdHocItemsForComponent(QString const& componentName,
+    QSharedPointer<QList<QSharedPointer<AdHocConnection> > > connections, QTreeWidgetItem* connectionsItem)
+{
+    QString targetID = getTargetID();
+    if (referenceCounter_->countReferencesInAdHocConnections(targetID, connections) > 0)
+    {
+        QTreeWidgetItem* componentItem = createMiddleItem(componentName, connectionsItem);
+
+        foreach (QSharedPointer<AdHocConnection> singleConnection, *connections)
+        {
+            if (referenceCounter_->countReferencesInSingleAdHocConnection(targetID, singleConnection) > 0)
+            {
+                createReferencesForSingleAdHocConnection(singleConnection, componentItem);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceTree::DesignParameterReferenceTree()
+//-----------------------------------------------------------------------------
+QMap<QString, QSharedPointer<AdHocConnection> > DesignParameterReferenceTree::getAdHocConnectionsInComponentOrder(
+    QString const& topComponentName) const
+{
+    QMap<QString, QSharedPointer<AdHocConnection> > connectionsInOder;
+
+    foreach (QSharedPointer<AdHocConnection> connection, *design_->getAdHocConnections())
+    {
+        if (connection->getInternalPortReferences()->size() == 1 &&
+            connection->getExternalPortReferences()->isEmpty())
+        {
+            QSharedPointer<PortReference> port = connection->getInternalPortReferences()->first();
+            connectionsInOder.insertMulti(port->getComponentRef(), connection);
+        }
+        else if (connection->getExternalPortReferences()->size() == 1 &&
+            connection->getInternalPortReferences()->isEmpty())
+        {
+            connectionsInOder.insertMulti(topComponentName, connection);
+        }
+    }
+
+    return connectionsInOder;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceTree::createReferencesForSingleAdHocConnection()
+//-----------------------------------------------------------------------------
+void DesignParameterReferenceTree::createReferencesForSingleAdHocConnection(
+    QSharedPointer<AdHocConnection> connection, QTreeWidgetItem* componentItem)
+{
+    QSharedPointer<PortReference> connectedPort = getTiedValuePort(connection);
+    QTreeWidgetItem* portItem = createMiddleItem(connectedPort->getPortRef(), componentItem);
+
+    QString targetID = getTargetID();
+    QString tiedValue = connection->getTiedValue();
+    if (!tiedValue.isEmpty() && referenceCounter_->countReferencesInExpression(targetID, tiedValue) > 0)
+    {
+        createItem(QStringLiteral("Tied value"), tiedValue, portItem);
+    }
+
+    if (connectedPort && connectedPort->getPartSelect())
+    {
+        QString portLeftBound = connectedPort->getPartSelect()->getLeftRange();
+        if (referenceCounter_->countReferencesInExpression(targetID, portLeftBound) > 0)
+        {
+            createItem(QStringLiteral("Tied value left bound"), portLeftBound, portItem);
+        }
+
+        QString portRightBound = connectedPort->getPartSelect()->getRightRange();
+        if (referenceCounter_->countReferencesInExpression(targetID, portRightBound) > 0)
+        {
+            createItem(QStringLiteral("Tied value right bound"), portRightBound, portItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceTree::getTiedValuePort()
+//-----------------------------------------------------------------------------
+QSharedPointer<PortReference> DesignParameterReferenceTree::getTiedValuePort(
+    QSharedPointer<AdHocConnection> connection) const
+{
+    if (!connection->getInternalPortReferences()->isEmpty())
+    {
+        return connection->getInternalPortReferences()->first();
+    }
+    else if (!connection->getExternalPortReferences()->isEmpty())
+    {
+        return connection->getExternalPortReferences()->first();
+    }
+
+    return QSharedPointer<PortReference>();
 }

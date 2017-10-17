@@ -19,6 +19,7 @@
 //-----------------------------------------------------------------------------
 AdHocBoundsChangeCommand::AdHocBoundsChangeCommand(QSharedPointer<PortReference> referencedPort,
     QString const& newLeftBound, QString const& newRightBound, QUndoCommand* parent):
+QObject(0),
 QUndoCommand(parent),
 referencedPort_(referencedPort),
 oldPartSelect_(0),
@@ -57,6 +58,17 @@ void AdHocBoundsChangeCommand::undo()
     QUndoCommand::undo();
 
     setPartSelectForReferencedPort(oldPartSelect_);
+
+    if (oldPartSelect_)
+    {
+        emit increaseReferences(oldPartSelect_->getLeftRange());
+        emit increaseReferences(oldPartSelect_->getRightRange());
+    }
+    if (newPartSelect_)
+    {
+        emit decreaseReferences(newPartSelect_->getLeftRange());
+        emit decreaseReferences(newPartSelect_->getRightRange());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -65,6 +77,17 @@ void AdHocBoundsChangeCommand::undo()
 void AdHocBoundsChangeCommand::redo()
 {
     setPartSelectForReferencedPort(newPartSelect_);
+
+    if (newPartSelect_)
+    {
+        emit increaseReferences(newPartSelect_->getLeftRange());
+        emit increaseReferences(newPartSelect_->getRightRange());
+    }
+    if (oldPartSelect_)
+    {
+        emit decreaseReferences(oldPartSelect_->getLeftRange());
+        emit decreaseReferences(oldPartSelect_->getRightRange());
+    }
 
     QUndoCommand::redo();
 }

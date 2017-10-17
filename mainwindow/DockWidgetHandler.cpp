@@ -63,7 +63,8 @@ designParameterReferenceCounter_(0),
 designParametersEditor_(0),
 designParameterDock_(0),
 designParameterTree_(0),
-designParameterFinder_(new MultipleParameterFinder()),
+designParameterFinder_(new ListParameterFinder()),
+designAndInstancesParameterFinder_(new MultipleParameterFinder()),
 instanceEditor_(0),
 instanceDock_(0),
 adHocVisibilityEditor_(0),
@@ -231,19 +232,19 @@ void DockWidgetHandler::setupDesignParametersEditor()
     designParameterDock_->setAllowedAreas(Qt::BottomDockWidgetArea);
     designParameterDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    QSharedPointer<ListParameterFinder> listFinder(new ListParameterFinder());
-    QSharedPointer<ExpressionFormatter> formatter(new ExpressionFormatter(listFinder));
-    QSharedPointer<ExpressionFormatter> referenceTreeFormatter(new ExpressionFormatter(designParameterFinder_));
-    designParameterFinder_->addFinder(listFinder);
+    QSharedPointer<ExpressionFormatter> formatter(new ExpressionFormatter(designParameterFinder_));
+    QSharedPointer<ExpressionFormatter> referenceTreeFormatter(
+        new ExpressionFormatter(designAndInstancesParameterFinder_));
+    designAndInstancesParameterFinder_->addFinder(designParameterFinder_);
 
-    designParameterReferenceCounter_ =
-        QSharedPointer<DesignParameterReferenceCounter>(new DesignParameterReferenceCounter(listFinder));
+    designParameterReferenceCounter_ = QSharedPointer<DesignParameterReferenceCounter>(
+        new DesignParameterReferenceCounter(designParameterFinder_));
 
     designParameterTree_ =
         new DesignParameterReferenceTree(referenceTreeFormatter, designParameterReferenceCounter_, mainWindow_);
 
     designParametersEditor_ = new ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > >(),
-        QSharedPointer<QList<QSharedPointer<Choice> > >(), listFinder, formatter, mainWindow_);
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), designParameterFinder_, formatter, mainWindow_);
 
     ParameterReferenceTreeWindow* designParameterReferenceWindow =
         new ParameterReferenceTreeWindow(designParameterTree_, designParametersEditor_);
@@ -314,9 +315,16 @@ void DockWidgetHandler::setupAdHocEditor()
     adhocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     adhocDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    adhocEditor_ = new AdHocEditor(adhocDock_);
+    adhocEditor_ = new AdHocEditor(designParameterFinder_, adhocDock_);
     adhocDock_->setWidget(adhocEditor_);
     mainWindow_->addDockWidget(Qt::RightDockWidgetArea, adhocDock_);
+
+    connect(adhocEditor_, SIGNAL(increaseReferences(QString const&)), 
+        designParameterReferenceCounter_.data(), SLOT(increaseReferenceCount(QString const&)),
+        Qt::UniqueConnection);
+    connect(adhocEditor_, SIGNAL(decreaseReferences(QString const&)),
+        designParameterReferenceCounter_.data(), SLOT(decreaseReferenceCount(QString const&)),
+        Qt::UniqueConnection);
 
     connect(adhocEditor_, SIGNAL(contentChanged()), this, SIGNAL(designChanged()), Qt::UniqueConnection);
 }
@@ -771,11 +779,10 @@ void DockWidgetHandler::documentChanged(TabDocument* doc)
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupDesignParameterFinder(QSharedPointer<Design> newDesign)
 {
-    QSharedPointer<ListParameterFinder> designListFinder(new ListParameterFinder());
-    designListFinder->setParameterList(newDesign->getParameters());
+    designParameterFinder_->setParameterList(newDesign->getParameters());
 
-    designParameterFinder_->removeAllFinders();
-    designParameterFinder_->addFinder(designListFinder);
+    designAndInstancesParameterFinder_->removeAllFinders();
+    designAndInstancesParameterFinder_->addFinder(designParameterFinder_);
 
     if (!newDesign->getComponentInstances()->isEmpty())
     {
@@ -793,7 +800,7 @@ void DockWidgetHandler::setupDesignParameterFinder(QSharedPointer<Design> newDes
                 {
                     QSharedPointer<ComponentParameterFinder> instanceFinder(
                         new ComponentParameterFinder(instancedComponent));
-                    designParameterFinder_->addFinder(instanceFinder);
+                    designAndInstancesParameterFinder_->addFinder(instanceFinder);
 
                     componentsWithFinders.append(instancedComponent);
                 }
@@ -998,9 +1005,17 @@ void DockWidgetHandler::changeProtection(TabDocument* doc, bool locked)
 }
 
 //-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::getDesignAndInstanceParameterFinder()
+//-----------------------------------------------------------------------------
+QSharedPointer<MultipleParameterFinder> DockWidgetHandler::getDesignAndInstanceParameterFinder() const
+{
+    return designAndInstancesParameterFinder_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::getDesignParameterFinder()
 //-----------------------------------------------------------------------------
-QSharedPointer<MultipleParameterFinder> DockWidgetHandler::getDesignParameterFinder() const
+QSharedPointer<ListParameterFinder> DockWidgetHandler::getDesignParameterFinder() const
 {
     return designParameterFinder_;
 }

@@ -17,9 +17,11 @@
 // Function: DesignWidgetFactoryImplementation::DesignWidgetFactoryImplementation()
 //-----------------------------------------------------------------------------
 DesignWidgetFactoryImplementation::DesignWidgetFactoryImplementation(LibraryInterface* libInterface,
-    QSharedPointer<MultipleParameterFinder> designParameterReferenceFinder):
+    QSharedPointer<MultipleParameterFinder> designAndInstanceParameterFinder,
+    QSharedPointer<ListParameterFinder> designParameterFinder):
 libInterface_(libInterface),
-designParameterReferenceFinder_(designParameterReferenceFinder)
+designAndInstanceParameterFinder_(designAndInstanceParameterFinder),
+designParameterFinder_(designParameterFinder)
 {
 
 }
@@ -37,7 +39,8 @@ DesignWidgetFactoryImplementation::~DesignWidgetFactoryImplementation()
 //-----------------------------------------------------------------------------
 DesignWidget* DesignWidgetFactoryImplementation::makeHWDesignWidget(QWidget* parent /* = 0 */)
 {
-    DesignWidget* hwDesignWidget (new HWDesignWidget(libInterface_, designParameterReferenceFinder_, parent));
+    DesignWidget* hwDesignWidget (new HWDesignWidget(
+        libInterface_, designAndInstanceParameterFinder_, designParameterFinder_, parent));
 
     return hwDesignWidget;
 }

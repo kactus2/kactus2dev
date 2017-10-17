@@ -19,6 +19,7 @@
 #include <library/LibraryInterface.h>
 
 class MultipleParameterFinder;
+class ListParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Class for constructing design widgets.
@@ -30,11 +31,13 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] libInterface                    Enables access to the library.
-     *      @param [in] designParameterReferenceFinder  Parameter finder for design parameter references.
+     *      @param [in] libInterface                        Enables access to the library.
+     *      @param [in] designAndInstanceParameterFinder    Parameter finder for design parameter reference tree.
+     *      @param [in] designParameterFinder               Locates the design parameters.
      */
     DesignWidgetFactoryImplementation(LibraryInterface* libInterface,
-        QSharedPointer<MultipleParameterFinder> designParameterReferenceFinder);
+        QSharedPointer<MultipleParameterFinder> designAndInstanceParameterFinder,
+        QSharedPointer<ListParameterFinder> designParameterFinder);
 
     /*!
      *  Destructor.
@@ -53,8 +56,11 @@ private:
 
     LibraryInterface* libInterface_;
 
-    //! Parameter finder for design parameter references.
-    QSharedPointer<MultipleParameterFinder> designParameterReferenceFinder_;
+    //! Parameter finder for design parameter reference tree.
+    QSharedPointer<MultipleParameterFinder> designAndInstanceParameterFinder_;
+
+    //! Locates the design parameters.
+    QSharedPointer<ListParameterFinder> designParameterFinder_;
 };
 
 #endif // DESIGNWIDGETFACTORYIMPLEMENTATION_H

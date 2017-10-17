@@ -53,6 +53,7 @@ void DesignParameterReferenceCounter::recalculateReferencesToParameters(
 
         referenceCount += countReferencesInParameters(parameterID, design_->getParameters());
         referenceCount += countReferencesInComponentInstances(parameterID);
+        referenceCount += countReferencesInAdHocConnections(parameterID, design_->getAdHocConnections());
 
         parameter->setUsageCount(referenceCount);
     }
@@ -80,4 +81,68 @@ int DesignParameterReferenceCounter::countReferencesInSingleComponentInstance(QS
     QSharedPointer<ComponentInstance> instance) const
 {
     return countReferencesInConfigurableElementValues(parameterID, instance->getConfigurableElementValues());
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceCounter::countReferencesInAdHocConnections()
+//-----------------------------------------------------------------------------
+int DesignParameterReferenceCounter::countReferencesInAdHocConnections(QString const& parameterID,
+    QSharedPointer<QList<QSharedPointer<AdHocConnection> > > connections) const
+{
+    int referenceCounter = 0;
+
+    foreach (QSharedPointer<AdHocConnection> connection, *connections)
+    {
+        referenceCounter += countReferencesInSingleAdHocConnection(parameterID, connection);
+    }
+
+    return referenceCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceCounter::countReferencesInSingleAdHocConnection()
+//-----------------------------------------------------------------------------
+int DesignParameterReferenceCounter::countReferencesInSingleAdHocConnection(QString const& parameterID,
+    QSharedPointer<AdHocConnection> connection) const
+{
+    int referenceCounter = 0;
+
+    if (!connection->getInternalPortReferences()->isEmpty() || !connection->getExternalPortReferences()->isEmpty())
+    {
+        referenceCounter += countReferencesInExpression(parameterID, connection->getTiedValue());
+
+        foreach (QSharedPointer<PortReference> port, *connection->getInternalPortReferences())
+        {
+            if (port->getPartSelect())
+            {
+                referenceCounter += countReferencesInPartSelect(parameterID, port->getPartSelect());
+            }
+        }
+        foreach (QSharedPointer<PortReference> port, *connection->getExternalPortReferences())
+        {
+            if (port->getPartSelect())
+            {
+                referenceCounter += countReferencesInPartSelect(parameterID, port->getPartSelect());
+            }
+        }
+    }
+
+    return referenceCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignParameterReferenceCounter::countReferencesInPartSelect()
+//-----------------------------------------------------------------------------
+int DesignParameterReferenceCounter::countReferencesInPartSelect(QString const& parameterID,
+    QSharedPointer<PartSelect> partSelect) const
+{
+    int referenceCount = 0;
+
+    if (partSelect)
+    {
+        referenceCount += countReferencesInExpression(parameterID, partSelect->getLeftRange());
+        referenceCount += countReferencesInExpression(parameterID, partSelect->getRightRange());
+    }
+
+    return referenceCount;
 }

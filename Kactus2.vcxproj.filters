@@ -4420,6 +4420,12 @@
     <ClCompile Include="GeneratedFiles\moc_DockWidgetHandler.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocTieOffChangeCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsChangeCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6087,6 +6093,18 @@
     <CustomBuild Include="mainwindow\DockWidgetHandler.h">
       <Filter>Header Files\mainwindow</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocTiedValueCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6566,9 +6584,6 @@
     <ClInclude Include="designEditors\common\DesignDiagramResolver.h">
       <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.h">
-      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
-    </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h">
       <Filter>Header Files\Plugins</Filter>
     </ClInclude>
@@ -6661,15 +6676,6 @@
     </ClInclude>
     <ClInclude Include="common\NameGenerationPolicy.h">
       <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.h">
-      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTiedValueCommand.h">
-      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.h">
-      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>

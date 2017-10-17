@@ -1345,8 +1345,8 @@ void MainWindow::generateDoc()
     }
     QTextStream stream(&targetFile);
 
-    DesignWidgetFactoryImplementation designWidgetFactory(
-        libraryHandler_, dockHandler_->getDesignParameterFinder());
+    DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_,
+        dockHandler_->getDesignAndInstanceParameterFinder(), dockHandler_->getDesignParameterFinder());
 
     ExpressionFormatterFactoryImplementation expressionFormatterFactory;
 
@@ -2645,7 +2645,11 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
         return;
     }
 
-    DesignWidgetFactoryImplementation factory(libraryHandler_, dockHandler_->getDesignParameterFinder());
+    QSharedPointer<Design> newDesign = libraryHandler_->getDesign(designVLNV);
+    dockHandler_->setupDesignParameterFinder(newDesign);
+
+    DesignWidgetFactoryImplementation factory(libraryHandler_,
+        dockHandler_->getDesignAndInstanceParameterFinder(), dockHandler_->getDesignParameterFinder());
     DesignWidget* designWidget = factory.makeHWDesignWidget(this);
     connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
         designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);

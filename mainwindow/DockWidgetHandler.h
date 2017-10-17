@@ -23,6 +23,7 @@ class ContextHelpBrowser;
 class DesignParameterReferenceCounter;
 class ParameterGroupBox;
 class DesignParameterReferenceTree;
+class ListParameterFinder;
 class MultipleParameterFinder;
 class ComponentInstanceEditor;
 class AdHocVisibilityEditor;
@@ -185,11 +186,18 @@ public:
     void changeProtection(TabDocument* doc, bool locked);
 
     /*!
-     *  Get the design  parameter finder.
+     *  Get the design parameter reference tree finder.
+     *
+     *      @return The design parameter reference tree finder.
+     */
+    QSharedPointer<MultipleParameterFinder> getDesignAndInstanceParameterFinder() const;
+
+    /*!
+     *  Get the design parameter finder.
      *
      *      @return The design parameter finder.
      */
-    QSharedPointer<MultipleParameterFinder> getDesignParameterFinder() const;
+    QSharedPointer<ListParameterFinder> getDesignParameterFinder() const;
 
     /*!
      *  Refresh the design document.
@@ -218,6 +226,13 @@ public:
      *      @param [in] settings    The settings.
      */
     void createVisibilityAndFilterSettings(QSettings& settings) const;
+
+    /*!
+     *  Setup the design parameter finder.
+     *
+     *      @param [in] newDesign   The design of the currently active design tab document.
+     */
+    void setupDesignParameterFinder(QSharedPointer<Design> newDesign);
 
 public slots:
 
@@ -443,13 +458,6 @@ private:
     unsigned int defaultWindows();
 
     /*!
-     *  Setup the design parameter finder.
-     *
-     *      @param [in] newDesign   The design of the currently active design tab document.
-     */
-    void setupDesignParameterFinder(QSharedPointer<Design> newDesign);
-
-    /*!
      *  Set the visibility for the selected dock widget.
      *
      *      @param [in] windowType  The type of the selected dock widget.
@@ -500,8 +508,11 @@ private:
     //! Reference tree containing the design parameter references.
     DesignParameterReferenceTree* designParameterTree_;
 
-    //! Parameter finder for design parameter references.
-    QSharedPointer<MultipleParameterFinder> designParameterFinder_;
+    //! Parameter finder for design parameters.
+    QSharedPointer<ListParameterFinder> designParameterFinder_;
+
+    //! Parameter finder for design parameter reference tree.
+    QSharedPointer<MultipleParameterFinder> designAndInstancesParameterFinder_;
 
     //! The widget to edit the settings of a component instance.
     ComponentInstanceEditor* instanceEditor_;

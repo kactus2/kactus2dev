@@ -43,12 +43,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] lh                              The library interface.
-     *      @param [in] designParameterReferenceFinder  Parameter finder for design parameter references.
-     *      @param [in] parent                          Owner of this object.
+     *      @param [in] lh                                  The library interface.
+     *      @param [in] designAndInstancesParameterFinder   Parameter finder for design parameter reference tree.
+     *      @param [in] designParameterFinder               Design parameter finder.
+     *      @param [in] parent                              Owner of this object.
      */
-    HWDesignWidget(LibraryInterface *lh, QSharedPointer<MultipleParameterFinder> designParameterReferenceFinder,
-        QWidget *parent = 0);
+    HWDesignWidget(LibraryInterface *lh, QSharedPointer<MultipleParameterFinder> designAndIsntancesParameterFinder,
+        QSharedPointer<ListParameterFinder> designParameterFinder, QWidget *parent = 0);
 
 	/*!
      *  The destructor.

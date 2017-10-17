@@ -47,6 +47,8 @@ void AdHocTieOffBoundsChangeCommand::undo()
     AdHocBoundsChangeCommand::undo();
 
     addOrRemoveTiedValueConnection();
+
+    emit refreshEditors();
 }
 
 //-----------------------------------------------------------------------------
@@ -57,4 +59,6 @@ void AdHocTieOffBoundsChangeCommand::redo()
     AdHocBoundsChangeCommand::redo();
 
     addOrRemoveTiedValueConnection();
+
+    emit refreshEditors();
 }

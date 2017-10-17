@@ -18,12 +18,15 @@ class PartSelect;
 #include <QUndoCommand>
 #include <QSharedPointer>
 #include <QString>
+#include <QObject>
 
 //-----------------------------------------------------------------------------
 //! Undo command for changing left and right bounds of an ad hoc port.
 //-----------------------------------------------------------------------------
-class AdHocBoundsChangeCommand : public QUndoCommand
+class AdHocBoundsChangeCommand : public QObject, public QUndoCommand
 {
+    Q_OBJECT
+
 public:
 
     /*!
@@ -51,6 +54,27 @@ public:
      *  Redoes the command.
      */
     virtual void redo();
+
+signals:
+    
+    /*!
+     *  Informs of new references created from the selected expression.
+     *
+     *      @param [in] expression  The selected expression.
+     */
+    void increaseReferences(QString const& expression);
+
+    /*!
+     *  Informs of old references created from the selected expression.
+     *
+     *      @param [in] expression  The selected expression.
+     */
+    void decreaseReferences(QString const& expression);
+
+    /*!
+     *  Informs of the need to refresh the ad hoc editors.
+     */
+    void refreshEditors();
 
 private:
     

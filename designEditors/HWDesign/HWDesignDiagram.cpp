@@ -100,13 +100,14 @@ Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
 // Function: HWDesignDiagram::HWDesignDiagram()
 //-----------------------------------------------------------------------------
 HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider,
-    QSharedPointer<MultipleParameterFinder> designReferenceParameterFinder, DesignWidget* parent):
+    QSharedPointer<MultipleParameterFinder> designandInstancesParameterFinder,
+    QSharedPointer<ListParameterFinder> designParameterFinder, DesignWidget* parent):
 ComponentDesignDiagram(lh, editProvider, parent),
 dragCompType_(ColumnTypes::NONE),
 dragBus_(false),
 dragEndPoint_(0),
-diagramResolver_(new DesignDiagramResolver()),
-designReferenceParameterFinder_(designReferenceParameterFinder)
+diagramResolver_(new DesignDiagramResolver(designParameterFinder)),
+designAndInstancesParameterFinder_(designandInstancesParameterFinder)
 {
 
 }
@@ -1936,7 +1937,7 @@ HWComponentItem* HWDesignDiagram::createComponentItem(QSharedPointer<Component> 
         if (!referenceFinderContainsComponent(comp))
         {
             QSharedPointer<ComponentParameterFinder> componentFinder(new ComponentParameterFinder(comp));
-            designReferenceParameterFinder_->addFinder(componentFinder);
+            designAndInstancesParameterFinder_->addFinder(componentFinder);
         }
 
         // Create the diagram component.                            
@@ -2435,6 +2436,9 @@ void HWDesignDiagram::createAdHocTieOffConnection(QSharedPointer<AdHocConnection
             componentPort = comp1->createAdhocItem(internalPort->getPortRef());
         }
 
+        QSharedPointer<Component> referencedComponent = componentPort->getOwnerComponent();
+        diagramResolver_->setContext(referencedComponent);
+
         diagramResolver_->resolveAdhocTieOff(connection->getTiedValue(), componentPort);
     }
 
@@ -2451,6 +2455,9 @@ void HWDesignDiagram::createAdHocTieOffConnection(QSharedPointer<AdHocConnection
         {
             topPort = createAdhocItem(externalPort->getPortRef());
         }
+
+        QSharedPointer<Component> referencedComponent = topAdHocPort->getOwnerComponent();
+        diagramResolver_->setContext(referencedComponent);
 
         diagramResolver_->resolveAdhocTieOff(connection->getTiedValue(), topPort);
     }

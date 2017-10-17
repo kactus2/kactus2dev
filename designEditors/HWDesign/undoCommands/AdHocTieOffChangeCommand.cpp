@@ -27,6 +27,7 @@ AdHocTieOffChangeCommand::AdHocTieOffChangeCommand(AdHocItem* portItem, QSharedP
     QString const& newTieOffValue, QString newParsedTieOff, QString newFormattedTieOff, int newBase,
     QString const& oldTieOffValue, QString oldParsedTieOff, QString oldFormattedTieOff, int oldBase,
     HWDesignDiagram* designDiagram, QUndoCommand* parent):
+QObject(0),
 AdHocTiedValueCommand(portItem, connection, designDiagram),
 QUndoCommand(parent),
 containingDiagram_(designDiagram),
@@ -66,7 +67,12 @@ void AdHocTieOffChangeCommand::undo()
         changeTieOffSymbolsInConnectedPorts(oldTieOff_, parsedOldTieOff_, formattedOldTieOff_, oldBase_);
 
         addOrRemoveTiedValueConnection();
+
+        emit increaseReferences(oldTieOff_);
+        emit decreaseReferences(newTieOff_);
     }
+
+    emit refreshEditors();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +88,12 @@ void AdHocTieOffChangeCommand::redo()
         changeTieOffSymbolsInConnectedPorts(newTieOff_, parsedNewTieOff_, formattedNewTieOff_, newBase_);
 
         addOrRemoveTiedValueConnection();
+
+        emit increaseReferences(newTieOff_);
+        emit decreaseReferences(oldTieOff_);
     }
+
+    emit refreshEditors();
 
     QUndoCommand::redo();
 }

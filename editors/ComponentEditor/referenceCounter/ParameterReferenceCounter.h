@@ -84,6 +84,16 @@ public:
      */
     int countReferencesInSingleConfigurableElementValue(QString const& parameterID,
         QSharedPointer<ConfigurableElementValue> element) const;
+    
+    /*!
+     *  Count the references made to the selected parameter in the selected expression.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] expression      The selected expression.
+     *
+     *      @return The amount of references made to the selected parameter in the selected expression.
+     */
+    int countReferencesInExpression(QString const& parameterID, QString const& expression) const;
 
 public slots:
 
@@ -107,18 +117,6 @@ public slots:
      *      @param [in] parameterList   The selected parameters.
      */
     virtual void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameterList);
-
-protected:
-
-    /*!
-     *  Count the references made to the selected parameter in the selected expression.
-     *
-     *      @param [in] parameterID     ID of the selected parameter.
-     *      @param [in] expression      The selected expression.
-     *
-     *      @return The amount of references made to the selected parameter in the selected expression.
-     */
-    int countReferencesInExpression(QString const& parameterID, QString const& expression) const;
 
 private:
 
