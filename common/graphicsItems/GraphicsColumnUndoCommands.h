@@ -76,59 +76,6 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! GraphicsColumnAddCommand class.
-//-----------------------------------------------------------------------------
-class GraphicsColumnAddCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] layout  The column layout.
-     *      @param [in] desc    The column to add.
-     *      @param [in] parent  The parent command.
-     */
-    GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column, QSharedPointer<Design> design,
-        QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~GraphicsColumnAddCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    GraphicsColumnAddCommand(GraphicsColumnAddCommand const& rhs);
-    GraphicsColumnAddCommand& operator=(GraphicsColumnAddCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The column layout.
-    GraphicsColumnLayout* layout_;
-
-    //! The column.
-    GraphicsColumn* column_;
-
-    //! The column layout.
-    QSharedPointer<Design> design_;
-
-    //! Boolean flag for indicating if the component should be deleted in the destructor.
-    bool del_;
-};
-
-//-----------------------------------------------------------------------------
 //! GraphicsColumnChangeCommand class.
 //-----------------------------------------------------------------------------
 class GraphicsColumnChangeCommand : public QUndoCommand

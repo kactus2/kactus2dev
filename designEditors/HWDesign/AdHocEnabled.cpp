@@ -130,10 +130,13 @@ AdHocItem* AdHocEnabled::createAdhocItem(QString const&)
 void AdHocEnabled::changeAdhocVisibility(AdHocItem* portItem, bool newVisibility)
 {
     // Check if the visibility has changed.
-    if (portAdHocVisibilities_.value(portItem->name()) != newVisibility)
+    if (portAdHocVisibilities_.value(portItem->name()) != newVisibility || portItem->getPort()->isAdHocVisible())
     {
-        // Update the value and call onAdHocVisiblityChanged().
-        portAdHocVisibilities_.insert(portItem->name(), newVisibility);
+        if (!portAdHocVisibilities_.contains(portItem->name()) || !portItem->getPort()->isAdHocVisible())
+        {
+            // Update the value and call onAdHocVisiblityChanged().
+            portAdHocVisibilities_.insert(portItem->name(), newVisibility);
+        }
 
         if (newVisibility == true)
         {

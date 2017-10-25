@@ -368,6 +368,14 @@ QSharedPointer<Kactus2Placeholder> AdHocInterfaceItem::getDataGroup() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AdHocInterfaceItem::setDataGroup()
+//-----------------------------------------------------------------------------
+void AdHocInterfaceItem::setDataGroup(QSharedPointer<Kactus2Placeholder> newDataGroup)
+{
+    dataGroup_ = newDataGroup;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AdHocInterfaceItem::labelShouldBeDrawnLeft()
 //-----------------------------------------------------------------------------
 bool AdHocInterfaceItem::labelShouldBeDrawnLeft() const

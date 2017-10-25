@@ -58,6 +58,13 @@ public:
     void addColumn(GraphicsColumn* column, bool append = false);
 
     /*!
+     *  Add the selected column to the end of the layout.
+     *
+     *      @param [in] column  The selected column.
+     */
+    void appendColumn(GraphicsColumn* column);
+
+    /*!
      *  Removes a column from the layout.
      *
      *      @param [in] column The column to remove.

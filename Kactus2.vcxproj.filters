@@ -4426,6 +4426,18 @@
     <ClCompile Include="GeneratedFiles\moc_AdHocBoundsChangeCommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTieOffConnectionDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="common\graphicsItems\GraphicsColumnAddCommand.cpp">
+      <Filter>Source Files\common\graphicsItems</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\HWColumnAddCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6694,6 +6706,18 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\DefaultRouting.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="common\graphicsItems\GraphicsColumnAddCommand.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\HWColumnAddCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

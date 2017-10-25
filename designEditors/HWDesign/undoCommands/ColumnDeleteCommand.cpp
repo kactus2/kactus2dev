@@ -23,6 +23,10 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/HWConnection.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
+#include <designEditors/HWDesign/AdHocInterfaceItem.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
+
+#include <designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h>
 
 #include <IPXACTmodels/Design/Design.h>
 
@@ -45,41 +49,6 @@ QUndoCommand(parent),
         if (item->type() == HWComponentItem::Type)
         {
             HWComponentItem* comp = static_cast<HWComponentItem*>(item);
-
-            foreach (QGraphicsItem* childItem, comp->childItems())
-            {
-                HWConnectionEndpoint* endpoint = dynamic_cast<HWConnectionEndpoint*>(childItem);
-
-                if (endpoint == 0)
-                {
-                    continue;
-                }
-
-                foreach (GraphicsConnection* conn, endpoint->getConnections())
-                {
-                    if (!connections.contains(conn))
-                    {
-                        new ConnectionDeleteCommand(diagram, static_cast<HWConnection*>(conn), this);
-                        connections.append(conn);
-                    }
-                }
-
-                if (endpoint->getOffPageConnector() != 0)
-                {
-                    foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
-                    {
-                        if (!connections.contains(conn))
-                        {
-                            new ConnectionDeleteCommand(diagram, static_cast<HWConnection*>(conn), this);
-                            connections.append(conn);
-                        }
-                    }
-                }
-            }
-            foreach(Association* association, comp->getAssociations())
-            {
-                new AssociationRemoveCommand(association, diagram, this);
-            }
 
             new ComponentDeleteCommand(diagram, column, comp, this);
         }
@@ -106,6 +75,16 @@ QUndoCommand(parent),
                         connections.append(connections);
                     }
                 }
+            }
+        }
+        else if (item->type() == GFX_TYPE_DIAGRAM_ADHOC_INTERFACE)
+        {
+            HWDesignDiagram* hwDiagram = dynamic_cast<HWDesignDiagram*>(diagram);
+            if (hwDiagram)
+            {
+                AdHocInterfaceItem* adHocInterface = dynamic_cast<AdHocInterfaceItem*>(item);
+
+                new TopAdHocVisibilityChangeCommand(hwDiagram, adHocInterface->name(), false, this);
             }
         }
     }

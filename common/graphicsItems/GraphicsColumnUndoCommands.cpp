@@ -63,59 +63,6 @@ void GraphicsColumnMoveCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsColumnAddCommand()
-//-----------------------------------------------------------------------------
-GraphicsColumnAddCommand::GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
-    QSharedPointer<Design> design, QUndoCommand* parent) :
-QUndoCommand(parent),
-    layout_(layout),
-    column_(column),
-    design_(design),
-    del_(false)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~GraphicsColumnAddCommand()
-//-----------------------------------------------------------------------------
-GraphicsColumnAddCommand::~GraphicsColumnAddCommand()
-{
-    if (del_)
-    {
-        delete column_;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void GraphicsColumnAddCommand::undo()
-{
-    QUndoCommand::undo();
-
-    Q_ASSERT(column_ != 0);
-
-    // Remove the column from the layout.
-    layout_->removeColumn(column_);
-    del_ = true;
-
-    design_->removeColumn(column_->getColumnDesc());
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void GraphicsColumnAddCommand::redo()
-{
-    // Add the column to the layout.
-    layout_->addColumn(column_, column_->pos().isNull());
-    del_ = false;
-    design_->addColumn(column_->getColumnDesc());
-
-    QUndoCommand::redo();
-}
-
-//-----------------------------------------------------------------------------
 // Function: GraphicsColumnChangeCommand()
 //-----------------------------------------------------------------------------
 GraphicsColumnChangeCommand::GraphicsColumnChangeCommand(GraphicsColumn* column,

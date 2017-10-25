@@ -215,6 +215,13 @@ public:
     virtual void updateHierComponent();
 
     /*!
+     *  Load and insert the selected column to the graphics layout.
+     *
+     *      @param [in] description     Column description of the selected column.
+     */
+    void loadColumn(QSharedPointer<ColumnDesc> description);
+
+    /*!
      *  Adds a column to the diagram's layout.
      *
      *      @param [in] desc The column description.

@@ -86,6 +86,29 @@ void GraphicsColumnLayout::addColumn(GraphicsColumn* column, bool append)
 }
 
 //-----------------------------------------------------------------------------
+// Function: GraphicsColumnLayout::appendColumn()
+//-----------------------------------------------------------------------------
+void GraphicsColumnLayout::appendColumn(GraphicsColumn* column)
+{
+    column->setPos(layoutWidth_, 0);
+
+    if (column->scene() == 0)
+    {
+        scene_->addItem(column);
+    }
+
+    column->setOffsetY(offsetY_);
+
+    // Add the column to the list of columns and update the layout width.
+    columns_.append(column);
+    layoutWidth_ += column->boundingRect().width();
+
+    // Update the position in the layout.
+    layout_->updateItemMove(columns_, column);
+    layout_->setItemPos(columns_, column, 0.0);
+}
+
+//-----------------------------------------------------------------------------
 // Function: GraphicsColumnLayout::removeColumn()
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::removeColumn(GraphicsColumn* column)

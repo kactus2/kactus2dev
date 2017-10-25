@@ -55,6 +55,7 @@
 #include <designEditors/HWDesign/undoCommands/PortPasteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h>
 #include <designEditors/HWDesign/undoCommands/HWComponentAddCommand.h>
+#include <designEditors/HWDesign/undoCommands/HWColumnAddCommand.h>
 
 #include <library/LibraryHandler.h>
 
@@ -128,10 +129,12 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     QList<QSharedPointer<ColumnDesc> > designColumns = design->getColumns();
     if (designColumns.isEmpty())
     {
-        addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
-        addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", ColumnTypes::BUSES, 0, COMPONENT_COLUMN_WIDTH)));
-        addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Components", ColumnTypes::COMPONENTS, 0, COMPONENT_COLUMN_WIDTH)));
-        addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
+        loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
+        loadColumn(
+            QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", ColumnTypes::BUSES, 0, COMPONENT_COLUMN_WIDTH)));
+        loadColumn(QSharedPointer<ColumnDesc>(
+            new ColumnDesc("Components", ColumnTypes::COMPONENTS, 0, COMPONENT_COLUMN_WIDTH)));
+        loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
     }
     else
     {
@@ -143,7 +146,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         foreach (QSharedPointer<ColumnDesc> desc, orderedColumns)
         {
-            addColumn(desc);
+            loadColumn(desc);
         }
     }
 
@@ -246,13 +249,24 @@ void HWDesignDiagram::updateHierComponent()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::loadColumn()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::loadColumn(QSharedPointer<ColumnDesc> description)
+{
+    HWColumn* column = new HWColumn(description, getLayout().data());
+
+    getLayout()->appendColumn(column);
+    getDesign()->addColumn(description);
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::addColumn()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 {
     HWColumn* column = new HWColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column, getDesign()));
+    QSharedPointer<QUndoCommand> cmd(new HWColumnAddCommand(getLayout().data(), column, this));
     getEditProvider()->addCommand(cmd);
     cmd->redo();
 }
@@ -484,7 +498,7 @@ void HWDesignDiagram::pasteColumns()
         HWColumn* columnItem = new HWColumn(columnCopy, getLayout().data());
         columnItem->setPos(columnPosition);
 
-        new GraphicsColumnAddCommand(getLayout().data(), columnItem, getDesign(), parentCommand.data());
+        new HWColumnAddCommand(getLayout().data(), columnItem, this, parentCommand.data());
 
         createComponentPasteCommand(columnData.components, columnItem, parentCommand.data(), false);
         
@@ -2456,7 +2470,7 @@ void HWDesignDiagram::createAdHocTieOffConnection(QSharedPointer<AdHocConnection
             topPort = createAdhocItem(externalPort->getPortRef());
         }
 
-        QSharedPointer<Component> referencedComponent = topAdHocPort->getOwnerComponent();
+        QSharedPointer<Component> referencedComponent = topPort->getOwnerComponent();
         diagramResolver_->setContext(referencedComponent);
 
         diagramResolver_->resolveAdhocTieOff(connection->getTiedValue(), topPort);
@@ -2770,6 +2784,36 @@ void HWDesignDiagram::showAdhocPort(AdHocItem* portItem)
             getLayout()->addItem(interfaceItem);
         }
     }
+
+    QSharedPointer<VendorExtension> adhocExtension = getDesign()->getAdHocPortPositions();
+    QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
+    if (!adhocGroup)
+    {
+        adhocGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:adHocVisibilities"));
+        getDesign()->getVendorExtensions()->append(adhocGroup);
+    }
+
+    foreach (QSharedPointer<VendorExtension> extension, adhocGroup->getByType("kactus2:adHocVisible"))
+    {
+        QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
+        if (portExtension->getAttributeValue("portName") == portItem->name())
+        {
+            return;
+        }
+    }
+
+    QSharedPointer<Kactus2Placeholder> newPortExtension = interfaceItem->getDataGroup();
+    if (!newPortExtension)
+    {
+        newPortExtension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:adHocVisible"));
+        newPortExtension->setAttribute("portName", portItem->name());
+        newPortExtension->setAttribute("x", QString::number(portItem->scenePos().x()));
+        newPortExtension->setAttribute("y", QString::number(portItem->scenePos().y()));
+
+        interfaceItem->setDataGroup(newPortExtension);
+    }
+
+    adhocGroup->addToGroup(newPortExtension);
 }
 
 //-----------------------------------------------------------------------------
@@ -2781,7 +2825,7 @@ void HWDesignDiagram::hideAdhocPort(AdHocItem* portItem)
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
 
     AdHocInterfaceItem* interfaceItem = dynamic_cast<AdHocInterfaceItem*>(portItem);
-    if (adhocGroup && interfaceItem)
+    if (adhocGroup && interfaceItem && interfaceItem->parentItem())
     {
         static_cast<GraphicsColumn*>(interfaceItem->parentItem())->removeItem(interfaceItem);
 
