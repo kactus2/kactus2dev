@@ -9,7 +9,7 @@
 // Data model for component indirect interfaces.
 //-----------------------------------------------------------------------------
 
-#include "IndirectInterfacesmodel.h"
+#include "IndirectInterfacesModel.h"
 
 #include "IndirectInterfaceColumns.h"
 

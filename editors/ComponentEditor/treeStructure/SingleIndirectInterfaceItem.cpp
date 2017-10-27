@@ -9,11 +9,11 @@
 // The item for single bus interface in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
 
-#include "SingleIndirectInterfaceitem.h"
+#include "SingleIndirectInterfaceItem.h"
 
 #include <library/LibraryInterface.h>
 
-#include <editors/ComponentEditor/IndirectInterfaces/SingleIndirectInterfaceEditor.h>
+#include <editors/ComponentEditor/indirectInterfaces/SingleIndirectInterfaceEditor.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/IndirectInterface.h>

@@ -9,10 +9,10 @@
 // The Indirect interfaces -item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
 
-#include "componenteditorIndirectInterfacesitem.h"
+#include "ComponentEditorIndirectInterfacesItem.h"
 #include "SingleIndirectInterfaceItem.h"
 
-#include <editors/ComponentEditor/IndirectInterfaces/IndirectInterfaceseditor.h>
+#include <editors/ComponentEditor/indirectInterfaces/IndirectInterfacesEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
