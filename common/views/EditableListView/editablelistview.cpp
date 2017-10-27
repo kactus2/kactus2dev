@@ -12,6 +12,9 @@
 #include "editablelistview.h"
 
 #include <QMenu>
+#include <QPainter>
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: EditableListView::EditableListView()
@@ -34,6 +37,28 @@ QListView(parent),
 //-----------------------------------------------------------------------------
 EditableListView::~EditableListView()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableListView::paintEvent()
+//-----------------------------------------------------------------------------
+void EditableListView::paintEvent(QPaintEvent *event)
+{
+    QListView::paintEvent(event);
+
+    if (model() && model()->rowCount() == 0) 
+    {     
+        const int MARGIN = 2;
+        QRect placeholderTextRec = rect();
+        placeholderTextRec.setX(placeholderTextRec.x() + MARGIN);
+        placeholderTextRec.setY(placeholderTextRec.y() + MARGIN);
+        placeholderTextRec.setWidth(placeholderTextRec.width() - MARGIN);
+        placeholderTextRec.setHeight(placeholderTextRec.height() - MARGIN);
+
+        QPainter p(this->viewport());
+        p.setPen(KactusColors::DISABLED_TEXT);
+        p.drawText(placeholderTextRec, Qt::AlignLeft | Qt::TextWordWrap, tr("Double click to add new item."));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -71,8 +96,8 @@ void EditableListView::mouseDoubleClickEvent(QMouseEvent* event)
 	QModelIndex index = indexAt(event->pos());
 	if (!index.isValid())
     {
-		emit addItem(index);
-		event->accept();
+        onAddAction();
+		event->accept();                
 		return;
 	}
 
@@ -114,6 +139,17 @@ void EditableListView::contextMenuEvent(QContextMenuEvent* event)
 
     removeAction_.setEnabled(true);
 	event->accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableListView::rowsInserted()
+//-----------------------------------------------------------------------------
+void EditableListView::rowsInserted(QModelIndex const& parent, int start, int end)
+{
+    QListView::rowsInserted(parent, start, end);
+
+    QModelIndex lastIndex = model()->index(end, 0, parent);
+    setCurrentIndex(lastIndex);
 }
 
 //-----------------------------------------------------------------------------

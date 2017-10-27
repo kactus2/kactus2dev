@@ -11,110 +11,64 @@
 
 #include <common/KactusColors.h>
 
-ListManagerModel::ListManagerModel(QObject *parent, 
-								   const QStringList& items)
-	: QAbstractListModel(parent), items_(items) {
+ListManagerModel::ListManagerModel(QObject *parent, const QStringList& items): 
+QAbstractListModel(parent),
+    items_(items)
+{
 
 }
 
-ListManagerModel::~ListManagerModel() {
+ListManagerModel::~ListManagerModel()
+{
 
 }
 
-int ListManagerModel::rowCount( const QModelIndex&) const {
-	
-	// if there are no items then there is the help text
-	if (items_.isEmpty()) {
-		return 1;
-	}
-
+int ListManagerModel::rowCount( const QModelIndex&) const
+{
 	return items_.size();
 }
 
-QVariant ListManagerModel::data( const QModelIndex& index, int role) const {
-	
+QVariant ListManagerModel::data( const QModelIndex& index, int role) const
+{
 	// nothing for invalid indexes
-	if (!index.isValid()) {
-		return QVariant();
-	}
-
-	// if there are no real items then display the help text
-	else if (index.row() == 0 && items_.isEmpty()) {
-		switch (role) {
-			case Qt::DisplayRole: {
-				return tr("Double click to add new item.");
-								  }
-			case Qt::ForegroundRole: {
-				return KactusColors::DISABLED_TEXT;
-									 }
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-
-	// if index.row() is invalid
-	else if (index.row() < 0 || index.row() >= items_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    {
 		return QVariant();
 	}
 
 	// return data for display role
-	if (role == Qt::DisplayRole || role == Qt::EditRole) {
+	if (role == Qt::DisplayRole || role == Qt::EditRole)
+    {
 		return items_.at(index.row());
 	}
 	// if unsupported role
-	else {
+	else
+    {
 		return QVariant();
 	}
 }
 
-QVariant ListManagerModel::headerData(int section, Qt::Orientation orientation, int role) const {
-
-	// only one column to display
-	if (section != 0) {
-		return QVariant();
-	}
-	// only horizontal headers
-	else if (orientation != Qt::Horizontal) {
-		return QVariant();
-	}
-
-	// data for displayRole
-	if (role == Qt::DisplayRole) {
-		return tr("Items");
-	}
-	// unsupported role
-	else {
-		return QVariant();
-	}
-
+QVariant ListManagerModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (section == 0 && orientation == Qt::Horizontal && role == Qt::DisplayRole)
+    {
+        return tr("Items");
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-bool ListManagerModel::setData( const QModelIndex& index,
-							   const QVariant& value,
-							   int role /*= Qt::EditRole*/ ) {
-								   
-	if (!index.isValid()) {
+bool ListManagerModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ )
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size() || index.column() != 0)
+    {
 		return false;
 	}
 
-	// if there are no real items then create one to avoid mis indexing
-	else if (index.row() == 0 && items_.isEmpty()) {
-		items_.append(QString());
-	}
-
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= items_.size()) {
-		return false;
-	}
-
-	// list model has only one column
-	else if (index.column() != 0) {
-		return false;
-	}
-
-	if (role == Qt::EditRole) {
-		
+	if (role == Qt::EditRole)
+    {
 		items_[index.row()] = value.toString();
 
 		emit dataChanged(index, index);
@@ -122,25 +76,31 @@ bool ListManagerModel::setData( const QModelIndex& index,
 	}
 
 	// unsupported role
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-Qt::ItemFlags ListManagerModel::flags( const QModelIndex& index ) const {
+Qt::ItemFlags ListManagerModel::flags( const QModelIndex& index ) const
+{
 	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
+    }
 
 	return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-void ListManagerModel::appendItem( const QString item ) {
+void ListManagerModel::appendItem( const QString item )
+{
 	beginInsertRows(QModelIndex(), items_.size(), items_.size());
 	items_.append(item);
 	endInsertRows();
 }
 
-void ListManagerModel::addItem( const QModelIndex& index ) {
+void ListManagerModel::addItem( const QModelIndex& index )
+{
 	int row = items_.size();
 	
 	// if the index is valid then add the item to the correct position
@@ -154,24 +114,23 @@ void ListManagerModel::addItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-const QStringList& ListManagerModel::items() const {
+const QStringList& ListManagerModel::items() const
+{
 	return items_;
 }
 
-void ListManagerModel::setItems( const QStringList& items ) {
+void ListManagerModel::setItems( const QStringList& items )
+{
 	beginResetModel();
 	items_ = items;
 	endResetModel();
 }
 
-void ListManagerModel::remove( const QModelIndex& index ) {
-
+void ListManagerModel::remove( const QModelIndex& index )
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= items_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    {
 		return;
 	}
 
@@ -182,31 +141,26 @@ void ListManagerModel::remove( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void ListManagerModel::moveItem( const QModelIndex& originalPos, 
-								const QModelIndex& newPos ) {
-
-	// if there was no item in the starting point
-	if (!originalPos.isValid()) {
-		return;
-	}
-	// if the indexes are the same
-	else if (originalPos == newPos) {
-		return;
-	}
-	else if (originalPos.row() < 0 || originalPos.row() >= items_.size()) {
+void ListManagerModel::moveItem( const QModelIndex& originalPos, const QModelIndex& newPos )
+{
+	if (!originalPos.isValid() ||
+        originalPos == newPos || 
+        originalPos.row() < 0 || originalPos.row() >= items_.size())
+    {
 		return;
 	}
 
 	// if the new position is invalid index then put the item last in the list
-	if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= items_.size()) {
-
+	if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= items_.size())
+    {
 		beginResetModel();
 		QString value = items_.takeAt(originalPos.row());
 		items_.append(value);
 		endResetModel();
 	}
 	// if both indexes were valid
-	else {
+	else
+    {
 		beginResetModel();
 		items_.swap(originalPos.row(), newPos.row());
 		endResetModel();
@@ -214,13 +168,10 @@ void ListManagerModel::moveItem( const QModelIndex& originalPos,
 	emit contentChanged();
 }
 
-void ListManagerModel::replace(QModelIndex& index, const QString newText) {
-
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row is correct
-	else if (index.row() < 0 || index.row() >= items_.size()) {
+void ListManagerModel::replace(QModelIndex& index, const QString newText)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    {
 		return;
 	}
 
@@ -228,7 +179,8 @@ void ListManagerModel::replace(QModelIndex& index, const QString newText) {
 	emit dataChanged(index, index);
 }
 
-void ListManagerModel::appendItems( const QStringList& items ) {
+void ListManagerModel::appendItems( const QStringList& items )
+{
 	foreach (const QString item, items) {
 		appendItem(item);
 	}

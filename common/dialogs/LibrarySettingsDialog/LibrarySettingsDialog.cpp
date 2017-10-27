@@ -85,12 +85,16 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
     locationLayout->addWidget(libLocationsTable_);
     locationLayout->addWidget(listButtonBox);
 
+    QGroupBox* separator = new QGroupBox(this);
+    separator->setFlat(true);
+
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                                        Qt::Horizontal, this);
     // Setup the layout.
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(introWidget);
     topLayout->addWidget(locationGroup, 1);
+    topLayout->addWidget(separator);
     topLayout->addWidget(buttonBox);
 
     resize(500, sizeHint().height());

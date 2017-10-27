@@ -321,13 +321,17 @@ void NewDesignDialog::setupLayout()
 
     directoryEditor_->layout()->setContentsMargins(0, 4, 0, 4);
 
+    QGroupBox* separator = new QGroupBox(this);
+    separator->setFlat(true);
+
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(introWidget);
     mainLayout->addWidget(viewSettingsBox);
     mainLayout->addWidget(vlnvEditor_);
     mainLayout->addWidget(directoryEditor_);
+    mainLayout->addWidget(separator);
     mainLayout->addWidget(buttonBox);    
-
+    
     setFixedHeight(sizeHint().height());
     resize(400, sizeHint().height());
 }

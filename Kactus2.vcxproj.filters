@@ -976,9 +976,6 @@
     <ClCompile Include="common\widgets\listManager\dirlistmanager.cpp">
       <Filter>Source Files\common\widgets\listManager</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\listManager\filelistmanager.cpp">
-      <Filter>Source Files\common\widgets\listManager</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\listManager\listeditor.cpp">
       <Filter>Source Files\common\widgets\listManager</Filter>
     </ClCompile>
@@ -1271,9 +1268,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_GeneralSettingsPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_filelistmanager.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_expandableitem.cpp">
@@ -4525,9 +4519,6 @@
       <Filter>Header Files\common\widgets\LineEditEx</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\listManager\dirlistmanager.h">
-      <Filter>Header Files\common\widgets\listManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\listManager\filelistmanager.h">
       <Filter>Header Files\common\widgets\listManager</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\listManager\listeditor.h">

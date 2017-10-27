@@ -65,6 +65,9 @@ signals:
 
 protected:
 
+    //! Handler for paint events.
+    virtual void paintEvent(QPaintEvent *event);
+
 	//! Handler for mouse move events
 	virtual void mouseMoveEvent(QMouseEvent* event);
 
@@ -82,6 +85,11 @@ protected:
 
     //! Handler for changes in current selection.
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
+
+protected slots:
+
+    //! Called when new rows have been inserted.
+    virtual void rowsInserted(QModelIndex const& parent, int start, int end);
 
 private slots:
 
