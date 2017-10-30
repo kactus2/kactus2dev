@@ -12,7 +12,7 @@
 #ifndef INDIRECT_INTERFACES_EDITOR_H
 #define INDIRECT_INTERFACES_EDITOR_H
 
-#include "IndirectInterfacesmodel.h"
+#include "IndirectInterfacesModel.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
 
