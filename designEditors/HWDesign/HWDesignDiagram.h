@@ -57,6 +57,7 @@ class Kactus2Placeholder;
 class DesignDiagramResolver;
 class AdHocItem;
 class MultipleParameterFinder;
+class ListParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! HWDesignDiagram is a graphical view to a design.
@@ -182,13 +183,16 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] lh                              Enables access to the library.
-     *      @param [in] editProvider                    The edit provider.
-     *      @param [in] designReferenceParameterFinder  Parameter finder for design parameter reference tree.
-     *      @param [in] parent                          Owner of this diagram.
+     *      @param [in] lh                                  Enables access to the library.
+     *      @param [in] editProvider                        The edit provider.
+     *      @param [in] designAndInstancesParameterFinder   Parameter finder for design parameter reference tree.
+     *      @param [in] designParameterFinder               Parameter finder for design parameters.
+     *      @param [in] parent                              Owner of this diagram.
      */
     HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider,
-        QSharedPointer<MultipleParameterFinder> designReferenceParameterFinder, DesignWidget* parent = 0);
+        QSharedPointer<MultipleParameterFinder> designAndInstancesParameterFinder,
+        QSharedPointer<ListParameterFinder> designParameterFinder,
+        DesignWidget* parent = 0);
 
 	/*!
      *  The destructor.
@@ -209,6 +213,13 @@ public:
      *  Reflects the changes in the design to the top-level component.
      */
     virtual void updateHierComponent();
+
+    /*!
+     *  Load and insert the selected column to the graphics layout.
+     *
+     *      @param [in] description     Column description of the selected column.
+     */
+    void loadColumn(QSharedPointer<ColumnDesc> description);
 
     /*!
      *  Adds a column to the diagram's layout.
@@ -850,7 +861,7 @@ private:
     QSharedPointer<DesignDiagramResolver> diagramResolver_;
 
     //! Parameter finder for design parameter reference tree
-    QSharedPointer<MultipleParameterFinder> designReferenceParameterFinder_;
+    QSharedPointer<MultipleParameterFinder> designAndInstancesParameterFinder_;
 };
 
 #endif // HWDESIGNDIAGRAM_H

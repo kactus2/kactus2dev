@@ -129,6 +129,13 @@ public:
      */
     QSharedPointer<Kactus2Placeholder> getDataGroup() const;
 
+    /*!
+     *  Set a new visibility and position data group.
+     *
+     *      @param [in] newDataGroup    The new visibility and position data group.
+     */
+    void setDataGroup(QSharedPointer<Kactus2Placeholder> newDataGroup);
+
 protected:
 
     /*!

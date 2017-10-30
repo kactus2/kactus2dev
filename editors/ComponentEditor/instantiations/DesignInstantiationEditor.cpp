@@ -26,6 +26,7 @@
 #include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Component/DesignInstantiation.h>
 
 #include <QApplication>
 #include <QScrollArea>

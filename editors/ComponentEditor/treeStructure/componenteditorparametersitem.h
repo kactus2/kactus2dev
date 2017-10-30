@@ -12,7 +12,7 @@
 #ifndef COMPONENTEDITORPARAMETERITEM_H
 #define COMPONENTEDITORPARAMETERITEM_H
 
-#include "componenteditoritem.h"
+#include <editors/ComponentEditor/treeStructure/ParameterizableItem.h>
 
 #include <IPXACTmodels/common/Parameter.h>
 
@@ -23,7 +23,7 @@ class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! The parameters-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
-class ComponentEditorParametersItem : public ComponentEditorItem
+class ComponentEditorParametersItem : public ParameterizableItem
 {
 	Q_OBJECT
 

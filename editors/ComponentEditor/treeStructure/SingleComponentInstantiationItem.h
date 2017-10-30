@@ -12,7 +12,7 @@
 #ifndef SINGLECOMPONENTINSTANTIATIONITEM_H
 #define SINGLECOMPONENTINSTANTIATIONITEM_H
 
-#include "componenteditoritem.h"
+#include <editors/ComponentEditor/treeStructure/ParameterizableItem.h>
 
 #include <QSharedPointer>
 
@@ -24,7 +24,7 @@ class InstantiationsValidator;
 //-----------------------------------------------------------------------------
 //! The item for one component instantiation in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
-class SingleComponentInstantiationItem : public ComponentEditorItem
+class SingleComponentInstantiationItem : public ParameterizableItem
 {
 	Q_OBJECT
 

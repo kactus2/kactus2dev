@@ -167,6 +167,29 @@ protected:
 	virtual void contextMenuEvent(QContextMenuEvent* event);
     
     /*!
+     *  Adds basic actions for the context menu (add, remove, clear, cut, copy, paste).
+     *
+     *      @param [in] menu    Menu containing the actions.
+     *      @param [in] index   Index of the item at the context menu event position.
+     */
+    void addBasicActionsForContextMenu(QMenu& menu, QModelIndex const& index);
+
+    /*!
+     *  Add actions for copying and pasting elements to the context menu.
+     *
+     *      @param [in] menu    Menu containing the actions.
+     *      @param [in] index   Index of the item at the context menu event position.
+     */
+    void addElementCopyActionForContextMenu(QMenu& menu, QModelIndex const& index);
+
+    /*!
+     *  Add actions for importing and exporting to the context menu.
+     *
+     *      @param [in] menu    Menu containing the actions.
+     */
+    void addImportExportActionsForContextMenu(QMenu& menu);
+
+    /*!
      *  Handler for intercepting events.
      *
      *      @param [in] target   The target for the event.
@@ -215,6 +238,11 @@ protected:
     //! Specifies if the elements can be copied / pasted.
     bool elementCopyIsAllowed_;
 
+    /*!
+     *  Set up the actions for the context menu
+     */
+    virtual void setupActions();
+
 protected slots:
 
 	//! Handler for add action
@@ -245,9 +273,6 @@ private:
 	//! No copying
 	EditableTableView(const EditableTableView& other);
 	EditableTableView& operator=(const EditableTableView& other);
-
-	//! Set up the actions for the context menu
-	void setupActions();
 
     /*!
      *  Counts the number of rows in a list of indexes.

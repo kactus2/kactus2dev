@@ -226,19 +226,39 @@ void EditableTableView::contextMenuEvent(QContextMenuEvent* event)
 	QModelIndex index = indexAt(pressedPoint_);
 
 	QMenu menu(this);
-	menu.addAction(&addAction_);
+    addBasicActionsForContextMenu(menu, index);
+    addElementCopyActionForContextMenu(menu, index);
+    addImportExportActionsForContextMenu(menu);
 
-    bool validIndex = index.isValid();
+	menu.exec(event->globalPos());
 
-	// if at least one valid item is selected
-	if (validIndex)
+	event->accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: editabletableview::addBasicActionsForContextMenu()
+//-----------------------------------------------------------------------------
+void EditableTableView::addBasicActionsForContextMenu(QMenu& menu, QModelIndex const& index)
+{
+    menu.addAction(&addAction_);
+
+    if (index.isValid())
     {
-		menu.addAction(&removeAction_);
-		menu.addAction(&clearAction_);
+        menu.addAction(&removeAction_);
+        menu.addAction(&clearAction_);
         menu.addAction(&cutAction_);
-		menu.addAction(&copyAction_);
+        menu.addAction(&copyAction_);
         menu.addAction(&pasteAction_);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: editabletableview::addElementCopyActionForContextMenu()
+//-----------------------------------------------------------------------------
+void EditableTableView::addElementCopyActionForContextMenu(QMenu& menu, QModelIndex const& index)
+{
+    bool validIndex = index.isValid();
+
     if (elementCopyIsAllowed_)
     {
         const QMimeData* clipMimeData = QApplication::clipboard()->mimeData();
@@ -259,17 +279,19 @@ void EditableTableView::contextMenuEvent(QContextMenuEvent* event)
             }
         }
     }
+}
 
-	if (importExportAllowed())
+//-----------------------------------------------------------------------------
+// Function: editabletableview::addImportExportActionsForContextMenu()
+//-----------------------------------------------------------------------------
+void EditableTableView::addImportExportActionsForContextMenu(QMenu& menu)
+{
+    if (importExportAllowed())
     {
         menu.addSeparator();
-		menu.addAction(&importAction_);
-		menu.addAction(&exportAction_);
-	}
-
-	menu.exec(event->globalPos());
-
-	event->accept();
+        menu.addAction(&importAction_);
+        menu.addAction(&exportAction_);
+    }
 }
 
 //-----------------------------------------------------------------------------

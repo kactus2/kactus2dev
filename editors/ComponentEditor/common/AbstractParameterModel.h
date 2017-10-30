@@ -107,6 +107,13 @@ public slots:
 	*/
 	virtual void onRemoveItem(QModelIndex const& index) = 0;
 
+    /*!
+     *  Handles calculation of references to the indexed parameters.
+     *
+     *      @param [in] indexes     The selected indexes.
+     */
+    virtual void onGetParametersMachingIndexes(QModelIndexList indexes);
+
 signals:
 
 	//! Emitted when contents of the model change.
@@ -117,6 +124,13 @@ signals:
 	
 	//! Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
+
+    /*!
+     *  Recalculate references made to the selected parameters.
+     *
+     *      @param [in] parameters  The selected parameters.
+     */
+    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
 
 protected:
                   

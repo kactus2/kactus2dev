@@ -12,7 +12,7 @@
 #ifndef COMPONENTEDITORBUSINTERFACEITEM_H
 #define COMPONENTEDITORBUSINTERFACEITEM_H
 
-#include "componenteditoritem.h"
+#include <editors/ComponentEditor/treeStructure/ParameterizableItem.h>
 
 #include <QSharedPointer>
 
@@ -23,7 +23,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The item for single bus interface in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
-class ComponentEditorBusInterfaceItem : public ComponentEditorItem
+class ComponentEditorBusInterfaceItem : public ParameterizableItem
 {
 	Q_OBJECT
 

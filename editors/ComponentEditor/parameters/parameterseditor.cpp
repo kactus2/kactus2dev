@@ -17,11 +17,10 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <common/views/EditableTableView/editabletableview.h>
-
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/parameters/ParametersView.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -38,9 +37,9 @@ ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryI
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget* parent): 
-ItemEditor(component, handler, parent),
-    view_(new EditableTableView(this)),
-    model_(0)
+ParameterItemEditor(component, handler, parent),
+view_(new ParametersView(this)),
+model_(0)
 {
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
@@ -121,6 +120,11 @@ ItemEditor(component, handler, parent),
     layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
     layout->addWidget(view_);
 	layout->setContentsMargins(0, 0, 0, 0);
+
+    connect(view_, SIGNAL(recalculateReferenceToIndexes(QModelIndexList)),
+        model_, SLOT(onGetParametersMachingIndexes(QModelIndexList)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
 
 	refresh();
 }

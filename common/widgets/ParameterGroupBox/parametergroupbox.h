@@ -19,12 +19,12 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
-class EditableTableView;
 class Component;
 class Choice;
 class ParameterFinder;
 class ParametersModel;
 class ExpressionFormatter;
+class ParametersView;
 
 //-----------------------------------------------------------------------------
 //! Group box that can be used to edit list of parameters.
@@ -96,11 +96,16 @@ signals:
      */
     void openReferenceTree(QString const& id, QString const& parameterName) const;
 
-private:
-	//! No copying
-	ParameterGroupBox(const ParameterGroupBox& other);
+    /*!
+     *  Recalculate references made to the selected parameters.
+     *
+     *      @param [in] parameters  The selected parameters.
+     */
+    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
 
-	//! No assignment
+private:
+	//! No copying. No assignment.
+	ParameterGroupBox(const ParameterGroupBox& other);
 	ParameterGroupBox& operator=(const ParameterGroupBox& other);
 
     //-----------------------------------------------------------------------------
@@ -108,7 +113,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! The view that displays the parameters.
-    EditableTableView* view_;
+    ParametersView* view_;
 
     //! The proxy that is used to do the sorting of parameters.
     QSortFilterProxyModel* proxy_;

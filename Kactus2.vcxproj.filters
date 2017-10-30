@@ -2758,9 +2758,6 @@
     <ClCompile Include="editors\ComponentEditor\visualization\fieldgapitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\visualization</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_itemeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_itemvisualizer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4377,6 +4374,63 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ParameterReferenceTreeWindow.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\ParametersView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParametersView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\referenceCounter\ComponentParameterReferenceCounter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\referenceCounter</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentParameterReferenceCounter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ParameterItemEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterItemEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\ParameterizableItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_itemeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterizableItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignParameterReferenceCounter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\DesignParameterReferenceTree\DesignParameterReferenceCounter.cpp">
+      <Filter>Source Files\designEditors\common\DesignParameterReferenceTree</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\DockWidgetHandler.cpp">
+      <Filter>Source Files\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DockWidgetHandler.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocTieOffChangeCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsChangeCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTieOffConnectionDeleteCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="common\graphicsItems\GraphicsColumnAddCommand.cpp">
+      <Filter>Source Files\common\graphicsItems</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\HWColumnAddCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6024,6 +6078,36 @@
     <CustomBuild Include="editors\ComponentEditor\parameterReferenceTree\ParameterReferenceTreeWindow.h">
       <Filter>Header Files\editors\ComponentEditor\parameterReferenceTree</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\ParametersView.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ComponentParameterReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ParameterItemEditor.h">
+      <Filter>Header Files\editors\ComponentEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\ParameterizableItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\DesignParameterReferenceTree\DesignParameterReferenceCounter.h">
+      <Filter>Header Files\designEditors\common\DesignParameterReferenceTree</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\DockWidgetHandler.h">
+      <Filter>Header Files\mainwindow</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocTiedValueCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6503,9 +6587,6 @@
     <ClInclude Include="designEditors\common\DesignDiagramResolver.h">
       <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.h">
-      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
-    </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h">
       <Filter>Header Files\Plugins</Filter>
     </ClInclude>
@@ -6599,15 +6680,6 @@
     <ClInclude Include="common\NameGenerationPolicy.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.h">
-      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTiedValueCommand.h">
-      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocBoundsChangeCommand.h">
-      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
@@ -6625,6 +6697,18 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\DefaultRouting.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffConnectionDeleteCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="common\graphicsItems\GraphicsColumnAddCommand.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\HWColumnAddCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

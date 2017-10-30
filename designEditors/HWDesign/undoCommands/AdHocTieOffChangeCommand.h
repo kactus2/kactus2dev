@@ -18,6 +18,7 @@
 
 #include <QUndoCommand>
 #include <QSharedPointer>
+#include <QObject>
 
 class AdHocItem;
 class AdHocConnection;
@@ -28,8 +29,10 @@ class PortReference;
 //-----------------------------------------------------------------------------
 //! Undo command for changing tie off in ad hoc editor.
 //-----------------------------------------------------------------------------
-class AdHocTieOffChangeCommand : public AdHocTiedValueCommand, public QUndoCommand
+class AdHocTieOffChangeCommand : public QObject, public AdHocTiedValueCommand, public QUndoCommand
 {
+    Q_OBJECT
+
 public:
 
     /*!
@@ -67,6 +70,27 @@ public:
      *  Redoes the command.
      */
     virtual void redo();
+
+signals:
+
+    /*!
+     *  Informs of new references created from the selected expression.
+     *
+     *      @param [in] expression  The selected expression.
+     */
+    void increaseReferences(QString const& expression);
+
+    /*!
+     *  Informs of old references created from the selected expression.
+     *
+     *      @param [in] expression  The selected expression.
+     */
+    void decreaseReferences(QString const& expression);
+
+    /*!
+     *  Informs of the need to refresh the ad hoc editors.
+     */
+    void refreshEditors();
 
 private:
     

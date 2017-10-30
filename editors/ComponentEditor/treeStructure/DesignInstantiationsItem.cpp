@@ -28,6 +28,7 @@ validator_(validator),
 componentParameterFinder_(componentParameterFinder)
 {
     setObjectName(tr("DesignInstantiationsItem"));
+    setReferenceCounter(referenceCounter);
 
     foreach(QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
     {

@@ -11,7 +11,7 @@
 
 #include "parametergroupbox.h"
 
-#include <common/views/EditableTableView/editabletableview.h>
+#include <editors/ComponentEditor/parameters/ParametersView.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ParameterColumns.h>
@@ -40,7 +40,7 @@ ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Paramet
                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
-view_(new EditableTableView(this)),
+view_(new ParametersView(this)),
 proxy_(new QSortFilterProxyModel(this)),
 model_(0),
 parameterFinder_(parameterFinder)
@@ -93,12 +93,16 @@ parameterFinder_(parameterFinder)
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString const&, QString const&)),
-        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(recalculateReferenceToIndexes(QModelIndexList)),
+        model_, SLOT(onGetParametersMachingIndexes(QModelIndexList)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
 
 	// set source model for proxy
 	proxy_->setSourceModel(model_);

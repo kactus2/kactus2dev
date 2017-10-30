@@ -21,6 +21,8 @@ class ComponentParameterFinder;
 class AdHocItem;
 class Component;
 class ExpressionFormatter;
+class MultipleParameterFinder;
+class ListParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Resolver class containing functionality for calculating expressions within design diagrams.
@@ -32,8 +34,10 @@ public:
 
     /*!
      *  The constructor.
+     *
+     *      @param [in] designParameterFinder   Locates the design parameters.
      */
-    DesignDiagramResolver();
+    DesignDiagramResolver(QSharedPointer<ListParameterFinder> designParameterFinder);
 
 	/*
      *  The destructor.
@@ -74,8 +78,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The used component parameter finder.
-    QSharedPointer<ComponentParameterFinder> componentFinder_;
+    //! The used design and component instance parameter finder.
+    QSharedPointer<MultipleParameterFinder> designAndInstanceParameterFinder_;
+
+    //! The used design parameter finder.
+    QSharedPointer<ListParameterFinder> designParameterFinder_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

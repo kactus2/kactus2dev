@@ -126,11 +126,19 @@ signals:
     void decreaseReferences(QString id);
 
     /*!
-     *  Open the reference tree of the parameter corresponding to the id.
+     *  Open the reference tree of the parameter corresponding to the ID.
      *
-     *      @param [in] id      The id of the parameter.
+     *      @param [in] ID              The ID of the selected parameter.
+     *      @param [in] parameterName   Name of the selected parameter.
      */
-    void openReferenceTree(QString const& id) const;
+    void openReferenceTree(QString const& id, QString const& parameterName) const;
+
+    /*!
+     *  Calculate the references made to the selected parameters.
+     *
+     *      @param [in] parameters  The selected parameters.
+     */
+    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
 
 protected:
 

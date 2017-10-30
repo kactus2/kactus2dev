@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorgroupslot.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
-#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+#include <editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
@@ -33,6 +33,7 @@ class PluginManager;
 class Component;
 class ExpressionParser;
 class ParameterReferenceTreeWindow;
+class ComponentParameterReferenceTree;
 
 //-----------------------------------------------------------------------------
 //! The editor to edit/packet IP-Xact components.
@@ -273,7 +274,7 @@ private:
     QSharedPointer<ComponentParameterFinder> parameterFinder_;
 
     //! The counter that increases the amount of references to parameters.
-    QSharedPointer<ReferenceCounter> referenceCounter_;
+    QSharedPointer<ComponentParameterReferenceCounter> referenceCounter_;
 
     //! The expression formatter used to change ids to names in expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
@@ -283,6 +284,9 @@ private:
 
     //! The used component validator.
     ComponentValidator validator_;
+
+    //! Parameter reference tree.
+    ComponentParameterReferenceTree* parameterReferenceTree_;
 
     //! Window for the parameter reference tree.
     ParameterReferenceTreeWindow* parameterReferenceWindow_;

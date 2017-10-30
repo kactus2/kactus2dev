@@ -400,7 +400,7 @@ private:
      *
      *      @return The <min, max> limits for the segment.
      */
-    QPair<qreal, qreal> GraphicsConnection::getSegmentLimitsY(int i) const;
+    QPair<qreal, qreal> getSegmentLimitsY(int i) const;
 
     /*!
      *  Searches for a vertical segment overlap.

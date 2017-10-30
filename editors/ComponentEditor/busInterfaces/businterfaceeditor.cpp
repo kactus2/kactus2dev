@@ -23,7 +23,7 @@ BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPoin
     QSharedPointer<BusInterface> busif, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<BusInterfaceValidator> busInterfaceValidator, QWidget* parent, QWidget* parentWnd):
-ItemEditor(component, libHandler, parent),
+ParameterItemEditor(component, libHandler, parent),
 busif_(busif),
 tabs_(this), 
 generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, &tabs_, parentWnd),
@@ -68,6 +68,10 @@ portmapsEditor_(libHandler, component, busif, expressionParser, expressionFormat
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     connect(&generalEditor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(&generalEditor_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        Qt::UniqueConnection);
 
 	connect(&tabs_, SIGNAL(currentChanged(int)), this, SLOT(onTabChange(int)), Qt::UniqueConnection);
 

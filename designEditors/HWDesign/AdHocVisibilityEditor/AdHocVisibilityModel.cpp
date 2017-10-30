@@ -18,8 +18,10 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/AdHocEnabled.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h>
 #include <designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
+#include <designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -227,10 +229,23 @@ bool AdHocVisibilityModel::setData(const QModelIndex& index, const QVariant& val
 
     if (role == Qt::CheckStateRole)
     {
-        QSharedPointer<QUndoCommand> cmd(new AdHocVisibilityChangeCommand(
-            visibilityPolicy_->getDataSource(), table_->at(index.row())->name(), value == Qt::Checked));
-        editProvider_->addCommand(cmd);
-        cmd->redo();
+        QSharedPointer<QUndoCommand> visibilityCommand(0);
+
+        AdHocEnabled* dataSource = visibilityPolicy_->getDataSource();
+        HWDesignDiagram* dataSourceDiagram = dynamic_cast<HWDesignDiagram*>(dataSource);
+        if (dataSourceDiagram)
+        {
+            visibilityCommand = QSharedPointer<QUndoCommand>(new TopAdHocVisibilityChangeCommand(
+                dataSourceDiagram, table_->at(index.row())->name(), value == Qt::Checked));
+        }
+        else
+        {
+            visibilityCommand = QSharedPointer<QUndoCommand>(new AdHocVisibilityChangeCommand(
+                dataSource, table_->at(index.row())->name(), value == Qt::Checked));
+        }
+
+        editProvider_->addCommand(visibilityCommand);
+        visibilityCommand->redo();
 
         emit dataChanged(index, index);
         return true;

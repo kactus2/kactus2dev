@@ -32,12 +32,12 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<BusInterfaceValidator> validator,
     ComponentEditorItem* parent, QWidget* parentWnd):
-ComponentEditorItem(model, libHandler, component, parent),
-    busif_(busif),
-    parentWnd_(parentWnd),
-    editAction_(new QAction(tr("Edit"), this)),
-    expressionParser_(expressionParser),
-    validator_(validator)
+ParameterizableItem(model, libHandler, component, parent),
+busif_(busif),
+parentWnd_(parentWnd),
+editAction_(new QAction(tr("Edit"), this)),
+expressionParser_(expressionParser),
+validator_(validator)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);

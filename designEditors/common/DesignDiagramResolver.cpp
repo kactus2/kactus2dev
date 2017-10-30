@@ -14,6 +14,8 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
@@ -23,13 +25,14 @@
 //-----------------------------------------------------------------------------
 // Function: DesignDiagramResolver::DesignDiagramResolver()
 //-----------------------------------------------------------------------------
-DesignDiagramResolver::DesignDiagramResolver():
-componentFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-    expressionParser_(new IPXactSystemVerilogParser(componentFinder_)),
-    expressionFormatter_(new ExpressionFormatter(componentFinder_)),
-    valueFormatter_()
+DesignDiagramResolver::DesignDiagramResolver(QSharedPointer<ListParameterFinder> designParameterFinder):
+designParameterFinder_(designParameterFinder),
+designAndInstanceParameterFinder_(new MultipleParameterFinder()),
+expressionParser_(new IPXactSystemVerilogParser(designAndInstanceParameterFinder_)),
+expressionFormatter_(new ExpressionFormatter(designAndInstanceParameterFinder_)),
+valueFormatter_()
 {
-
+    designAndInstanceParameterFinder_->addFinder(designParameterFinder);
 }
 
 //-----------------------------------------------------------------------------
@@ -45,7 +48,11 @@ DesignDiagramResolver::~DesignDiagramResolver()
 //-----------------------------------------------------------------------------
 void DesignDiagramResolver::setContext(QSharedPointer<Component const> component)
 {
-    componentFinder_->setComponent(component);
+    designAndInstanceParameterFinder_->removeAllFinders();
+
+    QSharedPointer<ComponentParameterFinder> newParameterFinder(new ComponentParameterFinder(component));
+    designAndInstanceParameterFinder_->addFinder(designParameterFinder_);
+    designAndInstanceParameterFinder_->addFinder(newParameterFinder);
 }
 
 //-----------------------------------------------------------------------------

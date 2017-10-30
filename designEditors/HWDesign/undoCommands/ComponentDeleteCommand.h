@@ -19,6 +19,7 @@ class ComponentItem;
 class DesignDiagram;
 class GraphicsColumn;
 class HWComponentItem;
+class ConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! Undo command for removing a component item in a design diagram.
@@ -66,6 +67,13 @@ private:
     // Disable copying.
     ComponentDeleteCommand(ComponentDeleteCommand const& rhs);
     ComponentDeleteCommand& operator=(ComponentDeleteCommand const& rhs);
+
+    /*!
+     *  Create a possible tie off value delete command for the selected connection end point.
+     *
+     *      @param [in] endPoint    The selected connection end point.
+     */
+    void createTieOffDeleteCommand(ConnectionEndpoint* endPoint);
 
     //-----------------------------------------------------------------------------
     // Data.

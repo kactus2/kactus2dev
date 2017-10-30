@@ -23,6 +23,7 @@
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
 #include <designEditors/HWDesign/AdHocConnectionItem.h>
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -75,6 +76,33 @@ del_(true)
             }
         }
 
+        if (endpoint->isAdHoc())
+        {
+            createTieOffDeleteCommand(endpoint);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDeleteCommand::createTieOffDeleteCommand()
+//-----------------------------------------------------------------------------
+void ComponentDeleteCommand::createTieOffDeleteCommand(ConnectionEndpoint* endPoint)
+{
+    QString portName = endPoint->name();
+
+    foreach (QSharedPointer<AdHocConnection> connection, *diagram_->getDesign()->getAdHocConnections())
+    {
+        if (connection->getInternalPortReferences()->size() == 1 &&
+            connection->getExternalPortReferences()->isEmpty())
+        {
+            QSharedPointer<PortReference> referencedPort =
+                connection->getInternalPortReferences()->first();
+            if (referencedPort->getPortRef() == portName &&
+                referencedPort->getComponentRef() == componentItem_->name())
+            {
+                new AdHocTieOffConnectionDeleteCommand(diagram_->getDesign(), connection, this);
+            }
+        }
     }
 }
 

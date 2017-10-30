@@ -106,6 +106,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/ExitScreen.h \
+    ./mainwindow/DockWidgetHandler.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/mainwindow.h \
@@ -235,6 +236,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComDefinitionEditor/ComPropertyDelegate.h \
     ./editors/ComDefinitionEditor/ComPropertyEditor.h \
     ./editors/ComDefinitionEditor/ComPropertyModel.h \
+    ./editors/ComponentEditor/ParameterItemEditor.h \
     ./editors/ComponentEditor/componenteditor.h \
     ./editors/ComponentEditor/itemeditor.h \
     ./editors/ComponentEditor/itemvisualizer.h \
@@ -252,6 +254,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h \
     ./editors/ComponentEditor/parameters/ParameterDelegate.h \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
+    ./editors/ComponentEditor/parameters/ParametersView.h \
     ./editors/ComponentEditor/parameters/parameterseditor.h \
     ./editors/ComponentEditor/parameters/Array/ArrayColumns.h \
     ./editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
@@ -434,6 +437,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.h \
     ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h \
+    ./editors/ComponentEditor/treeStructure/ParameterizableItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
@@ -503,8 +507,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
+    ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
     ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h \
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h \
     ./editors/ComponentEditor/remapStates/RemapConditionColumns.h \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.h \
     ./editors/ComponentEditor/remapStates/RemapStatesModel.h \
@@ -651,12 +657,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/HWDesign/AddressEditor/AddressEditor.h \
     ./designEditors/HWDesign/AddressEditor/AddressModel.h \
     ./designEditors/HWDesign/AddressEditor/AddressTableView.h \
-    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
-    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
-    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h \
-    ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h \
@@ -664,6 +666,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/PortDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.h \
@@ -676,6 +682,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.h \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h \
     ./designEditors/HWDesign/AdhocEditor/AdhocEditor.h \
+    ./designEditors/common/DefaultRouting.h \
     ./designEditors/common/DesignDiagramResolver.h \
     ./designEditors/common/DesignWidgetFactory.h \
     ./designEditors/common/DesignWidgetFactoryImplementation.h \
@@ -724,6 +731,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/common/Association/AssociationAddCommand.h \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h \
+    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h \
     ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
@@ -737,8 +745,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/common/DefaultRouting.h
-    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.h \
+    ./common/graphicsItems/GraphicsColumnAddCommand.h \
+    ./designEditors/HWDesign/undoCommands/HWColumnAddCommand.h \
+    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -821,6 +831,7 @@ SOURCES += ./VersionHelper.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
+    ./mainwindow/DockWidgetHandler.cpp \
     ./mainwindow/ExitScreen.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \
@@ -932,6 +943,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/componenteditor.cpp \
     ./editors/ComponentEditor/itemeditor.cpp \
     ./editors/ComponentEditor/itemvisualizer.cpp \
+    ./editors/ComponentEditor/ParameterItemEditor.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceeditor.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.cpp \
@@ -1002,6 +1014,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
     ./editors/ComponentEditor/parameters/parametersmodel.cpp \
+    ./editors/ComponentEditor/parameters/ParametersView.cpp \
     ./editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
     ./editors/ComponentEditor/parameters/Array/ArrayView.cpp \
     ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.cpp \
@@ -1129,6 +1142,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/treeStructure/DesignInstantiationsItem.cpp \
     ./editors/ComponentEditor/treeStructure/InstantiationsItem.cpp \
     ./editors/ComponentEditor/treeStructure/MemoryRemapItem.cpp \
+    ./editors/ComponentEditor/treeStructure/ParameterizableItem.cpp \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.cpp \
@@ -1164,9 +1178,11 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
+    ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.cpp \
     ./editors/ComponentEditor/remapStates/RemapConditionDelegate.cpp \
     ./editors/ComponentEditor/remapStates/RemapConditionEditor.cpp \
     ./editors/ComponentEditor/remapStates/RemapConditionModel.cpp \
@@ -1331,6 +1347,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ./designEditors/common/ComponentDesignDiagram.cpp \
     ./designEditors/common/ComponentInstanceParameterFinder.cpp \
+    ./designEditors/common/DefaultRouting.cpp \
     ./designEditors/common/DesignCompletionModel.cpp \
     ./designEditors/common/DesignDiagram.cpp \
     ./designEditors/common/DesignDiagramResolver.cpp \
@@ -1370,6 +1387,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/Association/AssociationAddCommand.cpp \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.cpp \
     ./designEditors/common/Association/AssociationRemoveCommand.cpp \
+    ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.cpp \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
@@ -1384,6 +1402,8 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./designEditors/common/DefaultRouting.cpp
-    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.cpp
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.cpp \
+    ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/HWColumnAddCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp
 RESOURCES += kactus.qrc

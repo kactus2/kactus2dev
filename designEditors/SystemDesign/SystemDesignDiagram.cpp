@@ -26,6 +26,7 @@
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnUndoCommands.h>
+#include <common/graphicsItems/GraphicsColumnAddCommand.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 
@@ -354,7 +355,7 @@ void SystemDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 {
     SystemColumn* column = new SystemColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column, getDesign()));
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column, this));
     getEditProvider()->addCommand(cmd);
     cmd->redo();
 }
@@ -536,7 +537,8 @@ void SystemDesignDiagram::pasteColumns(ColumnCollectionCopyData const collection
         SystemColumn* column = new SystemColumn(copiedColumnDescription, getLayout().data());
 
         GraphicsColumnAddCommand* addCommand =
-            new GraphicsColumnAddCommand(getLayout().data(), column, getDesign(), parentCmd.data());
+            new GraphicsColumnAddCommand(getLayout().data(), column, this, parentCmd.data());
+
         pasteSWInstances(columnData.components, column, parentCmd.data(), false);
         pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
 

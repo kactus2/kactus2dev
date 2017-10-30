@@ -15,8 +15,7 @@
 #include "ModuleParameterDelegate.h"
 #include "ModuleParameterHeaderView.h"
 
-#include <common/views/EditableTableView/editabletableview.h>
-
+#include <editors/ComponentEditor/parameters/ParametersView.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include "ModuleParameterColumns.h"
@@ -48,7 +47,7 @@ QGroupBox(tr("Module parameters"), parent),
     model_ = new ModuleParameterModel(parameters, componentChoices, expressionParser, parameterFinder,
         expressionFormatter, this);
     
-    EditableTableView* view = new EditableTableView(this);
+    ParametersView* view = new ParametersView(this);
 
     ModuleParameterHeaderView* horizontalHeader = new ModuleParameterHeaderView(Qt::Horizontal, view);
     view->setHorizontalHeader(horizontalHeader);
@@ -89,6 +88,11 @@ QGroupBox(tr("Module parameters"), parent),
 
     connect(view->itemDelegate(), SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(view, SIGNAL(recalculateReferenceToIndexes(QModelIndexList)),
+        model_, SLOT(onGetParametersMachingIndexes(QModelIndexList)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
 
     view->setSortingEnabled(true);
     view->setItemsDraggable(false);

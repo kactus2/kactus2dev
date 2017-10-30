@@ -18,9 +18,9 @@
 #include "NewWorkspaceDialog.h"
 #include "DeleteWorkspaceDialog.h"
 
+#include <mainwindow/DockWidgetHandler.h>
 #include <mainwindow/Ribbon/Ribbon.h>
 #include <mainwindow/Ribbon/RibbonGroup.h>
-#include <mainwindow/MessageConsole/messageconsole.h>
 #include <mainwindow/NewPages/NewCatalogPage.h>
 #include <mainwindow/NewPages/NewComponentPage.h>
 #include <mainwindow/NewPages/NewDesignPage.h>
@@ -34,37 +34,19 @@
 #include <mainwindow/SaveHierarchy/DocumentTreeBuilder.h>
 #include <mainwindow/SaveHierarchy/SaveHierarchyDialog.h>
 
+#include <common/NameGenerationPolicy.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/listSelectDialog/ListSelectDialog.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
+#include <common/graphicsItems/ComponentItem.h>
 
-#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
-#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
-
-#include <common/NameGenerationPolicy.h>
-
-#include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
-#include <designEditors/common/ConfigurationEditor/configurationeditor.h>
-#include <designEditors/common/InterfaceEditor/interfaceeditor.h>
-#include <designEditors/common/ConnectionEditor/connectioneditor.h>
 #include <designEditors/common/DesignWidgetFactoryImplementation.h>
-#include <designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h>
-
 #include <designEditors/HWDesign/HWDesignWidget.h>
 #include <designEditors/HWDesign/HWDesignDiagram.h>
-#include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/HWDesign/BusPortItem.h>
-#include <designEditors/HWDesign/BusInterfaceItem.h>
-#include <designEditors/HWDesign/AdHocItem.h>
-#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
-#include <designEditors/HWDesign/AdhocEditor/AdhocEditor.h>
-
-#include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>
-
 #include <designEditors/MemoryDesigner/MemoryDesignDocument.h>
 
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
@@ -73,16 +55,10 @@
 #include <editors/CatalogEditor/CatalogEditor.h>
 #include <editors/ComponentEditor/componenteditor.h>
 #include <editors/CSourceEditor/CSourceWidget.h>
-#include <editors/CSourceEditor/CSourceContentMatcher.h>
 #include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
-#include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
 #include <editors/ConfigurationTools/ViewConfigurer.h>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
 
 #include <settings/SettingsDialog.h>
@@ -91,14 +67,10 @@
 #include <wizards/ComponentWizard/ComponentWizard.h>
 #include <wizards/ImportWizard/ImportWizard.h>
 
-#include <Help/HelpSystem/ContextHelpBrowser.h>
-#include <Help/HelpSystem/HelpWindow.h>
-
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 
 #include <library/LibraryHandler.h>
 #include <library/LibraryUtils.h>
-#include <library/LibraryWidget.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
@@ -120,13 +92,11 @@
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QCoreApplication>
 #include <QApplication>
 #include <QSettings>
 #include <QStringList>
-#include <QToolBar>
 #include <QMenu>
 #include <QAction>
 #include <QFileDialog>
@@ -146,34 +116,8 @@
 MainWindow::MainWindow(QWidget *parent):
 QMainWindow(parent),
 libraryHandler_(0),
-libraryDock_(0),
 designTabs_(0),
-libraryWidget_(0),
-previewBox_(0),
-previewDock_(0),
-console_(0),
-consoleDock_(0),
-contextHelpBrowser_(0),
-contextHelpDock_(0),
-designParameterReferenceCounter_(0),
-designParametersEditor_(0),
-designParameterDock_(0),
-designParameterTree_(0),
-designParameterFinder_(new MultipleParameterFinder()),
-instanceEditor_(0),
-instanceDock_(0),
-adHocVisibilityEditor_(0),
-adHocVisibilityDock_(0),
-adhocEditor_(0),
-adhocDock_(0),
-configurationEditor_(0),
-configurationDock_(0),
-systemDetailsEditor_(0),
-systemDetailsDock_(0),
-interfaceEditor_(0),
-interfaceDock_(0),
-connectionEditor_(0),
-connectionDock_(0),
+dockHandler_(new DockWidgetHandler(this)),
 ribbon_(0),
 actNew_(0),
 actSave_(0),
@@ -229,9 +173,7 @@ windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
 curWorkspaceName_("Default"),
-pluginMgr_(),
-helpWnd_(0),
-visibilities_()
+pluginMgr_()
 {
     qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
 
@@ -252,18 +194,10 @@ visibilities_()
     setWindowState(Qt::WindowMaximized);
 
     // Setup windows.
-    setupMessageConsole();
-    setupContextHelp();
     setupDrawBoard();
-    setupLibraryDock();
-    setupDesignParametersEditor();
-    setupInstanceEditor();
-    setupAdHocVisibilityEditor();
-    setupAdHocEditor();
-    setupConfigurationEditor();
-    setupSystemDetailsEditor();
-    setupInterfaceEditor();
-    setupConnectionEditor();
+    dockHandler_->setupDockWidgets();
+    connectDockHandler();
+    setupAndConnectLibraryHandler();
 
     // Load plugins.
     QSettings settings;
@@ -324,7 +258,7 @@ void MainWindow::restoreSettings()
         Utils::FilterOptions defaultOptions;
         defaultOptions.type.advanced_ = false;
 
-        libraryWidget_->setFilters(defaultOptions);
+        dockHandler_->setLibraryFilters(defaultOptions);
 
         createNewWorkspace("Default");
         createNewWorkspace("Design");
@@ -388,11 +322,9 @@ void MainWindow::copyComponentEditorSettings(QString workspaceName)
 //-----------------------------------------------------------------------------
 void MainWindow::createNewWorkspace(QString workspaceName)
 {
-    QSettings settings;
-
     QString workspacePath = "Workspaces/" + workspaceName;
 
-    Utils::FilterOptions filters = libraryWidget_->getFilters();
+    QSettings settings;
 
     // Save the geometry and state of windows.
     settings.beginGroup(workspacePath);
@@ -400,48 +332,8 @@ void MainWindow::createNewWorkspace(QString workspaceName)
     settings.setValue("WindowState", saveState());
     settings.setValue("Geometry", saveGeometry());
     settings.setValue("WindowPosition", pos());
-    settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
-    settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
-    settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
-    settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
-    settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOCVISIBILITY_WINDOW));
-    settings.setValue("AdHocEditorVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
-    settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
-    settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
-    settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
-    settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
-    settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
-    settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
-    settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
 
-    // Save filters.
-    settings.beginGroup("LibraryFilters");
-    settings.beginGroup("Type");
-    settings.setValue("ShowComponents", filters.type.components_);
-    settings.setValue("ShowBuses", filters.type.buses_);
-    settings.setValue("ShowCatalogs", filters.type.catalogs_);
-    settings.setValue("ShowApis", filters.type.apis_);
-    settings.setValue("ShowAdvanced", filters.type.advanced_);
-    settings.endGroup();
-    settings.beginGroup("Implementation");
-    settings.setValue("ShowHW", filters.implementation.hw_);
-    settings.setValue("ShowSW", filters.implementation.sw_);
-    settings.setValue("ShowSystem", filters.implementation.system_);
-    settings.endGroup();
-    settings.beginGroup("Hierarchy");
-    settings.setValue("ShowGlobal", filters.hierarchy.flat_);
-    settings.setValue("ShowProduct", filters.hierarchy.product_);
-    settings.setValue("ShowBoard", filters.hierarchy.board_);
-    settings.setValue("ShowChip", filters.hierarchy.chip_);
-    settings.setValue("ShowSoC", filters.hierarchy.soc_);
-    settings.setValue("ShowIP", filters.hierarchy.ip_);
-    settings.endGroup();
-    settings.beginGroup("Firmness");
-    settings.setValue("ShowTemplates", filters.firmness.templates_);
-    settings.setValue("ShowMutable", filters.firmness.mutable_);
-    settings.setValue("ShowFixed", filters.firmness.fixed_);
-    settings.endGroup(); // Firmness
-    settings.endGroup(); // LibraryFilters
+    dockHandler_->createVisibilityAndFilterSettings(settings);
 
     // Create the component editor filters.
     settings.beginGroup("ComponentEditorFilters");
@@ -548,86 +440,11 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
         restoreState(settings.value("WindowState").toByteArray());
     }
 
-    const bool designParametersVisible = settings.value("DesignParameterVisibility", true).toBool();
-    visibilities_.insert(TabDocument::DESIGNPARAMETERSWINDOW, designParametersVisible);
-    designParameterDock_->toggleViewAction()->setChecked(designParametersVisible);
-
-    const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
-    visibilities_.insert(TabDocument::CONFIGURATIONWINDOW, configurationVisible);
-    configurationDock_->toggleViewAction()->setChecked(configurationVisible);
-
-    const bool systemDetailsVisible = settings.value("SystemDetailsVisibility", true).toBool();
-    visibilities_.insert(TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsVisible);
-    systemDetailsDock_->toggleViewAction()->setChecked(systemDetailsVisible);
-
-    const bool connectionVisible = settings.value("ConnectionVisibility", true).toBool();
-    visibilities_.insert(TabDocument::CONNECTIONWINDOW, connectionVisible);
-    connectionDock_->toggleViewAction()->setChecked(connectionVisible);
-
-    const bool instanceVisible = settings.value("InstanceVisibility", true).toBool();
-    visibilities_.insert(TabDocument::INSTANCEWINDOW, instanceVisible);
-    instanceDock_->toggleViewAction()->setChecked(instanceVisible);
-
-    const bool adHocVisibilityVisible = settings.value("AdHocVisibility", true).toBool();
-    visibilities_.insert(TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityVisible);
-    adHocVisibilityDock_->toggleViewAction()->setChecked(adHocVisibilityVisible);
-
-    const bool adHocEditorVisible = settings.value("AdHocEditorVisibility", true).toBool();
-    visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocEditorVisible);
-    adhocDock_->toggleViewAction()->setChecked(adHocEditorVisible);
-
-    const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
-    visibilities_.insert(TabDocument::INTERFACEWINDOW, interfaceVisible);
-    interfaceDock_->toggleViewAction()->setChecked(interfaceVisible);
-
-    const bool libraryVisible = settings.value("LibraryVisibility", true).toBool();
-    visibilities_.insert(TabDocument::LIBRARYWINDOW, libraryVisible);
-    libraryDock_->toggleViewAction()->setChecked(libraryVisible);
-
-    const bool outputVisible = settings.value("OutputVisibility", true).toBool();
-    visibilities_.insert(TabDocument::OUTPUTWINDOW, outputVisible);
-    consoleDock_->toggleViewAction()->setChecked(outputVisible);
-
-    const bool contextHelpVisible = settings.value("ContextHelpVisibility", false).toBool();
-    visibilities_.insert(TabDocument::CONTEXT_HELP_WINDOW, contextHelpVisible);
-    contextHelpDock_->toggleViewAction()->setChecked(contextHelpVisible);
-
-    const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
-    visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
-    previewDock_->toggleViewAction()->setChecked(previewVisible);
+    dockHandler_->loadVisiblities(settings);
 
     updateWindows();
 
-    // Load filter settings.
-    Utils::FilterOptions filters;
-    settings.beginGroup("LibraryFilters");
-    settings.beginGroup("Type");
-    filters.type.components_ = settings.value("ShowComponents", true).toBool();
-    filters.type.buses_ = settings.value("ShowBuses", true).toBool();
-    filters.type.catalogs_ = settings.value("ShowCatalogs", true).toBool();
-    filters.type.apis_ = settings.value("ShowApis", true).toBool();
-    filters.type.advanced_ = settings.value("ShowAdvanced", false).toBool();
-    settings.endGroup();
-    settings.beginGroup("Implementation");
-    filters.implementation.hw_ = settings.value("ShowHW", true).toBool();
-    filters.implementation.sw_ = settings.value("ShowSW", true).toBool();
-    filters.implementation.system_ = settings.value("ShowSystem", true).toBool();
-    settings.endGroup();
-    settings.beginGroup("Hierarchy");
-    filters.hierarchy.flat_ = settings.value("ShowGlobal", true).toBool();
-    filters.hierarchy.product_ = settings.value("ShowProduct", true).toBool();
-    filters.hierarchy.board_ = settings.value("ShowBoard", true).toBool();
-    filters.hierarchy.chip_ = settings.value("ShowChip", true).toBool();
-    filters.hierarchy.soc_ = settings.value("ShowSoC", true).toBool();
-    filters.hierarchy.ip_ = settings.value("ShowIP", true).toBool();
-    settings.endGroup();
-    settings.beginGroup("Firmness");
-    filters.firmness.templates_ = settings.value("ShowTemplates", true).toBool();
-    filters.firmness.mutable_ =settings.value("ShowMutable", true).toBool();
-    filters.firmness.fixed_ =settings.value("ShowFixed", true).toBool();
-    settings.endGroup();
-
-    libraryWidget_->setFilters(filters);
+    dockHandler_->setFilterSettings(settings);
 }
 
 //-----------------------------------------------------------------------------
@@ -641,56 +458,14 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     // Create the registry group name.
     QString keyName = "Workspaces/" + workspaceName;
 
-    Utils::FilterOptions filters = libraryWidget_->getFilters();
-
     // Save the geometry and state of windows.
     settings.beginGroup(keyName);
 
     settings.setValue("WindowState", saveState());
     settings.setValue("Geometry", saveGeometry());
     settings.setValue("WindowPosition", pos());
-    settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
-    settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
-    settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
-    settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
-    settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOCVISIBILITY_WINDOW));
-    settings.setValue("AdHocEditorVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
-    settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
-    settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
-    settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
-    settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
-    settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
-    settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
-    settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
 
-    // Save filters.
-    settings.beginGroup("LibraryFilters");
-    settings.beginGroup("Type");
-    settings.setValue("ShowComponents", filters.type.components_);
-    settings.setValue("ShowBuses", filters.type.buses_);
-    settings.setValue("ShowCatalogs", filters.type.catalogs_);
-    settings.setValue("ShowApis", filters.type.apis_);
-    settings.setValue("ShowAdvanced", filters.type.advanced_);
-    settings.endGroup();
-    settings.beginGroup("Implementation");
-    settings.setValue("ShowHW", filters.implementation.hw_);
-    settings.setValue("ShowSW", filters.implementation.sw_);
-    settings.setValue("ShowSystem", filters.implementation.system_);
-    settings.endGroup();
-    settings.beginGroup("Hierarchy");
-    settings.setValue("ShowGlobal", filters.hierarchy.flat_);
-    settings.setValue("ShowProduct", filters.hierarchy.product_);
-    settings.setValue("ShowBoard", filters.hierarchy.board_);
-    settings.setValue("ShowChip", filters.hierarchy.chip_);
-    settings.setValue("ShowSoC", filters.hierarchy.soc_);
-    settings.setValue("ShowIP", filters.hierarchy.ip_);
-    settings.endGroup();
-    settings.beginGroup("Firmness");
-    settings.setValue("ShowTemplates", filters.firmness.templates_);
-    settings.setValue("ShowMutable", filters.firmness.mutable_);
-    settings.setValue("ShowFixed", filters.firmness.fixed_);
-    settings.endGroup(); // Firmness
-    settings.endGroup(); // LibraryFilters
+    dockHandler_->createVisibilityAndFilterSettings(settings);
 
     settings.endGroup(); // Workspaces/keyName
 }
@@ -929,7 +704,7 @@ void MainWindow::setupActions()
     // Initialize the action to open the help window.
     actHelp_= new QAction(QIcon(":/icons/common/graphics/system-help.png"), tr("Help (F1)"), this);
     actHelp_->setShortcut(QKeySequence::HelpContents);
-    connect(actHelp_, SIGNAL(triggered()), this, SLOT(showHelp()), Qt::UniqueConnection);
+    connect(actHelp_, SIGNAL(triggered()), dockHandler_, SLOT(showHelp()), Qt::UniqueConnection);
 
     // Initialize the action to exit the program.
     actExit_ = new QAction(QIcon(":/icons/common/graphics/system-exit.png"), tr("Exit"), this);
@@ -942,6 +717,21 @@ void MainWindow::setupActions()
     connectVisibilityControls();
 
     setupMenus();
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onAdjustVisibilityInWindow()
+//-----------------------------------------------------------------------------
+void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show)
+{
+    int tabCount = designTabs_->count();
+    QWidget* currentWidget = 0;
+    if (tabCount > 0)
+    {
+        currentWidget = designTabs_->currentWidget();
+    }
+
+    dockHandler_->setWindowVisibilityForSupportedWindow(tabCount, currentWidget, type, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -1105,18 +895,7 @@ void MainWindow::setupMenus()
     sysGroup->widgetForAction(actExit_)->installEventFilter(ribbon_);
 
     // the menu to display the dock widgets
-    windowsMenu_.addAction(adHocVisibilityDock_->toggleViewAction());
-    windowsMenu_.addAction(adhocDock_->toggleViewAction());
-    windowsMenu_.addAction(connectionDock_->toggleViewAction());
-    windowsMenu_.addAction(contextHelpDock_->toggleViewAction());
-    windowsMenu_.addAction(designParameterDock_->toggleViewAction());
-    windowsMenu_.addAction(instanceDock_->toggleViewAction());
-    windowsMenu_.addAction(previewDock_->toggleViewAction());
-    windowsMenu_.addAction(configurationDock_->toggleViewAction());
-    windowsMenu_.addAction(systemDetailsDock_->toggleViewAction());
-    windowsMenu_.addAction(libraryDock_->toggleViewAction());
-    windowsMenu_.addAction(interfaceDock_->toggleViewAction());
-    windowsMenu_.addAction(consoleDock_->toggleViewAction());
+    dockHandler_->setupVisibilityActionMenu(windowsMenu_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1140,41 +919,34 @@ void MainWindow::setupDrawBoard()
         this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
     connect(designTabs_, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(designTabs_, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: mainwindow::setupLibraryDock()
+// Function: mainwindow::connectDockHandler()
 //-----------------------------------------------------------------------------
-void MainWindow::setupLibraryDock()
+void MainWindow::connectDockHandler()
 {
-    // set up the dock widget for the library
-    libraryDock_ = new QDockWidget(tr("IP-XACT Library"), this);
-    libraryDock_->setObjectName(tr("Library"));
-    libraryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    libraryDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    connect(this, SIGNAL(errorMessage(QString const&)),
+        dockHandler_, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
+    connect(this, SIGNAL(noticeMessage(QString const&)),
+        dockHandler_, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(helpUrlRequested(QString const&)),
+        dockHandler_, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
-    // create a container widget for dialer and library display
-    libraryWidget_ = new LibraryWidget(this);
-    libraryHandler_ = libraryWidget_->getLibraryHandler();
+    connect(dockHandler_, SIGNAL(designChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+}
 
-    libraryDock_->setWidget(libraryWidget_);
-
-    addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);
-
-    // set up the preview box to display the component preview
-    previewDock_ = new QDockWidget(tr("Component Preview"), this);
-    previewDock_->setObjectName(tr("ComponentPreview"));
-    previewDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    previewDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    previewBox_ = new ComponentPreviewBox(libraryHandler_, previewDock_);
-    previewDock_->setWidget(previewBox_);
-
-    addDockWidget(Qt::LeftDockWidgetArea, previewDock_);
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupAndConnectLibraryHandler()
+//-----------------------------------------------------------------------------
+void MainWindow::setupAndConnectLibraryHandler()
+{
+//     libraryHandler_ = libraryWidget_->getLibraryHandler();
+    libraryHandler_ = dockHandler_->getLibraryHandler();
 
     connect(libraryHandler_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -1215,240 +987,10 @@ void MainWindow::setupLibraryDock()
     connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
         this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 
-    connect(libraryHandler_, SIGNAL(itemSelected(const VLNV&)),
-        previewBox_, SLOT(setComponent(const VLNV&)), Qt::UniqueConnection);
-
     connect(libraryHandler_, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,KactusAttribute::Firmness,
         const VLNV&, const QString&)),
         this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
         const VLNV&, const QString&)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupMessageConsole()
-//-----------------------------------------------------------------------------
-void MainWindow::setupMessageConsole()
-{
-    consoleDock_ = new QDockWidget(tr("Output"), this);
-    consoleDock_->setObjectName(tr("Output"));
-    consoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    consoleDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    console_ = new MessageConsole(consoleDock_);
-    consoleDock_->setWidget(console_);
-    addDockWidget(Qt::BottomDockWidgetArea, consoleDock_);
-
-    connect(this, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-    connect(this, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-    // Force console visible on new messages.
-    connect(this, SIGNAL(errorMessage(const QString&)),
-        consoleDock_, SLOT(show()), Qt::UniqueConnection);
-    connect(this, SIGNAL(noticeMessage(const QString&)),
-        consoleDock_, SLOT(show()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::setupContextHelp()
-//-----------------------------------------------------------------------------
-void MainWindow::setupContextHelp()
-{
-    // Create the dock widget for the context help.
-    contextHelpDock_ = new QDockWidget(tr("Context Help"), this);
-    contextHelpDock_->setObjectName(tr("Context Help"));
-    contextHelpDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    contextHelpDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    // Initialize the help engine.
-    QSettings settings;
-    QString helpPath = settings.value("Platform/HelpPath", "Help").toString();
-
-    QHelpEngine* helpEngine = new QHelpEngine(helpPath + "/Kactus2Help.qhc", this);
-    helpEngine->setupData();
-
-    // Create the help window.
-    helpWnd_ = new HelpWindow(helpEngine, this);
-
-    // Create the context help browser.
-    contextHelpBrowser_ = new ContextHelpBrowser(helpEngine, "qthelp://com.tut.kactus2.2.0/doc",
-                                                 contextHelpDock_);
-
-    QColor bgColor = QApplication::palette().color(QPalette::Window);
-    QString style = QString("QTextBrowser { border: 5px solid transparent; "
-                            "background-color: #%1}").arg(bgColor.rgb() & 0x00FFFFFF, 0, 16);
-    contextHelpBrowser_->setStyleSheet(style);
-
-    contextHelpDock_->setWidget(contextHelpBrowser_);
-    addDockWidget(Qt::RightDockWidgetArea, contextHelpDock_);
-
-    connect(this, SIGNAL(helpUrlRequested(QString const&)),
-            contextHelpBrowser_, SLOT(onHelpRequested(QString const&)), Qt::UniqueConnection);
-    contextHelpBrowser_->onHelpRequested("welcome.html");
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupConfigurationEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupConfigurationEditor()
-{
-    configurationDock_ = new QDockWidget(tr("Design Configuration Details"), this);
-    configurationDock_->setObjectName(tr("Configuration editor"));
-    configurationDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    configurationDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    configurationEditor_ = new ConfigurationEditor(libraryHandler_, configurationDock_);
-    configurationDock_->setWidget(configurationEditor_);
-    addDockWidget(Qt::RightDockWidgetArea, configurationDock_);
-
-    connect(configurationEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
-    //connect(configurationEditor_, SIGNAL(configurationChanged(QString const&)),
-    //    instanceEditor_, SLOT(setTopComponentActiveView(QString const&)), Qt::UniqueConnection);
-//     connect(configurationEditor_, SIGNAL(designConfigurationChanged(QSharedPointer<DesignConfiguration>)),
-//         instanceEditor_, SLOT(changeDesignConfiguration(QSharedPointer<DesignConfiguration>)),
-//         Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: setupSystemDetailsEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupSystemDetailsEditor()
-{
-    systemDetailsDock_ = new QDockWidget(tr("HW Mapping Details"), this);
-    systemDetailsDock_->setObjectName(tr("HW Mapping Details Editor"));
-    systemDetailsDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    systemDetailsDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    systemDetailsEditor_ = new SystemDetailsEditor(libraryHandler_, systemDetailsDock_);
-    systemDetailsDock_->setWidget(systemDetailsEditor_);
-    addDockWidget(Qt::RightDockWidgetArea, systemDetailsDock_);
-
-    connect(systemDetailsEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupDesignParametersEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupDesignParametersEditor()
-{
-    designParameterDock_ = new QDockWidget(tr("Design Parameters"), this);
-    designParameterDock_->setObjectName(tr("Design Parameters dock"));
-    designParameterDock_->setAllowedAreas(Qt::BottomDockWidgetArea);
-    designParameterDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    QSharedPointer<ListParameterFinder> listFinder(new ListParameterFinder());
-    QSharedPointer<ExpressionFormatter> formatter(new ExpressionFormatter(listFinder));
-    QSharedPointer<ExpressionFormatter> referenceTreeFormatter(new ExpressionFormatter(designParameterFinder_));
-    designParameterFinder_->addFinder(listFinder);
-
-    designParameterReferenceCounter_ = new ParameterReferenceCounter(listFinder);
-
-    designParameterTree_ = new DesignParameterReferenceTree(referenceTreeFormatter, this);
-
-    designParametersEditor_ = new ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > >(),
-        QSharedPointer<QList<QSharedPointer<Choice> > >(), listFinder, formatter, this);
-
-    ParameterReferenceTreeWindow* designParameterReferenceWindow =
-        new ParameterReferenceTreeWindow(designParameterTree_, designParametersEditor_);
-
-    designParameterDock_->setWidget(designParametersEditor_);
-    addDockWidget(Qt::BottomDockWidgetArea, designParameterDock_);
-
-    connect(designParametersEditor_, SIGNAL(contentChanged()),
-        this, SLOT(onDesignChanged()), Qt::UniqueConnection);
-
-    connect(designParametersEditor_, SIGNAL(increaseReferences(QString)), 
-        designParameterReferenceCounter_, SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
-    connect(designParametersEditor_, SIGNAL(decreaseReferences(QString)),
-        designParameterReferenceCounter_, SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
-    connect(designParametersEditor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
-        designParameterReferenceWindow, SLOT(openReferenceTree(QString const&, QString const&)),
-        Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupInstanceEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupInstanceEditor()
-{
-    instanceDock_ = new QDockWidget(tr("Component Instance Details"), this);
-    instanceDock_->setObjectName(tr("Instance Editor"));
-    instanceDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    instanceDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    instanceEditor_ = new ComponentInstanceEditor(instanceDock_);
-    instanceDock_->setWidget(instanceEditor_);
-    addDockWidget(Qt::RightDockWidgetArea, instanceDock_);
-
-    connect(instanceEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
-    connect(instanceEditor_, SIGNAL(increaseReferences(QString)),
-        designParameterReferenceCounter_, SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
-    connect(instanceEditor_, SIGNAL(decreaseReferences(QString)),
-        designParameterReferenceCounter_, SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupAdHocVisibilityEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupAdHocVisibilityEditor()
-{
-    adHocVisibilityDock_ = new QDockWidget(tr("Ad hoc Visibility"), this);
-    adHocVisibilityDock_->setObjectName(tr("Ad-hoc Visibility"));
-    adHocVisibilityDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    adHocVisibilityDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    adHocVisibilityEditor_ = new AdHocVisibilityEditor(adHocVisibilityDock_);
-    adHocVisibilityDock_->setWidget(adHocVisibilityEditor_);
-    addDockWidget(Qt::RightDockWidgetArea, adHocVisibilityDock_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupAdHocEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupAdHocEditor()
-{
-    adhocDock_ = new QDockWidget(tr("Ad hoc Port Details"));
-    adhocDock_->setObjectName(tr("Ad hoc Port Details"));
-    adhocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    adhocDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    adhocEditor_ = new AdHocEditor(adhocDock_);
-    adhocDock_->setWidget(adhocEditor_);
-    addDockWidget(Qt::RightDockWidgetArea, adhocDock_);
-
-    connect(adhocEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupInterfaceEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupInterfaceEditor()
-{
-    interfaceDock_ = new QDockWidget(tr("Interface Editor"), this);
-    interfaceDock_->setObjectName(tr("Interface Editor"));
-    interfaceDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    interfaceDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    interfaceEditor_ = new InterfaceEditor(interfaceDock_, libraryHandler_);
-    interfaceDock_->setWidget(interfaceEditor_);
-    addDockWidget(Qt::RightDockWidgetArea, interfaceDock_);
-
-    connect(interfaceEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupConnectionEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupConnectionEditor()
-{
-    connectionDock_ = new QDockWidget(tr("Connection Editor"), this);
-    connectionDock_->setObjectName(tr("Connection Editor"));
-    connectionDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    connectionDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    connectionEditor_ = new ConnectionEditor(libraryHandler_, connectionDock_);
-    connectionDock_->setWidget(connectionEditor_);
-    addDockWidget(Qt::RightDockWidgetArea, connectionDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1499,22 +1041,7 @@ void MainWindow::onClearItemSelection()
 {
     HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
 
-    if (designWidget != 0)
-    {
-        QSharedPointer<Design> containedDesign = designWidget->getDiagram()->getDesign();
-
-        adHocVisibilityEditor_->setDataSource(designWidget->getDiagram(), containedDesign,
-            designWidget->getEditProvider(), designWidget->isProtected());
-    }
-    else
-    {
-        adHocVisibilityEditor_->clear();
-    }
-
-    instanceEditor_->clear();
-    interfaceEditor_->clear();
-    connectionEditor_->clear();
-    adhocEditor_->clear();
+    dockHandler_->clearItemSelection(designWidget);
 }
 
 //-----------------------------------------------------------------------------
@@ -1524,49 +1051,7 @@ void MainWindow::onComponentSelected(ComponentItem* component)
 {
     Q_ASSERT(component);
 
-    connectionEditor_->clear();
-    interfaceEditor_->clear();
-    adhocEditor_->clear();
-
-    DesignWidget* designWidget(0);
-
-    HWDesignWidget* hwDesignWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
-    if (hwDesignWidget)
-    {
-        designWidget = hwDesignWidget;
-    }
-    else
-    {
-        SystemDesignWidget* systemDesignWidget = dynamic_cast<SystemDesignWidget*>(designTabs_->currentWidget());
-        designWidget = systemDesignWidget;
-    }
-
-    QSharedPointer<Design> containingDesign = designWidget->getDiagram()->getDesign();
-
-    // Update the instance and ad-hoc visibility editors.
-    instanceEditor_->setComponentInstance(component, designWidget->getEditProvider(), containingDesign,
-        designWidget->getDiagram()->getDesignConfiguration(), designWidget->getOpenViewName());
-
-    HWComponentItem* hwComponent = dynamic_cast<HWComponentItem*>(component);
-    if (hwComponent != 0)
-    {
-        adHocVisibilityEditor_->setDataSource(hwComponent, containingDesign, designWidget->getEditProvider(),
-            designWidget->isProtected());
-    }
-    else
-    {
-        adHocVisibilityEditor_->clear();
-    }
-
-    if (component->componentModel()->getVlnv().isValid())
-    {
-        libraryHandler_->onSelectionChanged(component->componentModel()->getVlnv());
-        previewBox_->setComponent(component->componentModel()->getVlnv());
-    }
-    else
-    {
-        libraryHandler_->onClearSelection();
-    }
+    dockHandler_->selectComponent(designTabs_->currentWidget(), component);
 }
 
 //-----------------------------------------------------------------------------
@@ -1576,58 +1061,7 @@ void MainWindow::onInterfaceSelected(ConnectionEndpoint* interface)
 {
     Q_ASSERT(interface);
 
-    // if the port has an encompassing component then it is selected
-    ComponentItem* component = interface->encompassingComp();
-
-    if (component != 0 && component->componentModel()->getVlnv().isValid())
-    {
-        libraryHandler_->onSelectionChanged(component->componentModel()->getVlnv());
-        previewBox_->setComponent(component->componentModel()->getVlnv());
-    }
-    // if no component can be identified
-    else
-    {
-        libraryHandler_->onClearSelection();
-    }
-
-    adHocVisibilityEditor_->clear();
-    connectionEditor_->clear();
-    instanceEditor_->clear();
-
-
-    if (!interface->isAdHoc())
-    {
-        DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
-        if (designWidget)
-        {
-            interfaceEditor_->setInterface(interface, designWidget->getDiagram()->getDesign(),
-                designWidget->getEditProvider(), designWidget->isProtected());
-        }
-
-        adhocEditor_->clear();
-    }
-    else
-    {
-        AdHocItem* adhocEndPoint = dynamic_cast<AdHocItem*>(interface);
-        if (adhocEndPoint)
-        {
-            HWDesignWidget* hwDesignWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
-            if (hwDesignWidget)
-            {
-                HWDesignDiagram* hwDiagram = dynamic_cast<HWDesignDiagram*>(hwDesignWidget->getDiagram());
-                if (hwDiagram)
-                {
-                    adhocEditor_->setAdhocPort(adhocEndPoint, hwDiagram, hwDesignWidget->getEditProvider());
-                }
-            }
-        }
-        else
-        {
-            adhocEditor_->clear();
-        }
-
-        interfaceEditor_->clear();
-    }
+    dockHandler_->selectConnectionInterface(designTabs_->currentWidget(), interface);
 }
 
 //-----------------------------------------------------------------------------
@@ -1635,14 +1069,7 @@ void MainWindow::onInterfaceSelected(ConnectionEndpoint* interface)
 //-----------------------------------------------------------------------------
 void MainWindow::onConnectionSelected(GraphicsConnection* connection)
 {
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
-
-    Q_ASSERT(connection);
-    adHocVisibilityEditor_->clear();
-    adhocEditor_->clear();
-    instanceEditor_->clear();
-    interfaceEditor_->clear();
-    connectionEditor_->setConnection(connection, designWidget->getDiagram());
+    dockHandler_->selectGraphicsConnection(designTabs_->currentWidget(), connection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1918,15 +1345,16 @@ void MainWindow::generateDoc()
     }
     QTextStream stream(&targetFile);
 
-    DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_, designParameterFinder_);
+    DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_,
+        dockHandler_->getDesignAndInstanceParameterFinder(), dockHandler_->getDesignParameterFinder());
 
     ExpressionFormatterFactoryImplementation expressionFormatterFactory;
 
     DocumentGenerator generator(libraryHandler_, vlnv, &designWidgetFactory, &expressionFormatterFactory, this);
     connect(&generator, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(&generator, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     generator.writeDocumentation(stream, targetPath);
 
@@ -2070,50 +1498,7 @@ void MainWindow::onDocumentChanged(int index)
         updateVisibilityControlMenu(doc);
     }
 
-    // if the new tab is designWidget
-    DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
-    // set the configuration manager to edit the active design
-    if (designwidget)
-    {
-        configurationEditor_->setConfiguration(designwidget);
-
-        QSharedPointer<Document> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
-        QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
-        if (topComponent)
-        {
-            instanceEditor_->setContext(topComponent, designwidget->getDiagram()->getDesignConfiguration(),
-                designwidget->getDiagram()->getEditProvider());
-            instanceEditor_->setTopComponentActiveView(topComponent->getModel()->findView(designwidget->getOpenViewName()));
-            instanceEditor_->setProtection(designwidget->isProtected());
-
-            QSharedPointer<Design> design = designwidget->getDiagram()->getDesign();
-            designParametersEditor_->setDisabled(designwidget->isProtected());
-            designParametersEditor_->setNewParameters(design->getParameters());
-            designParameterTree_->setDesign(design);
-
-            setupDesignParameterFinder(design);
-        }
-        
-        if (doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
-        {
-            systemDetailsEditor_->setSystem(designwidget);
-        }
-        else
-        {
-            systemDetailsEditor_->clear();
-        }
-    }
-    // active tab is not design widget so clear the editors associated with design widget
-    else
-    {
-        configurationEditor_->clear();
-        systemDetailsEditor_->clear();
-        instanceEditor_->clear();
-        adHocVisibilityEditor_->clear();
-        adhocEditor_->clear();
-        interfaceEditor_->clear();
-        connectionEditor_->clear();
-    }
+    dockHandler_->documentChanged(doc);
 
     // Reset the draw mode to select.
     if (doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT))
@@ -2127,42 +1512,6 @@ void MainWindow::onDocumentChanged(int index)
 
     // Update the menu strip.
     updateMenuStrip();
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::setupDesignParameterFinder()
-//-----------------------------------------------------------------------------
-void MainWindow::setupDesignParameterFinder(QSharedPointer<Design> newDesign)
-{
-    QSharedPointer<ListParameterFinder> designListFinder(new ListParameterFinder());
-    designListFinder->setParameterList(newDesign->getParameters());
-
-    designParameterFinder_->removeAllFinders();
-    designParameterFinder_->addFinder(designListFinder);
-
-    if (!newDesign->getComponentInstances()->isEmpty())
-    {
-        QList<QSharedPointer<const Component> > componentsWithFinders;
-
-        foreach (QSharedPointer<ComponentInstance> instance, *newDesign->getComponentInstances())
-        {
-            QSharedPointer<const Document> referencedDocument =
-                libraryHandler_->getModelReadOnly(*instance->getComponentRef().data());
-            if (referencedDocument)
-            {
-                QSharedPointer<const Component> instancedComponent =
-                    referencedDocument.dynamicCast<const Component>();
-                if (instancedComponent && !componentsWithFinders.contains(instancedComponent))
-                {
-                    QSharedPointer<ComponentParameterFinder> instanceFinder(
-                        new ComponentParameterFinder(instancedComponent));
-                    designParameterFinder_->addFinder(instanceFinder);
-
-                    componentsWithFinders.append(instancedComponent);
-                }
-            }
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -3294,7 +2643,11 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
         return;
     }
 
-    DesignWidgetFactoryImplementation factory(libraryHandler_, designParameterFinder_);
+    QSharedPointer<Design> newDesign = libraryHandler_->getDesign(designVLNV);
+    dockHandler_->setupDesignParameterFinder(newDesign);
+
+    DesignWidgetFactoryImplementation factory(libraryHandler_,
+        dockHandler_->getDesignAndInstanceParameterFinder(), dockHandler_->getDesignParameterFinder());
     DesignWidget* designWidget = factory.makeHWDesignWidget(this);
     connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
         designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
@@ -3394,7 +2747,7 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
     MemoryDesignDocument* memoryDesignWidget = new MemoryDesignDocument(libraryHandler_, this);
 
     connect(memoryDesignWidget, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
     if (!memoryDesignWidget->setDesign(vlnv, viewName))
     {
@@ -3465,9 +2818,9 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
         designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     if (!designWidget->setDesign(vlnv, viewName))
     {
@@ -3475,8 +2828,10 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
         return;
     }
 
-    disconnect(designWidget, SIGNAL(errorMessage(const QString&)), console_, SLOT(onErrorMessage(const QString&)));
-    disconnect(designWidget, SIGNAL(noticeMessage(const QString&)), console_, SLOT(onNoticeMessage(const QString&)));
+    disconnect(designWidget, SIGNAL(errorMessage(const QString&)),
+        dockHandler_, SIGNAL(errorMessage(const QString&)));
+    disconnect(designWidget, SIGNAL(noticeMessage(const QString&)),
+        dockHandler_, SIGNAL(noticeMessage(const QString&)));
 
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -3530,9 +2885,9 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
         designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     if (!designWidget->setDesign(vlnv, viewName))
     {
@@ -3541,8 +2896,10 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
         return;
     }
 
-    disconnect(designWidget, SIGNAL(errorMessage(const QString&)), console_, SLOT(onErrorMessage(const QString&)));
-    disconnect(designWidget, SIGNAL(noticeMessage(const QString&)), console_, SLOT(onNoticeMessage(const QString&)));
+    disconnect(designWidget, SIGNAL(errorMessage(const QString&)),
+        dockHandler_, SIGNAL(errorMessage(const QString&)));
+    disconnect(designWidget, SIGNAL(noticeMessage(const QString&)),
+        dockHandler_, SIGNAL(noticeMessage(const QString&)));
 
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -3730,87 +3087,11 @@ bool MainWindow::isOpen(VLNV const& vlnv) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::setWindowVisibilityForSupportedWindow()
-//-----------------------------------------------------------------------------
-void MainWindow::setWindowVisibilityForSupportedWindow(TabDocument::SupportedWindows type, bool show)
-{
-    if (isSupportedWindowType(type))
-    {
-        setWindowVisibility(type, show);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::setWindowVisibility()
-//-----------------------------------------------------------------------------
-void MainWindow::setWindowVisibility(TabDocument::SupportedWindows windowType, bool show)
-{
-    visibilities_.insert(windowType, show);
-}
-
-//-----------------------------------------------------------------------------
 // Function: mainwindow::updateWindows()
 //-----------------------------------------------------------------------------
 void MainWindow::updateWindows()
 {
-    updateWindowAndControlVisibility(TabDocument::LIBRARYWINDOW, libraryDock_);
-    updateWindowAndControlVisibility(TabDocument::OUTPUTWINDOW, consoleDock_);
-    updateWindowAndControlVisibility(TabDocument::CONTEXT_HELP_WINDOW, contextHelpDock_);
-    updateWindowAndControlVisibility(TabDocument::PREVIEWWINDOW, previewDock_);
-    updateWindowAndControlVisibility(TabDocument::DESIGNPARAMETERSWINDOW, designParameterDock_);
-    updateWindowAndControlVisibility(TabDocument::CONFIGURATIONWINDOW, configurationDock_);
-    updateWindowAndControlVisibility(TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsDock_);
-    updateWindowAndControlVisibility(TabDocument::CONNECTIONWINDOW, connectionDock_);
-    updateWindowAndControlVisibility(TabDocument::INTERFACEWINDOW, interfaceDock_);
-    updateWindowAndControlVisibility(TabDocument::INSTANCEWINDOW, instanceDock_);
-    updateWindowAndControlVisibility(TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityDock_);
-    updateWindowAndControlVisibility(TabDocument::ADHOC_WINDOW, adhocDock_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::updateWindowControlVisibility()
-//-----------------------------------------------------------------------------
-void MainWindow::updateWindowAndControlVisibility(TabDocument::SupportedWindows windowType, QDockWidget* dock)
-{
-    QAction* showAction = dock->toggleViewAction();
-
-    bool shouldShow = isSupportedWindowType(windowType);
-
-    showAction->setVisible(shouldShow);
-    dock->setVisible(shouldShow && visibilities_.value(windowType));
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::isSupportedWindowType()
-//-----------------------------------------------------------------------------
-bool MainWindow::isSupportedWindowType(TabDocument::SupportedWindows windowType)
-{
-    return currentlySupportedWindows() & windowType;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::supportedWindows()
-//-----------------------------------------------------------------------------
-unsigned int MainWindow::currentlySupportedWindows()
-{
-    unsigned int windows = defaultWindows();
-
-    if (designTabs_->count() != 0)
-    {
-        TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-        windows = doc->getSupportedWindows();
-    }
-
-    return windows;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::defaultWindows()
-//-----------------------------------------------------------------------------
-unsigned int MainWindow::defaultWindows()
-{
-    return TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW |
-        TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW;
+    dockHandler_->updateWindows(designTabs_->count(), designTabs_->currentWidget());
 }
 
 //-----------------------------------------------------------------------------
@@ -3842,52 +3123,9 @@ void MainWindow::updateVisibilityControlMenu(TabDocument* document)
 //-----------------------------------------------------------------------------
 void MainWindow::connectVisibilityControls()
 {
-    // Action to show/hide the output window.
-    connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the context help window.
-    connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the preview box.
-    connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the library window.
-    connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the configuration window.
-    connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the system detail window.
-    connect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the connection editor.
-    connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the interface editor.
-    connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the instance editor.
-    connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide design parameter editor.
-    connect(designParameterDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onDesignParametersAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the ad-hoc visibility editor.
-    connect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onAdHocVisibilityAction(bool)), Qt::UniqueConnection);
-
-    connect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onAdHocEditorAction(bool)), Qt::UniqueConnection);
+    connect(dockHandler_, SIGNAL(adjustVisibilityInWindow(TabDocument::SupportedWindows, bool)),
+        this, SLOT(onAdjustVisibilityInWindow(TabDocument::SupportedWindows, bool)), Qt::UniqueConnection);
+    dockHandler_->connectVisibilityControls();
 }
 
 //-----------------------------------------------------------------------------
@@ -3895,33 +3133,9 @@ void MainWindow::connectVisibilityControls()
 //-----------------------------------------------------------------------------
 void MainWindow::disconnectVisibilityControls()
 {
-    disconnect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onOutputAction(bool)));
-
-    disconnect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onContextHelpAction(bool)));
-
-    disconnect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onPreviewAction(bool)));
-
-    disconnect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onLibraryAction(bool)));
-
-    disconnect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onConfigurationAction(bool)));
-
-    disconnect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onSystemDetailsAction(bool)));
-
-    disconnect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onConnectionAction(bool)));
-
-    disconnect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onInterfaceAction(bool)));
-
-    disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onInstanceAction(bool)));
-
-    disconnect(designParameterDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onDesignParametersAction(bool)));
-
-    disconnect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onAdHocVisibilityAction(bool)));
-
-    disconnect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
+    disconnect(dockHandler_, SIGNAL(adjustVisibilityInWindow(TabDocument::SupportedWindows, bool)),
+        this, SLOT(onAdjustVisibilityInWindow(TabDocument::SupportedWindows, bool)));
+    dockHandler_->disconnectVisibilityControls();
 }
 
 //-----------------------------------------------------------------------------
@@ -4168,24 +3382,7 @@ void MainWindow::changeProtection(bool locked)
         doc->setProtection(locked);
     }
 
-    DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
-    if (designwidget)
-    {
-        // update the editors to match the locked state
-        configurationEditor_->setLocked(locked);
-        instanceEditor_->setProtection(locked);
-        designParametersEditor_->setDisabled(locked);
-
-        if (designwidget->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
-        {
-            systemDetailsEditor_->setLocked(locked);
-        }
-    }
-    else
-    {
-        configurationEditor_->setLocked(true);
-        systemDetailsEditor_->setLocked(true);
-    }
+    dockHandler_->changeProtection(doc, locked);
 
     // Clear the item selection since the current instance is no longer valid.
     onClearItemSelection();
@@ -4279,14 +3476,6 @@ void MainWindow::showAbout()
     splash->setWindowModality(Qt::ApplicationModal);
     splash->show();
     splash->showMessage("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: showAbout()
-//-----------------------------------------------------------------------------
-void MainWindow::showHelp()
-{
-    helpWnd_->show();
 }
 
 //-----------------------------------------------------------------------------
@@ -4396,110 +3585,6 @@ void MainWindow::onDeleteWorkspace()
         settings.remove("Workspaces/" + saveDialog.name());
         updateWorkspaceMenu();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onOutputAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onOutputAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::OUTPUTWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onContextHelpAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onContextHelpAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::CONTEXT_HELP_WINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onPreviewAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onPreviewAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::PREVIEWWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onLibraryAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onLibraryAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::LIBRARYWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onConfigurationAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onConfigurationAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::CONFIGURATIONWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onSystemDetailsAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onSystemDetailsAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::SYSTEM_DETAILS_WINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onConnectionAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onConnectionAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::CONNECTIONWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onInterfaceAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onInterfaceAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::INTERFACEWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onAdHocAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onAdHocVisibilityAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::ADHOCVISIBILITY_WINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onAdHocEditorAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onAdHocEditorAction(bool show)
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::ADHOC_WINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::onAddressAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onAddressAction(bool show)
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::ADDRESS_WINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onInstanceAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onInstanceAction( bool show )
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::INSTANCEWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onDesignParametersAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onDesignParametersAction(bool show)
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::DESIGNPARAMETERSWINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -4838,23 +3923,7 @@ void MainWindow::setPluginVisibilities()
 //-----------------------------------------------------------------------------
 void MainWindow::onDesignDocumentRefreshed()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(doc);
-
-    if (designWidget)
-    {
-        QSharedPointer<Document> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
-        QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
-
-        instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getDesignConfiguration(),
-            designWidget->getDiagram()->getEditProvider());
-
-        QSharedPointer<Design> design = designWidget->getDiagram()->getDesign();
-        designParametersEditor_->setNewParameters(design->getParameters());
-        designParameterTree_->setDesign(design);
-
-        setupDesignParameterFinder(design);
-    }
+    dockHandler_->refreshDesignDocument(designTabs_->currentWidget());
 }
 
 //-----------------------------------------------------------------------------

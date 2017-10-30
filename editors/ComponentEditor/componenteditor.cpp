@@ -82,12 +82,12 @@ proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_),
 parameterFinder_(new ParameterCache(component_)),
-referenceCounter_(new ParameterReferenceCounter(parameterFinder_)),
+referenceCounter_(new ComponentParameterReferenceCounter(parameterFinder_, component_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 validator_(expressionParser_, libHandler_),
-parameterReferenceWindow_(new ParameterReferenceTreeWindow(
-    new ComponentParameterReferenceTree(component, expressionFormatter_), this))
+parameterReferenceTree_(new ComponentParameterReferenceTree(component_, expressionFormatter_, referenceCounter_)),
+parameterReferenceWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_, this))
 {
     // these can be used when debugging to identify the objects
 	setObjectName(tr("ComponentEditor"));
@@ -226,6 +226,9 @@ void ComponentEditor::refresh()
 	navigationModel_.setRootItem(createNavigationRootForComponent(comp));
 	component_.clear();
 	component_ = comp;
+
+    referenceCounter_->setComponent(component_);
+    parameterReferenceTree_->setComponent(component_);
 
     parameterFinder_->setComponent(comp);
 
@@ -694,9 +697,16 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)),
             Qt::UniqueConnection);
 
-        root->addChildItem(QSharedPointer<ComponentEditorIndirectInterfacesItem>(
-            new ComponentEditorIndirectInterfacesItem(&navigationModel_, libHandler_, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_, root, parentWidget())));
+        QSharedPointer<ComponentEditorIndirectInterfacesItem> indirectInterfacesItem(
+            QSharedPointer<ComponentEditorIndirectInterfacesItem>(new ComponentEditorIndirectInterfacesItem(
+            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+            expressionParser_, root, parentWidget())));
+
+        root->addChildItem(indirectInterfacesItem);
+
+        connect(indirectInterfacesItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+            parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)),
+            Qt::UniqueConnection);
 
         root->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
             new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, expressionParser_, root)));

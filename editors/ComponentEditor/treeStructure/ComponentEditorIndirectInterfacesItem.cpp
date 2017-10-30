@@ -9,10 +9,10 @@
 // The Indirect interfaces -item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
 
-#include "componenteditorIndirectInterfacesitem.h"
+#include "ComponentEditorIndirectInterfacesItem.h"
 #include "SingleIndirectInterfaceItem.h"
 
-#include <editors/ComponentEditor/IndirectInterfaces/IndirectInterfaceseditor.h>
+#include <editors/ComponentEditor/indirectInterfaces/IndirectInterfacesEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
@@ -29,11 +29,11 @@ ComponentEditorIndirectInterfacesItem::ComponentEditorIndirectInterfacesItem(Com
     QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
-    indirectInterfaces_(component->getIndirectInterfaces()),
-    validator_(new IndirectInterfaceValidator(component, expressionParser, 
-        QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, component->getChoices())))),
-    parentWnd_(parentWnd),
-    expressionParser_(expressionParser)
+indirectInterfaces_(component->getIndirectInterfaces()),
+validator_(new IndirectInterfaceValidator(component, expressionParser, 
+    QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, component->getChoices())))),
+parentWnd_(parentWnd),
+expressionParser_(expressionParser)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -45,8 +45,8 @@ ComponentEditorItem(model, libHandler, component, parent),
             new SingleIndirectInterfaceItem(indirectInterface, model, libHandler, component, referenceCounter_,
             parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd));
 
-        connect(interfaceItem.data(), SIGNAL(openReferenceTree(QString)),
-            this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+        connect(interfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+            this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 		childItems_.append(interfaceItem);
 	}
@@ -132,8 +132,8 @@ void ComponentEditorIndirectInterfacesItem::createChild(int index)
         referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
 	interfaceItem->setLocked(locked_);
 
-    connect(interfaceItem.data(), SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(interfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 	childItems_.insert(index, interfaceItem);
 }
