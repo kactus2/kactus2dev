@@ -37,7 +37,6 @@ public:
     tst_VHDLimport();
 
 private slots:
-    void initTestCase();
     void init();
     void cleanup();
 
@@ -59,10 +58,9 @@ private slots:
 
     void testModelParameterIsAssignedToPort();
     void testModelParameterIsAssignedToPort_data();
-    void testModelParameterChangeAppliesToPort();
+    void testModelParameterAsPortBoundary();
 
     void testModelParameterIsAssignedToModelParameter();
-    void testModelParameterIsAssignedToModelParameter_data();
 
     void testPortsAndModelParametersAreNotParsedOutsideEntity();
      
@@ -121,14 +119,6 @@ tst_VHDLimport::tst_VHDLimport(): displayEditor_(), parser_(),
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VHDLimport::initTestCase()
-//-----------------------------------------------------------------------------
-void tst_VHDLimport::initTestCase()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_VHDLimport::init()
 //-----------------------------------------------------------------------------
 void tst_VHDLimport::init()
@@ -141,7 +131,7 @@ void tst_VHDLimport::init()
 //-----------------------------------------------------------------------------
 void tst_VHDLimport::cleanup()
 {
-    parser_.clear();
+ 
 }
 
 //-----------------------------------------------------------------------------
@@ -528,6 +518,7 @@ void tst_VHDLimport::verifySectionFontColorIs(int startIndex, int endIndex, QCol
 void tst_VHDLimport::testModelParameterIsAssignedToPort()
 {
     QFETCH(QString, fileContent);
+    QFETCH(int, expectedParameterCount);
     QFETCH(int, expectedPortSize);
 
     runParser(fileContent);
@@ -535,6 +526,10 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort()
     QCOMPARE(importComponent_->getPorts()->count(), 1);
     QSharedPointer<Port> createdPort = importComponent_->getPorts()->first();
 
+    QCOMPARE(importComponent_->getModel()->getComponentInstantiations()->count(), 1);
+    QCOMPARE(importComponent_->getModel()->getComponentInstantiations()->first()->getModuleParameters()->count(), 
+        expectedParameterCount);
+    QCOMPARE(importComponent_->getParameters()->count(), expectedParameterCount);
     //QCOMPARE(createdPort->getPortSize(), expectedPortSize);
 }
 
@@ -544,6 +539,7 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort()
 void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
 {
     QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<int>("expectedParameterCount");
     QTest::addColumn<int>("expectedPortSize");
 
     QTest::newRow("Parametrized port width.") <<
@@ -555,7 +551,7 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
         "       data : out std_logic_vector(dataWidth_g downto 0)\n"
         "   );\n"
         "end test;"
-        << 32 ;
+        << 1 << 32 ;
 
     QTest::newRow("Parametrized port width with subtraction.") <<
         "entity test is\n"
@@ -566,7 +562,7 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
         "       data : out std_logic_vector(dataWidth_g-1 downto 0)\n"
         "   );\n"
         "end test;"
-        << 16 ;
+        << 1 << 16 ;
 
     QTest::newRow("Parametrized port width with equation of generics.") <<
         "entity test is\n"
@@ -578,7 +574,7 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
         "       data : out std_logic_vector(dataWidth_g+addrWidth_g-1 downto 0)\n"
         "   );\n"
         "end test;"
-        << 24 ;
+        << 2 << 24 ;
 
     QTest::newRow("Parametrized port width with power of two.") <<
         "entity test is\n"
@@ -589,13 +585,13 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
         "       data : out std_logic_vector(max_g**2-1 downto 0)\n"
         "   );\n"
         "end test;"
-        << 64 ;
+        << 1 << 64 ;
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VHDLimport::testModelParameterChangeAppliesToPort()
+// Function: tst_VHDLimport::testModelParameterAsPortBoundary()
 //-----------------------------------------------------------------------------
-void tst_VHDLimport::testModelParameterChangeAppliesToPort()
+void tst_VHDLimport::testModelParameterAsPortBoundary()
 {
     QString fileContent = 
         "entity test is\n"
@@ -614,8 +610,10 @@ void tst_VHDLimport::testModelParameterChangeAppliesToPort()
 	QSharedPointer<ComponentInstantiation> componentInstantiation = importComponent_->
 		getComponentInstantiations()->first();
 	QSharedPointer<ModuleParameter> createdGeneric = componentInstantiation->getModuleParameters()->first();
+    QSharedPointer<Parameter> equivalentParameter = importComponent_->getParameters()->first();
 
-	QCOMPARE(createdPort->getLeftBound(), QString("dataWidth_g-1"));
+    QCOMPARE(createdGeneric->getValue(), equivalentParameter->getValueId());
+	QCOMPARE(createdPort->getLeftBound(), QString("%1-1").arg(equivalentParameter->getValueId()));
 	QCOMPARE(createdPort->getRightBound(), QString("0"));
 }
 
@@ -624,53 +622,22 @@ void tst_VHDLimport::testModelParameterChangeAppliesToPort()
 //-----------------------------------------------------------------------------
 void tst_VHDLimport::testModelParameterIsAssignedToModelParameter()
 {
-    QFETCH(QString, fileContent);
-    QFETCH(QString, expectedValue);
-
-    runParser(fileContent);
-
-    QVERIFY2(!importComponent_->getComponentInstantiations()->isEmpty(), "Did not create a valid model parameter.");
-
-    QSharedPointer<ModuleParameter> createdGeneric = importComponent_->getComponentInstantiations()->first()
-		->getModuleParameters()->last();
-    QCOMPARE(createdGeneric->getValue(), expectedValue);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VHDLimport::testModelParameterIsAssignedToModelParameter_data()
-//-----------------------------------------------------------------------------
-void tst_VHDLimport::testModelParameterIsAssignedToModelParameter_data()
-{
-    QTest::addColumn<QString>("fileContent");
-    QTest::addColumn<QString>("expectedValue");
-
-    QTest::newRow("Parametrized generic with other generic.") <<
+    runParser(QString(
         "entity test is\n"
         "   generic (\n"
         "       width_g : integer := 8;\n"
         "       dataWidth_g : integer := width_g\n"        
         "   );\n"
-        "end test;"
-        << "width_g" ;
+        "end test;"));
 
-    QTest::newRow("Parametrized generic with subtraction.") <<
-        "entity test is\n"
-        "   generic (\n"
-        "       width_g : integer := 8;\n"
-        "       dataWidth_g : integer := width_g-2\n"        
-        "   );\n"
-        "end test;"
-        << "width_g-2" ;
+    QVERIFY2(!importComponent_->getComponentInstantiations()->isEmpty(), "Did not create a component instantiation.");
 
-    QTest::newRow("Parametrized generic with equation of generics.") <<
-        "entity test is\n"
-        "   generic (\n"
-        "       base_width_g : integer := 8;\n"
-        "       addrWidth_g : integer := 7;\n"
-        "       dataWidth_g : integer := base_width_g+addrWidth_g+1\n"        
-        "   );\n"
-        "end test;"
-        << "base_width_g+addrWidth_g+1" ;
+    //! Check value reference chain dataWidth_g (MP) -> dataWidth_g (P) -> width_g (P).
+    QSharedPointer<ModuleParameter> createdGeneric = 
+        importComponent_->getComponentInstantiations()->first()->getModuleParameters()->last();
+    QCOMPARE(createdGeneric->getValue(), importComponent_->getParameters()->last()->getValueId());
+    QCOMPARE(importComponent_->getParameters()->last()->getValue(), 
+        importComponent_->getParameters()->first()->getValueId());
 }
 
 //-----------------------------------------------------------------------------
@@ -754,7 +721,6 @@ void tst_VHDLimport::testExistingModelParameterIdDoesNotChange()
 	QSharedPointer<ModuleParameter> importedParameter = importComponent_->getComponentInstantiations()
 		->first()->getModuleParameters()->first();
     QCOMPARE(importedParameter->getValueId(), QString("existingId"));
-    QCOMPARE(importedParameter->getValue(), QString("8"));
 }
 
 //-----------------------------------------------------------------------------
@@ -828,7 +794,8 @@ void tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
 
 	QSharedPointer<ComponentInstantiation> cimp = importComponent_->getComponentInstantiations()->first();
 
-    QCOMPARE(cimp->getModuleName(), QString("testbench(structural)"));
+    QCOMPARE(cimp->getModuleName(), QString("testbench"));
+    QCOMPARE(cimp->getArchitectureName(), QString("structural"));
     QCOMPARE(cimp->getLanguage(), QString("VHDL"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->language, QString("VHDL"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, QString("Kactus2"));
@@ -869,8 +836,8 @@ void tst_VHDLimport::testArchitecturePrecedesConfigurationForModelName()
     runParser(fileContent);
 
     QVERIFY2(importComponent_->hasView("flat_vhdl"), "No view 'flat' found in component.");
-    QCOMPARE(importComponent_->getComponentInstantiations()->first()->getModuleName(), QString("testbench(structural)"));
-
+    QCOMPARE(importComponent_->getComponentInstantiations()->first()->getModuleName(), QString("testbench"));
+    QCOMPARE(importComponent_->getComponentInstantiations()->first()->getArchitectureName(), QString("structural"));
 
     QString architecture = "ARCHITECTURE structural OF testbench IS";
     QString modelNameSection = "structural OF testbench";

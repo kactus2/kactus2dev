@@ -12,7 +12,7 @@
 
 #include "VHDLimport.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QList>
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
@@ -32,22 +32,19 @@
 
 namespace
 {
-    //!  Regual expression for VHDL entity.
-    const QRegExp ENTITY_EXP = QRegExp("ENTITY\\s+(\\w+)\\s+IS\\s+.*END\\s+(?:ENTITY\\s+)?(\\1)?\\s*[;]", 
-        Qt::CaseInsensitive);
+    //!  Regular expression for VHDL entity.
+    const QRegularExpression ENTITY_EXP("ENTITY\\s+(\\w+)\\s+IS\\s+.*END\\s+(?:ENTITY\\s+)?(\\1)?\\s*[;]",
+        QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::VHDLimport()
 //-----------------------------------------------------------------------------
 VHDLimport::VHDLimport() : QObject(0),
-
     portParser_(new VHDLPortParser(this)),
     genericParser_(new VHDLGenericParser(this)),
     targetComponent_(0),        
-    highlighter_(0),
-    dependedGenerics_(),
-    parsedPortDeclarations_()
+    highlighter_(0)
 {
 }
 
@@ -72,7 +69,7 @@ QString VHDLimport::getName() const
 //-----------------------------------------------------------------------------
 QString VHDLimport::getVersion() const
 {
-    return "1.1";
+    return QStringLiteral("1.2");
 }
 
 //-----------------------------------------------------------------------------
@@ -139,8 +136,7 @@ QStringList VHDLimport::getSupportedFileTypes() const
 //-----------------------------------------------------------------------------
 QString VHDLimport::getCompatibilityWarnings() const
 {
-    return tr("Warning: %1 version 1.1 and earlier will not preserve references "
-        "to model parameters.").arg(getName());
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -149,30 +145,18 @@ QString VHDLimport::getCompatibilityWarnings() const
 void VHDLimport::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
     targetComponent_ = targetComponent;
-
-    clear();
-
+ 
     if (hasValidEntity(input))
     {        
         highlightEntity(input);
 
-		QSharedPointer<ComponentInstantiation> targetComponentInstantiation =
-		setLanguageAndEnvironmentalIdentifiers();
-        parseModelName(input, targetComponentInstantiation);
+		QSharedPointer<ComponentInstantiation> targetComponentInstantiation = setupComponentInstantiation();
+        parseModelNameAndArchitecture(input, targetComponentInstantiation);
 
         genericParser_->import(input, targetComponent, targetComponentInstantiation);
 
         portParser_->import(input, targetComponent, targetComponentInstantiation);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::clear()
-//-----------------------------------------------------------------------------
-void VHDLimport::clear()
-{
-    removePreviouslyDependentGenerics();
-    removePreviousPortDeclarations();    
 }
 
 //-----------------------------------------------------------------------------
@@ -206,31 +190,11 @@ void VHDLimport::highlight(QString const& text, QColor const& highlightColor) co
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::removePreviousPortDeclarations()
-//-----------------------------------------------------------------------------
-void VHDLimport::removePreviousPortDeclarations()
-{
-    parsedPortDeclarations_.clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::removePreviouslyDependentGenerics()
-//-----------------------------------------------------------------------------
-void VHDLimport::removePreviouslyDependentGenerics()
-{
-    dependedGenerics_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: VHDLimport::hasValidEntity()
 //-----------------------------------------------------------------------------
 bool VHDLimport::hasValidEntity(QString const& fileContent) const
 {
-    int entityStartIndex = ENTITY_EXP.indexIn(fileContent);
-    bool hasEntity = entityStartIndex != -1;
-    bool hasOnlyOneEntity = entityStartIndex == ENTITY_EXP.lastIndexIn(fileContent);
-
-    return hasEntity && hasOnlyOneEntity;
+    return fileContent.count(ENTITY_EXP) == 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -240,98 +204,69 @@ void VHDLimport::highlightEntity(QString const& fileContent) const
 {
     if (highlighter_)
     {
-        ENTITY_EXP.indexIn(fileContent);
-        highlighter_->applyFontColor(ENTITY_EXP.cap(0), QColor("black"));
+        QRegularExpressionMatch match = ENTITY_EXP.match(fileContent);
+        highlighter_->applyFontColor(match.captured(), Qt::black);
     }   
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::parseModelName()
+// Function: VHDLimport::parseModelNameAndArchitecture()
 //-----------------------------------------------------------------------------
-void VHDLimport::parseModelName(QString const& input, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+void VHDLimport::parseModelNameAndArchitecture(QString const& input, 
+    QSharedPointer<ComponentInstantiation> targetInstantiation) const
 {
-    ENTITY_EXP.indexIn(input);
-    QString entityName = ENTITY_EXP.cap(1);
+    QRegularExpressionMatch match = ENTITY_EXP.match(input);
+    QString entityName = match.captured(1);
 
-    QRegExp architectureExp("ARCHITECTURE\\s+((\\w+)\\s+OF\\s+(" + entityName + "))\\s+IS(?=\\s+)", 
-        Qt::CaseInsensitive);
+    QRegularExpression architectureExp("ARCHITECTURE\\s+((\\w+)\\s+OF\\s+(" + entityName + "))\\s+IS(?=\\s+)", 
+        QRegularExpression::CaseInsensitiveOption);
 
-    QRegExp configurationExp("CONFIGURATION\\s+((\\w+)\\s+OF\\s+" + entityName + ")\\s+IS(?=\\s+)", 
-        Qt::CaseInsensitive);
+    QRegularExpression configurationExp("CONFIGURATION\\s+((\\w+)\\s+OF\\s+" + entityName + ")\\s+IS(?=\\s+)", 
+        QRegularExpression::CaseInsensitiveOption);
 
-   QString modelName = "";
+    QRegularExpressionMatch architectureMatch = architectureExp.match(input);
+    QRegularExpressionMatch configurationMatch = configurationExp.match(input);
 
-   if (hasArchitecture(architectureExp, input))
+    QString modelName = QString();
+    QString architecture = QString();
+
+    if (architectureMatch.hasMatch())
     {
-        modelName = createModelNameFromArchitecture(architectureExp);
-        highlightArchitecture(architectureExp);
+        architecture = architectureMatch.captured(2);
+        modelName = architectureMatch.captured(3);        
+        highlightArchitecture(architectureMatch);
     }
-   else if(hasConfiguration(configurationExp, input))
+    else if(configurationMatch.hasMatch())
     {
-        modelName = createModelNameFromConfiguration(configurationExp);
-        highlightConfiguration(configurationExp);
+        modelName = configurationMatch.captured(2);
+        highlightConfiguration(configurationMatch);
     }
 
-	targetComponentInstantiation->setModuleName(modelName); 
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::hasArchitecture()
-//-----------------------------------------------------------------------------
-bool VHDLimport::hasArchitecture(QRegExp const& architectureExp, QString const& input) const
-{
-    return architectureExp.indexIn(input) != -1;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::createModelNameForArchitecture()
-//-----------------------------------------------------------------------------
-QString VHDLimport::createModelNameFromArchitecture(QRegExp const& architectureExp) const
-{
-    QString entityName = architectureExp.cap(3);
-    QString architectureName = architectureExp.cap(2);
-
-    return entityName + "(" + architectureName + ")";	
+    targetInstantiation->setModuleName(modelName); 
+    targetInstantiation->setArchitectureName(architecture);
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::highlightArchitecture()
 //-----------------------------------------------------------------------------
-void VHDLimport::highlightArchitecture(QRegExp const& architectureExp) const
+void VHDLimport::highlightArchitecture(QRegularExpressionMatch const& architectureExp) const
 {
     if (highlighter_)
     {
-        highlighter_->applyFontColor(architectureExp.cap(0), QColor("black"));
-        highlighter_->applyHighlight(architectureExp.cap(1), ImportColors::VIEWNAME);
+        highlighter_->applyFontColor(architectureExp.captured(0), Qt::black);
+        highlighter_->applyHighlight(architectureExp.captured(1), ImportColors::VIEWNAME);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::hasConfiguration()
-//-----------------------------------------------------------------------------
-bool VHDLimport::hasConfiguration(QRegExp const& configurationExp, QString const& input) const
-{
-    return configurationExp.indexIn(input) != -1;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::createModelNameFromConfiguration()
-//-----------------------------------------------------------------------------
-QString VHDLimport::createModelNameFromConfiguration(QRegExp const& configurationExp) const
-{
-    QString configurationName = configurationExp.cap(2);
-    return configurationName;
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::highlightConfiguration()
 //-----------------------------------------------------------------------------
-void VHDLimport::highlightConfiguration(QRegExp const& configurationExp) const
+void VHDLimport::highlightConfiguration(QRegularExpressionMatch const& configurationExp) const
 {
     if (highlighter_)
     {
-        highlighter_->applyFontColor(configurationExp.cap(0), QColor("black"));
-        highlighter_->applyHighlight(configurationExp.cap(2), ImportColors::VIEWNAME);
+        highlighter_->applyFontColor(configurationExp.captured(0), Qt::black);
+        highlighter_->applyHighlight(configurationExp.captured(2), ImportColors::VIEWNAME);
     }
 }
 
@@ -343,65 +278,49 @@ QSharedPointer<View> VHDLimport::findOrCreateFlatView() const
     QStringList flatViews = targetComponent_->getFlatViews();
     if (flatViews.isEmpty())
     {
-		// create new view
-		QSharedPointer<View> newView( new View() );
+		QSharedPointer<View> newView(new View());
 		newView->setName(NameGenerationPolicy::flatViewName("vhdl"));
 		targetComponent_->getViews()->append(newView);
 
-		flatViews = targetComponent_->getFlatViews();
+		flatViews.append(newView->name());
     }
 
     return targetComponent_->getModel()->findView(flatViews.first());
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::setLanguageAndEnvironmentalIdentifiers()
+// Function: VHDLimport::setupComponentInstantiation()
 //-----------------------------------------------------------------------------
-QSharedPointer<ComponentInstantiation> VHDLimport::setLanguageAndEnvironmentalIdentifiers() const
+QSharedPointer<ComponentInstantiation> VHDLimport::setupComponentInstantiation() const
 {
     QSharedPointer<View> rtlView = findOrCreateFlatView();
 
 	// Create environment identifiers for the view as needed.
-	QSharedPointer<View::EnvironmentIdentifier> envIdentifierForImport(new View::EnvironmentIdentifier);
-	envIdentifierForImport->language = "VHDL";
-	envIdentifierForImport->tool = "Kactus2";
+	QSharedPointer<View::EnvironmentIdentifier> importIdentifier(new View::EnvironmentIdentifier);
+	importIdentifier->language = QStringLiteral("VHDL");
+	importIdentifier->tool = QStringLiteral("Kactus2");
 
-	if (!rtlView->hasEnvIdentifier(envIdentifierForImport))
+	if (!rtlView->hasEnvIdentifier(importIdentifier))
 	{
-		rtlView->getEnvIdentifiers()->append(envIdentifierForImport);
+		rtlView->getEnvIdentifiers()->append(importIdentifier);
 	}
 
 	// Must have a component instantiation for module parameters.
-	QString instaName = NameGenerationPolicy::componentInstantiationName("vhdl");
+	QString instanceName = NameGenerationPolicy::componentInstantiationName("vhdl");
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation =
-		targetComponent_->getModel()->findComponentInstantiation(instaName);
+		targetComponent_->getModel()->findComponentInstantiation(instanceName);
 
 	// Create and add to the component if does not exist.
-	if ( !targetComponentInstantiation )
+	if (!targetComponentInstantiation)
 	{
-		targetComponentInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
-		targetComponentInstantiation->setName(instaName);
+		targetComponentInstantiation = QSharedPointer<ComponentInstantiation>(new ComponentInstantiation());
+		targetComponentInstantiation->setName(instanceName);
 		targetComponentInstantiation->setLanguage("VHDL");
+
 		targetComponent_->getComponentInstantiations()->append(targetComponentInstantiation);
 	}
 
-	rtlView->setComponentInstantiationRef( instaName );
+	rtlView->setComponentInstantiationRef(instanceName);
 
 	return targetComponentInstantiation;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::addDependencyOfGenericToPort()
-//-----------------------------------------------------------------------------
-void VHDLimport::addDependencyOfGenericToPort(QSharedPointer<ModuleParameter> modelParameter, 
-    QSharedPointer<Port> parsedPort)
-{
-    QList<QSharedPointer<Port> > portList = dependedGenerics_.value(modelParameter);
-
-    if (!portList.contains(parsedPort))
-    {
-        portList.append(parsedPort);
-    }
-
-    dependedGenerics_.insert(modelParameter, portList);
 }

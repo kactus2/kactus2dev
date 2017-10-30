@@ -82,6 +82,7 @@ void tst_VHDLPortParser::testPortIsParsed()
 	QFETCH(QString, leftBound);
 	QFETCH(QString, rightBound);
     QFETCH(QString, expectedType);    
+    QFETCH(QString, expectedTypeDefinition);    
     QFETCH(QString, expectedDefaultValue);
     QFETCH(QString, expectedDescription);
 
@@ -95,6 +96,7 @@ void tst_VHDLPortParser::testPortIsParsed()
 	QCOMPARE(createdPort->getLeftBound(), leftBound);
 	QCOMPARE(createdPort->getRightBound(), rightBound);
     QCOMPARE(createdPort->getTypeName(), expectedType);    
+    QCOMPARE(createdPort->getTypeDefinition(expectedType), expectedTypeDefinition);   
     QCOMPARE(createdPort->getDefaultValue(), expectedDefaultValue);
     QCOMPARE(createdPort->description(), expectedDescription);
 }
@@ -109,7 +111,8 @@ void tst_VHDLPortParser::testPortIsParsed_data()
     QTest::addColumn<DirectionTypes::Direction>("expectedDirection");
 	QTest::addColumn<QString>("leftBound");
 	QTest::addColumn<QString>("rightBound");
-    QTest::addColumn<QString>("expectedType");    
+    QTest::addColumn<QString>("expectedType");   
+    QTest::addColumn<QString>("expectedTypeDefinition"); 
     QTest::addColumn<QString>("expectedDefaultValue");
     QTest::addColumn<QString>("expectedDescription");
 
@@ -119,36 +122,38 @@ void tst_VHDLPortParser::testPortIsParsed_data()
         "       clk : in std_logic \n"
         "   );\n"
         "end test;"
-        << "clk" << DirectionTypes::IN << "" << "" << "std_logic" << "" << "";
+        << "clk" << DirectionTypes::IN << "" << "" << "std_logic" << "IEEE.std_logic_1164.all" << "" << "";
 
     QTest::newRow("name, type and direction on a single line") << 
         "entity test is\n"
         "   port (clk : in std_logic);\n"
         "end test;"
-        << "clk" << DirectionTypes::IN << "" << "" << "std_logic"<< "" << "";
+        << "clk" << DirectionTypes::IN << "" << "" << "std_logic" << "IEEE.std_logic_1164.all" << "" << "";
 
     QTest::newRow("name type, direction and default value") << 
         "entity test is\n"
         "   port (enable : in std_logic := '1');\n"
         "end test;"
-        << "enable" << DirectionTypes::IN << "" << "" << "std_logic" << "'1'" << "";
+        << "enable" << DirectionTypes::IN << "" << "" << "std_logic" << "IEEE.std_logic_1164.all" << "'1'" << "";
 
     QTest::newRow("name type, direction, default value and description") << 
         "entity test is\n"
         "   port (data : out std_logic_vector(31 downto 0) := (others => '0') -- data from ip\n"
         ");\n"
         "end test;"
-        << "data" << DirectionTypes::OUT << "31" << "0" << "std_logic_vector" << "(others => '0')" << "data from ip";
+        << "data" << DirectionTypes::OUT << "31" << "0" << "std_logic_vector" << "IEEE.std_logic_1164.all"
+        << "(others => '0')" << "data from ip";
 
     QTest::newRow("name type, direction and default value on separate lines") << 
         "entity test is\n"
         "port (clk\n"
         ":\n"
         "in\n"
-        "std_logic := '1' --       Clk from top.\n"
+        "std_ulogic := '1' --       Clk from top.\n"
         ");\n"
         "end test;"
-        << "clk" << DirectionTypes::IN << "" << "" << "std_logic" << "'1'" << "Clk from top.";
+        << "clk" << DirectionTypes::IN << "" << "" << "std_ulogic" << "IEEE.std_logic_1164.all"
+        << "'1'" << "Clk from top.";
 
     QTest::newRow("port after comment.") << 
         "entity test is\n"
@@ -157,7 +162,32 @@ void tst_VHDLPortParser::testPortIsParsed_data()
         "        i_clk : in std_logic\n"
         ");\n"
         "end test;"
-        << "i_clk" << DirectionTypes::IN << "" << "" << "std_logic" << "" << "";
+        << "i_clk" << DirectionTypes::IN << "" << "" << "std_logic" << "IEEE.std_logic_1164.all" << "" << "";
+
+    QTest::newRow("Standard type: string.") << 
+        "entity test is\n"
+        "   port (\n"
+        "       sim_name : in string  \n"
+        "   );\n"
+        "end test;"
+        << "sim_name" << DirectionTypes::IN << "" << "" << "string" << "" << "" << "";
+
+    QTest::newRow("Numeric type: unsigned.") << 
+        "entity test is\n"
+        "   port (\n"
+        "       count : in unsigned  \n"
+        "   );\n"
+        "end test;"
+        << "count" << DirectionTypes::IN << "" << "" << "unsigned" << "IEEE.numeric_std.all" << "" << "";
+
+    QTest::newRow("Numeric type: signed.") << 
+        "entity test is\n"
+        "   port (\n"
+        "       multiplicand : in signed  \n"
+        "   );\n"
+        "end test;"
+        << "multiplicand" << DirectionTypes::IN << "" << "" << "signed" << "IEEE.numeric_std.all" << "" << "";
+
 }
 
 //-----------------------------------------------------------------------------

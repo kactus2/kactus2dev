@@ -19,10 +19,12 @@
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
+
 #include <QList>
 #include <QMap>
 #include <QtPlugin>
-#include "IPXACTmodels/Component/ComponentInstantiation.h"
+#include <QRegularExpressionMatch>
 
 class Highlighter;
 class ModuleParameter;
@@ -124,11 +126,6 @@ public:
     virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
 
     /*!
-     *  Removes any previously parsed ports and model parameters.
-     */
-    void clear();
-
-    /*!
      *  Sets the given highlighter to be used by the import.
      *
      *      @param [in] highlighter   The highlighter to use.          
@@ -155,15 +152,6 @@ private:
     //! No assignment.
     VHDLimport& operator=(const VHDLimport&);
 
-	/*!
-     *  Signals remove for all ports and empties lists to ports.
-     */
-    void removePreviousPortDeclarations();
-
-	/*!
-     *  Signals remove for all model parameters and empties lists to model parameters.
-     */
-    void removePreviouslyDependentGenerics();
 
     /*!
      *   Checks if given vhdl file has a valid entity declaration.
@@ -182,68 +170,33 @@ private:
     void highlightEntity(QString const& fileContent) const;
     
     /*!
-     *  Parses the model name from the input and sets it in the rtl view.
+     *  Parses the model name and architecture name from the input and sets it in the rtl view.
      *
-     *      @param [in] input   The input text to parse the model name from.
+     *      @param [in] input                       The input text to parse the model name from.
+     *      @param [in/out] targetInstantiation     The instantiation to set the names in.
      */
-    void parseModelName(QString const& input, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
+    void parseModelNameAndArchitecture(QString const& input,
+        QSharedPointer<ComponentInstantiation> targetInstantiation) const;
 
-    /*!
-     *  Checks if the given input contains architecture definition for entity.
-     *
-     *      @param [in] architectureExp     Regular expression for capturing architecture.
-     *      @param [in] input               The input text to parse the architecture from.
-     *
-     *      @return True, if an architecture is defined, otherwise false.
-     */
-    bool hasArchitecture(QRegExp const& architectureExp, QString const& input) const;
-
-    /*!
-     *  Creates model name from architecture definition.
-     *
-     *      @param [in] architectureExp   Regular expression for capturing architecture.
-     *
-     *      @return Model name based on the architecture.
-     */
-    QString createModelNameFromArchitecture(QRegExp const& architectureExp) const;
 
     /*!
      *  Highlights the architecture from which the model name was created.
      *
      *      @param [in] architectureExp   Regular expression for capturing architecture.
      */
-    void highlightArchitecture(QRegExp const& architectureExp) const;
-    
-    /*!
-     *  Checks if the given input contains configuration definition for entity.
-     *
-     *      @param [in] configurationExp    Regular expression for capturing configuration.
-     *      @param [in] input               The input text to parse the configuration from.
-     *
-     *      @return True, if an configuration is defined, otherwise false.
-     */
-    bool hasConfiguration(QRegExp const& configurationExp, QString const& input) const;
-    
-    /*!
-     *  Creates model name from configuration definition.
-     *
-     *      @param [in] configurationExp   Regular expression for capturing configuration.
-     *
-     *      @return Model name based on the configuration.
-     */
-    QString createModelNameFromConfiguration(QRegExp const& configurationExp) const;
+    void highlightArchitecture(QRegularExpressionMatch const& architectureExp) const;
 
     /*!
      *  Highlights the configuration from which the model name was created.
      *
      *      @param [in] configurationExp   Regular expression for capturing configuration.
      */
-    void highlightConfiguration(QRegExp const& configurationExp) const;
+    void highlightConfiguration(QRegularExpressionMatch const& configurationExp) const;
 
     /*!
-     *  Sets the language and environmental identifiers in the rtl view.
+     *  Setup the component instantiation and sets the language and environmental identifiers in the rtl view.
      */
-    QSharedPointer<ComponentInstantiation> setLanguageAndEnvironmentalIdentifiers() const;
+    QSharedPointer<ComponentInstantiation> setupComponentInstantiation() const;
 
     /*!
      *  Finds a flat (rtl) view from the target component or creates one, if none are found.
@@ -252,14 +205,7 @@ private:
      */
     QSharedPointer<View> findOrCreateFlatView() const;
 
-    /*!
-     *  Adds a port dependency to a model parameter.
-     *
-     *      @param [in] modelParameter   The model parameter depended on.
-     *      @param [in] parsedPort       The port depending on the model parameter.
-     */
-    void addDependencyOfGenericToPort(QSharedPointer<ModuleParameter> modelParameter, 
-        QSharedPointer<Port> parsedPort);;
+
 
     //-----------------------------------------------------------------------------
     // Data.

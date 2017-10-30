@@ -63,7 +63,7 @@ void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> t
         modelParameter->setAttribute("kactus2:import", "no");
     }
 
-    foreach(QString declaration, findGenericDeclarations(input))
+    foreach(QString const& declaration, findGenericDeclarations(input))
     {
         createModelParameterFromDeclaration(declaration, targetComponent, targetComponentInstantiation);
         if (highlighter_)
@@ -74,11 +74,13 @@ void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> t
 
     foreach (QSharedPointer<ModuleParameter> modelParameter, *targetComponentInstantiation->getModuleParameters())
     {
-        if (modelParameter->getAttribute("kactus2:import") == "no")
+        if (modelParameter->getAttribute("kactus2:import").compare("no") == 0)
         {
             targetComponentInstantiation->getModuleParameters()->removeAll(modelParameter);
         }
     }
+
+    replaceNamesReferencesWithIds(targetComponent, targetComponentInstantiation);
 }
 
 //-----------------------------------------------------------------------------
@@ -87,66 +89,6 @@ void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> t
 void VHDLGenericParser::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ = highlighter;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLGenericParser::createModelParameterFromDeclaration()
-//-----------------------------------------------------------------------------
-void VHDLGenericParser::createModelParameterFromDeclaration(QString const& declaration, 
-    QSharedPointer<Component> targetComponent, 
-    QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
-{
-    QRegularExpressionMatch matchedDeclaration = GENERIC_EXP.match(declaration);
-
-    QString cap = matchedDeclaration.captured();
-
-    QStringList genericNames = matchedDeclaration.captured(1).split(QRegularExpression("\\s*[,]\\s*"), QString::SkipEmptyParts);
-    QString type = matchedDeclaration.captured(2);
-    QString defaultValue = matchedDeclaration.captured(3);
-
-    QString description = matchedDeclaration.captured(5).trimmed();
-    if (description.isEmpty())
-    {
-        description = matchedDeclaration.captured(6).trimmed();
-    }
-
-    foreach(QString name, genericNames)
-    {   
-        QSharedPointer<ModuleParameter> parameter;
-		
-		foreach ( QSharedPointer<ModuleParameter> currentPara, *targetComponentInstantiation->getModuleParameters() )
-		{
-			if ( currentPara->name() == name.trimmed() )
-			{
-				parameter = currentPara;
-				break;
-			}
-		}
-
-        if (parameter.isNull())
-        {
-            parameter = QSharedPointer<ModuleParameter>(new ModuleParameter());
-            targetComponentInstantiation->getModuleParameters()->append(parameter);
-        }
-
-        parameter->setName(name.trimmed());
-        parameter->setDataType(type);
-        parameter->setDescription(description);
-        parameter->setValue(defaultValue);
-        parameter->setUsageType("nontyped");
-        parameter->setAttribute("kactus2:import", "");
-    } 
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLGenericParser::removeCommentLines()
-//-----------------------------------------------------------------------------
-QString VHDLGenericParser::removeCommentLines(QString section) const
-{
-    QRegExp commentLine("^" + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP + "|" +
-        VHDLSyntax::ENDLINE + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP);
-
-    return section.remove(commentLine);
 }
 
 //-----------------------------------------------------------------------------
@@ -181,19 +123,171 @@ QString VHDLGenericParser::findGenericsSection(QString const &input) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::removeCommentLines()
+//-----------------------------------------------------------------------------
+QString VHDLGenericParser::removeCommentLines(QString section) const
+{
+    QRegularExpression commentLine("^" + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP + "|" +
+        VHDLSyntax::ENDLINE + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP);
+
+    return section.remove(commentLine);
+}
+
+//-----------------------------------------------------------------------------
 // Function: VHDLGenericParser::genericDeclarationsIn()
 //-----------------------------------------------------------------------------
 QStringList VHDLGenericParser::genericDeclarationsIn(QString const& sectionWithoutCommentLines) const
 {
     QStringList genericDeclarations;
 
-    int nextGeneric = sectionWithoutCommentLines.indexOf(GENERIC_EXP, 0);
-    while (nextGeneric != -1)
-    {
-        QRegularExpressionMatch match = GENERIC_EXP.match(sectionWithoutCommentLines, nextGeneric);
-        genericDeclarations.append(match.captured());
-        nextGeneric = sectionWithoutCommentLines.indexOf(GENERIC_EXP, nextGeneric + match.capturedLength());
+    QRegularExpressionMatchIterator i = GENERIC_EXP.globalMatch(sectionWithoutCommentLines);
+    while(i.hasNext())
+    {    
+        genericDeclarations.append(i.next().captured());
     }
 
     return genericDeclarations;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::createModelParameterFromDeclaration()
+//-----------------------------------------------------------------------------
+void VHDLGenericParser::createModelParameterFromDeclaration(QString const& declaration, 
+    QSharedPointer<Component> targetComponent, 
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+{
+    QRegularExpressionMatch matchedDeclaration = GENERIC_EXP.match(declaration);
+
+    QStringList genericNames = matchedDeclaration.captured(1).split(QRegularExpression("\\s*[,]\\s*"),
+        QString::SkipEmptyParts);
+    QString type = matchedDeclaration.captured(2);
+    QString defaultValue = matchedDeclaration.captured(3);
+
+    QString description = matchedDeclaration.captured(5).trimmed();
+    if (description.isEmpty())
+    {
+        description = matchedDeclaration.captured(6).trimmed();
+    }
+
+    foreach(QString const& name, genericNames)
+    {   
+        QSharedPointer<ModuleParameter> parameter = findModuleParameter(name.trimmed(), targetComponentInstantiation);
+        if (parameter.isNull())
+        {
+            parameter = QSharedPointer<ModuleParameter>(new ModuleParameter());
+            targetComponentInstantiation->getModuleParameters()->append(parameter);
+        }
+
+        parameter->setName(name.trimmed());
+        parameter->setDataType(type);
+        parameter->setDescription(description);
+        parameter->setValue(defaultValue);
+        parameter->setUsageType("nontyped");
+        parameter->setAttribute("kactus2:import", "");
+    } 
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::findModuleParameter()
+//-----------------------------------------------------------------------------
+QSharedPointer<ModuleParameter> VHDLGenericParser::findModuleParameter(QString const& name, 
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+{
+    foreach (QSharedPointer<ModuleParameter> currentParameter, *targetComponentInstantiation->getModuleParameters())
+    {
+        if (currentParameter->name().compare(name) == 0)
+        {
+            return currentParameter;
+        }
+    }	
+
+    return QSharedPointer<ModuleParameter>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::replaceReferenceNamesWithIds()
+//-----------------------------------------------------------------------------
+void VHDLGenericParser::replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent,
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+{
+    foreach (QSharedPointer<ModuleParameter> moduleParameter, *targetComponentInstantiation->getModuleParameters())
+    {
+        QSharedPointer<Parameter> targetParameter = findParameter(moduleParameter->name(), targetComponent);
+        if (targetParameter.isNull())
+        {
+            targetParameter = QSharedPointer<Parameter>(new Parameter());
+            targetParameter->setName(moduleParameter->name());
+            targetComponent->getParameters()->append(targetParameter);
+        }
+
+        targetParameter->setValue(moduleParameter->getValue());
+        targetParameter->setDescription(moduleParameter->description());
+        targetParameter->increaseUsageCount();
+
+        moduleParameter->setValue(targetParameter->getValueId());
+    }
+
+    foreach (QSharedPointer<Parameter> parameter, *targetComponent->getParameters())
+    {
+        replaceNameReferencesWithParameterIds(parameter, targetComponent);
+    }
+
+    foreach (QSharedPointer<ModuleParameter> parameter, *targetComponentInstantiation->getModuleParameters())
+    {
+        replaceNameReferencesWithParameterIds(parameter, targetComponent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::findParameter()
+//-----------------------------------------------------------------------------
+QSharedPointer<Parameter> VHDLGenericParser::findParameter(QString const& name, 
+    QSharedPointer<Component> component) const
+{
+    foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
+    {
+        if (parameter->name().compare(name) == 0)
+        {
+            return parameter;
+        }
+    }
+
+    return QSharedPointer<Parameter>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::replaceParameterNamesWithIds()
+//-----------------------------------------------------------------------------
+void VHDLGenericParser::replaceNameReferencesWithParameterIds(QSharedPointer<Parameter> parameter,
+    QSharedPointer<Component> targetComponent) const
+{
+    foreach (QSharedPointer<Parameter> reference, *targetComponent->getParameters())
+    {
+        QRegularExpression referenceUsage("\\b" + reference->name() + "\\b");
+
+        QString parameterValue = replaceNameWithId(parameter->getValue(), referenceUsage, reference);
+        parameter->setValue(parameterValue);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::replaceNameWithId()
+//-----------------------------------------------------------------------------
+QString VHDLGenericParser::replaceNameWithId(QString const& expression, QRegularExpression& namePattern, 
+    QSharedPointer<Parameter> referenced) const
+{
+    QString replaced = expression;
+    QRegularExpressionMatch match = namePattern.match(expression);
+    if (match.hasMatch())
+    {
+        replaced.replace(namePattern, referenced->getValueId());
+
+        int count = match.capturedTexts().count();
+        for (int i = 0; i < count; i++)
+        {
+            referenced->increaseUsageCount();
+        }
+    }
+
+    return replaced;
 }
