@@ -20,7 +20,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/listManager/listmanagermodel.h \
     ./common/widgets/listManager/listmanager.h \
     ./common/widgets/listManager/listeditor.h \
-    ./common/widgets/listManager/filelistmanager.h \
     ./common/widgets/listManager/dirlistmanager.h \
     ./common/widgets/nameGroupBox/namegroupbox.h \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.h \
@@ -71,6 +70,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/layouts/VCollisionLayout.h \
     ./common/layouts/VStackedLayout.h \
     ./common/layouts/VStaticLayout.h \
+    ./common/graphicsItems/GraphicsColumnAddCommand.h \
     ./common/graphicsItems/ConnectionUndoCommands.h \
     ./common/graphicsItems/GraphicsColumnUndoCommands.h \
     ./common/graphicsItems/GraphicsItemTypes.h \
@@ -555,6 +555,12 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ConfigurationTools/ViewConfigurerColumns.h \
     ./editors/ConfigurationTools/ViewConfigurer.h \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.h \
+    ./editors/CatalogEditor/CatalogFileColumns.h \
+    ./editors/CatalogEditor/CatalogEditor.h \
+    ./editors/CatalogEditor/CatalogFileModel.h \
+    ./editors/CatalogEditor/CatalogFileDelegate.h \
+    ./editors/CatalogEditor/CatalogFileFilter.h \
+    ./editors/CatalogEditor/CatalogFileView.h \
     ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/absdefgroup.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
@@ -562,12 +568,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/busportsdelegate.h \
     ./editors/BusDefinitionEditor/busportsmodel.h \
     ./editors/BusDefinitionEditor/busportsview.h \
-    ./editors/CatalogEditor/CatalogFileColumns.h \
-    ./editors/CatalogEditor/CatalogEditor.h \
-    ./editors/CatalogEditor/CatalogFileModel.h \
-    ./editors/CatalogEditor/CatalogFileDelegate.h \
-    ./editors/CatalogEditor/CatalogFileFilter.h \
-    ./editors/CatalogEditor/CatalogFileView.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/ComGraphicsConnection.h \
     ./designEditors/SystemDesign/ApiGraphicsConnection.h \
@@ -659,13 +659,16 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/HWDesign/AddressEditor/AddressTableView.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h \
     ./designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/HWColumnAddCommand.h \
     ./designEditors/HWDesign/undoCommands/PortDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.h \
+    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h \
@@ -744,11 +747,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.h \
-    ./common/graphicsItems/GraphicsColumnAddCommand.h \
-    ./designEditors/HWDesign/undoCommands/HWColumnAddCommand.h \
-    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -774,7 +773,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
     ./common/widgets/listManager/dirlistmanager.cpp \
     ./common/widgets/listManager/dirlistmanagermodel.cpp \
-    ./common/widgets/listManager/filelistmanager.cpp \
     ./common/widgets/listManager/listeditor.cpp \
     ./common/widgets/listManager/listmanager.cpp \
     ./common/widgets/listManager/listmanagermodel.cpp \
@@ -813,6 +811,7 @@ SOURCES += ./VersionHelper.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.cpp \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.cpp \
     ./common/widgets/colorBox/ColorBox.cpp \
+    ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -1266,6 +1265,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocTiedValueCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
@@ -1274,11 +1274,13 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/HWDesign/undoCommands/ConfigurableElementChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/HWColumnAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/PortDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.cpp \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.cpp \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.cpp \
@@ -1401,9 +1403,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.cpp \
-    ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
-    ./designEditors/HWDesign/undoCommands/HWColumnAddCommand.cpp \
-    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc
