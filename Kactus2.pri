@@ -748,7 +748,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.h \
     ./common/graphicsItems/GraphicsColumnAddCommand.h \
     ./designEditors/HWDesign/undoCommands/HWColumnAddCommand.h \
-    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h
+    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h \
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
+    ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
+    ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1405,5 +1408,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.cpp \
     ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/HWColumnAddCommand.cpp \
-    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp
+    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp \
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp
 RESOURCES += kactus.qrc

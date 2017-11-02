@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/Design.h>
 
 //-----------------------------------------------------------------------------
 //! Interface for constructing design widgets.
@@ -35,6 +36,15 @@ public:
      *      @param [in] component   Pointer to the component, whose parameters are used in the formatter.
      */
     virtual ExpressionFormatter* makeExpressionFormatter(QSharedPointer<Component> component) = 0;
+
+    /*!
+     *  Create an expression formatter for a component instance within a design.
+     *
+     *      @param [in] component   The component of the selected component instance.
+     *      @param [in] design      Design containing the component instance.
+     */
+    virtual ExpressionFormatter* createDesignInstanceFormatter(QSharedPointer<Component> component,
+        QSharedPointer<Design> design) = 0;
 };
 
 #endif // EXPRESSIONFORMATTERFACTORY_H

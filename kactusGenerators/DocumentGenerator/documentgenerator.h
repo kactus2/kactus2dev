@@ -1,36 +1,45 @@
-/* 
- *  	Created on: 19.9.2011
- *      Author: Antti Kamppi
- * 		filename: documentgenerator.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: DocumentGenerator.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 19.09.2011
+//
+// Description:
+// Generates documentation for a component and its associated items.
+//-----------------------------------------------------------------------------
 
 #ifndef DOCUMENTGENERATOR_H
 #define DOCUMENTGENERATOR_H
 
-#include <designEditors/common/DesignWidgetFactory.h>
+#include <kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h>
 
 #include <editors/ComponentEditor/common/ExpressionFormatterFactory.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
+#include <designEditors/common/DesignWidgetFactory.h>
 
 #include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <QObject>
 #include <QTextStream>
 #include <QList>
 #include <QSharedPointer>
 #include <QStringList>
 #include <QWidget>
 
-class View;
 class AddressBlock;
 class Register;
 class Field;
+class ViewDocumentGenerator;
 
-class DocumentGenerator : public QObject {
+//-----------------------------------------------------------------------------
+//! Generates documentation for a component and its associated items.
+//-----------------------------------------------------------------------------
+class DocumentGenerator : public GeneralDocumentGenerator
+{
 	Q_OBJECT
 
 public:
@@ -44,11 +53,8 @@ public:
 	 *      @param [in] expressionFormatterFactory  Factory for making expression formatters.
 	 *      @param [in] parent                      The parent widget of the generator.
 	 */
-	DocumentGenerator(LibraryInterface* handler,
-        const VLNV& vlnv,
-        DesignWidgetFactory* designWidgetFactory,
-        ExpressionFormatterFactory* expressionFormatterFactory,
-		QWidget* parent);
+	DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, DesignWidgetFactory* designWidgetFactory,
+        ExpressionFormatterFactory* expressionFormatterFactory, QWidget* parent);
 
 	/*!
 	 *  The constructor for child generators.
@@ -56,18 +62,17 @@ public:
 	 *      @param [in] handler                     Library, where the components reside.
 	 *      @param [in] vlnv                        VLNV of the component or design.
 	 *      @param [in] objects                     The vlnvs that have been gone through already.
-	 *      @param [in] designWidgetFactory         The factory for making design widgets.
 	 *      @param [in] expressionFormatterFactory  The factory for making expression formatters.
+     *      @param [in] viewDocumentationGenerator  Generates documentation for views and instantiations.
 	 *      @param [in] parent                      The parent generator.
 	 */
-	DocumentGenerator(LibraryInterface* handler, 
-		const VLNV& vlnv,
-		QList<VLNV>& objects,
-        DesignWidgetFactory* designWidgetFactory,
-        ExpressionFormatterFactory* expressionFormatterFactory,
-		DocumentGenerator* parent);
+    DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects,
+        ExpressionFormatterFactory* expressionFormatterFactory, ViewDocumentGenerator* viewDocumentationGenerator,
+        DocumentGenerator* parent);
 	
-	//! \brief The destructor
+	/*!
+     *  The destructor
+     */
 	virtual ~DocumentGenerator();
 
     /*!
@@ -101,14 +106,6 @@ public:
 	 *      @param [in] filesToInclude  List of file names that contain pictures needed to display the document.
 	 */
 	void writeDocumentation(QTextStream& stream, const QString& targetPath, QStringList& filesToInclude);
-
-	/*!
-	 *  Write the model parameters of the component.
-	 *
-	 *      @param [in] stream              The text stream to write the documentation into.
-	 *      @param [in] subHeaderNumber     The number that defines the number for the sub-header.
-	 */
-// 	void writeModelParameters(QTextStream& stream, int& subHeaderNumber);
 
     /*!
 	 *  Write the parameters and kactus2 parameters of the component.
@@ -181,25 +178,6 @@ public:
 	 */
 	void writeFileSets(QTextStream& stream, int& subHeaderNumber);
 
-	/*!
-	 *  Write the views of the component.
-	 *
-	 *      @param [in] stream              The text stream to write the documentation into.
-	 *      @param [in] subHeaderNumber     The number that defines the sub header.
-	 *      @param [in] pictureList         List of file names to add the pictures of the designs to.
-	 */
-	void writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList);
-
-	/*! Write the documentation for the given view.
-	 *
-	 *      @param [in] view                Pointer to the view the document.
-	 *      @param [in] stream              Text stream to write into.
-	 *      @param [in] subheaderNumber     The number of the subheader.
-	 *      @param [in] viewNumber          The number of the view.
-	 *
-	*/
-	void writeView(QSharedPointer<View> view, QTextStream& stream, const int subheaderNumber, const int viewNumber);
-
     /*!
      *  Write the end of the document.
      *
@@ -207,31 +185,20 @@ public:
      */
     void writeEndOfDocument(QTextStream& stream);
 
-signals:
-
-	//! \brief Print an error message to the user.
-	void errorMessage(const QString& errorMessage);
-
-	//! \brief Print a notification to the user.
-	void noticeMessage(const QString& noticeMessage);
-
 private:
-	//! \brief No copying
+    //! No copying. No assignment
 	DocumentGenerator(const DocumentGenerator& other);
-
-	//! \brief No assignment
 	DocumentGenerator& operator=(const DocumentGenerator& other);
 
-	/*! \brief Write the header to the given stream.
+	/*!
+     *  Write the header to the given stream.
 	 *
-	 * \param headerNumber The number of the sub-header.
-	 * \param stream The stream to write into.
-	 * \param text The textual part of the header.
-	 * \param headerID The id-tag for the header element.
-	 *
-	*/
-	void writeSubHeader(const int headerNumber, QTextStream& stream, 
-		const QString& text, const QString& headerID);
+	 *      @param [in] headerNumber    The number of the sub-header.
+	 *      @param [in] stream          The stream to write into.
+	 *      @param [in] text            The textual part of the header.
+	 *      @param [in] headerID        The id-tag for the header element.
+	 */
+	void writeSubHeader(const int headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
 
     /*!
      *  Write the port table for the selected ports.
@@ -242,73 +209,44 @@ private:
      */
     void writePortTable(QTextStream& stream, QString const& title, QList <QSharedPointer <Port> > ports);
 
-	/*! \brief Write the html-table element start into stream
+	/*!
+     *  Write the details of a file
 	 *
-	 * \param headers The headers for the table
-	 * \param title The title for the table.
-	 * \param stream The text stream to write into.
-	 *
-	*/
-	void writeTableElement(const QStringList& headers, const QString& title,
-		QTextStream& stream);
+	 *      @param [in] file    Pointer to the file.
+	 *      @param [in] stream  The text stream to write into.
+	 */
+	void writeFile(QSharedPointer<File> file, QTextStream& stream);
 
-	/*! \brief Write the details of a file
+	/*!
+     *  Parse the child items for the document generator.
 	 *
-	 * \param file Pointer to the file.
-	 * \param stream The text stream to write into.
-	 *
-	*/
-	void writeFile(QSharedPointer<File> file,  
-		QTextStream& stream);
-
-	/*! \brief Parse the child items for the document generator.
-	 *
-	 * \param objects List of objects that have already been parsed so there won't
-	 * be duplicate components in the generated document.
-	 *
-	*/
+	 *      @param [in] objects     List of objects that have already been parsed so there won't be duplicate
+     *                              components in the generated document.
+	 */
 	void parseChildItems(QList<VLNV>& objects);
 
-	/*! \brief Create a picture for the component
+	/*!
+     *  Create a picture for the component.
 	 *
-	 * \param pictureList List of file names to add the path of the created picture to.
-	 *
-	*/
+	 *      @param [in] pictureList     List of file names to add the path of the created picture to.
+	 */
 	void createComponentPicture(QStringList& pictureList);
 
-	/*! \brief Create a picture for the design
-	 *
-	 * \param pictureList List of file names to add the path of the created picture to.
-	 * \param viewName Name of the view to create the design picture for.
-	*/
-	void createDesignPicture(QStringList& pictureList, const QString& viewName);
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
-	//! \brief Pointer to the instance that manages the library.
-	LibraryInterface* handler_;
-
-	//! \brief Pointer to the component that's documentation this generator should write.
-	QSharedPointer<Component> component_;
-
-	//! \brief The running number that this instance uses for writing the numbered headers.
-	unsigned int myNumber_;
-
-	//! \brief List contains pointers to the document generators under this generator.
+	//! List contains pointers to the document generators under this generator.
 	QList<QSharedPointer<DocumentGenerator> > childInstances_;
 
-	//! \brief The file path to the html-file being written.
-	QString targetPath_;
-
-	//! \brief Pointer to the instance that owns the top document generator.
+	//! Pointer to the instance that owns the top document generator.
 	QWidget* parentWidget_;
-
-    //! The factory for creating design widgets.
-    DesignWidgetFactory* designWidgetFactory_;
-
-    //! The factory for creating expression formatters.
-    ExpressionFormatterFactory* expressionFormatterFactory_;
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
+
+    //! Document generator for component views.
+    ViewDocumentGenerator* viewDocumentationGenerator_;
 };
 
 #endif // DOCUMENTGENERATOR_H
