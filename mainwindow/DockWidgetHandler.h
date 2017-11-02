@@ -12,8 +12,8 @@
 #ifndef DOCKWIDGETHANDLER_H
 #define DOCKWIDGETHANDLER_H
 
-#include <common\utils.h>
-#include <common\widgets\tabDocument\TabDocument.h>
+#include <common/utils.h>
+#include <common/widgets/tabDocument/TabDocument.h>
 
 class LibraryHandler;
 class LibraryWidget;

@@ -26,22 +26,16 @@ QDialog(parent),
     view_(new QTableView(this)),
     sortProxy_(new QSortFilterProxyModel(this))
 {
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     view_->setSortingEnabled(true);
     view_->setModel(sortProxy_);
     view_->horizontalHeader()->setStretchLastSection(true);
     view_->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-    view_->setWordWrap(true);
-    //view_->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    view_->setWordWrap(true);    
     view_->verticalHeader()->hide();
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
-    connect(buttonBox->button(QDialogButtonBox::Close), SIGNAL(clicked()),
-            this, SLOT(accept()), Qt::UniqueConnection);
-
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(label_);
-    layout->addWidget(view_, 1);
-    layout->addWidget(buttonBox);    
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -70,4 +64,31 @@ void TableViewDialog::setModel(QAbstractTableModel* model)
     view_->setColumnWidth(1, 500);
     view_->resizeColumnToContents(2);
     view_->resizeRowsToContents();
+}
+
+//-----------------------------------------------------------------------------
+// Function: TableViewDialog::setupLayout()
+//-----------------------------------------------------------------------------
+void TableViewDialog::setupLayout()
+{
+    QWidget* introWidget = new QWidget(this);
+    QHBoxLayout* introLayout = new QHBoxLayout(introWidget);
+    introLayout->addWidget(label_, 9);
+    QLabel* errorIcon = new QLabel(this);
+    errorIcon->setPixmap(QPixmap(":/icons/common/graphics/checkIntegrity.png"));
+    introLayout->addWidget(errorIcon, 1, Qt::AlignRight);    
+
+    QPalette introPalette = introWidget->palette();
+    introPalette.setColor(QPalette::Background, Qt::white);
+    introWidget->setPalette(introPalette);
+    introWidget->setAutoFillBackground(true);
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
+    connect(buttonBox->button(QDialogButtonBox::Close), SIGNAL(clicked()),
+        this, SLOT(accept()), Qt::UniqueConnection);
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(introWidget);
+    layout->addWidget(view_, 1);
+    layout->addWidget(buttonBox);
 }

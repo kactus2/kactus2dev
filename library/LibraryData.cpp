@@ -654,7 +654,10 @@ void LibraryData::onFileChanged(QString const& path)
 //-----------------------------------------------------------------------------
 bool LibraryData::validateDocument(QSharedPointer<Document> document)
 {
-    Q_ASSERT(document);
+    if (document.isNull())
+    {
+        return false;
+    }
 
 	VLNV documentVLNV = document->getVlnv();
 	QString documentPath = getPath(documentVLNV);

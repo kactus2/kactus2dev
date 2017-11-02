@@ -20,6 +20,7 @@
 
 class Component;
 class ModuleParameter;
+class ComponentInstantiation;
 
 //-----------------------------------------------------------------------------
 //! Parser for VHDL generics.
@@ -36,10 +37,11 @@ public:
 	virtual ~VHDLGenericParser();
 
     /*!
-     *  Runs the generic parser for the given input and adds the model parameters to the given component.
+     *  Runs the generic parser for the given input and adds the module parameters to the given component.
      *
-     *      @param [in] input               The input text to parse.
-     *      @param [in] targetComponent     The component to add the model parameters to.
+     *      @param [in] input                           The input text to parse.
+     *      @param [in/out] targetComponent             The component to add the parameters to.
+     *      @param [in] targetComponentInstantiation    The component instantiation to add the module parameters to.
      */
     virtual void import(QString const& input, QSharedPointer<Component> targetComponent,
 		QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
@@ -83,7 +85,6 @@ private:
      *      @return The input without comment lines.
      */
     QString removeCommentLines(QString section) const;
-
     
     /*!
      *  Finds all generic declarations from a generics section without comment lines.
@@ -96,14 +97,67 @@ private:
     QStringList genericDeclarationsIn(QString const& sectionWithoutCommentLines) const;
 
     /*!
-     *  Creates a model parameter from a given VHDL declaration and adds it to the target component.
+     *  Creates a module parameter from a given VHDL declaration and adds it to the target component instantiation.
+     *  An equivalent parameter will be added to the component.
      *
-     *      @param [in] declaration         The declaration from which to create a model parameter.
-     *      @param [in] targetComponent     The component to which add the model parameter.
+     *      @param [in] declaration                         The declaration from which to create a model parameter.
+     *      @param [in/out] targetComponent                 The component to which add the parameter.
+     *      @param [in/out] targetComponentInstantiation    The component instantiation to which add the module parameter.
      */
     void createModelParameterFromDeclaration(QString const& declaration, 
         QSharedPointer<Component> targetComponent, 
-        QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
+
+    /*!
+     *  Finds the given module parameter.
+     *
+     *      @param [in] name                            The name of the module parameter to find.
+     *      @param [in] targetComponentInstantiation    The instantiation to search in.
+     *
+     *      @return The found module parameter.
+     */
+    QSharedPointer<ModuleParameter> findModuleParameter(QString const& name,
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
+
+    /*!
+     *  Replaces all name references in the module parameters to parameter id references.
+     *
+     *      @param [in] targetComponent                 The component containing the parameters.
+     *      @param [in] targetComponentInstantiation    The component instantiation containing the module parameters.
+     */
+    void replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent, 
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
+    
+    /*!
+     *  Finds the given parameter.
+     *
+     *      @param [in] name        The name of the parameter to find.
+     *      @param [in] component   The component to search in.
+     *
+     *      @return The found parameter.
+     */
+    QSharedPointer<Parameter> findParameter(QString const& name, QSharedPointer<Component> component) const;
+    
+    /*!
+     *  Replaces all name references in the given parameter to parameter id references.
+     *
+     *      @param [in] parameter    The parameter whose references to replace.
+     *      @param [in] component    The component containing the referenced parameters.
+     */
+    void replaceNameReferencesWithParameterIds(QSharedPointer<Parameter> parameter,
+        QSharedPointer<Component> targetComponent) const;
+
+    /*!
+     *  Replaces the given name in the given id in the referenced parameter.
+     *
+     *      @param [in] expression      The expression to replace names in.
+     *      @param [in] namePattern     The pattern for the given name.
+     *      @param [in] referenced      The referenced parameter.
+     *
+     *      @return The expression where name references have been replaced with ids.
+     */
+    QString replaceNameWithId(QString const& expression, QRegularExpression& namePattern,
+        QSharedPointer<Parameter> referenced) const;
 
     //-----------------------------------------------------------------------------
     // Data.

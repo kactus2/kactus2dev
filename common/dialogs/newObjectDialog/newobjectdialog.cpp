@@ -6,7 +6,7 @@
 // Date: 
 //
 // Description:
-// NewObjectDialog is used to query the VLNV and path of a newly created design
+// NewObjectDialog is used to query the VLNV and path of a newly created document.
 //-----------------------------------------------------------------------------
 
 #include "newobjectdialog.h"
@@ -22,63 +22,51 @@
 #include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
-// Function: NewObjectDialog()
+// Function: NewObjectDialog::NewObjectDialog()
 //-----------------------------------------------------------------------------
 NewObjectDialog::NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type, bool showAttributes,
-                                 QWidget *parent):
+    QWidget *parent):
 QDialog(parent), 
-lh_(libInterface),
-attributeEditor_(0), 
-vlnvEditor_(0),
-directoryEditor_(0), 
-okButton_(0)
+    library_(libInterface),
+    attributeEditor_(new KactusAttributeEditor(this)), 
+    vlnvEditor_(new VLNVEditor(type, libInterface, this, this, true)),
+    directoryEditor_(new LibrarySelectorWidget(this)), 
+    okButton_(new QPushButton(tr("&OK")))
 {
-    attributeEditor_ = new KactusAttributeEditor(this);
-    attributeEditor_->setVisible(showAttributes);
-    connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
-
-    vlnvEditor_ = new VLNVEditor(type, libInterface, this, this, true);
-    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
-    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
-
-    directoryEditor_ = new LibrarySelectorWidget(this);
-    directoryEditor_->layout()->setContentsMargins(0,0,0,0);
-	connect(directoryEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
-
-    QGroupBox* separator = new QGroupBox(this);
-    separator->setFlat(true);
-
-    okButton_ = new QPushButton(tr("&OK"));
-    okButton_->setEnabled(false);
-    connect(okButton_, SIGNAL(released()), this, SLOT(accept()));
-
-    QPushButton *cancelButton = new QPushButton(tr("&Cancel"));
-    connect(cancelButton, SIGNAL(released()), this, SLOT(reject()));
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
-    buttonBox->addButton(okButton_, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(attributeEditor_);
-    mainLayout->addWidget(vlnvEditor_);
-    mainLayout->addWidget(directoryEditor_);
-    mainLayout->addWidget(separator);
-    mainLayout->addWidget(buttonBox);
-    mainLayout->addStretch(1);
-    setLayout(mainLayout);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     setWindowTitle("New HW Design");
-    setFixedHeight(sizeHint().height());
-    resize(400, sizeHint().height());
 
+    attributeEditor_->setVisible(showAttributes);
+   
+    directoryEditor_->layout()->setContentsMargins(0,0,0,0);
+    
     okButton_->setDefault(true);
+    okButton_->setEnabled(false);
+
+    setupLayout();
 
     onProductHierarchyChanged();
+
+    connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
+
+    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
+    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
+    connect(directoryEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
+
+    connect(okButton_, SIGNAL(released()), this, SLOT(accept()));    
 }
 
 //-----------------------------------------------------------------------------
-// Function: getVLNV()
+// Function: NewObjectDialog::~NewObjectDialog()
+//-----------------------------------------------------------------------------
+NewObjectDialog::~NewObjectDialog()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewObjectDialog::getVLNV()
 //-----------------------------------------------------------------------------
 VLNV NewObjectDialog::getVLNV()
 {
@@ -86,7 +74,7 @@ VLNV NewObjectDialog::getVLNV()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getPath()
+// Function: NewObjectDialog::getPath()
 //-----------------------------------------------------------------------------
 QString NewObjectDialog::getPath()
 {
@@ -94,40 +82,42 @@ QString NewObjectDialog::getPath()
 }
 
 //-----------------------------------------------------------------------------
-// Function: onContentChanged()
+// Function: NewObjectDialog::onContentChanged()
 //-----------------------------------------------------------------------------
 void NewObjectDialog::onContentChanged()
 {
-    // Enable/disable the ok button if the contents are valid/invalid.
     okButton_->setEnabled(directoryEditor_->isValid() && vlnvEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------
-// Function: accept()
+// Function: NewObjectDialog::accept()
 //-----------------------------------------------------------------------------
 void NewObjectDialog::accept()
 {
     // Make sure that the VLNV is not already in use.
-    if (lh_->contains(vlnvEditor_->getVLNV()))
+    if (library_->contains(vlnvEditor_->getVLNV()))
     {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                           tr("The design cannot be created because the VLNV already exists."),
-                           QMessageBox::Ok, this);
+        QMessageBox::critical(this, QCoreApplication::applicationName(),
+            tr("The document cannot be created because the VLNV already exists."),
+            QMessageBox::Ok);
         
-        msgBox.exec();
         return;
     }
 
     QDialog::accept();
 }
 
-void NewObjectDialog::setVLNV( const VLNV& vlnv ) {
+//-----------------------------------------------------------------------------
+// Function: NewObjectDialog::setVLNV()
+//-----------------------------------------------------------------------------
+void NewObjectDialog::setVLNV( const VLNV& vlnv )
+{
 	vlnvEditor_->setVLNV(vlnv);
     updateDirectory();
 }
 
 //-----------------------------------------------------------------------------
-// Function: setKactusAttributes()
+// Function: NewObjectDialog::setKactusAttributes()
 //-----------------------------------------------------------------------------
 void NewObjectDialog::setKactusAttributes(KactusAttribute::ProductHierarchy prodHier,
                                           KactusAttribute::Firmness firmness)
@@ -136,7 +126,7 @@ void NewObjectDialog::setKactusAttributes(KactusAttribute::ProductHierarchy prod
 }
 
 //-----------------------------------------------------------------------------
-// Function: getProductHierarchy()
+// Function: NewObjectDialog::getProductHierarchy()
 //-----------------------------------------------------------------------------
 KactusAttribute::ProductHierarchy NewObjectDialog::getProductHierarchy() const
 {
@@ -144,7 +134,7 @@ KactusAttribute::ProductHierarchy NewObjectDialog::getProductHierarchy() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: getFirmness()
+// Function: NewObjectDialog::getFirmness()
 //-----------------------------------------------------------------------------
 KactusAttribute::Firmness NewObjectDialog::getFirmness() const
 {
@@ -152,14 +142,12 @@ KactusAttribute::Firmness NewObjectDialog::getFirmness() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: saveAsDialog()
+// Function: NewObjectDialog::saveAsDialog()
 //-----------------------------------------------------------------------------
 bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
-                                   KactusAttribute::ProductHierarchy& prodHier,
-                                   KactusAttribute::Firmness& firmness,
-                                   VLNV& vlnv, QString& directory)
+    KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness,
+    VLNV& vlnv, QString& directory)
 {
-    // Create a suggestion for the new vlnv without the version number.
     VLNV suggestion = oldVLNV;
     suggestion.setVersion(QString());
 
@@ -181,13 +169,11 @@ bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV c
 }
 
 //-----------------------------------------------------------------------------
-// Function: saveAsDialog()
+// Function: NewObjectDialog::saveAsDialog()
 //-----------------------------------------------------------------------------
 bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh,
-                                   VLNV const& oldVLNV, VLNV& vlnv, QString& directory,
-								   const QString& windowTitle)
+    VLNV const& oldVLNV, VLNV& vlnv, QString& directory, QString const& windowTitle)
 {
-    // Create a suggestion for the new vlnv without the version number.
     VLNV suggestion = oldVLNV;
     suggestion.setVersion(QString());
 
@@ -206,7 +192,7 @@ bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh,
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateDirectory()
+// Function: NewObjectDialog::updateDirectory()
 //-----------------------------------------------------------------------------
 void NewObjectDialog::updateDirectory()
 {
@@ -238,7 +224,7 @@ void NewObjectDialog::updateDirectory()
 }
 
 //-----------------------------------------------------------------------------
-// Function: onProductHierarchyChanged()
+// Function: NewObjectDialog::onProductHierarchyChanged()
 //-----------------------------------------------------------------------------
 void NewObjectDialog::onProductHierarchyChanged()
 {
@@ -263,4 +249,31 @@ void NewObjectDialog::onProductHierarchyChanged()
     }
 
     vlnvEditor_->setVLNV(vlnv);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewObjectDialog::setupLayout()
+//-----------------------------------------------------------------------------
+void NewObjectDialog::setupLayout()
+{
+    QGroupBox* separator = new QGroupBox(this);
+    separator->setFlat(true);
+
+    QPushButton* cancelButton = new QPushButton(tr("&Cancel"));
+    connect(cancelButton, SIGNAL(released()), this, SLOT(reject()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
+    buttonBox->addButton(okButton_, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(attributeEditor_);
+    mainLayout->addWidget(vlnvEditor_);
+    mainLayout->addWidget(directoryEditor_);
+    mainLayout->addWidget(separator);
+    mainLayout->addWidget(buttonBox);
+    mainLayout->addStretch(1);
+
+    setFixedHeight(sizeHint().height());
+    resize(400, sizeHint().height());
 }

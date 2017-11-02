@@ -6,7 +6,7 @@
 // Date: 
 //
 // Description:
-// NewObjectDialog is used to query the VLNV and path of a newly created design
+// NewObjectDialog is used to query the VLNV and path of a newly created document.
 //-----------------------------------------------------------------------------
 
 #ifndef NEWOBJECTDIALOG_H
@@ -25,7 +25,7 @@ class VLNVEditor;
 class KactusAttributeEditor;
 
 //-----------------------------------------------------------------------------
-//! NewObjectDialog is used to query the VLNV and path of a newly created design
+//! NewObjectDialog is used to query the VLNV and path of a newly created document.
 //-----------------------------------------------------------------------------
 class NewObjectDialog: public QDialog
 {
@@ -43,6 +43,10 @@ public:
      */
     NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type, bool showAttributes,
         QWidget *parent = 0);
+    
+
+    //! The destructor.
+    virtual ~NewObjectDialog();
 
 	/*!
      *  Set the vlnv for the editor.
@@ -94,7 +98,7 @@ public:
      *      @return True, if the user pressed OK. False if the user pressed Cancel.
      */
     static bool saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV, VLNV& vlnv,
-                             QString& directory, const QString& windowTitle = QString("Save As"));
+                             QString& directory, QString const& windowTitle = QString("Save As"));
 
 private slots:
     /*!
@@ -103,7 +107,7 @@ private slots:
     void updateDirectory();
 
     /*!
-     *  [Description].
+     *  Updates the OK button state when contents change.
      */
     void onContentChanged();
 
@@ -118,8 +122,16 @@ private slots:
     void onProductHierarchyChanged();
 
 private:
+
+    //! Disable copying.
+    NewObjectDialog(NewObjectDialog const& other);
+    NewObjectDialog& operator=(NewObjectDialog const& other);
+
+    //! Sets the widget layout.
+    void setupLayout();
+
     //! The library interface.
-    LibraryInterface* lh_;
+    LibraryInterface* library_;
 
     //! Attribute editor.
     KactusAttributeEditor* attributeEditor_;
@@ -127,7 +139,7 @@ private:
     //! The VLNV editor.
     VLNVEditor* vlnvEditor_;
 
-	//! \brief The editor to select the directory to save to. 
+	//! The editor to select the directory to save to. 
 	LibrarySelectorWidget* directoryEditor_;
 
     //! OK button.

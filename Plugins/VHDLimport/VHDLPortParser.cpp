@@ -16,6 +16,7 @@
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/common/ModuleParameter.h>
 
@@ -68,16 +69,16 @@ VHDLPortParser::~VHDLPortParser()
 // Function: VHDLPortParser::parse()
 //-----------------------------------------------------------------------------
 void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
+	QSharedPointer<ComponentInstantiation> /*targetComponentInstantiation*/)
 {
     foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
         existingPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);
     }
 
-    foreach (QString portDeclaration, findPortDeclarations(input))
+    foreach (QString const& portDeclaration, findPortDeclarations(input))
     {
-        createPortFromDeclaration(portDeclaration, targetComponent, targetComponentInstantiation);
+        createPortFromDeclaration(portDeclaration, targetComponent);
         if (highlighter_)
         {
             highlighter_->applyHighlight(portDeclaration, ImportColors::PORT);
@@ -91,40 +92,6 @@ void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targ
 void VHDLPortParser::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ = highlighter;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLPortParser::parseLeftBound()
-//-----------------------------------------------------------------------------
-QString VHDLPortParser::parseLeftBound(QString const& input,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
-{
-    QString vectorBounds = parseVectorBounds(input);
-
-    QString leftValue = parseLeftValue(vectorBounds, targetComponentInstantiation);
-
-    return leftValue;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLPortParser::parseRightBound()
-//-----------------------------------------------------------------------------
-QString VHDLPortParser::parseRightBound(QString const& input,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
-{
-    QString vectorBounds = parseVectorBounds(input);
-
-    QString rightValue = parseRightValue(vectorBounds, targetComponentInstantiation);
-
-    return rightValue;
-}    
-
-//-----------------------------------------------------------------------------
-// Function: VHDLPortParser::parseDefaultValue()
-//-----------------------------------------------------------------------------
-QString VHDLPortParser::parseDefaultValue(QString const& input) const
-{
-    return PORT_EXP.match(input).captured(4).trimmed();
 }
 
 //-----------------------------------------------------------------------------
@@ -176,13 +143,10 @@ QStringList VHDLPortParser::portDeclarationsIn(QString const& portSectionWithout
 {
     QStringList portDeclarations;
 
-    int nextPort = portSectionWithoutCommentLines.indexOf(PORT_EXP, 0);
-    while (nextPort != -1)
+    QRegularExpressionMatchIterator i = PORT_EXP.globalMatch(portSectionWithoutCommentLines);
+    while (i.hasNext())
     {
-        QRegularExpressionMatch match = PORT_EXP.match(portSectionWithoutCommentLines, nextPort);
-        portDeclarations.append(match.captured());
-
-        nextPort = portSectionWithoutCommentLines.indexOf(PORT_EXP, nextPort + match.capturedLength());
+        portDeclarations.append(i.next().captured());
     }
 
     return portDeclarations;
@@ -191,23 +155,23 @@ QStringList VHDLPortParser::portDeclarationsIn(QString const& portSectionWithout
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::createPort()
 //-----------------------------------------------------------------------------
-void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QSharedPointer<Component> targetComponent,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
+void VHDLPortParser::createPortFromDeclaration(QString const& declaration,
+    QSharedPointer<Component> targetComponent) const
 {
     QStringList portNames = parsePortNames(declaration);
     DirectionTypes::Direction direction =  parsePortDirection(declaration); 
     QString type = parsePortType(declaration);
     QString typeDefinition;
-    QString defaultValue = parseDefaultValue(declaration);
+    QString defaultValue = parseDefaultValue(declaration, targetComponent);
     QString description = parseDescription(declaration);
 
-    QString leftBound = parseLeftBound(declaration, targetComponentInstantiation);
-    QString rightBound = parseRightBound(declaration, targetComponentInstantiation);
+    QPair<QString, QString> bounds = parsePortBounds(declaration, targetComponent);
+    QString leftBound = bounds.first;
+    QString rightBound = bounds.second;
 
-    foreach(QString name, portNames)
+    foreach(QString const& name, portNames)
     {   
-        QSharedPointer<Port> port;
-        
+        QSharedPointer<Port> port;        
         if (targetComponent->hasPort(name))
         {
             port = targetComponent->getPort(name);
@@ -217,6 +181,7 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QShar
         {
             port = QSharedPointer<Port>(new Port());           
             port->setName(name);
+            typeDefinition = createDefaultTypeDefinition(type);
             targetComponent->getPorts()->append(port);
         }
 
@@ -227,8 +192,6 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QShar
         port->setTypeDefinition(type, typeDefinition);
         port->setDefaultValue(defaultValue);
         port->setDescription(description);
-
-        emit add(port, declaration);
     }
 }
 
@@ -246,8 +209,7 @@ QStringList VHDLPortParser::parsePortNames(QString const& declaration) const
 //-----------------------------------------------------------------------------
 DirectionTypes::Direction VHDLPortParser::parsePortDirection(QString const& declaration) const
 {
-    QString direction = PORT_EXP.match(declaration).captured(2).toLower();
-    
+    QString direction = PORT_EXP.match(declaration).captured(2).toLower();    
     return DirectionTypes::str2Direction(direction, DirectionTypes::DIRECTION_INVALID);
 }
 
@@ -270,10 +232,9 @@ QString VHDLPortParser::parsePortType(QString const& declaration) const
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parseDescription()
 //-----------------------------------------------------------------------------
-QString VHDLPortParser::parseDescription(QString const& declaration)
+QString VHDLPortParser::parseDescription(QString const& declaration) const
 {
     QString description = PORT_EXP.match(declaration).captured(6).trimmed();
-
     if (description.isEmpty())
     {
         description = PORT_EXP.match(declaration).captured(7).trimmed();
@@ -283,52 +244,84 @@ QString VHDLPortParser::parseDescription(QString const& declaration)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLPortParser::parseLeftValue()
+// Function: VHDLPortParser::parseDefaultValue()
 //-----------------------------------------------------------------------------
-QString VHDLPortParser::parseLeftValue(QString const& vectorBounds,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+QString VHDLPortParser::parseDefaultValue(QString const& input, QSharedPointer<Component> targetComponent) const
 {
-    QString value = "";
-
-    if(!vectorBounds.isEmpty() && vectorBounds.indexOf(VECTOR_BOUNDS) != -1 )
-    {
-        QString leftEquation = VECTOR_BOUNDS.match(vectorBounds).captured(1);
-
-        value = leftEquation;
-    }	
-
-    return value;
+    return replaceNameReferencesWithIds(PORT_EXP.match(input).captured(4).trimmed(), targetComponent);
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLPortParser::parseRightValue()
+// Function: VerilogPortParser::replaceNameReferencesWithIds()
 //-----------------------------------------------------------------------------
-QString VHDLPortParser::parseRightValue(QString const& vectorBounds,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+QString VHDLPortParser::replaceNameReferencesWithIds(QString const& expression, 
+    QSharedPointer<Component> targetComponent) const
 {
-    QString value = "";
+    QString result = expression;
 
-    if(!vectorBounds.isEmpty() && vectorBounds.indexOf(VECTOR_BOUNDS) != -1 )
+    foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
     {
-        QString rightEquation = VECTOR_BOUNDS.match(vectorBounds).captured(2);
+        QRegularExpression macroUsage("\\b" + define->name() + "\\b");
+        if (macroUsage.match(result).hasMatch())
+        {
+            result.replace(macroUsage, define->getValueId());
 
-        value = rightEquation;
-    }	
+            for(int i = 0; i < expression.count(macroUsage); i++)
+            {
+                define->increaseUsageCount();
+            }
+        }
+    }
 
-    return value;
+    return result;
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parsePortBounds()
 //-----------------------------------------------------------------------------
-QString VHDLPortParser::parseVectorBounds(QString const& declaration) const
+QPair<QString, QString> VHDLPortParser::parsePortBounds(QString const& declaration, 
+    QSharedPointer<Component> targetComponent) const
 {
     QString fullType = PORT_EXP.match(declaration).captured(3);
 
     QString typePattern = PORT_TYPE;
     typePattern.replace("(?:","(");
-
     QRegularExpression typeExpression(typePattern, QRegularExpression::CaseInsensitiveOption);
-    
-    return typeExpression.match(fullType).captured(2);
+
+    QString vectorBounds = typeExpression.match(fullType).captured(2);
+
+    QString leftValue = QString();
+    QString rightValue = QString();
+    if (!vectorBounds.isEmpty() && vectorBounds.indexOf(VECTOR_BOUNDS) != -1)
+    {
+        QString leftEquation = VECTOR_BOUNDS.match(vectorBounds).captured(1);
+        QString rightEquation = VECTOR_BOUNDS.match(vectorBounds).captured(2);
+
+        leftValue = replaceNameReferencesWithIds(leftEquation, targetComponent);
+        rightValue = replaceNameReferencesWithIds(rightEquation, targetComponent);
+    }	
+
+    return qMakePair(leftValue, rightValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLPortParser::getDefaultTypeDefinition()
+//-----------------------------------------------------------------------------
+QString VHDLPortParser::createDefaultTypeDefinition(QString const& type) const
+{
+    QRegularExpression defaultLogicTypes("std_(u)?logic(_vector)?");
+    QRegularExpression defaultNumericTypes("(un)?signed");
+
+    if (defaultLogicTypes.match(type).hasMatch())
+    {
+        return QStringLiteral("IEEE.std_logic_1164.all");
+    }
+    else if (defaultNumericTypes.match(type).hasMatch())
+    {
+        return QStringLiteral("IEEE.numeric_std.all");
+    }
+    else
+    {
+        return QString();
+    }
 }

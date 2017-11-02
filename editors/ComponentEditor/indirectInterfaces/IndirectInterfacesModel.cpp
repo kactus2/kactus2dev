@@ -9,7 +9,7 @@
 // Data model for component indirect interfaces.
 //-----------------------------------------------------------------------------
 
-#include "IndirectInterfacesmodel.h"
+#include "IndirectInterfacesModel.h"
 
 #include "IndirectInterfaceColumns.h"
 
@@ -314,8 +314,8 @@ void IndirectInterfacesModel::onAddItem(QModelIndex const& index)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-    QSharedPointer<IndirectInterface> IndirectInterface(new IndirectInterface());
-    indirectInterfaces_->insert(row, IndirectInterface);
+    QSharedPointer<IndirectInterface> indirectInterface(new IndirectInterface());
+    indirectInterfaces_->insert(row, indirectInterface);
 	endInsertRows();
 
 	emit interfaceAdded(row);

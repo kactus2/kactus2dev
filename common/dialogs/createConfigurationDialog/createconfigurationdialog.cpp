@@ -49,6 +49,8 @@ QDialog(parent, Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseB
     Q_ASSERT(component);
     Q_ASSERT(handler);
 
+    setStyleSheet(QString("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }"));
+
     QSettings settings;
     QStringList suggestedNames;
     QStringList reservedNames;
@@ -85,6 +87,7 @@ QDialog(parent, Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseB
     configNameEdit_->setDisallowedInputs(reservedNames);
     configNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
     configNameEdit_->setMessageTemplate(tr("View '%1' already exists!"));
+    configNameEdit_->setProperty("mandatoryField", true);
 
     VLNV topVLNV = component_->getVlnv();
 	vlnvEdit_->setTitle(tr("Configuration VLNV"));	
@@ -214,8 +217,28 @@ void CreateConfigurationDialog::prevalidate()
 //-----------------------------------------------------------------------------
 void CreateConfigurationDialog::setupLayout()
 {
-    QHBoxLayout* nameLayout = new QHBoxLayout();
-    nameLayout->addWidget(new QLabel(tr("Configuration name:"), this));
+    QLabel* introLabel = new QLabel(
+        tr("<b>Create a new design configuration.</b><br>"
+        "A new view will be added for the design configuration in the component. The given VLNV "
+        "will be used for identifying the design configuration within the library."), this);
+    introLabel->setWordWrap(true);
+
+    QLabel* configurationIcon = new QLabel(this);
+    configurationIcon->setPixmap(QPixmap(":icons/common/graphics/configuration.png"));
+    
+    QWidget* introWidget = new QWidget(this);
+    QHBoxLayout* introLayout = new QHBoxLayout(introWidget);
+    introLayout->addWidget(introLabel, 9);
+    introLayout->addWidget(configurationIcon, 1);    
+
+    QPalette introPalette = introWidget->palette();
+    introPalette.setColor(QPalette::Background, Qt::white);
+    introWidget->setPalette(introPalette);
+    introWidget->setAutoFillBackground(true);
+
+    QGroupBox* nameGroup = new QGroupBox(tr("Configuration settings"), this);
+    QHBoxLayout* nameLayout = new QHBoxLayout(nameGroup);
+    nameLayout->addWidget(new QLabel(tr("Name:"), this));
     nameLayout->addWidget(configNameEdit_);
 
     QGroupBox* radioGroup = new QGroupBox(tr("Select target design"), this);
@@ -256,15 +279,20 @@ void CreateConfigurationDialog::setupLayout()
     radioLayout->addWidget(createCopyButton_);
     radioLayout->addWidget(createCopyLabel);
 
+    QGroupBox* separator = new QGroupBox(this);
+    separator->setFlat(true);
+
     QHBoxLayout* buttonLayout = new QHBoxLayout();
     buttonLayout->addStretch();
     buttonLayout->addWidget(okButton_, 0, Qt::AlignRight);
     buttonLayout->addWidget(cancelButton_, 0, Qt::AlignRight);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);   
-    topLayout->addLayout(nameLayout);
+    topLayout->addWidget(introWidget);
+    topLayout->addWidget(nameGroup);
     topLayout->addWidget(vlnvEdit_);
-    topLayout->addWidget(radioGroup);	
+    topLayout->addWidget(radioGroup);
+    topLayout->addWidget(separator);
     topLayout->addLayout(buttonLayout);
 }
 

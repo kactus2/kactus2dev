@@ -72,7 +72,7 @@ void tst_VHDLGenericParser::init()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VHDLGenericParser::testWellFormedGenericIsParsed()
+// Function: tst_VHDLGenericParser::testGenericIsParsed()
 //-----------------------------------------------------------------------------
 void tst_VHDLGenericParser::testGenericIsParsed()
 {
@@ -85,13 +85,20 @@ void tst_VHDLGenericParser::testGenericIsParsed()
     runParser(fileContent);
 
     QCOMPARE(importComponentInstantiation_->getModuleParameters()->count(), 1);
+    QCOMPARE(importComponent_->getParameters()->count(), 1);
 
     QSharedPointer<ModuleParameter> createdModelParamter =
 		importComponentInstantiation_->getModuleParameters()->first();
+    QSharedPointer<Parameter> equivalentParameter = importComponent_->getParameters()->first();
+
     QCOMPARE(createdModelParamter->name(), expectedName);
     QCOMPARE(createdModelParamter->getDataType(), expectedType);
-    QCOMPARE(createdModelParamter->getValue(), expectedDefaultValue);
+    QCOMPARE(createdModelParamter->getValue(), equivalentParameter->getValueId());
     QCOMPARE(createdModelParamter->description(), expectedDescription);
+
+    QCOMPARE(equivalentParameter->name(), expectedName);
+    QCOMPARE(equivalentParameter->getValue(), expectedDefaultValue);
+    QCOMPARE(equivalentParameter->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------

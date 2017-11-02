@@ -20,6 +20,7 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QIcon>
+#include <QLabel>
 #include <QStringList>
 #include <QVBoxLayout>
 
@@ -37,7 +38,7 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
     setWindowTitle(tr("Configure Library"));
 
     // Create the library location group box.
-    QGroupBox* locationGroup = new QGroupBox(tr("Library locations (check the default directory)"), this);
+    QGroupBox* locationGroup = new QGroupBox(tr("Library locations"), this);
 
 	libLocationsTable_ = new QTableWidget(0, 3, locationGroup);
 
@@ -65,6 +66,17 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
 
     removeLocationButton_->setEnabled(false);
 
+    QWidget* introWidget = new QWidget(this);
+    QHBoxLayout* introLayout = new QHBoxLayout(introWidget);
+    introLayout->addWidget(new QLabel(tr("<b>Set library locations on disk</b><br>"
+        "Active directories and their sub-directories will be searched for IP-XACT files and "
+        "read into the library."), this));
+
+    QPalette introPalette = introWidget->palette();
+    introPalette.setColor(QPalette::Background, Qt::white);
+    introWidget->setPalette(introPalette);
+    introWidget->setAutoFillBackground(true);
+
     QDialogButtonBox* listButtonBox = new QDialogButtonBox(Qt::Vertical);
     listButtonBox->addButton(addLocationButton_, QDialogButtonBox::ActionRole);
     listButtonBox->addButton(removeLocationButton_, QDialogButtonBox::ActionRole);
@@ -73,12 +85,17 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
     locationLayout->addWidget(libLocationsTable_);
     locationLayout->addWidget(listButtonBox);
 
+    QGroupBox* separator = new QGroupBox(this);
+    separator->setFlat(true);
+
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                                        Qt::Horizontal, this);
     // Setup the layout.
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(locationGroup, 1);
-    layout->addWidget(buttonBox);
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addWidget(introWidget);
+    topLayout->addWidget(locationGroup, 1);
+    topLayout->addWidget(separator);
+    topLayout->addWidget(buttonBox);
 
     resize(500, sizeHint().height());
 
@@ -183,8 +200,6 @@ void LibrarySettingsDialog::onItemClicked(QTableWidgetItem* item)
 		for (int i = 0; i < libLocationsTable_->rowCount(); ++i)
 		{
 			QTableWidgetItem* temp = libLocationsTable_->item(i, LibrarySettingsDelegate::DEF_COLUMN);
-
-			// If the item is not the clicked item.
 			if (temp != item)
 			{
 				temp->setCheckState(Qt::Unchecked);
@@ -240,11 +255,7 @@ void LibrarySettingsDialog::accept()
 	}
 
     settings_.setValue("Library/Locations", locations);
-
-    // save the default location is one was set
     settings_.setValue("Library/DefaultLocation", defaultLocation);
-
-	// the active locations are saved
 	settings_.setValue("Library/ActiveLocations", activeLocations);
 
     if (changed_)

@@ -2005,7 +2005,6 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
 
     // Ask the user the VLNV, target path and view name.
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::SW, this);
-    dialog.setWindowTitle(tr("New SW Design"));
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv().getVendor(), component->getVlnv().getLibrary(), "", ""));
 
     QSettings settings;
@@ -2261,7 +2260,6 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
 
     // Ask the user the VLNV, target path and view name.
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::SYSTEM, this);
-    dialog.setWindowTitle(tr("New System Design"));
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv().getVendor(), component->getVlnv().getLibrary(), "", ""));
 
     QSettings settings;
