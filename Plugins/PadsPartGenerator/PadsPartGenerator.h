@@ -139,7 +139,7 @@ private:
      *
      *      @return True, if part file was successfully written, otherwise false.
      */
-    bool generatePartFile(QFile* file, const QString& partDescription);
+    bool generatePartFile(QFile* file, QString const& partDescription);
 
     /*!
      *  Writes the PADS CAE decal file.
@@ -150,7 +150,7 @@ private:
      *
      *      @return True, if CAE file was successfully written, otherwise false.
      */
-    bool generateCAEFile(QFile* file, const QString& partTitle, const QString& partDescription);
+    bool generateCAEFile(QFile* file, QString const& partTitle, QString const& partDescription);
 
     /*!
      *  Generates the CAE decal terminals and prints them into an output stream.
@@ -196,7 +196,7 @@ private:
      *
      *      @return True, if the file was successfully added to file set, otherwise false.
      */
-    bool addFileToFileset(QSharedPointer<FileSet> fileSet, const QString& filePath, QString const& basePath,
+    bool addFileToFileset(QSharedPointer<FileSet> fileSet, QString const& filePath, QString const& basePath,
         const QStringList& fileTypes);
 
 };

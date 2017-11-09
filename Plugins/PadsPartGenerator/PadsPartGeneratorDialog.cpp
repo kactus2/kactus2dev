@@ -15,6 +15,8 @@
 
 #include <library/LibraryInterface.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
@@ -70,18 +72,19 @@ namespace
     const QString DEFAULT_GATENAME = "Default_Gate";
 
     // Dialog settings.
-    const int MINIMUM_WIDTH = 500;
+    const int MINIMUM_WIDTH = 600;
 }
 
 //-----------------------------------------------------------------------------
 // Function: PadsPartGeneratorDialog::PadsPartGeneratorDialog()
 //-----------------------------------------------------------------------------
 PadsPartGeneratorDialog::PadsPartGeneratorDialog(LibraryInterface* libIf,
-    QSharedPointer<const Component> component, const QString& generatorName, 
-    const QString& generatorVersion, QWidget* parent)
-    : QDialog(parent),
+    QSharedPointer<const Component> component, QSharedPointer<ExpressionParser> expressionParser, 
+    QString const& generatorName,  QString const& generatorVersion, QWidget* parent):
+QDialog(parent),
     libHandler_(libIf),
     component_(component),
+    expressionParser_(expressionParser),
     generatorName_(generatorName),
     generatorVersion_(generatorVersion),
     fileSetSelector_(new QComboBox(this)),
@@ -103,7 +106,7 @@ PadsPartGeneratorDialog::PadsPartGeneratorDialog(LibraryInterface* libIf,
     QRegExpValidator* nameValidator = new QRegExpValidator(QRegExp("\\w{1,40}", Qt::CaseInsensitive), this); 
     nameEditor_->setValidator(nameValidator);    
     nameEditor_->setText(component_->getVlnv().getName());    
-    connect(nameEditor_, SIGNAL(textChanged(const QString&)),
+    connect(nameEditor_, SIGNAL(textChanged(QString const&)),
         this, SLOT(onNameChanged()), Qt::UniqueConnection);
 
     // File set selector.
@@ -134,7 +137,7 @@ PadsPartGeneratorDialog::PadsPartGeneratorDialog(LibraryInterface* libIf,
     QRegExpValidator* familyValidator = new QRegExpValidator(QRegExp("\\w{3}", Qt::CaseInsensitive), this); 
     familyEditor_->setValidator(familyValidator);
     familyEditor_->setText("MOS");
-    connect(familyEditor_, SIGNAL(textChanged(const QString&)),
+    connect(familyEditor_, SIGNAL(textChanged(QString const&)),
         this, SLOT(onFamilyChanged()), Qt::UniqueConnection);
 
     // Gate generation type.
@@ -147,7 +150,7 @@ PadsPartGeneratorDialog::PadsPartGeneratorDialog(LibraryInterface* libIf,
     gateNameEditor_->setValidator(gateNameValidator);  
     gateNameEditor_->setText(DEFAULT_GATENAME);  
     gateNameEditor_->setEnabled(false);
-    connect(gateNameEditor_, SIGNAL(textChanged(const QString&)),
+    connect(gateNameEditor_, SIGNAL(textChanged(QString const&)),
         this, SLOT(onGateNameChanged()), Qt::UniqueConnection);
 
     // Part preview.
@@ -403,56 +406,6 @@ void PadsPartGeneratorDialog::onGateNameChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PadsPartGeneratorDialog::setupLayout()
-//-----------------------------------------------------------------------------
-void PadsPartGeneratorDialog::setupLayout()
-{
-    QGroupBox* kactusGroup = new QGroupBox(tr("Fileset options"), this);
-    QFormLayout* kactusLayout = new QFormLayout(kactusGroup);
-    kactusLayout->addRow(tr("Select target fileset"), fileSetSelector_);
-
-    QGroupBox* headerGenerationGroup = new QGroupBox(tr("Header generation options"), this);
-    QFormLayout* headerLayout = new QFormLayout(headerGenerationGroup);
-
-    headerLayout->addRow(tr("Part name"), nameEditor_);
-    headerLayout->addRow(tr("Coordinate units"), unitSelector_);
-    headerLayout->addRow(tr("Logic family"), familyEditor_);
-
-    QGroupBox* gateGenerationGroup = new QGroupBox(tr("Gate options"), this);
-    QVBoxLayout* gateGenerationLayout = new QVBoxLayout(gateGenerationGroup);
-    gateGenerationLayout->addWidget(multiGateButton_);
-    gateGenerationLayout->addWidget(singleGateButton_);
-    QFormLayout* gateNameLayout = new QFormLayout();
-    gateNameLayout->addRow(tr("Gate name"), gateNameEditor_);
-    gateGenerationLayout->addLayout(gateNameLayout);
-
-    QGroupBox* previewGroup = new QGroupBox(tr("Preview"), this);
-    QVBoxLayout* previewLayout = new QVBoxLayout(previewGroup);
-    previewLayout->addWidget(preview_);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(kactusGroup);
-    topLayout->addWidget(headerGenerationGroup);
-    topLayout->addWidget(gateGenerationGroup);
-    topLayout->addWidget(previewGroup);
-
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    QPushButton* runButton = new QPushButton(tr("Run"));
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
-    buttonLayout->addStretch();
-    buttonLayout->addWidget(runButton, 0, Qt::AlignRight);
-    buttonLayout->addWidget(cancelButton, 0, Qt::AlignRight);
-    topLayout->addLayout(buttonLayout);
-
-    connect(runButton, SIGNAL(clicked(bool)),
-        this, SLOT(onRunClicked()), Qt::UniqueConnection);    
-    connect(cancelButton, SIGNAL(clicked(bool)),
-        this, SLOT(reject()), Qt::UniqueConnection);
-
-    setMinimumWidth(MINIMUM_WIDTH);
-}
-
-//-----------------------------------------------------------------------------
 // Function: PadsPartGeneratorDialog::generateHeader()
 //-----------------------------------------------------------------------------
 void PadsPartGeneratorDialog::generateHeader()
@@ -542,17 +495,11 @@ void PadsPartGeneratorDialog::generateGates()
     {        
         foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
         {
-            int pinCount = 0;
-            foreach(QSharedPointer<PortMap> portMap, *busInterface->getAbstractionTypes()->first()->getPortMaps())
-            {
-                pinCount += abs(portMap->getLogicalPort()->range_->getLeft().toInt() - 
-                    portMap->getLogicalPort()->range_->getRight().toInt()) + 1; 
-                //portMap->logicalVector()->getSize();
-            }
+            int pinCount = countInterfacePins(busInterface);
+
             insertGate(busInterface->name(), 1, pinCount, 0, cursor);
             insertPins(busInterface, cursor);
             cursor.insertBlock();
-
         }
         
         gateCount = component_->getBusInterfaces()->size();
@@ -563,11 +510,7 @@ void PadsPartGeneratorDialog::generateGates()
         int pinCount = 0;
         foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
         {
-            foreach(QSharedPointer<PortMap> portMap, *busInterface->getAbstractionTypes()->first()->getPortMaps())
-            {
-                pinCount += abs(portMap->getLogicalPort()->range_->getLeft().toInt() - 
-                    portMap->getLogicalPort()->range_->getRight().toInt()) + 1; 
-            }
+            pinCount += countInterfacePins(busInterface);
         }
 
         QString gateName = gateNameEditor_->text();
@@ -600,6 +543,55 @@ void PadsPartGeneratorDialog::generateGates()
 }
 
 //-----------------------------------------------------------------------------
+// Function: PadsPartGeneratorDialog::countInterfacePins()
+//-----------------------------------------------------------------------------
+int PadsPartGeneratorDialog::countInterfacePins(QSharedPointer<BusInterface> busInterface)
+{
+    int pinCount = 0;
+
+    foreach(QSharedPointer<PortMap> portMap, *busInterface->getAbstractionTypes()->first()->getPortMaps())
+    {
+        pinCount += countPortMapPins(portMap);
+    }  
+
+    return pinCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PadsPartGeneratorDialog::countPortMapPins()
+//-----------------------------------------------------------------------------
+int PadsPartGeneratorDialog::countPortMapPins(QSharedPointer<PortMap> portMap)
+{
+    int pinCount = 0;
+
+    if (portMap->getPhysicalPort())
+    {
+        QString left = QString();
+        QString right = QString();
+
+        if (portMap->getPhysicalPort()->partSelect_)
+        {
+            left = portMap->getPhysicalPort()->partSelect_->getLeftRange();
+            right = portMap->getPhysicalPort()->partSelect_->getRightRange();
+        }
+        else if (component_->hasPort(portMap->getPhysicalPort()->name_))
+        {
+            QSharedPointer<Port> physicalPort = component_->getPort(portMap->getPhysicalPort()->name_);
+            left = physicalPort->getLeftBound();
+            right = physicalPort->getRightBound();
+        }
+
+        if (!left.isEmpty() && !right.isEmpty())
+        {
+            pinCount += abs(expressionParser_->parseExpression(left).toInt() - 
+                expressionParser_->parseExpression(right).toInt()) + 1;
+        }
+    }    
+
+    return pinCount;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PadsPartGeneratorDialog::insertGate()
 //-----------------------------------------------------------------------------
 void PadsPartGeneratorDialog::insertGate(QString const& name, int decals, int pins, int gateswap, QTextCursor& cursor)
@@ -625,8 +617,7 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
     // Get the abstract definition of the bus interface for resolving the logical signal size.
     QSharedPointer<Document> libComp = 
         libHandler_->getModel(*busInterface->getAbstractionTypes()->first()->getAbstractionRef());
-    QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
-    bool showLogicalIndex = false;     
+    QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();  
 
     foreach(QSharedPointer<PortMap> portMap, *busInterface->getAbstractionTypes()->first()->getPortMaps())
     {
@@ -634,26 +625,10 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
         QStringList line = PadsAsciiSyntax::PART_GATE_PIN.split(PadsAsciiSyntax::SEPARATOR);        
         
         int logLower = 0;
-        int logHigher = 0;
-
-        QSharedPointer<PortMap::LogicalPort> logicalPort = portMap->getLogicalPort();
-        if (logicalPort && logicalPort->range_)
-        {
-            int rangeLeft = logicalPort->range_->getLeft().toInt();
-            int rangeRight = logicalPort->range_->getRight().toInt();
-            logLower = qMin(rangeLeft, rangeRight);
-            logHigher = qMax(rangeLeft, rangeRight);       
-
-            if (absDef)
-            {
-                QSharedPointer<PortAbstraction> absPort = absDef->getPort(portMap->getLogicalPort()->name_);
-                if (absPort && absPort->hasWire())
-                {
-                    showLogicalIndex = absPort->getWire()->getWidth(busInterface->getInterfaceMode(), busInterface->getSystem()).toInt() > 1; 
-                }                
-            }
-        }
+        int logHigher = countPortMapPins(portMap) - 1;
      
+        bool showLogicalIndex = logHigher > logLower;   
+
         for (int logIndex = logLower; logIndex <= logHigher; logIndex++)
         {                    
             line.replace(PadsAsciiSyntax::PINNUMBER, pin);
@@ -661,8 +636,8 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
             line.replace(PadsAsciiSyntax::PINTYPE, "U");
             if (showLogicalIndex)
             {
-                line.replace(PadsAsciiSyntax::PINNAME, portMap->getLogicalPort()->name_  + 
-                    "_" + QString::number(logIndex));
+                line.replace(PadsAsciiSyntax::PINNAME, 
+                    portMap->getLogicalPort()->name_  + "_" + QString::number(logIndex));
             } 
             else
             {
@@ -727,7 +702,56 @@ void PadsPartGeneratorDialog::insertAttributes(QTextCursor& cursor)
     foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
     {
         attr.replace(PadsAsciiSyntax::ATTRNAME, "\"" + parameter->name() + "\"");
-        attr.replace(PadsAsciiSyntax::VALUE, parameter->getValue());
+        attr.replace(PadsAsciiSyntax::VALUE, expressionParser_->parseExpression(parameter->getValue()));
         insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PadsPartGeneratorDialog::setupLayout()
+//-----------------------------------------------------------------------------
+void PadsPartGeneratorDialog::setupLayout()
+{
+    QGroupBox* kactusGroup = new QGroupBox(tr("Fileset options"), this);
+    QFormLayout* kactusLayout = new QFormLayout(kactusGroup);
+    kactusLayout->addRow(tr("Select target fileset"), fileSetSelector_);
+
+    QGroupBox* headerGenerationGroup = new QGroupBox(tr("Header generation options"), this);
+    QFormLayout* headerLayout = new QFormLayout(headerGenerationGroup);
+
+    headerLayout->addRow(tr("Part name"), nameEditor_);
+    headerLayout->addRow(tr("Coordinate units"), unitSelector_);
+    headerLayout->addRow(tr("Logic family"), familyEditor_);
+
+    QGroupBox* gateGenerationGroup = new QGroupBox(tr("Gate options"), this);
+    QVBoxLayout* gateGenerationLayout = new QVBoxLayout(gateGenerationGroup);
+    gateGenerationLayout->addWidget(multiGateButton_);
+    gateGenerationLayout->addWidget(singleGateButton_);
+    QFormLayout* gateNameLayout = new QFormLayout();
+    gateNameLayout->addRow(tr("Gate name"), gateNameEditor_);
+    gateGenerationLayout->addLayout(gateNameLayout);
+
+    QGroupBox* previewGroup = new QGroupBox(tr("Preview"), this);
+    QVBoxLayout* previewLayout = new QVBoxLayout(previewGroup);
+    previewLayout->addWidget(preview_);
+
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    QPushButton* runButton = new QPushButton(tr("Run"));
+    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+    buttonLayout->addStretch();
+    buttonLayout->addWidget(runButton, 0, Qt::AlignRight);
+    buttonLayout->addWidget(cancelButton, 0, Qt::AlignRight);
+
+    QGridLayout* topLayout = new QGridLayout(this);
+    topLayout->addWidget(kactusGroup, 0, 0, 1, 1);
+    topLayout->addWidget(headerGenerationGroup, 1, 0, 1, 1);
+    topLayout->addWidget(gateGenerationGroup, 2, 0, 1, 1);
+    topLayout->addWidget(previewGroup, 0, 1, 3, 1);
+    topLayout->addLayout(buttonLayout, 3, 0, 1, 2);
+    topLayout->setRowStretch(2, 1);
+
+    connect(runButton, SIGNAL(clicked(bool)), this, SLOT(onRunClicked()), Qt::UniqueConnection);    
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()), Qt::UniqueConnection);
+
+    setMinimumWidth(MINIMUM_WIDTH);
 }

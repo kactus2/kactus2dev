@@ -780,7 +780,7 @@ QSharedPointer<const Design> ConnectivityGraphFactory::getHierarchicalDesign(QSh
 {
     VLNV designVLNV = getHierarchicalDesignVLNV(component, hierarchicalView);
 
-    if (!designVLNV.isValid())
+    if (!designVLNV.isValid() && !designConfiguration.isNull())
     {
         designVLNV = designConfiguration->getDesignRef();        
     }

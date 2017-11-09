@@ -21,10 +21,13 @@
 #include <QPushButton>
 #include <QRadioButton>
 
-class Component;
 class BusInterface;
+class Component;
+class ExpressionParser;
 class LibraryInterface;
 class PadsPartGenerator;
+class PortMap;
+
 //-----------------------------------------------------------------------------
 // class PadsPartGeneratorDialog.
 //-----------------------------------------------------------------------------
@@ -46,6 +49,7 @@ public:
 	 *
 	 *      @param [in] libIf               The library interface.
 	 *      @param [in] component           The component for which generation is done.
+     *      @param [in] expressionParser    The parser for expressions.
 	 *      @param [in] generatorName       The utilizing generator name.
      *      @param [in] generatorVersion    The utilizing generator version.
 	 *      @param [in] parent              The parent widget.
@@ -53,7 +57,8 @@ public:
 	 *      @return 
 	 */
 	PadsPartGeneratorDialog(LibraryInterface* libIf, QSharedPointer<const Component> component, 
-        const QString& generatorName, const QString& generatorVersion, QWidget* parent);
+        QSharedPointer<ExpressionParser> expressionParser,
+        QString const& generatorName, QString const& generatorVersion, QWidget* parent);
 
 	/*!
     *  The destructor.
@@ -101,6 +106,24 @@ public slots:
     virtual void generateGates();
 
     /*!
+     *  Count the number of physical pins in a bus interface.
+     *
+     *      @param [in] busInterface   The bus interface whose physical pins to count.
+     *
+     *      @return The number of physical pins in the interface.
+     */
+    int countInterfacePins(QSharedPointer<BusInterface> busInterface);
+
+    /*!
+     *  Count the number of physical pins in a port map.
+     *
+     *      @param [in] portMap     The port map whose physical pins to count.
+     *
+     *      @return The number of physical pins in the port map.
+     */
+    int countPortMapPins(QSharedPointer<PortMap> portMap);
+
+    /*!
      *  Handler for events when user clicks run.
      */
     virtual void onRunClicked();
@@ -130,14 +153,12 @@ public slots:
      */
     virtual void onGateNameChanged();
 
-protected:
-	
 private slots:
 
-        /*!
-         *  Re-generates the part preview.
-         */
-        virtual void refreshPreview();
+    /*!
+     *  Re-generates the part preview.
+     */
+    virtual void refreshPreview();
 
 private:
 	// Disable copying.
@@ -145,11 +166,6 @@ private:
 
 	// Disable assignment.
 	PadsPartGeneratorDialog& operator=(PadsPartGeneratorDialog const& rhs);
-
-    /*!
-     *  Sets the dialog layout.
-     */
-    void setupLayout();
 
     /*!
      *  Adds pin declarations for interface ports.
@@ -185,6 +201,11 @@ private:
      *      @param [in] cursor   Cursor to the correct position in preview.
      */
     void insertAttributes( QTextCursor& cursor );
+    
+    /*!
+     *  Sets the dialog layout.
+     */
+    void setupLayout();
 
 	//-----------------------------------------------------------------------------
 	// Data.
@@ -195,6 +216,9 @@ private:
 
     //! The component for which the generator is run.
     QSharedPointer<const Component> component_;
+
+    //! The parser for expressions.
+    QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The generator name.
     QString generatorName_;

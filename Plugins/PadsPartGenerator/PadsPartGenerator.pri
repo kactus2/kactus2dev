@@ -9,7 +9,15 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./PadsAsciiSyntax.h \
     ./PadsPartGenerator.h \
-    ./PadsPartGeneratorDialog.h
+    ./PadsPartGeneratorDialog.h \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.h
 SOURCES += ./PadsPartGenerator.cpp \
-    ./PadsPartGeneratorDialog.cpp
+    ./PadsPartGeneratorDialog.cpp \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp
 RESOURCES += PadsPartGenerator.qrc
