@@ -747,7 +747,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h \
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
+    ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
+    ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1403,5 +1406,7 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
+    ./designEditors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp \
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp
 RESOURCES += kactus.qrc

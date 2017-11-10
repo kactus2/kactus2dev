@@ -4432,6 +4432,18 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="kactusGenerators\DocumentGenerator\ViewDocumentGenerator.cpp">
+      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ViewDocumentGenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.cpp">
+      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_GeneralDocumentGenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6108,6 +6120,12 @@
     <CustomBuild Include="designEditors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </CustomBuild>
+    <CustomBuild Include="kactusGenerators\DocumentGenerator\ViewDocumentGenerator.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6709,6 +6727,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentGeneratorHTML.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -109,6 +109,7 @@
 #include <QCursor>
 #include <QDesktopServices>
 #include <QPainter>
+#include <QDateTime>
 
 //-----------------------------------------------------------------------------
 // Function: mainwindow::MainWindow()
@@ -1312,6 +1313,9 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 //-----------------------------------------------------------------------------
 void MainWindow::generateDoc()
 {
+    emit noticeMessage(QString("Document generation started at %1.").arg(
+        QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss")));
+
     // get the vlnv of the current component
     TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
     Q_ASSERT(doc);
@@ -1334,6 +1338,7 @@ void MainWindow::generateDoc()
 
     if (targetPath.isEmpty())
     {
+        emit noticeMessage(tr("Generation aborted."));
         return;
     }
 
@@ -1341,8 +1346,10 @@ void MainWindow::generateDoc()
     if (!targetFile.open(QFile::WriteOnly))
     {
         emit errorMessage(tr("Could not open file %1 for writing.").arg(targetPath));
+        emit noticeMessage(tr("Generation aborted."));
         return;
     }
+
     QTextStream stream(&targetFile);
 
     DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_,
@@ -1357,8 +1364,9 @@ void MainWindow::generateDoc()
         dockHandler_, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     generator.writeDocumentation(stream, targetPath);
-
     targetFile.close();
+
+    emit noticeMessage(QString("Generation complete."));
 
     // open the generated document in user's default browser
     QDesktopServices::openUrl(QUrl::fromLocalFile(targetPath));
