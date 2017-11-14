@@ -16,8 +16,8 @@
 
 namespace RibbonTheme
 {
-	const QColor GRADIENTTOP(184, 210, 236);
-	const QColor GRADIENTBOTTOM(130, 181, 232);
+    const QColor GRADIENTTOP(218, 225, 233);
+    const QColor GRADIENTBOTTOM(160, 193, 226);
 	const QColor GROUPTITLEGRADIENTTOP(33, 135, 237);
 	const QColor GROUPTITLEGRADIENTBOTTOM(17, 127, 237);
 	const QColor GROUPTITLETEXT = Qt::white;

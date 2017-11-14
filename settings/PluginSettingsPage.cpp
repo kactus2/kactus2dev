@@ -241,7 +241,7 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
 
     // Create the category items.
     QTreeWidgetItem* generatorsItem = createCategoryItem(tr("Generators"),
-        QIcon(":icons/common/graphics/plugin-generator.png"));
+        QIcon(":icons/common/graphics/configuration.png"));
     QTreeWidgetItem* analyzersItem = createCategoryItem(tr("Source Analyzers"),
         QIcon(":icons/common/graphics/plugin-source_analyzer.png"));
     QTreeWidgetItem* importItems = createCategoryItem(tr("Import Plugins"),

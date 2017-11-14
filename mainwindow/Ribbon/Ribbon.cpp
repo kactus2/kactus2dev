@@ -21,14 +21,14 @@
 //-----------------------------------------------------------------------------
 // Function: Ribbon::Ribbon()
 //-----------------------------------------------------------------------------
-Ribbon::Ribbon(QWidget* parent /*= 0*/)
-    : QWidget(parent),
-      layout_(new QHBoxLayout(this)),
-	  ribbonScrollArea_(new QScrollArea(this)),
-	  ribbonGroupContainer_(),
-	  containerLayout_(),
-	  scrollLeft_(new QPushButton("<", this)),
-	  scrollRight_(new QPushButton(">", this))
+Ribbon::Ribbon(QWidget* parent /*= 0*/):
+QWidget(parent),
+layout_(new QHBoxLayout(this)),
+ribbonScrollArea_(new QScrollArea(this)),
+ribbonGroupContainer_(),
+containerLayout_(),
+scrollLeft_(new QPushButton(QIcon(":/icons/common/graphics/arrowLeft.png"), QString(""), this)),
+scrollRight_(new QPushButton(QIcon(":/icons/common/graphics/arrowRight.png"), QString(""), this))
 {
 	setupRibbonScrollArea();
 
@@ -95,13 +95,9 @@ void Ribbon::onRightScrollPressed()
 //-----------------------------------------------------------------------------
 void Ribbon::paintEvent(QPaintEvent* /*event*/)
 {
-	QLinearGradient gradient(rect().topLeft(), rect().bottomLeft());
-	gradient.setColorAt(0.0, RibbonTheme::GRADIENTTOP);
-	gradient.setColorAt(1.0, RibbonTheme::GRADIENTBOTTOM);
-
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing);
-	painter.fillRect(rect(), gradient);
+    painter.fillRect(rect(), RibbonTheme::GRADIENTBOTTOM);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,9 +186,8 @@ void Ribbon::setupRibbonScrollArea()
 //-----------------------------------------------------------------------------
 void Ribbon::setupScrollButtons()
 {
-    QFontMetrics metrics(font());
-    scrollLeft_->setFixedWidth(metrics.width(scrollLeft_->text()) + 10);
-    scrollRight_->setFixedWidth(metrics.width(scrollRight_->text()) + 10);
+    scrollLeft_->setFixedWidth(15);
+    scrollRight_->setFixedWidth(15);
     scrollLeft_->setFixedHeight(RIBBONHEIGHT);
     scrollRight_->setFixedHeight(RIBBONHEIGHT);
 
@@ -200,14 +195,9 @@ void Ribbon::setupScrollButtons()
     scrollRight_->setObjectName("scrollRight_");
 
     QString gradientTopName = RibbonTheme::GRADIENTTOP.name();
-    QString gradientBottomName = RibbonTheme::GRADIENTBOTTOM.name();
-    QString groupTitleGradientBottomName = RibbonTheme::GROUPTITLEGRADIENTBOTTOM.name();
-    QString groupTitleTextName = RibbonTheme::GROUPTITLETEXT.name();
 
     QString buttonStyle = "QPushButton#scrollLeft_, QPushButton#scrollRight_ "
-        "{background-color: qlineargradient(x1:0,y1:0,x2:0,y2:1, "
-        "stop:0 " + gradientTopName + ", stop:0.1 " + groupTitleTextName + 
-        ", stop:0.3 " + gradientTopName + ", stop: 1 " + groupTitleGradientBottomName + ");}";
+        "{background-color: " + gradientTopName + ";}";
 
     scrollLeft_->setStyleSheet(buttonStyle);
     scrollRight_->setStyleSheet(buttonStyle);

@@ -50,7 +50,7 @@ namespace
     const QString ICONS[CatalogFileColumns::CATEGORY_COUNT] =
     {
         QLatin1String(":icons/common/graphics/catalog.png"),
-        QLatin1String(":icons/common/graphics/new-bus.png"),
+        QLatin1String(":icons/common/graphics/bus-def.png"),
         QLatin1String(":icons/common/graphics/abs-def.png"),        
         QLatin1String(":icons/common/graphics/hw-component.png"),
         QLatin1String(":icons/common/graphics/connect.png"),

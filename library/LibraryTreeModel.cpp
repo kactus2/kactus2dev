@@ -270,7 +270,7 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
                         }
                         else
                         {
-                            return QIcon(":/icons/common/graphics/sw-component24x24.png");
+                            return QIcon(":/icons/common/graphics/sw-component48x48.png");
                         }
                     }
                     else
@@ -296,7 +296,7 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
 
             else if (documentType == VLNV::BUSDEFINITION)
             {
-                return QIcon(":/icons/common/graphics/new-bus.png");
+                return QIcon(":/icons/common/graphics/bus-def.png");
             }
 
             else if (documentType == VLNV::CATALOG)
@@ -318,9 +318,10 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
             {
                 // Determine the design type.
                 QSharedPointer<const Design> design = handler_->getModelReadOnly(vlnv).staticCast<const Design>();
-                if (design && design->getImplementation() == KactusAttribute::SW)
+                if (design && (design->getImplementation() == KactusAttribute::SW ||
+                    design->getImplementation() == KactusAttribute::SYSTEM))
                 {
-                    return QIcon(":/icons/common/graphics/sw-design24x24.png");
+                    return QIcon(":/icons/common/graphics/sw-design48x48.png");
                 }
                 else
                 {               

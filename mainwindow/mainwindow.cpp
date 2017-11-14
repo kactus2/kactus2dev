@@ -858,7 +858,6 @@ void MainWindow::setupMenus()
     viewGroup->addAction(actZoomOriginal_);
     viewGroup->addAction(actFitInView_);
     viewGroup->addAction(actVisibilityControl_);
-    viewGroup->addAction(openMemoryDesignerAction_);
 
     viewGroup->widgetForAction(actZoomIn_)->installEventFilter(ribbon_);
     viewGroup->widgetForAction(actZoomOut_)->installEventFilter(ribbon_);
@@ -866,15 +865,16 @@ void MainWindow::setupMenus()
     viewGroup->widgetForAction(actFitInView_)->installEventFilter(ribbon_);
     viewGroup->widgetForAction(actVisibleDocks_)->installEventFilter(ribbon_);
     viewGroup->widgetForAction(actVisibilityControl_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(openMemoryDesignerAction_)->installEventFilter(ribbon_);
 
     //! The "Configuration tools" group.
     configurationToolsGroup_ = ribbon_->addGroup(tr("Configuration Tools"));
     configurationToolsGroup_->addAction(actionConfigureViews_);
+    configurationToolsGroup_->addAction(openMemoryDesignerAction_);
     configurationToolsGroup_->setVisible(false);
     configurationToolsGroup_->setEnabled(false);
 
     configurationToolsGroup_->widgetForAction(actionConfigureViews_)->installEventFilter(ribbon_);
+    configurationToolsGroup_->widgetForAction(openMemoryDesignerAction_)->installEventFilter(ribbon_);
 
     //! The "Workspace" group.
     RibbonGroup* workspacesGroup = ribbon_->addGroup(tr("Workspace"));
@@ -1582,7 +1582,7 @@ void MainWindow::createNew()
     NewBusDefinitionPage* busPage = new NewBusDefinitionPage(libraryHandler_, &dialog);
     connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
         this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/new-bus.png"), tr("Bus Definition"), busPage);
+    dialog.addPage(QIcon(":icons/common/graphics/bus-def.png"), tr("Bus Definition"), busPage);
 
     NewCatalogPage* catalogPage = new NewCatalogPage(libraryHandler_, &dialog);
     connect(catalogPage, SIGNAL(createCatalog(VLNV const&, QString const&)),
