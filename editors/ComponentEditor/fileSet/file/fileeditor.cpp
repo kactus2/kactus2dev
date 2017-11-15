@@ -26,18 +26,18 @@ FileEditor::FileEditor(LibraryInterface* handler, QSharedPointer<Component> comp
             QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
             QWidget *parent):
 ItemEditor(component, handler, parent),
-    file_(file),
-    nameEditor_(file_, this),
-    fileTypeEditor_(this, file),
-    generalEditor_(this, file),
-    exportedNamesEditor_(tr("Exported names"), this),
-    buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
-    imageTypesEditor_(tr("Image types"), this),
-    dependenciesEditor_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this),
-    editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
-    runButton_(new QPushButton(QIcon(":/icons/common/graphics/plugin-generator.png"), tr("Run file"), this)),
-    openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), 
-        tr("Open containing folder"), this))
+file_(file),
+nameEditor_(file_, this),
+fileTypeEditor_(this, file),
+generalEditor_(this, file),
+exportedNamesEditor_(tr("Exported names"), this),
+buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
+imageTypesEditor_(tr("Image types"), this),
+dependenciesEditor_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this),
+editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
+runButton_(new QPushButton(QIcon(":/icons/common/graphics/runProgram.png"), tr("Run file"), this)),
+openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"),
+    tr("Open containing folder"), this))
 {
     setupLayout();
     

@@ -91,7 +91,7 @@ QDialog(parent),
         vlnvEditor_->setTitle("VLNV for new system design and design configuration");
         designExt_ = ".sysdesign";
         designConfExt_ = ".sysdesigncfg";
-        designIcon_->setPixmap(QPixmap(":/icons/common/graphics/system-design.png"));
+        designIcon_->setPixmap(QPixmap(":/icons/common/graphics/sw-design48x48.png"));
     }
     else
     {

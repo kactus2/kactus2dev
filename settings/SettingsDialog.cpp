@@ -29,8 +29,8 @@ SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
     //setFixedSize(600, 440);
     setWindowTitle(tr("Settings"));
 
-    addPage(QIcon(":icons/common/graphics/settings-general.png"), tr("General"),
-            new GeneralSettingsPage(settings_));
+    addPage(QIcon(":icons/common/graphics/configuration.png"), tr("General"),
+        new GeneralSettingsPage(settings_));
 
     addPage(QIcon(":icons/common/graphics/naming-policy.png"), tr("Naming Policies"),
         new NamingPolicySettingsPage(settings_));
@@ -38,8 +38,8 @@ SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
 	addPage(QIcon(":icons/common/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
 
-	addPage(QIcon(":icons/common/graphics/visibility.png"), tr("Component Editor Visibilities"),
-		new ComponentEditorSettingsPage(settings_));
+    addPage(QIcon(":icons/common/graphics/settings-visibilities.png"), tr("Component Editor Visibilities"),
+        new ComponentEditorSettingsPage(settings_));
 
     addPage(QIcon(":icons/common/graphics/settings-file_types.png"), tr("File Types"),
             new FileTypeSettingsPage(settings_));

@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 ObjectExportDialog::ObjectExportDialog(QWidget* parent, Qt::WindowFlags f):
 ObjectSelectionDialog(tr("Export"), QStringLiteral(":icons/common/graphics/export.png"),
-    QStringLiteral(":icons/common/graphics/export_small.png"), tr("Select items to be exported"), parent, f),
+    QStringLiteral(":icons/common/graphics/arrowRight.png"), tr("Select items to be exported"), parent, f),
 folderPathEditor_(QString(), this),
 folderBrowseButton_(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this),
 currentPath_(QString())

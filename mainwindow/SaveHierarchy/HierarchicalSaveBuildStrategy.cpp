@@ -175,22 +175,18 @@ void HierarchicalSaveBuildStrategy::setIcon(QObject* object, QTreeWidgetItem* it
         }
         else
         {
-            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/sw-component24x24.png"));
+            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/sw-component48x48.png"));
         }
     }
     else
     {
-        if (object->property("implementation") == "HW")
+        if (object->property("implementation") == "HW" || object->property("implementation") == "System")
         {
             item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/hw-design.png"));
         }
-        else if (object->property("implementation") == "System")
-        {
-            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/system-design.png"));
-        }
         else
         {
-            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/sw-design24x24.png"));
+            item->setIcon(HierarchicalSaveColumns::VLNV, QIcon(":/icons/common/graphics/sw-design48x48.png"));
         }
     }
 }

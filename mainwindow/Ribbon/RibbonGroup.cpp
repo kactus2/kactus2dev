@@ -56,15 +56,8 @@ void RibbonGroup::paintEvent(QPaintEvent* /*event*/)
 {
     QPainter painter(this);
 
-    // Draw the base gradient.
-    QLinearGradient gradient(rect().topLeft(), rect().bottomLeft());
-	gradient.setColorAt(0.0, RibbonTheme::GRADIENTTOP);
-	gradient.setColorAt(0.1, Qt::white);
-	gradient.setColorAt(0.3, RibbonTheme::GRADIENTTOP);
-	gradient.setColorAt(1.0, RibbonTheme::GRADIENTBOTTOM);
-
     painter.setRenderHints(QPainter::Antialiasing);
-    painter.fillRect(rect(), gradient);
+    painter.fillRect(rect(), RibbonTheme::GRADIENTTOP);
 
     // Draw a nice frame around the group area.
 	painter.setPen(QPen(RibbonTheme::GROUPTITLEGRADIENTTOP, 1));
@@ -74,11 +67,7 @@ void RibbonGroup::paintEvent(QPaintEvent* /*event*/)
     QRect titleRect = rect();
     titleRect.setTop(rect().height() - TITLE_HEIGHT);
 
-    QLinearGradient titleGradient(titleRect.topLeft(), titleRect.bottomLeft());
-	titleGradient.setColorAt(0.0, RibbonTheme::GROUPTITLEGRADIENTTOP);
-	titleGradient.setColorAt(1.0, RibbonTheme::GROUPTITLEGRADIENTBOTTOM);
-
-    painter.fillRect(titleRect, titleGradient);
+    painter.fillRect(titleRect, RibbonTheme::GROUPTITLEGRADIENTBOTTOM);
 
     // Draw the title text.
     QTextOption opt;

@@ -37,7 +37,7 @@ AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> me
     bool filterSegments, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::ADDRESSSEGMENT_TYPE,
     filterSegments, identifierChain, parent),
-cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), this))
+cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_editor.png"), this))
 {
     QBrush addressSpaceBrush(KactusColors::ADDRESS_SEGMENT);
     setBrush(addressSpaceBrush);

@@ -334,7 +334,7 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
                 }
                 else
                 {
-                    return QIcon(":/icons/common/graphics/sw-component24x24.png");
+                    return QIcon(":/icons/common/graphics/sw-component48x48.png");
                 }
             }
             else
@@ -365,13 +365,9 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
         {
 			return QIcon(":/icons/common/graphics/hw-design.png");
 		}
-		else if (item->type() == HierarchyItem::SW_DESIGN)
+		else if (item->type() == HierarchyItem::SW_DESIGN || item->type() == HierarchyItem::SYS_DESIGN)
         {
-			return QIcon(":/icons/common/graphics/sw-design24x24.png");
-		}
-		else if (item->type() == HierarchyItem::SYS_DESIGN)
-        {
-			return QIcon(":/icons/common/graphics/system-design.png");
+            return QIcon(":/icons/common/graphics/sw-design48x48.png");
 		}
         else if (item->type() == HierarchyItem::ABSDEFINITION)
         {
@@ -379,7 +375,7 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-			return QIcon(":/icons/common/graphics/new-bus.png");
+            return QIcon(":/icons/common/graphics/bus-def.png");
         }
 	}
 
