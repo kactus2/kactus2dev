@@ -18,11 +18,19 @@
 //-----------------------------------------------------------------------------
 FilterWidget::FilterWidget(QWidget *parent):
 QWidget(parent),
-    firmness_(this),
-    implementation_(this),
-    type_(this),
-    hierarchy_(this)
+firmness_(this),
+implementation_(this),
+type_(this),
+hierarchy_(this)
 {
+    QString uncheckedText =
+        "QCheckBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}";
+    QString checkedText =
+        "QCheckBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}";
+    QString styleText = uncheckedText + checkedText;
+
+    setStyleSheet(styleText);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&type_);
 	layout->addWidget(&implementation_);

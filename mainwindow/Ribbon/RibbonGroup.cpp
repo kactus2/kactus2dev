@@ -22,12 +22,11 @@
 //-----------------------------------------------------------------------------
 // Function: RibbonGroup::RibbonGroup()
 //-----------------------------------------------------------------------------
-RibbonGroup::RibbonGroup(QString const& title, Ribbon* parent)
-    : QToolBar(parent),
-      title_(title)
+RibbonGroup::RibbonGroup(QString const& title, Ribbon* parent):
+QToolBar(parent),
+title_(title)
 {
-
-	const int BOTTOM_MARGIN = 15;
+    const int BOTTOM_MARGIN = 10;
 	const int TOP_MARGIN = 10;
 
 	setIconSize(QSize (32, 32));

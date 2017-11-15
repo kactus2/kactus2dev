@@ -26,14 +26,16 @@ class FirmnessGroup : public QGroupBox
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
 	 *      @param [in] parent The owner of this widget.
-	 *
-	*/
+     */
 	FirmnessGroup(QWidget *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor
+     */
 	virtual ~FirmnessGroup();
 
     /*!
@@ -52,25 +54,31 @@ public:
 
 signals:
 
-	//! Emitted when one of the check boxes changes state.
+	/*!
+     *  Emitted when one of the check boxes changes state.
+     */
 	void optionsChanged(const Utils::FirmnessOptions& options);
 
 private slots:
 
-	//! Handler for template check box state changes.
+	/*!
+     *  Handler for template check box state changes.
+     */
 	void onTemplateChanged(bool checked);
 
-	//! Handler for mutable check box state changes.
+	/*!
+     *  Handler for mutable check box state changes.
+     */
 	void onMutableChanged(bool checked);
 
-	//! Handler for configuration check box state changes.
+	/*!
+     *  Handler for configuration check box state changes.
+     */
 	void onConfigurationChanged(bool checked);
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	FirmnessGroup(const FirmnessGroup& other);
-
-	//! No assignment
 	FirmnessGroup& operator=(const FirmnessGroup& other);
 
 	//! Check box to select templates in/out of search results.

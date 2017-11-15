@@ -26,13 +26,16 @@ class TypeGroup : public QGroupBox
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
 	 *      @param [in] parent The owner of this widget.
-	*/
+	 */
 	TypeGroup(QWidget *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor
+     */
 	virtual ~TypeGroup();
 
     /*!
@@ -51,31 +54,41 @@ public:
 
 signals:
 
-	//! Emitted when type settings change
+	/*!
+     *  Emitted when type settings change.
+     */
 	void optionsChanged(const Utils::TypeOptions& options);
 
 private slots:
 
-	//! Handler for componentBox state changes.
+	/*!
+     *  Handler for componentBox state changes.
+     */
     void onComponentChange(bool checked);
 
-	//! Handler for busApiBox state changes.
+	/*!
+     *  Handler for busApiBox state changes.
+     */
     void onBusChange(bool checked);
 
-    //! Handler for catalog state changes.
+    /*!
+     *  Handler for catalog state changes.
+     */
     void onCatalogChange(bool checked);
 
-    //! Handler for Api/Com state changes.
+    /*!
+     *  Handler for Api/Com state changes.
+     */
     void onApiComChange(bool checked);
 
-    //! Handler for advancedBox state changes.
+    /*!
+     *  Handler for advancedBox state changes.
+     */
     void onAdvancedChange(bool checked);
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	TypeGroup(const TypeGroup& other);
-
-	//! No assignment
 	TypeGroup& operator=(const TypeGroup& other);
 
 	//! Check box to select components in/out of search results.

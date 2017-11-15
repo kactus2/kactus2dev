@@ -51,9 +51,9 @@ private:
     enum
     {
         TITLE_MARGIN = 20,
-        TITLE_HEIGHT = 25,
+        TITLE_HEIGHT = 21,
         MIN_LARGE_BUTTON_WIDTH = 56,
-        HMARGIN = 5
+        HMARGIN = 2
     };
 
     //-----------------------------------------------------------------------------

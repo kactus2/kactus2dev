@@ -20,10 +20,10 @@
 //-----------------------------------------------------------------------------
 FirmnessGroup::FirmnessGroup(QWidget *parent):
 QGroupBox(tr("Firmness"), parent),
-    templateBox_(tr("Template"), this),
-    mutableBox_(tr("Mutable"), this),
-    fixedBox_(tr("Fixed"), this),
-    options_()
+templateBox_(tr("Template"), this),
+mutableBox_(tr("Mutable"), this),
+fixedBox_(tr("Fixed"), this),
+options_()
 {
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(&templateBox_, 0, 0, 1, 1);
