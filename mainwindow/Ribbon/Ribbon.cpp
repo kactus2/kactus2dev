@@ -36,6 +36,9 @@ scrollRight_(new QPushButton(QIcon(":/icons/common/graphics/arrowRight.png"), QS
 
 	setupScrollButtons();
 
+    scrollLeft_->setFlat(true);
+    scrollRight_->setFlat(true);
+
 	layout_->addWidget(scrollLeft_);
 	layout_->addWidget(ribbonScrollArea_);
 	layout_->addWidget(scrollRight_);

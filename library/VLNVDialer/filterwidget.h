@@ -30,42 +30,62 @@ class FilterWidget : public QWidget
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
 	 *      @param [in] parent The owner of this widget.
-	 *
-	*/
+	 */
 	FilterWidget(QWidget *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~FilterWidget();
 
+    /*!
+     *  Setup the filters.
+     *
+     *      @param [in] options     New filter options.
+     */
     void setFilters(Utils::FilterOptions options);
 
+    /*!
+     *  Get the filters.
+     *
+     *      @return The current filter options.
+     */
     Utils::FilterOptions getFilters() const;
 
 signals:
 
-	//! Emitted when re-usability options change.
+	/*!
+     *  Emitted when re-usability options change.
+     */
 	void firmnessChanged(const Utils::FirmnessOptions& options);
 
-	//! Emitted when firmness options change.
+	/*!
+     *  Emitted when firmness options change.
+     */
 	void implementationChanged(const Utils::ImplementationOptions& options);
 
-	//! Emitted when type options change.
+	/*!
+     *  Emitted when type options change.
+     */
 	void typeChanged(const Utils::TypeOptions& options);
 
-	//! Emitted when hierarchy options change.
+	/*!
+     *  Emitted when hierarchy options change.
+     */
 	void hierarchyChanged(const Utils::HierarchyOptions& options);
 
-    //! Emitted when all options change.
+    /*!
+     *  Emitted when all options change.
+     */
     void optionsChanged(Utils::FilterOptions const& options);
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	FilterWidget(const FilterWidget& other);
-
-	//! No assignment
 	FilterWidget& operator=(const FilterWidget& other);
 
 	//! Contains items to select the re-usability options.

@@ -26,13 +26,16 @@ class ImplementationGroup : public QGroupBox
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
 	 *      @param [in] parent The owner of this widget.
-	*/
+	 */
 	ImplementationGroup(QWidget *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~ImplementationGroup();
 
     /*!
@@ -51,25 +54,31 @@ public:
 
 signals:
 
-	//! Emitted when implementation options changes state.
+	/*!
+     *  Emitted when implementation options changes state.
+     */
 	void optionsChanged(const Utils::ImplementationOptions& options);
 
 private slots:
 
-	//! Handler for hwBox state changes.
+	/*!
+     *  Handler for hwBox state changes.
+     */
 	void onHWChanged(bool checked);
 
-	//! Handler for swBox state changes.
+	/*!
+     *  Handler for swBox state changes.
+     */
 	void onSWChanged(bool checked);
 
-	//! Handler for systemBox state changes.
+	/*!
+     *  Handler for systemBox state changes.
+     */
 	void onSystemChanged(bool checked);
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	ImplementationGroup(const ImplementationGroup& other);
-
-	//! No assignment
 	ImplementationGroup& operator=(const ImplementationGroup& other);
 
 	//! Check box to select hardware components in/out of search results.

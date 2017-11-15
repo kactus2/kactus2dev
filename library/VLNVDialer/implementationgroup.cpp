@@ -18,10 +18,10 @@
 //-----------------------------------------------------------------------------
 ImplementationGroup::ImplementationGroup(QWidget *parent): 
 QGroupBox(tr("Implementation"), parent),
-    hwBox_(tr("HW"), this),
-    swBox_(tr("SW"), this),
-    systemBox_(tr("System"), this),
-    options_()
+hwBox_(tr("HW"), this),
+swBox_(tr("SW"), this),
+systemBox_(tr("System"), this),
+options_()
 {
     QGridLayout* layout = new QGridLayout(this);
     layout->addWidget(&hwBox_, 0, 0, 1, 1);

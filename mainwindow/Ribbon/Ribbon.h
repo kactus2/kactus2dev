@@ -150,7 +150,7 @@ private:
 	static const int CONTAINER_SPACING = 3;
 
 	//! The height of the ribbon.
-	static const int RIBBONHEIGHT = 78;
+    static const int RIBBONHEIGHT = 64;
 };
 
 //-----------------------------------------------------------------------------
