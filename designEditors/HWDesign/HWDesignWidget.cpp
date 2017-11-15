@@ -62,8 +62,6 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
-
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -901,97 +899,6 @@ void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString
             }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignWidget::onVhdlGenerate()
-//-----------------------------------------------------------------------------
-void HWDesignWidget::onVhdlGenerate()
-{
-	if (isModified() && askSaveFile())
-    {
-		save();
-	}
-
-	QString filePath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
-	QFileInfo targetInfo(filePath);
-
-    QString fileName = targetInfo.absolutePath()+ "/" + findEntityName() +".vhd";
-
-	QString path = QFileDialog::getSaveFileName(this,
-		tr("Set the directory where the vhdl file is created to"), fileName, tr("Vhdl files (*.vhd)"));
-
-	// if user clicks cancel then nothing is created
-	if (path.isEmpty())
-    {
-		return;
-	}
-
-	VhdlGenerator2 vhdlGen(expressionParser_, getLibraryInterface(), this);
-	
-    connect(&vhdlGen, SIGNAL(errorMessage(const QString&)),
-        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(&vhdlGen, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-	// if errors are detected during parsing
-	if (!vhdlGen.parse(getEditedComponent(), getOpenViewName()))
-    {
-		return;
-	}
-
-	// generate the vhdl code
-	vhdlGen.generate(path);
-
-	// check if the file already exists in the metadata
-	QString basePath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
-	QString relativePath = General::getRelativePath(basePath, path);
-	if (!getEditedComponent()->hasFile(relativePath))
-    {
-		// ask user if he wants to save the generated vhdl into object metadata
-		QMessageBox::StandardButton button = QMessageBox::question(this, 
-			tr("Save generated file to metadata?"),
-			tr("Would you like to save the generated vhdl-file to IP-Xact"
-			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-		// if the generated file is saved
-		if (button == QMessageBox::Yes)
-        {
-			// add a rtl view to the getEditedComponent()
-			vhdlGen.addRTLView(path);
-
-			// write the getEditedComponent() into file system
-			getLibraryInterface()->writeModelToFile(getEditedComponent());
-
-			emit refresh(this);
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignWidget::findEntityName()
-//-----------------------------------------------------------------------------
-QString HWDesignWidget::findEntityName() const
-{
-    foreach (QSharedPointer<View> componentView, *getEditedComponent()->getViews())
-    {
-        if (componentView->name() == getOpenViewName())
-        {
-            QString componentInstantiation = componentView->getComponentInstantiationRef();
-
-            foreach (QSharedPointer<ComponentInstantiation> instantiation, 
-                *getEditedComponent()->getComponentInstantiations())
-            {
-                if (instantiation->name() == componentInstantiation)
-                {
-                    return instantiation->getModuleName();
-                }
-            }
-
-        }
-    }
-
-    return QString();
 }
 
 //-----------------------------------------------------------------------------

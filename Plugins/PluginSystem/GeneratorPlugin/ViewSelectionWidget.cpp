@@ -20,7 +20,8 @@
 //-----------------------------------------------------------------------------
 // Function: ViewSelectionWidget::ViewSelectionWidget()
 //-----------------------------------------------------------------------------
-ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> model) : 
+ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> model, QWidget* parent) :
+QWidget(parent),
 	model_(model),
     viewSelection_(new QComboBox(this)),
     addToFileset_(new QGroupBox(tr("Add file to fileset"))),

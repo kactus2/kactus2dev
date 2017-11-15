@@ -48,8 +48,6 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>
 
-#include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
-
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/itemvisualizer.h>
 
@@ -479,82 +477,6 @@ void ComponentEditor::onItemActivated( const QModelIndex& index )
 	visualizerSlot_.setWidget(visualizer);
 
 	editorVisualizerSplitter_.setSizes(editorVisualizerSizes);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditor::onVhdlGenerate()
-//-----------------------------------------------------------------------------
-bool ComponentEditor::onVhdlGenerate()
-{
-	// if the component is hierarchical then it must be opened in design widget
-	if (component_->isHierarchical())
-    {
-		QMessageBox::information(this, tr("Kactus2 component editor"),
-			tr("This component contains hierarchical views so you must open it"
-			" in a design editor and run the vhdl generator there."));
-		return false;
-	}
-
-	if (isModified() && askSaveFile())
-    {
-		save();
-	}
-
-	QString fileName = libHandler_->getPath(component_->getVlnv());
-	QFileInfo targetInfo(fileName);
-	fileName = targetInfo.absolutePath();
-	fileName += QString("/");
-	fileName += component_->getVlnv().getName();
-	fileName += QString(".vhd");
-
-	QString path = QFileDialog::getSaveFileName(this,
-		tr("Set the directory where the vhdl file is created to"),
-		fileName, tr("Vhdl files (*.vhd)"));
-
-	// if user clicks cancel then nothing is created
-	if (path.isEmpty())
-		return false;
-
-    VhdlGenerator2 vhdlGen(expressionParser_, libHandler_, this);
-
-    connect(&vhdlGen, SIGNAL(errorMessage(const QString&)),
-        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(&vhdlGen, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-	// if errors are detected during parsing
-	if (!vhdlGen.parse(component_, QString()))
-    {
-		return false;
-	}
-
-	// generate the vhdl code
-	vhdlGen.generate(path);
-
-	// check if the file already exists in the metadata
-	QString basePath = libHandler_->getPath(component_->getVlnv());
-	QString relativePath = General::getRelativePath(basePath, path);
-	if (!component_->hasFile(relativePath))
-    {
-		// ask user if he wants to save the generated vhdl into object metadata
-		QMessageBox::StandardButton button = QMessageBox::question(this, 
-			tr("Save generated file to metadata?"),
-			tr("Would you like to save the generated vhdl-file to IP-Xact"
-			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-		// if the generated file is saved
-		if (button == QMessageBox::Yes)
-        {
-			// add a rtl view to the component_
-			vhdlGen.addRTLView(path);
-
-			libHandler_->writeModelToFile(component_);
-
-			return true;
-		}
-	}
-
-	return false;
 }
 
 //-----------------------------------------------------------------------------
