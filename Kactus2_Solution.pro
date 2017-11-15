@@ -21,6 +21,7 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
     Plugins/PadsPartGenerator/PadsPartGenerator.pro \
     Plugins/MakefileGenerator/MakefileGenerator.pro \
     Plugins/VerilogGenerator/VerilogGeneratorPlugin.pro \
+    Plugins/VHDGenerator/VHDGenerator.pro \
     Plugins/VHDLimport/VHDLimport.pro \
     Plugins/VerilogImport/VerilogImport.pro \
     Plugins/VerilogIncludeImport/VerilogIncludeImport.pro \
