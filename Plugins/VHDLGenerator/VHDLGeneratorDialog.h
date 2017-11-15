@@ -6,7 +6,7 @@
 // Date: 13.11.2017
 //
 // Description:
-// <Short description of the class/file contents>
+// Dialog for setting VHDL generation options.
 //-----------------------------------------------------------------------------
 
 #ifndef VHDLGENERATORDIALOG_H

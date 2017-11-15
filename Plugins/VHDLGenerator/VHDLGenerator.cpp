@@ -6,12 +6,12 @@
 // Date: 13.11.2017
 //
 // Description:
-// <Short description of the class/file contents>
+// Kactus2 plugin for VHDL file generation.
 //-----------------------------------------------------------------------------
 
 #include "VHDLGenerator.h"
 
-#include "VhdlGenerator2.h"
+#include "vhdlgenerator2.h"
 #include "VHDLGeneratorDialog.h"
 
 #include <library/LibraryInterface.h>

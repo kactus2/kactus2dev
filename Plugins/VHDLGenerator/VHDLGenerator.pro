@@ -8,7 +8,7 @@ DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
 CONFIG += plugin release
 DEFINES += QT_DLL QT_XML_LIB VHDLGENERATOR_LIB QT_WIDGETS_LIB
-INCLUDEPATH += ./../../.. \
+INCLUDEPATH += ./../.. \
     ./GeneratedFiles \
     . \
     $(QTDIR)/../qttools/include 
