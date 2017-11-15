@@ -66,7 +66,7 @@ QString VHDLGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString VHDLGeneratorPlugin::getDescription() const
 {
-    return ".";
+    return "Generates a VHDL entity for a component or a structural description of a HW design.";
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ QString VHDLGeneratorPlugin::getVendor() const
 //-----------------------------------------------------------------------------
 QString VHDLGeneratorPlugin::getLicence() const
 {
-    return tr("LGPL2");
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ bool VHDLGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> 
     QSharedPointer<Design const> design,
     QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-    return true;
+    return component && component->getImplementation() == KactusAttribute::HW;
 }
 
 //-----------------------------------------------------------------------------
