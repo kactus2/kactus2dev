@@ -1,9 +1,13 @@
-/* 
- *	Created on: 7.2.2013
- *	Author:		Antti Kamppi
- * 	File name:	librarysettingsdelegate.h
- * 	Project:	Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: LibrarySettingsDelegate.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 07.02.2013
+//
+// Description:
+// This delegate is used to draw the check marks in the middle of default and active library columns.
+//-----------------------------------------------------------------------------
 
 #ifndef LIBRARYSETTINGSDELEGATE_H
 #define LIBRARYSETTINGSDELEGATE_H
@@ -11,7 +15,7 @@
 #include <QStyledItemDelegate>
 
 //-----------------------------------------------------------------------------
-//! This delegate is used to draw the check boxes in the middle of default and active library columns.
+//! This delegate is used to draw the check marks in the middle of default and active library columns.
 //-----------------------------------------------------------------------------
 class LibrarySettingsDelegate : public QStyledItemDelegate
 {
@@ -19,29 +23,26 @@ class LibrarySettingsDelegate : public QStyledItemDelegate
 
 public:
 
-	//! The columns for the library path table.
-	enum PathColumns
-    {
-		DEF_COLUMN = 0,
-		ACTIVE_COL,
-		PATH_COL
-	};
-
-	/*! The constructor. 
+	/*!
+     *  The constructor. 
 	 * 
-	 *      @param [in] parent Pointer to the owner of the delegate.
-	*/
+	 *      @param [in] parent  Pointer to the owner of the delegate.
+     */
 	LibrarySettingsDelegate(QObject *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~LibrarySettingsDelegate();
 
+	/*!
+	 *  Paint the check marks in the middle of the active and default columns.
+	 *
+	 *      @param [in] painter     The selected painter.
+	 *      @param [in] option      Options of the painter.
+	 *      @param [in] index       Current table index.
+	 */
 	virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-
-protected:
-
-	virtual bool editorEvent(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option, 
-        QModelIndex const& index);
 
 private:
 

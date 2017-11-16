@@ -18,6 +18,7 @@
 #include <QSettings>
 #include <QTableWidget>
 #include <QTableWidgetItem>
+#include <QIcon>
 
 //-----------------------------------------------------------------------------
 //! The dialog to display library locations and select active and default library paths.
@@ -36,7 +37,9 @@ public:
      */
     LibrarySettingsDialog(QSettings& settings, QWidget* parent = 0);
 
-    //! Destructor.
+    /*!
+     *  Destructor.
+     */
     ~LibrarySettingsDialog();
 
     /*!
@@ -46,40 +49,54 @@ public:
      */
     bool validate();
 
-    //! Applies the changes that were done in the page.
+    /*!
+     *  Applies the changes that were done in the page.
+     */
     void apply();
 
 public slots:
 
-    //! Adds a new directory to the library locations.
+    /*!
+     *  Adds a new directory to the library locations.
+     */
     void addLocation();
 
-    //! Removes the currently selected library location.
+    /*!
+     *  Removes the currently selected library location.
+     */
     void removeLocation();
 
-	/*! Called when a location is selected in the locations list.
+	/*!
+     *  Called when a location is selected in the locations list.
 	 *
 	 *      @param [in] cur     Pointer to the selected item.
 	 *      @param [in] prev    Pointer to the previously selected item.
-	*/
+     */
 	void onSelectLocation(QTableWidgetItem* cur, QTableWidgetItem* prev);
 
 signals:
-	//! Emitted when the library settings has changed and a scan should be performed.
+	
+    /*!
+     *  Emitted when the library settings has changed and a scan should be performed.
+     */
 	void scanLibrary();
 
 private slots:
 
-	/*! Handler for item clicks on the lib locations list.
+	/*!
+     *  Handler for item clicks on the lib locations list.
 	 *
-	 *      @param [in] item Pointer to the clicked item.
-	*/
+	 *      @param [in] item    Pointer to the clicked item.
+     */
 	void onItemClicked(QTableWidgetItem* item);
 
-    //! Called when the user presses OK.
+    /*!
+     *  Called when the user presses OK.
+     */
     virtual void accept();
 
 private:
+
     // Disable copying.
     LibrarySettingsDialog(LibrarySettingsDialog const& rhs);
     LibrarySettingsDialog& operator=(LibrarySettingsDialog const& rhs);
@@ -97,6 +114,20 @@ private:
      *      @param [in] isDefault   Is the directory is set default or not.
      */
     void createRowForDirectory(QString const& directory, bool isActive, bool isDefault);
+
+    /*!
+     *  Change the default path for the library.
+     *
+     *      @param [in] item    Table item for the new default path.
+     */
+    void changeDefaultPath(QTableWidgetItem* item);
+
+    /*!
+     *  Change the active status of the selected library path.
+     *
+     *      @param [in] item    The selected table item.
+     */
+    void changeActivePathStatus(QTableWidgetItem* item);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -122,6 +153,9 @@ private:
 
 	 //! Holds the info on if the user has changed the library or not.
 	 bool changed_;
+
+     //! Check icon for the active and default library paths.
+     QIcon checkMarkIcon_;
 };
 
 //-----------------------------------------------------------------------------

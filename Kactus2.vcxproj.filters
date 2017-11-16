@@ -6126,6 +6126,9 @@
     <CustomBuild Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsColumns.h">
+      <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
