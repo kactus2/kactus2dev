@@ -24,7 +24,7 @@ class ViewSelectionWidget : public QWidget
 public:
 
 	//! The constructor.
-	ViewSelectionWidget(QSharedPointer<ViewSelection> model);
+	ViewSelectionWidget(QSharedPointer<ViewSelection> model, QWidget* parent);
 
 	//! The destructor.
 	~ViewSelectionWidget();

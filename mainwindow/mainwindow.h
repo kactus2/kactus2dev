@@ -200,9 +200,6 @@ public slots:
     //! Adds a new column to the current HW/System design.
     void addColumn();
 
-    //! Generates the VHDL from the current design.
-    void generateVHDL();
-
 	//! Generates the documentation for the current component/design.
 	void generateDoc();
 
@@ -722,9 +719,6 @@ private:
 
     //! Action group for plugin generators.
     QActionGroup* pluginActionGroup_;
-
-    //! Action to generate VHDL from a design.
-    QAction* actGenVHDL_;
 
 	//! Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;

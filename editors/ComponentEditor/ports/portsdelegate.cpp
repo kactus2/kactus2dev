@@ -14,8 +14,6 @@
 #include "PortColumns.h"
 #include "PortTagEditorDelegate.h"
 
-#include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
-
 #include <common/widgets/listManager/listeditor.h>
 
 #include <QApplication>
@@ -307,10 +305,22 @@ QWidget* PortsDelegate::createSelectorWithCommonTypes(QWidget* parent) const
     combo->setEditable(true);
 
     QStringList types;
-    for (unsigned int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; i++)
-    {
-        types.append(VhdlGeneral::VHDL_TYPES[i]);
-    }
+    types.append("bit");
+    types.append("bit_vector");
+    types.append("boolean");
+    types.append("character");
+    types.append("integer");
+    types.append("natural");
+    types.append("positive");
+    types.append("real");
+    types.append("signed");
+    types.append("std_logic");
+    types.append("std_logic_vector");
+    types.append("std_ulogic");
+    types.append("std_ulogic_vector");
+    types.append("string");
+    types.append("time");
+    types.append("unsigned");
     types.append("reg");
     types.append("wire");
 
@@ -329,10 +339,8 @@ QWidget* PortsDelegate::createSelectorWithVHDLStandardLibraries(QWidget* parent)
     combo->setEditable(true);
     combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
-    for (unsigned int i = 0;i < VhdlGeneral::VHDL_TYPEDEF_COUNT; ++i)
-    {
-        combo->addItem(VhdlGeneral::VHDL_TYPE_DEFINITIONS[i]);
-    }
+    combo->addItem("IEEE.std_logic_1164.all");
+    combo->addItem("IEEE.numeric_std.all");
 
     return combo;
 }

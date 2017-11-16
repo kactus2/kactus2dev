@@ -133,7 +133,6 @@ actLibrarySearch_(0),
 actCheckIntegrity_(0),
 generationGroup_(0),
 pluginActionGroup_(0),
-actGenVHDL_(0),
 actGenDocumentation_(0),
 actRunImport_(0),
 diagramToolsGroup_(0),
@@ -532,11 +531,6 @@ void MainWindow::setupActions()
     connect(actCheckIntegrity_, SIGNAL(triggered()),
         libraryHandler_, SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
 
-    // Initialize the action to generate VHDL.
-    actGenVHDL_ = new QAction(QIcon(":/icons/common/graphics/vhdl_gen.png"),
-        tr("Generate Top-VHDL"), this);
-    connect(actGenVHDL_, SIGNAL(triggered()), this, SLOT(generateVHDL()), Qt::UniqueConnection);
-
     // initialize the action to generate documentation for the component/design
     actGenDocumentation_ = new QAction(QIcon(":icons/common/graphics/documentation.png"),
         tr("Generate Documentation"), this);
@@ -799,13 +793,11 @@ void MainWindow::setupMenus()
     generationGroup_ = ribbon_->addGroup(tr("Generation"));
     generationGroup_->addAction(actGenDocumentation_);
     generationGroup_->addAction(actRunImport_);
-    generationGroup_->addAction(actGenVHDL_);
     generationGroup_->setVisible(false);
     generationGroup_->setEnabled(false);
 
     generationGroup_->widgetForAction(actGenDocumentation_)->installEventFilter(ribbon_);
     generationGroup_->widgetForAction(actRunImport_)->installEventFilter(ribbon_);
-    generationGroup_->widgetForAction(actGenVHDL_)->installEventFilter(ribbon_);
 
     createGeneratorPluginActions();
 
@@ -1102,9 +1094,6 @@ void MainWindow::updateMenuStrip()
     generationGroup_->setEnabled(unlocked);
     generationGroup_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
 
-    actGenVHDL_->setEnabled((isHWDesign|| isHWComp) && unlocked);
-    actGenVHDL_->setVisible((isHWDesign|| isHWComp));
-
     actGenDocumentation_->setEnabled((isHWDesign|| isHWComp) && unlocked);
     actGenDocumentation_->setVisible((isHWDesign|| isHWComp));
 
@@ -1189,28 +1178,6 @@ void MainWindow::addColumn()
     if (designWidget != 0)
     {
         designWidget->addColumn();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: generateVHDL()
-//-----------------------------------------------------------------------------
-void MainWindow::generateVHDL()
-{
-    HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
-    ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(designTabs_->currentWidget());
-
-    if (designWidget != 0)
-    {
-        designWidget->onVhdlGenerate();
-    }
-    else if (compEditor)
-    {
-        // if user changed the metadata then the editor must be reopened
-        if (compEditor->onVhdlGenerate())
-        {
-            designTabs_->refreshCurrentDocument();
-        }
     }
 }
 

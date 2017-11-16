@@ -735,20 +735,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h \
-    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
-    ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
-    ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
-    ./kactusGenerators/vhdlGenerator/vhdlportsorter.h \
-    ./kactusGenerators/vhdlGenerator/VhdlTypedObject.h \
-    ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.h \
-    ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.h \
-    ./kactusGenerators/vhdlGenerator/vhdlgenerator2.h \
-    ./kactusGenerators/vhdlGenerator/vhdlgeneric.h \
-    ./kactusGenerators/vhdlGenerator/vhdlobject.h \
-    ./kactusGenerators/vhdlGenerator/vhdlport.h \
-    ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
+
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h
@@ -1395,18 +1384,6 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/Association/AssociationRemoveCommand.cpp \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.cpp \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlgeneral.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlgenerator2.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlgeneric.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlobject.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlport.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlportmap.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
-    ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp

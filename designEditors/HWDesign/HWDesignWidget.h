@@ -93,10 +93,6 @@ public slots:
     //! Saves the design as new object.
 	virtual bool saveAs();
 
-	//! Called when user clicks the generate top-vhdl icon.
-	void onVhdlGenerate();
-    QString findEntityName() const;
-
     /*!
      *  Handler for item deletion in the design diagram.
      */

@@ -309,8 +309,11 @@ QPair<QString, QString> VHDLPortParser::parsePortBounds(QString const& declarati
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::createDefaultTypeDefinition(QString const& type) const
 {
-    QRegularExpression defaultLogicTypes("std_(u)?logic(_vector)?");
-    QRegularExpression defaultNumericTypes("(un)?signed");
+    QRegularExpression defaultLogicTypes("std_(u)?logic(_vector)?", 
+        QRegularExpression::CaseInsensitiveOption);
+
+    QRegularExpression defaultNumericTypes("(un)?signed", 
+        QRegularExpression::CaseInsensitiveOption);
 
     if (defaultLogicTypes.match(type).hasMatch())
     {

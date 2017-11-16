@@ -29,7 +29,7 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
 	QString const& targetFileType, QWidget *parent) : 
 	QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint), 
     configuration_(configuration),
-    viewSelection_(new ViewSelectionWidget(configuration->getViewSelection())),
+    viewSelection_(new ViewSelectionWidget(configuration->getViewSelection(), this)),
     fileOutput_(new FileOutputWidget(configuration->getOutputControl())),
     generalWarningLabel_(new QLabel), 
     previewer_(new QPlainTextEdit(this)),

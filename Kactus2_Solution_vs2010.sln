@@ -56,6 +56,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModelSimGenerator", "Plugin
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryViewGenerator", "Plugins\MemoryViewGenerator\MemoryViewGenerator.vcxproj", "{8FC8D073-3D03-4DE6-8605-D906431FF5E8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VHDLGenerator", "Plugins\VHDLGenerator\VHDLGenerator.vcxproj", "{733888AA-F653-4A92-817D-25EE4AB2BE54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -268,6 +270,17 @@ Global
 		{8FC8D073-3D03-4DE6-8605-D906431FF5E8}.Template|Win32.ActiveCfg = Release|x64
 		{8FC8D073-3D03-4DE6-8605-D906431FF5E8}.Template|x64.ActiveCfg = Release|x64
 		{8FC8D073-3D03-4DE6-8605-D906431FF5E8}.Template|x64.Build.0 = Release|x64
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Debug|Win32.ActiveCfg = Debug|Win32
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Debug|Win32.Build.0 = Debug|Win32
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Debug|x64.ActiveCfg = Debug|x64
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Debug|x64.Build.0 = Debug|x64
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Release|Win32.ActiveCfg = Release|Win32
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Release|Win32.Build.0 = Release|Win32
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Release|x64.ActiveCfg = Release|x64
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Release|x64.Build.0 = Release|x64
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Template|Win32.ActiveCfg = Release|x64
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Template|x64.ActiveCfg = Release|x64
+		{733888AA-F653-4A92-817D-25EE4AB2BE54}.Template|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -289,12 +302,13 @@ Global
 		{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{09C39723-AF6B-4F3B-81C7-3233E7F8A22E} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{8FC8D073-3D03-4DE6-8605-D906431FF5E8} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+		{733888AA-F653-4A92-817D-25EE4AB2BE54} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD} = {9AC1D5FF-D209-4186-8C80-027639ACC2A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
-		BuildVersion_UpdateAssemblyVersion = True
-		BuildVersion_UpdateFileVersion = True
 		Qt5Version = 5.2.0x64
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
 	EndGlobalSection
 EndGlobal

@@ -27,6 +27,9 @@
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <QDate>
 #include <QDialog>
 #include <QDir>
@@ -184,8 +187,11 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
     QSharedPointer<Design> design,
     QSharedPointer<DesignConfiguration> designConfiguration)
 {
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(component));
+    QSharedPointer<ExpressionParser> parser(new IPXactSystemVerilogParser(finder));
+
     // Ask user for generation settings.
-    PadsPartGeneratorDialog dialog(utility->getLibraryInterface(), component, getName(), getVersion(), 
+    PadsPartGeneratorDialog dialog(utility->getLibraryInterface(), component, parser, getName(), getVersion(), 
         utility->getParentWidget());
     if (dialog.exec() == QDialog::Rejected)
     {
@@ -222,8 +228,15 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
     partFile->close();
     utility->printInfo(tr("Finished writing %1").arg(partFilePath));
 
-    // Add part file to fileset.    
-    if (addFileToFileset(component->getFileSet(filesetName), partFilePath, basePath, QStringList("padsPart")))
+    // Add part file to fileset.
+    QSharedPointer<FileSet> targetFileset = component->getFileSet(filesetName);
+    if (!targetFileset)
+    {
+        targetFileset = QSharedPointer<FileSet>(new FileSet(filesetName));
+        component->getFileSets()->append(targetFileset);
+    }
+
+    if (addFileToFileset(targetFileset, partFilePath, basePath, QStringList("padsPart")))
     {
         utility->printInfo(tr("Added %1 to fileset %2").arg(partFileName).arg(filesetName)); 
     }
@@ -248,7 +261,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
     utility->printInfo(tr("Finished writing %1").arg(caeFilePath));
 
     // Add cae file to fileset.
-    if (!addFileToFileset(component->getFileSet(filesetName), caeFilePath, basePath, QStringList("padsCAEDecal")))
+    if (!addFileToFileset(targetFileset, caeFilePath, basePath, QStringList("padsCAEDecal")))
     {
         utility->printError(tr("Could not add %1 to fileset %2").arg(caeFileName).arg(filesetName));
     }
@@ -273,7 +286,7 @@ QList<IPlugin::ExternalProgramRequirement> PadsPartGenerator::getProgramRequirem
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::generatePartFile()
 //-----------------------------------------------------------------------------                        
-bool PadsPartGenerator::generatePartFile(QFile* file, const QString& partDescription)
+bool PadsPartGenerator::generatePartFile(QFile* file, QString const& partDescription)
 {
     // open the file and erase all old contents if any exists.
     // if file could not be opened, cancel.
@@ -290,7 +303,7 @@ bool PadsPartGenerator::generatePartFile(QFile* file, const QString& partDescrip
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::generateCAEFile()
 //-----------------------------------------------------------------------------
-bool PadsPartGenerator::generateCAEFile(QFile* file, const QString& partTitle, const QString& partDescription)
+bool PadsPartGenerator::generateCAEFile(QFile* file, QString const& partTitle, QString const& partDescription)
 {
     // open the file and erase all old contents if any exists.
     // if file could not be opened, cancel.
@@ -506,7 +519,7 @@ void PadsPartGenerator::insertCAETerminals(QTextStream& output, QRect const& dra
 // Function: PadsPartGenerator::addFileToFileset()
 //-----------------------------------------------------------------------------
 bool PadsPartGenerator::addFileToFileset(QSharedPointer<FileSet> fileSet, 
-    const QString& filePath, QString const& basePath, const QStringList& fileTypes)
+    QString const& filePath, QString const& basePath, const QStringList& fileTypes)
 {
     QString relativePath = General::getRelativePath(basePath, filePath);
     if (relativePath.isEmpty())
