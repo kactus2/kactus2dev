@@ -25,9 +25,9 @@
 //-----------------------------------------------------------------------------
 AssistedLineEdit::AssistedLineEdit(QWidget* parentWnd, QWidget* parent) : 
 QLineEdit(parent),
-    mainWnd_(parentWnd),
-    matcher_(0),
-    contentAssist_()
+mainWnd_(parentWnd),
+matcher_(0),
+contentAssist_()
 {
     contentAssist_ = new LineContentAssistWidget(this, parentWnd);
     
@@ -102,6 +102,7 @@ void AssistedLineEdit::focusInEvent(QFocusEvent* e)
 
     if (e->reason() != Qt::ActiveWindowFocusReason)
     {
+        contentAssist_->setWidthForAssist(width());
         contentAssist_->updateAssist(0);
     }
 }

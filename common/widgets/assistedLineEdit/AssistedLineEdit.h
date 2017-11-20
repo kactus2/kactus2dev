@@ -29,15 +29,17 @@ class AssistedLineEdit : public QLineEdit
     Q_OBJECT
 
 public:
-    /*!  Constructor.
+
+    /*!
+     *  The constructor.
      *
-     *      @param [in] mainWnd         The parent window of the line edit. Must not be null.
-     *      @param [in] parent          The parent widget. Can be null.
+     *      @param [in] parentWnd   The parent window of the line edit. Must not be null.
+     *      @param [in] parent      The parent widget. Can be null.
      */
     AssistedLineEdit(QWidget* parentWnd, QWidget* parent = 0);
 
     /*!
-     *  Destructor.
+     *  The destructor.
      */
     ~AssistedLineEdit();
 
@@ -55,8 +57,9 @@ public:
      *      @param [in] e    The event.
      */
     bool eventFilter(QObject* obj, QEvent* e);
-    
+
 protected:
+
     /*!
      *  Handles the given key press event.
      *

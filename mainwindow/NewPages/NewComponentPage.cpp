@@ -25,7 +25,7 @@
 NewComponentPage::NewComponentPage(LibraryInterface* libInterface, QWidget* parentDlg):
 NewPage(libInterface, VLNV::COMPONENT, tr("New HW Component"),
     tr("Creates a flat (non-hierarchical) HW component"), parentDlg),
-    attributeEditor_(new KactusAttributeEditor(this))
+attributeEditor_(new KactusAttributeEditor(this))
 {
     connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
 

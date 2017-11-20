@@ -27,16 +27,17 @@ class NewComponentPage : public NewPage
     Q_OBJECT
 
 public:
+
     /*!
-     *  Constructor.
+     *  The constructor.
      *
-     *      @param [in] libInterface The library interface.
-     *      @param [in] parentDlg    The parent dialog.
+     *      @param [in] libInterface    The library interface.
+     *      @param [in] parentDlg       The parent dialog.
      */
     NewComponentPage(LibraryInterface* libInterface, QWidget* parentDlg);
 
     /*!
-     *  Destructor.
+     *  The destructor.
      */
     ~NewComponentPage();
 
@@ -64,14 +65,18 @@ public:
 public slots:
 
 
-    //! Called when the user changes the product hierarchy attribute.
+    /*!
+     *  Called when the user changes the product hierarchy attribute.
+     */
     void onProductHierarchyChanged();
 
 signals:
-    //! Signaled when a component should be created.
-    void createComponent(KactusAttribute::ProductHierarchy prodHier,
-                         KactusAttribute::Firmness firmness,
-                         VLNV const& vlnv, QString const& directory);
+
+    /*!
+     *  Signaled when a component should be created.
+     */
+    void createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
+        VLNV const& vlnv, QString const& directory);
 
 private:
     // Disable copying.

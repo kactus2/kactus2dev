@@ -24,8 +24,9 @@
 class LineContentAssistWidget : public QListWidget
 {
 public:
+
     /*!
-     *  Constructor.
+     *  The constructor.
      *
      *      @param [in] target     The target line edit. Must not be null.
      *      @param [in] parentWnd  The parent window of the line edit.
@@ -33,7 +34,7 @@ public:
     LineContentAssistWidget(QLineEdit* target, QWidget* parentWnd);
 
     /*!
-     *  Destructor.
+     *  The destructor.
      */
     ~LineContentAssistWidget();
 
@@ -61,6 +62,9 @@ public:
      */
     void updateAssist(QKeyEvent* e);
 
+    /*!
+     *  Hide the content assist.
+     */
     void hideAssist();
 
     /*!
@@ -79,6 +83,13 @@ public:
      *  Returns true if there is some content shown by the content assist widget.
      */
     bool isContentShown() const;
+
+    /*!
+     *  Set a new width for the assist.
+     *
+     *      @param [in] newWidth    The new assist width.
+     */
+    void setWidthForAssist(int newWidth);
 
 protected:
     /*!
@@ -101,8 +112,8 @@ private:
     LineContentAssistWidget& operator=(LineContentAssistWidget const& rhs);
 
     /*!
-     *  Tries to match the contents to the text close to the text cursor.
-     *  If there is a match, the content assist is automatically shown. Otherwise it is hidden.
+     *  Tries to match the contents to the text close to the text cursor. If there is a match, the content assist
+     *  is automatically shown. Otherwise it is hidden.
      */
     void updateMatches();
 
@@ -118,8 +129,8 @@ private:
     /*!
      *  Commits the selection with the contents from the content assist.
      *
-     *      @remarks Assumes that there is at least a partial match found when match()
-     *               was called the previous time.
+     *      @remarks    Assumes that there is at least a partial match found when match() was called the previous
+     *                  time.
      */
     void commitSelection();
 
@@ -134,7 +145,7 @@ private:
     void moveClose(int cursorPos);
 
     //! The default maximum number of visible items.
-    static int const DEFAULT_MAX_VISIBLE_ITEMS = 6;
+    static int const DEFAULT_MAX_VISIBLE_ITEMS = 15;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -154,6 +165,9 @@ private:
     
     //! Current content state.
     bool contentFound_;
+
+    //! Width of the line assist.
+    int lineAssistWidth_;
 };
 
 //-----------------------------------------------------------------------------
