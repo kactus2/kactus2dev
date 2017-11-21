@@ -12,7 +12,7 @@ INCLUDEPATH += ./../.. \
     ./GeneratedFiles \
     . \
     $(QTDIR)/../qttools/include 
-LIBS += -L"./../../../executable" \
+LIBS += -L"./../../executable" \
     -lIPXACTmodels
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release
