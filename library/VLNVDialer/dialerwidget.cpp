@@ -28,15 +28,15 @@
 //-----------------------------------------------------------------------------
 DialerWidget::DialerWidget(QWidget *parent):
 QWidget(parent),
-    vendorBox_(this),
-    libraryBox_(this),
-    nameBox_(this),
-    versionBox_(this),
-    root_(0),
-    vendors_(),
-    libraries_(),
-    names_(),
-    versions_()
+vendorBox_(this),
+libraryBox_(this),
+nameBox_(this),
+versionBox_(this),
+root_(0),
+vendors_(),
+libraries_(),
+names_(),
+versions_()
 {
 	vendorBox_.setEditable(true);
 	libraryBox_.setEditable(true);
