@@ -737,7 +737,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
-
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h
