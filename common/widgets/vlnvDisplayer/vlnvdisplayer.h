@@ -68,6 +68,20 @@ private:
 	//! No assignment.
 	VLNVDisplayer& operator=(const VLNVDisplayer& other);
 
+    /*!
+     *  Setup the VLNV layout.
+     */
+    void setupLayout();
+
+    /*!
+     *  Setup a compact VLNV layout.
+     */
+    void setupCompactLayout();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Title labels for each field.
     QLabel vendorLabel_;
     QLabel libraryLabel_;
@@ -91,6 +105,9 @@ private:
 
     //! Compact layout.
     QHBoxLayout* compactLayout_;
+
+    //! Label containing the folder path of the displayed VLNV item.
+    QLabel* pathLabel_;
 };
 
 #endif // VLNVDISPLAYER_H

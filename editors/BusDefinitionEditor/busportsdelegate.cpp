@@ -25,7 +25,9 @@
 //-----------------------------------------------------------------------------
 // Function: BusPortsDelegate::BusPortsDelegate()
 //-----------------------------------------------------------------------------
-BusPortsDelegate::BusPortsDelegate(QObject *parent): QStyledItemDelegate(parent), busDefinition_(0)
+BusPortsDelegate::BusPortsDelegate(QObject *parent):
+QStyledItemDelegate(parent),
+busDefinition_(0)
 {
 
 }
@@ -48,12 +50,12 @@ QWidget* BusPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem co
     {
         QComboBox* box = new QComboBox(parent);
         QStringList list;
+        list.append("none");
         list.append("address");
         list.append("data");
         list.append("data/address");
         list.append("clock");
         list.append("reset");
-        list.append("any");
 
         box->addItems(list);
 

@@ -16,9 +16,7 @@
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/common/VLNV.h>
-
 #include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
-
 #include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
 
 #include <QApplication>
@@ -32,17 +30,17 @@
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionEditor::BusDefinitionEditor()
 //-----------------------------------------------------------------------------
-BusDefinitionEditor::BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<BusDefinition> busDef, 
-    QSharedPointer<AbstractionDefinition> absDef, bool disableBusDef):
-TabDocument(parent, DOC_PROTECTION_SUPPORT), 
-    libHandler_(libHandler),
-    busDef_(busDef),
-    absDef_(absDef),
-    busDefGroup_(this),
-    absDefGroup_(this),
-    expressionParser_(new SystemVerilogExpressionParser()),
-    busDefinitionValidator_(new BusDefinitionValidator(expressionParser_)),
-    absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
+BusDefinitionEditor::BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
+    QSharedPointer<BusDefinition> busDef, QSharedPointer<AbstractionDefinition> absDef, bool disableBusDef):
+TabDocument(parent, DOC_PROTECTION_SUPPORT),
+libHandler_(libHandler),
+busDef_(busDef),
+absDef_(absDef),
+busDefGroup_(libHandler, this),
+absDefGroup_(libHandler, this),
+expressionParser_(new SystemVerilogExpressionParser()),
+busDefinitionValidator_(new BusDefinitionValidator(expressionParser_)),
+absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
 {
     if (absDef_)
     {
@@ -362,7 +360,8 @@ void BusDefinitionEditor::setupLayout()
     verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     verticalSplitter->addWidget(&busDefGroup_);
     verticalSplitter->addWidget(&absDefGroup_);
-    verticalSplitter->setStretchFactor(1, 1);
+    verticalSplitter->setStretchFactor(0, 1);
+    verticalSplitter->setStretchFactor(1, 300);
     verticalSplitter->setContentsMargins(2, 2, 2, 2);
     verticalSplitter->setHandleWidth(10);
 

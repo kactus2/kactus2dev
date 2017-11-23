@@ -22,6 +22,10 @@
 #include <QSharedPointer>
 #include <QPlainTextEdit>
 
+class VLNVDisplayer;
+class VLNVEditor;
+class LibraryInterface;
+
 //-----------------------------------------------------------------------------
 //! BusDefGroup contains elements to set the properties of a Bus Definition.
 //-----------------------------------------------------------------------------
@@ -32,58 +36,77 @@ class BusDefGroup : public QGroupBox
 public:
 
 	/*!
-     *  The constructor
+     *  The constructor.
 	 *
-	 *      @param [in] parent The owner of this widget
+     *      @param [in] libraryHandler  Interface to the library.
+	 *      @param [in] parent          The owner of this widget.
 	 */
-	BusDefGroup(QWidget *parent);
+	BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent);
 
 	/*!
-     *  Set the bus definition that is being edited
+     *  Set the bus definition that is being edited.
 	 *
 	 *      @param [in] busDef The bus definition
 	 */
 	void setBusDef(QSharedPointer<BusDefinition> busDef);
 	
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~BusDefGroup();
 
 signals:
 
-	//! Emitted when user changes the state of one of the elements.
+	/*!
+     *  Emitted when user changes the state of one of the elements.
+     */
 	void contentChanged();
 
 private slots:
 
-	//! Handler for state changes on direct connection check box.
+	/*!
+     *  Handler for state changes on direct connection check box.
+     */
 	void onDirectConnectionChanged(bool checked);
 
-    //! Handler for state changes on is broadcast check box.
+    /*!
+     *  Handler for state changes on is broadcast check box.
+     */
     void onIsBroadcastChanged(bool checked);
 
-	//! Handler for state changes on is addressable check box.
+	/*!
+     *  Handler for state changes on is addressable check box.
+     */
 	void onIsAddressableChanged(bool checked);
 
-	//! Handler for changes in max masters line edit.
+	/*!
+     *  Handler for changes in max masters line edit.
+     */
 	void onMastersChanged();
 
-	//! Handler for changes in max slaves line edit.
+	/*!
+     *  Handler for changes in max slaves line edit.
+     */
 	void onSlavesChanged();
 
-    //! Handler for changes in system group names.
+    /*!
+     *  Handler for changes in system group names.
+     */
     void onSystemNamesChanged();
 
-    //! Handler for changes in the description.
+    /*!
+     *  Handler for changes in the description.
+     */
     void onDescriptionChanged();
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	BusDefGroup(const BusDefGroup& other);
-
-	//! No assignment
 	BusDefGroup& operator=(const BusDefGroup& other);
 
-    //! Sets the widget layout.
+    /*!
+     *  Sets the widget layout.
+     */
     void setupLayout();
     
 	//! The bus definition to edit.
@@ -109,6 +132,12 @@ private:
 
     //! Editor for bus definition description.
     QPlainTextEdit descriptionEditor_;
+
+    //! Display for the bus definition VLNV.
+    VLNVDisplayer* vlnvDisplay_;
+
+    //! Editor for the bus definition extension.
+    VLNVEditor* extendDisplay_;
 };
 
 #endif // BUSDEFGROUP_H

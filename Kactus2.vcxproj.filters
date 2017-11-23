@@ -4396,6 +4396,9 @@
     <ClCompile Include="GeneratedFiles\moc_GeneralDocumentGenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionPortsSortFilter.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6056,6 +6059,9 @@
     </CustomBuild>
     <CustomBuild Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsColumns.h">
       <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionDefinitionPortsSortFilter.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
