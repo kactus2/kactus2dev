@@ -439,12 +439,16 @@ void ComponentEditorSettingsPage::loadSettings()
 QList <QCheckBox*> ComponentEditorSettingsPage::setCheckBoxes()
 {
 	QList <QCheckBox*> checkBoxes;
+    QString checkBoxStyle("QCheckBox::indicator:unchecked { image: none}"
+        "QCheckBox::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}");   
 
 	QStringList boxNames = SettingsPage::settings().childKeys();
 	foreach (QString name, boxNames)
 	{
-		QString checkBoxName = name;
-		QCheckBox* checkBox = new QCheckBox;
+		QString checkBoxName = name;     
+		QCheckBox* checkBox = new QCheckBox(this);
+        checkBox->setStyleSheet(checkBoxStyle);
+
 		checkBox->setChecked(settings().value(name, true).toBool());
 		checkBoxes.append(checkBox);
 	}

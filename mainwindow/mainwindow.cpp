@@ -193,6 +193,17 @@ pluginMgr_()
     resize(1024, 768);
     setWindowState(Qt::WindowMaximized);
 
+    QString defaultStyleSheet(
+        "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
+        "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
+        "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
+        "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"        
+        "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
+        "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
+        "QTableView::indicator:unchecked {image: none;}"
+        "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
+    setStyleSheet(defaultStyleSheet);
+
     // Setup windows.
     setupDrawBoard();
     dockHandler_->setupDockWidgets();
@@ -2943,9 +2954,6 @@ void MainWindow::openComponent(VLNV const& vlnv)
     ComponentEditor* editor = new ComponentEditor(libraryHandler_, *pluginMgr_, component, this);
     connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
         editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
-
-    QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
-    editor->setStyleSheet(styleSheet);
 
     connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
