@@ -30,7 +30,6 @@ class BusInterface;
 class AbstractionType;
 class AbstractionDefinition;
 class Port;
-class Parameter;
 class RemapState;
 
 struct GenerationTuple

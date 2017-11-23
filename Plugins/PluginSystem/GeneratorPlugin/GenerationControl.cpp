@@ -348,7 +348,7 @@ QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleVie
             findDesignInstantiation(view->getDesignInstantiationRef());
 
         // If it exists it must refer to the input design.
-        if (dis && *dis->getDesignReference() == input.design->getVlnv())
+        if (dis && *dis->getDesignReference() != input.design->getVlnv())
         {
             continue;
         }

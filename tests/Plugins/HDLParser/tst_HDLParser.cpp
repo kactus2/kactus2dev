@@ -193,12 +193,19 @@ void tst_HDLParser::init()
     topView_ = QSharedPointer<View>(new View("topView"));
     topComponent_->getViews()->append(topView_);
 
-    VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
-	design_ = QSharedPointer<Design>(new Design(designVlnv));
+    QSharedPointer<ConfigurableVLNVReference> designVlnv(
+        new ConfigurableVLNVReference(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0"));
+    design_ = QSharedPointer<Design>(new Design(*designVlnv));
+
+    QSharedPointer<DesignInstantiation> di(new DesignInstantiation);
+    di->setName("TestDesignInstantiation");
+    topView_->setDesignInstantiationRef(di->name());
+    di->setDesignReference(designVlnv);
+    topComponent_->getDesignInstantiations()->append(di);
 
 	VLNV designConfVlnv(VLNV::DESIGNCONFIGURATION, "Test", "TestLibrary", "TestDesignConfiguration", "1.0");
 	designConf_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(designConfVlnv));
-    designConf_->setDesignRef(designVlnv);
+    designConf_->setDesignRef(*designVlnv);
 
     input_.component = topComponent_;
     input_.design = design_;
