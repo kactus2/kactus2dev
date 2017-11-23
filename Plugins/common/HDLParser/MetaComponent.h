@@ -105,6 +105,8 @@ public:
 
 protected:
 
+    void cullMetaParameters();
+
     //! The messages.
     MessagePasser* messages_;
 

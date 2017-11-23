@@ -51,7 +51,8 @@ public:
      *
      */
     void parseInstance();
-    
+
+
     /*!
     *   Parses the expression using the parser and returns the result.
     */

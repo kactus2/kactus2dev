@@ -62,32 +62,7 @@ void MetaInstance::parseInstance()
     parsePorts(instanceParser);
     parsePortAssignments(instanceParser);
 
-    foreach(QSharedPointer<Parameter> original, *getParameters())
-    {
-        QSharedPointer<Parameter> mParameter(original);
-
-        getMetaParameters()->insert(original->name(), mParameter);
-    }
-
-    foreach(QSharedPointer<Parameter> pOriginal, *getModuleParameters())
-    {
-        QSharedPointer<ModuleParameter> original = qSharedPointerDynamicCast<ModuleParameter>(pOriginal);
-
-        if (!original)
-        {
-            continue;
-        }
-
-        QMap<QString, QSharedPointer<Parameter> >::iterator i = getMetaParameters()->find(original->name());
-
-        if (i != getMetaParameters()->end())
-        {
-            getMetaParameters()->erase(i);
-        }
-
-        QSharedPointer<ModuleParameter> mParameter = QSharedPointer<ModuleParameter>(original);
-        getMetaParameters()->insert(original->name(), mParameter);
-    }
+    cullMetaParameters();
 }
 
 //-----------------------------------------------------------------------------
