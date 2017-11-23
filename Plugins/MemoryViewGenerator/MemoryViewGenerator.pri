@@ -17,14 +17,15 @@ HEADERS += ../../designEditors/MemoryDesigner/ConnectivityComponent.h \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./MemoryViewGenerator.h \
     ./memoryviewgenerator_global.h \
-    ../../editors/ComponentEditor/common/ParameterCache.h \
-    ./MemoryViewGeneratorPlugin.h \
     ../../designEditors/common/ComponentInstanceParameterFinder.h \
-    ../../editors/ComponentEditor/common/MultipleParameterFinder.h
-SOURCES += ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
+    ../../editors/ComponentEditor/common/ParameterCache.h \
+    ./MemoryViewGeneratorPlugin.h
+SOURCES += ../../designEditors/common/ComponentInstanceParameterFinder.cpp \
+    ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
@@ -33,10 +34,9 @@ SOURCES += ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../designEditors/MemoryDesigner/MemoryItem.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ParameterCache.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./MemoryViewGenerator.cpp \
-    ./MemoryViewGeneratorPlugin.cpp \
-    ../../designEditors/common/ComponentInstanceParameterFinder.cpp \
-    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp
+    ./MemoryViewGeneratorPlugin.cpp
 RESOURCES += MemoryViewGenerator.qrc
