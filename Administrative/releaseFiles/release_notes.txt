@@ -1,4 +1,4 @@
-	===============================================================================
+===============================================================================
                             RELEASE NOTES : Kactus2
            Copyright (c) 2012-2017 Tampere University of Technology
                             http://funbase.cs.tut.fi
@@ -7,6 +7,46 @@
               - Bug fix or something removed
               * Changed or Information
 ===============================================================================
+
+23/11/2017 3.5.0
+----------------------------------------------------
+
++ Graphical user interface visual update:
+    * All icons updated
+    * Instruction labels added in dialogs
+    * Colors centralized in KactusColors.h
++ Added feature to show the directory icons provided by OS for library paths 
+  which shows version controlled items in Windows
++ Added feature to automatically update library view when file changes on disk
++ Added feature to select the which HW design to open for an IP-XACT component
+  with multiple designs
++ Added editor for indirect interfaces in component
++ Added editor for component instantiation parameters
++ Added editor for design configuration instantiation parameters
++ Added editor for design configuration instantiation configurable elements
++ Added editor for design instantiation configurable elements
++ Added feature to define prefix in port map auto-connect for better matching
++ Added editor for design parameters
++ Improved performance on drawing connections in design
++ Added delete in context menu in design view
++ Improvements in  Memory Designer:
+    * Added support for multiple items accessing the same memory map
+    * Improved layout for items
++ Improvements in HTML generation:
+    * Added writing register and field reset values in HTML
+    * Added writing instantiations within a component in HTML
+
+- Fixed error in XML schema location writing
+- Fixed C source editor refresh
+- Fixed port size parsign in PADS part generator which previously caused the
+  plugin to crash
+- TLMW generator plugin removed from build
+
+* Software component instance merged to component instance
+* Changed VHDL import to create component parameters and retains references in
+  port boundaries
+* Moved VHDL generator from core to a separate plugin
+* ModelSim generator plugin moved to same framework as Verilog generator
 
 22/03/2017 3.4.0
 ----------------------------------------------------
