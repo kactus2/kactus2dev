@@ -36,21 +36,22 @@ class VLNVEditor : public QGroupBox
     Q_OBJECT
 
 public:
+
     /*!
-     *  Constructor.
+     *  The constructor.
      *
-     *      @param [in] vlnvType    The VLNV type which to edit.
-     *      @param [in] parentWnd   The parent window (having a title bar).
+     *      @param [in] type        The VLNV type which to edit.
      *      @param [in] libHandler  The library handler.
+     *      @param [in] parentWnd   The parent window (having a title bar).
      *      @param [in] parent      The parent widget.
      *      @param [in] compact     If true, the VLNV layout is made compact (label and edit on the same row).
      *                              If false, the labels and edits are on different rows.
      */
-    VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd = 0,
-               QWidget* parent = 0, bool compact = true);
+    VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd = 0, QWidget* parent = 0,
+        bool compact = true);
 
     /*!
-     *  Destructor.
+     *  The destructor.
      */
     virtual ~VLNVEditor();
 
@@ -92,7 +93,6 @@ public:
 
     /*!
      *  Generates a VLNV that matches the contents of the editor.
-     *
      */
     VLNV getVLNV() const;
 
@@ -107,36 +107,39 @@ public:
 	bool isEmpty() const;
 
 signals:
-    //! Emitted when the contents of the editor have changed.
+
+    /*!
+     *  Emitted when the contents of the editor have changed.
+     */
     void contentChanged();
 
-    //! Emitted when the user edits the VLNV in the editor.
+    /*!
+     *  Emitted when the user edits the VLNV in the editor.
+     */
     void vlnvEdited();
 
-	/*! Emitted when a vlnv for abstraction definition is dropped to this editor.
+	/*!
+     *  Emitted when a vlnv for abstraction definition is dropped to this editor.
 	 *
 	 *        @param [in] busDefVLNV The vlnv of the matching bus definition.
-	 *
-	*/
+	 */
 	void setBusDef(const VLNV& busDefVLNV);
 
-	/*! Emitted when a vlnv for bus definition is dropped to this editor.
+	/*!
+     *  Emitted when a vlnv for bus definition is dropped to this editor. If there are several matching
+     *  abstraction definitions then this is not emitted.
 	 * 
-	 * If there are several matching abstraction definitions then this is not emitted.
-	 * 
-	 *        @param [in] absDefVLNV Identifies the vlnv of matching abstraction definition.
-	 *
-	*/
+     *      @param [in] absDefVLNV  Identifies the vlnv of matching abstraction definition.
+	 */
 	void setAbsDef(const VLNV& absDefVLNV);
 
 public slots:
-	/*! Set the widget to be mandatory or not.
-	 * 
-	 * The default setting is mandatory on.
-	 * 
-	 *        @param [in] mandatory If true then all 4 vlnv fields are displayed as mandatory fields.
+	
+    /*!
+     *  Set the widget to be mandatory or not. The default setting is mandatory on.
 	 *
-	*/
+	 *      @param [in] mandatory   If true then all 4 vlnv fields are displayed as mandatory fields.
+	 */
 	void setMandatory(bool mandatory);
 
 	/*! 
@@ -146,53 +149,79 @@ public slots:
 	 */
 	void setVLNV(VLNV const& vlnv);
 
-    //! Updates the data tree.
+    /*!
+     *  Updates the data tree.
+     */
     void updateFiltering();
 
-    //! Updates all matcher items based on the contents of the VLNV editor fields.
+    /*!
+     *  Updates all matcher items based on the contents of the VLNV editor fields.
+     */
     void updateMatcherItems();
 
-    //! Called when the vendor field has changed.
+    /*!
+     *  Called when the vendor field has changed.
+     */
     void updateLibraryMatcherItem();
 
-    //! Called when the library field has changed.
+    /*!
+     *  Called when the library field has changed.
+     */
     void updateNameMatcherItem();
 
-    //! Called when the name field has changed.
+    /*!
+     *  Called when the name field has changed.
+     */
     void updateVersionMatcherItem();
 
-	//! Sets the vendor-field to contain the given string.
+	/*!
+     *  Sets the vendor-field to contain the given string.
+     */
 	void setVendor(QString const& vendor);
 
-	//! Sets the library-field to contain the given string.
+	/*!
+     *  Sets the library-field to contain the given string.
+     */
 	void setLibrary(QString const& library);
 
-	//! Sets the name-field to contain the given string.
+	/*!
+     *  Sets the name-field to contain the given string.
+     */
 	void setName(QString const& name);
 
-	//! Sets the version-field to contain the given string.
+	/*!
+     *  Sets the version-field to contain the given string.
+     */
 	void setVersion(QString const& version);
 
 protected:
-	/*! Handler for drop events on drag & drop
+	
+    /*!
+     *  Handler for drop events on drag & drop
 	 *
-	 *        @param [in] event Pointer to the drop event.
-	 *
-	*/
+	 *      @param [in] event   Pointer to the drop event.
+	 */
 	virtual void dropEvent(QDropEvent* event);
 
-	/*! Handler for drag enter events in drag & drop.
+	/*!
+     *  Handler for drag enter events in drag & drop.
 	 *
-	 *        @param [in] event Pointer to the event.
-	 *
-	*/
+	 *      @param [in] event   Pointer to the event.
+	 */
 	virtual void dragEnterEvent(QDragEnterEvent* event);
     
+    /*!
+     *  Handler for the show event.
+     *
+     *      @param [in] event   Pointer to the show event.
+     */
     virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-    //! Refreshes the filtering and matcher items.
+    /*!
+     *  Refreshes the filtering and matcher items.
+     */
     void refresh();
 
 private:
@@ -208,8 +237,8 @@ private:
     /*!
      *  Initializes the widgets of the vlnv editor.
      *
-     *      @param [in] parentWnd The parent window.
-     *      @param [in] compact   If true, the layout is made compact.
+     *      @param [in] parentWnd   The parent window.
+     *      @param [in] compact     If true, the layout is made compact.
      */
     void initWidgets(QWidget* parentWnd, bool compact);
 
@@ -261,6 +290,8 @@ private:
 
     //! Implementation filter data.
     bool implementationFilterEnabled_;
+
+    //! Implementation filter.
     KactusAttribute::Implementation implementationFilter_;
 };
 

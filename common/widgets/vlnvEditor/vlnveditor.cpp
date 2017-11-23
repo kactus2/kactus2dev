@@ -38,28 +38,25 @@
 //-----------------------------------------------------------------------------
 // Function: VLNVEditor::VLNVEditor()
 //-----------------------------------------------------------------------------
-VLNVEditor::VLNVEditor(VLNV::IPXactType type, 
-					   LibraryInterface* libHandler, 
-					   QWidget* parentWnd,
-					   QWidget* parent,
-					   bool compact)
-    : QGroupBox(parent),
-      type_(type),
-      contentTypes_(),
-      dirty_(false),
-      dataTree_(),
-      vendorEdit_(0),
-      vendorMatcher_(libHandler),
-      libraryEdit_(0),
-      libraryMatcher_(libHandler),
-      nameEdit_(0),
-      nameExtensionLabel_(this),
-      nameMatcher_(libHandler),
-      versionEdit_(0),
-      versionMatcher_(libHandler),
-      handler_(libHandler),
-      implementationFilterEnabled_(false),
-      implementationFilter_(KactusAttribute::HW)
+VLNVEditor::VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd, QWidget* parent,
+    bool compact):
+QGroupBox(parent),
+type_(type),
+contentTypes_(),
+dirty_(false),
+dataTree_(),
+vendorEdit_(0),
+vendorMatcher_(libHandler),
+libraryEdit_(0),
+libraryMatcher_(libHandler),
+nameEdit_(0),
+nameExtensionLabel_(this),
+nameMatcher_(libHandler),
+versionEdit_(0),
+versionMatcher_(libHandler),
+handler_(libHandler),
+implementationFilterEnabled_(false),
+implementationFilter_(KactusAttribute::HW)
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(type_ != VLNV::INVALID);

@@ -49,6 +49,8 @@ parameters_(componentInstantiation->getParameters(), component->getChoices(), pa
 {
     fileSetRefs_.initialize();
 
+    connect(&nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
 	connect(&languageEditor_, SIGNAL(textEdited(const QString&)), 
         this, SLOT(onLanguageChange()), Qt::UniqueConnection);
 	connect(&languageStrict_, SIGNAL(toggled(bool)),

@@ -113,6 +113,7 @@
       <file>common/graphics/arrowRight.png</file>
       <file>common/graphics/settings-visibilities.png</file>
       <file>common/graphics/runProgram.png</file>
+      <file>common/graphics/checkMark.png</file>
   </qresource>
     <qresource prefix="/">        
       <file>common/graphics/splash.png</file>

@@ -18,12 +18,12 @@
 //-----------------------------------------------------------------------------
 TypeGroup::TypeGroup(QWidget *parent):
 QGroupBox(tr("Item Type"), parent),
-    componentBox_(tr("Component"), this),
-    busBox_(tr("Bus"), this),
-    catalogBox_(tr("Catalog"), this),
-    apiComBox_(tr("API/COM"), this),
-    advancedBox_(tr("Advanced"), this),
-    options_()
+componentBox_(tr("Component"), this),
+busBox_(tr("Bus"), this),
+catalogBox_(tr("Catalog"), this),
+apiComBox_(tr("API/COM"), this),
+advancedBox_(tr("Advanced"), this),
+options_()
 {
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(&busBox_, 0, 0, 1, 1);

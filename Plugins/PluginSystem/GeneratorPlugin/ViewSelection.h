@@ -19,7 +19,7 @@
 class View;
 class ComponentInstantiation;
 class FileSet;
-class GenerationSettings;
+struct GenerationSettings;
 
 //-----------------------------------------------------------------------------
 //! Container class for view selection.

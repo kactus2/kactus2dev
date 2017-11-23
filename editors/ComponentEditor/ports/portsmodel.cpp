@@ -20,8 +20,6 @@
 
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
-#include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
-
 #include <common/KactusColors.h>
 
 #include <QTextStream>
@@ -361,7 +359,7 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
             port->setTypeName(typeName);
 
             // update the type definition for the new type name.
-            port->setTypeDefinition(typeName, VhdlGeneral::getDefaultVhdlTypeDef(typeName));
+            port->setTypeDefinition(typeName, QString());
 
             emit dataChanged(index, QAbstractTableModel::index(index.row(), PortColumns::TYPE_DEF));
             return true;
@@ -921,7 +919,7 @@ void PortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int ro
     {
         // change the type to vectored
         port->setTypeName("std_logic_vector");
-        port->setTypeDefinition("std_logic_vector", VhdlGeneral::getDefaultVhdlTypeDef("std_logic_vector"));
+        port->setTypeDefinition("std_logic_vector", "IEEE.std_logic_1164.all");
 
         emit dataChanged(QAbstractTableModel::index(row, PortColumns::TYPE_NAME), 
             QAbstractTableModel::index(row, PortColumns::TYPE_DEF));
@@ -930,7 +928,7 @@ void PortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int ro
     else if (portWidth < 2 && port->getTypeName() == QString("std_logic_vector")) 
     {
         port->setTypeName("std_logic");
-        port->setTypeDefinition("std_logic", VhdlGeneral::getDefaultVhdlTypeDef("std_logic"));
+        port->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
 
         emit dataChanged(QAbstractTableModel::index(row, PortColumns::TYPE_NAME), 
             QAbstractTableModel::index(row, PortColumns::TYPE_DEF));

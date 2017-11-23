@@ -12,6 +12,8 @@
 #include "LibrarySettingsDialog.h"
 #include "librarysettingsdelegate.h"
 
+#include <common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h>
+
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QFileDialog>
@@ -27,14 +29,17 @@
 //-----------------------------------------------------------------------------
 // Function: LibrarySettingsDialog::LibrarySettingsDialog()
 //-----------------------------------------------------------------------------
-LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* parent): QDialog(parent),
-      settings_(settings),
-      iconProvider_(),
-	  libLocationsTable_(0),
-      addLocationButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
-      removeLocationButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
-      changed_(false)
+LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* parent):
+QDialog(parent),
+settings_(settings),
+iconProvider_(),
+libLocationsTable_(0),
+addLocationButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
+removeLocationButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
+changed_(false),
+checkMarkIcon_(":/icons/common/graphics/checkMark.png")
 {
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle(tr("Configure Library"));
 
     // Create the library location group box.
@@ -59,8 +64,8 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
 	libLocationsTable_->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
 
 	libLocationsTable_->setMinimumWidth(500);
-    libLocationsTable_->setColumnWidth(LibrarySettingsDelegate::DEF_COLUMN, 50);
-    libLocationsTable_->setColumnWidth(LibrarySettingsDelegate::ACTIVE_COL, 50);
+    libLocationsTable_->setColumnWidth(LibrarySettingsColumns::DEFAULT, 50);
+    libLocationsTable_->setColumnWidth(LibrarySettingsColumns::ACTIVE, 50);
 
 	libLocationsTable_->setItemDelegate(new LibrarySettingsDelegate(this));
 
@@ -97,7 +102,7 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
     topLayout->addWidget(separator);
     topLayout->addWidget(buttonBox);
 
-    resize(500, sizeHint().height());
+    resize(700, sizeHint().height() + 50);
 
     connect(libLocationsTable_, SIGNAL(itemClicked(QTableWidgetItem*)),
         this, SLOT(onItemClicked(QTableWidgetItem*)), Qt::UniqueConnection);
@@ -159,13 +164,13 @@ void LibrarySettingsDialog::removeLocation()
 
 	if (row >= 0)
     {
-		QTableWidgetItem* defItem = libLocationsTable_->takeItem(row, LibrarySettingsDelegate::DEF_COLUMN);
+        QTableWidgetItem* defItem = libLocationsTable_->takeItem(row, LibrarySettingsColumns::DEFAULT);
 		delete defItem;
 
-		QTableWidgetItem* activeItem = libLocationsTable_->takeItem(row, LibrarySettingsDelegate::ACTIVE_COL);
+        QTableWidgetItem* activeItem = libLocationsTable_->takeItem(row, LibrarySettingsColumns::ACTIVE);
 		delete activeItem;
 
-		QTableWidgetItem* pathItem = libLocationsTable_->takeItem(row, LibrarySettingsDelegate::PATH_COL);
+        QTableWidgetItem* pathItem = libLocationsTable_->takeItem(row, LibrarySettingsColumns::PATH);
 		delete pathItem;
 
 		libLocationsTable_->removeRow(row);
@@ -187,36 +192,69 @@ void LibrarySettingsDialog::onSelectLocation(QTableWidgetItem* cur, QTableWidget
 //-----------------------------------------------------------------------------
 void LibrarySettingsDialog::onItemClicked(QTableWidgetItem* item)
 {
-	// If the item is the check box to select the default library.
-	if (item->column() == LibrarySettingsDelegate::DEF_COLUMN)
-	{
-		changed_ = true;
-
-		// Default library should be active.
-		QTableWidgetItem* activeItem = libLocationsTable_->item(item->row(), LibrarySettingsDelegate::ACTIVE_COL);
-		activeItem->setCheckState(Qt::Checked);
-
-		// Uncheck other items because only one library can be default.
-		for (int i = 0; i < libLocationsTable_->rowCount(); ++i)
-		{
-			QTableWidgetItem* temp = libLocationsTable_->item(i, LibrarySettingsDelegate::DEF_COLUMN);
-			if (temp != item)
-			{
-				temp->setCheckState(Qt::Unchecked);
-			}
-		}
-
-        // Do not allow unchecking.
-        if (item->checkState() != Qt::Checked)
-		{
-            item->setCheckState(Qt::Checked);
-        }           
+    if (item->column() == LibrarySettingsColumns::DEFAULT || item->column() == LibrarySettingsColumns::ACTIVE)
+    {
+        changed_ = true;
+        if (item->column() == LibrarySettingsColumns::DEFAULT)
+        {
+            changeDefaultPath(item);
+        }
+        else if (item->column() == LibrarySettingsColumns::ACTIVE)
+        {
+            changeActivePathStatus(item);
+        }
     }
-	// If the item is the check box to select the active libraries.
-	else if (item->column() == LibrarySettingsDelegate::ACTIVE_COL)
-	{
-		changed_ = true;
-	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDialog::changeDefaultPath()
+//-----------------------------------------------------------------------------
+void LibrarySettingsDialog::changeDefaultPath(QTableWidgetItem* item)
+{
+    if (!item->icon().isNull())
+    {
+        return;
+    }
+
+    item->setIcon(checkMarkIcon_);
+    for (int index = 0; index < libLocationsTable_->rowCount(); ++index)
+    {
+        QTableWidgetItem* tableItem = libLocationsTable_->item(index, LibrarySettingsColumns::DEFAULT);
+        if (tableItem != item)
+        {
+            if (!tableItem->icon().isNull())
+            {
+                tableItem->setIcon(QIcon());
+            }
+        }
+        else
+        {
+            QTableWidgetItem* activeTableItem = libLocationsTable_->item(index, LibrarySettingsColumns::ACTIVE);
+            if (activeTableItem && activeTableItem->icon().isNull())
+            {
+                activeTableItem->setIcon(checkMarkIcon_);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDialog::changeActivePathStatus()
+//-----------------------------------------------------------------------------
+void LibrarySettingsDialog::changeActivePathStatus(QTableWidgetItem* item)
+{
+    if (!item->icon().isNull())
+    {
+        QTableWidgetItem* defaultItem = libLocationsTable_->item(item->row(), LibrarySettingsColumns::DEFAULT);
+        if (defaultItem && defaultItem->icon().isNull())
+        {
+            item->setIcon(QIcon());
+        }
+    }
+    else
+    {
+        item->setIcon(checkMarkIcon_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -235,17 +273,16 @@ void LibrarySettingsDialog::accept()
 
 	for (int i = 0; i < libLocationsTable_->rowCount(); ++i)
     {
-		QTableWidgetItem* defItem = libLocationsTable_->item(i, LibrarySettingsDelegate::DEF_COLUMN);
-		QTableWidgetItem* activeItem = libLocationsTable_->item(i, LibrarySettingsDelegate::ACTIVE_COL);
-		QTableWidgetItem* pathItem = libLocationsTable_->item(i, LibrarySettingsDelegate::PATH_COL);
+        QTableWidgetItem* defItem = libLocationsTable_->item(i, LibrarySettingsColumns::DEFAULT);
+        QTableWidgetItem* activeItem = libLocationsTable_->item(i, LibrarySettingsColumns::ACTIVE);
+        QTableWidgetItem* pathItem = libLocationsTable_->item(i, LibrarySettingsColumns::PATH);
 		
 		// if the row contains the default library
-		if (defItem->checkState()  == Qt::Checked)
+        if (!defItem->icon().isNull())
         {
 			defaultLocation = pathItem->text();
 		}
-
-		if (activeItem->checkState() == Qt::Checked)
+        if (!activeItem->icon().isNull())
         {
 			activeLocations.append(pathItem->text());
 		}
@@ -305,33 +342,25 @@ void LibrarySettingsDialog::createRowForDirectory(QString const& directory, bool
 
     // Create the item for default column.
     QTableWidgetItem* defaultItem = new QTableWidgetItem();
-    defaultItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    defaultItem->setFlags(Qt::ItemIsEnabled);
 
     if (isDefault)
     {        
-        defaultItem->setCheckState(Qt::Checked);
-    }
-    else
-    {
-        defaultItem->setCheckState(Qt::Unchecked);
+        defaultItem->setIcon(checkMarkIcon_);
     }
 
-    libLocationsTable_->setItem(rowNumber, LibrarySettingsDelegate::DEF_COLUMN, defaultItem);
+    libLocationsTable_->setItem(rowNumber, LibrarySettingsColumns::DEFAULT, defaultItem);
 
     // create the item for the active column
     QTableWidgetItem* activeItem = new QTableWidgetItem();
-    activeItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    activeItem->setFlags(Qt::ItemIsEnabled);
 
     if (isActive)
     {
-        activeItem->setCheckState(Qt::Checked);
-    }
-    else
-    {
-        activeItem->setCheckState(Qt::Unchecked);
+        activeItem->setIcon(checkMarkIcon_);
     }
 
-    libLocationsTable_->setItem(rowNumber, LibrarySettingsDelegate::ACTIVE_COL, activeItem);
+    libLocationsTable_->setItem(rowNumber, LibrarySettingsColumns::ACTIVE, activeItem);
 
     QTableWidgetItem* pathItem = new QTableWidgetItem(directory);
     pathItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -346,5 +375,5 @@ void LibrarySettingsDialog::createRowForDirectory(QString const& directory, bool
         pathItem->setIcon(QIcon(":/icons/common/graphics/exclamation--frame.png"));
     }
 
-    libLocationsTable_->setItem(rowNumber, LibrarySettingsDelegate::PATH_COL, pathItem);
+    libLocationsTable_->setItem(rowNumber, LibrarySettingsColumns::PATH, pathItem);
 }

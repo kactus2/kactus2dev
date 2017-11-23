@@ -303,7 +303,7 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 //-----------------------------------------------------------------------------
 // Function: vhdlgenerator2::addRTLView()
 //-----------------------------------------------------------------------------
-bool VhdlGenerator2::addRTLView( const QString& vhdlFileName )
+bool VhdlGenerator2::addRTLView(QString const& fileSetName, const QString& vhdlFileName )
 {
 	// ipDir represents the directory where the IP-Xact file is located in.
 	QString ipDir(handler_->getPath(component_->getVlnv()));
@@ -312,19 +312,13 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName )
 		emit errorMessage(tr("Path to top-component was not found."));
 		return false;
 	}
-
+    
 	// get the relative path to add to file set
 	QString relativePath = General::getRelativePath(ipDir, vhdlFileName);
 	if (relativePath.isEmpty())
     {
 		emit errorMessage(tr("Could not create relative path to vhdl file."));
 		return false;
-	}
-
-	QString fileSetName = "vhdlSource";
-	if (!viewName_.isEmpty())
-    {
-		fileSetName = QString("%1_vhdlSource").arg(viewName_);
 	}
 
 	QSharedPointer<FileSet> topFileSet = component_->getFileSet(fileSetName);
@@ -354,10 +348,8 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName )
 		topFileSet->getDefaultFileBuilders()->append(vhdl93Builder);
 	}
 
-	topFileSet->clearFiles();
-
 	QSettings settings;
-
+    
 	// create a new file
 	QSharedPointer<File> topVhdlFile = topFileSet->addFile(relativePath, settings);
 	topVhdlFile->setIncludeFile(true);
@@ -365,41 +357,45 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName )
 	topVhdlFile->setCommand(QString("vcom"));
 	topVhdlFile->setBuildFlags("-quiet -check_synthesis -work work", "true");
 
-	QString newViewName;
-	if (!viewName_.isEmpty())
+    if (!component_->hasView(viewName_))
+    {       
+        QSharedPointer<View> targetView(new View(viewName_));
+        QSharedPointer<View::EnvironmentIdentifier> envId( new View::EnvironmentIdentifier );
+        envId->language = "vhdl";
+        envId->tool = "Kactus2";
+        targetView->addEnvIdentifier(envId);
+    
+        component_->getViews()->append(targetView);
+    }
+
+    QSharedPointer<View> rtlView = component_->getModel()->findView(viewName_);
+
+    QString instantiationName = QString("%1_vhd").arg(viewName_);
+    rtlView->setComponentInstantiationRef(instantiationName);
+
+    QSharedPointer<ComponentInstantiation> componentInstantiation = 
+        component_->getModel()->findComponentInstantiation(instantiationName);
+    if (!componentInstantiation)
     {
-		newViewName = QString("%1_vhd").arg(viewName_);
-	}
-	else
-    {
-		newViewName = "rtl";
-	}
+        componentInstantiation = QSharedPointer<ComponentInstantiation>(new ComponentInstantiation(instantiationName));
+        component_->getComponentInstantiations()->append(componentInstantiation);
+    }
 
-	QSharedPointer<View> rtlView(new View(newViewName));
+    componentInstantiation->setModuleName(topLevelEntity_);
+    componentInstantiation->setLanguage("vhdl");
 
-	QSharedPointer<View::EnvironmentIdentifier> envId( new View::EnvironmentIdentifier );
-	envId->language = "VHDL";
-	envId->tool = "Kactus2";
-	rtlView->addEnvIdentifier(envId);
-
-	QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation);
-    componentInstantiation->setName(newViewName);
-	componentInstantiation->setLanguage("vhdl");
-
-	// Set the model name to be the top_level architecture of the top-level entity.
 	QString architectureName = viewName_;
 	if (architectureName.isEmpty())
     {
-		architectureName = "rtl";
+        architectureName = "rtl";		
 	}
 
-	componentInstantiation->setModuleName(topLevelEntity_);
     componentInstantiation->setArchitectureName(architectureName);
 
-	componentInstantiation->getFileSetReferences()->append(fileSetName);
-
-	component_->getViews()->append(rtlView);
-	component_->getComponentInstantiations()->append(componentInstantiation);
+    if (!componentInstantiation->getFileSetReferences()->contains(fileSetName))
+    {
+        componentInstantiation->getFileSetReferences()->append(fileSetName);
+    }	
 
 	return true;
 }
@@ -426,117 +422,114 @@ bool VhdlGenerator2::parseDesignAndConfiguration()
 		{
 			view = currentView;
 			break;
-		}
-	}
-	
-	// if view is not found
-	if (!view)
+        }
+    }
+
+    // if view is not found
+    if (!view)
     {
-		return false;
-	}
-	else if (!view->isHierarchical())
+        return false;
+    }
+    else if (view->isHierarchical())
     {
-		return false;
-	}
+        QSharedPointer<DesignInstantiation> DI;
+        QSharedPointer<DesignConfigurationInstantiation> DCI;
 
-	QSharedPointer<DesignInstantiation> DI;
-	QSharedPointer<DesignConfigurationInstantiation> DCI;
-
-	// Try to find design instantiation.
-	foreach (QSharedPointer<DesignInstantiation> currentInsta, *component_->getDesignInstantiations())
-	{
-		if (currentInsta->name() == view->getDesignInstantiationRef())
-		{
-			DI = currentInsta;
-			break;
-		}
-	}
-
-	// Try to find design configuration instantiation.
-	foreach (QSharedPointer<DesignConfigurationInstantiation> currentInsta,
-		*component_->getDesignConfigurationInstantiations())
-	{
-		if (currentInsta->name() == view->getDesignConfigurationInstantiationRef())
-		{
-			DCI = currentInsta;
-			break;
-		}
-	}
-
-	VLNV hierarchyRef;
-
-	// if configuration is used
-	if (DCI)
-	{
-		hierarchyRef = *DCI->getDesignConfigurationReference();
-		QSharedPointer<Document> libComp = handler_->getModel(hierarchyRef);
-		desConf_ = libComp.staticCast<DesignConfiguration>();
-	}
-	else if (DI)
-	{
-		hierarchyRef = *DI->getDesignReference();
-	}
-	// if the referenced document was not found
-	else
-	{
-		emit errorMessage(tr("The design or design configuration reference within component %1's"
-			" view %2 was not found in library.").arg(component_->getVlnv().toString()).arg(viewName_));
-		return false;
-	}
-	
-	design_ = handler_->getDesign(hierarchyRef);
-	// if design was not found
-	if (!design_)
-    {
-		VLNV designVLNV = handler_->getDesignVLNV(hierarchyRef);
-		emit errorMessage(tr("The design %1 referenced in component %2 was not found in library.").arg(
-			designVLNV.toString()).arg(component_->getVlnv().toString()));
-		return false;
-	}
-
-	// if design is found then make sure it is valid
-	else
-    {
-        if (!designvalidator_->validate(design_))
+        // Try to find design instantiation.
+        foreach (QSharedPointer<DesignInstantiation> currentInsta, *component_->getDesignInstantiations())
         {
-            QVector<QString> errorList;
-            designvalidator_->findErrorsIn(errorList, design_);
-
-            emit noticeMessage(tr("The design '%1' contained the following errors:").
-                arg(design_->getVlnv().toString()));
-
-            foreach (QString designError, errorList)
+            if (currentInsta->name() == view->getDesignInstantiationRef())
             {
-                emit errorMessage(designError);
+                DI = currentInsta;
+                break;
             }
+        }
 
+        // Try to find design configuration instantiation.
+        foreach (QSharedPointer<DesignConfigurationInstantiation> currentInsta,
+            *component_->getDesignConfigurationInstantiations())
+        {
+            if (currentInsta->name() == view->getDesignConfigurationInstantiationRef())
+            {
+                DCI = currentInsta;
+                break;
+            }
+        }
+
+        VLNV hierarchyRef;
+
+        // if configuration is used
+        if (DCI)
+        {
+            hierarchyRef = *DCI->getDesignConfigurationReference();
+            QSharedPointer<Document> libComp = handler_->getModel(hierarchyRef);
+            desConf_ = libComp.staticCast<DesignConfiguration>();
+        }
+        else if (DI)
+        {
+            hierarchyRef = *DI->getDesignReference();
+        }
+        // if the referenced document was not found
+        else
+        {
+            emit errorMessage(tr("The design or design configuration reference within component %1's"
+                " view %2 was not found in library.").arg(component_->getVlnv().toString()).arg(viewName_));
             return false;
         }
-	}
 
-	// if design configuration is found the make sure it is also valid
-	if (desConf_)
-    {
-        if (!designConfigurationValidator_->validate(desConf_))
+        design_ = handler_->getDesign(hierarchyRef);
+        // if design was not found
+        if (!design_)
         {
-            QVector<QString> errorList;
-            designConfigurationValidator_->findErrorsIn(errorList, desConf_);
-
-            emit noticeMessage(tr("The design configuration '%1' contained the following errors:").
-                arg(desConf_->getVlnv().toString()));
-
-            foreach (QString configurationError, errorList)
-            {
-                emit errorMessage(configurationError);
-            }
-
+            VLNV designVLNV = handler_->getDesignVLNV(hierarchyRef);
+            emit errorMessage(tr("The design %1 referenced in component %2 was not found in library.").arg(
+                designVLNV.toString()).arg(component_->getVlnv().toString()));
             return false;
         }
-	}
-	
 
-	// the design and possibly the configuration are now parsed
-	return true;
+        // if design is found then make sure it is valid
+        else
+        {
+            if (!designvalidator_->validate(design_))
+            {
+                QVector<QString> errorList;
+                designvalidator_->findErrorsIn(errorList, design_);
+
+                emit noticeMessage(tr("The design '%1' contained the following errors:").
+                    arg(design_->getVlnv().toString()));
+
+                foreach (QString designError, errorList)
+                {
+                    emit errorMessage(designError);
+                }
+
+                return false;
+            }
+        }
+
+        // if design configuration is found the make sure it is also valid
+        if (desConf_)
+        {
+            if (!designConfigurationValidator_->validate(desConf_))
+            {
+                QVector<QString> errorList;
+                designConfigurationValidator_->findErrorsIn(errorList, desConf_);
+
+                emit noticeMessage(tr("The design configuration '%1' contained the following errors:").
+                    arg(desConf_->getVlnv().toString()));
+
+                foreach (QString configurationError, errorList)
+                {
+                    emit errorMessage(configurationError);
+                }
+
+                return false;
+            }
+        }
+    }
+
+    // the design and possibly the configuration are now parsed
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -919,7 +912,7 @@ void VhdlGenerator2::connectInterfaces( const QString& connectionName, const QSt
 			}
 
             General::PortAlignment alignment = calculatePortAlignment(
-                portMap1.data(), port1->getLeftBound(), port1->getLeftBound(), firstParser,
+                portMap1.data(), port1->getLeftBound(), port1->getRightBound(), firstParser,
                 portMap2.data(), port2->getLeftBound(), port2->getRightBound(), secondParser);
 
 			// if the alignment is not valid (port sizes do not match or they do not have any common bits)
@@ -1612,9 +1605,9 @@ void VhdlGenerator2::writeUserModifiedAssignments( QTextStream& stream )
 //-----------------------------------------------------------------------------
 // Function: vhdlgenerator2::calculatePortAlignment()
 //-----------------------------------------------------------------------------
-General::PortAlignment VhdlGenerator2::calculatePortAlignment(const PortMap* portMap1, QString phys1LeftBound,
-    QString phys1RightBound, QSharedPointer<ExpressionParser> firstParser, const PortMap* portMap2,
-    QString phys2LeftBound, QString phys2RightBound, QSharedPointer<ExpressionParser> secondParser)
+General::PortAlignment VhdlGenerator2::calculatePortAlignment(const PortMap* portMap1, QString const& phys1LeftBound,
+    QString const& phys1RightBound, QSharedPointer<ExpressionParser> firstParser, const PortMap* portMap2,
+    QString const& phys2LeftBound, QString const& phys2RightBound, QSharedPointer<ExpressionParser> secondParser) const
 {
     General::PortAlignment alignment;
 
@@ -1716,7 +1709,7 @@ QSharedPointer<PortAlignment> VhdlGenerator2::getPhysicalAlignment(const PortMap
 // Function: vhdlgenerator2::getLogicalValue()
 //-----------------------------------------------------------------------------
 int VhdlGenerator2::getLogicalValue(const PortMap* portMap, QSharedPointer<ExpressionParser> parser,
-    bool isMaximum)
+    bool isMaximum) const
 {
     QSharedPointer<PortMap::LogicalPort> logicalPort = portMap->getLogicalPort();
 

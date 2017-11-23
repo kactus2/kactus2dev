@@ -102,9 +102,9 @@ public:
 	 *
 	 *      @return bool True if the view was added successfully.
 	 */
-	bool addRTLView(const QString& vhdlFileName);
+    bool addRTLView(QString const& fileSetName, const QString& vhdlFileName );
 
-	/*!
+    /*!
      *  Check if the generator is able to generate and architecture for top entity.
 	 *
 	 *      @return True if component contains a design and is able to create an architecture for the entity.
@@ -344,9 +344,9 @@ private:
      *      @param [in] phys2LeftBound      Physical left bound of the second port.
      *      @param [in] phys2RightBound     Physical right bound of the second port.
      */
-    General::PortAlignment calculatePortAlignment(const PortMap* portMap1, QString phys1LeftBound,
-        QString phys1RightBound, QSharedPointer<ExpressionParser> firstParser, const PortMap* portMap2,
-        QString phys2LeftBound, QString phys2RightBound, QSharedPointer<ExpressionParser> secondParser);
+    General::PortAlignment calculatePortAlignment(const PortMap* portMap1, QString const& phys1LeftBound,
+        QString const& phys1RightBound, QSharedPointer<ExpressionParser> firstParser, const PortMap* portMap2,
+        QString const& phys2LeftBound, QString const& phys2RightBound, QSharedPointer<ExpressionParser> secondParser) const;
 
     /*!
      *  Get the alignment of the physical port mapping.
@@ -370,7 +370,7 @@ private:
      *
      *      @return A logical bound of the logical port mapping.
      */
-    int getLogicalValue(const PortMap* portMap, QSharedPointer<ExpressionParser> parser, bool isMaximum);
+    int getLogicalValue(const PortMap* portMap, QSharedPointer<ExpressionParser> parser, bool isMaximum) const;
 
     /*!
      *  Get the name of the containing bus interface.

@@ -455,17 +455,11 @@
     <Filter Include="Source Files\kactusGenerators">
       <UniqueIdentifier>{9e2200b5-c8b4-434a-9926-39ab71cf426e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\kactusGenerators\vhdlGenerator">
-      <UniqueIdentifier>{43031955-41a7-4ad1-af45-1be42a4286fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\kactusGenerators\DocumentGenerator">
       <UniqueIdentifier>{69521121-c455-4608-9dc4-da1c622addad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\kactusGenerators">
       <UniqueIdentifier>{92fda97e-e51f-4e8f-94dc-dd7b59575d10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\kactusGenerators\vhdlGenerator">
-      <UniqueIdentifier>{32daecaf-f441-49a3-8f81-2e3dc32e2acb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\kactusGenerators\DocumentGenerator">
       <UniqueIdentifier>{9e423b88-6032-4541-9a86-aa8855635370}</UniqueIdentifier>
@@ -1669,33 +1663,6 @@
     <ClCompile Include="kactusGenerators\DocumentGenerator\documentgenerator.cpp">
       <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlcomponentdeclaration.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlcomponentinstance.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlgeneral.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlgenerator2.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlgeneric.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlobject.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlport.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlportmap.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlsignal.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_documentgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2863,15 +2830,6 @@
     <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp">
       <Filter>Source Files\Plugins\PluginSystem</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlconnectionendpoint.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlgenerator2.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlportsorter.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ImportRunner.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3012,12 +2970,6 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\vhdlGenerator\VhdlTypedObject.cpp">
-      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentinstance.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsModel.cpp">
       <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
@@ -4812,27 +4764,6 @@
     <CustomBuild Include="designEditors\SystemDesign\SystemDesignWidget.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlcomponentdeclaration.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlcomponentinstance.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlgenerator2.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlgeneric.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlobject.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlport.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlsignal.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
     <CustomBuild Include="kactusGenerators\DocumentGenerator\documentgenerator.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </CustomBuild>
@@ -5487,9 +5418,6 @@
     <CustomBuild Include="mainwindow\Ribbon\Ribbon.h">
       <Filter>Header Files\mainwindow\Ribbon</Filter>
     </CustomBuild>
-    <CustomBuild Include="kactusGenerators\vhdlGenerator\VhdlTypedObject.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsModel.h">
       <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
@@ -6126,6 +6054,9 @@
     <CustomBuild Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsColumns.h">
+      <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6251,15 +6182,6 @@
     <ClInclude Include="designEditors\SystemDesign\HWMappingItem.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </ClInclude>
-    <ClInclude Include="kactusGenerators\vhdlGenerator\vhdlgeneral.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusGenerators\vhdlGenerator\vhdlportmap.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusGenerators\vhdlGenerator\vhdlportsorter.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="designEditors\HWDesign\AddressEditor\AddressEntry.h">
       <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
     </ClInclude>
@@ -6295,9 +6217,6 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteEditCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusGenerators\vhdlGenerator\vhdlconnectionendpoint.h">
-      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardPages.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>

@@ -26,14 +26,16 @@ class HierarchyGroup : public QGroupBox
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
 	 *      @param [in] parent The owner of this widget.
-	 *
-	*/
+	 */
 	HierarchyGroup(QWidget *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~HierarchyGroup();
 
     /*!
@@ -52,34 +54,46 @@ public:
 
 signals:
 
-	//! Emitted when hierarchy options change.
+	/*!
+     *  Emitted when hierarchy options change.
+     */
 	void optionsChanged(const Utils::HierarchyOptions& options);
 
 private slots:
 
-	//! Handler for global box state changes.
+	/*!
+     *  Handler for global box state changes.
+     */
 	void onFlatChange(bool checked);
 
-	//! Handler for product box state changes.
+	/*!
+     *  Handler for product box state changes.
+     */
 	void onProductChange(bool checked);
 
-	//! Handler for board box state changes.
+	/*!
+     *  Handler for board box state changes.
+     */
 	void onBoardChange(bool checked);
 
-	//! Handler for chip box state changes.
+	/*!
+     *  Handler for chip box state changes.
+     */
 	void onChipChange(bool checked);
 
-	//! Handler for soc box state changes.
+	/*!
+     *  Handler for soc box state changes.
+     */
 	void onSocChange(bool checked);
 
-	//! Handler for ip box state changes.
+	/*!
+     *  Handler for ip box state changes.
+     */
 	void onIpChange(bool checked);
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	HierarchyGroup(const HierarchyGroup& other);
-
-	//! No assignment
 	HierarchyGroup& operator=(const HierarchyGroup& other);
 
 	//! Check box to select global components in/out of search results.

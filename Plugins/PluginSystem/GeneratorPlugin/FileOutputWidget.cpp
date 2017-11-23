@@ -19,10 +19,18 @@
 #include <QApplication>
 #include <QPushButton>
 
-#define WARNING_FILE_EXISTS "<b>One or more of the output files already exists and will be overwritten.</b>"
-#define COLUMN_VLNV 0
-#define COLUMN_EXISTS 1
-#define COLUMN_FILENAME 2
+namespace
+{
+    const QString WARNING_FILE_EXISTS("<b>One or more of the output files already exists and will "
+        "be overwritten.</b>");
+
+    enum Columns
+    {
+        COLUMN_VLNV = 0,
+        COLUMN_EXISTS,
+        COLUMN_FILENAME
+    };
+}
 
 //-----------------------------------------------------------------------------
 // Function: FileOutputWidget::FileOutputWidget()

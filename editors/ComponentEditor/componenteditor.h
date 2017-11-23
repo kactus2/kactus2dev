@@ -126,12 +126,6 @@ public slots:
 	//! Saves the document as new object and resets modifies state
 	virtual bool saveAs();
 
-	/*! Run vhdl generator for the component.
-	 *
-	 *      @return bool True if the metadata was changed and the editor should be refreshed.
-	*/
-	bool onVhdlGenerate();
-
 	/*! Set the protection state of the document.
 	 *
 	 *      @param [in] locked True for locked state, false for unlocked.

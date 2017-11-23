@@ -11,6 +11,8 @@
 
 #include "LineContentAssistWidget.h"
 
+#include <common/KactusColors.h>
+
 #include <algorithm>
 #include <QScrollBar>
 #include <QRegExp>
@@ -23,25 +25,32 @@
 //-----------------------------------------------------------------------------
 // Function: LineContentAssistWidget()
 //-----------------------------------------------------------------------------
-LineContentAssistWidget::LineContentAssistWidget(QLineEdit* target, QWidget* parentWnd)
-    : QListWidget(parentWnd),
-      target_(target),
-      matcher_(0),
-      maxVisibleItems_(DEFAULT_MAX_VISIBLE_ITEMS),
-      lastAssistStartPos_(-1),
-      contentFound_(false)
+LineContentAssistWidget::LineContentAssistWidget(QLineEdit* target, QWidget* parentWnd):
+QListWidget(parentWnd),
+target_(target),
+matcher_(0),
+maxVisibleItems_(DEFAULT_MAX_VISIBLE_ITEMS),
+lastAssistStartPos_(-1),
+contentFound_(false),
+lineAssistWidth_(0)
 {
     Q_ASSERT(parentWnd != 0);
     Q_ASSERT(target != 0);
 
     // Set widget settings.
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFrameShadow(QFrame::Raised);
     setFocusPolicy(Qt::NoFocus);
     setFont(QFont("Tahoma", 10));
 
     // We want the widget to look active even though it is inactive.
-    setStyleSheet("selection-color: black; selection-background-color: "
-                  "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
+    QString borderColorName = KactusColors::DISABLED_TEXT.name();
+
+    setStyleSheet("border-style: solid;"
+        "border-width: 1px;"
+        "border-color: " + borderColorName + ";"
+        "selection-color: black; selection-background-color: "
+        "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
 
     hideAssist();
 }
@@ -91,43 +100,33 @@ bool LineContentAssistWidget::tryHandleKey(QKeyEvent* e)
     // Handle up and down arrows and escape, if the content is shown.
     if (isContentShown())
     {
-        switch (e->key())
+        int keyEvent = e->key();
+        if (keyEvent == Qt::Key_Up || keyEvent == Qt::Key_Down)
         {
-        case Qt::Key_Up:
-        case Qt::Key_Down:
+            if (isVisible())
             {
-                if (isVisible())
-                {
-                    keyPressEvent(e);
-                    return true;
-                }
-                break;
+                keyPressEvent(e);
+                return true;
             }
-
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Home:
-        case Qt::Key_End:
+        }
+        else if (keyEvent == Qt::Key_Left || keyEvent == Qt::Key_Right || keyEvent == Qt::Key_Home ||
+            keyEvent == Qt::Key_End)
+        {
+            cancel();
+            return false;
+        }
+        else if (keyEvent == Qt::Key_A)
+        {
+            if (e->modifiers() == Qt::ControlModifier)
             {
                 cancel();
                 return false;
             }
-
-        case Qt::Key_A:
-            {
-                if (e->modifiers() == Qt::ControlModifier)
-                {
-                    cancel();
-                    return false;
-                }
-                break;
-            }
-
-        case Qt::Key_Escape:
-            {
-                cancel();
-                return true;
-            }
+        }
+        else if (keyEvent == Qt::Key_Escape)
+        {
+            cancel();
+            return true;
         }
     }
 
@@ -215,8 +214,7 @@ void LineContentAssistWidget::updateMatches()
     int toolTipIndex = -1;
     QString text = target_->text().left(target_->cursorPosition());
 
-    contentFound_ = matcher_->fillWithContent(text, *this, lastAssistStartPos_, toolTipText,
-                                                toolTipIndex);
+    contentFound_ = matcher_->fillWithContent(text, *this, lastAssistStartPos_, toolTipText, toolTipIndex);
 
     // Check if content was found.
     if (contentFound_)
@@ -242,19 +240,12 @@ void LineContentAssistWidget::moveClose(int /*cursorPos*/)
 {
     // Determine the correct upper-left corner position for the widget.
     int parentWidth = parentWidget()->width();
-    int parentHeight = parentWidget()->height();
     
     // By default, the desired position is below line edit.
     QPoint pos = target_->mapTo(parentWidget(), QPoint(0, 0)) + QPoint(0,  target_->height());
     
     // Restrict x coordinate by the screen width.
     pos.setX(qMin(qMax(0, pos.x()), qMax(0, parentWidth - width())));
-
-    // Lift the widget above the line edit only if necessary to keep it fully in view.
-    if (pos.y() + height() > parentHeight)
-    {
-        pos.setY(target_->mapTo(parentWidget(), QPoint(0, 0)).y() - height() - 10);
-    }
     
     // Move the widget to the final position.
     move(pos);
@@ -297,10 +288,21 @@ void LineContentAssistWidget::fitToContents()
     }
 
     int visibleRowCount = qMin(count(), maxVisibleItems_);
-    int height = visibleRowCount * sizeHintForRow(0) + frameWidth() * 2;
-    int width = sizeHintForColumn(0) + frameWidth() * 2 + verticalScrollBar()->sizeHint().width() + 5;
-    
-    setFixedSize(width, height);
+
+    int rowHeight = sizeHintForRow(0);
+    int height = visibleRowCount * rowHeight + frameWidth() * 2;
+
+    int parentHeight = parentWidget()->height();
+    int assistPosition = target_->mapTo(parentWidget(), QPoint(0, 0)).y() + target_->height();
+
+    if (assistPosition + height > parentHeight)
+    {
+        int availableHeight = parentHeight - assistPosition;
+        int availableRows = availableHeight / rowHeight;
+        height = availableRows * rowHeight + frameWidth() * 2;
+    }
+
+    setFixedSize(lineAssistWidth_, height);
 }
 
 //-----------------------------------------------------------------------------
@@ -319,4 +321,12 @@ void LineContentAssistWidget::hideAssist()
 void LineContentAssistWidget::setContentMatcher(ILineContentMatcher* matcher)
 {
     matcher_ = matcher;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LineContentAssistWidget::setWidthForAssist()
+//-----------------------------------------------------------------------------
+void LineContentAssistWidget::setWidthForAssist(int newWidth)
+{
+    lineAssistWidth_ = newWidth;
 }

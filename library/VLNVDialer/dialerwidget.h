@@ -28,64 +28,89 @@ class DialerWidget : public QWidget
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
 	 *      @param [in] parent  The owner of this widget.
-	 *
-	*/
+	 */
 	DialerWidget(QWidget *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~DialerWidget();
 
-	/*! Set the root item used to create the suggestions for dialer.
+	/*!
+     *  Set the root item used to create the suggestions for dialer.
 	 *
 	 *      @param [in] rootItem    The root item of the library.
-	 *
-	*/
+	 */
 	void setRootItem(const LibraryItem* rootItem);
 
 signals:
 
-	//! Emitted when the text in vendor combobox is changed.
+	/*!
+     *  Emitted when the text in vendor combobox is changed.
+     */
 	void vendorChanged(QString const& vendorText);
 
-	//! Emitted when the text in library combobox is changed.
+	/*!
+     *  Emitted when the text in library combobox is changed.
+     */
 	void libraryChanged(QString const& libraryText);
 
-	//! Emitted when the text in name combobox is changed.
+	/*!
+     *  Emitted when the text in name combobox is changed.
+     */
 	void nameChanged(QString const& nameText);
 
-	//! Emitted when the text in version combobox is changed.
+	/*!
+     *  Emitted when the text in version combobox is changed.
+     */
 	void versionChanged(QString const& versionText);
 
 public slots:
 
-	//! Refresh the vendor list
+	/*!
+     *  Refresh the vendor list
+     */
 	void refreshVendors();
 
 private slots:
 
-	//! Handler when the text in vendor combobox is changed.
+	/*!
+     *  Handler when the text in vendor combobox is changed.
+     */
 	void onVendorChanged(QString const& vendorText);
 
-	//! Handler when the text in library combobox is changed.
+	/*!
+     *  Handler when the text in library combobox is changed.
+     */
 	void onLibraryChanged(QString const& libraryText);
 
-	//! Handler when the text in name combobox is changed.
+	/*!
+     *  Handler when the text in name combobox is changed.
+     */
 	void onNameChanged(QString const& nameText);
 
-	//! Handler when the text in version combobox is changed.
+	/*!
+     *  Handler when the text in version combobox is changed.
+     */
 	void onVersionChanged(QString const& versionText);
 
 private:
-	//! No copying
+	//! No copying.
 	DialerWidget(const DialerWidget& other);
 	DialerWidget& operator=(const DialerWidget& other);
 
+    /*!
+     *  Setup the layout.
+     */
     void setupLayout();
 
-	//! Connect signals from combo boxes.
+	/*!
+     *  Connect signals from combo boxes.
+     */
 	void connectBoxes();
 
     //-----------------------------------------------------------------------------
