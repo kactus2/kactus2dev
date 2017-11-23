@@ -124,16 +124,16 @@ void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) c
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStream) const
 {
-	if (component_->getParameters()->isEmpty())
+	if (component_->getMetaParameters()->isEmpty())
     {
         return;
     }
 
     outputStream << " #(" << endl;
 
-    foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
+    foreach(QSharedPointer<Parameter> parameter, *component_->getMetaParameters())
     {
-        bool isLastParameter = parameter == component_->getParameters()->last();
+        bool isLastParameter = parameter == component_->getMetaParameters()->last();
         writeParameter(outputStream, parameter, isLastParameter);
     }
 

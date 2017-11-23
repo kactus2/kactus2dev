@@ -27,6 +27,8 @@ MetaComponent::MetaComponent(MessagePasser* messages,
     component_(component),
     activeView_(activeView),
     parameters_(new QList<QSharedPointer<Parameter> >()),
+    moduleParameters_(new QList<QSharedPointer<Parameter> >()),
+    metaParameters_(new QMap<QString,QSharedPointer<Parameter> >()),
     ports_(new QMap<QString,QSharedPointer<MetaPort> >()),
     remapStates_(new QList<QSharedPointer<FormattedRemapState> >()),
     fileSets_(new QList<QSharedPointer<FileSet> >())
@@ -60,6 +62,39 @@ MetaComponent::MetaComponent(MessagePasser* messages,
 //-----------------------------------------------------------------------------
 MetaComponent::~MetaComponent()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::cullMetaParameters()
+//-----------------------------------------------------------------------------
+void MetaComponent::cullMetaParameters()
+{
+    foreach(QSharedPointer<Parameter> original, *getParameters())
+    {
+        QSharedPointer<Parameter> mParameter(original);
+
+        getMetaParameters()->insert(original->name(), mParameter);
+    }
+
+    foreach(QSharedPointer<Parameter> pOriginal, *getModuleParameters())
+    {
+        QSharedPointer<ModuleParameter> original = qSharedPointerDynamicCast<ModuleParameter>(pOriginal);
+
+        if (!original)
+        {
+            continue;
+        }
+
+        QMap<QString, QSharedPointer<Parameter> >::iterator i = getMetaParameters()->find(original->name());
+
+        if (i != getMetaParameters()->end())
+        {
+            getMetaParameters()->erase(i);
+        }
+
+        QSharedPointer<ModuleParameter> mParameter = QSharedPointer<ModuleParameter>(original);
+        getMetaParameters()->insert(original->name(), mParameter);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -172,8 +207,8 @@ void MetaComponent::cullParameters()
     {
         foreach(QSharedPointer<ModuleParameter> parameterOrig, *activeInstantiation_->getModuleParameters())
         {
-            QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-            parameters_->append(parameterCpy);
+            QSharedPointer<ModuleParameter> parameterCpy(new ModuleParameter(*parameterOrig));
+            moduleParameters_->append(parameterCpy);
         }
     }
 }
@@ -195,6 +230,8 @@ void MetaComponent::formatComponent()
 
     // Find and parse the component stuff that (currently) does not exists in the hierarchy parsing.
     parseRemapStates(formatter);
+
+    cullMetaParameters();
 }
 
 //-----------------------------------------------------------------------------
@@ -207,6 +244,15 @@ void MetaComponent::formatParameters(QSharedPointer<ExpressionFormatter> formatt
 
     // Format the parameters.
     foreach(QSharedPointer<Parameter> parameter, *parameters_)
+    {
+        parameter->setValue(formatter->formatReferringExpression(parameter->getValue()));
+    }
+
+    // Sort the module parameters.
+    sortParameters(moduleParameters_);
+
+    // Format the module parameters.
+    foreach(QSharedPointer<Parameter> parameter, *moduleParameters_)
     {
         parameter->setValue(formatter->formatReferringExpression(parameter->getValue()));
     }

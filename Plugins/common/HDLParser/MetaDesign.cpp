@@ -19,6 +19,8 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+
 #include <QQueue>
 
 //-----------------------------------------------------------------------------
@@ -27,23 +29,20 @@
 MetaDesign::MetaDesign(LibraryInterface* library,
     MessagePasser* messages,
     QSharedPointer<Design const> design,
+    QSharedPointer<DesignInstantiation const> designInstantiation,
     QSharedPointer<DesignConfiguration const> designConf,
     QSharedPointer<MetaInstance> topInstance) :
 library_(library),
 messages_(messages),
 design_(design),
+designInstantiation_(designInstantiation),
 designConf_(designConf),
 topInstance_(topInstance),
-topFinder_(new ListParameterFinder),
+parameters_(new QList<QSharedPointer<Parameter> >()),
 instances_(new QMap<QString,QSharedPointer<MetaInstance> >),
 interconnections_(new QList<QSharedPointer<MetaInterconnection> >),
 adHocWires_(new QList<QSharedPointer<MetaWire> >)
 {
-    // Create the finder for the parameters coming from the top.
-    // TODO: The parameters must come through the proper chain, rather than directly from the top component!
-    QSharedPointer<QList<QSharedPointer<Parameter> > > toplist =
-        QSharedPointer<QList<QSharedPointer<Parameter> > >(topInstance->getParameters());
-    topFinder_->setParameterList(toplist);
 }
 
 //-----------------------------------------------------------------------------
@@ -59,20 +58,35 @@ MetaDesign::~MetaDesign()
 QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* library, GenerationTuple input,
     QSharedPointer<View> topComponentView)
 {
-    // Creating null parameters for function call.
+    // Creating null parameters for function calls.
     QSharedPointer<ComponentInstance> componentInstance;
-    QSharedPointer<ListParameterFinder> topFinder;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > topList(new QList<QSharedPointer<Parameter> >);
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs;
 
     // Instantiate the top component with the selected design.
     // Obviously it cannot have CEVs or parameters of any other component.
     QSharedPointer<MetaInstance> topMostInstance(new MetaInstance
-        (library, input.messages, input.component, topComponentView));
-    topMostInstance->parseInstance(componentInstance, topFinder, cevs);
+        (componentInstance, library, input.messages, input.component, topComponentView));
+    parseParameters(topMostInstance->getParameters(), topList, cevs);
+    topList->append(*topMostInstance->getParameters());
+    parseParameters(topMostInstance->getModuleParameters(), topList, cevs);
+    topMostInstance->parseInstance();
+
+    // Find the design instantiation matching the design.
+    QSharedPointer<DesignInstantiation> designInstantiation;
+
+    foreach(QSharedPointer<DesignInstantiation> di, *input.component->getDesignInstantiations())
+    {
+        if (input.design->getVlnv() == *di->getDesignReference())
+        {
+            designInstantiation = di;
+            break;
+        }
+    }
 
     // Create the design associated with the top component.
     QSharedPointer<MetaDesign> topMostDesign(new MetaDesign
-        (library, input.messages, input.design, input.designConfiguration, topMostInstance));
+        (library, input.messages, input.design, designInstantiation, input.designConfiguration, topMostInstance));
 
     // Add it to the queue of designs that are to be parsed.
     QQueue<QSharedPointer<MetaDesign> > designs;
@@ -94,7 +108,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
     {
          // In each iteration the next from the queue and parse it.
          QSharedPointer<MetaDesign> currentDesign = designs.dequeue();
-         currentDesign->parseDesign();
+         currentDesign->cullInstances();
 
          // Append to the list of returns.
          retval.append(currentDesign);
@@ -139,6 +153,11 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
          }
     }
 
+    foreach (QSharedPointer<MetaDesign> design, retval)
+    {
+        design->parseDesign();
+    }
+
     return retval;
 }
 
@@ -147,6 +166,44 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 //-----------------------------------------------------------------------------
 void MetaDesign::parseDesign()
 {
+    // Cull all the design parameters.
+    foreach(QSharedPointer<Parameter> parameterOrig, *design_->getParameters())
+    {
+        QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
+        parameters_->append(parameterCpy);
+    }
+
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs;
+
+    if (designInstantiation_)
+    {
+         cevs = designInstantiation_->getDesignReference()->getConfigurableElementValues();
+    }
+
+    // TODO: CEVs may refer to also other than component parameters!
+    parseParameters(parameters_, topInstance_->getParameters(), cevs);
+
+    foreach(QSharedPointer<Parameter> original, *parameters_)
+    {
+        QMap<QString, QSharedPointer<Parameter> >::iterator i = topInstance_->getMetaParameters()->find(original->name());
+
+        QSharedPointer<Parameter> mParameter;
+
+        if (i == topInstance_->getMetaParameters()->end())
+        {
+            mParameter = QSharedPointer<Parameter>(original);
+            topInstance_->getMetaParameters()->insert(original->name(), mParameter);
+        }
+        else
+        {
+            mParameter = *i;
+
+            mParameter->setName(original->name());
+            mParameter->setValue(original->getValue());
+            mParameter->setValueResolve(original->getValueResolve());
+        }
+    }
+
     parseInstances();
 
     parseInterconnections();
@@ -157,9 +214,9 @@ void MetaDesign::parseDesign()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaDesign::parseInstances()
+// Function: MetaDesign::cullInstances()
 //-----------------------------------------------------------------------------
-void MetaDesign::parseInstances()
+void MetaDesign::cullInstances()
 {
     // Go through each component instance in the design.
     foreach(QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
@@ -193,38 +250,111 @@ void MetaDesign::parseInstances()
             }
             else
             {
-                messages_->errorMessage(QObject::tr("Design %1: Instance %2 did not have specified active view, and its component %3 has multiple possible views, so no active view was chosen.")
+                messages_->errorMessage(QObject::tr("Design %1: Instance %2 did not have specified active view, "
+                    "and its component %3 has multiple possible views, so no active view was chosen.")
                     .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
             }
         }
 
-        // Cull the CEVS for the instance.
-        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs
-             (new QList<QSharedPointer<ConfigurableElementValue> >);
-
-        // Instance may have CEVs pointing to component parameters.
-        cevs->append(*(instance->getConfigurableElementValues()));
-
-        // Design configuration may have CEVs pointing to module parameters.
-        if (designConf_)
-        {
-            QSharedPointer<ViewConfiguration> viewConfig = designConf_->getViewConfiguration(instance->getInstanceName());
-
-            if (viewConfig)
-            {
-                cevs->append(*viewConfig->getViewConfigurableElements());
-            }
-        }
-
         // Now create the instance, using what we know as the parameters.
-        QSharedPointer<MetaInstance> mInstance(new MetaInstance(library_, messages_, component, activeView));
-        // Parse.
-        mInstance->parseInstance(instance, topFinder_, cevs);
+        QSharedPointer<MetaInstance> mInstance(new MetaInstance
+            (instance, library_, messages_, component, activeView));
         // Map using the name.
         instances_->insert(instance->getInstanceName(), mInstance);
 
         // Find also the hierarchical references if applicable.
         findHierarchy(mInstance);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::parseParameters()
+//-----------------------------------------------------------------------------
+void MetaDesign::parseParameters(
+    QSharedPointer<QList<QSharedPointer<Parameter> > > subList,
+    QSharedPointer<QList<QSharedPointer<Parameter> > > topList,
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs)
+{
+    // If CEVs have been supplied, use them.
+    if (cevs)
+    {
+        // Go through the provided parameters, find if any exists in CEVs.
+        foreach(QSharedPointer<Parameter> parameter, *subList)
+        {
+            foreach(QSharedPointer<ConfigurableElementValue> cev, *cevs)
+            {
+                // If a CEV refers to the parameter, its value shall be the value of the parameter.
+                if (cev->getReferenceId() == parameter->getValueId())
+                {
+                    parameter->setValue(cev->getConfigurableValue());
+                    break;
+                }
+            }
+        }
+    }
+
+    // Initialize the parameter parsing: Find parameters from both the instance and the top component.
+    QSharedPointer<ListParameterFinder> subFinder(new ListParameterFinder);
+    subFinder->setParameterList(subList);
+
+    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
+    multiFinder->addFinder(subFinder);
+
+    // If top list has been supplied, use it.
+    if (topList)
+    {
+        QSharedPointer<ListParameterFinder> topFinder(new ListParameterFinder);
+        subFinder->setParameterList(topList);
+
+        multiFinder->addFinder(topFinder);
+    }
+
+    // Create parser using the applicable finders.
+    IPXactSystemVerilogParser parser(multiFinder);
+
+    // Parse values.
+    foreach(QSharedPointer<Parameter> parameter, *subList)
+    {
+        parameter->setValue(MetaInstance::parseExpression(parser, parameter->getValue()));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::parseInstances()
+//-----------------------------------------------------------------------------
+void MetaDesign::parseInstances()
+{
+    // Go through each component instance in the design.
+    foreach(QSharedPointer<MetaInstance> mInstance, *instances_)
+    {
+        // Parse parameters of the instance, which may be overridden by
+        // component instance CEVs, which may point to the design parameters.
+        parseParameters(mInstance->getParameters(), parameters_,
+            mInstance->getComponentInstance()->getConfigurableElementValues());
+
+        // Module parameters may refer to the component parameters.
+        QSharedPointer<QList<QSharedPointer<Parameter> > > topList(new QList<QSharedPointer<Parameter> >);
+        topList->append(*mInstance->getParameters());
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs;
+
+        // Design configuration may have CEVs pointing to module parameters.
+        if (designConf_)
+        {
+            QSharedPointer<ViewConfiguration> viewConfig = designConf_->
+                getViewConfiguration(mInstance->getComponentInstance()->getInstanceName());
+
+            if (viewConfig)
+            {
+                // TODO: Use view configuration CEVs.
+            }
+        }
+
+        // Parse module parameters of the instance, TODO: which may be overridden by view configuration CEVS,
+        // which may point to the design configuration parameters.
+        parseParameters(mInstance->getModuleParameters(), topList, cevs);
+
+        // Parse instance.
+        mInstance->parseInstance();
     }
 }
 
@@ -544,7 +674,8 @@ void MetaDesign::parseAdHocs()
             {
                 if (defaultValue.isEmpty() )
                 {
-                    messages_->errorMessage(QObject::tr("Design %1: Ad-hoc connection %2 needs either more ports or a tie-off.")
+                    messages_->errorMessage(QObject::tr
+                        ("Design %1: Ad-hoc connection %2 needs either more ports or a tie-off.")
                         .arg(design_->getVlnv().toString(),
                         connection->name()));
 
@@ -795,11 +926,11 @@ void MetaDesign::findHierarchy(QSharedPointer<MetaInstance> mInstance)
         }
     }
 
-    // If a sub design exists, it must be also parsed.
     if (subDesign)
     {
+        // If a sub design exists, it must be also parsed.
         QSharedPointer<MetaDesign> subMetaDesign(new MetaDesign
-            (library_, messages_, subDesign, subDesignConfiguration, mInstance));
+            (library_, messages_, subDesign, dis, subDesignConfiguration, mInstance));
         subDesigns_.append(subMetaDesign);
     }
 }
