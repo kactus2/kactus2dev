@@ -30,12 +30,15 @@ public:
 	/*!
 	 *  The constructor.
      *
+     *      @param [in] componentInstance   The instance under inspection.
      *      @param [in] library             The library which is expected to contain the parsed documents.
      *      @param [in] messages            For message output.
      *      @param [in] component           The instantiated component.
      *      @param [in] activeView          The active view for the component. May be null.
 	 */
-    MetaInstance(LibraryInterface* library,
+    MetaInstance(
+        QSharedPointer<ComponentInstance> componentInstance,
+        LibraryInterface* library,
         MessagePasser* messages,
         QSharedPointer<Component> component,
         QSharedPointer<View> activeView);
@@ -44,15 +47,15 @@ public:
     ~MetaInstance();
     
 	/*!
-	 *  Parses the interfaces, ports and parameters for explicit values of this particular meta instance.
+	 *  Parses the interfaces and ports for explicit values of this particular meta instance.
      *
-     *      @param [in] componentInstance   The instance under inspection.
-     *      @param [in] topFinder           Finder for parameters in upper level. May be null
-     *      @param [in] cevs                Applicable configurable element values for the instance. May be null.
      */
-    void parseInstance(QSharedPointer<ComponentInstance> componentInstance,
-        QSharedPointer<ListParameterFinder> topFinder,
-        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
+    void parseInstance();
+    
+    /*!
+    *   Parses the expression using the parser and returns the result.
+    */
+    static QString parseExpression(IPXactSystemVerilogParser& parser, const QString& expression);
     
     /*!
      *  Returns list of culled interfaces.
@@ -68,12 +71,6 @@ private:
 	// Disable copying.
 	MetaInstance(MetaInstance const& rhs);
     MetaInstance& operator=(MetaInstance const& rhs);
-
-    /*!
-     *  Parses the found parameter declarations.
-     */
-    virtual void parseParameters(IPXactSystemVerilogParser& parser,
-        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
     
     /*!
      *  Culls the interfaces of the component.
@@ -93,11 +90,6 @@ private:
      *      @param [in] parser          Used to parse expressions.
      */
     virtual void parsePortAssignments(IPXactSystemVerilogParser& parser);
-    
-    /*!
-    *   Parses the expression using the parser and returns the result.
-    */
-    static QString parseExpression(IPXactSystemVerilogParser& parser, const QString& expression);
 
     /*!
      *  Finds the mapped logical port bounds for a port map.
@@ -125,13 +117,12 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The matching IP-XACT component instance.
+    QSharedPointer<ComponentInstance> componentInstance_;
     //! The component library.
     LibraryInterface* library_;
     //! The parsed interfaces of the instance, keyed with its name.
     QSharedPointer<QMap<QString,QSharedPointer<MetaInterface> > > interfaces_;
-    //! The matching IP-XACT component instance.
-    QSharedPointer<ComponentInstance> componentInstance_;
-
 };
 
 #endif // METAINSTANCE_H

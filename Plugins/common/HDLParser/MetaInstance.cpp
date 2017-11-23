@@ -13,9 +13,6 @@
 
 #include <library/LibraryInterface.h>
 
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include "editors/ComponentEditor/common/ExpressionFormatter.h"
-
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -24,7 +21,9 @@
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::MetaInstance()
 //-----------------------------------------------------------------------------
-MetaInstance::MetaInstance(LibraryInterface* library,
+MetaInstance::MetaInstance(
+    QSharedPointer<ComponentInstance> componentInstance,
+    LibraryInterface* library,
     MessagePasser* messages,
     QSharedPointer<Component> component,
     QSharedPointer<View> activeView) :
@@ -32,8 +31,9 @@ MetaComponent(
     messages,
     component,
     activeView),
+    componentInstance_(componentInstance),
     library_(library),
-    interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >())
+    interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >)
 {
 }
 
@@ -47,66 +47,62 @@ MetaInstance::~MetaInstance()
 //-----------------------------------------------------------------------------
 // Function:  MetaInstance::parseInstance()
 //-----------------------------------------------------------------------------
-void MetaInstance::parseInstance(QSharedPointer<ComponentInstance> componentInstance,
-    QSharedPointer<ListParameterFinder> topFinder,
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs)
+void MetaInstance::parseInstance()
 {
-    // This is now the associated component instance.
-    componentInstance_ = componentInstance;
-
     // Initialize the parameter parsing: Find parameters from both the instance and the top component.
     QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(getParameters());
     QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
     instanceFinder->setParameterList(ilist);
 
-    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-    multiFinder->addFinder(instanceFinder);
-
-    // Use the top finder only if it actually exists.
-    if (topFinder)
-    {
-        multiFinder->addFinder(topFinder);
-    }
-
     // Create parser using the applicable finders.
-    IPXactSystemVerilogParser instanceParser(multiFinder);
+    IPXactSystemVerilogParser instanceParser(instanceFinder);
 
-    // Parse the content: Parameters, interfaces and ports.
-    parseParameters(instanceParser, cevs);
+    // Parse the interfaces and ports.
     cullInterfaces();
     parsePorts(instanceParser);
     parsePortAssignments(instanceParser);
+
+    foreach(QSharedPointer<Parameter> original, *getParameters())
+    {
+        QSharedPointer<Parameter> mParameter(original);
+
+        getMetaParameters()->insert(original->name(), mParameter);
+    }
+
+    foreach(QSharedPointer<Parameter> pOriginal, *getModuleParameters())
+    {
+        QSharedPointer<ModuleParameter> original = qSharedPointerDynamicCast<ModuleParameter>(pOriginal);
+
+        if (!original)
+        {
+            continue;
+        }
+
+        QMap<QString, QSharedPointer<Parameter> >::iterator i = getMetaParameters()->find(original->name());
+
+        if (i != getMetaParameters()->end())
+        {
+            getMetaParameters()->erase(i);
+        }
+
+        QSharedPointer<ModuleParameter> mParameter = QSharedPointer<ModuleParameter>(original);
+        getMetaParameters()->insert(original->name(), mParameter);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function:  MetaInstance::parseParameters()
+// Function: MetaInstance::parseExpression()
 //-----------------------------------------------------------------------------
-void MetaInstance::parseParameters(IPXactSystemVerilogParser& parser,
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs)
+QString MetaInstance::parseExpression(IPXactSystemVerilogParser& parser, const QString& expression)
 {
-    // If CEVs have been supplied, use them.
-    if (cevs)
+    QString value = parser.parseExpression(expression);
+
+    if (value == "x")
     {
-        // Go through the culled parameters, find if any exists in CEVs.
-        foreach(QSharedPointer<Parameter> parameter, *getParameters())
-        {
-            foreach(QSharedPointer<ConfigurableElementValue> cev, *cevs)
-            {
-                // If a CEV refers to the parameter, its value shall be the value of the parameter.
-                if (cev->getReferenceId() == parameter->getValueId())
-                {
-                    parameter->setValue(cev->getConfigurableValue());
-                    break;
-                }
-            }
-        }
+        return "0";
     }
 
-    // Parse values.
-    foreach(QSharedPointer<Parameter> parameter, *getParameters())
-    {
-        parameter->setValue(parseExpression(parser, parameter->getValue()));
-    }
+    return value;
 }
 
 //-----------------------------------------------------------------------------
@@ -293,21 +289,6 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
             }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaInstance::parseExpression()
-//-----------------------------------------------------------------------------
-QString MetaInstance::parseExpression(IPXactSystemVerilogParser& parser, const QString& expression)
-{
-    QString value = parser.parseExpression(expression);
-
-    if (value == "x")
-    {
-        return "0";
-    }
-
-    return value;
 }
 
 //-----------------------------------------------------------------------------

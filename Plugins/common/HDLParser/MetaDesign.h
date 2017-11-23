@@ -35,6 +35,7 @@ public:
     MetaDesign(LibraryInterface* library,
         MessagePasser* messages,
         QSharedPointer<Design const> design,
+        QSharedPointer<DesignInstantiation const> designInstantiation,
         QSharedPointer<DesignConfiguration const> designConf,
         QSharedPointer<MetaInstance> topInstance);
 
@@ -78,13 +79,22 @@ private:
     MetaDesign(MetaDesign const& rhs);
     MetaDesign& operator=(MetaDesign const& rhs);
 
+
+    void cullInstances();
+
     /*!
      *  Parses the design_: The instances, the interconnections, the ad-hocs.
      */
     void parseDesign();
+    
+
+    static void parseParameters(
+        QSharedPointer<QList<QSharedPointer<Parameter> > > subList,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > topList,
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
 
     /*!
-     *  Parses instance in the design_.
+     *  Parses instances in the design_.
      */
     void parseInstances();
 
@@ -149,14 +159,17 @@ private:
     //! The design to parse.
     QSharedPointer<Design const> design_;
 
+    //! The design instantiation that matches the design.
+    QSharedPointer<DesignInstantiation const> designInstantiation_;
+
     //! The design configuration to parse.
     QSharedPointer<DesignConfiguration const> designConf_;
 
     //! The parsed meta instance of the top component.
     QSharedPointer<MetaInstance> topInstance_;
 
-    //! The finder for top level parameters.
-    QSharedPointer<ListParameterFinder> topFinder_;
+    //! The parsed design parameters.
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 
     //! The parsed instances in the design_, keyed with their names.
     QSharedPointer<QMap<QString,QSharedPointer<MetaInstance> > > instances_;

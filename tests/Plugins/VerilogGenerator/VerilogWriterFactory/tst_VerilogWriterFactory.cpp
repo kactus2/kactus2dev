@@ -163,7 +163,7 @@ void tst_VerilogWriterFactory::init()
 
     MessagePasser messages;
 
-    topComponent_ =  QSharedPointer<MetaInstance>(new MetaInstance(
+    topComponent_ =  QSharedPointer<MetaInstance>(new MetaInstance(QSharedPointer<ComponentInstance>(),
         &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
 
     design_ = QSharedPointer<MetaDesign>(new MetaDesign(&library_,&messages,
@@ -673,9 +673,9 @@ QSharedPointer<MetaInstance> tst_VerilogWriterFactory::addInstanceToDesign(QStri
 
     MessagePasser messages;
 
-    QSharedPointer<MetaInstance> mInstance(new MetaInstance(
+    QSharedPointer<MetaInstance> mInstance(new MetaInstance(instance,
         &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
-    mInstance->parseInstance(instance, topFinder, cevs);
+    mInstance->parseInstance(topFinder, cevs);
 
     design_->getInstances()->insert(instanceName, mInstance);
 

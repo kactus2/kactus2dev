@@ -69,6 +69,16 @@ public:
     QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() { return parameters_; }
 
     /*!
+     *  Returns list of culled module parameters
+     */
+    QSharedPointer<QList<QSharedPointer<Parameter> > > getModuleParameters() { return moduleParameters_; }
+
+    /*!
+     *  Returns list of resolved meta parameters
+     */
+    QSharedPointer<QMap<QString,QSharedPointer<Parameter> > > getMetaParameters() { return metaParameters_; }
+
+    /*!
      *  Returns list of culled ports.
      */
     QSharedPointer<QMap<QString,QSharedPointer<MetaPort> > > getPorts() { return ports_; }
@@ -136,8 +146,11 @@ private:
     QSharedPointer<View> activeView_;
     //! The matching IP-XACT component.
     QSharedPointer<Component> component_;
-    //! The parsed parameters that are to be used with the instance. CEVs used where applicable.
+    //! The parameters, which are either formatted or completely parsed.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters_;
+    //! These parameters are actually generated.
+    QSharedPointer<QMap<QString,QSharedPointer<Parameter> > > metaParameters_;
     //! The ports of the component keyed with its physical name.
     QSharedPointer<QMap<QString,QSharedPointer<MetaPort> > > ports_;
     //! The filesets referred by the activeInstantiation_;

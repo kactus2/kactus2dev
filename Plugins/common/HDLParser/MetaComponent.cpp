@@ -27,6 +27,8 @@ MetaComponent::MetaComponent(MessagePasser* messages,
     component_(component),
     activeView_(activeView),
     parameters_(new QList<QSharedPointer<Parameter> >()),
+    moduleParameters_(new QList<QSharedPointer<Parameter> >()),
+    metaParameters_(new QMap<QString,QSharedPointer<Parameter> >()),
     ports_(new QMap<QString,QSharedPointer<MetaPort> >()),
     remapStates_(new QList<QSharedPointer<FormattedRemapState> >()),
     fileSets_(new QList<QSharedPointer<FileSet> >())
@@ -172,8 +174,8 @@ void MetaComponent::cullParameters()
     {
         foreach(QSharedPointer<ModuleParameter> parameterOrig, *activeInstantiation_->getModuleParameters())
         {
-            QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-            parameters_->append(parameterCpy);
+            QSharedPointer<ModuleParameter> parameterCpy(new ModuleParameter(*parameterOrig));
+            moduleParameters_->append(parameterCpy);
         }
     }
 }
@@ -207,6 +209,15 @@ void MetaComponent::formatParameters(QSharedPointer<ExpressionFormatter> formatt
 
     // Format the parameters.
     foreach(QSharedPointer<Parameter> parameter, *parameters_)
+    {
+        parameter->setValue(formatter->formatReferringExpression(parameter->getValue()));
+    }
+
+    // Sort the module parameters.
+    sortParameters(moduleParameters_);
+
+    // Format the module parameters.
+    foreach(QSharedPointer<Parameter> parameter, *moduleParameters_)
     {
         parameter->setValue(formatter->formatReferringExpression(parameter->getValue()));
     }
