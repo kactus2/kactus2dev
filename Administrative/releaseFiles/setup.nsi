@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "3.4.0"
+!define PRODUCT_VERSION "3.5.0"
 !define PRODUCT_PUBLISHER "TUT"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -111,7 +111,6 @@ Section "MainSection" SEC01
   File "..\..\executable\Plugins\VerilogSourceAnalyzer.dll"
   File "..\..\executable\Plugins\VHDLGenerator.dll"
   File "..\..\executable\Plugins\VHDLImport.dll"
-  File "..\..\executable\Plugins\TLMWGenerator.dll"
   File "..\..\executable\Plugins\MemoryViewGenerator.dll"
     
   SetOutPath "$INSTDIR\Help"
@@ -204,7 +203,6 @@ Section Uninstall
   Delete "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
-  Delete "$INSTDIR\Plugins\TLMWGenerator.dll"
   Delete "$INSTDIR\Plugins\MemoryViewGenerator.dll"
   Delete "$INSTDIR\Plugins\VHDLImport.dll"
   Delete "$INSTDIR\Plugins\VHDLGenerator.dll"
