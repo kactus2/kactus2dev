@@ -267,6 +267,8 @@ void MetaDesign::cullInstances()
     }
 }
 
+
+#include <QDebug>
 //-----------------------------------------------------------------------------
 // Function: MetaDesign::parseParameters()
 //-----------------------------------------------------------------------------
@@ -304,7 +306,7 @@ void MetaDesign::parseParameters(
     if (topList)
     {
         QSharedPointer<ListParameterFinder> topFinder(new ListParameterFinder);
-        subFinder->setParameterList(topList);
+        topFinder->setParameterList(topList);
 
         multiFinder->addFinder(topFinder);
     }
