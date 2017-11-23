@@ -13,27 +13,43 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
+#include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
+
+#include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
+#include <common/widgets/vlnvEditor/vlnveditor.h>
+
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: AbsDefGroup::AbsDefGroup()
 //-----------------------------------------------------------------------------
-AbsDefGroup::AbsDefGroup(QWidget *parent): 
+AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, QWidget *parent):
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
-    portView_(this),
-    portProxy_(this),
-    portModel_(this),
-    portDelegate_(this)
+portView_(this),
+portProxy_(new AbstractionDefinitionPortsSortFilter(this)),
+portModel_(this),
+portDelegate_(this),
+vlnvDisplay_(new VLNVDisplayer(this)),
+extendVLNVEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
+descriptionEditor_(new QPlainTextEdit(this)),
+abstraction_()
 {
+    extendVLNVEditor_->setToolTip(QString("Extended abstraction definition is not currently supported in Kactus2"));
 
-    portProxy_.setSourceModel(&portModel_);
+    vlnvDisplay_->setTitle(QStringLiteral("Abstraction definition VLNV"));
+    extendVLNVEditor_->setTitle(tr("Extended abstraction definition"));
 
-	portView_.setModel(&portProxy_);
+    extendVLNVEditor_->setDisabled(true);
+
+    portProxy_->setSourceModel(&portModel_);
+
+	portView_.setModel(portProxy_);
     portView_.setSortingEnabled(true);
 	portView_.setItemDelegate(&portDelegate_);
     portView_.setAllowImportExport(true);
     portView_.setItemsDraggable(false);
+    portView_.setAlternatingRowColors(false);
 
     portView_.sortByColumn(0, Qt::AscendingOrder);
 
@@ -49,13 +65,15 @@ QGroupBox(tr("Signals (Abstraction Definition)"), parent),
     connect(&portModel_, SIGNAL(portRenamed(const QString&, const QString&)), 
         this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
     connect(&portModel_, SIGNAL(portRenamed(const QString&, const QString&)), 
-        &portProxy_, SLOT(invalidate()), Qt::UniqueConnection);
+        portProxy_, SLOT(invalidate()), Qt::UniqueConnection);
     connect(&portModel_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), 
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
     connect(&portView_, SIGNAL(addItem(const QModelIndex&)), &portModel_, SLOT(addSignal()), Qt::UniqueConnection);
     connect(&portView_, SIGNAL(removeItem(const QModelIndex&)),
         &portModel_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 
 	setupLayout();
 }
@@ -76,7 +94,7 @@ void AbsDefGroup::onAddSignalOptions()
     QModelIndexList selection;
     foreach (QModelIndex index, portView_.selected())
     {
-        selection.append(portProxy_.mapToSource(index));
+        selection.append(portProxy_->mapToSource(index));
     }
 
 	portModel_.addSignalOptions(selection);
@@ -95,7 +113,20 @@ void AbsDefGroup::save()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 {
+    abstraction_ = absDef;
+
 	portModel_.setAbsDef(absDef);
+    vlnvDisplay_->setVLNV(absDef->getVlnv());
+
+    if (absDef->getExtends().isValid())
+    {
+        extendVLNVEditor_->setVLNV(absDef->getExtends());
+    }
+
+    if (!absDef->getDescription().isEmpty())
+    {
+        descriptionEditor_->setPlainText(absDef->getDescription());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -112,6 +143,30 @@ void AbsDefGroup::setBusDef(QSharedPointer<BusDefinition> busDefinition)
 //-----------------------------------------------------------------------------
 void AbsDefGroup::setupLayout()
 {
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(&portView_, 1);
+    QGroupBox* descriptionGroup = new QGroupBox(tr("Description"), this);
+
+    QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionGroup);
+    descriptionLayout->addWidget(descriptionEditor_);
+
+    QGridLayout* topLayout = new QGridLayout(this);
+    topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
+    topLayout->addWidget(extendVLNVEditor_, 0, 1, 1, 1);
+    topLayout->addWidget(descriptionGroup, 0, 2, 1, 1);
+    topLayout->addWidget(&portView_, 1, 0, 1, 3);
+
+    topLayout->setColumnStretch(0, 25);
+    topLayout->setColumnStretch(1, 25);
+    topLayout->setColumnStretch(2, 50);
+
+    topLayout->setRowStretch(0, 1);
+    topLayout->setRowStretch(1, 10);
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::onDescriptionChanged()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::onDescriptionChanged()
+{
+    abstraction_->setDescription(descriptionEditor_->toPlainText());
+    emit contentChanged();
 }

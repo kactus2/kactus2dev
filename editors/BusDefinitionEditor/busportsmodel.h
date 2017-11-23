@@ -186,10 +186,8 @@ signals:
     void portRemoved(QString const& portName, const General::InterfaceMode mode);
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	BusPortsModel(const BusPortsModel& other);
-
-	//! No assignment
 	BusPortsModel& operator=(const BusPortsModel& other);
     
 	/*!
@@ -210,23 +208,32 @@ private:
 	void createRow(QSharedPointer<PortAbstraction> portAbs, QSharedPointer<WirePort> modeSpesific,
 		General::InterfaceMode mode);
      
-	/*! Convert PortQualifier to string.
+	/*!
+     *  Convert PortQualifier to string.
 	 *
 	 *      @param [in]  qualifier The Qualifier to convert.
 	 *
 	 *      @return A string representation for the Qualifier.
-	*/
+     */
 	QString toString(Qualifier qualifier) const;
 
-	/*! Convert a string to PortQualifier.
+	/*!
+     *  Convert a string to PortQualifier.
 	 *
 	 *      @param [in] str The string to convert.
 	 *
 	 *      @return A qualifier that matches the string.
-	*/
+     */
 	Qualifier::Type toQualifier(QString const& str) const;
 
-     //-----------------------------------------------------------------------------
+    /*!
+     *  Send change data signals for all the affected items.
+     *
+     *      @param [in] changedIndexes  List of all the changed model indexes.
+     */
+    void sendDataChangeForAllChangedItems(QModelIndexList changedIndexes);
+    
+    //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
     

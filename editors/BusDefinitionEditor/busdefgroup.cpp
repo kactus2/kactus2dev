@@ -11,6 +11,9 @@
 
 #include "busdefgroup.h"
 
+#include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
+#include <common/widgets/vlnvEditor/vlnveditor.h>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
@@ -22,17 +25,25 @@
 //-----------------------------------------------------------------------------
 // Function: BusDefGroup::BusDefGroup()
 //-----------------------------------------------------------------------------
-BusDefGroup::BusDefGroup(QWidget *parent): 
+BusDefGroup::BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent):
 QGroupBox(tr("General (Bus Definition)"), parent),
-    busDef_(),
-    directConnection_(tr("Allow non-mirrored connections"), this),
-    isBroadcast_(tr("Support broadcast"), this),
-    isAddressable_(tr("Addressable bus"), this),
-    maxMastersEditor_(this),
-    maxSlavesEditor_(this),
-    systemgroupEditor_(tr("System group names"), this),
-    descriptionEditor_(this)
-{    
+busDef_(),
+directConnection_(tr("Allow non-mirrored connections"), this),
+isBroadcast_(tr("Support broadcast"), this),
+isAddressable_(tr("Addressable bus"), this),
+maxMastersEditor_(this),
+maxSlavesEditor_(this),
+systemgroupEditor_(tr("System group names"), this),
+descriptionEditor_(this),
+vlnvDisplay_(new VLNVDisplayer(this)),
+extendDisplay_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this))
+{
+    vlnvDisplay_->setTitle(QStringLiteral("Bus definition VLNV"));
+    extendDisplay_->setTitle(QStringLiteral("Extended bus definition VLNV"));
+    extendDisplay_->setDisabled(true);
+
+    extendDisplay_->setToolTip(QStringLiteral("Extended bus definition is not currently supported in Kactus2"));
+
     QRegExp numberExpression(QString("[0-9]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
     QRegExpValidator* numberValidator = new QRegExpValidator(numberExpression, this);
     maxMastersEditor_.setValidator(numberValidator);
@@ -72,6 +83,12 @@ BusDefGroup::~BusDefGroup()
 void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 {
 	busDef_ = busDef;
+    vlnvDisplay_->setVLNV(busDef_->getVlnv());
+
+    if (busDef->getExtends().isValid())
+    {
+        extendDisplay_->setVLNV(busDef_->getExtends());
+    }
 
     directConnection_.setChecked(busDef_->getDirectConnection());
     isBroadcast_.setChecked(busDef_->getBroadcast().toBool());
@@ -172,16 +189,19 @@ void BusDefGroup::setupLayout()
     QGroupBox* descriptionGroup = new QGroupBox(tr("Description"), this);
 
     QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionGroup);
-    descriptionLayout->addWidget(&descriptionEditor_, 1, Qt::AlignTop);
-    
-    QHBoxLayout* topLayout = new QHBoxLayout(this);
-    topLayout->addWidget(selectionGroup);
-    topLayout->addWidget(&systemgroupEditor_);
-    topLayout->addWidget(descriptionGroup, 1);
+    descriptionLayout->addWidget(&descriptionEditor_);
+
+    QGridLayout* topLayout = new QGridLayout(this);
+    topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
+    topLayout->addWidget(extendDisplay_, 0, 1, 1, 1);
+    topLayout->addWidget(selectionGroup, 1, 0, 1, 1);
+    topLayout->addWidget(&systemgroupEditor_, 1, 1, 1, 1);
+    topLayout->addWidget(descriptionGroup, 0, 2, 2, 2);
+
+    topLayout->setColumnStretch(0, 25);
+    topLayout->setColumnStretch(1, 25);
+    topLayout->setColumnStretch(2, 50);
 
     maxMastersEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
     maxSlavesEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
-
-    systemgroupEditor_.setMinimumHeight(100);
-    descriptionEditor_.setMinimumHeight(100);
 }

@@ -570,6 +570,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/busportsdelegate.h \
     ./editors/BusDefinitionEditor/busportsmodel.h \
     ./editors/BusDefinitionEditor/busportsview.h \
+    ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/ComGraphicsConnection.h \
     ./designEditors/SystemDesign/ApiGraphicsConnection.h \
@@ -1214,6 +1215,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ConfigurationTools/ViewConfigurer.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./editors/BusDefinitionEditor/absdefgroup.cpp \
+    ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/busportsdelegate.cpp \

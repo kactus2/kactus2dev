@@ -214,51 +214,6 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
     }
-	else if (role == Qt::BackgroundRole) 
-    {
-        if (index.column() == LogicalPortColumns::NAME ||
-            (index.column() == LogicalPortColumns::SYSTEM_GROUP && port.mode_ == General::SYSTEM)) 
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        
-        int topIndex = index.row();
-
-        // Find the index that is the first index for this port.
-        while (0 < topIndex && topIndex < table_.size()) 
-        {
-            if (table_.at(topIndex - 1).abstraction_->getLogicalName() != 
-                table_.at(index.row()).abstraction_->getLogicalName())
-            {
-                break;
-            }
-            else
-            {
-                topIndex--;
-            }
-        }
-
-        // The first item has always white background.
-        if (topIndex == 0)
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-
-        QModelIndex previousPort = QAbstractTableModel::index(topIndex - 1, LogicalPortColumns::QUALIFIER,
-            QModelIndex());
-
-        QColor previousColor = data(previousPort, Qt::BackgroundRole).value<QColor>();
-
-        // Return a color that is different from previous port.
-        if (previousColor == KactusColors::REGULAR_FIELD)
-        {
-            return KactusColors::LOGICAL_PORT_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
     else if (role == Qt::ForegroundRole)
     {
         if ((index.column() == LogicalPortColumns::NAME && port.abstraction_->getLogicalName().isEmpty()) ||
@@ -289,13 +244,15 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool BusPortsModel::setData(QModelIndex const& index, QVariant const& value, int role) 
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size() || role != Qt::EditRole)
+    QString oldData = data(index, Qt::DisplayRole).toString();
+
+    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size() || role != Qt::EditRole ||
+        oldData.compare(value.toString()) == 0)
     {
         return false;
     }
 
     BusPortsModel::SignalRow& port = table_[index.row()];
-
     if (index.column() == LogicalPortColumns::NAME)
     {		
         QString newName = value.toString();
@@ -374,8 +331,52 @@ bool BusPortsModel::setData(QModelIndex const& index, QVariant const& value, int
         return false;
     }
 
-    emit dataChanged(index, index);
+    //! Indexing doesn't work correctly (select other than first index).
+    QModelIndexList indexList;
+    indexList.append(index);
+
+    if (index.column() == LogicalPortColumns::NAME || index.column() == LogicalPortColumns::DEFAULT_VALUE ||
+        index.column() == LogicalPortColumns::DRIVER || index.column() == LogicalPortColumns::QUALIFIER ||
+        index.column() == LogicalPortColumns::DESCRIPTION)
+    {
+        for (int i = 0; i < table_.size(); ++i)
+        {
+            BusPortsModel::SignalRow signal = table_.at(i);
+
+            if (signal.abstraction_->getLogicalName().compare(port.abstraction_->getLogicalName()) == 0 &&
+                signal != port)
+            {
+                QModelIndex signalIndex = index.sibling(i, index.column());
+                indexList.append(signalIndex);
+            }
+        }
+    }
+
+    sendDataChangeForAllChangedItems(indexList);
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: busportsmodel::sendDataChangeForAllChangedItems()
+//-----------------------------------------------------------------------------
+void BusPortsModel::sendDataChangeForAllChangedItems(QModelIndexList changedIndexes)
+{
+    QModelIndex firstIndex = changedIndexes.first();
+    QModelIndex lastIndex = changedIndexes.last();
+
+    foreach (QModelIndex currentIndex, changedIndexes)
+    {
+        if (currentIndex.row() < firstIndex.row())
+        {
+            firstIndex = currentIndex;
+        }
+        else if (currentIndex.row() > lastIndex.row())
+        {
+            lastIndex = currentIndex;
+        }
+    }
+
+    emit dataChanged(firstIndex, lastIndex);
 }
 
 //-----------------------------------------------------------------------------
