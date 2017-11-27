@@ -17,10 +17,11 @@
 #include <common/utils.h>
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCache.h>
+#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -98,7 +99,8 @@ LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget):
     componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
     componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
                         handler_),
-    designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+    designValidatorFinder_(new ListParameterFinder()),
+    designValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(designValidatorFinder_)), handler_),
     designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
     systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
     fileWatch_(new QFileSystemWatcher(this))
@@ -707,7 +709,10 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
     }
     else if (documentType == VLNV::DESIGN)
     {
-        if (!designValidator_.validate(document.dynamicCast<Design>()))
+        QSharedPointer<Design> currentDesign = document.dynamicCast<Design>();
+        designValidatorFinder_->setParameterList(currentDesign->getParameters());
+
+        if (!designValidator_.validate(currentDesign))
         {
             return false;
         }
@@ -827,6 +832,7 @@ void LibraryData::findErrorsInComponent(QSharedPointer<Component> component, QVe
 //-----------------------------------------------------------------------------
 void LibraryData::findErrorsInDesign(QSharedPointer<Design> design, QVector<QString>& errorList)
 {
+    designValidatorFinder_->setParameterList(design->getParameters());
     designValidator_.findErrorsIn(errorList, design);
 }
 
