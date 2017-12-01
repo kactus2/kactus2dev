@@ -157,6 +157,9 @@ HEADERS += ./XmlUtils.h \
     ./Component/File.h \
     ./Component/FileSet.h \
     ./Component/Function.h \
+    ./Component/IndirectInterface.h \
+    ./Component/IndirectInterfaceReader.h \
+    ./Component/IndirectInterfaceWriter.h \
     ./Component/MasterInterface.h \
     ./Component/MemoryBlockBase.h \
     ./Component/MemoryMap.h \
@@ -177,6 +180,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/Segment.h \
     ./Component/SlaveInterface.h \
     ./Component/Transactional.h \
+    ./Component/TransparentBridge.h \
     ./Component/View.h \
     ./Component/Wire.h \
     ./Component/WireTypeDef.h \
@@ -234,6 +238,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/FieldValidator.h \
     ./Component/validators/FileSetValidator.h \
     ./Component/validators/FileValidator.h \
+    ./Component/validators/IndirectInterfaceValidator.h \
     ./Component/validators/InstantiationsValidator.h \
     ./Component/validators/PortMapValidator.h \
     ./Component/validators/OtherClockDriverValidator.h \
@@ -248,12 +253,7 @@ HEADERS += ./XmlUtils.h \
     ./Catalog/IpxactFile.h \
     ./Catalog/CatalogReader.h \
     ./Catalog/CatalogWriter.h \
-    ./Catalog/validators/CatalogValidator.h \
-    ./Component/IndirectInterface.h \
-    ./Component/IndirectInterfaceReader.h \
-    ./Component/TransparentBridge.h \
-    ./Component/IndirectInterfaceWriter.h \
-    ./Component/validators/IndirectInterfaceValidator.h
+    ./Catalog/validators/CatalogValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -426,6 +426,9 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/FileSetWriter.cpp \
     ./Component/FileWriter.cpp \
     ./Component/Function.cpp \
+    ./Component/IndirectInterface.cpp \
+    ./Component/IndirectInterfaceReader.cpp \
+    ./Component/IndirectInterfaceWriter.cpp \
     ./Component/InstantiationsReader.cpp \
     ./Component/InstantiationsWriter.cpp \
     ./Component/MasterInterface.cpp \
@@ -460,6 +463,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/Segment.cpp \
     ./Component/SlaveInterface.cpp \
     ./Component/Transactional.cpp \
+    ./Component/TransparentBridge.cpp \
     ./Component/View.cpp \
     ./Component/ViewReader.cpp \
     ./Component/ViewWriter.cpp \
@@ -478,6 +482,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/FieldValidator.cpp \
     ./Component/validators/FileSetValidator.cpp \
     ./Component/validators/FileValidator.cpp \
+    ./Component/validators/IndirectInterfaceValidator.cpp \
     ./Component/validators/InstantiationsValidator.cpp \
     ./Component/validators/PortMapValidator.cpp \
     ./Component/validators/OtherClockDriverValidator.cpp \
@@ -492,9 +497,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/CatalogReader.cpp \
     ./Catalog/CatalogWriter.cpp \
     ./Catalog/IpxactFile.cpp \
-    ./Catalog/validators/CatalogValidator.cpp \
-    ./Component/IndirectInterface.cpp \
-    ./Component/IndirectInterfaceReader.cpp \
-    ./Component/TransparentBridge.cpp \
-    ./Component/IndirectInterfaceWriter.cpp \
-    ./Component/validators/IndirectInterfaceValidator.cpp
+    ./Catalog/validators/CatalogValidator.cpp

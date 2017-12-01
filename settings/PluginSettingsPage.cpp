@@ -54,6 +54,11 @@ SettingsPage(settings),
     pluginDirSelector_.setPersistentDirectory("Plugins");
     pluginDirSelector_.setPersistentDirectory("plugins");
 
+    pluginsTree_.setObjectName("PluginsTree");
+    QString stylesheet("QTreeView#PluginsTree::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"
+        "QTreeView#PluginsTree::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}");
+    pluginsTree_.setStyleSheet(stylesheet);
+
     pluginsTree_.setHeaderHidden(true);
     pluginsTree_.setColumnCount(1);
     pluginsTree_.setSelectionBehavior(QAbstractItemView::SelectItems);    

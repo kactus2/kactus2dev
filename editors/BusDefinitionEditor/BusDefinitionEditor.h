@@ -36,29 +36,34 @@ class BusDefinitionEditor : public TabDocument
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
 	 *      @param [in] parent          The owner of this widget.
 	 *      @param [in] libHandler      The instance that manages library.
 	 *      @param [in] busDef          The bus definition to edit.
 	 *      @param [in] absDef          The abstraction definition to edit.
 	 *      @param [in] disableBusDef If true then the BusDefGroup is disabled.
-	*/
-	BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
-        QSharedPointer<BusDefinition> busDef,
-		QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(),
-		bool disableBusDef = false);
+     */
+	BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<BusDefinition> busDef,
+        QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(),
+        bool disableBusDef = false);
 	
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~BusDefinitionEditor();
 
-	/*! Get the VLNV that can be used to identify the Bus.
+	/*!
+     *  Get the VLNV that can be used to identify the Bus.
 	 *
 	 *      @return The VLNV that identifies the Bus.
-	*/
+     */
 	virtual VLNV getIdentifyingVLNV() const;
 
-    //! Refreshes the editor.
+    /*!
+     *  Refreshes the editor.
+     */
     virtual void refresh();
 
     /*!
@@ -68,13 +73,15 @@ public:
      */
     virtual void setProtection(bool locked);
 
-	/*! Get the vlnv of the current bus definition.
+	/*!
+     *  Get the vlnv of the current bus definition.
 	 *
 	 *      @return VLNV of the bus definition/abstraction definition being edited.
-	*/
+	 */
 	virtual VLNV getDocumentVLNV() const;
 
-    /*! Sets the edited bus definition.
+    /*!
+     *  Sets the edited bus definition.
      * 
      *      @param [in] busDef   The bus definition to set. Must not be NULL.
      */
@@ -88,6 +95,7 @@ public:
     virtual void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
 
 public slots:
+
     /*!
      *  Validates the document against the IP-XACT standard.
      *
@@ -97,33 +105,56 @@ public slots:
      */
     virtual bool validate(QVector<QString>& errorList);
 
-	//! Saves the document and resets the modified state.
+	/*!
+     *  Saves the document and resets the modified state.
+     */
 	virtual bool save();
 
-	//! Saves the document as new object and resets modifies state
+	/*!
+     *  Saves the document as new object and resets modifies state
+     */
 	virtual bool saveAs();
 
 signals:
 
-    //! Inform that a port abstraction has been renamed.
+    /*!
+     *  Inform that a port abstraction has been renamed.
+     *
+     *      @param [in] oldName     Old name of the port abstraction.
+     *      @param [in] newName     New name for the port abstraction.
+     */
     void portRenamed(QString const& oldName, QString const& newName);
 
-    //! Inform that a port abstraction has been removed.
+    /*!
+     *  Inform that a port abstraction has been removed.
+     *
+     *      @param [in] portName    Name of the removed port abstraction.
+     *      @param [in] mode        Mode of the removed port abstraction.
+     */
     void portRemoved(QString const& portName, General::InterfaceMode const mode);
 
 protected:
-    //! Called when the editor is shown.
+    
+    /*!
+     *  Called when the editor is shown.
+     *
+     *      @param [in] event   The show event.
+     */
     virtual void showEvent(QShowEvent* event);
 
 private:
-	//! No copying
+	//! No copying. No assignment.
 	BusDefinitionEditor(const BusDefinitionEditor& other);
-
-	//! No assignment
 	BusDefinitionEditor& operator=(const BusDefinitionEditor& other);
 
-	//! Set the layout of the widget
+	/*!
+     *  Set the layout of the widget
+     */
 	void setupLayout();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! The instance that handles the library
 	LibraryInterface* libHandler_;

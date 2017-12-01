@@ -18,11 +18,11 @@ HEADERS += ../../common/NameGenerationPolicy.h \
     ./VerilogSyntax.h \
     ./verilogimport_global.h \
     ./VerilogImporter.h
-SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+SOURCES += ../../common/NameGenerationPolicy.cpp \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/NullParser.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./VerilogImporter.cpp \
     ./VerilogParameterParser.cpp \
     ./VerilogPortParser.cpp \
-    ./VerilogSyntax.cpp \
-    ../../common/NameGenerationPolicy.cpp
+    ./VerilogSyntax.cpp

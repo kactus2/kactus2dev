@@ -13,44 +13,44 @@ HEADERS += ./modelsimgenerator_global.h \
     ../common/HDLParser/MetaComponent.h \
     ../common/HDLParser/MetaDesign.h \
     ../common/HDLParser/MetaInstance.h \
-    ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ../../editors/ComponentEditor/common/ListParameterFinder.h \
-    ../PluginSystem/GeneratorPlugin/MessagePasser.h \
-    ../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
-    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
-    ../PluginSystem/GeneratorPlugin/GenerationControl.h \
-    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.h \
+    ../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../PluginSystem/GeneratorPlugin/IGeneratorPlugin.h \
-    ../PluginSystem/GeneratorPlugin/IWriterFactory.h \
+    ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
-    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
+    ../PluginSystem/GeneratorPlugin/MessagePasser.h \
     ../../mainwindow/MessageConsole/messageconsole.h \
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
+    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.h \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
     ./ModelSimWriterFactory/ModelSimDocument.h \
+    ./ModelSimWriterFactory/ModelSimWriter.h \
     ./ModelSimWriterFactory/ModelSimWriterFactory.h \
-    ./ModelSimWriterFactory/ModelSimWriter.h
+    ../PluginSystem/GeneratorPlugin/IWriterFactory.h
 SOURCES += ./ModelSimGeneratorPlugin.cpp \
     ../common/HDLParser/MetaComponent.cpp \
     ../common/HDLParser/MetaDesign.cpp \
     ../common/HDLParser/MetaInstance.cpp \
-    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
-    ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
-    ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
-    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
+    ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
-    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.cpp \
+    ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
     ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
-    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ../../mainwindow/MessageConsole/messageconsole.cpp \
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
+    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ./ModelSimWriterFactory/ModelSimDocument.cpp \
-    ./ModelSimWriterFactory/ModelSimWriterFactory.cpp \
-    ./ModelSimWriterFactory/ModelSimWriter.cpp
+    ./ModelSimWriterFactory/ModelSimWriter.cpp \
+    ./ModelSimWriterFactory/ModelSimWriterFactory.cpp
 RESOURCES += ModelSimGenerator.qrc

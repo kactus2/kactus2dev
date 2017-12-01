@@ -37,6 +37,7 @@ class BusDefinition;
 class Component;
 class Document;
 class LibraryHandler;
+class ListParameterFinder;
 class ScanProgressWidget;
 
 class ComponentParameterFinder;
@@ -373,6 +374,9 @@ private:
 
     //! The used component validator.
     ComponentValidator componentValidator_;
+
+    //! The parameter finder used in the design validator.
+    QSharedPointer<ListParameterFinder> designValidatorFinder_;
 
     //! The used design validator.
     DesignValidator designValidator_;

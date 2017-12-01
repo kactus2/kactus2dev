@@ -9,6 +9,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./VersionHelper.h \
+    ./version.h \
     ./common/NameGenerationPolicy.h \
     ./common/Global.h \
     ./common/KactusColors.h \
@@ -97,6 +98,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
+    ./common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
@@ -568,6 +570,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/busportsdelegate.h \
     ./editors/BusDefinitionEditor/busportsmodel.h \
     ./editors/BusDefinitionEditor/busportsview.h \
+    ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/ComGraphicsConnection.h \
     ./designEditors/SystemDesign/ApiGraphicsConnection.h \
@@ -738,8 +741,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1213,6 +1215,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ConfigurationTools/ViewConfigurer.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./editors/BusDefinitionEditor/absdefgroup.cpp \
+    ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/busportsdelegate.cpp \

@@ -22,7 +22,8 @@ HEADERS += ../../common/NameGenerationPolicy.h \
     ./MakeConfiguration.h \
     ./MakeParametersDialog.h \
     ./MakefileGeneratorPlugin.h
-SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+SOURCES += ../../common/NameGenerationPolicy.cpp \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
@@ -32,6 +33,5 @@ SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ./MakefileGeneratorPlugin.cpp \
     ./MakefileParser.cpp \
     ./MakeParametersDialog.cpp \
-    ./SWStackParser.cpp \
-    ../../common/NameGenerationPolicy.cpp
+    ./SWStackParser.cpp
 RESOURCES += MakefileGenerator.qrc

@@ -16,6 +16,10 @@
 
 namespace KactusColors
 {
+    //! Icon and visual design base colors.
+    QColor const KACTUS_BLUE(0x1b, 0x65, 0xaf);
+    QColor const KACTUS_GREEN(0x32,0xbc, 0x8f);
+
     //! Errors.
     QColor const ERROR = Qt::red;
 
