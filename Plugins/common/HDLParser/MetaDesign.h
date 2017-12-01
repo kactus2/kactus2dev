@@ -16,6 +16,8 @@
 
 class Design;
 class DesignConfiguration;
+class AdHocConnection;
+class PartSelect;
 
 //-----------------------------------------------------------------------------
 // An instantiated design with all its parameters, instances, and interconnections parsed.
@@ -86,7 +88,10 @@ private:
      *  Parses the design_: The instances, the interconnections, the ad-hocs.
      */
     void parseDesign();
-    
+
+    void parseDesignParamaters();
+
+
 
     static void parseParameters(
         QSharedPointer<QList<QSharedPointer<Parameter> > > subList,
@@ -117,7 +122,19 @@ private:
      *  Parses ad-hocs in the design_.
      */
     void parseAdHocs();
-    
+
+    void parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort, QSharedPointer<AdHocConnection> connection, QSharedPointer<MetaWire> mWire,  bool isHierarchical, QString wireName, QSharedPointer<PartSelect> matchingPartSelect);
+
+    void findHierarchicalPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
+        QList<QSharedPointer<MetaPort> > &foundPorts,
+        QList<QSharedPointer<MetaPort> > &foundHierPorts,
+        QList<QSharedPointer<PartSelect> > &matchingPartSelects);
+
+    void findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
+        QList<QSharedPointer<MetaPort> > &foundPorts,
+        QList<QSharedPointer<PartSelect> > &matchingPartSelects);
+
+
     /*!
      *  Removes assignments without wire or default value from down ports of the topInstance_ and
      *  up ports of others. Also culls cases where the wire has only one attached port assignment.
@@ -136,7 +153,14 @@ private:
      *                                          Consequently, will be the top instance of the created meta design.
      */
     void findHierarchy(QSharedPointer<MetaInstance> mInstance);
-    
+
+    QSharedPointer<Design> findDesignFromInstantiation(QSharedPointer<DesignInstantiation> dis);
+
+    QSharedPointer<DesignConfiguration> findDesignConfigurationFromInsantiation(
+        QSharedPointer<DesignConfigurationInstantiation> disg,
+        QSharedPointer<Design> &subDesign);
+
+
     /*!
      *  Compares new bounds to existing bounds of the wire and then assigns the largest combination of two
      *  If even one of the existing bounds is missing, candidates will replace them both.
