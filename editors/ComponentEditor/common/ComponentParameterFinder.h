@@ -99,18 +99,6 @@ public:
      */
     virtual void registerParameterModel(QAbstractItemModel const* model);
 
-private:
-
-	//! No copying
-    ComponentParameterFinder(const ComponentParameterFinder& other);
-	//! No assignment
-    ComponentParameterFinder& operator=(const ComponentParameterFinder& other);
-
-	/*!
-	 *  Returns a parameter corresponding given id, if any exists.
-	*/
-	QSharedPointer<Parameter> searchParameter(QString const& parameterId) const;
-
     /*!
      *  Returns all the parameters in component address spaces.
      */
@@ -139,6 +127,18 @@ private:
      *      @return The parameters in all registers.
      */
     QList<QSharedPointer<Parameter> > allRegisterParameters() const;
+
+private:
+
+	//! No copying
+    ComponentParameterFinder(const ComponentParameterFinder& other);
+	//! No assignment
+    ComponentParameterFinder& operator=(const ComponentParameterFinder& other);
+
+	/*!
+	 *  Returns a parameter corresponding given id, if any exists.
+	*/
+	QSharedPointer<Parameter> searchParameter(QString const& parameterId) const;
     
     /*!
      *  Returns number of parameters in bus interfaces.

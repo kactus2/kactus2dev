@@ -16,6 +16,8 @@
 
 class Design;
 class DesignConfiguration;
+class AdHocConnection;
+class PartSelect;
 
 //-----------------------------------------------------------------------------
 // An instantiated design with all its parameters, instances, and interconnections parsed.
@@ -79,15 +81,28 @@ private:
     MetaDesign(MetaDesign const& rhs);
     MetaDesign& operator=(MetaDesign const& rhs);
 
-
+    /*!
+     *  Finds the component instances within the design, also determines if they are hierarchical.
+     */
     void cullInstances();
 
     /*!
      *  Parses the design_: The instances, the interconnections, the ad-hocs.
      */
     void parseDesign();
-    
 
+    /*!
+     *  Parses the design parameters. Also applies them to the meta parameters.
+     */
+    void parseDesignParamaters();
+    
+    /*!
+     *  Parses parameters within a list.
+     *
+     *      @param [inout] subList              The list which parameters are parsed.
+     *      @param [in] input		            The list of parameters which may affect the parsing result. May be null.
+     *      @param [in] topComponentView        The list of overrides for the parsed parameters. May be null.
+     */
     static void parseParameters(
         QSharedPointer<QList<QSharedPointer<Parameter> > > subList,
         QSharedPointer<QList<QSharedPointer<Parameter> > > topList,
@@ -119,13 +134,57 @@ private:
     void parseAdHocs();
     
     /*!
+     *  Parses a port assignment for an ad-hoc port.
+     *
+     *      @param [in] mPort                   The port which get an assignment.
+     *      @param [in] connection		        The interconnect which is associated with IP-XACT port corresponding mPrt.
+     *      @param [in] mWire                   Wire which will be referred by the assignment.
+     *      @param [in] isHierarchical          True, if this connection is hierarchical.
+     *      @param [in] wireName                Name of mWire.
+     *      @param [in] matchingPartSelect      The part select that affects the bounds of the assignment.
+     */
+    void parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
+        QSharedPointer<AdHocConnection> connection,
+        QSharedPointer<MetaWire> mWire,
+        bool isHierarchical,
+        QString wireName,
+        QSharedPointer<PartSelect> matchingPartSelect);
+    
+    /*!
+     *  Finds hierarchical ports within an ad-hoc interconnection.
+     *
+     *      @param [in] connection		        The interconnect which ports are beign searched.
+     *      @param [out] foundPorts             Every port found for the interconnection.
+     *      @param [out] foundHierPorts         Every hierarchical port found for the interconnection.
+     *      @param [out] matchingPartSelects    The part select that affects the bounds of the assignment.
+     */
+    void findHierarchicalPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
+        QList<QSharedPointer<MetaPort> > &foundPorts,
+        QList<QSharedPointer<MetaPort> > &foundHierPorts,
+        QList<QSharedPointer<PartSelect> > &matchingPartSelects);
+    
+    /*!
+     *  Finds ports within an ad-hoc interconnection.
+     *
+     *      @param [in] connection		        The interconnect which ports are beign searched.
+     *      @param [out] foundPorts             Every port found for the interconnection.
+     *      @param [out] matchingPartSelects    The part select that affects the bounds of the assignment.
+     */
+    void findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
+        QList<QSharedPointer<MetaPort> > &foundPorts,
+        QList<QSharedPointer<PartSelect> > &matchingPartSelects);
+
+
+    /*!
      *  Removes assignments without wire or default value from down ports of the topInstance_ and
      *  up ports of others. Also culls cases where the wire has only one attached port assignment.
-     *  
-     *      @param [in] allowDefault		    If true, assignments containing default values are not culled.
-     *  
      */
     void removeUnconnectedInterfaceAssignments();
+
+    /*!
+     *  Removes assignments without wire or default value from down ports of the topInstance_ and
+     *  up ports of others. Also culls cases where the wire has only one attached port assignment
+     */
     void removeUnconnectedAdHocAssignments();
     
     /*!
@@ -136,7 +195,29 @@ private:
      *                                          Consequently, will be the top instance of the created meta design.
      */
     void findHierarchy(QSharedPointer<MetaInstance> mInstance);
-    
+
+    /*!
+     *  Finds a design from a design instantiation.
+     *
+     *      @param [in] dis                     Where from the design is searched.
+     *
+     *      @return The found design, or null.
+     */
+    QSharedPointer<Design> findDesignFromInstantiation(QSharedPointer<DesignInstantiation> dis);
+
+    /*!
+     *  Finds a design and design configuration from a design instantiation.
+     *
+     *      @param [in] disg                    Where from the design configuration is searched.
+     *      @param [out] subDesign              The design pointed by the design configuration.
+     *
+     *      @return The found design configuration, or null.
+     */
+    QSharedPointer<DesignConfiguration> findDesignConfigurationFromInsantiation(
+        QSharedPointer<DesignConfigurationInstantiation> disg,
+        QSharedPointer<Design> &subDesign);
+
+
     /*!
      *  Compares new bounds to existing bounds of the wire and then assigns the largest combination of two
      *  If even one of the existing bounds is missing, candidates will replace them both.

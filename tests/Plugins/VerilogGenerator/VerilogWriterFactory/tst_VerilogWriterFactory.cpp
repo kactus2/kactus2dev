@@ -167,7 +167,8 @@ void tst_VerilogWriterFactory::init()
         &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
 
     design_ = QSharedPointer<MetaDesign>(new MetaDesign(&library_,&messages,
-        QSharedPointer<Design>::QSharedPointer(),QSharedPointer<DesignConfiguration>::QSharedPointer(),
+        QSharedPointer<Design>::QSharedPointer(), QSharedPointer<DesignInstantiation>::QSharedPointer(),
+        QSharedPointer<DesignConfiguration>::QSharedPointer(),
         topComponent_));
 
     flatComponent_ = QSharedPointer<MetaComponent>(
@@ -263,7 +264,7 @@ QSharedPointer<Parameter> tst_VerilogWriterFactory::addParameter(QString const& 
     parameter->setName(name);
     parameter->setValue(value);
 
-    mComponent->getParameters()->append(parameter);
+    mComponent->getMetaParameters()->insert(name, parameter);
 
     return parameter;
 }
@@ -668,14 +669,12 @@ QSharedPointer<MetaInstance> tst_VerilogWriterFactory::addInstanceToDesign(QStri
 {
     QSharedPointer<ConfigurableVLNVReference> componentVLNV (new ConfigurableVLNVReference(component->getVlnv()));
     QSharedPointer<ComponentInstance> instance (new ComponentInstance(instanceName, componentVLNV));
-    QSharedPointer<ListParameterFinder> topFinder;
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs;
 
     MessagePasser messages;
 
     QSharedPointer<MetaInstance> mInstance(new MetaInstance(instance,
         &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
-    mInstance->parseInstance(topFinder, cevs);
+    mInstance->parseInstance();
 
     design_->getInstances()->insert(instanceName, mInstance);
 
