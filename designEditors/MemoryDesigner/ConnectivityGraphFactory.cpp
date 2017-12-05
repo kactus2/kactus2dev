@@ -21,6 +21,7 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCache.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <designEditors/common/ComponentInstanceParameterFinder.h>
 
@@ -93,6 +94,11 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design
     QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces, 
     QSharedPointer<ConnectivityGraph> graph) const
 {
+    QSharedPointer<ListParameterFinder> designParameterFinder(new ListParameterFinder());
+    designParameterFinder->setParameterList(design->getParameters());
+
+    parameterFinder_->addFinder(designParameterFinder);
+
     QVector<QSharedPointer<ConnectivityInterface> > interfacesInDesign;
 
     foreach (QSharedPointer<ComponentInstance> componentInstance, *design->getComponentInstances())
@@ -132,6 +138,8 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design
     {
         createConnectionsForInterconnection(interconnection, interfacesInDesign, topInterfaces, graph);
     }
+
+    parameterFinder_->removeFinder(designParameterFinder);
 }
 
 //-----------------------------------------------------------------------------
