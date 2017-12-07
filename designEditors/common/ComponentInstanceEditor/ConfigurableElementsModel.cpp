@@ -514,7 +514,7 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
 {
     if (!isIndexValid(index))
     {
-        return false;
+        return QString();
     }
 
     QSharedPointer<EditorConfigurableElement> element = configurableElements_.at(index.row());
