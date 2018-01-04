@@ -386,11 +386,12 @@ void BusInterfaceWriter::writeMasterInterface(QXmlStreamWriter& writer,
         {
             writer.writeStartElement(QStringLiteral("ipxact:addressSpaceRef"));
 
+
             // Write address space reference if it exists.
             if (!masterInterface->getAddressSpaceRef().isEmpty())
-            {			
-                writer.writeAttribute(QStringLiteral("ipxact:addressSpaceRef"), masterInterface->getAddressSpaceRef());
-            }
+            {			               
+                writer.writeAttribute(QStringLiteral("addressSpaceRef"), masterInterface->getAddressSpaceRef());
+             }
 
             if (!masterInterface->getIsPresent().isEmpty())
             {
@@ -407,9 +408,6 @@ void BusInterfaceWriter::writeMasterInterface(QXmlStreamWriter& writer,
                 {
                     writer.writeAttribute(QStringLiteral("ipxact:prompt"), masterInterface->getPrompt());
                 }
-
-                // Write the rest of the attributes.
-                XmlUtils::writeAttributes(writer, masterInterface->getBaseAttributes());
 
                 // Write the value of the baseAddress element and close the tag.
                 writer.writeCharacters(masterInterface->getBaseAddress());

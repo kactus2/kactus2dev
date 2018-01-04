@@ -403,7 +403,7 @@ void BusinterfaceReader::readMasterInterface(QDomElement const& masterInterfaceE
 {
     QDomElement addressSpaceRefElement = masterInterfaceElement.firstChildElement(QStringLiteral("ipxact:addressSpaceRef"));
  
-    QString addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("ipxact:addressSpaceRef"));
+    QString addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("addressSpaceRef"));
     masterInterface->setAddressSpaceRef(XmlUtils::removeWhiteSpace(addressSpaceRef));
 
     QDomElement isPresentElement = addressSpaceRefElement.firstChildElement(QStringLiteral("ipxact:isPresent"));
@@ -418,9 +418,6 @@ void BusinterfaceReader::readMasterInterface(QDomElement const& masterInterfaceE
         QString baseAddress = baseAddressElement.firstChild().nodeValue();
         masterInterface->setBaseAddress(XmlUtils::removeWhiteSpace(baseAddress));
     }
-
-    QMap<QString, QString> baseAttributes = XmlUtils::parseAttributes(addressSpaceRefElement);
-    masterInterface->setBaseAttributes(baseAttributes);
 }
 
 //-----------------------------------------------------------------------------
