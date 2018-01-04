@@ -199,7 +199,7 @@ void Parameter::setValueId(QString const& id)
 //-----------------------------------------------------------------------------
 int Parameter::getUsageCount() const
 {
-    return getAttribute(QStringLiteral("usageCount")).toInt();
+    return getAttribute(QStringLiteral("kactus2:usageCount")).toInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -207,7 +207,7 @@ int Parameter::getUsageCount() const
 //-----------------------------------------------------------------------------
 void Parameter::setUsageCount(int const& newUsageCount)
 {
-    attributes_.insert(QStringLiteral("usageCount"), QString::number(newUsageCount));
+    attributes_.insert(QStringLiteral("kactus2:usageCount"), QString::number(newUsageCount));
 }
 
 //-----------------------------------------------------------------------------
@@ -215,7 +215,7 @@ void Parameter::setUsageCount(int const& newUsageCount)
 //-----------------------------------------------------------------------------
 void Parameter::increaseUsageCount()
 {
-    attributes_.insert(QStringLiteral("usageCount"), QString::number(getUsageCount() + 1));
+    attributes_.insert(QStringLiteral("kactus2:usageCount"), QString::number(getUsageCount() + 1));
 }
 
 //-----------------------------------------------------------------------------
@@ -225,12 +225,12 @@ void Parameter::decreaseUsageCount()
 {
     if (getUsageCount() < 2)
     {
-        attributes_.remove(QStringLiteral("usageCount"));
+        attributes_.remove(QStringLiteral("kactus2:usageCount"));
     }
 
     else
     {
-        attributes_.insert(QStringLiteral("usageCount"), QString::number(getUsageCount() - 1));
+        attributes_.insert(QStringLiteral("kactus2:usageCount"), QString::number(getUsageCount() - 1));
     }
 }
 
@@ -345,13 +345,13 @@ void Parameter::setVectorLeft(QString const& leftExpression)
     {
         if (!leftExpression.isEmpty())
         {
-            vectors_->append(QSharedPointer<Vector>(new Vector(leftExpression, QStringLiteral(""))));
+            vectors_->append(QSharedPointer<Vector>(new Vector(leftExpression, QString())));
         }
     }
     else
     {
         vectors_->first()->setLeft(leftExpression);
-        if (vectors_->first()->getRight().isEmpty())
+        if (leftExpression.isEmpty() && vectors_->first()->getRight().isEmpty())
         {
             vectors_->removeFirst();
         }
@@ -367,13 +367,13 @@ void Parameter::setVectorRight(QString const& rightExpression)
     {
         if (!rightExpression.isEmpty())
         {
-            vectors_->append(QSharedPointer<Vector>(new Vector(QStringLiteral(""), rightExpression)));
+            vectors_->append(QSharedPointer<Vector>(new Vector(QString(), rightExpression)));
         }
     }
     else
     {
         vectors_->first()->setRight(rightExpression);
-        if (vectors_->first()->getLeft().isEmpty())
+        if (rightExpression.isEmpty() && vectors_->first()->getLeft().isEmpty())
         {
             vectors_->removeFirst();
         }
@@ -419,7 +419,10 @@ void Parameter::setArrayLeft(QString const& leftExpression)
 {
     if (arrays_->isEmpty())
     {
-        arrays_->append(QSharedPointer<Array>(new Array(leftExpression, QStringLiteral(""))));
+        if (!leftExpression.isEmpty())
+        {
+             arrays_->append(QSharedPointer<Array>(new Array(leftExpression, QString())));
+        }       
     }
     else
     {
@@ -435,7 +438,10 @@ void Parameter::setArrayRight(QString const& rightExpression)
 {
     if (arrays_->isEmpty())
     {
-        arrays_->append(QSharedPointer<Array>(new Array(QStringLiteral(""), rightExpression)));
+        if (!rightExpression.isEmpty())
+        {
+            arrays_->append(QSharedPointer<Array>(new Array(QString() rightExpression)));
+        }        
     }
     else
     {
@@ -450,6 +456,6 @@ void Parameter::createUuid()
 {
     QString formattedUuid = QUuid::createUuid().toString().remove(QLatin1Char('{')).remove(QLatin1Char('}'));
     formattedUuid.replace(QLatin1Char('-'), QLatin1Char('_'));
-    formattedUuid.prepend(QLatin1String("uuid_"));
+    formattedUuid.prepend(QStringLiteral("uuid_"));
     setValueId(formattedUuid);
 }
