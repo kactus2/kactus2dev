@@ -229,6 +229,7 @@ bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component)
     if (!component->getChannels()->isEmpty())
     {
         QVector<QString> channelNames;
+        QVector<QString> interfaceNames;
         foreach (QSharedPointer<Channel> channel, *component->getChannels())
         {
             if (channelNames.contains(channel->name()) || !channelValidator_->validate(channel))
@@ -238,6 +239,15 @@ bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component)
             else
             {
                 channelNames.append(channel->name());
+                foreach (QString const& busInterface, channel->getInterfaces())
+                {
+                    if (interfaceNames.contains(busInterface))
+                    {
+                        return false;
+                    }
+                                    
+                    interfaceNames.append(busInterface);
+                }
             }
         }
     }
@@ -728,18 +738,33 @@ void ComponentValidator::findErrorsInChannels(QVector<QString>& errors, QSharedP
     if (!component->getChannels()->isEmpty())
     {
         QVector<QString> channelNames;
-        QVector<QString> duplicateNames;
+        QVector<QString> duplicateChannelNames;
+
+        QVector<QString> interfaceNames;
+        QVector<QString> duplicateInterfaceNames;
         foreach(QSharedPointer<Channel> channel, *component->getChannels())
         {
-            if (channelNames.contains(channel->name()) && !duplicateNames.contains(channel->name()))
+            if (channelNames.contains(channel->name()) && !duplicateChannelNames.contains(channel->name()))
             {
-                errors.append(QObject::tr("Channel name %1 within %2 is not unique.")
+                errors.append(QObject::tr("Channel name '%1' within %2 is not unique.")
                     .arg(channel->name()).arg(context));
-                duplicateNames.append(channel->name());
+                duplicateChannelNames.append(channel->name());
             }
 
             channelNames.append(channel->name());
             channelValidator_->findErrorsIn(errors, channel, context);
+
+            foreach (QString const& busInterface, channel->getInterfaces())
+            {
+                if (interfaceNames.contains(busInterface) && !duplicateInterfaceNames.contains(busInterface))
+                {
+                    errors.append(QObject::tr("Bus interface '%1' is not unique in channels within %2.")
+                        .arg(busInterface).arg(context));
+                    duplicateInterfaceNames.append(busInterface);
+                }
+
+                interfaceNames.append(busInterface);
+            }
         }
     }
 }
