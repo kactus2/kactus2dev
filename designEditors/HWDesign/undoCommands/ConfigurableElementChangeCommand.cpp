@@ -85,16 +85,19 @@ void ConfigurableElementChangeCommand::changeConfigurableElement(QString const& 
 {
     element_->setConfigurableValue(newElementValue);
 
-    if (newElementValue.isEmpty() || newElementValue == defaultValue_)
+    if (!defaultValue_.isEmpty())
     {
-        if (configurableElements_->contains(element_))
+        if (newElementValue.isEmpty() || newElementValue == defaultValue_)
         {
-            configurableElements_->removeOne(element_);
+            if (configurableElements_->contains(element_))
+            {
+                configurableElements_->removeOne(element_);
+            }
         }
-    }
-    else if (!configurableElements_->contains(element_))
-    {
-        configurableElements_->append(element_);
+        else if (!configurableElements_->contains(element_))
+        {
+            configurableElements_->append(element_);
+        }
     }
 
     emit dataChangedInID(element_->getReferenceId(), newElementValue);

@@ -266,6 +266,15 @@ private:
      */
     QSharedPointer<rootModel> getRootModelContainingReferencedID(QString const& referencedID) const;
 
+    /*!
+     *  Check if the selected list of configurable elements contains a reference to the selected parameter.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] elementList     The selected list of configurable elements.
+     */
+    bool elementListContainsID(QString const& parameterID,
+        QList<QSharedPointer<EditorConfigurableElement> > elementList) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
