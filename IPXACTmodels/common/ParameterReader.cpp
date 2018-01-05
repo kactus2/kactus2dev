@@ -65,6 +65,12 @@ void ParameterReader::parseAttributes(QDomNode const& parameterNode, QSharedPoin
         QString attributeName = attributes.item(j).nodeName();
         QString attributeValue = attributes.item(j).nodeValue();
 
+        //! Add missing prefix to Kactus2-specific attribute.
+        if (attributeName.compare(QLatin1String("usageCount")) == 0)
+        {
+            attributeName.prepend(QStringLiteral("kactus2:"));
+        }
+
         parameter->setAttribute(attributeName, attributeValue);
     }            
 }

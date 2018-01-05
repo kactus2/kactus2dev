@@ -15,6 +15,8 @@
 #include <IPXACTmodels/Component/RemapPort.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 //-----------------------------------------------------------------------------
@@ -218,8 +220,14 @@ void MetaComponent::cullParameters()
 //-----------------------------------------------------------------------------
 void MetaComponent::formatComponent()
 {
-    // Initialize the parameter finder and formatter.
-    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component_));
+    // Initialize the parameter finders.
+    QSharedPointer<MultipleParameterFinder> parameterFinder (new MultipleParameterFinder());
+    QSharedPointer<ComponentParameterFinder> componentFinder(new ComponentParameterFinder(component_));
+    QSharedPointer<ListParameterFinder> moduleFinder(new ListParameterFinder());
+    moduleFinder->setParameterList(getModuleParameters());
+    parameterFinder->addFinder(componentFinder);
+    parameterFinder->addFinder(moduleFinder);
+
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter = 
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));

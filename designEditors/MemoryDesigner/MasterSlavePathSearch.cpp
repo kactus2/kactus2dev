@@ -167,8 +167,7 @@ bool MasterSlavePathSearch::canConnectInterfaces(QSharedPointer<ConnectivityInte
     bool endIsMirroredSlave = endMode.compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0;
 
     return (startVertex->getMode() == endVertex->getMode() &&
-        ((startVertex->isHierarchical() && !endVertex->isHierarchical()) ||
-        (!startVertex->isHierarchical() && endVertex->isHierarchical()))) ||
+        startVertex->isHierarchical() || endVertex->isHierarchical()) ||
         (startIsMaster && (endIsSlave || endIsMirroredMaster)) ||
         (startIsSlave && (endIsMirroredSlave ||
             (endIsMaster && startVertex->isBridged() && endVertex->isBridged() && startInstance == endInstance))) ||

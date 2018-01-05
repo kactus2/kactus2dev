@@ -20,6 +20,7 @@
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <QQueue>
 
@@ -166,51 +167,83 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 //-----------------------------------------------------------------------------
 void MetaDesign::parseDesign()
 {
-    // Cull all the design parameters.
+    // Design may have parameters and every parsed value may depend on it.
+    parseDesignParamaters();
+
+    // Need to parse instances first as interconnections may depend on them.
+    parseInstances();
+
+    // Parse interconnections, both buses and ad-hocs.
+    parseInterconnections();
+    parseAdHocs();
+
+    // We know the unconnected assignments only after all of interconnections are parsed.
+    removeUnconnectedInterfaceAssignments();
+    removeUnconnectedAdHocAssignments();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::parseDesignParamaters()
+//-----------------------------------------------------------------------------
+void MetaDesign::parseDesignParamaters()
+{
+    // Copy all design parameters.
     foreach(QSharedPointer<Parameter> parameterOrig, *design_->getParameters())
     {
         QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
         parameters_->append(parameterCpy);
     }
 
+    // If there is a design instantiation, get its CEVs.
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs;
 
     if (designInstantiation_)
     {
-         cevs = designInstantiation_->getDesignReference()->getConfigurableElementValues();
+        cevs = designInstantiation_->getDesignReference()->getConfigurableElementValues();
     }
 
-    // TODO: CEVs may refer to also other than component parameters!
-    parseParameters(parameters_, topInstance_->getParameters(), cevs);
+    // Provide the list of parameters that are referable by CEVs.
+    QSharedPointer<QList<QSharedPointer<Parameter> > > topParameters(new QList<QSharedPointer<Parameter> >);
+    // It contains parsed top component parameters.
+    topParameters->append(*topInstance_->getParameters());
 
+    // Also other parameters within the component may be referred.
+    QSharedPointer<ComponentParameterFinder> componentParameters(new ComponentParameterFinder(topInstance_->getComponent()));
+    topParameters->append(componentParameters->allCpuParameters());
+    topParameters->append(componentParameters->allGeneratorParameters());
+    topParameters->append(componentParameters->allBusInterfaceParameters());
+    topParameters->append(componentParameters->allAddressSpaceParameters());
+    topParameters->append(componentParameters->allRegisterParameters());
+
+    // Parse the parameters.
+    parseParameters(parameters_, topParameters, cevs);
+
+    // Finally, add these parameters to the top instance.
     foreach(QSharedPointer<Parameter> original, *parameters_)
     {
+        // First try find an existing meta-parameter with a matching name.
         QMap<QString, QSharedPointer<Parameter> >::iterator i = topInstance_->getMetaParameters()->find(original->name());
 
         QSharedPointer<Parameter> mParameter;
 
         if (i == topInstance_->getMetaParameters()->end())
         {
+            // Not found: This is the first one with the name.
             mParameter = QSharedPointer<Parameter>(original);
+            // Insert to the map.
             topInstance_->getMetaParameters()->insert(original->name(), mParameter);
         }
         else
         {
+            // There is an existing parameter with the same name: Refer to it.
             mParameter = *i;
 
+            // Its name, value and resolve shall be overwritten by this one.
             mParameter->setName(original->name());
             mParameter->setValue(original->getValue());
             mParameter->setValueResolve(original->getValueResolve());
         }
     }
-
-    parseInstances();
-
-    parseInterconnections();
-    removeUnconnectedInterfaceAssignments();
-
-    parseAdHocs();
-    removeUnconnectedAdHocAssignments();
 }
 
 //-----------------------------------------------------------------------------
@@ -229,7 +262,7 @@ void MetaDesign::cullInstances()
         {
             messages_->errorMessage(QObject::tr("Design %1: Component of instance %2 was not found: %3")
                 .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
-            continue;
+            continue;   
         }
 
         // The instance may have an active view in the design configuration.
@@ -304,7 +337,7 @@ void MetaDesign::parseParameters(
     if (topList)
     {
         QSharedPointer<ListParameterFinder> topFinder(new ListParameterFinder);
-        subFinder->setParameterList(topList);
+        topFinder->setParameterList(topList);
 
         multiFinder->addFinder(topFinder);
     }
@@ -559,68 +592,14 @@ void MetaDesign::parseAdHocs()
     // Go through the ad hoc connections within the design.
     foreach(QSharedPointer<AdHocConnection> connection, *design_->getAdHocConnections())
     {
-        // Found ports for the interconnection.
+        // Find ports for the interconnection.
         QList<QSharedPointer<MetaPort> > foundPorts;
         QList<QSharedPointer<MetaPort> > foundHierPorts;
         // The part select is expected to be in the same index as its matching port reference.
         QList<QSharedPointer<PartSelect> > matchingPartSelects;
 
-        // Go through the port references within the ad-hoc connection.
-        foreach(QSharedPointer<PortReference> portRef, *connection->getInternalPortReferences())
-        {
-            // The matching instance must exist.
-            QSharedPointer<MetaInstance> mInstance = instances_->value(portRef->getComponentRef());
-
-            if (!mInstance)
-            {
-                messages_->errorMessage(QObject::tr("Design %1: Instance %2 referred by ad-hoc connection %3 does not exist.")
-                    .arg(design_->getVlnv().toString(),
-                    portRef->getComponentRef(),
-                    connection->name()));
-                continue;
-            }
-
-            // The port must be found within the ad-hoc ports recognized for the instance.
-            QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value(portRef->getPortRef());
-
-            if (!mPort)
-            {
-                messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3 does"
-                    " not exist within component %4.")
-                    .arg(design_->getVlnv().toString(),
-                    portRef->getPortRef(),
-                    connection->name(),
-                    mInstance->getComponent()->getVlnv().toString()));
-                continue;
-            }
-
-            // Append to the lists.
-            foundPorts.append(mPort);
-            matchingPartSelects.append(portRef->getPartSelect());
-        }
-
-        // Go through the hierarchical port references.
-        foreach(QSharedPointer<PortReference> portRef, *connection->getExternalPortReferences())
-        {
-            // The port must be found within the ad-hoc ports recognized for the top instance.
-            QSharedPointer<MetaPort> mPort = topInstance_->getPorts()->value(portRef->getPortRef());
-
-            if (!mPort)
-            {
-                messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3"
-                    " does not exist within component %4.")
-                    .arg(design_->getVlnv().toString(),
-                    portRef->getPortRef(),
-                    connection->name(),
-                    topInstance_->getComponent()->getVlnv().toString()));
-                continue;
-            }
-
-            // Append to the lists.
-            foundPorts.append(mPort);
-            foundHierPorts.append(mPort);
-            matchingPartSelects.append(portRef->getPartSelect());
-        }
+        findPortsInAdHoc(connection, foundPorts, matchingPartSelects);
+        findHierarchicalPortsInAdHoc(connection, foundPorts, foundHierPorts, matchingPartSelects);
 
         // If not enough ports are in the connection, drop it.
         if (foundPorts.size() < 1)
@@ -652,91 +631,176 @@ void MetaDesign::parseAdHocs()
         for (int i = 0; i < foundPorts.size(); ++i)
         {
             QSharedPointer<MetaPort> mPort = foundPorts[i];
-
-            // Try to find a default value.
-            QString defaultValue;
-
-            if (connection->getTiedValue() == "open")
-            {
-                defaultValue = "";
-            }
-            else if (connection->getTiedValue() == "default")
-            {
-                defaultValue = mPort->defaultValue_;
-            }
-            else
-            {
-                defaultValue = connection->getTiedValue();
-            }
-
-            // No wire or default value means no assignment.
-            if (!mWire)
-            {
-                if (defaultValue.isEmpty() )
-                {
-                    messages_->errorMessage(QObject::tr
-                        ("Design %1: Ad-hoc connection %2 needs either more ports or a tie-off.")
-                        .arg(design_->getVlnv().toString(),
-                        connection->name()));
-
-                    continue;
-                }
-            }
-            else
-            {
-                mWire->refCount = mWire->refCount + 1;
-            }
-
             bool isHierarchical = foundHierPorts.contains(mPort);
-
-            // New port assignment must be created for the each port.
-            QSharedPointer<MetaPortAssignment> mpa(new MetaPortAssignment);
-
-            // Associate the port assignments with the wire.
-            mpa->wire_ = mWire;
-            // Assign the resolved default value.
-            mpa->defaultValue_ = defaultValue;
-
-            // Map the port assignment to the port using the name of the wire.
-            if (isHierarchical)
-            {
-                mPort->downAssignments_.insert(wireName, mpa);
-            }
-            else
-            {
-                mPort->upAssignments_.insert(wireName, mpa);
-            }
-
-            // Assigning bounds.
-            QSharedPointer<PartSelect> ps = matchingPartSelects[i];
-            if (ps && !ps->getLeftRange().isEmpty() && !ps->getRightRange().isEmpty())
-            {
-                // If part select exists, it shall be used.
-                mpa->physicalBounds_.first = ps->getLeftRange();
-                mpa->physicalBounds_.second = ps->getRightRange();
-            }
-            else
-            {
-                // Else just choose the port bounds.
-                mpa->physicalBounds_ = mPort->vectorBounds_;
-            }
-
-            // Determine the part of the wire that shall be assigned to the port:
-            // This is [abs(physical.left – physical.right):0]
-            QPair<QString, QString> newBounds;
-            newBounds.second = "0";
-
-            int right = mpa->physicalBounds_.first.toInt() - mpa->physicalBounds_.second.toInt();
-            newBounds.first = QString::number(right);
-
-            mpa->logicalBounds_ = newBounds;
-
-            // Also assign larger bounds for the wire, if applicable.
-            if (mWire)
-            {
-                assignLargerBounds(mWire, mpa->logicalBounds_);
-            }
+            parseAdHocAssignmentForPort(mPort, connection, mWire, isHierarchical, wireName, matchingPartSelects[i]);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::parseAdHocAssignmentForPort()
+//-----------------------------------------------------------------------------
+void MetaDesign::parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
+    QSharedPointer<AdHocConnection> connection,
+    QSharedPointer<MetaWire> mWire,
+    bool isHierarchical,
+    QString wireName,
+    QSharedPointer<PartSelect> partSelect)
+{
+    // Try to find a default value.
+    QString defaultValue;
+
+    if (connection->getTiedValue() == "open")
+    {
+        defaultValue = "";
+    }
+    else if (connection->getTiedValue() == "default")
+    {
+        defaultValue = mPort->defaultValue_;
+    }
+    else
+    {
+        defaultValue = connection->getTiedValue();
+    }
+
+    // No wire or default value means no assignment.
+    if (!mWire)
+    {
+        if (defaultValue.isEmpty() )
+        {
+            messages_->errorMessage(QObject::tr
+                ("Design %1: Ad-hoc connection %2 needs either more ports or a tie-off.")
+                .arg(design_->getVlnv().toString(),
+                connection->name()));
+
+            return;
+        }
+    }
+    else
+    {
+        mWire->refCount = mWire->refCount + 1;
+    }
+
+    // New port assignment must be created for the each port.
+    QSharedPointer<MetaPortAssignment> mpa(new MetaPortAssignment);
+
+    // Associate the port assignments with the wire.
+    mpa->wire_ = mWire;
+    // Assign the resolved default value.
+    mpa->defaultValue_ = defaultValue;
+
+    // Map the port assignment to the port using the name of the wire.
+    if (isHierarchical)
+    {
+        mPort->downAssignments_.insert(wireName, mpa);
+    }
+    else
+    {
+        mPort->upAssignments_.insert(wireName, mpa);
+    }
+
+    // Assigning bounds.
+    if (partSelect && !partSelect->getLeftRange().isEmpty()
+        && !partSelect->getRightRange().isEmpty())
+    {
+        // If part select exists, it shall be used.
+        mpa->physicalBounds_.first = partSelect->getLeftRange();
+        mpa->physicalBounds_.second = partSelect->getRightRange();
+    }
+    else
+    {
+        // Else just choose the port bounds.
+        mpa->physicalBounds_ = mPort->vectorBounds_;
+    }
+
+    // Determine the part of the wire that shall be assigned to the port:
+    // This is [abs(physical.left – physical.right):0]
+    QPair<QString, QString> newBounds;
+    newBounds.second = "0";
+
+    int right = mpa->physicalBounds_.first.toInt() - mpa->physicalBounds_.second.toInt();
+    newBounds.first = QString::number(right);
+
+    mpa->logicalBounds_ = newBounds;
+
+    // Also assign larger bounds for the wire, if applicable.
+    if (mWire)
+    {
+        assignLargerBounds(mWire, mpa->logicalBounds_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::findHierarchicalPortsInAdHoc()
+//-----------------------------------------------------------------------------
+void MetaDesign::findHierarchicalPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
+    QList<QSharedPointer<MetaPort> > &foundPorts,
+    QList<QSharedPointer<MetaPort> > &foundHierPorts,
+    QList<QSharedPointer<PartSelect> > &matchingPartSelects)
+{
+    // Go through the hierarchical port references.
+    foreach(QSharedPointer<PortReference> portRef, *connection->getExternalPortReferences())
+    {
+        // The port must be found within the ad-hoc ports recognized for the top instance.
+        QSharedPointer<MetaPort> mPort = topInstance_->getPorts()->value(portRef->getPortRef());
+
+        if (!mPort)
+        {
+            messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3"
+                " does not exist within component %4.")
+                .arg(design_->getVlnv().toString(),
+                portRef->getPortRef(),
+                connection->name(),
+                topInstance_->getComponent()->getVlnv().toString()));
+            continue;
+        }
+
+        // Append to the lists.
+        foundPorts.append(mPort);
+        foundHierPorts.append(mPort);
+        matchingPartSelects.append(portRef->getPartSelect());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::findPortsInAdHoc()
+//-----------------------------------------------------------------------------
+void MetaDesign::findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
+    QList<QSharedPointer<MetaPort> > &foundPorts,
+    QList<QSharedPointer<PartSelect> > &matchingPartSelects)
+{
+    // Go through the port references within the ad-hoc connection.
+    foreach(QSharedPointer<PortReference> portRef, *connection->getInternalPortReferences())
+    {
+        // The matching instance must exist.
+        QSharedPointer<MetaInstance> mInstance = instances_->value(portRef->getComponentRef());
+
+        if (!mInstance)
+        {
+            messages_->errorMessage(QObject::tr("Design %1: Instance %2 referred by ad-hoc connection %3 does not exist.")
+                .arg(design_->getVlnv().toString(),
+                portRef->getComponentRef(),
+                connection->name()));
+            continue;
+        }
+
+        // The port must be found within the ad-hoc ports recognized for the instance.
+        QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value(portRef->getPortRef());
+
+        if (!mPort)
+        {
+            messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3 does"
+                " not exist within component %4.")
+                .arg(design_->getVlnv().toString(),
+                portRef->getPortRef(),
+                connection->name(),
+                mInstance->getComponent()->getVlnv().toString()));
+            continue;
+        }
+
+        // Append to the lists.
+        foundPorts.append(mPort);
+        matchingPartSelects.append(portRef->getPartSelect());
     }
 }
 
@@ -869,62 +933,9 @@ void MetaDesign::findHierarchy(QSharedPointer<MetaInstance> mInstance)
         findDesignConfigurationInstantiation(activeView->getDesignConfigurationInstantiationRef());
 
     // Try to find the referred documents.
-    QSharedPointer<Design> subDesign;
-    QSharedPointer<DesignConfiguration> subDesignConfiguration;
-
-    if (dis && dis->getDesignReference())
-    {
-        // Try to find the referred design.
-        subDesign = library_->getModel(*(dis->getDesignReference())).dynamicCast<Design>();
-
-        // If instantiation exists, the referred document must exist!
-        if (!subDesign)
-        {
-            messages_->errorMessage(QObject::tr
-                ("Design %1: Subdesign referred by instantiation did not exist: %2")
-                .arg(design_->getVlnv().toString(),
-                dis->getDesignReference()->toString()));
-            return;
-        }
-    }
-
-    if (disg && disg->getDesignConfigurationReference())
-    {
-        // Try to find the referred design configuration.
-        subDesignConfiguration = library_->getModel(*(disg->getDesignConfigurationReference()))
-            .dynamicCast<DesignConfiguration>();
-
-        // If instantiation exists, the referred document must exist!
-        if (!subDesignConfiguration)
-        {
-            messages_->errorMessage(QObject::tr
-                ("Design %1: Design configuration referred by instantiation did not exist: %2")
-                .arg(design_->getVlnv().toString(),
-                disg->getDesignConfigurationReference()->toString()));
-
-            return;
-        }
-
-        if (subDesign)
-        {
-            // If the design is already found, check for discrepancy.
-            if (subDesignConfiguration->getDesignRef() != subDesign->getVlnv())
-            {
-                messages_->errorMessage(QObject::tr
-                    ("Design %1: Design configuration %2 of sub design %3 refers to different VLNV: %4")
-                    .arg(design_->getVlnv().toString(),
-                    subDesignConfiguration->getVlnv().toString(),
-                    subDesign->getVlnv().toString(),
-                    subDesignConfiguration->getDesignRef().toString()));
-                return;
-            }
-        }
-        else
-        {
-            // Else pick the referred design as sub design.
-            subDesign = library_->getModel(subDesignConfiguration->getDesignRef()).dynamicCast<Design>();
-        }
-    }
+    QSharedPointer<Design> subDesign = findDesignFromInstantiation(dis);
+    QSharedPointer<DesignConfiguration> subDesignConfiguration =
+    findDesignConfigurationFromInsantiation(disg, subDesign);
 
     if (subDesign)
     {
@@ -933,6 +944,78 @@ void MetaDesign::findHierarchy(QSharedPointer<MetaInstance> mInstance)
             (library_, messages_, subDesign, dis, subDesignConfiguration, mInstance));
         subDesigns_.append(subMetaDesign);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::findDesignConfigurationFromInsantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignConfiguration> MetaDesign::findDesignConfigurationFromInsantiation(
+    QSharedPointer<DesignConfigurationInstantiation> disg,
+    QSharedPointer<Design> &subDesign)
+{
+    QSharedPointer<DesignConfiguration> referredDesignConfiguration;
+
+    if (disg && disg->getDesignConfigurationReference())
+    {
+        // Try to find the referred design configuration.
+        referredDesignConfiguration = library_->getModel(*(disg->getDesignConfigurationReference()))
+            .dynamicCast<DesignConfiguration>();
+
+        // If instantiation exists, the referred document must exist!
+        if (!referredDesignConfiguration)
+        {
+            messages_->errorMessage(QObject::tr
+                ("Design %1: Design configuration referred by instantiation did not exist: %2")
+                .arg(design_->getVlnv().toString(),
+                disg->getDesignConfigurationReference()->toString()));
+        }
+
+        if (subDesign)
+        {
+            // If the design is already found, check for discrepancy.
+            if (referredDesignConfiguration->getDesignRef() != subDesign->getVlnv())
+            {
+                messages_->errorMessage(QObject::tr
+                    ("Design %1: Design configuration %2 of sub design %3 refers to different VLNV: %4")
+                    .arg(design_->getVlnv().toString(),
+                    referredDesignConfiguration->getVlnv().toString(),
+                    subDesign->getVlnv().toString(),
+                    referredDesignConfiguration->getDesignRef().toString()));
+            }
+        }
+        else
+        {
+            // Else pick the referred design as sub design.
+            subDesign = library_->getModel(referredDesignConfiguration->getDesignRef()).dynamicCast<Design>();
+        }
+    }
+
+    return referredDesignConfiguration;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::findDesignFromInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<Design> MetaDesign::findDesignFromInstantiation(QSharedPointer<DesignInstantiation> dis)
+{
+    QSharedPointer<Design> referredDesign;
+
+    if (dis && dis->getDesignReference())
+    {
+        // Try to find the referred design.
+        referredDesign = library_->getModel(*(dis->getDesignReference())).dynamicCast<Design>();
+
+        // If instantiation exists, the referred document must exist!
+        if (!referredDesign)
+        {
+            messages_->errorMessage(QObject::tr
+                ("Design %1: Subdesign referred by instantiation did not exist: %2")
+                .arg(design_->getVlnv().toString(),
+                dis->getDesignReference()->toString()));
+        }
+    }
+
+    return referredDesign;
 }
 
 //-----------------------------------------------------------------------------
