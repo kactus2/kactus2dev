@@ -28,13 +28,11 @@
 // Function: MemoryMapsView::MemoryMapsView()
 //-----------------------------------------------------------------------------
 MemoryMapsView::MemoryMapsView(QWidget* parent):
-ConfigurableElementsView(parent),
+EditableTreeView(true, QString(tr("Add memory map")), QString(tr("Add memory remap")), QString(tr("Remove row")),
+    QString(tr("Remove all memory remaps")), parent),
 pressedPoint_(),
-addMemoryRemapAction_(tr("Add memory remap"), this),
-addAction_(tr("Add memory map"), this),
 copyAction_(tr("Copy"), this),
 pasteAction_(tr("Paste"), this),
-clearAction_(tr("Clear"), this),
 importAction_(tr("Import csv-file"), this),
 exportAction_(tr("Export csv-file"), this),
 copyRowsAction_(tr("Copy elements"), this),
@@ -42,8 +40,6 @@ pasteRowsAction_(tr("Paste elements"), this),
 importExportable_(false),
 defaultImportExportPath_()
 {
-    getRemoveAction()->setText("Remove row");
-
     setAlternatingRowColors(false);
 
     setSelectionMode(QAbstractItemView::ContiguousSelection);
@@ -95,35 +91,14 @@ void MemoryMapsView::keyPressEvent(QKeyEvent* event)
     {
         onPasteAction();
     }
-    if (event->matches(QKeySequence::Delete))
-    {
-        onClearAction();
-    }
     if (event->matches(QKeySequence::InsertLineSeparator))
     {
-        onAddAction();
+        onAddItem();
     }
     if (event->matches(QKeySequence::Cut))
     {
-        onRemoveAction();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapsView::mouseDoubleClickEvent()
-//-----------------------------------------------------------------------------
-void MemoryMapsView::mouseDoubleClickEvent(QMouseEvent* event)
-{
-    QModelIndex index = indexAt(event->pos());
-    if (!index.isValid())
-    {
-        emit addItem(index);
-        event->accept();
-        //return;
-    }
-    else
-    {
-        QTreeView::mouseDoubleClickEvent(event);
+        onCopyAction();
+        onRemoveSelectedItems();
     }
 }
 
@@ -138,10 +113,10 @@ void MemoryMapsView::contextMenuEvent(QContextMenuEvent* event)
 
     QMenu menu(this);
 
-    menu.addAction(&addAction_);
+    menu.addAction(getAddItemAction());
     if (!index.parent().isValid() && index.isValid())
     {
-        menu.addAction(&addMemoryRemapAction_);
+        menu.addAction(getAddSubItemAction());
     }
 
     if (index.isValid())
@@ -153,7 +128,7 @@ void MemoryMapsView::contextMenuEvent(QContextMenuEvent* event)
 
     if (index.isValid())
     {
-        menu.addAction(&clearAction_);
+        menu.addAction(getClearAction());
         menu.addAction(&copyAction_);
     }
 
@@ -203,18 +178,11 @@ void MemoryMapsView::contextMenuEvent(QContextMenuEvent* event)
 //-----------------------------------------------------------------------------
 void MemoryMapsView::setupActions()
 {
-    addAction_.setToolTip(tr("Add a new row to the table."));
-    addAction_.setStatusTip(tr("Add a new row to the table."));
-    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
+    getAddItemAction()->setToolTip(tr("Add a new row to the table."));
+    getAddItemAction()->setStatusTip(tr("Add a new row to the table."));
 
-    getRemoveAction()->setToolTip(tr("Remove a row from the table."));
-    getRemoveAction()->setStatusTip(tr("Remove a row from the table."));
-    disconnect(getRemoveAction(), 0, this, 0);
-    connect(getRemoveAction(), SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
-
-    addMemoryRemapAction_.setToolTip(tr("Add a new memory remap to the selected memory map."));
-    addMemoryRemapAction_.setStatusTip(tr("Add a new memory remap to the selected memory map."));
-    connect(&addMemoryRemapAction_, SIGNAL(triggered()), this, SLOT(onAddMemoryRemapAction()), Qt::UniqueConnection);
+    getAddSubItemAction()->setToolTip(tr("Add a new memory remap to the selected memory map."));
+    getAddSubItemAction()->setStatusTip(tr("Add a new memory remap to the selected memory map."));
 
     copyAction_.setToolTip(tr("Copy the contents of a cell from the table."));
     copyAction_.setStatusTip(tr("Copy the contents of a cell from the table."));
@@ -223,10 +191,6 @@ void MemoryMapsView::setupActions()
     pasteAction_.setToolTip(tr("Paste the contents of a cell to the table."));
     pasteAction_.setStatusTip(tr("Paste the contents of a cell to the table."));
     connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
-
-    clearAction_.setToolTip(tr("Clear the contents of a cell."));
-    clearAction_.setStatusTip(tr("Clear the contents of a cell."));
-    connect(&clearAction_, SIGNAL(triggered()), this, SLOT(onClearAction()), Qt::UniqueConnection);
 
     importAction_.setToolTip(tr("Import a csv-file to the table."));
     importAction_.setStatusTip(tr("Import a csv-file to the table."));
@@ -243,47 +207,6 @@ void MemoryMapsView::setupActions()
     pasteRowsAction_.setToolTip(tr("Paste a row from the table"));
     pasteRowsAction_.setStatusTip(tr("Paste a row from the table"));
     connect(&pasteRowsAction_, SIGNAL(triggered()), this, SLOT(onPasteRowsAction()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapsView::onAddActions()
-//-----------------------------------------------------------------------------
-void MemoryMapsView::onAddAction()
-{
-    QModelIndexList indexes = selectedIndexes();
-    QModelIndex posToAdd;
-
-    int rowCount = 1;
-
-    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
-
-    if (!indexes.isEmpty())
-    {
-        qSort(indexes);
-
-        posToAdd = indexes.first();
-        
-        if (sortProxy)
-        {
-            posToAdd = sortProxy->mapToSource(posToAdd);
-        }
-
-        int previousRow = indexes.first().row();
-        foreach (QModelIndex index, indexes)
-        {
-            if (index.row() != previousRow)
-            {
-                ++rowCount;
-            }
-
-            previousRow = index.row();
-        }
-    }
-
-    for (int i = 0; i < rowCount; ++i)
-    {
-        emit(addItem(posToAdd));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -378,8 +301,7 @@ void MemoryMapsView::onPasteAction()
         // new row starts always on same column
         int columnCounter = qMax(0, startCol);
 
-        QModelIndex newRow = origModel->index(startRow, columnCounter, QModelIndex());
-        emit addItem(newRow);
+        onAddItem();
 
         // split the row into columns
         QStringList columnsToAdd = row.split("\t");
@@ -412,20 +334,6 @@ void MemoryMapsView::onPasteAction()
     }
 
     QApplication::restoreOverrideCursor();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapsView::onClearAction()
-//-----------------------------------------------------------------------------
-void MemoryMapsView::onClearAction()
-{
-    QModelIndexList indexes = selectedIndexes();
-
-    // clear the contents of each cell
-    foreach (QModelIndex index, indexes)
-    {
-        model()->setData(index, QVariant(), Qt::EditRole);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -488,7 +396,7 @@ void MemoryMapsView::onCSVImport(const QString& filePath /* = QString() */)
         QStringList columns = line.split(";");
 
         // add a new empty row
-        emit addItem(QModelIndex());
+        onAddItem();
 
         // data is always added to the last row
         int rowCount = origModel->rowCount(QModelIndex());
@@ -563,76 +471,6 @@ void MemoryMapsView::onCSVExport(const QString& filePath /* = QString() */)
     file.close();
 
     QApplication::restoreOverrideCursor();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapsView::onAddMemoryRemapAction()
-//-----------------------------------------------------------------------------
-void MemoryMapsView::onAddMemoryRemapAction()
-{
-    QModelIndex parentMemoryMapIndex = currentIndex();
-
-    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
-    if (sortProxy)
-    {
-        parentMemoryMapIndex = sortProxy->mapToSource(parentMemoryMapIndex);
-    }
-
-    QModelIndex parentNameIndex = 
-        parentMemoryMapIndex.sibling(parentMemoryMapIndex.row(), MemoryMapsColumns::NAME_COLUMN);
-
-    emit addMemoryRemapItem(parentNameIndex);
-
-    expand(parentNameIndex);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapsView::onRemoveAction()
-//-----------------------------------------------------------------------------
-void MemoryMapsView::onRemoveAction()
-{
-    QModelIndexList indexes = selectedIndexes();
-    if (indexes.isEmpty())
-    {
-        return;
-    }
-
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-
-    qSort(indexes);
-
-    // count how many rows the user wants to remove
-    int previousRow = indexes.first().row();
-    int rowCount = 1;
-    foreach (QModelIndex index, indexes)
-    {
-        if (previousRow != index.row())
-        {
-            ++rowCount;
-        }
-        previousRow = index.row();
-    }
-
-    // remove as many rows as wanted
-    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
-
-    for (int i = 0; i < rowCount; ++i)
-    {
-        QModelIndex index = indexes.first();
-
-        if (sortProxy != 0)
-        {
-            index = sortProxy->mapToSource(index);
-        }
-
-        emit removeItem(index);
-    }
-
-    clearSelection();
-    setCurrentIndex(QModelIndex());
-
-    QApplication::restoreOverrideCursor();
-
 }
 
 //-----------------------------------------------------------------------------

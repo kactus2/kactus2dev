@@ -28,6 +28,8 @@ class Port;
 class PortsModel;
 class PortsView;
 class PortValidator;
+class PortsDelegate;
+
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
 //-----------------------------------------------------------------------------
@@ -130,6 +132,9 @@ private:
 
 	//! The instance that manages the library.
 	LibraryInterface* handler_;
+
+    //! The delegate for ports.
+    PortsDelegate* delegate_;
 };
 
 #endif // PORTSEDITOR_H

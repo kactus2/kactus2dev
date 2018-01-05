@@ -27,15 +27,12 @@
 // Function: PortMapTreeView::PortMapTreeView()
 //-----------------------------------------------------------------------------
 PortMapTreeView::PortMapTreeView(QWidget* parent):
-ConfigurableElementsView(parent),
-removeAllMapsAction_(tr("Remove all port maps"), this),
-addMapAction_(tr("Add port map"), this),
+EditableTreeView(false, QString(""), QString(tr("Add port map")), QString(tr("Remove port map")),
+    QString(tr("Remove all port maps")), parent),
 expandAllItemsAction_(tr("Expand all"), this),
 collapseAllItemsAction_(tr("Collapse all"), this),
 autoConnectAction_(tr("Auto connect"), this)
 {
-    getRemoveAction()->setText("Remove port map");
-
     header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setStretchLastSection(true);
     
@@ -67,18 +64,8 @@ PortMapTreeView::~PortMapTreeView()
 //-----------------------------------------------------------------------------
 void PortMapTreeView::setupActions()
 {
-    removeAllMapsAction_.setToolTip(tr("Remove all port maps."));
-    removeAllMapsAction_.setStatusTip(tr("Remove all port maps."));
-    connect(&removeAllMapsAction_, SIGNAL(triggered()), this, SLOT(onRemoveAllPortMaps()), Qt::UniqueConnection);
-
-    getRemoveAction()->setToolTip(tr("Remove the selected port map."));
-    getRemoveAction()->setStatusTip(tr("Remove the selected port map."));
-    disconnect(getRemoveAction(), 0, this, 0);
-    connect(getRemoveAction(), SIGNAL(triggered()), this, SLOT(onRemovePortMap()), Qt::UniqueConnection);
-
-    addMapAction_.setToolTip(tr("Add a new port map to the selected logical port."));
-    addMapAction_.setStatusTip(tr("Add a new port map to the selected logical port."));
-    connect(&addMapAction_, SIGNAL(triggered()), this, SLOT(onAddPortMap()), Qt::UniqueConnection);
+    getAddSubItemAction()->setToolTip(tr("Add a new port map to the selected logical port."));
+    getAddSubItemAction()->setStatusTip(tr("Add a new port map to the selected logical port."));
 
     expandAllItemsAction_.setToolTip(tr("Expand all port maps."));
     expandAllItemsAction_.setStatusTip(tr("Expand all port maps."));
@@ -129,11 +116,11 @@ void PortMapTreeView::contextMenuEvent(QContextMenuEvent* event)
 
     if (contextMenuIndex.isValid())
     {
-        contextMenu.addAction(&addMapAction_);
+        contextMenu.addAction(getAddSubItemAction());
 
         if (!contextMenuIndex.parent().isValid())
         {
-            contextMenu.addAction(&removeAllMapsAction_);
+            contextMenu.addAction(getRemoveAllSubItemsAction());
             contextMenu.addAction(&autoConnectAction_);
         }
         else
@@ -150,91 +137,6 @@ void PortMapTreeView::contextMenuEvent(QContextMenuEvent* event)
     contextMenu.exec(event->globalPos());
 
     event->accept();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapTreeView::onRemoveAllPortMaps()
-//-----------------------------------------------------------------------------
-void PortMapTreeView::onRemoveAllPortMaps()
-{
-    QModelIndexList indexList = selectedIndexes();
-
-    if (!indexList.isEmpty())
-    {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-
-        qSort(indexList);
-
-        clearSelection();
-
-        foreach (QModelIndex index, indexList)
-        {
-            if (!index.parent().isValid())
-            {
-                emit removeAllChildItemsFromIndex(index);
-            }
-        }
-
-        setCurrentIndex(QModelIndex());
-
-        QApplication::restoreOverrideCursor();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapTreeView::onRemovePortMap()
-//-----------------------------------------------------------------------------
-void PortMapTreeView::onRemovePortMap()
-{
-    QModelIndexList removedIndexes = selectedIndexes();
-
-    if (!removedIndexes.isEmpty())
-    {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-
-        qSort(removedIndexes);
-
-        int previousRow = removedIndexes.first().row();
-        int rowCount = 1;
-
-        foreach (QModelIndex index, removedIndexes)
-        {
-            if (previousRow != index.row())
-            {
-                ++rowCount;
-            }
-            previousRow = index.row();
-        }
-
-        for (int i = 0; i < rowCount; ++i)
-        {
-            QModelIndex index = removedIndexes.first();
-
-            if (index.parent().isValid())
-            {
-                emit removeItem(index);
-            }
-        }
-
-        clearSelection();
-        setCurrentIndex(QModelIndex());
-
-        QApplication::restoreOverrideCursor();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapTreeView::onAddPortMap()
-//-----------------------------------------------------------------------------
-void PortMapTreeView::onAddPortMap()
-{
-    QModelIndexList indexes = selectedIndexes();
-
-    foreach (QModelIndex index, indexes)
-    {
-        emit addItem(index);
-        expand(index);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -289,5 +191,5 @@ void PortMapTreeView::dragEnterEvent(QDragEnterEvent *event)
         event->acceptProposedAction();
     }
 
-    ConfigurableElementsView::dragEnterEvent(event);
+    EditableTreeView::dragEnterEvent(event);
 }

@@ -128,16 +128,16 @@ public slots:
     /*!
      *  Handles the creation of a configurable element remove command.
      *
-     *      @param [in] index   Index of the selected configurable element.
+     *      @param [in] indexes     Indexes of the selected configurable elements.
      */
-    void onCreateRemoveElementCommand(QModelIndex const& index);
+    void onCreateRemoveElementCommands(QModelIndexList const& indexes);
 
     /*!
      *  Create remove commands for the sub items of the selected index.
      *
-     *      @param [in] index   Index of the selected configurable element.
+     *      @param [in] indexes     Indexes of the selected configurable elements.
      */
-    void onCreateMultipleElementRemoveCommands(QModelIndex const& index);
+    void onCreateMultipleElementRemoveCommands(QModelIndexList const& indexes);
 
     /*!
      *  Create an undo command for configurable element value change.
@@ -278,8 +278,8 @@ private:
      *
      *      @return Pointer to the created configurable element remove command.
      */
-    QSharedPointer<ConfigurableElementRemoveCommand> createElementRemoveCommand(QModelIndex const& index,
-        QUndoCommand* parentCommand = 0);
+    ConfigurableElementRemoveCommand* createElementRemoveCommand(QModelIndex const& index,
+        QSharedPointer<QUndoCommand> parentCommand);
 
     /*!
      *  Get the filtered index row of the selected index.
@@ -323,7 +323,7 @@ private:
      *
      *      @param [in] removeCommand   The selected configurable element remove command.
      */
-    void connectElementRemoveCommand(QSharedPointer<ConfigurableElementRemoveCommand> removeCommand);
+    void connectElementRemoveCommand(ConfigurableElementRemoveCommand* removeCommand);
 
     /*!
      *  Add the selected command to the command stack and redo the command.

@@ -203,7 +203,7 @@ public:
      *      @return A list of type definitions.
      */
     QStringList getTypeDefinitions() const;
-
+    
     /*!
      *  Set a type definition.
      *

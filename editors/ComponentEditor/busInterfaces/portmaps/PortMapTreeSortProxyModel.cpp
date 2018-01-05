@@ -23,7 +23,7 @@
 // Function: PortMapTreeSortProxyModel::PortMapTreeSortProxyModel()
 //-----------------------------------------------------------------------------
 PortMapTreeSortProxyModel::PortMapTreeSortProxyModel(QSharedPointer<BusInterface> busInterface, QObject *parent):
-QSortFilterProxyModel(parent),
+EditableTreeSortFilter(parent),
 containingBus_(busInterface)
 {
 
@@ -85,30 +85,6 @@ bool PortMapTreeSortProxyModel::lessThan(const QModelIndex &left, const QModelIn
     }
 
     return QSortFilterProxyModel::lessThan(left, right);
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapTreeSortProxyModel::onAddItem()
-//-----------------------------------------------------------------------------
-void PortMapTreeSortProxyModel::onAddItem(QModelIndex const& index)
-{
-    emit addItem(mapToSource(index));
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapTreeSortProxyModel::onRemoveItem()
-//-----------------------------------------------------------------------------
-void PortMapTreeSortProxyModel::onRemoveItem(QModelIndex const& index)
-{
-    emit removeItem(mapToSource(index));
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapTreeSortProxyModel::onRemoveAllChildItemsFrom()
-//-----------------------------------------------------------------------------
-void PortMapTreeSortProxyModel::onRemoveAllChildItemsFrom(QModelIndex const& index)
-{
-    emit removeAllChildItemsFromIndex(mapToSource(index));
 }
 
 //-----------------------------------------------------------------------------

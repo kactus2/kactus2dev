@@ -16,6 +16,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:wireTypeDef element.
@@ -90,30 +91,48 @@ public:
      *
      *      @return A list of type definitions.
      */
-    QStringList getTypeDefinitions() const;
+    QSharedPointer<QStringList> getTypeDefinitions() const;
 
     /*!
      *  Set the type definitions.
      *
      *      @param [in] newTypeDefinitions  A list of new type definitions.
      */
-    void setTypeDefinitions(QStringList newTypeDefinitions);
+    void setTypeDefinitions(QSharedPointer<QStringList> newTypeDefinitions);
 
     /*!
      *  Get the view references.
      *
      *      @return A list of view references.
      */
-    QStringList getViewRefs() const;
+    QSharedPointer<QStringList> getViewRefs() const;
 
     /*!
      *  Set the view references.
      *
      *      @param [in] newViewRefs     A new list of view references.
      */
-    void setViewRefs(QStringList newViewRefs);
+    void setViewRefs(QSharedPointer<QStringList> newViewRefs);
 
 private:
+
+    /*!
+     *  Copy the type definitions.
+     *
+     *      @param [in] newTypeDefinitions  List of new type definitions.
+     */
+    void copyTypeDefinitions(QSharedPointer<QStringList> newTypeDefinitions);
+
+    /*!
+     *  Copy the view references.
+     *
+     *      @param [in] newViewReferences   List of new view references.
+     */
+    void copyViewNameReferences(QSharedPointer<QStringList> newViewReferences);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! Defines the name of the type for the port
     QString typeName_;
@@ -122,10 +141,10 @@ private:
     bool constrained_;
 
     //! Contains language specific reference to where given type is actually defined.
-    QStringList typeDefinitions_;
+    QSharedPointer<QStringList> typeDefinitions_;
 
     //! Indicates the view or views in which this type definition applies.
-    QStringList viewNameRefs_;
+    QSharedPointer<QStringList> viewNameRefs_;
 };
 
 #endif // WIRETYPEDEF_H

@@ -77,7 +77,7 @@ void FilesDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) co
     {
         ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
         Q_ASSERT(listEditor);
-        QStringList groups = index.data(Qt::DisplayRole).toString().split(' ', QString::SkipEmptyParts);
+        QStringList groups = index.data(Qt::DisplayRole).toString().split("; ");
         listEditor->setItems(groups);
     }
     else
@@ -101,7 +101,7 @@ void FilesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QMo
         Q_ASSERT(listEditor);
 
         QStringList fileTypes = listEditor->items();
-        model->setData(index, fileTypes.join(' '), Qt::EditRole);
+        model->setData(index, fileTypes.join("; "), Qt::EditRole);
     }
     else
     {

@@ -17,6 +17,7 @@
 #include <QCompleter>
 
 class ParameterFinder;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors to edit ports of a component.
@@ -30,12 +31,13 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] component                   Component containing the edited ports.
      *      @param [in] parameterNameCompleter      The completer to use for parameter names in expression editor.
      *      @param [in] parameterFinder             The parameter finder to use for for expression editor.
      *      @param [in] parent                      The parent object.
      */
-	PortsDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder, 
-        QObject* parent = 0);
+	PortsDelegate(QSharedPointer<Component> component, QCompleter* parameterCompleter,
+        QSharedPointer<ParameterFinder> parameterFinder, QObject* parent = 0);
 	
 	//! The destructor
 	virtual ~PortsDelegate();
@@ -77,6 +79,30 @@ public:
 	 *      @param [in] index       The index to the data being rendered.
 	 */
 	virtual void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
+    
+    /*!
+     *  Updates the editor geometry.
+     *
+     *      @param [in] editor  The editor being updated.
+     *      @param [in] option  The options used to update the editor.
+     *      @param [in] index   The model index being edited.
+     */
+    virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
+
+    /*!
+     *  Set a new component.
+     *
+     *      @param [in] newComponent    The new component.
+     */
+    void setComponent(QSharedPointer<Component> newComponent);
+
+signals:
+
+    /*!
+     *  Transmits changes in the content.
+     */
+    void contentChanged();
 
 protected:
     
@@ -118,24 +144,15 @@ private:
      *      @return The selector for port direction.
      */
     QWidget* createSelectorForDirection(QWidget* parent) const;
-        
+
     /*!
-     *  Creates a selector for port type with common VHDL and Verilog types as options.
+     *  Creates a port type editor.
      *
-     *      @param [in] parent   The parent widget for the selector.
+     *      @param [in] parent  Parent widget for the editor.
      *
-     *      @return The selector for port type.
+     *      @return The editor for port types.
      */
-    QWidget* createSelectorWithCommonTypes(QWidget* parent) const;
-          
-    /*!
-     *  Creates a selector for port typedef with VHDL standard libraries as options.
-     *
-     *      @param [in] parent   The parent widget for the selector.
-     *
-     *      @return The selector for port typedef.
-     */  
-    QWidget* createSelectorWithVHDLStandardLibraries(QWidget* parent) const;
+    QWidget* createTypeEditor(QWidget* parent) const;
 
     /*!
      *  Create a list editor used in defining tags for the ports.
@@ -147,9 +164,29 @@ private:
      */
     QWidget* createListEditorForPortTags(const QModelIndex& currentIndex, QWidget* parent) const;
 
+    /*!
+     *  Reposition and resize the selected editor.
+     *
+     *      @param [in] editor  The selected editor.
+     *      @param [in] option  Style options for the area containing the editor.
+     *      @param [in] index   Index of the editor.
+     */
+    void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index)
+        const;
+
+    /*!
+     *  Get the row count for the port type editor.
+     *
+     *      @param [in] index   Index of the selected port.
+     */
+    int getRowCountForPortTypes(QModelIndex const& index) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! Component containing the ports.
+    QSharedPointer<Component> component_;
 
     //! Boolean for ad-hoc group modify.
     bool adhocGroupModify_;

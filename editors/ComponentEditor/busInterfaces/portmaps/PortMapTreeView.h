@@ -12,7 +12,7 @@
 #ifndef PORTMAPTREEVIEW_H
 #define PORTMAPTREEVIEW_H
 
-#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h>
+#include <common/views/EditableTreeView/EditableTreeView.h>
 
 #include <QTreeView>
 #include <QModelIndex>
@@ -25,7 +25,7 @@ class PortMapsTreeModel;
 //-----------------------------------------------------------------------------
 //! A tree view for the port map tree model.
 //-----------------------------------------------------------------------------
-class PortMapTreeView : public ConfigurableElementsView
+class PortMapTreeView : public EditableTreeView
 {
     Q_OBJECT
 
@@ -69,20 +69,6 @@ protected:
 signals:
 
     /*!
-     *  Add a new port map at the selected position.
-     *
-     *      @param [in] position    The parent index of the new port map.
-     */
-    void addItem(QModelIndex const& position);
-
-    /*!
-     *  Remove all port maps from the selected logical port.
-     *
-     *      @param [in] position    The index of the selected logical port.
-     */
-    void removeAllChildItemsFromIndex(QModelIndex const& position);
-
-    /*!
      *  Automatically create port maps for the selected logical signals.
      *
      *      @param [in] logicalSignals  The selected logical signals.
@@ -90,21 +76,6 @@ signals:
     void autoConnecteLogicalSignals(QStringList const& logicalSignals);
 
 private slots:
-
-    /*!
-     *  Handler for removing all port maps from the selected logical port.
-     */
-    void onRemoveAllPortMaps();
-
-    /*!
-     *  Handler for removing a port map.
-     */
-    void onRemovePortMap();
-
-    /*!
-     *  Handler for adding a port map.
-     */
-    void onAddPortMap();
 
     /*!
      *  Handler for expanding all items.
@@ -135,12 +106,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The action for removing all port maps from a selected logical port.
-    QAction removeAllMapsAction_;
-
-    //! The action for adding a port map.
-    QAction addMapAction_;
 
     //! The action for expanding all items.
     QAction expandAllItemsAction_;

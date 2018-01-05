@@ -45,15 +45,15 @@
 // Function: PortsEditor::PortsEditor()
 //-----------------------------------------------------------------------------
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-                         QSharedPointer<ParameterFinder> parameterFinder,
-                         QSharedPointer<ExpressionFormatter> expressionFormatter,
-                         QSharedPointer<PortValidator> portValidator, QWidget *parent /* = 0 */):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<PortValidator> portValidator, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(new PortsView(this)), 
 model_(0),
 proxy_(this),
 component_(component),
-handler_(handler)
+handler_(handler),
+delegate_()
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
@@ -66,6 +66,8 @@ handler_(handler)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
+    delegate_ = new PortsDelegate(component, parameterCompleter, parameterFinder, this);
+
 	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
 	QString defaultPath = QString("%1/portListing.csv").arg(componentPath);
 	view_->setDefaultImportExportPath(defaultPath);
@@ -73,7 +75,7 @@ handler_(handler)
     view_->setAlternatingRowColors(false);
     view_->setSortingEnabled(true);
     view_->setItemsDraggable(false);
-    view_->setItemDelegate(new PortsDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(delegate_);
 
     proxy_.setSourceModel(model_);
     view_->setModel(&proxy_);
@@ -106,6 +108,8 @@ handler_(handler)
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(delegate_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
@@ -165,6 +169,7 @@ void PortsEditor::setComponent(QSharedPointer<Component> component)
 {
     component_ = component;
     model_->setModelAndLockCurrentPorts(component_->getModel());
+    delegate_->setComponent(component);
 }
 
 //-----------------------------------------------------------------------------

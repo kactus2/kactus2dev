@@ -32,8 +32,7 @@ public:
 	 *      @param [in] remapStateNames         A list of names of the component remap states.
 	 *      @param [in] parent                  Pointer to the owner of the delegate.
 	 */
-    MemoryMapsDelegate(QCompleter* parameterNameCompleter,
-        QSharedPointer<ParameterFinder> parameterFinder,
+    MemoryMapsDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder,
         QStringList remapStateNames, QObject *parent);
 	
 	//! The destructor.

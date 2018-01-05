@@ -15,6 +15,7 @@
 #include "MemoryMapsView.h"
 
 #include <common/widgets/summaryLabel/summarylabel.h>
+#include <common/views/EditableTreeView/EditableTreeSortFilter.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -31,17 +32,15 @@
 // Function: memorymapseditor::MemoryMapsEditor()
 //-----------------------------------------------------------------------------
 MemoryMapsEditor::MemoryMapsEditor(QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    LibraryInterface* handler,
-    QSharedPointer<MemoryMapValidator> memoryMapValidator,
-    QWidget *parent):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, LibraryInterface* handler,
+    QSharedPointer<MemoryMapValidator> memoryMapValidator, QWidget *parent):
 ItemEditor(component, handler, parent),
-    view_(new MemoryMapsView(this)),
-    proxy_(new QSortFilterProxyModel(this)),
-    model_(new MemoryMapsModel(component, parameterFinder, expressionParser, expressionFormatter, memoryMapValidator, this)),
-    delegate_()
+view_(new MemoryMapsView(this)),
+proxy_(new EditableTreeSortFilter(this)),
+model_(new MemoryMapsModel(
+    component, parameterFinder, expressionParser, expressionFormatter, memoryMapValidator, this)),
+delegate_()
 {
     // display a label on top the table
     SummaryLabel* summaryLabel = new SummaryLabel(tr("Memory maps summary"), this);
@@ -72,10 +71,26 @@ ItemEditor(component, handler, parent),
     delegate_ = new MemoryMapsDelegate(parameterCompleter, parameterFinder, getRemapStateNames(), this);
     view_->setItemDelegate(delegate_);
 
-	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connectSignals();
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapseditor::~MemoryMapsEditor()
+//-----------------------------------------------------------------------------
+MemoryMapsEditor::~MemoryMapsEditor()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapseditor::connectSignals()
+//-----------------------------------------------------------------------------
+void MemoryMapsEditor::connectSignals()
+{
+    connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-	connect(model_, SIGNAL(memoryMapAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(model_, SIGNAL(memoryMapRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(memoryMapAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(memoryMapRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -90,28 +105,27 @@ ItemEditor(component, handler, parent),
     connect(model_, SIGNAL(aubChangedOnRow(int)), 
         this, SIGNAL(changeInAddressUnitBitsOnRow(int)), Qt::UniqueConnection);
 
-	connect(view_, SIGNAL(addItem(const QModelIndex&)),
-		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
-		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-	
-    connect(view_, SIGNAL(addMemoryRemapItem(const QModelIndex&)), 
+    connect(view_, SIGNAL(addItems(QModelIndexList const&)),
+        proxy_, SLOT(onAddItem(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(proxy_, SIGNAL(addItem(QModelIndex const&)),
+        model_, SLOT(onAddItem(QModelIndex const&)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(addSubItem(QModelIndexList const&)), 
+        proxy_, SLOT(onAddSubItem(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(proxy_, SIGNAL(addSubItem(QModelIndex const&)),
         model_, SLOT(onAddMemoryRemap(const QModelIndex&)), Qt::UniqueConnection);
-        
-	connect(view_, SIGNAL(doubleClicked(const QModelIndex&)),
-		this, SLOT(onDoubleClick(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(removeSelectedItems(QModelIndexList const&)),
+        proxy_, SLOT(onRemoveSelectedRows(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(proxy_, SIGNAL(removeItem(QModelIndex const&)),
+        model_, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(doubleClicked(const QModelIndex&)),
+        this, SLOT(onDoubleClick(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(view_, SIGNAL(copyRows(QModelIndexList)),
         model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
     connect(view_, SIGNAL(pasteRows(QModelIndex)), model_, SLOT(onPasteRows(QModelIndex)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapseditor::~MemoryMapsEditor()
-//-----------------------------------------------------------------------------
-MemoryMapsEditor::~MemoryMapsEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------

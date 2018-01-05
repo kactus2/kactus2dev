@@ -12,14 +12,12 @@
 #ifndef MEMORYMAPSVIEW_H
 #define MEMORYMAPSVIEW_H
 
-#include <common/views/EditableTableView/editabletableview.h>
-
-#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h>
+#include <common/views/EditableTreeView/EditableTreeView.h>
 
 //-----------------------------------------------------------------------------
 //! View for memory maps editor.
 //-----------------------------------------------------------------------------
-class MemoryMapsView : public ConfigurableElementsView
+class MemoryMapsView : public EditableTreeView
 {
 	Q_OBJECT
 
@@ -70,20 +68,6 @@ public slots:
 signals:
 
     /*!
-     *  Add a new memory map.
-     *
-     *      @param [in] index   The index of the new memory map.
-     */
-    void addItem(const QModelIndex& index);
-
-    /*!
-     *  Add a new memory remap.
-     *
-     *      @param [in] index   The index of the new memory remap.
-     */
-    void addMemoryRemapItem(const QModelIndex& index);
-
-    /*!
      *  Copy the selected rows.
      *
      *      @param [in] indexList   List of selected indexes containing the copied rows.
@@ -107,63 +91,13 @@ protected:
 	virtual void keyPressEvent(QKeyEvent* event);
 
 	/*!
-	 *  Creates a new memory map to the model.
-	 *
-	 *      @param [in] event   The mouse event.
-	 */
-	virtual void mouseDoubleClickEvent(QMouseEvent* event);
-
-	/*!
 	 *  Creates a context menu for adding/removing/editing items in the editor.
 	 *
 	 *      @param [in] event   The context menu event.
 	 */
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
-	//! The point where mouse was clicked
-	QPoint pressedPoint_;
-
-    //! Action for adding memory remaps.
-    QAction addMemoryRemapAction_;
-
-	//! Action for adding new items.
-	QAction addAction_;
-
-	//! Action for copying item texts.
-	QAction copyAction_;
-
-	//! Action for pasting item texts.
-	QAction pasteAction_;
-
-	//! Action for clearing selected cells.
-	QAction clearAction_;
-
-	//! Action for importing a csv-file.
-	QAction importAction_;
-
-	//! Action for exporting a csv-file.
-	QAction exportAction_;
-
-    //! The action to copy an element.
-    QAction copyRowsAction_;
-
-    //! The action to paste an element.
-    QAction pasteRowsAction_;
-
-	//! Specifies if the items can be imported/exported to a csv file..
-	bool importExportable_;
-
 private slots:
-
-	/*!
-	 *  Adds a new memory map to the model.
-	 */
-	virtual void onAddAction();
-
-	/*!
-	 *  Removes an item from the model.
-	 */
-	virtual void onRemoveAction();
 
 	/*!
 	 *  Copies the text contained in the item.
@@ -174,16 +108,6 @@ private slots:
 	 *  Pastes the text from clipboard to the item.
 	 */
 	virtual void onPasteAction();
-
-	/*!
-	 *  Clears the contents of the item.
-	 */
-	virtual void onClearAction(); 
-
-    /*!
-     *  Adds a new memory remap under a memory map..
-     */
-    virtual void onAddMemoryRemapAction();
 
     /*!
      *  Handler for element copy action.
@@ -197,10 +121,8 @@ private slots:
 
 private:
 
-	//! No copying.
+	//! No copying. No assignment.
     MemoryMapsView(const MemoryMapsView& other);
-
-	//! No assignment.
     MemoryMapsView& operator=(const MemoryMapsView& other);
 
 	/*!
@@ -218,8 +140,36 @@ private:
     */
     QString getUniqueName(QString const& original, QAbstractItemModel* model);
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! The default path to use for import/export csv
 	QString defaultImportExportPath_;
+
+    //! The point where mouse was clicked
+    QPoint pressedPoint_;
+
+    //! Action for copying item texts.
+    QAction copyAction_;
+
+    //! Action for pasting item texts.
+    QAction pasteAction_;
+
+    //! Action for importing a csv-file.
+    QAction importAction_;
+
+    //! Action for exporting a csv-file.
+    QAction exportAction_;
+
+    //! The action to copy an element.
+    QAction copyRowsAction_;
+
+    //! The action to paste an element.
+    QAction pasteRowsAction_;
+
+    //! Specifies if the items can be imported/exported to a csv file..
+    bool importExportable_;
 };
 
 #endif // MEMORYMAPSVIEW_H

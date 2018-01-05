@@ -159,7 +159,7 @@ bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
         // Any view reference must point to an existing view.
         foreach (QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs())
         {
-            foreach (QString const& viewRef, typeDef->getViewRefs())
+            foreach (QString const& viewRef, *typeDef->getViewRefs())
             {
                 if (!referencedViewExists(viewRef))
                 {
@@ -272,7 +272,7 @@ bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
         // Any view reference must point to an existing view.
         foreach (QSharedPointer<WireTypeDef> typeDef, *trans->getTransTypeDef())
         {
-            foreach (QString viewRef, typeDef->getViewRefs())
+            foreach (QString viewRef, *typeDef->getViewRefs())
             {
                 if (!referencedViewExists(viewRef))
                 {
@@ -380,7 +380,7 @@ void PortValidator::findErrorsInWire(QVector<QString>& errors, QSharedPointer<Po
     // Any view reference must point to an existing view.
     foreach (QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs())
     {
-        foreach (QString viewRef, typeDef->getViewRefs())
+        foreach (QString viewRef, *typeDef->getViewRefs())
         {
             if (!referencedViewExists(viewRef))
             {
@@ -437,7 +437,7 @@ void PortValidator::findErrorsInTransactional(QVector<QString> &errors, QSharedP
     // Any view reference must point to an existing view.
     foreach (QSharedPointer<WireTypeDef> typeDef, *trans->getTransTypeDef())
     {
-        foreach (QString viewRef, typeDef->getViewRefs())
+        foreach (QString viewRef, *typeDef->getViewRefs())
         {
             if (!referencedViewExists(viewRef))
             {

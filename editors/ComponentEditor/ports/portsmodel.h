@@ -35,7 +35,8 @@ class PortsModel : public ReferencingTableModel, public ParameterizableTable
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
 	 *      @param [in] model                   Pointer to the model being edited.
      *      @param [in] expressionParser        Pointer to the expression parser.
@@ -43,46 +44,46 @@ public:
      *      @param [in] expressionFormatter     Pointer to the expression formatter.
      *      @param [in] portValidator           Validator used for ports.
 	 *      @param [in] parent                  Pointer to the owner of this model.
-	*/
-	PortsModel(QSharedPointer<Model> model,
-        QSharedPointer <ExpressionParser> expressionParser,
-        QSharedPointer <ParameterFinder> parameterFinder,
-        QSharedPointer <ExpressionFormatter> expressionFormatter,
-        QSharedPointer<PortValidator> portValidator,
-        QObject *parent);
+     */
+	PortsModel(QSharedPointer<Model> model, QSharedPointer <ExpressionParser> expressionParser,
+        QSharedPointer <ParameterFinder> parameterFinder, QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QSharedPointer<PortValidator> portValidator, QObject *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~PortsModel();
 
-	/*! Get the number of rows in the model.
+	/*!
+     *  Get the number of rows in the model.
 	 *
-	 *      @param [in] parent      Model index of the parent of the item. Must be invalid
-	 *                              because this is not hierarchical model.
+	 *      @param [in] parent      Model index of the parent of the item. Must be invalid.
 	 *
 	 *      @return Number of rows currently in the model.
-	*/
+     */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
 
-	/*! Get the number of columns in the model
+	/*!
+     *  Get the number of columns in the model.
 	 *
 	 *      @param [in] parent      Model index of the parent of the item. Must be invalid
-	 *                              because this is not hierarchical model.
-	 *
-	 *      @return Always returns 9
-	*/
+     *
+	 *      @return Always returns 9.
+     */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex() ) const;
 
-	/*! Get the data for the specified item for specified role.
+	/*!
+     *  Get the data for the specified item for specified role.
 	 *
-	 *      @param [in]     index Identifies the item that's data is wanted.
-	 *      @param [in]     role Specifies what kind of data is wanted
+	 *      @param [in] index   Identifies the item that's data is wanted.
+	 *      @param [in] role    Specifies what kind of data is wanted
 	 *
 	 *      @return QVariant containing the data
-	*/
-	virtual QVariant data(const QModelIndex& index, 
-		int role = Qt::DisplayRole ) const;
+     */
+	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
 
-	/*! Get the data for the headers
+	/*!
+     *  Get the data for the headers.
 	 *
 	 *      @param [in] section         The column that's header is wanted
 	 *      @param [in] orientation     Only Qt::Horizontal is supported
@@ -92,7 +93,8 @@ public:
 	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-	/*! Set the data for specified item.
+	/*!
+     *  Set the data for specified item.
 	 *
 	 *      @param [in] index   Specifies the item that's data is modified
 	 *      @param [in] value   The value to be set.
@@ -102,8 +104,8 @@ public:
 	 */
 	virtual bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole);
 
-
-	/*! Get information on how specified item can be handled.
+	/*!
+     *  Get information on how specified item can be handled.
 	 *
 	 *      @param [in]     index Specifies the item that's flags are wanted.
 	 *
@@ -111,18 +113,20 @@ public:
 	*/
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*! Check if the model is in valid state or not.
+	/*!
+     *  Check if the model is in valid state or not.
 	 *
 	 *      @return True if all items in model are valid.
-	*/
+     */
 	bool isValid() const;
 
-	/*! Get the index of the identified port.
+	/*!
+     *  Get the index of the identified port.
 	 *
 	 *      @param [in] portName    Identifies the port.
 	 *
-	 *      @return QModelIndex of first column of the specified port. Invalid index if named port is not found. 
-	*/
+	 *      @return QModelIndex of first column of the specified port. Invalid index if named port is not found.
+     */
 	virtual QModelIndex index(QSharedPointer<Port> port) const;
    
     /*!
@@ -173,51 +177,61 @@ protected:
 
 public slots:
 
-	/*! Remove a row from the model
+	/*!
+     *  Remove a row from the model.
 	 *
 	 *      @param [in] row Specifies the row to remove
-	*/
+     */
 	void onRemoveRow(int row);
     
 
-	//! Add a new empty row to the model
+	/*!
+     *  Add a new empty row to the model
+     */
 	void onAddRow();
 
-	/*! A new item should be added to given index.
+	/*!
+     *  A new item should be added to given index.
 	 *
 	 *      @param [in] index   The position where new item should be added at.
-	*/
+     */
 	void onAddItem(const QModelIndex& index);
 
-	/*! An item should be removed from the model.
+	/*!
+     *  An item should be removed from the model.
 	 * 
 	 *      @param [in] index   Identifies the item that should be removed.
-	*/
+     */
 	void onRemoveItem(const QModelIndex& index);
 
-	/*! Add a new port to the model.
+	/*!
+     *  Add a new port to the model.
 	 *
 	 *      @param [in] port    The port to be added to the model.
-	*/
+     */
 	virtual void addPort(QSharedPointer<Port> port);
 
 signals:
 
-	//! Emitted when contents of the model change
+	/*!
+     *  Emitted when contents of the model change
+     */
 	void contentChanged();
 
-	//! Prints an error message to the user.
+	/*!
+     *  Prints an error message to the user.
+     */
 	void errorMessage(const QString& msg) const;
 	
-	//! Prints a notification to user.
+	/*!
+     *  Prints a notification to user.
+     */
 	void noticeMessage(const QString& msg) const;
 
 private:
 	
-	//! No copying
+	//! No copying. No assignment.
 	PortsModel(const PortsModel& other);
-
-	//! No assignment
 	PortsModel& operator=(const PortsModel& other);
  
     /*!
@@ -249,8 +263,8 @@ private:
      *      @param [in] index   The index to lock.
      */
     void lockIndex(QModelIndex const& index);
-
-  /*!
+    
+    /*!
      *   Unlocks the given index disabling editing.
      *
      *      @param [in] index   The index to unlock.
@@ -300,6 +314,15 @@ private:
      *      @return True, if left or right bound is an expression, otherwise false.
      */
     bool hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) const;
+
+    /*!
+     *  Get the displayed names of the port types.
+     *
+     *      @param [in] port    The selected port.
+     *
+     *      @return Combination of the types contained within the selected port.
+     */
+    QString getTypeName(QSharedPointer<Port> port) const;
 
     //-----------------------------------------------------------------------------
     // Data.

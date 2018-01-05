@@ -164,7 +164,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == FileColumns::TYPES_COLUMN)
         {
-            return file->getFileTypes()->join(' ');
+            return file->getFileTypes()->join("; ");
         }
         else if (index.column() == FileColumns::DESCRIPTION)
         {
@@ -252,7 +252,7 @@ bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int ro
         else if (index.column() == FileColumns::TYPES_COLUMN)
         {
             QString str = value.toString();
-            QSharedPointer<QStringList> fileTypes(new QStringList(str.split(' ', QString::SkipEmptyParts)));
+            QSharedPointer<QStringList> fileTypes(new QStringList(str.split("; ", QString::SkipEmptyParts)));
 
             files_->at(index.row())->setFileTypes(fileTypes);
         }

@@ -15,6 +15,9 @@
 #include "PortTagEditorDelegate.h"
 
 #include <common/widgets/listManager/listeditor.h>
+#include <editors/ComponentEditor/ports/PortWireTypeEditor.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QApplication>
 #include <QComboBox>
@@ -27,9 +30,12 @@
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::PortsDelegate()
 //-----------------------------------------------------------------------------
-PortsDelegate::PortsDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
-    QObject *parent) : ExpressionDelegate(parameterCompleter, parameterFinder, parent), 
-    adhocGroupModify_(false), adhocGroupState_(Qt::Unchecked)
+PortsDelegate::PortsDelegate(QSharedPointer<Component> component, QCompleter* parameterCompleter,
+    QSharedPointer<ParameterFinder> parameterFinder, QObject* parent):
+ExpressionDelegate(parameterCompleter, parameterFinder, parent),
+component_(component),
+adhocGroupModify_(false),
+adhocGroupState_(Qt::Unchecked)
 {
 
 }
@@ -54,11 +60,7 @@ QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
     }
     else if (index.column() == PortColumns::TYPE_NAME)
     {
-        return createSelectorWithCommonTypes(parent);
-    }
-    else if (index.column() == PortColumns::TYPE_DEF)
-    {
-        return createSelectorWithVHDLStandardLibraries(parent);
+        return createTypeEditor(parent);
     }
     else if (index.column() == PortColumns::TAG_GROUP)
     {
@@ -68,6 +70,18 @@ QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
     {
         return ExpressionDelegate::createEditor(parent, option, index);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsdelegate::createTypeEditor()
+//-----------------------------------------------------------------------------
+QWidget* PortsDelegate::createTypeEditor(QWidget* parent) const
+{
+    PortWireTypeEditor* editor = new PortWireTypeEditor(component_, parent);
+
+    connect(editor, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    return editor;
 }
 
 //-----------------------------------------------------------------------------
@@ -83,20 +97,16 @@ void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) con
         int comboIndex = combo->findText(text);
         combo->setCurrentIndex(comboIndex);
     }
-    else if (index.column() == PortColumns::TYPE_NAME || index.column() == PortColumns::TYPE_DEF)
+    else if (index.column() == PortColumns::TYPE_NAME)
     {
-        QString text = index.data(Qt::DisplayRole).toString();
-        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        PortWireTypeEditor* typeEditor = dynamic_cast<PortWireTypeEditor*>(editor);
+        if (typeEditor)
+        {
+            QModelIndex portNameIndex = index.sibling(index.row(), PortColumns::NAME);
+            QString portName = portNameIndex.data(Qt::DisplayRole).toString();
+            QSharedPointer<Port> currentPort = component_->getPort(portName);
 
-        int comboIndex = combo->findText(text);
-        // if the text is not found
-        if (comboIndex < 0)
-        {
-            combo->setEditText(text);
-        }
-        else
-        {
-            combo->setCurrentIndex(comboIndex);
+            typeEditor->setPortForModel(currentPort);
         }
     }
     else if (index.column() == PortColumns::TAG_GROUP)
@@ -123,13 +133,15 @@ void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 void PortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index ) const
 {
-    if (index.column() == PortColumns::DIRECTION ||
-        index.column() == PortColumns::TYPE_NAME ||
-        index.column() == PortColumns::TYPE_DEF)
+    if (index.column() == PortColumns::DIRECTION)
     {
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
         QString text = combo->currentText();
         model->setData(index, text, Qt::EditRole);
+    }
+    else if (index.column() == PortColumns::TYPE_NAME)
+    {
+        return;
     }
     else if (index.column() == PortColumns::TAG_GROUP)
     {
@@ -297,55 +309,6 @@ QWidget* PortsDelegate::createSelectorForDirection(QWidget* parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsDelegate::createSelectorWithCommonTypes()
-//-----------------------------------------------------------------------------
-QWidget* PortsDelegate::createSelectorWithCommonTypes(QWidget* parent) const
-{
-    QComboBox* combo = new QComboBox(parent);
-    combo->setEditable(true);
-
-    QStringList types;
-    types.append("bit");
-    types.append("bit_vector");
-    types.append("boolean");
-    types.append("character");
-    types.append("integer");
-    types.append("natural");
-    types.append("positive");
-    types.append("real");
-    types.append("signed");
-    types.append("std_logic");
-    types.append("std_logic_vector");
-    types.append("std_ulogic");
-    types.append("std_ulogic_vector");
-    types.append("string");
-    types.append("time");
-    types.append("unsigned");
-    types.append("reg");
-    types.append("wire");
-
-    types.sort(Qt::CaseInsensitive);
-
-    combo->addItems(types);
-    return combo;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsDelegate::createSelectorWithVHDLStandardLibraries()
-//-----------------------------------------------------------------------------
-QWidget* PortsDelegate::createSelectorWithVHDLStandardLibraries(QWidget* parent) const
-{
-    QComboBox* combo = new QComboBox(parent);
-    combo->setEditable(true);
-    combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-
-    combo->addItem("IEEE.std_logic_1164.all");
-    combo->addItem("IEEE.numeric_std.all");
-
-    return combo;
-}
-
-//-----------------------------------------------------------------------------
 // Function: portsdelegate::createListEditorForPortTags()
 //-----------------------------------------------------------------------------
 QWidget* PortsDelegate::createListEditorForPortTags(const QModelIndex& currentIndex, QWidget* parent) const
@@ -371,4 +334,91 @@ QWidget* PortsDelegate::createListEditorForPortTags(const QModelIndex& currentIn
 
     tagEditor->setItemDelegate(new PortTagEditorDelegate(existingTags, parent));
     return tagEditor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsdelegate::updateEditorGeometry()
+//-----------------------------------------------------------------------------
+void PortsDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+    const QModelIndex &index) const
+{
+    ExpressionDelegate::updateEditorGeometry(editor, option, index);
+
+    if (index.column() == PortColumns::TYPE_NAME)
+    {
+        repositionAndResizeEditor(editor, option, index);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsdelegate::repositionAndResizeEditor()
+//-----------------------------------------------------------------------------
+void PortsDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option,
+    QModelIndex const& index) const
+{
+    int editorMinimumSize = 30 * (getRowCountForPortTypes(index) + 5);
+    editor->setFixedWidth(300);
+
+    const int PARENT_HEIGHT = editor->parentWidget()->height();
+    const int AVAILABLE_HEIGHT_BELOW = PARENT_HEIGHT - option.rect.top();
+
+    if (AVAILABLE_HEIGHT_BELOW > editorMinimumSize)
+    {
+        editor->move(option.rect.topLeft());
+    }
+    else
+    {
+        int editorNewY = PARENT_HEIGHT-editorMinimumSize;
+        if (editorNewY <= 0)
+        {
+            editorNewY = 0;
+        }
+
+        editor->move(option.rect.left(), editorNewY);
+    }
+
+    if (editorMinimumSize > PARENT_HEIGHT)
+    {
+        editor->setFixedHeight(PARENT_HEIGHT);
+    }
+    else
+    {
+        editor->setFixedHeight(editorMinimumSize);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsdelegate::getRowCountForPortTypes()
+//-----------------------------------------------------------------------------
+int PortsDelegate::getRowCountForPortTypes(QModelIndex const& index) const
+{
+    QModelIndex portNameIndex = index.sibling(index.row(), PortColumns::NAME);
+    QString portName = portNameIndex.data(Qt::DisplayRole).toString();
+    QSharedPointer<Port> currentPort = component_->getPort(portName);
+
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions;
+    if (currentPort->getWire() && currentPort->getWire()->getWireTypeDefs())
+    {
+        typeDefinitions = currentPort->getWire()->getWireTypeDefs();
+    }
+    else if (currentPort->getTransactional() && currentPort->getTransactional()->getTransTypeDef())
+    {
+        typeDefinitions = currentPort->getTransactional()->getTransTypeDef();
+    }
+
+    int portTypeRowCount = 0;
+    foreach (QSharedPointer<WireTypeDef> singleTypeDefinition, *typeDefinitions)
+    {
+        portTypeRowCount += singleTypeDefinition->getViewRefs()->count() + 1;
+    }
+
+    return portTypeRowCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsdelegate::setComponent()
+//-----------------------------------------------------------------------------
+void PortsDelegate::setComponent(QSharedPointer<Component> newComponent)
+{
+    component_ = newComponent;
 }

@@ -39,23 +39,23 @@ BusInterfacePortMapTab::BusInterfacePortMapTab(LibraryInterface* libHandler, QSh
     QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder,
     QSharedPointer<PortMapValidator> portMapValidator, QWidget* parent):
 QWidget(parent),
-    busif_(busif),
-    component_(component),
-    libHandler_(libHandler),
-    physicalPortView_(this),
-    physicalPortModel_(component_, expressionParser, this),
-    physicalPortSorter_(component_, this),
-    nameFilterEditor_(new QLineEdit(this)),
-    directionFilter_(this),
-    hideConnectedPortsBox_(this),
-    physicalPrefixEditor_(new QLineEdit(this)),
-    portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
-    portMapsSorter_(busif_, this),
-    portMapsView_(this),
-    portMapsDelegate_(0),
-    autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
-    removeAllMappingsButton_(QIcon(":/icons/common/graphics/cross.png"), "Remove all", this),
-    autoConnector_(component, busif, expressionParser, libHandler, this)
+busif_(busif),
+component_(component),
+libHandler_(libHandler),
+physicalPortView_(this),
+physicalPortModel_(component_, expressionParser, this),
+physicalPortSorter_(component_, this),
+nameFilterEditor_(new QLineEdit(this)),
+directionFilter_(this),
+hideConnectedPortsBox_(this),
+physicalPrefixEditor_(new QLineEdit(this)),
+portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
+portMapsSorter_(busif_, this),
+portMapsView_(this),
+portMapsDelegate_(0),
+autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
+removeAllMappingsButton_(QIcon(":/icons/common/graphics/cross.png"), "Remove all", this),
+autoConnector_(component, busif, expressionParser, libHandler, this)
 {
     hideConnectedPortsBox_.setCheckState(Qt::Checked);
 
@@ -251,19 +251,19 @@ void BusInterfacePortMapTab::connectItems()
     connect(&portMapsModel_, SIGNAL(portDisconnected(QString const&)),
         this, SLOT(onPortDisconnected(QString const&)), Qt::UniqueConnection);
 
-    connect(&portMapsView_, SIGNAL(addItem(QModelIndex const&)),
-        &portMapsSorter_, SLOT(onAddItem(QModelIndex const&)), Qt::UniqueConnection);
-    connect(&portMapsSorter_, SIGNAL(addItem(QModelIndex const&)),
+    connect(&portMapsView_, SIGNAL(addSubItem(QModelIndexList const&)),
+        &portMapsSorter_, SLOT(onAddSubItem(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(&portMapsSorter_, SIGNAL(addSubItem(QModelIndex const&)),
         &portMapsModel_, SLOT(onAddPortMap(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&portMapsView_, SIGNAL(removeItem(QModelIndex const&)),
-        &portMapsSorter_, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
+    connect(&portMapsView_, SIGNAL(removeSelectedItems(QModelIndexList const&)),
+        &portMapsSorter_, SLOT(onRemoveSelectedRows(QModelIndexList const&)), Qt::UniqueConnection);
     connect(&portMapsSorter_, SIGNAL(removeItem(QModelIndex const&)),
         &portMapsModel_, SLOT(onRemovePort(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&portMapsView_, SIGNAL(removeAllChildItemsFromIndex(QModelIndex const&)),
-        &portMapsSorter_, SLOT(onRemoveAllChildItemsFrom(QModelIndex const&)), Qt::UniqueConnection);
-    connect(&portMapsSorter_, SIGNAL(removeAllChildItemsFromIndex(QModelIndex const&)),
+    connect(&portMapsView_, SIGNAL(removeAllSubItems(QModelIndexList const&)),
+        &portMapsSorter_, SLOT(onRemoveAllSubItemsFromIndexes(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(&portMapsSorter_, SIGNAL(removeAllSubItemsFromIndex(QModelIndex const&)),
         &portMapsModel_, SLOT(onRemoveAllChildItemsFrom(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(&hideConnectedPortsBox_, SIGNAL(toggled(bool)),

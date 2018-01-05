@@ -200,3 +200,24 @@ void EditableListView::currentChanged(QModelIndex const& current, QModelIndex co
     QListView::currentChanged(current, previous);
     emit selectionChanged(current);
 }
+
+//-----------------------------------------------------------------------------
+// Function: editablelistview::keyPressEvent()
+//-----------------------------------------------------------------------------
+void EditableListView::keyPressEvent(QKeyEvent *event)
+{
+    int rowCount = model()->rowCount();
+
+    if (currentIndex().row() == 0 && event->key() == Qt::Key_Up)
+    {
+        setCurrentIndex(model()->index(rowCount - 1, 0));
+    }
+    else if (currentIndex().row() == rowCount - 1 && event->key() == Qt::Key_Down)
+    {
+        setCurrentIndex(model()->index(0, 0));
+    }
+    else
+    {
+        QListView::keyPressEvent(event);
+    }
+}
