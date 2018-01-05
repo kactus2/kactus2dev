@@ -105,8 +105,7 @@ bool LineContentAssistWidget::tryHandleKey(QKeyEvent* e)
         {
             if (isVisible())
             {
-                keyPressEvent(e);
-                return true;
+                return handleKeyboardItemSelection(e, keyEvent);
             }
         }
         else if (keyEvent == Qt::Key_Left || keyEvent == Qt::Key_Right || keyEvent == Qt::Key_Home ||
@@ -329,4 +328,27 @@ void LineContentAssistWidget::setContentMatcher(ILineContentMatcher* matcher)
 void LineContentAssistWidget::setWidthForAssist(int newWidth)
 {
     lineAssistWidth_ = newWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LineContentAssistWidget::handleKeyboardItemSelection()
+//-----------------------------------------------------------------------------
+bool LineContentAssistWidget::handleKeyboardItemSelection(QKeyEvent* event, int key)
+{
+    int numberOfItems = count();
+
+    if (currentIndex().row() == 0 && key == Qt::Key_Up)
+    {
+        setCurrentIndex(model()->index(numberOfItems - 1, 0));
+    }
+    else if (currentIndex().row() == numberOfItems -1 && key == Qt::Key_Down)
+    {
+        setCurrentIndex(model()->index(0, 0));
+    }
+    else
+    {
+        keyPressEvent(event);
+    }
+
+    return true;
 }

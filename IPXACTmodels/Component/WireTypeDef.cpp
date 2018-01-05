@@ -17,12 +17,12 @@
 WireTypeDef::WireTypeDef(const QString& typeName, const QString& viewNameRef) :
 typeName_(typeName),
 constrained_(false),
-typeDefinitions_(),
-viewNameRefs_()
+typeDefinitions_(new QStringList()),
+viewNameRefs_(new QStringList())
 {
     if (!viewNameRef.isEmpty())
     {
-        viewNameRefs_.append(viewNameRef);
+        viewNameRefs_->append(viewNameRef);
     }
 }
 
@@ -32,10 +32,11 @@ viewNameRefs_()
 WireTypeDef::WireTypeDef(const WireTypeDef& other) :
 typeName_(other.typeName_),
 constrained_(other.constrained_),
-typeDefinitions_(other.typeDefinitions_),
-viewNameRefs_(other.viewNameRefs_)
+typeDefinitions_(new QStringList()),
+viewNameRefs_(new QStringList())
 {
-
+    copyTypeDefinitions(other.typeDefinitions_);
+    copyViewNameReferences(other.viewNameRefs_);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,9 +49,36 @@ WireTypeDef& WireTypeDef::operator=(const WireTypeDef& other)
         typeName_ = other.typeName_;
         constrained_ = other.constrained_;
         typeDefinitions_ = other.typeDefinitions_;
-        viewNameRefs_ = other.viewNameRefs_;
+
+        typeDefinitions_->clear();
+        viewNameRefs_->clear();
+
+        copyTypeDefinitions(other.typeDefinitions_);
+        copyViewNameReferences(other.viewNameRefs_);
     }
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireTypeDef::copyTypeDefinitions()
+//-----------------------------------------------------------------------------
+void WireTypeDef::copyTypeDefinitions(QSharedPointer<QStringList> newTypeDefinitions)
+{
+    foreach (QString definition, *newTypeDefinitions)
+    {
+        typeDefinitions_->append(definition);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireTypeDef::copyViewNameReferences()
+//-----------------------------------------------------------------------------
+void WireTypeDef::copyViewNameReferences(QSharedPointer<QStringList> newViewReferences)
+{
+    foreach (QString viewReference, *newViewReferences)
+    {
+        viewNameRefs_->append(viewReference);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -72,7 +100,7 @@ bool WireTypeDef::hasView(QString const& viewName)
         return true;
     }
 
-    foreach (QString viewReference, viewNameRefs_)
+    foreach (QString viewReference, *viewNameRefs_)
     {
         if (viewReference == viewName)
         {
@@ -117,7 +145,7 @@ void WireTypeDef::setConstrained(bool constrainedStatus)
 //-----------------------------------------------------------------------------
 // Function: WireTypeDef::getTypeDefinitions()
 //-----------------------------------------------------------------------------
-QStringList WireTypeDef::getTypeDefinitions() const
+QSharedPointer<QStringList> WireTypeDef::getTypeDefinitions() const
 {
     return typeDefinitions_;
 }
@@ -125,7 +153,7 @@ QStringList WireTypeDef::getTypeDefinitions() const
 //-----------------------------------------------------------------------------
 // Function: WireTypeDef::setTypeDefinitions()
 //-----------------------------------------------------------------------------
-void WireTypeDef::setTypeDefinitions(QStringList newTypeDefinitions)
+void WireTypeDef::setTypeDefinitions(QSharedPointer<QStringList> newTypeDefinitions)
 {
     typeDefinitions_ = newTypeDefinitions;
 }
@@ -133,7 +161,7 @@ void WireTypeDef::setTypeDefinitions(QStringList newTypeDefinitions)
 //-----------------------------------------------------------------------------
 // Function: WireTypeDef::getViewRefs()
 //-----------------------------------------------------------------------------
-QStringList WireTypeDef::getViewRefs() const
+QSharedPointer<QStringList> WireTypeDef::getViewRefs() const
 {
     return viewNameRefs_;
 }
@@ -141,7 +169,7 @@ QStringList WireTypeDef::getViewRefs() const
 //-----------------------------------------------------------------------------
 // Function: WireTypeDef::setViewRefs()
 //-----------------------------------------------------------------------------
-void WireTypeDef::setViewRefs(QStringList newViewRefs)
+void WireTypeDef::setViewRefs(QSharedPointer<QStringList> newViewRefs)
 {
     viewNameRefs_ = newViewRefs;
 }

@@ -12,7 +12,7 @@
 #ifndef PORTMAPTREESORTPROXYMODEL_H
 #define PORTMAPTREESORTPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
+#include <common/views/EditableTreeView/EditableTreeSortFilter.h>
 
 #include <QSharedPointer>
 
@@ -21,7 +21,7 @@ class BusInterface;
 //-----------------------------------------------------------------------------
 //! Sorting proxy model for bus interface port maps.
 //-----------------------------------------------------------------------------
-class PortMapTreeSortProxyModel : public QSortFilterProxyModel
+class PortMapTreeSortProxyModel : public EditableTreeSortFilter
 {
     Q_OBJECT
 
@@ -63,20 +63,6 @@ protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
 signals:
-
-    /*!
-     *  Add a new port map at the selected position.
-     *
-     *      @param [in] position    The parent index of the new port map.
-     */
-    void addItem(QModelIndex const& position);
-
-    /*!
-     *  Remove port map at the selected position.
-     *
-     *      @param [in] position    The parent index of the removed port map.
-     */
-    void removeItem(QModelIndex const& position);
       
     /*!
      *  Remove all port maps from the selected logical port.
@@ -84,14 +70,6 @@ signals:
      *      @param [in] position    The index of the selected logical port.
      */
     void removeAllChildItemsFromIndex(QModelIndex const& index);
-
-public slots:
-            
-    void onAddItem(QModelIndex const& index);
-
-    void onRemoveItem(QModelIndex const& index);
-
-    void onRemoveAllChildItemsFrom(QModelIndex const&);
 
 private:
 

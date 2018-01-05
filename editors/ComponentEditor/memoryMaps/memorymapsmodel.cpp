@@ -151,10 +151,6 @@ QVariant MemoryMapsModel::headerData(int section, Qt::Orientation orientation, i
             return tr("Description");
         }
 	}
-    else if (role == Qt::TextAlignmentRole)
-    {
-        return Qt::AlignCenter;
-    }
 
     return QVariant();
 }

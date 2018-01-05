@@ -12,7 +12,7 @@
 #ifndef CONFIGURABLEELEMENTSVIEW_H
 #define CONFIGURABLEELEMENTSVIEW_H
 
-#include <QTreeView>
+#include <common/views/EditableTreeView/EditableTreeView.h>
 
 #include <QContextMenuEvent>
 #include <QModelIndex>
@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! A tree view for the configurable element tree model.
 //-----------------------------------------------------------------------------
-class ConfigurableElementsView : public QTreeView
+class ConfigurableElementsView : public EditableTreeView
 {
     Q_OBJECT
 
@@ -42,20 +42,6 @@ public:
 signals:
 
     /*!
-     *  Emitted when the user attempts to remove an item.
-     *
-     *      @param [in] index   The index of the item to be removed.
-     */
-    void removeItem(QModelIndex const& index);
-
-    /*!
-     *  Emitted when the user attempts to remove all sub items.
-     *
-     *      @param [in] index   The index of the item whose sub items are removed.
-     */
-    void removeAllSubItems(QModelIndex const& index);
-
-    /*!
      *  Emitted when a configurable element change command should be created.
      *
      *      @param [in] oldValue    Old value of the indexed element.
@@ -67,15 +53,6 @@ signals:
         QAbstractItemModel* cevModel) const;
 
 protected:
-    
-    /*!
-     *  Draws a row and a separator line under it.
-     *
-     *      @param [in] painter   The painter used for the drawing.
-     *      @param [in] option    Options for the drawing.
-     *      @param [in] index     Index of the item to draw.
-     */
-    virtual void drawRow(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
     /*!
      *  Handler for context menu events.
@@ -84,29 +61,12 @@ protected:
      */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 
-    /*!
-     *  Gets the action for the remove command.
-     *
-     *      @return The action for the remove command.
-     */
-    QAction* getRemoveAction() const;
-
-private slots:
-   
-    /*!
-     *  Called when removeAction is clicked from the context menu.
-     */
-    virtual void onRemoveItem();
-
-    /*!
-     *  Handles the removal of all sub items of the selected index.
-     */
-    virtual void onRemoveAllSubItems();
+protected slots:
 
     /*!
      *  Handles the deleting of the selected cell.
      */
-    void onClearAction();
+    virtual void onClearAction();
 
 private:
    
@@ -117,18 +77,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The file dependency item context menu was opened on
-    QModelIndex contextMenuIndex_;
-
-    //! Action for removing mappings.
-    QAction* removeAction_;
-
-    //! Action for removing all sub items.
-    QAction* removeAllAction_;
-
-    //! Action for clearing a cell.
-    QAction* clearAction_;
 };
 
 //-----------------------------------------------------------------------------

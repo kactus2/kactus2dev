@@ -9,7 +9,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./VersionHelper.h \
-    ./version.h \
     ./common/NameGenerationPolicy.h \
     ./common/Global.h \
     ./common/KactusColors.h \
@@ -91,6 +90,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
+    ./common/views/EditableTreeView/EditableTreeView.h \
+    ./common/views/EditableTreeView/EditableTreeSortFilter.h \
     ./common/dialogs/comboSelector/comboselector.h \
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
@@ -244,7 +245,13 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/itemvisualizer.h \
     ./editors/ComponentEditor/general/generaleditor.h \
     ./editors/ComponentEditor/ports/PortColumns.h \
+    ./editors/ComponentEditor/ports/PortTypeDefinitionDelegate.h \
+    ./editors/ComponentEditor/ports/PortWireTypeColumns.h \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.h \
+    ./editors/ComponentEditor/ports/PortWireTypeEditor.h \
+    ./editors/ComponentEditor/ports/PortWireTypeModel.h \
+    ./editors/ComponentEditor/ports/PortWireTypeDelegate.h \
+    ./editors/ComponentEditor/ports/PortWireTypeView.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
@@ -741,7 +748,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -823,6 +831,8 @@ SOURCES += ./VersionHelper.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
+    ./common/views/EditableTreeView/EditableTreeSortFilter.cpp \
+    ./common/views/EditableTreeView/EditableTreeView.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/DockWidgetHandler.cpp \
     ./mainwindow/ExitScreen.cpp \
@@ -1016,6 +1026,11 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
+    ./editors/ComponentEditor/ports/PortTypeDefinitionDelegate.cpp \
+    ./editors/ComponentEditor/ports/PortWireTypeDelegate.cpp \
+    ./editors/ComponentEditor/ports/PortWireTypeEditor.cpp \
+    ./editors/ComponentEditor/ports/PortWireTypeModel.cpp \
+    ./editors/ComponentEditor/ports/PortWireTypeView.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
@@ -1388,5 +1403,6 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.cpp
 RESOURCES += kactus.qrc

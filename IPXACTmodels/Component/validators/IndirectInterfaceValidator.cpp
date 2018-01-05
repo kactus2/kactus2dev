@@ -342,7 +342,7 @@ void IndirectInterfaceValidator::findErrorsInAddressReference(QVector<QString>& 
     {
         errors.append(QStringLiteral(
             "Field '%1' not found for address in indirect interface '%2' within %3").arg(
-            indirectInterface->getIndirectAddressRef(), indirectInterface->name(), context));        
+            indirectInterface->getIndirectAddressRef(), indirectInterface->name(), context));
     }
     else if (memoryMapContainsField(indirectInterface->getMemoryMapRef(), indirectInterface->getIndirectAddressRef()))
     {
@@ -352,9 +352,9 @@ void IndirectInterfaceValidator::findErrorsInAddressReference(QVector<QString>& 
             indirectInterface->name(), context));
     }
 
-    if (targetField->getAccess() == AccessTypes::READ_ONLY ||
+    if (targetField && (targetField->getAccess() == AccessTypes::READ_ONLY ||
         targetField->getAccess() == AccessTypes::READ_WRITEONCE ||
-        targetField->getAccess() == AccessTypes::WRITEONCE)
+        targetField->getAccess() == AccessTypes::WRITEONCE))
     {
         errors.append(QStringLiteral(
             "Field '%1' has invalid access '%2' for address in indirect interface %3 within %4").arg(

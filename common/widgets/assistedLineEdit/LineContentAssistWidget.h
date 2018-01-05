@@ -112,6 +112,14 @@ private:
     LineContentAssistWidget& operator=(LineContentAssistWidget const& rhs);
 
     /*!
+     *  Handles the wrapping of item selection.
+     *
+     *      @param [in] event   The key event.
+     *      @param [in] key     The pressed key.
+     */
+    bool handleKeyboardItemSelection(QKeyEvent* event, int key);
+
+    /*!
      *  Tries to match the contents to the text close to the text cursor. If there is a match, the content assist
      *  is automatically shown. Otherwise it is hidden.
      */

@@ -29,6 +29,7 @@ class MemoryMap;
 class ExpressionFormatter;
 class ExpressionParser;
 class MemoryMapValidator;
+class EditableTreeSortFilter;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the memory maps of a component.
@@ -57,13 +58,9 @@ public:
      *      @param [in] memoryMapValidator      Validator used for memory maps.
 	 *      @param [in] parent                  The owner of this editor.
 	 */
-	MemoryMapsEditor(QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-		LibraryInterface* handler, 
-        QSharedPointer<MemoryMapValidator> memoryMapValidator,
-		QWidget *parent = 0);
+	MemoryMapsEditor(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+		LibraryInterface* handler,  QSharedPointer<MemoryMapValidator> memoryMapValidator, QWidget *parent = 0);
 	
 	//! The destructor.
 	virtual ~MemoryMapsEditor();
@@ -133,11 +130,20 @@ private:
      */
     QStringList getRemapStateNames() const;
 
+    /*!
+     *  Connect signals.
+     */
+    void connectSignals();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! The view to display the table.
     MemoryMapsView* view_;
 
 	//! The proxy that does the sorting of items.
-	QSortFilterProxyModel* proxy_;
+    EditableTreeSortFilter* proxy_;
 
 	//! The model that manages the memory maps.
 	MemoryMapsModel* model_;

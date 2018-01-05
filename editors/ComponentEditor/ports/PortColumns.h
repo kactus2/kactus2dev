@@ -26,7 +26,6 @@ namespace PortColumns
         RIGHT_BOUND,        //!< Column for specifying the right bound of the port.
         WIDTH,              //!< Column for the port width.
         TYPE_NAME,          //!< Column for the port typename.
-        TYPE_DEF,           //!< Column for the port type definition.
         DEFAULT_VALUE,      //!< Column for setting the default value for the port.
         ARRAY_LEFT,         //!< Column for setting the left side of the array.
         ARRAY_RIGHT,        //!< Column for setting the right side of the array.

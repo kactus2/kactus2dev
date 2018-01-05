@@ -180,27 +180,5 @@ to purchase a commercial license.
 Icons used in Kactus2
 ----------------------------------------------------
 
-Oxygen Icons by Oxygen Team
-https://github.com/KDE/oxygen-icons5 (LGPL)
-
-Farm Fresh Icons by Fatcow Web Hosting
-http://www.fatcow.com/free-icons (CC Attribution 3.0)
-
-Human o2 by Oliver Scholtz
-http://schollidesign.deviantart.com/art/Human-O2-Iconset-105344123 (Free for non-commercial use)
-
-Nuvola by David Vignoni
-http://www.icon-king.com/ (LGPL)
-
-Crystal Project by Everaldo Coelho (LGPL)
-http://www.everaldo.com/
-
-Fugue Icons
-http://p.yusukekamiyamane.com/ (CC Attribution 3.0 Unported)
-
-PixeloPhilia 2 by Omercetin 
-http://omercetin.deviantart.com/art/PixeloPhilia2-166570194 (CC Attribution 3.0 Unported)
-
-Dellipack by Dellustrations
-http://dellustrations.deviantart.com/ (Free for commercial use)
-
+Icons8 by Icons8 LLC
+https://icons8.com/

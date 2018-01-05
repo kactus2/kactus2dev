@@ -33,9 +33,8 @@
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------
 PortsModel::PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser,
-                       QSharedPointer<ParameterFinder> parameterFinder,
-                       QSharedPointer<ExpressionFormatter> expressionFormatter,
-                       QSharedPointer<PortValidator> portValidator, QObject *parent):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<PortValidator> portValidator, QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 model_(model),
@@ -145,8 +144,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
         if (index.column() == PortColumns::ROW_NUMBER ||
             (index.column() == PortColumns::DEFAULT_VALUE && (port->getDirection() != DirectionTypes::IN &&
                 port->getDirection() != DirectionTypes::INOUT)) ||
-            (index.column() == PortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row()))) ||
-            (index.column() == PortColumns::TYPE_DEF && !port->hasType()))
+            (index.column() == PortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row()))))
         {
             return KactusColors::DISABLED_FIELD;
         }
@@ -229,10 +227,6 @@ QVariant PortsModel::headerData(int section, Qt::Orientation orientation, int ro
             else if (section == PortColumns::TYPE_NAME)
             {
                 return tr("Type");
-            }
-            else if (section == PortColumns::TYPE_DEF)
-            {
-                return tr("Type\ndefinition");
             }
             else if (section == PortColumns::DEFAULT_VALUE)
             {
@@ -361,12 +355,8 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
             // update the type definition for the new type name.
             port->setTypeDefinition(typeName, QString());
 
-            emit dataChanged(index, QAbstractTableModel::index(index.row(), PortColumns::TYPE_DEF));
+            emit dataChanged(index, index);
             return true;
-        }
-        else if (index.column() == PortColumns::TYPE_DEF)
-        {
-            port->setTypeDefinition(port->getTypeName(), value.toString());
         }
         else if (index.column() == PortColumns::DEFAULT_VALUE)
         {
@@ -756,12 +746,7 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::TYPE_NAME)
     {
-        return port->getTypeName();
-    }
-    else if (index.column() == PortColumns::TYPE_DEF)
-    {
-        QString typeName = port->getTypeName();
-        return port->getTypeDefinition(typeName);
+        return getTypeName(port);
     }
     else if (index.column() == PortColumns::DEFAULT_VALUE)
     {
@@ -791,6 +776,45 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     {
         return QVariant();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::getTypeName()
+//-----------------------------------------------------------------------------
+QString PortsModel::getTypeName(QSharedPointer<Port> port) const
+{
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > definitionList;
+    if (port->getWire())
+    {
+        definitionList = port->getWire()->getWireTypeDefs();
+    }
+    else if (port->getTransactional())
+    {
+        definitionList = port->getTransactional()->getTransTypeDef();
+    }
+
+    if (definitionList)
+    {
+        if (definitionList->count() > 1)
+        {
+            QString combinedType = "";
+            foreach (QSharedPointer<WireTypeDef> typeDefinition, *definitionList)
+            {
+                combinedType.append(typeDefinition->getTypeName());
+                if (typeDefinition != definitionList->last())
+                {
+                    combinedType.append(", ");
+                }
+            }
+
+            return combinedType;
+        }
+        else if (!definitionList->isEmpty())
+        {
+            return definitionList->first()->getTypeName();
+        }
+    }
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -910,6 +934,8 @@ int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& v
 //-----------------------------------------------------------------------------
 void PortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int row)
 {
+    QModelIndex index = QAbstractTableModel::index(row, PortColumns::TYPE_NAME);
+
     int calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toInt();
     int calculatedRightBound = parseExpressionToDecimal(port->getRightBound()).toInt();
 
@@ -920,19 +946,15 @@ void PortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int ro
         // change the type to vectored
         port->setTypeName("std_logic_vector");
         port->setTypeDefinition("std_logic_vector", "IEEE.std_logic_1164.all");
-
-        emit dataChanged(QAbstractTableModel::index(row, PortColumns::TYPE_NAME), 
-            QAbstractTableModel::index(row, PortColumns::TYPE_DEF));
     }
     // if port is not vectored but previous type was std_logic_vector
     else if (portWidth < 2 && port->getTypeName() == QString("std_logic_vector")) 
     {
         port->setTypeName("std_logic");
         port->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
-
-        emit dataChanged(QAbstractTableModel::index(row, PortColumns::TYPE_NAME), 
-            QAbstractTableModel::index(row, PortColumns::TYPE_DEF));
     }
+
+    emit dataChanged(index, index);
 }
 
 //-----------------------------------------------------------------------------

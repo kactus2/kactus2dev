@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 28.1.2011
- *      Author: Antti Kamppi
- * 		filename: listmanagermodel.h
- */
+//-----------------------------------------------------------------------------
+// File: ListManagerModel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 28.01.2012
+//
+// Description:
+// Model class for managing a list of strings.
+//----------------------------------------------------------------------------- 
 
 #ifndef LISTMANAGERMODEL_H
 #define LISTMANAGERMODEL_H
@@ -14,141 +18,150 @@
 #include <QStringList>
 #include <QModelIndex>
 
-/*! \brief ListManagerModel is a model class to manage a list of strings.
- *
- * This class can be used as a model class for a list view to implement a 
- * widget to manage a list of strings.
- */
-class ListManagerModel : public QAbstractListModel {
+//-----------------------------------------------------------------------------
+//! Model class for managing a list of strings.
+//-----------------------------------------------------------------------------
+class ListManagerModel : public QAbstractListModel
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
-	*
-	* \param parent Pointer to the owner of this model.
-	* \param items QStringList that contains the items to add.
-	*/
-	ListManagerModel(QObject *parent = 0, 
-		const QStringList& items = QStringList());
+	/*!
+     *  The constructor.
+     *
+     *      @param [in] parent  Pointer to the owner of this model.
+     *      @param [in] items   QStringList that contains the items to add.
+     */
+	ListManagerModel(QObject *parent = 0, const QStringList& items = QStringList());
 
-	//! \brief The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~ListManagerModel();
 
-	/*! \brief Get the number of rows in this model.
-	*
-	* \param parent ModelIndex of the item that's rowCount is requested.
-	*/
+	/*!
+     *  Get the number of rows in this model.
+     *
+     *      @param [in] parent  ModelIndex of the item that's rowCount is requested.
+     */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get the data stored for the specified item.
-	*
-	* \param index ModelIndex of the wanted item.
-	* \param role Specifies what kind of data is requested.
-	*/
+	/*!
+     *  Get the data stored for the specified item.
+     *
+     *      @param [in] index   ModelIndex of the wanted item.
+     *      @param [in] role    Specifies what kind of data is requested.
+     */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Get the data for the header of the list.
-	*
-	* \param section Specifies the column for which the header is requested.
-	* \param orientation The orientation of the header, only Qt::Horizontal is
-	* supported.
-	* \param role Specifies what kind of header data is requested.
-	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole) const;
+	/*!
+     *  Get the data for the header of the list.
+     *
+     *      @param [in] section         Specifies the column for which the header is requested.
+     *      @param [in] orientation     The orientation of the header, only Qt::Horizontal is supported.
+     *      @param [in] role            Specifies what kind of header data is requested.
+     */
+	virtual QVariant headerData(int section, Qt::Orientation orientation,  int role = Qt::DisplayRole) const;
 
-	/*! \brief Save the data to the model for specified item
+	/*!
+     *  Save the data to the model for specified item.
 	 *
-	 * \param index The model index of the item that's data is to be saved.
-	 * \param value The data that is to be saved.
-	 * \param role The role specifies what kind of data should be saved.
+	 *      @param [in] index   The model index of the item that's data is to be saved.
+	 *      @param [in] value   The data that is to be saved.
+	 *      @param [in] role    The role specifies what kind of data should be saved.
 	 *
-	 * \return True if saving happened successfully.
-	*/
-	virtual bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole);
+	 *      @return True if saving happened successfully.
+     */
+	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*! \brief Get the item flags that defines the possible operations for the item.
+	/*!
+     *  Get the item flags that defines the possible operations for the item.
 	 *
-	 * \param index Model index that identifies the item.
+	 *      @param [in] index   Model index that identifies the item.
 	 *
-	 * \return Qt::ItemFlags specify the possible operations for the item.
-	*/
+	 *      @return Qt::ItemFlags specify the possible operations for the item.
+     */
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*! \brief Append a new item to the end of the list.
+	/*!
+     *  Append a new item to the end of the list.
 	 *
-	 * \param item The string to be appended to the end of the list.
+	 *      @param [in] item    The string to be appended to the end of the list.
 	 */
 	virtual void appendItem(const QString item);
 
-	/*! \brief Get the items currently stored in the model.
+	/*!
+     *  Get the items currently stored in the model.
 	 *
-	 * \return QStringList containing the items.
+	 *      @return QStringList containing the items.
 	 */
 	virtual const QStringList& items() const;
 
-	/*! \brief Set the items to the model.
+	/*!
+     *  Set the items to the model.
 	 *
-	 * \param items QStringList containing the items to be contained in the
-	 * model.
+	 *      @param [in] items   QStringList containing the items to be contained in the model.
 	 */
 	virtual void setItems(const QStringList& items);
 
-	/*! \brief Append a QStringList to the current items in the list
+	/*!
+     *  Append a QStringList to the current items in the list.
 	 *
-	 * \param items QStringList containing the items to append
-	 *
-	*/
+	 *      @param [in] items   QStringList containing the items to append
+     */
 	virtual void appendItems(const QStringList& items);
 
-	/*! \brief Replace an item text in the list
+	/*!
+     *  Replace an item text in the list.
 	 * 
-	 * \param index ModelIndex of the item that is to be replaced.
-	 * \param newText The new text for the given item.
+	 *      @param [in] index       ModelIndex of the item that is to be replaced.
+	 *      @param [in] newText     The new text for the given item.
 	 */
 	virtual void replace(QModelIndex& index, const QString newText);
 
 public slots:
 	 
-	/*! \brief Removes the specified item from the model.
-	*
-	* \param index The model index of the item to remove.
-	*/
+	/*!
+     *  Removes the specified item from the model.
+     *
+     *      @param [in] index   The model index of the item to remove.
+     */
 	virtual void remove(const QModelIndex& index);
 
-	/*! \brief A new item should be added to given index.
+	/*!
+     *  A new item should be added to given index.
 	 *
-	 * \param index The position where new item should be added at.
-	 *
-	*/
+	 *      @param [in] index   The position where new item should be added at.
+     */
 	virtual void addItem(const QModelIndex& index);
 
-	/*! \brief Move item to another position.
+	/*!
+     *  Move item to another position.
 	 *
-	 * \param originalPos Identifies the item that should be moved.
-	 * \param newPos The new position the item should be moved to.
-	 *
-	*/
+	 *      @param [in] originalPos     Identifies the item that should be moved.
+	 *      @param [in] newPos          The new position the item should be moved to.
+	 */
 	virtual void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
 
 signals: 
 
-	//! \brief Emitted when contents of the model change.
+	/*!
+     *  Emitted when contents of the model change.
+     */
 	void contentChanged();
 
 protected:
 
-	//! \brief Contains the items to be displayed in a list.
+	/*!
+     *  Contains the items to be displayed in a list.
+     */
 	QStringList items_;
 
 private:
 
-	//! No copying
+	//! No copying. No assignment.
 	ListManagerModel(const ListManagerModel& other);
-
-	//! No assignment
 	ListManagerModel& operator=(const ListManagerModel& other);
 };
 

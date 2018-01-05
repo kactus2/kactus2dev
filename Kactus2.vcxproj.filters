@@ -917,6 +917,12 @@
     <Filter Include="Header Files\editors\BusDefinitionEditor">
       <UniqueIdentifier>{cde09ff6-5bc5-4b7e-9974-552b151c81b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\views\EditableTreeView">
+      <UniqueIdentifier>{fed4b9d0-dc32-4bd5-9ce4-c279ea264331}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\views\EditableTreeView">
+      <UniqueIdentifier>{b85af0c9-7149-4008-9c0c-40fe9e875e07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4399,6 +4405,51 @@
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionPortsSortFilter.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortWireTypeEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortWireTypeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortWireTypeDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortWireTypeModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortWireTypeModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_EditableTreeView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\views\EditableTreeView\EditableTreeView.cpp">
+      <Filter>Source Files\common\views\EditableTreeView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortWireTypeView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortWireTypeView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_EditableTreeSortFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\views\EditableTreeView\EditableTreeSortFilter.cpp">
+      <Filter>Source Files\common\views\EditableTreeView</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortTypeDefinitionDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortWireTypeDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortTypeDefinitionEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortTypeDefinitionEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6063,6 +6114,27 @@
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionDefinitionPortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortWireTypeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortWireTypeModel.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortWireTypeDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\views\EditableTreeView\EditableTreeView.h">
+      <Filter>Header Files\common\views\EditableTreeView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortWireTypeView.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\views\EditableTreeView\EditableTreeSortFilter.h">
+      <Filter>Header Files\common\views\EditableTreeView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortTypeDefinitionEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6655,6 +6727,12 @@
     </ClInclude>
     <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentGeneratorHTML.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\PortWireTypeColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\PortTypeDefinitionDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -145,13 +145,13 @@ void PortReader::parseTypeDefinitions(QDomElement const& wireTypeDefinitionEleme
     QSharedPointer<WireTypeDef> newWireTypeDefinition) const
 {
     QDomNodeList typeDefinitionList = wireTypeDefinitionElement.elementsByTagName(QStringLiteral("ipxact:typeDefinition"));
-    QStringList definitionList;
+    QSharedPointer<QStringList> definitionList(new QStringList());
     for (int typeDefinitionIndex = 0; typeDefinitionIndex < typeDefinitionList.count(); ++typeDefinitionIndex)
     {
         QString definition = typeDefinitionList.at(typeDefinitionIndex).firstChild().nodeValue();
-        definitionList.append(definition);
+        definitionList->append(definition);
     }
-    if (!definitionList.isEmpty())
+    if (!definitionList->isEmpty())
     {
         newWireTypeDefinition->setTypeDefinitions(definitionList);
     }
@@ -164,15 +164,15 @@ void PortReader::parseViewReferences(QDomElement const& wireTypeDefinitionElemen
     QSharedPointer<WireTypeDef> newWireTypeDefinition) const
 {
     QDomNodeList viewRefNodeList = wireTypeDefinitionElement.elementsByTagName(QStringLiteral("ipxact:viewRef"));
-    QStringList viewRefs;
+    QSharedPointer<QStringList> viewRefs(new QStringList());
 
     for (int viewIndex = 0; viewIndex < viewRefNodeList.count(); ++viewIndex)
     {
         QString viewName = viewRefNodeList.at(viewIndex).firstChild().nodeValue();
-        viewRefs.append(viewName);
+        viewRefs->append(viewName);
     }
 
-    if (!viewRefs.isEmpty())
+    if (!viewRefs->isEmpty())
     {
         newWireTypeDefinition->setViewRefs(viewRefs);
     }

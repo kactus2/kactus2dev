@@ -128,7 +128,7 @@ public:
      *
      *      @return QModelIndex that identifies the object.
      */
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
     /*!
      *  Get the model index of the parent of the object.
@@ -137,7 +137,7 @@ public:
      *
      *      @return QModelindex that identifies the parent of the given object.
      */
-    QModelIndex parent(const QModelIndex &child) const;
+    virtual QModelIndex parent(const QModelIndex &child) const;
     
     /*!
      *  Get the list of acceptable mime types.

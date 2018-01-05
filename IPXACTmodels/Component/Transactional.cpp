@@ -241,7 +241,7 @@ void Transactional::setTypeName(QString const& typeName, QString const& viewName
 {
     foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
     {
-        if (transactionalTypeDefinition->getViewRefs().contains(viewName) || viewName.isEmpty())
+        if (transactionalTypeDefinition->getViewRefs()->contains(viewName) || viewName.isEmpty())
         {
             transactionalTypeDefinition->setTypeName(typeName);
             return;
@@ -283,7 +283,7 @@ QString Transactional::getTypeDefinition(QString const& typeName) const
     {
         if (transactionalTypeDefinition->getTypeName() == typeName)
         {
-            return transactionalTypeDefinition->getTypeDefinitions().value(0, QString());
+            return transactionalTypeDefinition->getTypeDefinitions()->value(0, QString());
         }
     }
 
@@ -298,7 +298,10 @@ QStringList Transactional::getTypeDefinitions() const
     QStringList typeDefs;
     foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
     {
-        typeDefs.append(transactionalTypeDefinition->getTypeDefinitions());
+        foreach (QString singleDefinition, *transactionalTypeDefinition->getTypeDefinitions())
+        {
+            typeDefs.append(singleDefinition);
+        }
     }
     return typeDefs;
 }
@@ -312,8 +315,8 @@ void Transactional::setTypeDefinition(const QString& typeName, const QString& ty
     {
         if (transactionalTypeDefinition->getTypeName() == typeName)
         {
-            QStringList typeDefinitions;
-            typeDefinitions.append(typeDefinition);
+            QSharedPointer<QStringList> typeDefinitions(new QStringList());
+            typeDefinitions->append(typeDefinition);
             transactionalTypeDefinition->setTypeDefinitions(typeDefinitions);
             return;
         }
@@ -322,8 +325,8 @@ void Transactional::setTypeDefinition(const QString& typeName, const QString& ty
     transTypeDefs_->clear();
 
     QSharedPointer<WireTypeDef> transactionalTypeDefinition(new WireTypeDef(typeName));
-    QStringList typeDefinitions;
-    typeDefinitions.append(typeDefinition);
+    QSharedPointer<QStringList> typeDefinitions(new QStringList());
+    typeDefinitions->append(typeDefinition);
     transactionalTypeDefinition->setTypeDefinitions(typeDefinitions);
     transTypeDefs_->append(transactionalTypeDefinition);
 }
@@ -336,7 +339,7 @@ bool Transactional::hasTypeDefinitions() const
     foreach(QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
     {
         if (!transactionalTypeDefinition->getTypeName().isEmpty() ||
-            !transactionalTypeDefinition->getTypeDefinitions().isEmpty())
+            !transactionalTypeDefinition->getTypeDefinitions()->isEmpty())
         {
             return true;
         }

@@ -1,21 +1,26 @@
-/* 
- *  	Created on: 30.5.2012
- *      Author: Antti Kamppi
- * 		filename: listeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: ListEditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 30.05.2012
+//
+// Description:
+// Editor for a list of items.
+//-----------------------------------------------------------------------------
 
 #include "listeditor.h"
 
 #include <QHBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: listeditor::ListEditor()
+//-----------------------------------------------------------------------------
 ListEditor::ListEditor(QWidget *parent):
 QWidget(parent),
 model_(this),
-view_(this) {
-
-    setFocusProxy(&view_);
-
+view_(this)
+{
 	// the signals from the view
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);
@@ -41,21 +46,42 @@ view_(this) {
 	view_.setModel(&model_);
 }
 
-ListEditor::~ListEditor() {
+//-----------------------------------------------------------------------------
+// Function: listeditor::~ListEditor()
+//-----------------------------------------------------------------------------
+ListEditor::~ListEditor()
+{
+
 }
 
-const QStringList& ListEditor::items() const {
+//-----------------------------------------------------------------------------
+// Function: listeditor::items()
+//-----------------------------------------------------------------------------
+const QStringList& ListEditor::items() const
+{
 	return model_.items();
 }
 
-void ListEditor::setItems( const QStringList& items ) {
+//-----------------------------------------------------------------------------
+// Function: listeditor::setItems()
+//-----------------------------------------------------------------------------
+void ListEditor::setItems( const QStringList& items )
+{
 	model_.setItems(items);
 }
 
-int ListEditor::size() const {
+//-----------------------------------------------------------------------------
+// Function: listeditor::size()
+//-----------------------------------------------------------------------------
+int ListEditor::size() const
+{
 	return model_.rowCount();
 }
 
-void ListEditor::setItemDelegate( QStyledItemDelegate* delegate ) {
+//-----------------------------------------------------------------------------
+// Function: listeditor::setItemDelegate()
+//-----------------------------------------------------------------------------
+void ListEditor::setItemDelegate( QStyledItemDelegate* delegate )
+{
 	view_.setItemDelegate(delegate);
 }

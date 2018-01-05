@@ -45,10 +45,10 @@ filterSelection_(new QCheckBox(tr("Show immediate values"), this))
 	topLayout->addWidget(&view_);
     topLayout->addWidget(filterSelection_);
 
-    connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-        delegate_, SLOT(onCreateRemoveElementCommand(const QModelIndex&)), Qt::UniqueConnection);
-    connect(&view_, SIGNAL(removeAllSubItems(QModelIndex const&)),
-        delegate_, SLOT(onCreateMultipleElementRemoveCommands(QModelIndex const&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(removeSelectedItems(QModelIndexList const&)),
+        delegate_, SLOT(onCreateRemoveElementCommands(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(removeAllSubItems(QModelIndexList const&)),
+        delegate_, SLOT(onCreateMultipleElementRemoveCommands(QModelIndexList const&)), Qt::UniqueConnection);
 
     connect(delegate_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

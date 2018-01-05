@@ -50,6 +50,11 @@ AssistedLineEdit::~AssistedLineEdit()
         removeEventFilter(this);
         mainWnd_->removeEventFilter(this);
     }
+
+    if (contentAssist_)
+    {
+        delete contentAssist_;
+    }
 }
 
 //-----------------------------------------------------------------------------
