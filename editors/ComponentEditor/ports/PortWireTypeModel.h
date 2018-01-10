@@ -18,6 +18,8 @@
 class WireTypeDef;
 class Port;
 
+class PortTypeValidator;
+
 //-----------------------------------------------------------------------------
 //! Table model that can be used to display port wire type definitions.
 //-----------------------------------------------------------------------------
@@ -30,9 +32,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this model.
+     *      @param [in] typeValidator   Validator for port type definitions.
+	 *      @param [in] parent          Pointer to the owner of this model.
      */
-	PortWireTypeModel(QObject *parent);
+	PortWireTypeModel(QSharedPointer<PortTypeValidator> typeValidator, QObject *parent);
 	
 	/*!
      *  The destructor.
@@ -201,12 +204,34 @@ private:
      */
     QSharedPointer<WireTypeDef> getIndexedWireTypeDefinition(QModelIndex index) const;
 
+    /*!
+     *  Get the color for valid and invalid indexes.
+     *
+     *      @param [in] index           The selected index.
+     *      @param [in] typeDefinition  The indexed type definition.
+     *
+     *      @return Black color for valid indexes, red for invalid.
+     */
+    QVariant blackForValidRedForInvalid(QModelIndex const& index, QSharedPointer<WireTypeDef> typeDefinition)
+        const;
+
+    /*!
+     *  Validate the selected index.
+     *
+     *      @param [in] index           The selected index.
+     *      @param [in] typeDefinition  The indexed type definition.
+     */
+    bool validateIndex(QModelIndex const& index, QSharedPointer<WireTypeDef> typeDefinition) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The contained wire type definitions.
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > wireTypeDefinitions_;
+
+    //! The validator for type definitions.
+    QSharedPointer<PortTypeValidator> typeValidator_;
 };
 
 #endif // PORTWIRETYPEMODEL_H

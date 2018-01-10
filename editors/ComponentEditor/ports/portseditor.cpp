@@ -31,6 +31,8 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/Component/validators/PortValidator.h>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -66,7 +68,8 @@ delegate_()
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
-    delegate_ = new PortsDelegate(component, parameterCompleter, parameterFinder, this);
+    delegate_ = new PortsDelegate(component, parameterCompleter, parameterFinder,
+        portValidator->getTypeValidator(), this);
 
 	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
 	QString defaultPath = QString("%1/portListing.csv").arg(componentPath);

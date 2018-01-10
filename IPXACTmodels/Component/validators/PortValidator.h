@@ -23,6 +23,9 @@ class ExpressionParser;
 class Port;
 class View;
 class Wire;
+class WireTypeDef;
+
+class PortTypeValidator;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Port.
@@ -123,15 +126,6 @@ public:
      *      @return True, if the port bound is valid, otherwise false.
      */
     bool portBoundIsValid(QString const& portBound) const;
-    	
-    /*!
-     *  Check if the referenced view exists within the provided collection.
-     *
-	 *      @param [in] viewRef		The reference which view that must be found.
-     *
-     *      @return True, if the view reference is valid, otherwise false.
-     */
-    bool referencedViewExists(QString const& viewRef) const;
 
     /*!
      *  Check if the transactional port is valid.
@@ -143,6 +137,24 @@ public:
     bool hasValidTransactionalPort(QSharedPointer<Port> port) const;
 
     /*!
+     *  Check if the port has valid type definitions.
+     *
+     *      @param [in] port    The selected port.
+     *
+     *      @return True, if the type definitions are valid, false otherwise.
+     */
+    bool hasValidTypes(QSharedPointer<Port> port) const;
+
+    /*!
+     *  Check if the selected type definitions are valid.
+     *
+     *      @param [in] typeDefinitions     The selected type definitions.
+     *
+     *      @return True, if the type definitions are valid, false otherwise.
+     */
+    bool hasValidTypeDefinitions(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const;
+
+    /*!
      *  Finds possible errors in a Port and creates a list of them.
      *
      *      @param [in] errors      List of found errors.
@@ -150,6 +162,13 @@ public:
      *      @param [in] context     Context to help locate the errors.
      */
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> port, QString const& context) const;
+
+    /*!
+     *  Get the type definition validator.
+     *
+     *      @return The validator used for type definitions.
+     */
+    QSharedPointer<PortTypeValidator> getTypeValidator() const;
 
 private:
 
@@ -176,6 +195,16 @@ private:
     void findErrorsInTransactional(QVector<QString> &errors, QSharedPointer<Port> port,
         QString const& context) const;
 
+    /*!
+     *  Find possible errors in the selected type definitions.
+     *
+     *      @param [in] errors              List of found errors.
+     *      @param [in] typeDefinitions     The selected type definitions.
+     *      @param [in] context             Context to help locate the errors.
+     */
+    void findErrorsInTypeDefinitions(QVector<QString>& errors,
+        QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions, QString const& context) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -183,8 +212,8 @@ private:
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! The currently available views.
-    QSharedPointer<QList<QSharedPointer<View> > > availableViews_;
+    //! Validator for port type definitions.
+    QSharedPointer<PortTypeValidator> typeValidator_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

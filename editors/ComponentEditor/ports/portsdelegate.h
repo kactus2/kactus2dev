@@ -19,6 +19,8 @@
 class ParameterFinder;
 class Component;
 
+class PortTypeValidator;
+
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors to edit ports of a component.
 //-----------------------------------------------------------------------------
@@ -34,10 +36,12 @@ public:
      *      @param [in] component                   Component containing the edited ports.
      *      @param [in] parameterNameCompleter      The completer to use for parameter names in expression editor.
      *      @param [in] parameterFinder             The parameter finder to use for for expression editor.
+     *      @param [in] typeValidator               Validator for port type definitions.
      *      @param [in] parent                      The parent object.
      */
 	PortsDelegate(QSharedPointer<Component> component, QCompleter* parameterCompleter,
-        QSharedPointer<ParameterFinder> parameterFinder, QObject* parent = 0);
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortTypeValidator> typeValidator,
+        QObject* parent = 0);
 	
 	//! The destructor
 	virtual ~PortsDelegate();
@@ -194,6 +198,8 @@ private:
     //! The new state for the group modify.
     Qt::CheckState adhocGroupState_;
 
+    //! Validator for the port type definitions.
+    QSharedPointer<PortTypeValidator> typeValidator_;
 };
 
 #endif // PORTSDELEGATE_H

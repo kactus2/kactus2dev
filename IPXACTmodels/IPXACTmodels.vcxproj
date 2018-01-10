@@ -297,6 +297,7 @@
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
     <ClCompile Include="Component\validators\PortMapValidator.cpp" />
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
+    <ClCompile Include="Component\validators\PortTypeValidator.cpp" />
     <ClCompile Include="Component\validators\PortValidator.cpp" />
     <ClCompile Include="Component\validators\RemapStateValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryMapBaseValidator.cpp" />
@@ -2145,6 +2146,7 @@
     <ClInclude Include="Component\validators\InstantiationsValidator.h" />
     <ClInclude Include="Component\validators\PortMapValidator.h" />
     <ClInclude Include="Component\validators\OtherClockDriverValidator.h" />
+    <ClInclude Include="Component\validators\PortTypeValidator.h" />
     <ClInclude Include="Component\validators\PortValidator.h" />
     <ClInclude Include="Component\validators\RemapStateValidator.h" />
     <ClInclude Include="Component\validators\MemoryMapBaseValidator.h" />

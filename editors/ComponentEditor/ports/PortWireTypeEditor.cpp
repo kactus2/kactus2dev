@@ -21,10 +21,11 @@
 //-----------------------------------------------------------------------------
 // Function: PortWireTypeEditor::PortWireTypeEditor()
 //-----------------------------------------------------------------------------
-PortWireTypeEditor::PortWireTypeEditor(QSharedPointer<Component> component, QWidget* parent):
+PortWireTypeEditor::PortWireTypeEditor(QSharedPointer<Component> component,
+    QSharedPointer<PortTypeValidator> typeValidator, QWidget* parent):
 QScrollArea(parent),
 typeDefinitionView_(new PortWireTypeView(this)),
-typeDefinitionModel_(new PortWireTypeModel(this)),
+typeDefinitionModel_(new PortWireTypeModel(typeValidator, this)),
 typeDefinitionDelegate_(new PortWireTypeDelegate(component, this))
 {
     setWidgetResizable(true);

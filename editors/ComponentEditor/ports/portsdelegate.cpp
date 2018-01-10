@@ -31,11 +31,13 @@
 // Function: PortsDelegate::PortsDelegate()
 //-----------------------------------------------------------------------------
 PortsDelegate::PortsDelegate(QSharedPointer<Component> component, QCompleter* parameterCompleter,
-    QSharedPointer<ParameterFinder> parameterFinder, QObject* parent):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortTypeValidator> typeValidator,
+    QObject* parent):
 ExpressionDelegate(parameterCompleter, parameterFinder, parent),
 component_(component),
 adhocGroupModify_(false),
-adhocGroupState_(Qt::Unchecked)
+adhocGroupState_(Qt::Unchecked),
+typeValidator_(typeValidator)
 {
 
 }
@@ -77,7 +79,7 @@ QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
 //-----------------------------------------------------------------------------
 QWidget* PortsDelegate::createTypeEditor(QWidget* parent) const
 {
-    PortWireTypeEditor* editor = new PortWireTypeEditor(component_, parent);
+    PortWireTypeEditor* editor = new PortWireTypeEditor(component_, typeValidator_, parent);
 
     connect(editor, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 

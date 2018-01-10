@@ -905,6 +905,10 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
     {
         return portValidator_->arrayValueIsValid(port->getArrayRight());
     }
+    else if (index.column() == PortColumns::TYPE_NAME)
+    {
+        return portValidator_->hasValidTypes(port);
+    }
     else
     {
         return true;

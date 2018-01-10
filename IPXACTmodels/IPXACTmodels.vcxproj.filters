@@ -1322,6 +1322,9 @@
     <ClCompile Include="Component\validators\IndirectInterfaceValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\PortTypeValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1841,6 +1844,9 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="Component\validators\IndirectInterfaceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\PortTypeValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>

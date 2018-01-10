@@ -14,11 +14,14 @@
 
 #include <QScrollArea>
 
+class Port;
+class Component;
+
+class PortTypeValidator;
+
 class PortWireTypeModel;
 class PortWireTypeDelegate;
-class Port;
 class PortWireTypeView;
-class Component;
 
 //-----------------------------------------------------------------------------
 //! Editor for the port wire type definitions..
@@ -32,10 +35,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] component   Component containing the edited port.
-	 *      @param [in] parent      The owner of the editor.
+     *      @param [in] component       Component containing the edited port.
+     *      @param [in] typeValidator   Validator for the port type definitions.
+	 *      @param [in] parent          The owner of the editor.
 	 */
-    PortWireTypeEditor(QSharedPointer<Component> component, QWidget* parent);
+    PortWireTypeEditor(QSharedPointer<Component> component, QSharedPointer<PortTypeValidator> typeValidator,
+        QWidget* parent);
 	
 	/*!
      *  The destructor.
