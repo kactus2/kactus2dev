@@ -350,10 +350,17 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         else if (index.column() == PortColumns::TYPE_NAME)
         {
             QString typeName = value.toString();
-            port->setTypeName(typeName);
+            if (typeName.isEmpty())
+            {
+                port->getTypes()->clear();
+            }
+            else
+            {
+                port->setTypeName(typeName);
 
-            // update the type definition for the new type name.
-            port->setTypeDefinition(typeName, QString());
+                // update the type definition for the new type name.
+                port->setTypeDefinition(typeName, QString());
+            }
 
             emit dataChanged(index, index);
             return true;

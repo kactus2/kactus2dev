@@ -307,6 +307,13 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<Array> > > getArrays() const;
 
+    /*!
+     *  Get the type definitions.
+     *
+     *      @return A list of pointers to the type definitions contained within the port.
+     */
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getTypes() const;
+
 private:
 
     /*!

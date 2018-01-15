@@ -25,7 +25,7 @@
 
 namespace PortWireConstants
 {
-    QString const DEFINITIONSEPARATOR = ", ";
+    QString const DEFINITIONSEPARATOR = "; ";
 }
 
 //-----------------------------------------------------------------------------
