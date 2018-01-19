@@ -24,7 +24,7 @@ class PortWireTypeDelegate;
 class PortWireTypeView;
 
 //-----------------------------------------------------------------------------
-//! Editor for the port wire type definitions..
+//! Editor for the port wire type definitions.
 //-----------------------------------------------------------------------------
 class PortWireTypeEditor : public QScrollArea
 {

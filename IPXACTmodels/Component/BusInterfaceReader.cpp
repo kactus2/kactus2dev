@@ -170,12 +170,7 @@ void BusinterfaceReader::parseAbstractionTypes(QDomElement const& abstractionTyp
 
         QDomNode abstractionNode = abstractionNodes.at(i);
 
-        QDomElement viewRefElement = abstractionNode.firstChildElement(QStringLiteral("ipxact:viewRef"));
-        if (!viewRefElement.isNull())
-        {
-            QString viewRef = viewRefElement.firstChild().nodeValue();
-            newAbstractionType->setViewRef(XmlUtils::removeWhiteSpace(viewRef));
-        }
+        parseViewReferences(abstractionNode, newAbstractionType);
 
         QDomElement abstractionRefElement = abstractionNode.firstChildElement(QStringLiteral("ipxact:abstractionRef"));
         newAbstractionType->setAbstractionRef(parseConfigurableVLNVReference(abstractionRefElement,
@@ -189,6 +184,29 @@ void BusinterfaceReader::parseAbstractionTypes(QDomElement const& abstractionTyp
 
         busInterface->getAbstractionTypes()->append(newAbstractionType);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceReader::parseAbstractionTypes()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::parseViewReferences(QDomNode const& abstractionNode,
+    QSharedPointer<AbstractionType> newAbstractionType) const
+{
+    QDomElement abstractionElement = abstractionNode.toElement();
+    if (!abstractionElement.isNull())
+    {
+        QSharedPointer<QStringList> viewList(new QStringList());
+
+        QDomNodeList abstractionViewNodes =
+            abstractionNode.toElement().elementsByTagName(QStringLiteral("ipxact:viewRef"));
+        for (int i = 0; i < abstractionViewNodes.count(); ++i)
+        {
+            QString viewReference = abstractionViewNodes.at(i).firstChild().nodeValue();
+            viewList->append(viewReference);
+        }
+
+        newAbstractionType->setViewReferences(viewList);
+    }
 }
 
 //-----------------------------------------------------------------------------

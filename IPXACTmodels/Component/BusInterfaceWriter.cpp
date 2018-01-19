@@ -185,13 +185,16 @@ void BusInterfaceWriter::writeAbstractionTypes(QXmlStreamWriter& writer,
 		{
 			writer.writeStartElement(QStringLiteral("ipxact:abstractionType"));
 
-			if (!abstractionType->getViewRef().isEmpty() )
-			{
-				writer.writeTextElement(QStringLiteral("ipxact:viewRef"), abstractionType->getViewRef());
-			}
+            foreach (QString viewReference, *abstractionType->getViewReferences())
+            {
+                writer.writeTextElement(QStringLiteral("ipxact:viewRef"), viewReference);
+            }
 
-            writer.writeEmptyElement(QStringLiteral("ipxact:abstractionRef"));
-            writeVLNVAttributes(writer, *abstractionType->getAbstractionRef());
+            if (abstractionType->getAbstractionRef())
+            {
+                writer.writeEmptyElement(QStringLiteral("ipxact:abstractionRef"));
+                writeVLNVAttributes(writer, *abstractionType->getAbstractionRef());
+            }
 
             writePortMaps(writer, abstractionType);
 

@@ -173,7 +173,7 @@ bool BusInterfaceValidator::hasValidAbstractionTypes(QSharedPointer<BusInterface
     foreach (QSharedPointer<AbstractionType> abstraction, *busInterface->getAbstractionTypes())
     {
         if (!abstractionTypeHasValidAbstractionReference(abstraction) ||
-            !abstractionTypeHasValidViewReference(abstraction) ||
+            !abstractionTypeHasValidViewReferences(abstraction) ||
             !abstractionTypeHasValidPortMaps(busInterface, abstraction))
         {
             return false;
@@ -199,24 +199,36 @@ bool BusInterfaceValidator::abstractionTypeHasValidAbstractionReference(
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::abstractionTypeHasValidViewReference()
+// Function: BusInterfaceValidator::abstractionTypeHasValidViewReferences()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::abstractionTypeHasValidViewReference(QSharedPointer<AbstractionType> abstraction) const
+bool BusInterfaceValidator::abstractionTypeHasValidViewReferences(QSharedPointer<AbstractionType> abstraction)
+    const
 {
-    if (abstraction->getViewRef().isEmpty())
+    foreach (QString viewReference, *abstraction->getViewReferences())
     {
-        return true;
+        if (!referencedViewIsValid(viewReference))
+        {
+            return false;
+        }
     }
 
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::referencedViewIsValid()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::referencedViewIsValid(QString const& viewReference) const
+{
     foreach (QSharedPointer<View> view, *availableViews_)
     {
-        if (abstraction->getViewRef() == view->name())
+        if (view->name() == viewReference)
         {
             return true;
         }
     }
 
-    return abstraction->getViewRef().isEmpty();
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -853,10 +865,13 @@ void BusInterfaceValidator::findErrorsInAbstractionTypes(QVector<QString>& error
 {
     foreach (QSharedPointer<AbstractionType> abstraction, *busInterface->getAbstractionTypes())
     {
-        if (!abstractionTypeHasValidViewReference(abstraction))
+        foreach (QString viewReference, *abstraction->getViewReferences())
         {
-            errors.append(QObject::tr("Invalid view reference %1 set for abstraction type in %2")
-                .arg(abstraction->getViewRef()).arg(context));
+            if (!referencedViewIsValid(viewReference))
+            {
+                errors.append(QObject::tr("Invalid view reference %1 set for abstraction type in %2")
+                    .arg(viewReference).arg(context));
+            }
         }
 
         QString portMapContext = QObject::tr("%1 %2")

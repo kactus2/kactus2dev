@@ -167,10 +167,13 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == BusInterfaceColumns::ABSDEF)
         {
-            if (!busInterface->getAbstractionTypes()->isEmpty() &&
-                busInterface->getAbstractionTypes()->first()->getAbstractionRef())
+            if (busInterface->getAbstractionTypes()->size() == 1)
             {
                 return busInterface->getAbstractionTypes()->first()->getAbstractionRef()->toString();
+            }
+            else if (!busInterface->getAbstractionTypes()->isEmpty())
+            {
+                return QStringLiteral("Multiple");
             }
 
             return QVariant();

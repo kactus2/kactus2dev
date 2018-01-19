@@ -29,6 +29,7 @@
 class BusInterface;
 class Component;
 class LibraryInterface;
+class AbstractionTypesEditor;
 
 //-----------------------------------------------------------------------------
 //! Container for editor on the general tab of a bus interface editor.
@@ -150,9 +151,6 @@ private slots:
 	//! Handler for changes in the bus type.
 	void onBusTypeChanged();
 
-	//! Handler for changes in the abstraction type.
-	void onAbsTypeChanged();
-
 	//! Handler for changes in interface mode.
 	void onModeChanged(General::InterfaceMode mode);
 
@@ -186,25 +184,25 @@ private:
 	//! Pointer to the bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 
-	//! Contains the name, display name and description of bus interface
+	//! Contains the name, display name and description of bus interface.
 	NameGroupEditor nameEditor_;
 
-	//! Contains the vlnv of the bus type for this bus interface
+	//! Contains the vlnv of the bus type for this bus interface.
 	VLNVEditor busType_;
 
-	//! Contains the vlnv of the abstraction type for this interface
-	VLNVEditor absType_;
+	//! Contains the vlnv of the abstraction types for this interface.
+    AbstractionTypesEditor* abstractionEditor_;
 
-	//! Contains the mode-specific editors
+	//! Contains the mode-specific editors.
 	InterfaceModeStack modeStack_;
 
-	//! Contains the details of this bus interface
+	//! Contains the details of this bus interface.
 	BusIfGeneralDetails details_;
 
 	//! Contains the parameters of bus interface.
 	ParameterGroupBox parameters_;
 
-	//! Pointer to the instance that manages the library
+	//! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 };
 
