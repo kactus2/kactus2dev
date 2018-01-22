@@ -21,7 +21,6 @@ class FileDependencyItem;
 class FileDependency;
 class ISourceAnalyzerPlugin;
 class Component;
-class PluginManager;
 
 //-----------------------------------------------------------------------------
 //! The data model for the file dependencies.
@@ -34,11 +33,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] pluginMgr  The plugin manager.
      *      @param [in] component  The component to which this model is made.
      *      @param [in] basePath   The component's base path.
      */
-    FileDependencyModel(PluginManager const& pluginMgr, QSharedPointer<Component> component,
+    FileDependencyModel(QSharedPointer<Component> component,
                         QString const& basePath);
 
     /*!
@@ -330,9 +328,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The plugin manager.
-    PluginManager const& pluginMgr_;
 
     //! The parent component.
     QSharedPointer<Component> component_;

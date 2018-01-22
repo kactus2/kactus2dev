@@ -14,14 +14,33 @@
 
 #include <VersionHelper.h>
 
+#include <settings/SettingsUpdater.h>
+
 #include <QApplication>
 #include <QPalette>
 #include <QTimer>
+#include <QCommandLineParser>
 
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(kactus);
     QApplication application(argc, argv);
+    
+    // set the identification tags for the application
+    QCoreApplication::setOrganizationDomain("tut.fi");
+    QCoreApplication::setOrganizationName("TUT");
+    QCoreApplication::setApplicationName("Kactus2");
+    QCoreApplication::setApplicationVersion(VersionHelper::createVersionString());
+
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+
+    SettingsUpdater::runUpgrade(0);
+
+    QSettings settings;
+    QStringList pluginsPath = settings.value("Platform/PluginsPath", QStringList("Plugins")).toStringList();
+
+    PluginManager& pluginMgr = PluginManager::getInstance();
+    pluginMgr.setPluginPaths(pluginsPath);
 
     // Set the palette to use nice pastel colors.
     QPalette palette = application.palette();

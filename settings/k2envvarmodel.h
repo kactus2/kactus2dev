@@ -17,13 +17,15 @@
 /*! \brief Manages the K2 environment variables displayed in the settings dialog.
  *
  */
-class K2EnvVarModel : public QAbstractTableModel {
+class K2EnvVarModel : public QAbstractTableModel
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief Defines the used columns
-	enum Columns {
+	//! Defines the used columns
+	enum Columns
+    {
 		NAME_COLUMN	= 0,
 		VALUE_COLUMN,
 		FILE_SUFFIX_COLUMN,
@@ -31,9 +33,9 @@ public:
 		COLUMN_COUNT
 	};
 
-	K2EnvVarModel(QSettings& settings, PluginManager& pluginMgr, QObject *parent);
+	K2EnvVarModel(QSettings& settings, QObject *parent);
 	
-	//! \brief The destructor.
+	//! The destructor.
 	virtual ~K2EnvVarModel();
 
 	/*! \brief Save the model to settings.
@@ -53,7 +55,7 @@ public:
 	 *
 	 * \return Number of rows the item has.
 	*/
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! \brief Get the number of columns the item has to be displayed.
 	 *
@@ -61,7 +63,7 @@ public:
 	 *
 	 * \return The number of columns to be displayed.
 	*/
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! \brief Get the item flags that defines the possible operations for the item.
 	 *
@@ -69,7 +71,7 @@ public:
 	 *
 	 * \return Qt::ItemFlags specify the possible operations for the item.
 	*/
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	Qt::ItemFlags flags(QModelIndex const& index) const;
 
 	/*! \brief Get the header data for specified header.
 	 *
@@ -89,7 +91,7 @@ public:
 	 *
 	 * \return QVariant Contains the data for the item.
 	*/
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
 	/*! \brief Save the data to the model for specified item
 	 *
@@ -99,7 +101,7 @@ public:
 	 *
 	 * \return True if saving happened successfully.
 	*/
-	bool setData(const QModelIndex& index, const QVariant& value, 
+	bool setData(QModelIndex const& index, const QVariant& value, 
 		int role = Qt::EditRole);
 
 	/*! \brief Check that all variables have at least the name defined.
@@ -120,14 +122,14 @@ public slots:
 	 * \param index The index identifying the position for new item.
 	 *
 	*/
-	virtual void onAddItem(const QModelIndex& index);
+	virtual void onAddItem(QModelIndex const& index);
 
 	/*! \brief Remove the item in the given index.
 	 *
 	 * \param index The index identifying the item to remove.
 	 *
 	*/
-	virtual void onRemoveItem(const QModelIndex& index);
+	virtual void onRemoveItem(QModelIndex const& index);
 
 private:
 	
@@ -168,10 +170,10 @@ private:
 		 * \param fromPlugin Defines whether the variable is requested by the plugins.
 		 *
 		*/
-		EnvSetting(const QString& name, 
-			const QString& value,
-			const QString& fileSuffix,
-			const QString& description,
+		EnvSetting(QString const& name, 
+			QString const& value,
+			QString const& fileSuffix,
+			QString const& description,
 			bool fromPlugin);
 
 		/*! \brief The constructor.
@@ -183,7 +185,7 @@ private:
 		 * \param name The name for the variable.
 		 *
 		*/
-		EnvSetting(const QString& name);
+		EnvSetting(QString const& name);
 
 		//! \brief The default constructor.
 		EnvSetting();

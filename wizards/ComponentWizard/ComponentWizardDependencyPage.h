@@ -36,12 +36,11 @@ public:
      *      @param [in] component           The component.
      *      @param [in] parameterFinder     Finder used to identify parameters.
      *      @param [in] componentPath       Path to the component.
-     *      @param [in] pluginMgr           Plugin manager.
      *      @param [in] parent              The parent wizard.
      */
     ComponentWizardDependencyPage(QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder, QString const& componentPath, 
-        PluginManager const& pluginMgr, QWidget* parent);
+        QWidget* parent);
 
     /*!
      *  Destructor.

@@ -30,7 +30,7 @@
 // Function: ComponentWizard::ComponentWizard()
 //-----------------------------------------------------------------------------
 ComponentWizard::ComponentWizard(QSharedPointer<Component> component, QString const& basePath,
-    PluginManager const& pluginMgr, LibraryInterface* handler, QWidget* parent):
+    LibraryInterface* handler, QWidget* parent):
 QWizard(parent),
 originalComponent_(component),
 workingComponent_(component),
@@ -48,7 +48,7 @@ referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
     setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
 
-    ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, pluginMgr,
+    ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, 
         parameterFinder_, expressionFormatter_, this);
 
     ComponentWizardConclusionPage* conclusionPage = new ComponentWizardConclusionPage(component, handler,
@@ -57,7 +57,7 @@ referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
     setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
     setPage(ComponentWizardPages::FILE_DEPENDENCY, new ComponentWizardDependencyPage(component, parameterFinder_,
-        basePath, pluginMgr, this));
+        basePath, this));
     setPage(ComponentWizardPages::IMPORT, importPage);
     setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(handler, parameterFinder_,
         expressionFormatter_, this));

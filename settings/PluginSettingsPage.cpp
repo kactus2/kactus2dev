@@ -38,11 +38,9 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: PluginSettingsPage::PluginSettingsPage()
 //-----------------------------------------------------------------------------
-PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr):
+PluginSettingsPage::PluginSettingsPage(QSettings& settings):
 SettingsPage(settings),
     settings_(settings),
-    pluginMgr_(pluginMgr),
-    localManager_(QStringList()),
     pluginDirSelector_(QApplication::applicationDirPath(), 
         settings.value("Platform/PluginsPath", QStringList("Plugins")).toStringList(), this),
     pluginsTree_(this),
@@ -118,7 +116,7 @@ void PluginSettingsPage::apply()
     {
         // Save the new plugins directories and update plugin manager.
         settings_.setValue("Platform/PluginsPath", pluginDirSelector_.getDirectories());
-        pluginMgr_.setPluginPaths(pluginDirSelector_.getDirectories());
+        PluginManager::getInstance().setPluginPaths(pluginDirSelector_.getDirectories());
     }
 
     settings_.beginGroup("PluginSettings");
@@ -239,7 +237,7 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
     QApplication::setOverrideCursor(Qt::WaitCursor);
     
     QList<IPlugin*> newPlugins;
-    QList<IPlugin*> oldPlugins = localManager_.getAllPlugins();    
+    QList<IPlugin*> oldPlugins = PluginManager::getInstance().getAllPlugins();    
     
     resetStacks();
     pluginsTree_.clear();
@@ -253,10 +251,10 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
         QIcon(":icons/common/graphics/import.png"));
 
     // Enumerate all plugins and add them to the correct root.
-    localManager_.setPluginPaths(pluginDirSelector_.getDirectories());
+    QList<IPlugin*> plugins = PluginManager::findPluginsInPaths(pluginDirSelector_.getDirectories());
 
     settings_.beginGroup("PluginSettings");
-    foreach (IPlugin* plugin, localManager_.getAllPlugins())
+    foreach (IPlugin* plugin, plugins)
     {
         settings_.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
 

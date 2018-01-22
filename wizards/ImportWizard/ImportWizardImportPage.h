@@ -23,7 +23,6 @@
 class Component;
 class LibraryInterface;
 class ImportEditor;
-class PluginManager;
 
 //-----------------------------------------------------------------------------
 //! Import wizard page for importing elements from a file.
@@ -37,14 +36,12 @@ public:
      *
      *      @param [in] component               Pointer to the component to import to.
      *      @param [in] handler                 The library handle.
-     *      @param [in] pluginMgr               Manager for all plugins.
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] parent                  The parent wizard.
      */
     ImportWizardImportPage(QSharedPointer<Component> component,
         LibraryInterface* handler,
-        PluginManager const& pluginMgr,
         QSharedPointer <ComponentParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget* parent);

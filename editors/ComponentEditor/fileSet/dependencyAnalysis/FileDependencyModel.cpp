@@ -30,10 +30,9 @@
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::FileDependencyModel()
 //-----------------------------------------------------------------------------
-FileDependencyModel::FileDependencyModel(PluginManager const& pluginMgr, QSharedPointer<Component> component,
+FileDependencyModel::FileDependencyModel(QSharedPointer<Component> component,
                                          QString const& basePath)
-    : pluginMgr_(pluginMgr),
-      component_(component),
+    : component_(component),
       basePath_(basePath),
       root_(new FileDependencyItem()),
       timer_(0),
@@ -663,7 +662,7 @@ void FileDependencyModel::resolvePlugins()
     analyzerPluginMap_.clear();
     usedPlugins_.clear();
 
-    foreach (IPlugin* plugin, pluginMgr_.getActivePlugins())
+    foreach (IPlugin* plugin, PluginManager::getInstance().getActivePlugins())
     {
         ISourceAnalyzerPlugin* analyzer = dynamic_cast<ISourceAnalyzerPlugin*>(plugin);
 

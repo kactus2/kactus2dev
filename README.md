@@ -1,6 +1,6 @@
 
                                 README : Kactus2
-           Copyright (c) 2012-2017 Tampere University of Technology
+           Copyright (c) 2012-2018 Tampere University of Technology
                             http://funbase.cs.tut.fi
 
 Summary

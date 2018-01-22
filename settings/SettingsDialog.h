@@ -13,7 +13,6 @@
 #define SETTINGSDIALOG_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
-#include <Plugins/PluginSystem/PluginManager.h>
 
 #include <QSettings>
 
@@ -28,10 +27,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] pluginMgr The plugin manager.
      *      @param [in] parent    The parent widget.
      */
-    SettingsDialog(PluginManager& pluginMgr, QWidget* parent = 0);
+    SettingsDialog(QWidget* parent = 0);
 
     /*!
      *  Destructor.

@@ -40,7 +40,7 @@
 // Function: FileDependencyEditor::FileDependencyEditor()
 //-----------------------------------------------------------------------------
 FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
-    QString const& basePath, PluginManager const& pluginMgr, QWidget* parent):
+    QString const& basePath, QWidget* parent):
 QWidget(parent),
     toolbar_(this),
     progressBar_(this),
@@ -50,7 +50,7 @@ QWidget(parent),
     component_(component),
     fileTypeLookup_(),
     ignoreExtList_(),
-    model_(pluginMgr, component, basePath + "/"),
+    model_(component, basePath + "/"),
     basePath_(basePath),
     scanning_(false),
     filterActions_(this),

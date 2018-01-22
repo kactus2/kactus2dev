@@ -22,8 +22,8 @@
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
 //-----------------------------------------------------------------------------
-SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
-    : PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST, APPLY_ALL, parent),
+SettingsDialog::SettingsDialog(QWidget* parent): 
+PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST, APPLY_ALL, parent),
       settings_()
 {
     //setFixedSize(600, 440);
@@ -45,10 +45,10 @@ SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
             new FileTypeSettingsPage(settings_));
 
     addPage(QIcon(":icons/common/graphics/settings-plugins.png"), tr("Plugins"),
-            new PluginSettingsPage(settings_, pluginMgr));
+            new PluginSettingsPage(settings_));
 
 	 addPage(QIcon(":icons/common/graphics/settings-environment_vars.png"), tr("Environment variables"),
-		 new K2EnvVariableSettingsPage(settings_, pluginMgr));
+		 new K2EnvVariableSettingsPage(settings_));
 
     finalizePages();
     resize(sizeHint().width(), minimumHeight());

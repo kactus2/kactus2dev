@@ -21,7 +21,6 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
-class PluginManager;
 class LibraryInterface;
 class Component;
 class ParameterFinder;
@@ -48,7 +47,7 @@ public:
      *      @param [in] parameterFinder     Finder used to identify parameters.
      *      @param [in] pluginMgr           The plugin manager.    
 	 */
-    FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface, PluginManager& pluginMgr,
+    FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface,
         QSharedPointer<ParameterFinder> parameterFinder);
 	
 	//! The destructor

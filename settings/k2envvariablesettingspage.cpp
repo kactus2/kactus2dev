@@ -17,10 +17,10 @@
 //-----------------------------------------------------------------------------
 // Function: K2EnvVariableSettingsPage::K2EnvVariableSettingsPage()
 //-----------------------------------------------------------------------------
-K2EnvVariableSettingsPage::K2EnvVariableSettingsPage(QSettings& settings, PluginManager& pluginMgr):
+K2EnvVariableSettingsPage::K2EnvVariableSettingsPage(QSettings& settings):
 SettingsPage(settings),
     view_(new EditableTableView(this)),
-    model_(new K2EnvVarModel(settings, pluginMgr, this)) 
+    model_(new K2EnvVarModel(settings, this)) 
 {
 	view_->setAllowImportExport(false);
 	view_->setItemsDraggable(false);

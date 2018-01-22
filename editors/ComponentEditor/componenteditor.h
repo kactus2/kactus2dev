@@ -47,13 +47,11 @@ public:
 	/*! The constructor.
 	 *
 	 *      @param [in] libHandler  The instance that manages the component library.
-     *      @param [in] pluginMgr   The instance that manages the plugins.
 	 *      @param [in] component   The component being edited.
 	 *      @param [in] parent      Parent widget of the editor.
 	 *
 	 */
 	ComponentEditor(LibraryInterface* libHandler, 
-        PluginManager& pluginMgr,
 		QSharedPointer<Component> component, 
 		QWidget *parent);
 
@@ -236,9 +234,6 @@ private:
 
     //! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
-
-    //! The instance managing all the plugins.
-    PluginManager& pluginManager_;
 
 	//! The component being edited.
 	QSharedPointer<Component> component_;

@@ -18,6 +18,8 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/ports/portseditor.h>
 
+#include <Plugins/PluginSystem/PluginManager.h>
+
 #include <wizards/ComponentWizard/ImportRunner.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -35,7 +37,7 @@
 // Function: ImportEditor::ImportEditor()
 //-----------------------------------------------------------------------------
 ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    PluginManager const& pluginMgr, QSharedPointer <ComponentParameterFinder> parameterFinder,
+    QSharedPointer <ComponentParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
 QWidget(parent),
 splitter_(Qt::Vertical, this),
@@ -63,7 +65,7 @@ componentViews_(component->getViews())
 	portEditor_->setAllowImportExport(false);
 
     runner_->setExpressionParser(expressionParser);
-    runner_->loadPlugins(pluginMgr);
+    runner_->loadPlugins(PluginManager::getInstance());
 
     connect(portEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 

@@ -27,7 +27,6 @@ class Component;
 class FileSelector;
 class ImportRunner;
 class LibraryInterface;
-class PluginManager;
 class PortsEditor;
 class View;
 
@@ -45,14 +44,12 @@ public:
 	 *
 	 *      @param [in] component               The component being edited.
 	 *      @param [in] handler                 The instance which manages the library.
-	 *      @param [in] pluginMgr               The plugin manager.
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] parent                  The owner of this widget.
 	 */
 	ImportEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
-        PluginManager const& pluginMgr,
         QSharedPointer <ComponentParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent);

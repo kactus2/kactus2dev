@@ -10,7 +10,6 @@
 
 #include "SettingsPage.h"
 #include <common/views/EditableTableView/editabletableview.h>
-#include <Plugins/PluginSystem/PluginManager.h>
 
 #include <QSettings>
 
@@ -25,16 +24,8 @@ class K2EnvVariableSettingsPage : public SettingsPage
 
 public:
 
-	/*! \brief The constructor.
-	 *
-	 * Method: 		K2EnvVariableSettingsPage
-	 * Full name:	K2EnvVariableSettingsPage::K2EnvVariableSettingsPage
-	 * Access:		private 
-	 *
-	 * \param settings The settings to store.
-	 *
-	*/
-	K2EnvVariableSettingsPage(QSettings& settings,  PluginManager& pluginMgr);
+
+	K2EnvVariableSettingsPage(QSettings& settings);
 	
 	//! \brief The destructor.
 	virtual ~K2EnvVariableSettingsPage();

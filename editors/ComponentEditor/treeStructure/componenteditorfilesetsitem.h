@@ -23,7 +23,6 @@ class File;
 class FileValidator;
 class FileSetValidator;
 class ParameterFinder;
-class PluginManager;
 class ReferenceCounter;
 class ExpressionParser;
 class ParameterFinder;
@@ -43,7 +42,6 @@ public:
 	 *
 	 *      @param [in] model                   The model that owns the items.
 	 *      @param [in] libHandler              The instance that manages the library.
-  	 *      @param [in] pluginMgr               The plugin manager.
 	 *      @param [in] component               The component being edited.
      *      @param [in] referenceCounter        The counter for parameter references.
      *      @param [in] parameterFinder         Finder used to identify parameters.
@@ -53,7 +51,7 @@ public:
 	 *      @param [in] parent                  The parent item.
 	 */
     ComponentEditorFileSetsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-        PluginManager& pluginMgr, QSharedPointer<Component> component,
+        QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
         ComponentEditorItem* parent);
@@ -127,8 +125,6 @@ private:
     //! Validator for file set items.
     QSharedPointer<FileSetValidator> fileSetValidator_;
 
-	//! The plugin manager.
-	PluginManager& pluginMgr_;
 };
 
 #endif // COMPONENTEDITORFILESETSITEM_H
