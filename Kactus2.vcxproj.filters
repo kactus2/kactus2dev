@@ -4450,6 +4450,24 @@
     <ClCompile Include="GeneratedFiles\moc_PortTypeDefinitionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractionTypesEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\AbstractionTypesEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\AbstractionTypesModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractionTypesModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractionTypesDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6135,6 +6153,15 @@
     <CustomBuild Include="editors\ComponentEditor\ports\PortTypeDefinitionEditor.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\AbstractionTypesEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\AbstractionTypesModel.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6733,6 +6760,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\ports\PortTypeDefinitionDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\AbstractionTypesConstants.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

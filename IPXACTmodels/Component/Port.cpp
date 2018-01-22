@@ -22,11 +22,11 @@
 //-----------------------------------------------------------------------------
 Port::Port(QString const& portName, DirectionTypes::Direction direction) :
 NameGroup(portName),
-    Extendable(),
-    isPresent_(),
-    wire_(QSharedPointer<Wire>(new Wire())),
-    transactional_(),
-    configurableArrays_(new QList<QSharedPointer<Array> > ())
+Extendable(),
+isPresent_(),
+wire_(QSharedPointer<Wire>(new Wire())),
+transactional_(),
+configurableArrays_(new QList<QSharedPointer<Array> > ())
 {
     setDirection(direction);
 }
@@ -36,11 +36,11 @@ NameGroup(portName),
 //-----------------------------------------------------------------------------
 Port::Port(const Port &other): 
 NameGroup(other),
-    Extendable(other),
-    isPresent_(other.isPresent_),
-    wire_(),
-    transactional_(),
-    configurableArrays_(new QList<QSharedPointer<Array> > ())
+Extendable(other),
+isPresent_(other.isPresent_),
+wire_(),
+transactional_(),
+configurableArrays_(new QList<QSharedPointer<Array> > ())
 {
     if (other.wire_)
     {
@@ -687,4 +687,21 @@ void Port::copyArrays(const Port& other)
             configurableArrays_->append(copy);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::getTypes()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<WireTypeDef> > > Port::getTypes() const
+{
+    if (getWire())
+    {
+        return getWire()->getWireTypeDefs();
+    }
+    else if (getTransactional())
+    {
+        return getTransactional()->getTransTypeDef();
+    }
+
+    return QSharedPointer<QList<QSharedPointer<WireTypeDef> > >();
 }

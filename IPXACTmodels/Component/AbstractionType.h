@@ -27,28 +27,40 @@ class PortMap;
 class IPXACTMODELS_EXPORT AbstractionType
 {
 public:
-    //! Default constructor.
+    
+    /*!
+     *  Default constructor.
+     */
     AbstractionType();
 
-    //! Copy constructor.
+    /*!
+     *  The destructor.
+     */
+    virtual ~AbstractionType();
+
+    /*!
+     *  Copy constructor.
+     */
     AbstractionType(const AbstractionType &other);
 
-    //! Assignment operator.
+    /*!
+     *  Assignment operator.
+     */
     AbstractionType &operator=(const AbstractionType &other);
 
     /*!
-     *  Set the referenced view.
+     *  Set the view references.
      *
-     *      @param [in] viewName    The name of the referenced view.
+     *      @param [in] newViewReferences   List containing the new view references.
      */
-    void setViewRef(QString const& viewName);
+    void setViewReferences(QSharedPointer<QStringList> newViewReferences);
 
     /*!
-     *  Get the referenced view.
+     *  Get the view references.
      *
-     *      @return The name of the referenced view.
+     *      @return List of the referenced views.
      */
-    QString getViewRef() const;
+    QSharedPointer<QStringList> getViewReferences() const;
 
     /*!
      *  Set the abstraction reference.
@@ -73,8 +85,14 @@ public:
 
 private:
 
+    void copyViewReferences(QSharedPointer<QStringList> newViewReferences);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Specifies views where the abstraction type applies.
-    QString viewRef_;
+    QSharedPointer<QStringList> viewReferences_;
 
     //! Reference to an abstraction description for this abstractor instance.
     QSharedPointer<ConfigurableVLNVReference> abstractionRef_;

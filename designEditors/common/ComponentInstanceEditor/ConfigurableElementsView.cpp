@@ -80,8 +80,6 @@ void ConfigurableElementsView::onClearAction()
         QString oldValue = model()->data(selectedIndex, Qt::EditRole).toString();
         QString newValue("");
 
-        model()->setData(selectedIndex, newValue, Qt::EditRole);
-
         emit createElementChangeCommand(oldValue, newValue, selectedIndex, model());
     }
 }

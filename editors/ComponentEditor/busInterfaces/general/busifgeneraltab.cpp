@@ -13,10 +13,11 @@
 
 #include <library/LibraryInterface.h>
 
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/BusInterface.h>
+#include <editors/ComponentEditor/busInterfaces/AbstractionTypesEditor.h>
 
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <QHBoxLayout>
 #include <QScrollArea>
@@ -32,7 +33,7 @@ QWidget(parent),
 busif_(busif),
 nameEditor_(busif, this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
-absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
+abstractionEditor_(new AbstractionTypesEditor(component, libHandler, parentWnd, this)),
 modeStack_(busif, component, parameterFinder, libHandler, expressionParser, this),
 details_(busif, this),
 parameters_(busif->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
@@ -59,7 +60,6 @@ libHandler_(libHandler)
 
 	connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&busType_, SIGNAL(vlnvEdited()), this, SLOT(onBusTypeChanged()), Qt::UniqueConnection);
-	connect(&absType_, SIGNAL(vlnvEdited()), this, SLOT(onAbsTypeChanged()), Qt::UniqueConnection);
 	connect(&details_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onModeChanged(General::InterfaceMode)), Qt::UniqueConnection);
 	connect(&modeStack_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -67,12 +67,9 @@ libHandler_(libHandler)
 	connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	connect(&busType_, SIGNAL(setAbsDef(const VLNV&)), this, SLOT(onSetAbsType(const VLNV&)), Qt::UniqueConnection);
-	connect(&absType_, SIGNAL(setBusDef(const VLNV&)), this, SLOT(onSetBusType(const VLNV&)), Qt::UniqueConnection);
+    connect(abstractionEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	busType_.setTitle(tr("Bus definition"));
-	absType_.setTitle(tr("Abstraction definition"));
-
-	absType_.setMandatory(false);
 
     setupLayout();
 }
@@ -99,7 +96,8 @@ void BusIfGeneralTab::refresh()
         abstractionVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
     }
 
-	absType_.setVLNV(abstractionVLNV);
+    abstractionEditor_->setBusForModel(busif_);
+
 	modeStack_.refresh();
 	details_.refresh();
 	parameters_.refresh();
@@ -118,7 +116,14 @@ VLNV BusIfGeneralTab::getBusType() const
 //-----------------------------------------------------------------------------
 VLNV BusIfGeneralTab::getAbsType() const
 {
-	return absType_.getVLNV();
+    if (abstractionEditor_->getFirstAbstraction())
+    {
+        return *abstractionEditor_->getFirstAbstraction().data();
+    }
+    else
+    {
+        return VLNV();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -126,7 +131,7 @@ VLNV BusIfGeneralTab::getAbsType() const
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::setAbsTypeMandatory(bool isMandatory)
 {
-	absType_.setMandatory(isMandatory);
+    abstractionEditor_->setProperty("mandatoryField", isMandatory);
 }
 
 //-----------------------------------------------------------------------------
@@ -135,18 +140,6 @@ void BusIfGeneralTab::setAbsTypeMandatory(bool isMandatory)
 void BusIfGeneralTab::onBusTypeChanged()
 {
 	busif_->setBusType(busType_.getVLNV());
-
-    // If only one possible absDef, set it automatically.
-    if (busType_.getVLNV().isValid())
-    {
-        QList<VLNV> absDefVLNVs;
-        if (libHandler_->getChildren(absDefVLNVs, busType_.getVLNV()) > 0) 
-        {
-            absType_.setVLNV(absDefVLNVs.first());
-            onAbsTypeChanged();
-            return;
-        }
-    }
 
 	emit contentChanged();
 }
@@ -157,35 +150,7 @@ void BusIfGeneralTab::onBusTypeChanged()
 void BusIfGeneralTab::setBusTypesLock(bool locked)
 {
     busType_.setEnabled(!locked);
-    absType_.setEnabled(!locked);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfGeneralTab::onAbsTypeChanged()
-//-----------------------------------------------------------------------------
-void BusIfGeneralTab::onAbsTypeChanged()
-{
-    if (busif_->getAbstractionTypes()->isEmpty())
-    {
-        busif_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType()));
-    }
-
-    QSharedPointer<ConfigurableVLNVReference> abstractionVLNV = 
-        busif_->getAbstractionTypes()->first()->getAbstractionRef();
-
-    if (!abstractionVLNV)
-    {
-        abstractionVLNV = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference());
-        abstractionVLNV->setType(VLNV::ABSTRACTIONDEFINITION);
-        busif_->getAbstractionTypes()->first()->setAbstractionRef(abstractionVLNV);
-    }
-
-    abstractionVLNV->setVendor(absType_.getVLNV().getVendor());
-    abstractionVLNV->setLibrary(absType_.getVLNV().getLibrary());
-    abstractionVLNV->setName(absType_.getVLNV().getName());
-    abstractionVLNV->setVersion(absType_.getVLNV().getVersion());
-
-	emit contentChanged();
+    abstractionEditor_->setEnabled(!locked);
 }
 
 //-----------------------------------------------------------------------------
@@ -223,26 +188,10 @@ void BusIfGeneralTab::onSetAbsType(VLNV const& absDefVLNV)
 {
     if (busif_->getAbstractionTypes()->isEmpty())
     {
-        busif_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType()));
+        abstractionEditor_->addNewAbstraction(absDefVLNV);
     }
 
-    QSharedPointer<ConfigurableVLNVReference> abstractionVLNV = 
-        busif_->getAbstractionTypes()->first()->getAbstractionRef();
-
-    if (!abstractionVLNV)
-    {
-        abstractionVLNV = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference());
-        abstractionVLNV->setType(absDefVLNV.getType());
-        busif_->getAbstractionTypes()->first()->setAbstractionRef(abstractionVLNV);
-    }
-	
-    abstractionVLNV->setVendor(absDefVLNV.getVendor());
-    abstractionVLNV->setLibrary(absDefVLNV.getLibrary());
-    abstractionVLNV->setName(absDefVLNV.getName());
-    abstractionVLNV->setVersion(absDefVLNV.getVersion());
-    
-	absType_.setVLNV(absDefVLNV);
-	emit contentChanged();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -250,7 +199,6 @@ void BusIfGeneralTab::onSetAbsType(VLNV const& absDefVLNV)
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::setupLayout()
 {
-    // create the scroll area
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
@@ -266,21 +214,16 @@ void BusIfGeneralTab::setupLayout()
     QGridLayout* topLayout = new QGridLayout(topWidget);
 
     topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
-    topLayout->addWidget(&modeStack_, 0, 1, 2, 1);
-
+    topLayout->addWidget(&busType_, 0, 1, 1, 1);
     topLayout->addWidget(&details_, 1, 0, 1, 1);
-
-    QHBoxLayout* vlnvLayout = new QHBoxLayout();
-    vlnvLayout->addWidget(&busType_);
-    vlnvLayout->addWidget(&absType_);
-    topLayout->addLayout(vlnvLayout, 2, 0, 1, 2);
-    topLayout->setRowStretch(2, 10);
-
+    topLayout->addWidget(abstractionEditor_, 1, 1, 2, 1);
+    topLayout->addWidget(&modeStack_, 2, 0, 1, 1);
     topLayout->addWidget(&parameters_, 3, 0, 1, 2);
 
     topLayout->setRowStretch(0, 5);
     topLayout->setRowStretch(1, 5);
-    topLayout->setRowStretch(3, 80);
+    topLayout->setRowStretch(2, 5);
+    topLayout->setRowStretch(3, 10);
 
     scrollArea->setWidget(topWidget);
 }

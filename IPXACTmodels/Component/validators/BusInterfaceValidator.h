@@ -213,13 +213,20 @@ private:
     bool abstractionTypeHasValidAbstractionReference(QSharedPointer<AbstractionType> abstraction) const;
 
     /*!
-     *  Check if an abstraction type has valid view reference.
+     *  Check if an abstraction type has valid view references.
      *
      *      @param [in] abstraction     The selected abstraction type.
      *
-     *      @return True, if the referenced view is valid, otherwise false.
+     *      @return True, if the referenced views are valid, otherwise false.
      */
-    bool abstractionTypeHasValidViewReference(QSharedPointer<AbstractionType> abstraction) const;
+    bool abstractionTypeHasValidViewReferences(QSharedPointer<AbstractionType> abstraction) const;
+
+    /*!
+     *  Check if a view reference is valid.
+     *
+     *      @param [in] viewReference   The selected view reference.
+     */
+    bool referencedViewIsValid(QString const& viewReference) const;
 
     /*!
      *  Check if an abstraction type has valid port maps.

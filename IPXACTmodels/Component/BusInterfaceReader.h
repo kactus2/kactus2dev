@@ -82,6 +82,15 @@ private:
         QSharedPointer<BusInterface> busInterface) const;
 
     /*!
+     *  Reads the view references.
+     *
+     *      @param [in] abstractionNode     The examined abstraction type node.
+     *      @param [in] newAbstractionType  The abstraction type matching the selected node.
+     */
+    void parseViewReferences(QDomNode const& abstractionNode, QSharedPointer<AbstractionType> newAbstractionType)
+        const;
+
+    /*!
      *  Tries to extract port maps from the parameter inspected and append them to parameter abstractionType.
      *
      *      @param [in] inspected			The potential XML-node to yield abstraction types.

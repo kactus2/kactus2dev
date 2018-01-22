@@ -19,19 +19,22 @@
 #include <IPXACTmodels/Component/Wire.h>
 #include <IPXACTmodels/Component/WireTypeDef.h>
 
+#include <IPXACTmodels/Component/validators/PortTypeValidator.h>
+
 #include <QFont>
 
 namespace PortWireConstants
 {
-    QString const DEFINITIONSEPARATOR = ", ";
+    QString const DEFINITIONSEPARATOR = "; ";
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortWireTypeModel::PortWireTypeModel()
 //-----------------------------------------------------------------------------
-PortWireTypeModel::PortWireTypeModel(QObject *parent):
+PortWireTypeModel::PortWireTypeModel(QSharedPointer<PortTypeValidator> typeValidator, QObject *parent):
 QAbstractItemModel(parent),
-wireTypeDefinitions_()
+wireTypeDefinitions_(),
+typeValidator_(typeValidator)
 {
 
 }
@@ -224,7 +227,7 @@ QVariant PortWireTypeModel::data(QModelIndex const& index, int role) const
         }
         else if (Qt::ForegroundRole == role)
         {
-            return KactusColors::REGULAR_TEXT;
+            return blackForValidRedForInvalid(index, typeDefinition);
         }
         else if (!index.parent().isValid() && index.column() == PortWireTypeColumns::TYPE && role == Qt::FontRole)
         {
@@ -485,4 +488,41 @@ Qt::ItemFlags PortWireTypeModel::flags(const QModelIndex& index) const
     }
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortWireTypeModel::blackForValidRedForInvalid()
+//-----------------------------------------------------------------------------
+QVariant PortWireTypeModel::blackForValidRedForInvalid(QModelIndex const& index,
+    QSharedPointer<WireTypeDef> typeDefinition) const
+{
+    if (validateIndex(index, typeDefinition))
+    {
+        return KactusColors::REGULAR_TEXT;
+    }
+    else
+    {
+        return KactusColors::ERROR;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortWireTypeModel::validateIndex()
+//-----------------------------------------------------------------------------
+bool PortWireTypeModel::validateIndex(QModelIndex const& index, QSharedPointer<WireTypeDef> typeDefinition) const
+{
+    if (index.column() == PortWireTypeColumns::TYPE)
+    {
+        if (!index.parent().isValid())
+        {
+            return typeValidator_->validate(typeDefinition, wireTypeDefinitions_);
+        }
+        else
+        {
+            QString* viewReference = &(*typeDefinition->getViewRefs())[index.row()];
+            return typeValidator_->hasValidView(viewReference, wireTypeDefinitions_);
+        }
+    }
+
+    return true;
 }

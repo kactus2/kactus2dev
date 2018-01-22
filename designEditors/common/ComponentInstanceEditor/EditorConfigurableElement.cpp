@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 30.08.2011
+// Date: 30.08.2017
 //
 // Description:
 // Container class for configurable elements in the configurable element value tables.

@@ -79,7 +79,7 @@ elementFinder_(elementFinder)
 
     unknownParametersRoot_->elementModel_ = unkownParametersModel;
     unknownParametersRoot_->elementFilter_ = unknownParametersFilter;
-    unknownParametersRoot_->name_ = QStringLiteral("Unknown");
+    unknownParametersRoot_->name_ = QStringLiteral("Missing view parameters");
 
     rootItems_.append(parametersRoot_);
     rootItems_.append(missingParametersRoot_);
@@ -302,8 +302,7 @@ QVariant ComponentInstanceConfigurableElementsModel::data(QModelIndex const& ind
 
         if (role == Qt::ForegroundRole)
         {
-            if (rootItem->name_.contains(QStringLiteral("Missing")) ||
-                rootItem->name_.contains(QStringLiteral("Unknown")))
+            if (rootItem->name_.contains(QStringLiteral("Missing")))
             {
                 return KactusColors::ERROR;
             }
@@ -510,6 +509,16 @@ void ComponentInstanceConfigurableElementsModel::onDataChangedInID(QString const
     {
         root->elementModel_->emitDataChangeForID(parameterID, newDataValue);
 
+        if (elementListContainsID(parameterID, missingParametersRoot_->elementModel_->getConfigurableElements()))
+        {
+            missingParametersRoot_->elementModel_->emitDataChangeForID(parameterID, newDataValue);
+        }
+        else if (elementListContainsID(
+            parameterID, unknownParametersRoot_->elementModel_->getConfigurableElements()))
+        {
+            unknownParametersRoot_->elementModel_->emitDataChangeForID(parameterID, newDataValue);
+        }
+
         QModelIndex startIndex = index(0, ConfigurableElementsColumns::VALUE, QModelIndex());
         QModelIndex endIndex = index(rootItems_.size() - 1, ConfigurableElementsColumns::VALUE, QModelIndex());
 
@@ -542,6 +551,23 @@ QSharedPointer<ComponentInstanceConfigurableElementsModel::rootModel> ComponentI
     }
 
     return QSharedPointer<rootModel>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceConfigurableElementsModel::elementListContainsID()
+//-----------------------------------------------------------------------------
+bool ComponentInstanceConfigurableElementsModel::elementListContainsID(QString const& parameterID,
+    QList<QSharedPointer<EditorConfigurableElement> > elementList) const
+{
+    foreach (QSharedPointer<EditorConfigurableElement> element, elementList)
+    {
+        if (element->getReferencedParameter() && element->getReferencedParameter()->getValueId() == parameterID)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

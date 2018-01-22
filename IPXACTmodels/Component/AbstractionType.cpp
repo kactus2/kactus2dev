@@ -19,9 +19,17 @@
 // Function: AbstractionType()
 //-----------------------------------------------------------------------------
 AbstractionType::AbstractionType():
-viewRef_(),
+viewReferences_(new QStringList()),
 abstractionRef_(),
 portMaps_(new QList<QSharedPointer<PortMap> >())
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionType::~AbstractionType()
+//-----------------------------------------------------------------------------
+AbstractionType::~AbstractionType()
 {
 
 }
@@ -30,7 +38,7 @@ portMaps_(new QList<QSharedPointer<PortMap> >())
 // Function: AbstractionType::AbstractionType()
 //-----------------------------------------------------------------------------
 AbstractionType::AbstractionType(AbstractionType const& other):
-viewRef_(other.viewRef_),
+viewReferences_(new QStringList()),
 abstractionRef_(),
 portMaps_(new QList<QSharedPointer<PortMap> >())
 {
@@ -48,6 +56,8 @@ portMaps_(new QList<QSharedPointer<PortMap> >())
             portMaps_->append(copy);
 		}
 	}
+
+    copyViewReferences(other.viewReferences_);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,8 +67,6 @@ AbstractionType& AbstractionType::operator=(AbstractionType const& other)
 {
 	if (this != &other)
 	{
-        viewRef_ = other.viewRef_;
-
         abstractionRef_.clear();
         if (other.abstractionRef_)
         {
@@ -75,26 +83,39 @@ AbstractionType& AbstractionType::operator=(AbstractionType const& other)
 				portMaps_->append(copy);
 			}
 		}
+
+        viewReferences_->clear();
+        copyViewReferences(other.viewReferences_);
 	}
 
 	return *this;
 }
 
-
 //-----------------------------------------------------------------------------
-// Function: AbstractionType::setViewRef()
+// Function: AbstractionType::copyViewReferences()
 //-----------------------------------------------------------------------------
-void AbstractionType::setViewRef(QString const& viewName)
+void AbstractionType::copyViewReferences(QSharedPointer<QStringList> newViewReferences)
 {
-    viewRef_ = viewName;
+    foreach (QString viewReference, *newViewReferences)
+    {
+        viewReferences_->append(viewReference);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionType::getViewRef()
+// Function: AbstractionType::setViewReferences()
 //-----------------------------------------------------------------------------
-QString AbstractionType::getViewRef() const
+void AbstractionType::setViewReferences(QSharedPointer<QStringList> newViewReferences)
 {
-    return viewRef_;
+    viewReferences_ = newViewReferences;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionType::getViewReferences()
+//-----------------------------------------------------------------------------
+QSharedPointer<QStringList> AbstractionType::getViewReferences() const
+{
+    return viewReferences_;
 }
 
 //-----------------------------------------------------------------------------

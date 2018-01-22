@@ -251,6 +251,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/PortWireTypeEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeModel.h \
     ./editors/ComponentEditor/ports/PortWireTypeDelegate.h \
+    ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeView.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
@@ -277,7 +278,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/channels/channelsdelegate.h \
     ./editors/ComponentEditor/channels/channelseditor.h \
     ./editors/ComponentEditor/channels/channelsmodel.h \
+    ./editors/ComponentEditor/busInterfaces/AbstractionTypesConstants.h \
     ./editors/ComponentEditor/busInterfaces/BusInterfaceColumns.h \
+    ./editors/ComponentEditor/busInterfaces/AbstractionTypesEditor.h \
+    ./editors/ComponentEditor/busInterfaces/AbstractionTypesModel.h \
+    ./editors/ComponentEditor/busInterfaces/AbstractionTypesDelegate.h \
     ./editors/ComponentEditor/busInterfaces/businterfaceeditor.h \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.h \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.h \
@@ -748,8 +753,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -947,6 +951,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/itemeditor.cpp \
     ./editors/ComponentEditor/itemvisualizer.cpp \
     ./editors/ComponentEditor/ParameterItemEditor.cpp \
+    ./editors/ComponentEditor/busInterfaces/AbstractionTypesDelegate.cpp \
+    ./editors/ComponentEditor/busInterfaces/AbstractionTypesEditor.cpp \
+    ./editors/ComponentEditor/busInterfaces/AbstractionTypesModel.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceeditor.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.cpp \
@@ -1027,6 +1034,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
     ./editors/ComponentEditor/ports/PortTypeDefinitionDelegate.cpp \
+    ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.cpp \
     ./editors/ComponentEditor/ports/PortWireTypeDelegate.cpp \
     ./editors/ComponentEditor/ports/PortWireTypeEditor.cpp \
     ./editors/ComponentEditor/ports/PortWireTypeModel.cpp \
@@ -1403,6 +1411,5 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
 RESOURCES += kactus.qrc
