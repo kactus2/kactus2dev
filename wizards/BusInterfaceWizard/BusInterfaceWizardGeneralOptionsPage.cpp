@@ -24,16 +24,16 @@
 // Function: BusInterfaceWizardVLNVSelectionPage::BusInterfaceWizardVLNVSelectionPage()
 //-----------------------------------------------------------------------------
 BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busIf, LibraryInterface* lh,  bool absDefEditable,
+    QSharedPointer<BusInterface> busIf, LibraryInterface* lh, bool absDefEditable,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> ExpressionParser, 
-    BusInterfaceWizard* parent): 
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<BusInterfaceValidator> busValidator,
+    BusInterfaceWizard* parent):
 QWizardPage(parent),
-    component_(component),
-    busIf_(busIf),
-    handler_(lh),
-    generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
-    this, parent))
+component_(component),
+busIf_(busIf),
+handler_(lh),
+generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, expressionParser,
+    busValidator, this, parent))
 {
     setTitle(tr("Bus interface general options"));
     setSubTitle(tr("Setup the general options for the bus interface."));

@@ -14,6 +14,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
+
 #include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -26,9 +28,10 @@ BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPoin
 ParameterItemEditor(component, libHandler, parent),
 busif_(busif),
 tabs_(this), 
-generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, &tabs_, parentWnd),
+generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser,
+    busInterfaceValidator, &tabs_, parentWnd),
 portmapsEditor_(libHandler, component, busif, expressionParser, expressionFormatter, parameterFinder,
-    busInterfaceValidator->getPortMapValidator(), &tabs_)
+    busInterfaceValidator->getAbstractionValidator()->getPortMapValidator(), &tabs_)
 {
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);

@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 
 #include <library/LibraryInterface.h>
 
@@ -38,7 +39,7 @@ component_(component),
 busIf_(busIf),
 handler_(lh),
 portMapTab_(handler_, component_, busIf_, expressionParser, formatter, parameterFinder,
-    validator->getPortMapValidator(), this),
+    validator->getAbstractionValidator()->getPortMapValidator(), this),
 validator_(validator)
 {
     setTitle(tr("Port Maps"));

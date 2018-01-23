@@ -44,30 +44,27 @@ public:
      *      @param [in] absDefEditable          The editability of abstract definition.
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] busValidator            Validator for bus interfaces.
      *      @param [in] parent                  The parent wizard.
      */
-    BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
-        QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh,
-        bool absDefEditable,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        BusInterfaceWizard* parent);
+    BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
+        LibraryInterface* lh, bool absDefEditable, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<BusInterfaceValidator> busValidator, BusInterfaceWizard* parent);
 
     /*!
-    *  Destructor.
-    */
+     *  Destructor.
+     */
     ~BusInterfaceWizardGeneralOptionsPage();
 
     /*!
-    *  Returns the ID of the next page.
-    */
+     *  Returns the ID of the next page.
+     */
     virtual int nextId() const;
 
     /*!
-    *  Initializes the page.
-    */
+     *  Initializes the page.
+     */
     void initializePage();
 
     /*!

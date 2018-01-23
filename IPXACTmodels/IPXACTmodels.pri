@@ -242,6 +242,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/InstantiationsValidator.h \
     ./Component/validators/PortMapValidator.h \
     ./Component/validators/OtherClockDriverValidator.h \
+    ./Component/validators/PortTypeValidator.h \
     ./Component/validators/PortValidator.h \
     ./Component/validators/RemapStateValidator.h \
     ./Component/validators/MemoryMapBaseValidator.h \
@@ -254,7 +255,7 @@ HEADERS += ./XmlUtils.h \
     ./Catalog/CatalogReader.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
-    ./Component/validators/PortTypeValidator.h
+    ./Component/validators/AbstractionTypeValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -487,6 +488,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/InstantiationsValidator.cpp \
     ./Component/validators/PortMapValidator.cpp \
     ./Component/validators/OtherClockDriverValidator.cpp \
+    ./Component/validators/PortTypeValidator.cpp \
     ./Component/validators/PortValidator.cpp \
     ./Component/validators/RemapStateValidator.cpp \
     ./Component/validators/MemoryMapBaseValidator.cpp \
@@ -499,4 +501,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/CatalogWriter.cpp \
     ./Catalog/IpxactFile.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
-    ./Component/validators/PortTypeValidator.cpp
+    ./Component/validators/AbstractionTypeValidator.cpp

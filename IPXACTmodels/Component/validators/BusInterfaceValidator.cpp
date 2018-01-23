@@ -31,8 +31,11 @@
 
 #include <IPXACTmodels/Component/validators/MemoryReserve.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
+
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 #include <IPXACTmodels/common/Parameter.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QRegularExpression>
@@ -63,7 +66,7 @@ availableFileSets_(fileSets),
 availableRemapStates_(remapStates),
 libraryHandler_(libraryHandler),
 parameterValidator_(parameterValidator),
-portMapValidator_(portMapValidator)
+abstractionValidator_(new AbstractionTypeValidator(expressionParser, views, portMapValidator, libraryHandler))
 {
 
 }
@@ -96,15 +99,15 @@ void BusInterfaceValidator::componentChange(QSharedPointer<QList<QSharedPointer<
     availableFileSets_ = newFileSets;
     availableRemapStates_ = newRemapStates;
 
-    portMapValidator_->componentChanged(availablePorts_);
+    abstractionValidator_->changeComponent(newViews, newPorts);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::getPortMapValidator()
+// Function: BusInterfaceValidator::getAbstractionValidator()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortMapValidator> BusInterfaceValidator::getPortMapValidator()
+QSharedPointer<AbstractionTypeValidator> BusInterfaceValidator::getAbstractionValidator() const
 {
-    return portMapValidator_;
+    return abstractionValidator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -170,224 +173,16 @@ bool BusInterfaceValidator::hasValidBusType(QSharedPointer<BusInterface> busInte
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidAbstractionTypes(QSharedPointer<BusInterface> busInterface) const
 {
-    foreach (QSharedPointer<AbstractionType> abstraction, *busInterface->getAbstractionTypes())
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > busAbstractions = busInterface->getAbstractionTypes();
+    foreach (QSharedPointer<AbstractionType> abstraction, *busAbstractions)
     {
-        if (!abstractionTypeHasValidAbstractionReference(abstraction) ||
-            !abstractionTypeHasValidViewReferences(abstraction) ||
-            !abstractionTypeHasValidPortMaps(busInterface, abstraction))
+        if (!abstractionValidator_->validate(abstraction, busAbstractions, busInterface))
         {
             return false;
         }
     }
 
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::abstractionTypeHasValidAbstractionReference()
-//-----------------------------------------------------------------------------
-bool BusInterfaceValidator::abstractionTypeHasValidAbstractionReference(
-    QSharedPointer<AbstractionType> abstraction) const
-{
-    if (abstraction->getAbstractionRef())
-    {
-        return libraryHandler_->contains(*abstraction->getAbstractionRef()) && 
-            libraryHandler_->getDocumentType(*abstraction->getAbstractionRef()) == VLNV::ABSTRACTIONDEFINITION;
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::abstractionTypeHasValidViewReferences()
-//-----------------------------------------------------------------------------
-bool BusInterfaceValidator::abstractionTypeHasValidViewReferences(QSharedPointer<AbstractionType> abstraction)
-    const
-{
-    foreach (QString viewReference, *abstraction->getViewReferences())
-    {
-        if (!referencedViewIsValid(viewReference))
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::referencedViewIsValid()
-//-----------------------------------------------------------------------------
-bool BusInterfaceValidator::referencedViewIsValid(QString const& viewReference) const
-{
-    foreach (QSharedPointer<View> view, *availableViews_)
-    {
-        if (view->name() == viewReference)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::abstractionTypeHasValidPortMaps()
-//-----------------------------------------------------------------------------
-bool BusInterfaceValidator::abstractionTypeHasValidPortMaps(QSharedPointer<BusInterface> busInterface,
-    QSharedPointer<AbstractionType> abstraction) const
-{
-    if (abstraction && abstraction->getAbstractionRef())
-    {
-        QSharedPointer<AbstractionDefinition const> abstractionDefinition =
-            getAbstractionDefinition(abstraction->getAbstractionRef());
-
-        if (!requiredPortAbstractionsAreMapped(busInterface, abstractionDefinition, abstraction->getPortMaps()))
-        {
-            return false;
-        }
-        else if (!abstraction->getPortMaps()->isEmpty())
-        {
-            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode(), busInterface->getSystem());
-
-            MemoryReserve reservedArea;
-            foreach (QSharedPointer<PortMap> portMap, *abstraction->getPortMaps())
-            {
-                if (abstractionDefinition && portMap->getLogicalPort() &&
-                    !logicalPortHasValidPresence(abstractionDefinition, portMap->getLogicalPort()->name_,
-                    busInterface->getInterfaceMode(), busInterface->getSystem()))
-                {
-                    return false;
-                }
-
-                if (!portMapValidator_->validate(portMap))
-                {
-                    return false;
-                }
-
-                qint64 logicalAreaBegin = 0;
-                qint64 LogicalAreaEnd = 0;
-
-                if (portMap->getLogicalPort()->range_)
-                {
-                    logicalAreaBegin =
-                        expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toLongLong();
-                    LogicalAreaEnd =
-                        expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toLongLong();
-                }
-
-                if (LogicalAreaEnd < logicalAreaBegin)
-                {
-                    int temporary = logicalAreaBegin;
-                    logicalAreaBegin = LogicalAreaEnd;
-                    LogicalAreaEnd = temporary;
-                }
-
-                reservedArea.addArea(portMap->getLogicalPort()->name_, logicalAreaBegin, LogicalAreaEnd);
-            }
-
-            return !reservedArea.hasIdDependantOverlap();
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::portAbstractionsHaveValidPresences()
-//-----------------------------------------------------------------------------
-bool BusInterfaceValidator::requiredPortAbstractionsAreMapped(QSharedPointer<BusInterface> busInterface,
-    QSharedPointer<AbstractionDefinition const> abstractionDefinition,
-    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const
-{
-    if (abstractionDefinition && abstractionDefinition->getLogicalPorts())
-    {
-        foreach (QSharedPointer<PortAbstraction> logicalPort, *abstractionDefinition->getLogicalPorts())
-        {
-            if (logicalPort->hasMode(busInterface->getInterfaceMode(), busInterface->getSystem()) &&
-                logicalPort->getPresence(busInterface->getInterfaceMode(), busInterface->getSystem())
-                == PresenceTypes::REQUIRED && !logicalPortHasReferencingPortMaps(logicalPort->name(), portMaps))
-            {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::logicalPortHasReferencingPortMaps()
-//-----------------------------------------------------------------------------
-bool BusInterfaceValidator::logicalPortHasReferencingPortMaps(QString const& portName,
-    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const
-{
-    foreach (QSharedPointer<PortMap> currentMap, *portMaps)
-    {
-        if (currentMap->getLogicalPort() && currentMap->getLogicalPort()->name_ == portName)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::getAbstractionDefinition()
-//-----------------------------------------------------------------------------
-QSharedPointer<AbstractionDefinition const> BusInterfaceValidator::getAbstractionDefinition(
-    QSharedPointer<ConfigurableVLNVReference> abstractionReference) const
-{
-    QSharedPointer<AbstractionDefinition const> abstractionDefinition;
-
-    if (abstractionReference)
-    {
-        QSharedPointer<Document const> abstractionDocument =
-            libraryHandler_->getModelReadOnly(*abstractionReference.data());
-
-        abstractionDefinition = abstractionDocument.dynamicCast<AbstractionDefinition const>();
-    }
-
-    return abstractionDefinition;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::logicalPortHasValidPresence()
-//-----------------------------------------------------------------------------
-bool BusInterfaceValidator::logicalPortHasValidPresence(
-    QSharedPointer<AbstractionDefinition const> abstractionDefinition, QString const& logicalPortName,
-    General::InterfaceMode mode, QString const& systemGroup) const
-{
-    QSharedPointer<PortAbstraction> logicalPort =
-        getLogicalPort(logicalPortName, abstractionDefinition);
-
-    if (logicalPort && logicalPort->getPresence(mode, systemGroup) == PresenceTypes::ILLEGAL)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::getLogicalPort()
-//-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> BusInterfaceValidator::getLogicalPort(QString const& portName,
-    QSharedPointer<AbstractionDefinition const> abstractionDefinition) const
-{
-    if (abstractionDefinition)
-    {
-        foreach (QSharedPointer<PortAbstraction> definitionPort, *abstractionDefinition->getLogicalPorts())
-        {
-            if (portName == definitionPort->getLogicalName())
-            {
-                return definitionPort;
-            }
-        }
-    }
-
-    return QSharedPointer<PortAbstraction>();
 }
 
 //-----------------------------------------------------------------------------
@@ -863,139 +658,10 @@ void BusInterfaceValidator::findErrorsInBusType(QVector<QString>& errors,
 void BusInterfaceValidator::findErrorsInAbstractionTypes(QVector<QString>& errors,
     QSharedPointer<BusInterface> busInterface, QString const& context) const
 {
-    foreach (QSharedPointer<AbstractionType> abstraction, *busInterface->getAbstractionTypes())
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > busAbstractions = busInterface->getAbstractionTypes();
+    foreach (QSharedPointer<AbstractionType> abstraction, *busAbstractions)
     {
-        foreach (QString viewReference, *abstraction->getViewReferences())
-        {
-            if (!referencedViewIsValid(viewReference))
-            {
-                errors.append(QObject::tr("Invalid view reference %1 set for abstraction type in %2")
-                    .arg(viewReference).arg(context));
-            }
-        }
-
-        QString portMapContext = QObject::tr("%1 %2")
-            .arg(General::interfaceMode2Str(busInterface->getInterfaceMode())).arg(context);
-
-        findErrorsInAbstractionReference(errors, abstraction, context);
-        findErrorsInAbstractionPortMaps(errors, busInterface, abstraction, portMapContext);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::findErrorsInAbstractionReference()
-//-----------------------------------------------------------------------------
-void BusInterfaceValidator::findErrorsInAbstractionReference(QVector<QString>& errors,
-    QSharedPointer<AbstractionType> abstraction, QString const& context) const
-{
-    if (!abstraction->getAbstractionRef())
-    {
-        errors.append(QObject::tr("Abstraction reference must be set for each abstraction type in %1")
-            .arg(context));
-    }
-    else
-    {
-        if (!libraryHandler_->contains(*abstraction->getAbstractionRef().data()))
-        {
-            errors.append(QObject::tr("Abstraction reference %1 set for %2 could not be found in the library")
-                .arg(abstraction->getAbstractionRef()->toString()).arg(context));
-        }
-        if (libraryHandler_->getDocumentType(*abstraction->getAbstractionRef()) !=
-            VLNV::ABSTRACTIONDEFINITION)
-        {
-            errors.append(QObject::tr("Invalid abstraction reference set within %1").arg(context));
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::findErrorsInAbstractionPortMaps()
-//-----------------------------------------------------------------------------
-void BusInterfaceValidator::findErrorsInAbstractionPortMaps(QVector<QString>& errors,
-    QSharedPointer<BusInterface> busInterface, QSharedPointer<AbstractionType> abstraction, QString const& context)
-    const
-{
-    if (abstraction && abstraction->getAbstractionRef())
-    {
-        QSharedPointer<AbstractionDefinition const> abstractionDefinition =
-            getAbstractionDefinition(abstraction->getAbstractionRef());
-
-        if (!requiredPortAbstractionsAreMapped(busInterface, abstractionDefinition, abstraction->getPortMaps()))
-        {
-            findErrorsInRequiredPortAbstractions(
-                errors, context, busInterface, abstractionDefinition, abstraction->getPortMaps());
-        }
-
-        if (!abstraction->getPortMaps()->isEmpty())
-        {
-            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode(), busInterface->getSystem());
-
-            QStringList portNames;
-
-            MemoryReserve logicalReservedArea;
-
-            foreach (QSharedPointer<PortMap> portMap, *abstraction->getPortMaps())
-            {
-                if (abstractionDefinition && portMap->getLogicalPort() &&
-                    !logicalPortHasValidPresence(abstractionDefinition, portMap->getLogicalPort()->name_,
-                    busInterface->getInterfaceMode(), busInterface->getSystem()) && !portNames.contains(portMap->getLogicalPort()->name_))
-                {
-                    errors.append(QObject::tr("Logical port %1 with presence 'ILLEGAL' mapped within %2.")
-                        .arg(portMap->getLogicalPort()->name_)
-                        .arg(context));
-
-                    portNames.append(portMap->getLogicalPort()->name_);
-                }
-
-                portMapValidator_->findErrorsIn(errors, portMap, context);
-
-                if (portMap->getLogicalPort())
-                {
-                    qint64 logicalAreaBegin = 0;
-                    qint64 LogicalAreaEnd = 0;
-
-                    if (portMap->getLogicalPort()->range_)
-                    {
-                        logicalAreaBegin =
-                            expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toLongLong();
-                        LogicalAreaEnd =
-                            expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toLongLong();
-                    }
-                    if (LogicalAreaEnd < logicalAreaBegin)
-                    {
-                        int temporary = logicalAreaBegin;
-                        logicalAreaBegin = LogicalAreaEnd;
-                        LogicalAreaEnd = temporary;
-                    }
-
-                    logicalReservedArea.addArea(portMap->getLogicalPort()->name_, logicalAreaBegin, LogicalAreaEnd);
-                }
-            }
-            logicalReservedArea.findErrorsInIdDependantOverlap(errors, QLatin1String("logical port"), context);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::findErrorsInRequiredPortAbstractions()
-//-----------------------------------------------------------------------------
-void BusInterfaceValidator::findErrorsInRequiredPortAbstractions(QVector<QString>& errors, QString const& context,
-    QSharedPointer<BusInterface> busInterface, QSharedPointer<AbstractionDefinition const> abstractionDefinition,
-    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const
-{
-    if (!requiredPortAbstractionsAreMapped(busInterface, abstractionDefinition, portMaps))
-    {
-        foreach (QSharedPointer<PortAbstraction> logicalPort, *abstractionDefinition->getLogicalPorts())
-        {
-            if (logicalPort->hasMode(busInterface->getInterfaceMode(), busInterface->getSystem()) &&
-                logicalPort->getPresence(busInterface->getInterfaceMode(), busInterface->getSystem())
-                == PresenceTypes::REQUIRED && !logicalPortHasReferencingPortMaps(logicalPort->name(), portMaps))
-            {
-                errors.append(QObject::tr("Logical port %1 with presence 'REQUIRED' is not mapped within %2.")
-                    .arg(logicalPort->name())
-                    .arg(context));
-            }
-        }
+        abstractionValidator_->findErrorsIn(errors, abstraction, busAbstractions, busInterface, context);
     }
 }
 

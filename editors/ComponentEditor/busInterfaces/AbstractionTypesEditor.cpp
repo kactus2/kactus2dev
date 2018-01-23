@@ -25,10 +25,10 @@
 // Function: AbstractionTypesEditor::AbstractionTypesEditor()
 //-----------------------------------------------------------------------------
 AbstractionTypesEditor::AbstractionTypesEditor(QSharedPointer<Component> component, LibraryInterface* library,
-    QWidget* parentWindow, QWidget* parent):
+    QSharedPointer<AbstractionTypeValidator> validator, QWidget* parentWindow, QWidget* parent):
 QGroupBox(parent),
 abstractionView_(new EditableTableView(this)),
-abstractionModel_(new AbstractionTypesModel(this)),
+abstractionModel_(new AbstractionTypesModel(validator, this)),
 abstractionDelegate_(new AbstractionTypesDelegate(component, library, parentWindow, this)),
 library_(library)
 {

@@ -30,6 +30,7 @@ class BusInterface;
 class Component;
 class LibraryInterface;
 class AbstractionTypesEditor;
+class BusInterfaceValidator;
 
 //-----------------------------------------------------------------------------
 //! Container for editor on the general tab of a bus interface editor.
@@ -49,17 +50,14 @@ public:
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
      *      @param [in] expressionParser        Pointer to the expression parser.
+     *      @param [in] busValidator            Validator for bus interfaces.
 	 *      @param [in] parent                  Pointer to the owner of this editor.
 	 *      @param [in] parentWnd               Pointer to the parent window.
 	 */
-	BusIfGeneralTab(LibraryInterface* libHandler,
-		QSharedPointer<BusInterface> busif,
-		QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-		QWidget* parent,
-        QWidget* parentWnd);
+	BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<BusInterface> busif,
+		QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<BusInterfaceValidator> busValidator, QWidget* parent, QWidget* parentWnd);
 	
 	//! The destructor.
 	virtual ~BusIfGeneralTab();
