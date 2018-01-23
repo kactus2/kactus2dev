@@ -152,8 +152,9 @@ void CodeEditorSettingsPage::apply()
 
     for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        settings().setValue("Editor/Highlight/" + CSourceHighlighter::STYLE_IDS[i],
-                           QVariant::fromValue(styles_[i]));
+        settings().setValue("Editor/Highlight/" + 
+            CSourceHighlighter::getStyleName(static_cast<CSourceHighlighter::StyleType>(i)),
+            QVariant::fromValue(styles_[i]));
     }
 }
 
@@ -288,7 +289,8 @@ void CodeEditorSettingsPage::loadSettings()
 
     for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        styles_[i] = settings().value("Editor/Highlight/" + CSourceHighlighter::STYLE_IDS[i],
+        styles_[i] = settings().value("Editor/Highlight/" + 
+            CSourceHighlighter::getStyleName(static_cast<CSourceHighlighter::StyleType>(i)),
             QVariant::fromValue(CSourceHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
     }
 }

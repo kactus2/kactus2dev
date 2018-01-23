@@ -48,9 +48,15 @@ public:
 
     //! Default styles.
     static HighlightStyleDesc const DEFAULT_STYLES[STYLE_COUNT];
-
-    //! Style ids for storing the styles in the settings.
-    static QString const STYLE_IDS[STYLE_COUNT];
+   
+    /*!
+     *  Gets the name for the given style type.
+     *
+     *      @param [in] type   The type whose name to find.
+     *
+     *      @return The name for the type.
+     */
+    static QString getStyleName(StyleType type);
 
     /*!
      *  Constructor.
