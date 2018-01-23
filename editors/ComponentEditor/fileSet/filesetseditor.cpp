@@ -27,13 +27,13 @@
 // Function: FileSetsEditor::FileSetsEditor()
 //-----------------------------------------------------------------------------
 FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface,
-                               PluginManager& pluginMgr, QSharedPointer<ParameterFinder> parameterFinder):
+                               QSharedPointer<ParameterFinder> parameterFinder):
 ItemEditor(component, libInterface),
 splitter_(Qt::Vertical, this),
 view_(&splitter_),
 model_(component, parameterFinder, this),
 proxy_(this),
-dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), pluginMgr, &splitter_),
+dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), &splitter_),
 firstShow_(true)
 {
 	// display a label on top the table

@@ -30,18 +30,28 @@ HighlightStyleDesc const LanguageHighlighter::DEFAULT_STYLES[STYLE_COUNT] =
     HighlightStyleDesc(Qt::darkMagenta, false, false)
 };
 
-//! Style ids for storing the styles in the settings.
-QString const LanguageHighlighter::STYLE_IDS[STYLE_COUNT] =
+//-----------------------------------------------------------------------------
+// Function: LanguageHighlighter::getStyleName()
+//-----------------------------------------------------------------------------
+QString LanguageHighlighter::getStyleName(StyleType type)
 {
-    "Keywords",
-    "Preprocessor",
-    "Strings",
-    "SinglelineComments",
-    "MultilineComments",
-    "APITypes",
-    "APIFunc",
-    "LanguageSpecific"
-};
+    static const QStringList styles = QStringList() 
+        << "Keywords"
+        << "Preprocessor"
+        << "Strings"
+        << "SinglelineComments"
+        << "MultilineComments"
+        << "APITypes"
+        << "APIFunc"
+        << "LanguageSpecific";
+
+    if (type > STYLE_COUNT)
+    {
+        return QString();
+    }
+
+    return styles.at(type);
+}
 
 //-----------------------------------------------------------------------------
 // Function: LanguageHighlighter::LanguageHighlighter()

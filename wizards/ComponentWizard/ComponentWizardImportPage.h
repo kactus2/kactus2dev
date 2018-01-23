@@ -21,7 +21,6 @@
 class Component;
 class LibraryInterface;
 class ImportEditor;
-class PluginManager;
 
 //-----------------------------------------------------------------------------
 //! Import page for the component wizard.
@@ -36,14 +35,12 @@ public:
      *
      *      @param [in] component               Pointer to the component being edited.
      *      @param [in] handler                 Pointer to the instance which manages the library.
-     *      @param [in] pluginMgr               Manager for all plugins.
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] parent                  The parent wizard.
      */
     ComponentWizardImportPage(QSharedPointer<Component> component,
 		 LibraryInterface* handler,
-         PluginManager const& pluginMgr,
          QSharedPointer <ComponentParameterFinder> parameterFinder,
          QSharedPointer<ExpressionFormatter> expressionFormatter,
 		 QWidget* parent);

@@ -25,14 +25,14 @@
 //-----------------------------------------------------------------------------
 ComponentWizardDependencyPage::ComponentWizardDependencyPage(QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder, QString const& componentPath,
-        PluginManager const& pluginMgr, QWidget* parent):
+        QWidget* parent):
 QWizardPage(parent),
 component_(component),
 splitter_(Qt::Vertical, this),
 view_(&splitter_),
 model_(component_, parameterFinder, this),
 proxy_(this),
-editor_(component_, componentPath, pluginMgr, &splitter_)
+editor_(component_, componentPath, &splitter_)
 {
     setTitle(tr("File Sets & Dependency Analysis"));
     setSubTitle(tr("Add files to the component by specifying the source directories, check "

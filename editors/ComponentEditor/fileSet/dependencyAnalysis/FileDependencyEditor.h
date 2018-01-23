@@ -26,7 +26,6 @@
 #include <QTimer>
 
 class Component;
-class PluginManager;
 class ISourceAnalyzerPlugin;
 class FileSet;
 class File;
@@ -45,11 +44,10 @@ public:
      *
      *      @param [in] component     The component being edited.
      *      @param [in] basePath      The component's base path.
-     *      @param [in] pluginMgr     The plugin manager for accessing plugins.
      *      @param [in] parent        The parent widget.
      */
     FileDependencyEditor(QSharedPointer<Component> component, QString const& basePath,
-        PluginManager const& pluginMgr, QWidget* parent);
+         QWidget* parent);
 
     /*!
      *  Destructor.

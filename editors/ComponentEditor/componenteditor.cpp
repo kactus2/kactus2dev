@@ -65,12 +65,10 @@
 // Function: ComponentEditor::ComponentEditor()
 //-----------------------------------------------------------------------------
 ComponentEditor::ComponentEditor(LibraryInterface* libHandler,
-                                 PluginManager& pluginMgr,
 								 QSharedPointer<Component> component,
 								 QWidget *parent):
 TabDocument(parent, DOC_PROTECTION_SUPPORT),
 libHandler_(libHandler),
-pluginManager_(pluginMgr),
 component_(component),
 navigationSplitter_(Qt::Horizontal, this),
 editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_), 
@@ -551,7 +549,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
     connect(genEditor, SIGNAL(hierarchyChanged(QSettings&)), this, SLOT(setRowVisibility(QSettings&)));
 
     root->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>( new ComponentEditorFileSetsItem(
-        &navigationModel_, libHandler_, pluginManager_, component, referenceCounter_, parameterFinder_,
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
         expressionParser_, expressionFormatter_, root)));
 
     if (component->getImplementation() == KactusAttribute::HW)

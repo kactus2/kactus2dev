@@ -33,9 +33,8 @@ public:
      *  Constructor.
      *
      *      @param [in/out] settings   The settings store.
-     *      @param [in]     pluginMgr  The plugin manager.
      */
-    PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr);
+    PluginSettingsPage(QSettings& settings);
 
     /*!
      *  Destructor.
@@ -110,12 +109,6 @@ private:
 
     //! The settings store.
     QSettings& settings_;
-
-    //! The plugin manager.
-    PluginManager& pluginMgr_;
-
-    //! The local manager.
-    PluginManager localManager_;
 
     //! The plugins directories editor.
     DirectoryListSelector pluginDirSelector_;

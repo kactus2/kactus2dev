@@ -117,7 +117,8 @@ void CSourceWidget::applySettings(QSettings& settings)
 
     for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        HighlightStyleDesc styleDesc = settings.value("Editor/Highlight/" + CSourceHighlighter::STYLE_IDS[i],
+        HighlightStyleDesc styleDesc = settings.value("Editor/Highlight/" + 
+            CSourceHighlighter::getStyleName(static_cast<CSourceHighlighter::StyleType>(i)),
             QVariant::fromValue(CSourceHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
 
         textEdit_->getHighlighter().setStyle(static_cast<CSourceHighlighter::StyleType>(i), styleDesc);

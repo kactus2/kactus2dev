@@ -18,7 +18,6 @@
 #include <QWizard>
 
 class Component;
-class PluginManager;
 class LibraryInterface;
 class ReferenceCounter;
 
@@ -36,11 +35,10 @@ public:
      *
      *      @param [in] component   The component for which the wizard is run.
      *      @param [in] basePath    The base path where the component XML will be located.
-     *      @param [in] pluginMgr   The plugin manager.
      *      @param [in] handler	    Pointer to the instance which manages the library.
      *      @param [in] parent      The parent widget.
      */
-    ComponentWizard(QSharedPointer<Component> component, QString const& basePath, PluginManager const& pluginMgr,
+    ComponentWizard(QSharedPointer<Component> component, QString const& basePath,
         LibraryInterface* handler, QWidget* parent);
 
     /*!

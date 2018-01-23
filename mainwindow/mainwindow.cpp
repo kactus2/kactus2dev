@@ -62,7 +62,7 @@
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
 
 #include <settings/SettingsDialog.h>
-#include <settings/SettingsUpdater.h>
+
 
 #include <wizards/ComponentWizard/ComponentWizard.h>
 #include <wizards/ImportWizard/ImportWizard.h>
@@ -172,19 +172,9 @@ actionFilterFields_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
-curWorkspaceName_("Default"),
-pluginMgr_()
+curWorkspaceName_("Default")
 {
     qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
-
-    // set the identification tags for the application
-    QCoreApplication::setOrganizationDomain(tr("tut.fi"));
-    QCoreApplication::setOrganizationName(tr("TUT"));
-    QCoreApplication::setApplicationName(tr("Kactus2"));
-    QCoreApplication::setApplicationVersion("2.0");
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-
-    SettingsUpdater::runUpgrade(this);
 
     setWindowTitle(QCoreApplication::applicationName());
     setWindowIcon(QIcon(":icons/common/graphics/appicon.png"));
@@ -211,10 +201,9 @@ pluginMgr_()
     setupAndConnectLibraryHandler();
 
     // Load plugins.
-    QSettings settings;
-    QStringList pluginsPath = settings.value("Platform/PluginsPath", QStringList("Plugins")).toStringList();
 
-    pluginMgr_ = QSharedPointer<PluginManager>(new PluginManager(pluginsPath));
+
+
 
     // some actions need the editors so set them up before the actions
     setupActions();
@@ -2100,7 +2089,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void MainWindow::openSettings()
 {
-    SettingsDialog dialog(*pluginMgr_, this);
+    SettingsDialog dialog(this);
 
     if (dialog.exec() == QDialog::Accepted)
     {
@@ -2951,7 +2940,7 @@ void MainWindow::openComponent(VLNV const& vlnv)
         return;
     }
 
-    ComponentEditor* editor = new ComponentEditor(libraryHandler_, *pluginMgr_, component, this);
+    ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
     connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
         editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
@@ -3710,7 +3699,7 @@ void MainWindow::onRunImportWizard()
 
     if (component)
     {
-        ImportWizard wizard(component, *pluginMgr_.data(), libraryHandler_, this);
+        ImportWizard wizard(component, libraryHandler_, this);
 
         if (wizard.exec() == QDialog::Accepted)
         {
@@ -3733,7 +3722,7 @@ void MainWindow::createGeneratorPluginActions()
 {
     pluginActionGroup_ = new QActionGroup(this);
 
-    foreach (IPlugin* plugin, pluginMgr_->getActivePlugins())
+    foreach (IPlugin* plugin, PluginManager::getInstance().getActivePlugins())
     {
         IGeneratorPlugin* genPlugin = dynamic_cast<IGeneratorPlugin*>(plugin);
 
@@ -3794,7 +3783,7 @@ void MainWindow::updateGeneratorPluginActions()
 void MainWindow::runComponentWizard(QSharedPointer<Component> component, QString const& directory)
 {
     // Open the component wizard.
-    ComponentWizard wizard(component, directory, *pluginMgr_, libraryHandler_, this);
+    ComponentWizard wizard(component, directory, libraryHandler_, this);
 
     QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     wizard.setStyleSheet(styleSheet);

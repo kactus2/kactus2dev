@@ -16,8 +16,6 @@
 
 #include <editors/ComponentEditor/fileSet/filesetseditor.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
-
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
@@ -29,7 +27,7 @@
 // Function: componenteditorfilesetsitem::ComponentEditorFileSetsItem()
 //-----------------------------------------------------------------------------
 ComponentEditorFileSetsItem::ComponentEditorFileSetsItem(ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler, PluginManager& pluginMgr, QSharedPointer<Component> component,
+        LibraryInterface* libHandler, QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
         ComponentEditorItem* parent):
@@ -37,8 +35,7 @@ ComponentEditorItem(model, libHandler, component, parent),
 fileSets_(component->getFileSets()),
 expressionParser_(expressionParser),
 fileValidator_(new FileValidator(expressionParser_)),
-fileSetValidator_(new FileSetValidator(fileValidator_, expressionParser_)),
-pluginMgr_(pluginMgr)
+fileSetValidator_(new FileSetValidator(fileValidator_, expressionParser_))
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -90,7 +87,7 @@ ItemEditor* ComponentEditorFileSetsItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new FileSetsEditor(component_, libHandler_, pluginMgr_, parameterFinder_);
+        editor_ = new FileSetsEditor(component_, libHandler_, parameterFinder_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(fileAdded(File*)), this, SLOT(onFileAdded(File*)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

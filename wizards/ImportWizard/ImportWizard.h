@@ -19,7 +19,6 @@
 #include <QSharedPointer>
 
 class Component;
-class PluginManager;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -35,12 +34,10 @@ public:
      *  Constructor.
      *
      *      @param [in] component  The component for which the wizard is run.
-     *      @param [in] pluginMgr  The plugin manager.
      *      @param [in] handler	   The library handle.
      *      @param [in] parent     The parent widget.
      */
     ImportWizard(QSharedPointer<const Component> component,
-                 PluginManager const& pluginMgr,
                  LibraryInterface* handler,
                  QWidget* parent);
 

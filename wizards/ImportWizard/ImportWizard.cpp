@@ -25,7 +25,6 @@
 // Function: ImportWizard::ImportWizard()
 //-----------------------------------------------------------------------------
 ImportWizard::ImportWizard(QSharedPointer<const Component> component,
-	                             PluginManager const& pluginMgr,
 	                             LibraryInterface* handler,
 	                             QWidget* parent)
     : QWizard(parent),
@@ -49,7 +48,7 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     QSharedPointer<ExpressionFormatter> singleExpressionFormatter(new ExpressionFormatter(updatingFinder_));
     QSharedPointer<ExpressionFormatter> multipleExpressionFormatter(new ExpressionFormatter(multiFinder));
 
-    ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, pluginMgr,
+    ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, 
         updatingFinder_, singleExpressionFormatter, this);
     ComponentWizardConclusionPage* finalPage = new ComponentWizardConclusionPage(workingComponent_, handler,
         multipleExpressionFormatter, this);

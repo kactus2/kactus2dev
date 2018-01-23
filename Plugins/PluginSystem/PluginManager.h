@@ -25,12 +25,6 @@ class IPlugin;
 class PluginManager
 {
 public:
-    /*!
-     *  Constructor which loads the plugins from the given paths.
-     *
-     *      @param [in] pluginPaths The paths containing the plugins.
-     */
-    PluginManager(QStringList const& pluginPaths);
 
     /*!
      *  Destructor.
@@ -45,7 +39,7 @@ public:
     /*!
      *  Returns the list of all loaded plugins.
      */
-    QList<IPlugin*> const& getAllPlugins() const;
+    QList<IPlugin*> getAllPlugins() const;
 
     /*!
      *  Loads the plugins from given paths.
@@ -54,15 +48,22 @@ public:
      */
     void setPluginPaths(QStringList const& pluginPaths);
     
+    static QList<IPlugin*> findPluginsInPaths(QStringList const& pluginPaths);
+
+    static PluginManager& getInstance();
+
 private:
     // Disable copying.
     PluginManager(PluginManager const& rhs);
     PluginManager& operator=(PluginManager const& rhs);
+     
+    //! The constructor.
+    PluginManager();
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
+    
     //! The list of loaded plugins.
     QList<IPlugin*> plugins_;
 };
