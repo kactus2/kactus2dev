@@ -12,6 +12,8 @@ software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 
 Windows installer and tar-package for Linux are available at https://sourceforge.net/projects/kactus2/
 
+Guidelines for issue reporting and contributing are given in CONTRIBUTING.md. Other support is provided by email: kactus2@cs.tut.fi
+
 What you can do with Kactus2
 ----------------------------------------------------
 
@@ -147,18 +149,8 @@ c) In some systems, a link to the executable is created if Kactus2 was installed
 Community Guidelines & Contributions
 ----------------------------------------------------
 
-Issues should be reported at Kactus2 project management site: https://kactus2.cs.tut.fi
+See CONTRIBUTING.md for details.
 
-Other support is provided by email: kactus2@cs.tut.fi
-
-If you want to contribute to Kactus2, you should see the wiki at the project management site (link above).
-It has guides on essentials like building with Visual Studio, plugin development and code style.
-
-Please note that contributions to Kactus2 core, the IP-XACTmodels library, and the plugins provided by
-TUT will not be included in a release unless we accept them and you agree to transfer the copyrights of the
-changes to TUT.
-
-When creating a plugin, you may keep it closed or open source, and the copyright stays with you.
 
 Contributors
 ----------------------------------------------------
