@@ -39,15 +39,15 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeModel::PortMapTreeModel()
 //-----------------------------------------------------------------------------
-PortMapTreeModel::PortMapTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
-    LibraryInterface* handler, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortMapValidator> portMapValidator, QObject *parent):
+PortMapTreeModel::PortMapTreeModel(QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortMapValidator> portMapValidator,
+    QObject *parent):
 QAbstractItemModel(parent),
 ParameterizableTable(parameterFinder),
 component_(component),
 handler_(handler),
-containingBusInterface_(busif),
+abstraction_(),
 absDef_(),
 interfaceMode_(General::MASTER),
 systemGroup_(),
@@ -656,7 +656,7 @@ bool PortMapTreeModel::setData(const QModelIndex &index, const QVariant &value, 
             beginInsertRows(logicalColumnIndex, portMapCountInIndex, portMapCountInIndex);
 
             portMappings_[logicalColumnIndex.row()].portMaps_.append(newPortMap);
-            containingBusInterface_->getPortMaps()->append(newPortMap);
+            abstraction_->getPortMaps()->append(newPortMap);
 
             endInsertRows();
 
@@ -955,9 +955,9 @@ void PortMapTreeModel::reset()
         }
     }
 
-    if (containingBusInterface_->getPortMaps())
+    if (abstraction_ && abstraction_->getPortMaps())
     {
-        foreach (QSharedPointer<PortMap> currentMap, *containingBusInterface_->getPortMaps())
+        foreach (QSharedPointer<PortMap> currentMap, *abstraction_->getPortMaps())
         {
             bool logicalPortFound = false;
 
@@ -1000,19 +1000,28 @@ void PortMapTreeModel::reset()
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeModel::setAbsType()
 //-----------------------------------------------------------------------------
-void PortMapTreeModel::setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString const& systemGroup)
+void PortMapTreeModel::setAbsType(QSharedPointer<AbstractionType> abstraction, General::InterfaceMode mode,
+    QString const& systemGroup)
 {
+    abstraction_ = abstraction;
+
+    VLNV abstractionVLNV;
+    if (abstraction_)
+    {
+        abstractionVLNV = *abstraction_->getAbstractionRef().data();
+    }
+
     interfaceMode_ = mode;
     systemGroup_ = systemGroup;
 
     absDef_ = QSharedPointer<AbstractionDefinition>();
 
-    if (vlnv.isValid())
+    if (abstractionVLNV.isValid())
     {
-        QSharedPointer<Document> libComb = handler_->getModel(vlnv);
+        QSharedPointer<Document> libComb = handler_->getModel(abstractionVLNV);
         if (libComb)
         {
-            if (handler_->getDocumentType(vlnv) == VLNV::ABSTRACTIONDEFINITION)
+            if (handler_->getDocumentType(abstractionVLNV) == VLNV::ABSTRACTIONDEFINITION)
             {
                 absDef_ = libComb.dynamicCast<AbstractionDefinition>();
             }
@@ -1219,7 +1228,7 @@ void PortMapTreeModel::onAddPortMap(QModelIndex const& itemIndex)
         portMappings_[parentRow].portMaps_.insert(newItemRow, newPortMap);
         endInsertRows();
 
-        containingBusInterface_->getPortMaps()->append(newPortMap);
+        abstraction_->getPortMaps()->append(newPortMap);
 
         emit contentChanged();
     }
@@ -1240,8 +1249,7 @@ void PortMapTreeModel::onRemovePort(QModelIndex const& itemIndex)
         portMappings_[parentIndex.row()].portMaps_.removeAll(removedPortMap);
         endRemoveRows();
 
-
-        containingBusInterface_->getPortMaps()->removeAll(removedPortMap);
+        abstraction_->getPortMaps()->removeAll(removedPortMap);
 
         if (removedPortMap->getPhysicalPort())
         {
@@ -1276,7 +1284,7 @@ void PortMapTreeModel::onRemoveAllChildItemsFrom(QModelIndex const& itemIndex)
             foreach (QSharedPointer<PortMap> portMap, removedMaps)
             {
                 portMappings_[logicalPortIndex.row()].portMaps_.removeAll(portMap);
-                containingBusInterface_->getPortMaps()->removeAll(portMap);
+                abstraction_->getPortMaps()->removeAll(portMap);
 
                 if (portMap->getPhysicalPort())
                 {
@@ -1374,7 +1382,7 @@ void PortMapTreeModel::onAddConnectedPortMap(QSharedPointer<PortMap> newPortMap)
                 beginInsertRows(logicalIndex, portMapCount, portMapCount);
 
                 portMappings_[portMapIndex].portMaps_.append(newPortMap);
-                containingBusInterface_->getPortMaps()->append(newPortMap);
+                abstraction_->getPortMaps()->append(newPortMap);
 
                 endInsertRows();
 

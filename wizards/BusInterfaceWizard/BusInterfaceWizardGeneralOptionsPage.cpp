@@ -96,8 +96,26 @@ bool BusInterfaceWizardGeneralOptionsPage::mandatoryFieldsAreFilledIn() const
     return !busIf_->name().isEmpty() &&
         busIf_->getInterfaceMode() != General::INTERFACE_MODE_COUNT &&
         handler_->contains(busIf_->getBusType()) && 
-        !busIf_->getAbstractionTypes()->isEmpty() && 
-        handler_->contains(*busIf_->getAbstractionTypes()->first()->getAbstractionRef());
+        abstractionReferenceIsFound();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceWizardGeneralOptionsPage::abstractionReferenceIsFound()
+//-----------------------------------------------------------------------------
+bool BusInterfaceWizardGeneralOptionsPage::abstractionReferenceIsFound() const
+{
+    if (busIf_->getAbstractionTypes() && !busIf_->getAbstractionTypes()->isEmpty())
+    {
+        foreach (QSharedPointer<AbstractionType> abstraction, *busIf_->getAbstractionTypes())
+        {
+            if (abstraction->getAbstractionRef() && handler_->contains(*abstraction->getAbstractionRef().data()))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

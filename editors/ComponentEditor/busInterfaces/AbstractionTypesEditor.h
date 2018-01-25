@@ -66,13 +66,6 @@ public:
     void setBusForModel(QSharedPointer<BusInterface> newBus);
 
     /*!
-     *  Get the first abstraction definition of the bus interface.
-     *
-     *      @return The first abstraction definition.
-     */
-    QSharedPointer<ConfigurableVLNVReference> getFirstAbstraction() const;
-
-    /*!
      *  Add a new abstraction definition referencing the selected VLNV to the bus interface.
      *
      *      @param [in] newAbstraction  The selected VLNV.

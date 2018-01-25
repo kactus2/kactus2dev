@@ -255,20 +255,6 @@ Qt::ItemFlags AbstractionTypesModel::flags(const QModelIndex& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTypesModel::getFirstAbstraction()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConfigurableVLNVReference> AbstractionTypesModel::getFirstAbstraction() const
-{
-    QSharedPointer<ConfigurableVLNVReference> currentVLNV;
-    if (!abstractions_->isEmpty() && abstractions_->first()->getAbstractionRef())
-    {
-        currentVLNV = abstractions_->first()->getAbstractionRef();
-    }
-
-    return currentVLNV;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::supportedDropActions()
 //-----------------------------------------------------------------------------
 Qt::DropActions AbstractionTypesModel::supportedDropActions() const

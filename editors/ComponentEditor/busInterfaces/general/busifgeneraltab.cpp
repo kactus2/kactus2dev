@@ -115,21 +115,6 @@ VLNV BusIfGeneralTab::getBusType() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfGeneralTab::getAbsType()
-//-----------------------------------------------------------------------------
-VLNV BusIfGeneralTab::getAbsType() const
-{
-    if (abstractionEditor_->getFirstAbstraction())
-    {
-        return *abstractionEditor_->getFirstAbstraction().data();
-    }
-    else
-    {
-        return VLNV();
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusIfGeneralTab::setAbsTypeMandatory()
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::setAbsTypeMandatory(bool isMandatory)

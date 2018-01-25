@@ -109,13 +109,6 @@ public:
      *      @param [in] newBus  The new bus interface.
      */
     void onChangeSelectedBusInterface(QSharedPointer<BusInterface> newBus);
-
-    /*!
-     *  Get the abstraction definition VLNV of the first abstraction type.
-     *
-     *      @return The abstraction definition VLNV of the first abstraction type.
-     */
-    QSharedPointer<ConfigurableVLNVReference> getFirstAbstraction() const;
     
     /*!
      *  Returns the supported actions of a drop.

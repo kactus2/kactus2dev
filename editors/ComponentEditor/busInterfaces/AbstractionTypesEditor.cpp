@@ -92,14 +92,6 @@ void AbstractionTypesEditor::setBusForModel(QSharedPointer<BusInterface> newBus)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTypesEditor::getFirstAbstraction()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConfigurableVLNVReference> AbstractionTypesEditor::getFirstAbstraction() const
-{
-    return abstractionModel_->getFirstAbstraction();
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionTypesEditor::addNewAbstraction()
 //-----------------------------------------------------------------------------
 void AbstractionTypesEditor::addNewAbstraction(VLNV const& newAbstraction)

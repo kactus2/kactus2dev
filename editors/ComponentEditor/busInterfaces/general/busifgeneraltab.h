@@ -75,13 +75,6 @@ public:
 	VLNV getBusType() const;
 
 	/*!
-     *  Get the currently set abstraction type.
-	 *
-	 *      @return VLNV that is set for the current abstraction type.
-	 */
-	VLNV getAbsType() const;
-
-	/*!
      *  Set the abstraction type mandatory or not.
 	 *
 	 *      @param [in] isMandatory Whether abstraction type is mandatory or not.

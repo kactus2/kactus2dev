@@ -35,11 +35,10 @@
 // Function: PortmapDialog()
 //-----------------------------------------------------------------------------
 PortmapDialog::PortmapDialog(LibraryInterface* library, QSharedPointer<Component> component,
-                             QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf,
-                             QWidget* parent) :
+    QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf, QWidget* parent) :
 QDialog(parent),
-    busIf_(busIf),
-    otherBusIf_(otherBusIf)
+busIf_(busIf),
+otherBusIf_(otherBusIf)
 {
     Q_ASSERT(library != 0);
     Q_ASSERT(component != 0);
@@ -58,8 +57,7 @@ QDialog(parent),
     portmapWidget_ = new BusInterfacePortMapTab(library, component, busIf, expressionParser,
         expressionFormatter, parameterFinder, portMapValidator, this);
 
-    portmapWidget_->setAbsType(*busIf->getAbstractionTypes()->first()->getAbstractionRef(),
-        busIf->getInterfaceMode(), busIf_->getSystem());
+    portmapWidget_->setAbstractionDefinitions();
 
     // Create a separator.
     QGroupBox* separator = new QGroupBox(this);

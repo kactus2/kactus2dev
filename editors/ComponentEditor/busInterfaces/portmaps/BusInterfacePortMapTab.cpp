@@ -49,13 +49,15 @@ nameFilterEditor_(new QLineEdit(this)),
 directionFilter_(this),
 hideConnectedPortsBox_(this),
 physicalPrefixEditor_(new QLineEdit(this)),
-portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
+portMapsModel_(component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
 portMapsSorter_(busif_, this),
 portMapsView_(this),
 portMapsDelegate_(0),
 autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
 removeAllMappingsButton_(QIcon(":/icons/common/graphics/cross.png"), "Remove all", this),
-autoConnector_(component, busif, expressionParser, libHandler, this)
+autoConnector_(component, busif, expressionParser, libHandler, this),
+abstractionSelector_(new QComboBox(this)),
+abstractions_()
 {
     hideConnectedPortsBox_.setCheckState(Qt::Checked);
 
@@ -157,13 +159,82 @@ void BusInterfacePortMapTab::refresh()
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusInterfacePortMapTab::setAbstractionDefinitions()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::setAbstractionDefinitions()
+{
+    QString currentAbstraction = abstractionSelector_->currentText();
+
+    abstractionSelector_->clear();
+    abstractions_.clear();
+
+    if (!busif_->getAbstractionTypes()->isEmpty())
+    {
+        int currentIndex = 0;
+        for (int i = 0; i < busif_->getAbstractionTypes()->size(); ++i)
+        {
+            QSharedPointer<AbstractionType> abstraction = busif_->getAbstractionTypes()->at(i);
+            abstractions_.append(abstraction);
+
+            if (abstraction->getAbstractionRef())
+            {
+                abstractionSelector_->addItem(abstraction->getAbstractionRef()->toString());
+
+                if (!currentAbstraction.isEmpty() &&
+                    abstraction->getAbstractionRef()->toString() == currentAbstraction)
+                {
+                    currentIndex = i;
+                }
+            }
+        }
+
+        if (!abstractions_.isEmpty())
+        {
+            abstractionSelector_->setCurrentIndex(currentIndex);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacePortMapTab::onAbstractionChanged()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::onAbstractionChanged()
+{
+    QSharedPointer<AbstractionType> currentAbstraction;
+
+    int currentAbstractionIndex = abstractionSelector_->currentIndex();
+    if (currentAbstractionIndex >= 0)
+    {
+        currentAbstraction = abstractions_.at(abstractionSelector_->currentIndex());
+    }
+
+    setAbsType(currentAbstraction);
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusInterfacePortMapTab::setAbsType()
 //-----------------------------------------------------------------------------
-void BusInterfacePortMapTab::setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString const& systemGroup)
+void BusInterfacePortMapTab::setAbsType(QSharedPointer<AbstractionType> abstraction)
 {
-    portMapsModel_.setAbsType(vlnv, mode, systemGroup);
-    portMapsDelegate_->updateLogicalPortNames(vlnv, mode, systemGroup);
-    autoConnector_.setAbstractionDefinition(vlnv, mode, systemGroup);
+    General::InterfaceMode busMode = busif_->getInterfaceMode();
+    if (busMode == General::MONITOR && busif_->getMonitor())
+    {
+        busMode = busif_->getMonitor()->interfaceMode_;
+    }
+
+    QString systemGroup = busif_->getSystem();
+
+    VLNV definitionVLNV;
+    if (abstraction && abstraction->getAbstractionRef())
+    {
+        definitionVLNV = *abstraction->getAbstractionRef().data();
+    }
+
+    physicalPortSorter_.setNewAbstractionType(abstraction);
+
+    portMapsModel_.setAbsType(abstraction, busMode, systemGroup);
+    portMapsDelegate_->updateLogicalPortNames(definitionVLNV, busMode, systemGroup);
+    autoConnector_.setAbstractionDefinition(definitionVLNV, busMode, systemGroup);
 
     refresh();
 }
@@ -214,7 +285,14 @@ void BusInterfacePortMapTab::setupLayout()
     topLayout->addWidget(physicalGroupBox, 1);
     topLayout->addLayout(filterAndFunctionLayout);
 
+    QLabel* abstractionLabel(new QLabel(tr("Abstraction definition: "), this));
+    QHBoxLayout* abstractionLayout = new QHBoxLayout();
+    abstractionLayout->addWidget(abstractionLabel, 0, Qt::AlignLeft);
+    abstractionLayout->addWidget(abstractionSelector_, 0, Qt::AlignLeft);
+    abstractionLayout->addStretch(5);
+
     QVBoxLayout* portMapsLayout = new QVBoxLayout();
+    portMapsLayout->addLayout(abstractionLayout, 0);
     portMapsLayout->addWidget(&portMapsView_);
     portMapsLayout->addWidget(&removeAllMappingsButton_, 0, Qt::AlignLeft);
 
@@ -280,6 +358,9 @@ void BusInterfacePortMapTab::connectItems()
         &portMapsModel_, SLOT(onAddConnectedPortMap(QSharedPointer<PortMap>)), Qt::UniqueConnection);
     connect(&portMapsView_, SIGNAL(autoConnecteLogicalSignals(QStringList const&)),
         &autoConnector_, SLOT(onAutoConnectLogicalSignals(QStringList const&)), Qt::UniqueConnection);
+
+    connect(abstractionSelector_, SIGNAL(currentIndexChanged(int)),
+        this, SLOT(onAbstractionChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

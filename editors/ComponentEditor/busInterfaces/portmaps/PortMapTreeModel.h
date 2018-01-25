@@ -33,6 +33,7 @@ class PortMap;
 class ExpressionFormatter;
 class PortMapValidator;
 class Port;
+class AbstractionType;
 
 //-----------------------------------------------------------------------------
 //! A model for displaying bus interface port maps.
@@ -46,7 +47,6 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] busif                   The containing bus interface.
      *      @param [in] component               The component to which this model is made.
      *      @param [in] handler                 The library handler.
      *      @param [in] expressionParser        The used expression parser.
@@ -55,10 +55,10 @@ public:
      *      @param [in] portMapValidator        Validator used for port maps.
      *      @param [in] parent                  The owner of this model.
      */
-    PortMapTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
-        LibraryInterface* handler, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortMapValidator> portMapValidator, QObject *parent);
+    PortMapTreeModel(QSharedPointer<Component> component, LibraryInterface* handler,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortMapValidator> portMapValidator,
+        QObject *parent);
 
     /*!
      *  The destructor.
@@ -158,11 +158,12 @@ public:
 	/*!
      *  Set the abstraction definition that is used in this port map.
 	 *
-	 *      @param [in] vlnv            Identifies the abstraction definition.
+     *      @param [in] abstraction     The abstraction type containing the referenced abstraction definition.
      *      @param [in] mode            The used bus interface mode.
      *      @param [in] systemGroup     The used system group in case of system mode.
 	 */
-	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString const& systemGroup);
+    void setAbsType(QSharedPointer<AbstractionType> abstraction, General::InterfaceMode mode,
+        QString const& systemGroup);
 
     /*!
      *  Get the list of acceptable mime types.
@@ -415,8 +416,8 @@ private:
     //! The instance that manages the library.
     LibraryInterface* handler_;
 
-    //! The bus interface being edited.
-    QSharedPointer<BusInterface> containingBusInterface_;    
+    //! The abstraction type referencing the selected abstraction definition.
+    QSharedPointer<AbstractionType> abstraction_;
 
     //! The abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;

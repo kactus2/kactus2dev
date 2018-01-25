@@ -107,6 +107,13 @@ private:
      */
     void setupLayout();
    
+    /*!
+     *  Check if a valid reference to an existing abstraction definition is found.
+     *
+     *      @return True, if a valid abstraction definition is found, false otherwise.
+     */
+    bool abstractionReferenceIsFound() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

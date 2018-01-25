@@ -19,6 +19,8 @@
 #include <QSharedPointer>
 
 class Component;
+class AbstractionType;
+
 //-----------------------------------------------------------------------------
 //! Sorting proxy for port list view.
 //-----------------------------------------------------------------------------
@@ -72,6 +74,13 @@ public:
      *      @return The allowed port names.
      */
     QStringList filterPortNames() const;
+
+    /*!
+     *  Setup a new abstraction type for sorting.
+     *
+     *      @param [in] newAbstraction  The selected abstraction type.
+     */
+    void setNewAbstractionType(QSharedPointer<AbstractionType> newAbstraction);
 
 public slots:
 	 
@@ -148,6 +157,17 @@ private:
     //! No assignment
     PortListSortProxyModel& operator=(const PortListSortProxyModel& other);  
     
+    /*!
+     *  Add connected physical ports from the selected abstraction type port mappings.
+     *
+     *      @param [in] abstraction     The selected abstraction type.
+     */
+    void addConnectedPortsFromAbstraction(QSharedPointer<AbstractionType> abstraction);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The owner component of the ports.
     QSharedPointer<Component> component_;
 
@@ -162,6 +182,9 @@ private:
 
     //! Filter for allowed port names. If set to empty, all ports are allowed by the filter.
     QStringList filterPorts_;
+
+    //! The connected abstraction type.
+    QSharedPointer<AbstractionType> abstraction_;
 };
 
 #endif // PORTLISTSORTPROXYMODEL_H
