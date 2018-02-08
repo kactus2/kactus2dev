@@ -33,6 +33,8 @@
 #include <IPXACTmodels/Design/HierInterface.h>
 #include <IPXACTmodels/Design/Interconnection.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/validators/namevalidator.h>
 
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
@@ -57,27 +59,29 @@ namespace
 //-----------------------------------------------------------------------------
 InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler):
 QStackedWidget(parent),
-    library_(handler),
-    busType_(this),
-    absType_(this),
-    busNameEditor_(this),
-    modeSelector_(this),
-    portMapsView_(this),
-    portMapsModel_(new InterfacePortMapModel(handler, this)),
-    busDescriptionEditor_(this),
-    comType_(this),
-    comNameEditor_(this),
-    transferTypeCombo_(this),
-    comDirectionCombo_(this),
-    comDescriptionEditor_(this),
-    apiType_(this),
-    apiNameEditor_(this),   
-    dependencyDirCombo_(this), 
-    apiDescriptionEditor_(this),
-    propertyValueEditor_(this),
-    interface_(0),
-    containingDesign_(),
-    editProvider_()
+activeTopView_(),
+library_(handler),
+busType_(this, VLNV(), true),
+absType_(this, VLNV(), true),
+busNameEditor_(this),
+modeSelector_(this),
+portMapsView_(this),
+portMapsModel_(new InterfacePortMapModel(handler, this)),
+busDescriptionEditor_(this),
+comType_(this, VLNV(), true),
+comNameEditor_(this),
+transferTypeCombo_(this),
+comDirectionCombo_(this),
+comDescriptionEditor_(this),
+apiType_(this, VLNV(), true),
+apiNameEditor_(this),
+dependencyDirCombo_(this),
+apiDescriptionEditor_(this),
+propertyValueEditor_(this),
+interface_(0),
+containingDesign_(),
+containingConfiguration_(),
+editProvider_()
 {
     Q_ASSERT(parent);
     Q_ASSERT(handler);
@@ -103,7 +107,8 @@ InterfaceEditor::~InterfaceEditor()
 //-----------------------------------------------------------------------------
 // Function: interfaceeditor::setInterface()
 //-----------------------------------------------------------------------------
-void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign, 
+void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign,
+    QSharedPointer<DesignConfiguration> configuration, QString const& activeTopView,
     QSharedPointer<IEditProvider> editProvider, bool locked)
 {
 	Q_ASSERT(interface);
@@ -117,8 +122,10 @@ void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer
 		disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 	}
 
+    activeTopView_ = activeTopView;
 	interface_ = interface;
     containingDesign_ = containingDesign;
+    containingConfiguration_ = configuration;
     editProvider_ = editProvider;
     locked_ = locked;
 
@@ -169,7 +176,7 @@ void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer
 void InterfaceEditor::refresh()
 {
     Q_ASSERT(interface_);
-    setInterface(interface_, containingDesign_, editProvider_, locked_);
+    setInterface(interface_, containingDesign_, containingConfiguration_, activeTopView_, editProvider_, locked_);
 }
 
 //-----------------------------------------------------------------------------
@@ -323,20 +330,25 @@ void InterfaceEditor::setBusInterface()
 {
     Q_ASSERT(interface_->getBusInterface());
     
-    busType_.setVLNV(interface_->getBusInterface()->getBusType(), true);
+    busType_.setVLNV(interface_->getBusInterface()->getBusType());
 
     setNameAndDescription(&busNameEditor_, &busDescriptionEditor_);
 
-    if (interface_->getBusInterface()->getAbstractionTypes() && 
-        !interface_->getBusInterface()->getAbstractionTypes()->isEmpty() &&
-        interface_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef())
+    QString activeView = activeTopView_;
+    if (interface_->encompassingComp())
     {
-        absType_.setVLNV(*interface_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef(), true);
+        activeView = containingConfiguration_->getActiveView(interface_->encompassingComp()->name());
     }
-    else
+
+    VLNV absVLNV;
+    if (interface_->getBusInterface() && interface_->getBusInterface()->getAbstractionContainingView(activeView))
     {
-        absType_.setVLNV(VLNV(), true);
+        QSharedPointer<AbstractionType> abstraction =
+            interface_->getBusInterface()->getAbstractionContainingView(activeView);
+        absVLNV = *abstraction->getAbstractionRef().data();
     }
+
+    absType_.setVLNV(absVLNV);
 
     // Set selection for mode editor, signal must be disconnected when mode is set to avoid loops.
     disconnect(&modeSelector_, SIGNAL(currentIndexChanged(QString const&)),
@@ -348,7 +360,7 @@ void InterfaceEditor::setBusInterface()
     connect(&modeSelector_, SIGNAL(currentIndexChanged(QString const&)),
         this, SLOT(onInterfaceModeChanged(QString const&)), Qt::UniqueConnection);
 
-    portMapsModel_->setInterfaceData(interface_, getActiveInterfaces());
+    portMapsModel_->setInterfaceData(interface_, activeView, getActiveInterfaces());
 
     setCurrentIndex(BUS);
 }
@@ -453,7 +465,7 @@ void InterfaceEditor::setComInterface()
 
     VLNV comType = interface_->getComInterface()->getComType();
 
-    comType_.setVLNV(comType, true);
+    comType_.setVLNV(comType);
 
     // set text for the name editor, signal must be disconnected when name is set to avoid loops 
     setNameAndDescription(&comNameEditor_, &comDescriptionEditor_);
@@ -513,7 +525,7 @@ void InterfaceEditor::setApiInterface()
 {
     Q_ASSERT(interface_->getApiInterface());
 
-    apiType_.setVLNV(interface_->getApiInterface()->getApiType(), true);
+    apiType_.setVLNV(interface_->getApiInterface()->getApiType());
 
     setNameAndDescription(&apiNameEditor_, &apiDescriptionEditor_);
 

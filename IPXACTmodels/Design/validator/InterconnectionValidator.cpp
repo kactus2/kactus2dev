@@ -231,7 +231,7 @@ bool InterconnectionValidator::singleExcludePortIsValid(QString const& portRefer
 {
     if (!currentBus->getAbstractionTypes()->isEmpty())
     {
-        foreach (QSharedPointer<PortMap> portMap, *currentBus->getPortMaps())
+        foreach (QSharedPointer<PortMap> portMap, *currentBus->getAllPortMaps())
         {
             if (portMap->getLogicalPort()->name_ == portReference)
             {

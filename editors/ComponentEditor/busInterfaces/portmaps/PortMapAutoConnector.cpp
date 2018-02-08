@@ -31,15 +31,14 @@
 // Function: PortMapAutoConnector::PortMapAutoConnector()
 //-----------------------------------------------------------------------------
 PortMapAutoConnector::PortMapAutoConnector(QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busInterface, QSharedPointer<ExpressionParser> parser,
-    LibraryInterface* libraryHandler, QObject* parent):
+    QSharedPointer<ExpressionParser> parser, LibraryInterface* libraryHandler, QObject* parent):
 QObject(parent),
-    component_(component),
-    busInterface_(busInterface),
-    absDef_(),
-    parser_(parser),
-    libraryHandler_(libraryHandler),
-    physicalPrefix_()
+component_(component),
+abstraction_(),
+absDef_(),
+parser_(parser),
+libraryHandler_(libraryHandler),
+physicalPrefix_()
 {
 
 }
@@ -55,10 +54,10 @@ PortMapAutoConnector::~PortMapAutoConnector()
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::setAbstractionDefinition()
 //-----------------------------------------------------------------------------
-void PortMapAutoConnector::setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV,
-    General::InterfaceMode newMode,
-    QString const& systemGroup)
+void PortMapAutoConnector::setAbstractionDefinition(QSharedPointer<AbstractionType> abstraction,
+    VLNV const& abstractionDefinitionVLNV, General::InterfaceMode newMode, QString const& systemGroup)
 {
+    abstraction_ = abstraction;
     interfaceMode_ = newMode;
     systemGroup_ =  systemGroup;
     absDef_.clear();
@@ -150,7 +149,7 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<Port
 //-----------------------------------------------------------------------------
 bool PortMapAutoConnector::logicalPortHasReferencingPortMap(QString const& logicalName) const
 {
-    foreach (QSharedPointer<PortMap> portMap, *busInterface_->getPortMaps())
+    foreach (QSharedPointer<PortMap> portMap, *abstraction_->getPortMaps())
     {
         if (portMap->getLogicalPort() && portMap->getLogicalPort()->name_.compare(logicalName) == 0)
         {

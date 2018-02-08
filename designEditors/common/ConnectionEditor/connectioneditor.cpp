@@ -45,6 +45,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
+#include <IPXACTmodels/Design/ComponentInstance.h>
+
 #include <IPXACTmodels/validators/namevalidator.h>
 
 #include <QFormLayout>
@@ -60,22 +62,23 @@
 //-----------------------------------------------------------------------------
 ConnectionEditor::ConnectionEditor(LibraryInterface* library, QWidget *parent):
 QWidget(parent),
-    type_(this),
-    absType_(this),
-    instanceLabel_(tr("Connected interfaces:"), this),
-    connectedInstances_(this),
-    nameGroup_(this),
-    nameLabel_(tr("Name:"), this),
-    nameEdit_(this),
-    descriptionLabel_(tr("Description:"), this),
-    descriptionEdit_(this),
-    portsLabel_(tr("Connected physical ports:"), this),
-    portWidget_(this),
-    connection_(NULL),
-    diagram_(0),
-    library_(library),
-    adHocBoundsTable_(this),
-    adHocBoundsModel_(this)
+type_(this, VLNV(), true),
+absType_(this, VLNV(), true),
+instanceLabel_(tr("Connected interfaces:"), this),
+connectedInstances_(this),
+nameGroup_(this),
+nameLabel_(tr("Name:"), this),
+nameEdit_(this),
+descriptionLabel_(tr("Description:"), this),
+descriptionEdit_(this),
+portsLabel_(tr("Connected physical ports:"), this),
+portWidget_(this),
+connection_(NULL),
+diagram_(0),
+library_(library),
+adHocBoundsTable_(this),
+adHocBoundsModel_(this),
+connectionTypeTable_(new QStackedWidget())
 {
 	Q_ASSERT(parent);
 	Q_ASSERT(library_);
@@ -117,6 +120,9 @@ QWidget(parent),
     adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::LEFT_BOUND, QHeaderView::Fixed);
     adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::RIGHT_BOUND, QHeaderView::Fixed);
 
+    connectionTypeTable_->addWidget(&portWidget_);
+    connectionTypeTable_->addWidget(&adHocBoundsTable_);
+
     setupLayout();
 
 	clear();
@@ -145,8 +151,8 @@ void ConnectionEditor::clear()
 	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onNameOrDescriptionChanged()));
 
 	// clear the contents of the editors
-	type_.setVLNV(VLNV(), true);
-	absType_.setVLNV(VLNV(), true);
+    type_.setVLNV(VLNV());
+    absType_.setVLNV(VLNV());
 	connectedInstances_.clear();
 	nameEdit_.clear();
 	descriptionEdit_.clear();
@@ -160,8 +166,7 @@ void ConnectionEditor::clear()
 	connectedInstances_.hide();
 	nameGroup_.hide();
 	portsLabel_.hide();
-	portWidget_.hide();
-    adHocBoundsTable_.hide();
+    connectionTypeTable_->hide();
 
 	parentWidget()->setMaximumHeight(20);
 }
@@ -209,11 +214,11 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
 
         if (endpoint2->isCom())
         {
-            type_.setVLNV(endpoint1->getComInterface()->getComType(), true);
+            type_.setVLNV(endpoint1->getComInterface()->getComType());
         }
         else
         {
-            type_.setVLNV(VLNV(), true);
+            type_.setVLNV(VLNV());
         }
     }
     else if (endpoint1->isApi())
@@ -222,19 +227,18 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
 
         if (endpoint2->isApi())
         {
-            type_.setVLNV(endpoint1->getApiInterface()->getApiType(), true);
+            type_.setVLNV(endpoint1->getApiInterface()->getApiType());
         }
         else
         {
-            type_.setVLNV(VLNV(), true);
+            type_.setVLNV(VLNV());
         }
     }
     else if (endpoint1->isBus())
     {
         type_.setTitle(tr("Bus type VLNV"));
-        type_.setVLNV(endpoint1->getBusInterface()->getBusType(), true);
-
-        absType_.setVLNV(findAbstractionVLNV(endpoint1->getBusInterface()), true);
+        type_.setVLNV(endpoint1->getBusInterface()->getBusType());
+        absType_.setVLNV(findAbstractionVLNV(endpoint1, endpoint1->getBusInterface()));
 
         setPortMaps();
         portWidget_.scrollToTop();
@@ -282,8 +286,18 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     absType_.setVisible(isBus);
 
     portsLabel_.setVisible(isBus || isAdHocConnection);
-    portWidget_.setVisible(isBus);
-    adHocBoundsTable_.setVisible(isAdHocConnection);
+
+    connectionTypeTable_->setVisible(isBus || isAdHocConnection);
+    if (isBus)
+    {
+        connectionTypeTable_->setCurrentIndex(0);
+    }
+    else if (isAdHocConnection)
+    {
+        connectionTypeTable_->setCurrentIndex(1);
+    }
+
+    portWidget_.resizeColumnsToContents();
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
@@ -309,17 +323,19 @@ void ConnectionEditor::onNameOrDescriptionChanged()
 //-----------------------------------------------------------------------------
 // Function: ConnectionEditor::findAbstractionVLNV()
 //-----------------------------------------------------------------------------
-VLNV ConnectionEditor::findAbstractionVLNV(QSharedPointer<BusInterface> busInterface) const
+VLNV ConnectionEditor::findAbstractionVLNV(ConnectionEndpoint* endPoint,
+    QSharedPointer<BusInterface> busInterface) const
 {
-    VLNV abstraction;
+    QString activeView = getActiveViewForEndPoint(endPoint);
+    QSharedPointer<AbstractionType> abstraction = busInterface->getAbstractionContainingView(activeView);
 
-    if (busInterface->getAbstractionTypes() && !busInterface->getAbstractionTypes()->isEmpty() &&
-        busInterface->getAbstractionTypes()->first()->getAbstractionRef())
+    VLNV definition;
+    if (abstraction && abstraction->getAbstractionRef())
     {
-        abstraction = *busInterface->getAbstractionTypes()->first()->getAbstractionRef();
-    }   
+        definition = *abstraction->getAbstractionRef().data();
+    }
 
-    return abstraction;
+    return definition;
 }
 
 //-----------------------------------------------------------------------------
@@ -337,11 +353,14 @@ void ConnectionEditor::setPortMaps()
         return;
     }
 
-	QSharedPointer<BusInterface> busIf1 = connection_->endpoint1()->getBusInterface();
-    QSharedPointer<BusInterface> busIf2 = connection_->endpoint2()->getBusInterface();
+    ConnectionEndpoint* endPoint1 = connection_->endpoint1();
+    ConnectionEndpoint* endPoint2 = connection_->endpoint2();
 
-    QSharedPointer<Component> component1 = connection_->endpoint1()->getOwnerComponent();
-	QSharedPointer<Component> component2 = connection_->endpoint2()->getOwnerComponent();
+    QSharedPointer<BusInterface> busIf1 = endPoint1->getBusInterface();
+    QSharedPointer<BusInterface> busIf2 = endPoint2->getBusInterface();
+
+    QSharedPointer<Component> component1 = endPoint1->getOwnerComponent();
+    QSharedPointer<Component> component2 = endPoint2->getOwnerComponent();
 
     Q_ASSERT(busIf1);
     Q_ASSERT(component1);
@@ -359,20 +378,11 @@ void ConnectionEditor::setPortMaps()
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    QList<QSharedPointer<PortMap> > portMaps1;
-    if (busIf1->getPortMaps())
-    {
-        portMaps1 = *busIf1->getPortMaps();
-    }
-
-    QList<QSharedPointer<PortMap> > portMaps2;
-    if (busIf2->getPortMaps())
-    {
-        portMaps2 = *busIf2->getPortMaps();
-    }
+    QList<QSharedPointer<PortMap> > portMaps1 = getPortMapsForEndPoint(endPoint1, busIf1);
+    QList<QSharedPointer<PortMap> > portMaps2 = getPortMapsForEndPoint(endPoint2, busIf2);
 
     // Get the abstraction def for the interfaces.
-    VLNV absDefVLNV = findAbstractionVLNV(busIf1);
+    VLNV absDefVLNV = findAbstractionVLNV(endPoint1, busIf1);
     
     QSharedPointer<AbstractionDefinition> absDef;
     if (library_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
@@ -410,6 +420,48 @@ void ConnectionEditor::setPortMaps()
 
 	// Finally, set sorting back on.
 	portWidget_.setSortingEnabled(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: connectioneditor::getPortMapsForEndPoint()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<PortMap> > ConnectionEditor::getPortMapsForEndPoint(ConnectionEndpoint* endPoint,
+    QSharedPointer<BusInterface> busInterface) const
+{
+    QString activeView;
+    if (endPoint->encompassingComp() && endPoint->encompassingComp()->getComponentInstance())
+    {
+//         activeView = getActiveViewForEndPoint(endPoint->encompassingComp()->getComponentInstance());
+        activeView = getActiveViewForEndPoint(endPoint);
+    }
+
+    return busInterface->getPortMapsForView(activeView);
+}
+
+//-----------------------------------------------------------------------------
+// Function: connectioneditor::getActiveViewForComponentInstance()
+//-----------------------------------------------------------------------------
+QString ConnectionEditor::getActiveViewForEndPoint(ConnectionEndpoint* endPoint) const
+{
+    QString activeView("");
+
+    if (diagram_)
+    {
+        if (!endPoint->encompassingComp())
+        {
+            activeView = diagram_->getTopView();
+        }
+
+        else if (endPoint->encompassingComp() && endPoint->encompassingComp()->getComponentInstance() &&
+            diagram_->getDesignConfiguration())
+        {
+            QSharedPointer<DesignConfiguration> configuration = diagram_->getDesignConfiguration();
+            QSharedPointer<ComponentInstance> instance = endPoint->encompassingComp()->getComponentInstance();
+            activeView = configuration->getActiveView(instance->getInstanceName());
+        }
+    }
+
+    return activeView;
 }
 
 //-----------------------------------------------------------------------------
@@ -621,8 +673,7 @@ void ConnectionEditor::setupLayout()
 
     layout->addWidget(&nameGroup_, 3, 0, 1, 2);
     layout->addWidget(&portsLabel_, 4, 0, 1, 2);
-    layout->addWidget(&portWidget_, 5, 0, 1, 2);
-    layout->addWidget(&adHocBoundsTable_, 6, 0, 1, 2);
+    layout->addWidget(connectionTypeTable_, 5, 0, 1, 2);
 
     layout->setColumnStretch(1, 1);
 }

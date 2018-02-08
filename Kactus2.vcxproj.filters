@@ -1501,9 +1501,6 @@
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4468,6 +4465,15 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceEndPoint.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\BusInterfaceEndPoint.cpp">
+      <Filter>Source Files\designEditors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6162,6 +6168,9 @@
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\BusInterfaceEndPoint.h">
+      <Filter>Header Files\designEditors\HWDesign</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6763,6 +6772,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\AbstractionTypesConstants.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\InterfaceGraphics.h">
+      <Filter>Header Files\designEditors\HWDesign</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -93,12 +93,6 @@ void BusIfGeneralTab::refresh()
 	nameEditor_.refresh();
 	busType_.setVLNV(busif_->getBusType());
 
-    VLNV abstractionVLNV;
-    if (!busif_->getAbstractionTypes()->isEmpty() && busif_->getAbstractionTypes()->first()->getAbstractionRef())
-    {
-        abstractionVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
-    }
-
     abstractionEditor_->setBusForModel(busif_);
 
 	modeStack_.refresh();
@@ -112,14 +106,6 @@ void BusIfGeneralTab::refresh()
 VLNV BusIfGeneralTab::getBusType() const
 {
 	return busType_.getVLNV();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfGeneralTab::setAbsTypeMandatory()
-//-----------------------------------------------------------------------------
-void BusIfGeneralTab::setAbsTypeMandatory(bool isMandatory)
-{
-    abstractionEditor_->setProperty("mandatoryField", isMandatory);
 }
 
 //-----------------------------------------------------------------------------

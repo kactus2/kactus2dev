@@ -25,26 +25,37 @@ namespace InterfaceGraphics
     static DirectionTypes::Direction getInterfaceDirection(QSharedPointer<BusInterface> busInterface_, 
         QSharedPointer<Component> component) 
     {
-        DirectionTypes::Direction dir = DirectionTypes::DIRECTION_INVALID;
+        DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
 
-        foreach (QString const& portName, busInterface_->getPhysicalPortNames())
+        if (busInterface_->getAbstractionTypes() && !busInterface_->getAbstractionTypes()->isEmpty())
         {
-            QSharedPointer<Port> port = component->getPort(portName);
-
-            if (port != 0)
+            if (busInterface_->getAbstractionTypes()->size() != 1)
             {
-                if (dir == DirectionTypes::DIRECTION_INVALID)
+                direction = DirectionTypes::INOUT;
+            }
+
+            else
+            {
+                QSharedPointer<AbstractionType> abstraction = busInterface_->getAbstractionTypes()->first();
+                foreach (QString portName, abstraction->getPhysicalPortNames())
                 {
-                    dir = port->getDirection();
-                }
-                else if (dir != port->getDirection())
-                {
-                    return DirectionTypes::INOUT;
+                    QSharedPointer<Port> port = component->getPort(portName);
+                    if (port != 0)
+                    {
+                        if (direction == DirectionTypes::DIRECTION_INVALID)
+                        {
+                            direction = port->getDirection();
+                        }
+                        else if (direction != port->getDirection())
+                        {
+                            return DirectionTypes::INOUT;
+                        }
+                    }
                 }
             }
         }
 
-        return DirectionTypes::DIRECTION_INVALID;
+        return direction;
     }
 
 }

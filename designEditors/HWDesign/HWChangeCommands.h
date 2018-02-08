@@ -50,7 +50,7 @@ class Design;
 class HierInterface;
 class ViewConfiguration;
 class PortReference;
-
+class AbstractionType;
 
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.
@@ -695,14 +695,14 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint          The diagram connection end point.
-     *      @param [in] oldBusType        The end point's old bus type.
-     *      @param [in] oldAbsType        The end point's old abs type.
-     *      @param [in] oldInterfaceMode  The end point's old interface mode.
-     *      @param [in] oldName           The end point's old name.
-     *      @param [in] parent            The parent command.
+     *      @param [in] endpoint    The diagram connection end point.
+     *      @param [in] busType     The end point's current bus type.
+     *      @param [in] absType     The end point's current abs type.
+     *      @param [in] activeView  The active view of the containing item.
+     *      @param [in] parent      The parent command.
      */
-    EndPointTypesCommand(ConnectionEndpoint* endpoint, VLNV const& busType, VLNV const& absType, QUndoCommand* parent = 0);
+    EndPointTypesCommand(ConnectionEndpoint* endpoint, VLNV const& busType, VLNV const& absType,
+        QString const& activeView, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -746,6 +746,9 @@ private:
 
     //! The end point's new abs type.
     VLNV newAbsType_;
+
+    //! The active view of the containing item.
+    QString activeView_;
 };
 
 //-----------------------------------------------------------------------------
@@ -791,6 +794,9 @@ private:
 
     //! The diagram connection end point.
     ConnectionEndpoint* endpoint_;
+
+    //! The currently active abstraction type.
+    QSharedPointer<AbstractionType> abstraction_;
 
     //! The end point's old port maps.
     QList< QSharedPointer<PortMap> > oldPortMaps_;

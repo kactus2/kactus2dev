@@ -552,6 +552,21 @@ QString ComponentDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::getActiveViewForEndPoint()
+//-----------------------------------------------------------------------------
+QString ComponentDesignDiagram::getActiveViewForEndPoint(ConnectionEndpoint* endPoint) const
+{
+    if (endPoint->isHierarchical())
+    {
+        return getTopView();
+    }
+    else
+    {
+        return getActiveViewOf(endPoint->encompassingComp());
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::contextMenuPosition()
 //-----------------------------------------------------------------------------
 QPoint ComponentDesignDiagram::contextMenuPosition() const

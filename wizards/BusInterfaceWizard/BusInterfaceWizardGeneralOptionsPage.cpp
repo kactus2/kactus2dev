@@ -14,6 +14,9 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
+
 #include <library/LibraryInterface.h>
 
 #include <QVBoxLayout>
@@ -33,13 +36,13 @@ component_(component),
 busIf_(busIf),
 handler_(lh),
 generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, expressionParser,
-    busValidator, this, parent))
+    busValidator, this, parent)),
+abstractionValidator_(busValidator->getAbstractionValidator())
 {
     setTitle(tr("Bus interface general options"));
     setSubTitle(tr("Setup the general options for the bus interface."));
     setFinalPage(false);
 
-    generalTab_->setAbsTypeMandatory(true);
     generalTab_->setBusTypesLock(!absDefEditable);
 
     connect(generalTab_, SIGNAL(contentChanged()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
@@ -106,6 +109,7 @@ bool BusInterfaceWizardGeneralOptionsPage::abstractionReferenceIsFound() const
 {
     if (busIf_->getAbstractionTypes() && !busIf_->getAbstractionTypes()->isEmpty())
     {
+/*
         foreach (QSharedPointer<AbstractionType> abstraction, *busIf_->getAbstractionTypes())
         {
             if (abstraction->getAbstractionRef() && handler_->contains(*abstraction->getAbstractionRef().data()))
@@ -113,6 +117,20 @@ bool BusInterfaceWizardGeneralOptionsPage::abstractionReferenceIsFound() const
                 return true;
             }
         }
+*/
+
+        foreach (QSharedPointer<AbstractionType> abstraction, *busIf_->getAbstractionTypes())
+        {
+            if (!abstraction->getAbstractionRef() || 
+                (abstraction->getAbstractionRef() &&
+                !handler_->contains(*abstraction->getAbstractionRef().data()) ||
+                !abstractionValidator_->hasValidViewReferences(abstraction, busIf_->getAbstractionTypes())))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     return false;

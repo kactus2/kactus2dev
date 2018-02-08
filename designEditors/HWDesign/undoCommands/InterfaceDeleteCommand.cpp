@@ -46,7 +46,7 @@ del_(true)
     if (removePorts)
     {
         // Create copies of the related ports and remove commands for them.
-        QList<QSharedPointer<Port> > ports = interface_->getPorts();
+        QList<QSharedPointer<Port> > ports = interface_->getAllPorts();
         foreach (QSharedPointer<Port> port, ports)
         {
             DeletePhysicalPortCommand* delCmd = new DeletePhysicalPortCommand(interface_->getOwnerComponent(), port, this);

@@ -596,7 +596,9 @@ void HWDesignDiagram::onAddToLibraryAction()
                 {
                     copyMode(definedPoint, interfacePoint, cmd.data());
                     copyType(definedPoint, interfacePoint, cmd.data());                    
-                    copyPortMapsAndPhysicalPorts(definedPoint->getOwnerComponent(), definedPoint->getBusInterface(), interfacePoint, cmd.data());
+                    copyPortMapsAndPhysicalPorts(definedPoint->getOwnerComponent(),
+                        definedPoint->getBusInterface(), definedPoint->encompassingComp(), interfacePoint,
+                        cmd.data());
                 }
 
                 interfacePoint->setSelectionHighlight(false);
@@ -883,8 +885,11 @@ void HWDesignDiagram::setInterfaceVLNVatEndpoint(VLNV const& droppedVLNV)
     dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
 
     if (result == QDialog::Accepted)
-    {             
-        QSharedPointer<QUndoCommand> typeCommand(new EndPointTypesCommand(dragEndPoint_, busVLNV, absdefVLNV));      
+    {
+        QString activeView = getActiveViewForEndPoint(dragEndPoint_);
+
+        QSharedPointer<QUndoCommand> typeCommand(
+            new EndPointTypesCommand(dragEndPoint_, busVLNV, absdefVLNV, activeView));
         new EndpointChangeCommand(dragEndPoint_, dialog.getSelectedMode(), typeCommand.data());
 
         getEditProvider()->addCommand(typeCommand);
@@ -1499,14 +1504,23 @@ void HWDesignDiagram::copyType(ConnectionEndpoint* definedPoint, ConnectionEndpo
     QUndoCommand* parentCommand)
 {
     VLNV busVLNV = definedPoint->getBusInterface()->getBusType();
+
+    QString activeView = getActiveViewForEndPoint(definedPoint);
+
     VLNV absVLNV;
-    if (!definedPoint->getBusInterface()->getAbstractionTypes()->isEmpty() &&
-        definedPoint->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef())
+    if (definedPoint && definedPoint->getBusInterface() &&
+        definedPoint->getBusInterface()->getAbstractionContainingView(activeView))
     {
-        absVLNV = *definedPoint->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
+        QSharedPointer<AbstractionType> sourceAbstraction =
+            definedPoint->getBusInterface()->getAbstractionContainingView(activeView);
+        if (sourceAbstraction)
+        {
+            absVLNV = *sourceAbstraction->getAbstractionRef().data();
+        }
     }
-    
-    QUndoCommand* typeChangeCommand = new EndPointTypesCommand(draftPoint, busVLNV, absVLNV, parentCommand);    
+
+    QUndoCommand* typeChangeCommand =
+        new EndPointTypesCommand(draftPoint, busVLNV, absVLNV, activeView, parentCommand);
     typeChangeCommand->redo();
 }
 
@@ -1531,8 +1545,8 @@ bool HWDesignDiagram::copyPortsAndMapsForHierarchicalPoint(ConnectionEndpoint* s
     bool setupDone = false;
     if (msgBox.clickedButton() == copyButton)
     {
-        copyPortMapsAndPhysicalPorts(sourcePoint->getOwnerComponent(), sourcePoint->getBusInterface(), 
-            targetPoint, parentCommand);        
+        copyPortMapsAndPhysicalPorts(sourcePoint->getOwnerComponent(), sourcePoint->getBusInterface(),
+            sourcePoint->encompassingComp(), targetPoint, parentCommand);
         setupDone = true;
     }
     else if (msgBox.clickedButton() == manualSetupButton)
@@ -1546,16 +1560,28 @@ bool HWDesignDiagram::copyPortsAndMapsForHierarchicalPoint(ConnectionEndpoint* s
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceItem::copyPortMapsAndPhysicalPorts()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sourceComponent, 
-    QSharedPointer<BusInterface> sourceInterface, ConnectionEndpoint* target, QUndoCommand* parentCommand)
+void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sourceComponent,
+    QSharedPointer<BusInterface> sourceInterface, ComponentItem* sourceInstanceItem, ConnectionEndpoint* target,
+    QUndoCommand* parentCommand)
 {
-    if (sourceInterface->getAbstractionTypes()->isEmpty() ||
-        !sourceInterface->getAbstractionTypes()->first()->getAbstractionRef())
+    QString sourceView;
+    if (!sourceInstanceItem)
+    {
+        sourceView = getTopView();
+    }
+    else
+    {
+        sourceView = getActiveViewOf(sourceInstanceItem);
+    }
+
+    QSharedPointer<AbstractionType> sourceAbstraction = sourceInterface->getAbstractionContainingView(sourceView);
+
+    if (!sourceAbstraction || (sourceAbstraction && !sourceAbstraction->getAbstractionRef()))
     {
        return;
     }
 
-    VLNV abstractionVLNV = *sourceInterface->getAbstractionTypes()->first()->getAbstractionRef();
+    VLNV abstractionVLNV = *sourceAbstraction->getAbstractionRef().data();
     QSharedPointer<AbstractionDefinition const> absDef =
         getLibraryInterface()->getModelReadOnly(abstractionVLNV).staticCast<AbstractionDefinition const>();
 
@@ -1568,7 +1594,7 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
 
     QMap<QString, QString> nameTranslations;
     QList< QSharedPointer<PortMap> > newPortMaps;   
-    foreach (QSharedPointer<PortMap> portMap, *sourceInterface->getPortMaps())
+    foreach (QSharedPointer<PortMap> portMap, *sourceAbstraction->getPortMaps())
     {
         if (portMap->getPhysicalPort() && portMap->getLogicalPort())
         {
@@ -1659,14 +1685,12 @@ bool HWDesignDiagram::createPortMapsManually(ConnectionEndpoint* sourcePoint, Co
     QUndoCommand* parentCommand)
 {
     PortmapDialog dialog(getLibraryInterface(), targetPoint->getOwnerComponent(), 
-        targetPoint->getBusInterface(), sourcePoint->getBusInterface(), getParent());    
+        targetPoint->getBusInterface(), sourcePoint->getBusInterface(), getParent());
 
     int accepted = dialog.exec() == QDialog::Accepted;
 
-    // Edits in the dialog will directly apply the maps into the bus interface.
-    // Copy the edited maps and clear the bus interface so the command will remove the maps on undo.
-    QList<QSharedPointer<PortMap> > newMaps = *targetPoint->getBusInterface()->getPortMaps();
-    sourcePoint->getBusInterface()->getPortMaps()->clear();
+    QList<QSharedPointer<PortMap> > newMaps = *targetPoint->getBusInterface()->getAllPortMaps();
+    sourcePoint->getBusInterface()->clearAllPortMaps();
 
     new EndPointPortMapCommand(targetPoint, newMaps, parentCommand);
 
@@ -2543,6 +2567,7 @@ void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusInte
 
             instance.srcComponent = busPort->getOwnerComponent();
             instance.busInterface = busPort->getBusInterface();
+            instance.containingItem = busPort->encompassingComp();
             instance.position = busPort->pos();
             instance.topLevelIf = item->type() == BusInterfaceItem::Type;
         }
@@ -2606,10 +2631,11 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
         QMap<QString, QPointF> oldLocations = component->getBusInterfacePositions();
 
         PortPasteCommand* pasteCmd = new PortPasteCommand(component, interfaceItem, cmd);
- 
+
         if (!component->isDraft())
         {
-            copyPortMapsAndPhysicalPorts(instance.srcComponent, instance.busInterface, interfaceItem, pasteCmd);
+            copyPortMapsAndPhysicalPorts(instance.srcComponent, instance.busInterface, instance.containingItem,
+                interfaceItem, pasteCmd);
         }
         
         pasteCmd->redo();
@@ -2668,7 +2694,8 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
             BusInterfacePasteCommand* pasteCmd = new BusInterfacePasteCommand(getEditedComponent(), pastedItem,
                 targetColumn, this, cmd);    
 
-            copyPortMapsAndPhysicalPorts(instance.srcComponent, instance.busInterface, pastedItem, pasteCmd);
+            copyPortMapsAndPhysicalPorts(instance.srcComponent, instance.busInterface, instance.containingItem,
+                pastedItem, pasteCmd);
 
             if (useCursorPos)
             {

@@ -28,16 +28,13 @@ class BusInterfaceWizardConclusionPage : public QWizardPage
 public:
 
     /*!
-     *  <Description>.
+     *  The constructor.
      *
      *      @param [in] busIf   The bus interface being edited.
      *      @param [in] ports   The ports selected to the wizard.
      *      @param [in] parent  The parent wizard.
-     *
-     *      @return 
      */
-    BusInterfaceWizardConclusionPage(QSharedPointer<BusInterface> busIf, 
-        QStringList ports,
+    BusInterfaceWizardConclusionPage(QSharedPointer<BusInterface> busIf, QStringList ports,
         BusInterfaceWizard* parent);
 
     /*!
@@ -87,10 +84,6 @@ private:
 
     //! Label for bus interface abstraction definition.
     QLabel absDefLabel_;
-
-    //! Label for bus interface port map count.
-    QLabel portMapLabel_;
-
 };
 
 #endif // BUSINTERFACEWIZARDCONCLUSIONSPAGE_H

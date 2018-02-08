@@ -252,6 +252,15 @@ protected:
     QString getActiveViewOf(ComponentItem* compItem) const;
 
     /*!
+     *  Get the active view for the item containing the selected end point item.
+     *
+     *      @param [in] endPoint    The selected end point item.
+     *
+     *      @return The active view for the item containing the selected end point item.
+     */
+    QString getActiveViewForEndPoint(ConnectionEndpoint* endPoint) const;
+
+    /*!
      *  Gets the position where context menu was activated.     
      *
      *      @return The position of the context menu activation.

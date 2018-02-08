@@ -30,7 +30,7 @@ portView_(this),
 portProxy_(new AbstractionDefinitionPortsSortFilter(this)),
 portModel_(this),
 portDelegate_(this),
-vlnvDisplay_(new VLNVDisplayer(this)),
+vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendVLNVEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 descriptionEditor_(new QPlainTextEdit(this)),
 abstraction_()

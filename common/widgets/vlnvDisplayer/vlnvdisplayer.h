@@ -31,19 +31,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this widget.
-	 *      @param [in] vlnv    Reference to the vlnv to be displayed
+	 *      @param [in] parent      Pointer to the owner of this widget.
+	 *      @param [in] vlnv        Reference to the vlnv to be displayed
+     *      @param [in] compact     A compact VLNV display takes less space.
 	 */
-	VLNVDisplayer(QWidget *parent, VLNV const& vlnv, bool compact = false);
+    VLNVDisplayer(QWidget *parent, VLNV const& vlnv, bool compact = false);
 
 	/*!
-     *  The constructor.
-	 *
-	 *      @param [in] parent  Pointer to the owner of this widget.
-	 */
-	VLNVDisplayer(QWidget* parent);
-
-	//! The destructor.
+     *  The destructor.
+     */
 	virtual ~VLNVDisplayer();
 
 	/*!
@@ -51,7 +47,7 @@ public:
 	 *
 	 *      @param [in] vlnv    Reference to the VLNV to be displayed
 	 */
-	void setVLNV(const VLNV& vlnv, bool compact = false);
+    void setVLNV(const VLNV& vlnv);
 
 	/*!
      *  Also display path along with the vlnv in the widget.
@@ -108,6 +104,9 @@ private:
 
     //! Label containing the folder path of the displayed VLNV item.
     QLabel* pathLabel_;
+
+    //! Compact VLNV display takes less screen space.
+    bool compact_;
 };
 
 #endif // VLNVDISPLAYER_H

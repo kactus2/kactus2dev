@@ -110,7 +110,7 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
     configurationDisplay_->setVisible(hasConfiguration);
     if (hasConfiguration)
     {
-        configurationDisplay_->setVLNV(designWidget_->getDiagram()->getDesignConfiguration()->getVlnv(), true);
+        configurationDisplay_->setVLNV(designWidget_->getDiagram()->getDesignConfiguration()->getVlnv());
     }
 
     // Display this widget.

@@ -21,7 +21,6 @@
 #include <QMap>
 
 class Component;
-class BusInterface;
 class AbstractionDefinition;
 class VLNV;
 class LibraryInterface;
@@ -29,6 +28,7 @@ class Port;
 class PortAbstraction;
 class ExpressionParser;
 class PortMap;
+class AbstractionType;
 
 //-----------------------------------------------------------------------------
 //! Automatically forms port maps between logical and physical ports.
@@ -43,13 +43,12 @@ public:
      *  The constructor.
      *
      *      @param [in] component       Component containing the bus interface.
-     *      @param [in] busInterface    The containing bus interface.
      *      @param [in] parser          The used expression parser.
      *      @param [in] libraryHandler  The library interface for locating required documents.
      *      @param [in] parent          The owner of this object.
      */
-    PortMapAutoConnector(QSharedPointer<Component> component, QSharedPointer<BusInterface> busInterface,
-        QSharedPointer<ExpressionParser> parser, LibraryInterface* libraryHandler, QObject* parent);
+    PortMapAutoConnector(QSharedPointer<Component> component, QSharedPointer<ExpressionParser> parser,
+        LibraryInterface* libraryHandler, QObject* parent);
 
     /*!
      *  The destructor.
@@ -59,12 +58,13 @@ public:
     /*!
      *  Set the abstraction definition.
      *
+     *      @param [in] abstraction                 The currently active abstraction type.
      *      @param [in] abstractionDefinitionVLNV   VLNV of the abstraction definition.
      *      @param [in] newMode                     The new interface mode.
      *      @param [in] systemGroup                 The used system group in case of system mode.
      */
-    void setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV, General::InterfaceMode newMode,
-        QString const& systemGroup);
+    void setAbstractionDefinition(QSharedPointer<AbstractionType> abstraction,
+        VLNV const& abstractionDefinitionVLNV, General::InterfaceMode newMode, QString const& systemGroup);
 
 public slots:
 
@@ -230,8 +230,8 @@ private:
     //! Component containing the bus interface.
     QSharedPointer<Component> component_;
 
-    //! The containing bus interface.
-    QSharedPointer<BusInterface> busInterface_;
+    //! The currently active abstraction type.
+    QSharedPointer<AbstractionType> abstraction_;
 
     //! The abstraction definition referenced in the bus interface.
     QSharedPointer<AbstractionDefinition const> absDef_;

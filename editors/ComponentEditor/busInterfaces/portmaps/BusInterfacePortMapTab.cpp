@@ -55,7 +55,7 @@ portMapsView_(this),
 portMapsDelegate_(0),
 autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
 removeAllMappingsButton_(QIcon(":/icons/common/graphics/cross.png"), "Remove all", this),
-autoConnector_(component, busif, expressionParser, libHandler, this),
+autoConnector_(component, expressionParser, libHandler, this),
 abstractionSelector_(new QComboBox(this)),
 abstractions_()
 {
@@ -234,7 +234,7 @@ void BusInterfacePortMapTab::setAbsType(QSharedPointer<AbstractionType> abstract
 
     portMapsModel_.setAbsType(abstraction, busMode, systemGroup);
     portMapsDelegate_->updateLogicalPortNames(definitionVLNV, busMode, systemGroup);
-    autoConnector_.setAbstractionDefinition(definitionVLNV, busMode, systemGroup);
+    autoConnector_.setAbstractionDefinition(abstraction, definitionVLNV, busMode, systemGroup);
 
     refresh();
 }
@@ -378,7 +378,7 @@ void BusInterfacePortMapTab::onPortDisconnected(QString const& portName)
 {
     foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
     {
-        foreach (QSharedPointer<PortMap> interfacePortMap, *busInterface->getPortMaps())
+        foreach (QSharedPointer<PortMap> interfacePortMap, *busInterface->getAllPortMaps())
         {
             if (interfacePortMap->getPhysicalPort())
             {

@@ -166,15 +166,6 @@ General::InterfaceMode BusInterface::getInterfaceMode() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterface::setPortMaps()
-//-----------------------------------------------------------------------------
-void BusInterface::setPortMaps(QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps)
-{
-    abstractionTypes_->first()->getPortMaps()->clear();
-    abstractionTypes_->first()->getPortMaps() = portMaps;
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusInterface::setAbstractionTypes()
 //-----------------------------------------------------------------------------
 void BusInterface::setAbstractionTypes(QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes)
@@ -237,19 +228,6 @@ void BusInterface::setBitsInLau(QString const& newBitsInLau)
 QSharedPointer<QList<QSharedPointer<Parameter> > > BusInterface::getParameters() const
 {
 	return parameters_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterface::getPortMaps()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<PortMap> > > BusInterface::getPortMaps() const
-{
-    if (abstractionTypes_->isEmpty())
-    {
-        return QSharedPointer<QList<QSharedPointer<PortMap> > > ();
-    }
-
-    return abstractionTypes_->first()->getPortMaps();
 }
 
 //-----------------------------------------------------------------------------
@@ -537,99 +515,128 @@ void BusInterface::setAttributes(QMap<QString, QString> const& attributes)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterface::getPhysicalPortNames()
+// Function: BusInterface::containsMappedPhysicalPort()
 //-----------------------------------------------------------------------------
-QStringList BusInterface::getPhysicalPortNames() const
+bool BusInterface::containsMappedPhysicalPort(QString const& portName) const
 {
-	QStringList list;
-    if (!abstractionTypes_->isEmpty())
+    if (abstractionTypes_)
     {
-        foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
+        foreach (QSharedPointer<AbstractionType> abstraction, *abstractionTypes_)
         {
-            if (portMap->getPhysicalPort())
+            if (abstraction->hasPhysicalPort(portName))
             {
-                list.append(portMap->getPhysicalPort()->name_);
+                return true;
             }
         }
     }
-
-	return list;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterface::getLogicalPortNames()
-//-----------------------------------------------------------------------------
-QStringList BusInterface::getLogicalPortNames() const
-{
-	QStringList list;
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
-	{
-		list.append(portMap->getLogicalPort()->name_);
-	}
-	return list;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterface::hasLogicalPort()
-//-----------------------------------------------------------------------------
-bool BusInterface::hasLogicalPort(QString const& logicalPortName ) const
-{
-    if (abstractionTypes_->isEmpty())
-    {
-        return false;
-    }
-
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
-	{
-		if (portMap->getLogicalPort()->name_ == logicalPortName)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterface::hasPhysicalPort()
-//-----------------------------------------------------------------------------
-bool BusInterface::hasPhysicalPort(QString const& physicalPortName ) const
-{
-    if (abstractionTypes_->isEmpty())
-    {
-        return false;
-    }
-
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
-	{
-		if (portMap->getPhysicalPort() && portMap->getPhysicalPort()->name_ == physicalPortName)
-		{
-			return true;
-		}
-	}
 
     return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterface::getLogicalPortName()
+// Function: BusInterface::containsMappedlogicalPort()
 //-----------------------------------------------------------------------------
-QString BusInterface::getLogicalPortName(QString const& physicalPortName) const
+bool BusInterface::containsMappedlogicalPort(QString const& portName) const
 {
-    if (abstractionTypes_->isEmpty())
+    if (abstractionTypes_)
     {
-        return QString();
+        foreach (QSharedPointer<AbstractionType> abstraction, *abstractionTypes_)
+        {
+            if (abstraction->hasLogicalPort(portName))
+            {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterface::getAllMappedPhysicalPorts()
+//-----------------------------------------------------------------------------
+QStringList BusInterface::getAllMappedPhysicalPorts() const
+{
+    QStringList portNames;
+
+    foreach (QSharedPointer<AbstractionType> abstraction, *abstractionTypes_)
+    {
+        foreach (QString port, abstraction->getPhysicalPortNames())
+        {
+            portNames.append(port);
+        }
     }
 
-	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
-	{
-		if (portMap->getPhysicalPort()->name_.compare(physicalPortName) == 0)
-		{
-			return portMap->getLogicalPort()->name_;
-		}
-	}
+    return portNames;
+}
 
-	return QString();
+//-----------------------------------------------------------------------------
+// Function: BusInterface::getAllPortMaps()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<PortMap> > > BusInterface::getAllPortMaps() const
+{
+    QSharedPointer<QList<QSharedPointer<PortMap> > > containedPortMaps(new QList<QSharedPointer<PortMap> > ());
+
+    foreach (QSharedPointer<AbstractionType> abstraction, *abstractionTypes_)
+    {
+        foreach (QSharedPointer<PortMap> portMap, *abstraction->getPortMaps())
+        {
+            containedPortMaps->append(portMap);
+        }
+    }
+
+    return containedPortMaps;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterface::getPortMapsForView()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<PortMap> > BusInterface::getPortMapsForView(QString const& view) const
+{
+    QList<QSharedPointer<PortMap> > portMaps;
+
+    foreach (QSharedPointer<AbstractionType> abstraction, *abstractionTypes_)
+    {
+        if (abstraction->getViewReferences()->isEmpty() || abstraction->getViewReferences()->contains(view))
+        {
+            foreach (QSharedPointer<PortMap> abstractionMap, *abstraction->getPortMaps())
+            {
+                portMaps.append(abstractionMap);
+            }
+        }
+    }
+
+    return portMaps;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterface::getAbstractionContainingView()
+//-----------------------------------------------------------------------------
+QSharedPointer<AbstractionType> BusInterface::getAbstractionContainingView(QString const& view) const
+{
+    foreach (QSharedPointer<AbstractionType> abstraction, *abstractionTypes_)
+    {
+        if (abstraction->getViewReferences()->isEmpty() || abstraction->getViewReferences()->contains(view))
+        {
+            return abstraction;
+        }
+    }
+
+    return QSharedPointer<AbstractionType>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterface::clearAllPortMaps()
+//-----------------------------------------------------------------------------
+void BusInterface::clearAllPortMaps()
+{
+    if (abstractionTypes_)
+    {
+        foreach (QSharedPointer<AbstractionType> abstraction, *abstractionTypes_)
+        {
+            abstraction->getPortMaps()->clear();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
