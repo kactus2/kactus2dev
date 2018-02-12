@@ -590,41 +590,12 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
 // Function: LibraryHandler::onExportItem()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onExportItem(VLNV const vlnv)
-{
-    if (!vlnv.isValid())
-    {
-        return;
-    }
-
-    // get the current working directory and save it to be restored in the end of the function
-    QDir savedWorkingDirectory = QDir::current();
-
-    QString defaultPath = QSettings().value("Library/DefaultLocation", QDir::homePath()).toString();
-
-    // ask the target directory where the package is to be exported
-    QString targetPath = QFileDialog::getExistingDirectory(parentWidget_, tr("Select the location to export library to"),
-        defaultPath);
-
-    if (targetPath.isEmpty())
-    {
-        return;
-    }
-
-    QDir target(targetPath);
-
-    // The user hasn't chosen "yes to all" or "no to all" yet
-    bool yesToAll = false;
-    bool noToAll = false;
-
-    // info of copied files is stored so same file is not copied multiple times
-    fileList handledFiles;
-    copyFiles(target, vlnv, handledFiles, yesToAll, noToAll);
-
-    QDir::setCurrent(savedWorkingDirectory.absolutePath());
+{  
+    onExportItems(QList<VLNV>() << vlnv);
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryHandler::onExportItem()
+// Function: LibraryHandler::onExportItems()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onExportItems(const QList<VLNV> vlnvs)
 {
