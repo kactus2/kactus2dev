@@ -49,9 +49,10 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] library   The used IP-XACT library instance.
      *      @param [in] parent    The parent widget.
      */
-    MainWindow(QWidget *parent = 0);
+    MainWindow(LibraryHandler* library, QWidget *parent = 0);
     
 	/*!
      *  The destructor.

@@ -25,10 +25,13 @@
 //-----------------------------------------------------------------------------
 HierarchyModel::HierarchyModel(LibraryInterface* handler, QObject* parent):
 QAbstractItemModel(parent),
-    rootItem_(),
+    rootItem_(new HierarchyItem(handler, this)),
     handler_(handler)
 {
-    onResetModel();
+    connect(rootItem_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(rootItem_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -43,43 +46,28 @@ HierarchyModel::~HierarchyModel()
 //-----------------------------------------------------------------------------
 void HierarchyModel::onResetModel()
 {
-	beginResetModel();
+    beginResetModel();
 
-	// create the root item if it does not yet exist
-	if (!rootItem_)
-    {
-		rootItem_ = new HierarchyItem(handler_, this);
-		connect(rootItem_, SIGNAL(errorMessage(const QString&)),
-			this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-		connect(rootItem_, SIGNAL(noticeMessage(const QString&)),
-			this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	}
-	// if root exists then tell it to remove children
-	else
-    {
-		rootItem_->clear();
-	}
-	
+    rootItem_->clear();
+
 	QList<VLNV> absDefs;
 
 	// add all items to this model
     foreach (VLNV const& itemVlnv, handler_->getAllVLNVs())
     {
 		// make sure the item can be parsed
-		QSharedPointer<Document const> libComp = handler_->getModelReadOnly(itemVlnv);
-		if (libComp)
+		QSharedPointer<Document const> document = handler_->getModelReadOnly(itemVlnv);
+		if (document)
         {
             VLNV::IPXactType documentType = handler_->getDocumentType(itemVlnv);
-
-            if (documentType == VLNV::COMPONENT || documentType == VLNV::BUSDEFINITION ||
-                documentType == VLNV::CATALOG ||
-                documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION) 
-            {
-                rootItem_->createChild(itemVlnv);
-            }
-            else if (documentType == VLNV::ABSTRACTIONDEFINITION)
+            if (documentType == VLNV::ABSTRACTIONDEFINITION)
             {
                 absDefs.append(itemVlnv);
+            }
+
+            //! Designs and configurations are parsed after their containing component.
+            if (documentType != VLNV::DESIGN && documentType != VLNV::DESIGNCONFIGURATION)
+            {
                 rootItem_->createChild(itemVlnv);
             }
 		}
@@ -88,8 +76,8 @@ void HierarchyModel::onResetModel()
 	// create the abstraction definitions
 	foreach (VLNV const& absDefVlnv, absDefs) 
     {
-		QSharedPointer<Document const> libComp = handler_->getModelReadOnly(absDefVlnv);
-		QSharedPointer<AbstractionDefinition const> absDef = libComp.staticCast<AbstractionDefinition const>();
+		QSharedPointer<AbstractionDefinition const> absDef = 
+            handler_->getModelReadOnly(absDefVlnv).staticCast<AbstractionDefinition const>();
 
         foreach (HierarchyItem* busDefItem, rootItem_->findItems(absDef->getBusType()))
         {
@@ -97,7 +85,7 @@ void HierarchyModel::onResetModel()
         }
 	}
 
-	// remove the duplicates
+	// Remove the duplicates.
 	rootItem_->cleanUp();
 
 	endResetModel();

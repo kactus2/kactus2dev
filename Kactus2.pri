@@ -40,7 +40,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/colorBox/ColorBox.h \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.h \
-    ./common/widgets/ScanProgressWidget/scanprogresswidget.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
     ./common/widgets/summaryLabel/summarylabel.h \
@@ -187,10 +186,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h \
     ./Plugins/PluginSystem/PluginSettingsModel.h \
     ./Plugins/PluginSystem/IPlugin.h \
-    ./Plugins/PluginSystem/IPluginUtility.h \
     ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
     ./Plugins/PluginSystem/PluginInfoWidget.h \
     ./Plugins/PluginSystem/PluginManager.h \
+    ./Plugins/PluginSystem/IPluginUtility.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \
     ./Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
@@ -203,6 +202,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
+    ./library/DocumentFileAccess.h \
+    ./library/DocumentValidator.h \
     ./library/LibraryInterface.h \
     ./library/LibraryUtils.h \
     ./library/TableViewDialog.h \
@@ -562,7 +563,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/indirectInterfaces/SingleIndirectInterfaceEditor.h \
     ./editors/CSourceEditor/CSourceHighlight.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
-    ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
     ./editors/CSourceEditor/CSourceTextEdit.h \
     ./editors/CSourceEditor/CSourceWidget.h \
@@ -794,7 +794,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
     ./common/widgets/tabDocument/TabDocument.cpp \
     ./common/widgets/booleanComboBox/booleancombobox.cpp \
-    ./common/widgets/ScanProgressWidget/scanprogresswidget.cpp \
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
     ./common/widgets/summaryLabel/summarylabel.cpp \
@@ -914,6 +913,8 @@ SOURCES += ./VersionHelper.cpp \
     ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
+    ./library/DocumentFileAccess.cpp \
+    ./library/DocumentValidator.cpp \
     ./library/LibraryData.cpp \
     ./library/LibraryErrorModel.cpp \
     ./library/LibraryFilter.cpp \

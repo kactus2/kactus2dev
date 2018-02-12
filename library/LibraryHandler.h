@@ -402,6 +402,11 @@ signals:
 	//! Emit a notice message to be printed to user.
 	void noticeMessage(const QString& message);
 
+    //! Emit a change in the library status e.g. loading.
+    void statusMessage(QString const& message);
+
+    void progressStatus();
+
 	//! Signal that user wants to open the specified component for editing.
 	void openDesign(VLNV const& vlnv, const QString& viewName);
 

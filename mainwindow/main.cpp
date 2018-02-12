@@ -10,16 +10,21 @@
 //-----------------------------------------------------------------------------
 
 #include "mainwindow.h"
+
 #include "SplashScreen.h"
 
 #include <VersionHelper.h>
+
+#include <library/LibraryHandler.h>
+
+#include <Plugins/PluginSystem/PluginManager.h>
 
 #include <settings/SettingsUpdater.h>
 
 #include <QApplication>
 #include <QPalette>
 #include <QTimer>
-#include <QCommandLineParser>
+
 
 int main(int argc, char *argv[])
 {
@@ -39,8 +44,7 @@ int main(int argc, char *argv[])
     QSettings settings;
     QStringList pluginsPath = settings.value("Platform/PluginsPath", QStringList("Plugins")).toStringList();
 
-    PluginManager& pluginMgr = PluginManager::getInstance();
-    pluginMgr.setPluginPaths(pluginsPath);
+    PluginManager::getInstance().setPluginPaths(pluginsPath);
 
     // Set the palette to use nice pastel colors.
     QPalette palette = application.palette();
@@ -50,28 +54,34 @@ int main(int argc, char *argv[])
 
     application.setPalette(palette);
 
-	// Create the main window and close the splash after 1.5 seconds.
-	MainWindow w;
-		
-	// the release mode
-	#ifdef NDEBUG
-	
-	// Show the splash screen.
-	SplashScreen splash(VersionHelper::createVersionString());
+    // Parent set later in LibraryWidget.
+    LibraryHandler* library = new LibraryHandler(0, 0);
+
+    // Create the main window and close the splash after 1.5 seconds.
+    MainWindow mainWindow(library);
+
+    // the release mode
+#ifdef NDEBUG
+
+    // Show the splash screen.
+    SplashScreen splash(VersionHelper::createVersionString());
     splash.show();
     splash.showMessage("");
 
-	application.processEvents();
+    application.processEvents();
 
-	QTimer::singleShot(1500, &splash, SLOT(close()));
-	QTimer::singleShot(1500, &w, SLOT(show()));
-	QTimer::singleShot(1700, &w, SLOT(onLibrarySearch()));
+    QTimer::singleShot(1500, &splash, SLOT(close()));
+    QTimer::singleShot(1500, &mainWindow, SLOT(show()));
+    QTimer::singleShot(1600, &mainWindow, SLOT(onLibrarySearch()));
 
-	// the debug mode
-	#else
-    QTimer::singleShot(200, &w, SLOT(onLibrarySearch()));
-	w.show();    
-	#endif    
-    
-	return application.exec();
+    // the debug mode
+#else
+
+    mainWindow.show();    
+    application.processEvents();
+    mainWindow.onLibrarySearch();
+
+#endif       
+
+    return application.exec();  
 }

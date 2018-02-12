@@ -74,9 +74,6 @@
     <Filter Include="Source Files\common\widgets\booleanComboBox">
       <UniqueIdentifier>{996434f3-7697-4fb2-9356-3df1f317ec3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\ScanProgressWidget">
-      <UniqueIdentifier>{e3ef319b-6662-4df0-a9d8-691d3d45b236}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\ParameterGroupBox">
       <UniqueIdentifier>{ad13bc80-2bc0-4bec-96bc-d47541c21bde}</UniqueIdentifier>
     </Filter>
@@ -185,9 +182,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\componentPreviewBox">
       <UniqueIdentifier>{b5d5c333-036b-4276-a7ef-a400082b82be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\ScanProgressWidget">
-      <UniqueIdentifier>{2dce8bcc-4b84-4cbc-a486-4180e81a598a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ParameterGroupBox">
       <UniqueIdentifier>{84b4b9a9-cae5-43bc-bac4-f574ebe3ece8}</UniqueIdentifier>
@@ -1024,9 +1018,6 @@
     <ClCompile Include="common\widgets\booleanComboBox\booleancombobox.cpp">
       <Filter>Source Files\common\widgets\booleanComboBox</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\ScanProgressWidget\scanprogresswidget.cpp">
-      <Filter>Source Files\common\widgets\ScanProgressWidget</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\nameGroupEditor\namegroupeditor.cpp">
       <Filter>Source Files\common\widgets\nameGroupEditor</Filter>
     </ClCompile>
@@ -1175,9 +1166,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SettingsDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_scanprogresswidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_readactioncombobox.cpp">
@@ -4468,6 +4456,15 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_IPluginUtility.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="library\DocumentFileAccess.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\DocumentValidator.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4631,9 +4628,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\readActionComboBox\readactioncombobox.h">
       <Filter>Header Files\common\widgets\readActionComboBox</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\ScanProgressWidget\scanprogresswidget.h">
-      <Filter>Header Files\common\widgets\ScanProgressWidget</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\SnippetTextEdit\SnippetTextEdit.h">
       <Filter>Header Files\common\widgets\SnippetTextEdit</Filter>
@@ -6162,6 +6156,9 @@
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
+    <CustomBuild Include="Plugins\PluginSystem\IPluginUtility.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6260,9 +6257,6 @@
     <ClInclude Include="Plugins\PluginSystem\IPlugin.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\IPluginUtility.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ISourceAnalyzerPlugin.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
@@ -6306,9 +6300,6 @@
       <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\CSourceEditor\CSourceContentMatcher.h">
-      <Filter>Header Files\editors\CSourceEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\CSourceEditor\MCAPIDesignerTypes.h">
       <Filter>Header Files\editors\CSourceEditor</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteMoveCommand.h">
@@ -6763,6 +6754,12 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\AbstractionTypesConstants.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="library\DocumentFileAccess.h">
+      <Filter>Header Files\library</Filter>
+    </ClInclude>
+    <ClInclude Include="library\DocumentValidator.h">
+      <Filter>Header Files\library</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

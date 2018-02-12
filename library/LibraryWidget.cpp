@@ -18,24 +18,30 @@
 
 #include "VLNVDialer/vlnvdialer.h"
 
+#include <QStatusBar>
 #include <QTabWidget>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::LibraryWidget()
 //-----------------------------------------------------------------------------
-LibraryWidget::LibraryWidget(QWidget *parent): QWidget(parent),
+LibraryWidget::LibraryWidget(LibraryHandler* library, QWidget *parent): QWidget(parent),
     dialer_(new VLNVDialer(this)),
-    library_(new LibraryHandler(this, this)),
+    library_(library),
     hierarchyWidget_(new HierarchyWidget(library_, library_->getHierarchyModel(), this)),
-    treeWidget_(new LibraryTreeWidget(library_, library_->getTreeModel(), this))
+    treeWidget_(new LibraryTreeWidget(library_, library_->getTreeModel(), this)),
+    statusBar_(new QStatusBar(this))
 {
+    library_->setParent(this);
+
     dialer_->setRootItem(library_->getTreeRoot());
 
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
 
     connect(library_, SIGNAL(refreshDialer()), dialer_, SLOT(refreshLibrary()), Qt::UniqueConnection);
+    connect(library_, SIGNAL(statusMessage(QString const&)), statusBar_, SLOT(showMessage(QString const&)), 
+        Qt::UniqueConnection);
 
     connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
@@ -79,6 +85,14 @@ Utils::FilterOptions LibraryWidget::getFilters() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryWidget::statusMessage()
+//-----------------------------------------------------------------------------
+void LibraryWidget::statusMessage(QString const& message)
+{
+    statusBar_->showMessage(message);
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryWidget::connectVLNVFilter()
 //-----------------------------------------------------------------------------
 void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
@@ -116,6 +130,7 @@ void LibraryWidget::setupLayout()
     QVBoxLayout* containerLayout = new QVBoxLayout(this);
     containerLayout->addWidget(dialer_, 0);
     containerLayout->addWidget(navigationTabs, 1);
+    containerLayout->addWidget(statusBar_);
     containerLayout->setSpacing(0);
     containerLayout->setContentsMargins(0, 0, 0, 0);
 }

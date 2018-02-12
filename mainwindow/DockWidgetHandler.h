@@ -57,9 +57,10 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] library The used IP-XACT library.
      *      @param [in] parent  The main window.
      */
-    DockWidgetHandler(QMainWindow* parent);
+    DockWidgetHandler(LibraryHandler* library, QMainWindow* parent);
 
     /*!
      *  The destructor.

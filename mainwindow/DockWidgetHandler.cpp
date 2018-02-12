@@ -49,8 +49,8 @@
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::DockWidgetHandler()
 //-----------------------------------------------------------------------------
-DockWidgetHandler::DockWidgetHandler(QMainWindow* parent):
-libraryHandler_(0),
+DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, QMainWindow* parent):
+libraryHandler_(library),
 libraryDock_(0),
 libraryWidget_(0),
 previewBox_(0),
@@ -195,8 +195,7 @@ void DockWidgetHandler::setupLibraryDock()
 
 
     // create a container widget for dialer and library display
-    libraryWidget_ = new LibraryWidget(mainWindow_);
-    libraryHandler_ = libraryWidget_->getLibraryHandler();
+    libraryWidget_ = new LibraryWidget(libraryHandler_, mainWindow_);
 
     libraryDock_->setWidget(libraryWidget_);
 

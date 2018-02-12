@@ -12,35 +12,25 @@
 #ifndef LIBRARYDATA_H
 #define LIBRARYDATA_H
 
+#include "DocumentFileAccess.h"
+#include "DocumentValidator.h"
+
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <IPXACTmodels/Component/validators/ComponentValidator.h>
-
-#include <IPXACTmodels/Design/validator/DesignValidator.h>
-
-#include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
-
-#include <IPXACTmodels/kactusExtensions/validators/SystemDesignConfigurationValidator.h>
-
 #include <QFile>
-#include <QObject>
+#include <QFileSystemWatcher>
 #include <QList>
 #include <QMap>
+#include <QObject>
 #include <QSharedPointer>
-#include <QTimer>
 #include <QRegExpValidator>
 #include <QWidget>
-#include <QFileSystemWatcher>
 
 class AbstractionDefinition;
 class BusDefinition;
 class Component;
 class Document;
-class LibraryHandler;
-class ListParameterFinder;
-class ScanProgressWidget;
-
-class ComponentParameterFinder;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! LibraryData is the data model that manages the actual VLNV library.
@@ -56,14 +46,14 @@ public:
      *      @param [in] parent          The parent object of this widget.
 	 *      @param [in] parentWidget    The widget containing the displayed library.
 	*/
-	LibraryData(LibraryHandler* parent, QWidget* parentWidget);
+	LibraryData(LibraryInterface* library, QObject* parent);
 
 	//! The destructor
 	virtual ~LibraryData();
 
-	/*! Returns the absolute file path of the specified IP-Xact document.
+	/*! Returns the absolute file path of the specified IP-XACT document.
 	 *
-	 *      @param [in] vlnv The vlnv that specifies the wanted IP-Xact document.
+	 *      @param [in] vlnv The vlnv that specifies the wanted IP-XACT document.
 	 *
 	 *      @return The absolute filepath of the document.
 	*/
@@ -86,12 +76,6 @@ public:
 	*/
 	bool contains(VLNV const& vlnv);
 
-	/*! Get the library items stored in the model.
-	 *
-	 *      @return All the items.
-	 */
-	QList<VLNV> getItems() const;
-
 	/*! Get the type of the given document.
 	 * 
 	 * If vlnv is not found in the library then VLNV::INVALID is returned.
@@ -101,18 +85,16 @@ public:
 	 *      @return The type of the given document.
 	*/
 	VLNV::IPXactType getType(VLNV const& vlnv) const;
-
-	/*! Search all saved library paths for IP-Xact objects.
-	 * 
-	 * The found objects are displayed in the library.
-	 * When search is complete the library integrity is checked.
-	 * 
-	*/
-	void parseLibrary();
+    
+	/*! Get the library items stored in the model.
+	 *
+	 *      @return All the items.
+	 */
+	QList<VLNV> getItems() const;
 
     /*! Get a model that matches given VLNV.
 	 *
-	 * This function can be called to get a model that matches an IP-Xact document.
+	 * This function can be called to get a model that matches an IP-XACT document.
 	 * 
 	 *      @param [in] vlnv Identifies the desired document.
 	 *
@@ -131,9 +113,6 @@ public:
      */
     bool writeFile(QSharedPointer<Document> model, QString const& filePath = QString());
 
-	//! Check the integrity of the library.
-	void checkLibraryIntegrity();
-
     /*! Check the document validity.
 	 *
 	 *      @param [in] document    The document to check.
@@ -151,6 +130,16 @@ public:
 	*/
 	QVector<QString> findErrorsInDocument(QSharedPointer<Document> document);
 
+	/*! Search all saved library paths for IP-Xact objects.
+	 * 
+	 * The found objects are displayed in the library.
+	 * When search is complete the library integrity is checked.
+	 * 
+	*/
+	void parseLibrary();
+
+    //! Check the integrity of the library.
+    void checkLibraryIntegrity();
 
 signals:
 
@@ -159,6 +148,9 @@ signals:
 
 	//! Emit a notice message to be printed to user.
 	void noticeMessage(QString const& message);
+
+    //! Emit a change in the library status e.g. loading.
+    void statusMessage(QString const& message);
 
 	//! Inform tree model that a vlnv is to be removed from the tree.
 	void removeVLNV(VLNV const& vlnv);
@@ -169,16 +161,10 @@ signals:
     //! Inform that object has been updated.
     void updatedVLNV(VLNV const& vlnv);
 
-	//! Inform tree model that the model should be reset
-	void resetModel();
+	//! Inform the library model that the model should be reset.
+	void resetModel();    
 
 public slots:
-
-    //! Runs one step of the library parsing.
-    void performParseLibraryStep();
-
-    //! Runs one step of the integrity check.
-    void performIntegrityCheckStep();
    
     //! Remove the specified VLNV from the library
 	void onRemoveVLNV(VLNV const& vlnv);
@@ -203,65 +189,11 @@ private:
 	//! No assignment
 	LibraryData& operator=(const LibraryData& other);
 
-    /*!
-     *  Change the component used in the component validator parameter finder.
-     *
-     *      @param [in] targetComponent     The new component.
-     */
-    void changeComponentValidatorParameterFinder(QSharedPointer<Component> targetComponent);
+    //! Runs one step of the library parsing.
+    void performParseLibraryStep(QString const& location);
 
-	/*! Search the directory and it's sub-directories for IP-Xact objects.
-	 *
-	 *      @param [in] directoryPath The absolute path of the directory to start the search.
-	*/
-	void parseDirectory(QString const& directoryPath);
-
-	/*! Check if the file in given path is IP-Xact file and if it is then save it.
-	 *
-	 *      @param [in] filePath Absolute file path to the file to check.
-	*/
-	void parseFile(QString const& filePath);
-
-    /*!
-     *  Finds any errors within a given bus definition document.
-     *
-     *      @param [in]  busDefinition   The bus definition to search in.
-     *      @param [out] errorList      The list of errors to add any found errors.
-     */
-    void findErrorsInBusDefinition(QSharedPointer<BusDefinition> busDefinition, QVector<QString>& errorList);
-    
-    /*!
-     *  Finds any errors within a given abstraction definition document.
-     *
-     *      @param [in]  abstraction    The bus definition to search in.
-     *      @param [out] errorList      The list of errors to add any found errors.
-     */
-    void findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction, QVector<QString>& errorList);
-
-    /*!
-     *  Finds any errors within a given component.
-     *
-     *      @param [in] component   The selected component.
-     *      @param [in] errorList   The list of errors.
-     */
-    void findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList);
-
-    /*!
-     *  Finds any errors within a given design.
-     *
-     *      @param [in] design      The selected design.
-     *      @param [in] errorList   The list of errors.
-     */
-    void findErrorsInDesign(QSharedPointer<Design> design, QVector<QString>& errorList);
-
-    /*!
-     *  Finds any errors within a given design configuration.
-     *
-     *      @param [in] configuration   The selected design configuration.
-     *      @param [in] errorList       The list of errors.
-     */
-    void findErrorsInDesignConfiguration(QSharedPointer<DesignConfiguration> configuration,
-        QVector<QString>& errorList);
+    //! Runs one step of the integrity check.
+    void performIntegrityCheck(VLNV const& documentVLNV);
 
     /*! Check the validity of VLNV references within a document.
 	 *
@@ -315,22 +247,22 @@ private:
      */
     void findErrorsInDependentFiles(QSharedPointer<const Document> document, QString const& documentPath,
         QVector<QString>& errorList);
+    
+	/*! Search the directory and it's sub-directories for IP-Xact objects.
+	 *
+	 *      @param [in] directoryPath The absolute path of the directory to start the search.
+	*/
+	void parseDirectory(QString const& directoryPath);
 
-    /*!
-     *  Finds the VLNV identifier for the given document.
-     *
-     *      @param [in] doc   The document whose VLNV to find.
-     *
-     *      @return The VLNV identifier for the document.
-     */
-    VLNV getDocumentVLNV(QFile& doc);
+	/*! Check if the file in given path is IP-XACT file and if it is then save it.
+	 *
+	 *      @param [in] filePath Absolute file path to the file to check.
+	*/
+	void parseFile(QString const& filePath);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The parent widget.
-    QWidget* parentWidget_;
 
 	/*! Map containing all the VLNVs that are in the library.
 	 *
@@ -340,25 +272,7 @@ private:
 	QMap<VLNV, QString> libraryItems_;
 
 	//! The LibraryHandler instance that owns this class.
-	LibraryHandler *handler_;
-
-    //! The progress dialog widget for scans.
-    ScanProgressWidget* progressWidget_;
-
-    //! The number of timer steps.
-    int timerSteps_;
-
-    //! The index of the current timer step.
-    int timerStep_;
-
-    //! The timer for scans. 
-    QTimer* timer_;
-
-    //! The location list to scan.
-    QList<QString> locations_;
-
-    //! The iterator for integrity check scan.
-    QMap<VLNV, QString>::iterator iterObjects_;
+	LibraryInterface *library_;
 
     //! Number of failed objects found during the integrity check.
     int failedObjects_;
@@ -369,23 +283,9 @@ private:
     //! Checks if the given string is a URL (invalids are allowed) or not.
     QRegularExpressionValidator* urlTester_;
 
-    //! The parameter finder used in the component validator.
-    QSharedPointer<ComponentParameterFinder> componentValidatorFinder_;
+    DocumentFileAccess fileAccess_;
 
-    //! The used component validator.
-    ComponentValidator componentValidator_;
-
-    //! The parameter finder used in the design validator.
-    QSharedPointer<ListParameterFinder> designValidatorFinder_;
-
-    //! The used design validator.
-    DesignValidator designValidator_;
-
-    //! The used design configuration validator.
-    DesignConfigurationValidator designConfigurationValidator_;
-
-    //! The used system design configuration validator.
-    SystemDesignConfigurationValidator systemDesignConfigurationValidator_;
+    DocumentValidator validator_;
 
     //! Watch for changes in the IP-XACT files.
     QFileSystemWatcher* fileWatch_;

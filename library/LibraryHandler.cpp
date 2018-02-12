@@ -54,12 +54,12 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::LibraryHandler()
 //-----------------------------------------------------------------------------
-LibraryHandler::LibraryHandler(QWidget* parentWidget, QObject *parent):
+LibraryHandler::LibraryHandler(QWidget* parentWidget, QObject* parent):
 QObject(parent),
     parentWidget_(parentWidget),
-    data_(new LibraryData(this, parentWidget)),
-    treeModel_(new LibraryTreeModel(this, parentWidget)),
-    hierarchyModel_(new HierarchyModel( this, parentWidget)),
+    data_(new LibraryData(this, this)),
+    treeModel_(new LibraryTreeModel(this, this)),
+    hierarchyModel_(new HierarchyModel(this, this)),
     integrityWidget_(0),
     objects_(),
     objectValidity_(),
@@ -69,6 +69,9 @@ QObject(parent),
 {
 	// create the connections between models and library handler
 	syncronizeModels();
+
+    connect(data_.data(), SIGNAL(statusMessage(QString const&)), this, SIGNAL(statusMessage(QString const&)),
+        Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -147,14 +150,7 @@ bool LibraryHandler::contains(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 const QString LibraryHandler::getPath(VLNV const& vlnv) const
 {
-    if (!vlnv.isValid())
-    {
-        return QString();
-    }
-    else
-    {
-        return data_->getPath(vlnv);
-    }
+    return data_->getPath(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -263,10 +259,7 @@ void LibraryHandler::getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list)
         return;
     }
 
-    // get the vlnvs needed by this vlnv
     QSharedPointer<const Document> document = getModelReadOnly(vlnv);
-
-    // if there was no match for the vlnv
     if (!document)
     {
         emit errorMessage(tr("No item with following info was found in library: \n"
@@ -277,14 +270,14 @@ void LibraryHandler::getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list)
         return;
     }
 
-    // this document is searched so add it to the list
+    // This document is searched so add it to the list.
     list.append(vlnv);
 
+    // Search recursively for VLNVs.
     foreach (VLNV const& dependentVLNV, document->getDependentVLNVs())
     {
         if (!list.contains(dependentVLNV))
         {
-            // search recursively for vlnvs
             getNeededVLNVs(dependentVLNV, list);
         }
     }
@@ -299,7 +292,6 @@ void LibraryHandler::getDependencyFiles(VLNV const& vlnv, QStringList& list)
 
     // Get path to the IP-Xact document that is used as base for relative file paths.
     QFileInfo documentFile(data_->getPath(vlnv));
-
     if (!documentFile.exists())
     {
         emit errorMessage(tr("File %1 can't be found in file system").arg(documentFile.filePath()));
@@ -607,8 +599,7 @@ void LibraryHandler::onExportItem(VLNV const vlnv)
     // get the current working directory and save it to be restored in the end of the function
     QDir savedWorkingDirectory = QDir::current();
 
-    QSettings settings;
-    QString defaultPath = settings.value("Library/DefaultLocation", QDir::homePath()).toString();
+    QString defaultPath = QSettings().value("Library/DefaultLocation", QDir::homePath()).toString();
 
     // ask the target directory where the package is to be exported
     QString targetPath = QFileDialog::getExistingDirectory(parentWidget_, tr("Select the location to export library to"),
@@ -635,7 +626,7 @@ void LibraryHandler::onExportItem(VLNV const vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onExportItem()
 //-----------------------------------------------------------------------------
-void LibraryHandler::onExportItems(const QList<VLNV> vlnvs )
+void LibraryHandler::onExportItems(const QList<VLNV> vlnvs)
 {
     if (vlnvs.isEmpty())
     {
@@ -974,7 +965,7 @@ void LibraryHandler::onGenerateIntegrityReport()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onSelectionChanged(VLNV const& /*vlnv*/)
 {
-
+    
 }
 
 //-----------------------------------------------------------------------------

@@ -11,63 +11,31 @@
 
 #include "LibraryData.h"
 
+#include "DocumentFileAccess.h"
 #include "LibraryHandler.h"
-#include "LibraryTreeModel.h"
 
 #include <common/utils.h>
-#include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
-
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCache.h>
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionReader.h>
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h>
-#include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
-#include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
-#include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
-#include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 
 #include <IPXACTmodels/Catalog/Catalog.h>
-#include <IPXACTmodels/Catalog/CatalogReader.h>
-#include <IPXACTmodels/Catalog/CatalogWriter.h>
-#include <IPXACTmodels/Catalog/validators/CatalogValidator.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/Design/DesignReader.h>
-
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
-#include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/ComponentWriter.h>
-#include <IPXACTmodels/Component/ComponentReader.h>
-
-#include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/Design/DesignWriter.h>
 
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
-#include <IPXACTmodels/kactusExtensions/ComDefinitionReader.h>
-#include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
-
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
-#include <IPXACTmodels/kactusExtensions/ApiDefinitionReader.h>
-#include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
 
 #include <QDir>
-#include <QDomDocument>
 #include <QFile>
-#include <QFileDialog>
 #include <QFileInfo>
 #include <QList>
 #include <QObject>
@@ -75,40 +43,26 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QStringList>
-#include <QTimer>
-#include <QWidget>
-
 
 //-----------------------------------------------------------------------------
-// Function: librarydata::()
+// Function: LibraryData::LibraryData()
 //-----------------------------------------------------------------------------
-LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget):
+LibraryData::LibraryData(LibraryInterface* library, QObject* parent):
     QObject(parent),
-    parentWidget_(parentWidget),
     libraryItems_(),
-    handler_(parent),
-    progressWidget_(0),
-    timerSteps_(0),
-    timerStep_(0),
-    timer_(0),
-    locations_(),
-    iterObjects_(),
+    library_(library),
     failedObjects_(0),
     fileCount_(0),
-    urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),
-    componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
-    componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
-                        handler_),
-    designValidatorFinder_(new ListParameterFinder()),
-    designValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(designValidatorFinder_)), handler_),
-    designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
-    systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),
+    urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),   
+    fileAccess_(),
+    validator_(library),
     fileWatch_(new QFileSystemWatcher(this))
 {
 	connect(this, SIGNAL(errorMessage(QString const&)),
         parent, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(QString const&)),
 		parent, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+
     connect(fileWatch_, SIGNAL(fileChanged(QString const&)),
             this, SLOT(onFileChanged(QString const&)), Qt::UniqueConnection);
 }
@@ -122,23 +76,16 @@ LibraryData::~LibraryData()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryData::getItems()
-//-----------------------------------------------------------------------------
-QList<VLNV> LibraryData::getItems() const
-{
-    return libraryItems_.keys();
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryData::getPath()
 //-----------------------------------------------------------------------------
 QString LibraryData::getPath(VLNV const& vlnv)
 {
-	if (libraryItems_.contains(vlnv))
+    if (!vlnv.isValid())
     {
-		return libraryItems_.value(vlnv);
-	}
-	else
+        return QString();
+    }
+
+	if (!libraryItems_.contains(vlnv))
     {
 		emit errorMessage(tr("The VLNV \n"
 			"Vendor: %1\n"
@@ -147,9 +94,9 @@ QString LibraryData::getPath(VLNV const& vlnv)
 			"Version: %4\n"
 			"was not found in the library.").arg(
             vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), vlnv.getVersion()));
-
-		return QString();
 	}
+
+    return libraryItems_.value(vlnv, QString());
 }
 
 //-----------------------------------------------------------------------------
@@ -210,143 +157,11 @@ VLNV::IPXactType LibraryData::getType(VLNV const& vlnv) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryData::checkLibraryIntegrity()
+// Function: LibraryData::getItems()
 //-----------------------------------------------------------------------------
-void LibraryData::checkLibraryIntegrity()
+QList<VLNV> LibraryData::getItems() const
 {
-	failedObjects_ = 0;
-	fileCount_ = 0;
-
-    timerStep_ = 0;
-    timerSteps_ = libraryItems_.size();
-    iterObjects_ = libraryItems_.begin();
-
-    // Create the progress bar that displays the progress of the check.
-    progressWidget_ = new ScanProgressWidget(parentWidget_);
-    progressWidget_->setWindowTitle(tr("Checking integrity..."));
-    progressWidget_->setRange(0, timerSteps_);
-    progressWidget_->setMessage(tr("Validating %1 items. Please wait...").arg(QString::number(timerSteps_)));
-
-    timer_ = new QTimer(this);
-    connect(timer_, SIGNAL(timeout()), this, SLOT(performIntegrityCheckStep()));
-    connect(progressWidget_, SIGNAL(rejected()), timer_, SLOT(stop()));
-    timer_->start();
-
-    progressWidget_->exec();
-
-	emit noticeMessage(tr("========== Library integrity check complete =========="));
-	emit noticeMessage(tr("Total library object count: %1").arg(libraryItems_.size()));
-	emit noticeMessage(tr("Total file count in the library: %1").arg(fileCount_));
-
-	// if errors were found then print the summary of error types
-	if (failedObjects_ > 0)
-    {
-		emit errorMessage(tr("Total items containing errors: %1").arg(failedObjects_));
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::parseLibrary()
-//-----------------------------------------------------------------------------
-void LibraryData::parseLibrary()
-{
-	// clear the previous items in the library
-    if (!libraryItems_.isEmpty())
-    {
-        fileWatch_->removePaths(libraryItems_.values());
-    }
-
-    libraryItems_.clear();
-
-	QSettings settings;
-
-	locations_ = settings.value("Library/ActiveLocations", QStringList()).toStringList();
-	if (!locations_.isEmpty()) 
-    {
-        timerStep_ = 0;
-        timerSteps_ = locations_.size();
-
-        // create the progress bar that displays the progress of the scan
-        progressWidget_ = new ScanProgressWidget(parentWidget_);
-        progressWidget_->setRange(0, timerSteps_);
-        progressWidget_->setMessage("Scanning location: \n" + locations_.first());
-
-        timer_ = new QTimer(this);
-        connect(timer_, SIGNAL(timeout()), this, SLOT(performParseLibraryStep()));
-        connect(progressWidget_, SIGNAL(rejected()), timer_, SLOT(stop()));
-        timer_->start();
-
-        progressWidget_->exec();
-    }  
-
-    if (timerStep_ == timerSteps_)
-    {
-        checkLibraryIntegrity();
-    }
-    else
-    {
-        emit resetModel();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::parseDirectory()
-//-----------------------------------------------------------------------------
-void LibraryData::parseDirectory(QString const& directoryPath)
-{
-	if (directoryPath.isEmpty())
-    {
-		return;
-	}
-
-	QDir dirHandler(directoryPath);
-    dirHandler.setNameFilters(QStringList(QLatin1String("*.xml")));
-
-	// get list of files and folders
-	foreach (QFileInfo const& entryInfo, 
-        dirHandler.entryInfoList(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files | QDir::Readable))
-    {
-        if (entryInfo.isFile())
-        {
-            parseFile(entryInfo.absoluteFilePath());
-        }
-        else if (entryInfo.isDir())
-        {
-            parseDirectory(entryInfo.absoluteFilePath());
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::parseFile()
-//-----------------------------------------------------------------------------
-void LibraryData::parseFile(QString const& filePath)
-{
-	QFile docFile(filePath);
-	if (!docFile.open(QFile::ReadOnly))
-    {
-        emit errorMessage(tr("File %1 was not valid xml and could not be read.").arg(filePath));
-        docFile.close();
-        return;
-	}
-	
-    VLNV vlnv = getDocumentVLNV(docFile);
-    docFile.close();
-
-	if (!vlnv.isValid())
-    {
-		return;
-	}
-	
-	if (libraryItems_.contains(vlnv))
-    {
-		emit noticeMessage(tr("VLNV %1 was already found in the library").arg(vlnv.toString()));
-		return;
-	}
-
-	// add the component to the library if parsing was successful
-	libraryItems_.insert(vlnv, filePath);
-    fileWatch_->addPath(filePath);
+    return libraryItems_.keys();
 }
 
 //-----------------------------------------------------------------------------
@@ -354,79 +169,13 @@ void LibraryData::parseFile(QString const& filePath)
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
 {
-	if (!libraryItems_.contains(vlnv))
+    if (!libraryItems_.contains(vlnv))
     {
-		//emit noticeMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
-		return QSharedPointer<Document>();
-	}
-
-	VLNV toCreate = vlnv;
-	toCreate.setType(getType(vlnv));
-	
-	QString path = getPath(toCreate);
-	if (path.isEmpty())
-    {
-		return QSharedPointer<Document>();
-	}
-
-	// create file handle and use it to read the IP-Xact document into memory
-	QFile file(path);
-	QDomDocument doc;
-    if (!doc.setContent(&file))
-    {
-        file.close();
-		//emit errorMessage(tr("The document %1 in file %2 could not be opened.").arg(toCreate.toString(), path));
-		return QSharedPointer<Document>();
-    }
-    file.close();
-
-    // Create correct type of object.
-    if (toCreate.getType() == VLNV::ABSTRACTIONDEFINITION)
-    {
-        AbstractionDefinitionReader reader;
-        return reader.createAbstractionDefinitionFrom(doc);
-    }
-    else if (toCreate.getType() == VLNV::BUSDEFINITION)
-    {
-        BusDefinitionReader reader;
-        return reader.createBusDefinitionFrom(doc);
-    }
-    else if (toCreate.getType() == VLNV::CATALOG)
-    {
-        CatalogReader reader;
-        return reader.createCatalogFrom(doc);
-    }
-    else if (toCreate.getType() == VLNV::COMPONENT)
-    {
-        ComponentReader reader;
-        return reader.createComponentFrom(doc);
-    }
-    else if (toCreate.getType() == VLNV::DESIGN)
-	{
-        DesignReader reader;
-        return reader.createDesignFrom(doc);
-    }
-    else if (toCreate.getType() == VLNV::DESIGNCONFIGURATION)
-    {
-        DesignConfigurationReader reader;
-        return reader.createDesignConfigurationFrom(doc);
-    }
-
-    else if (toCreate.getType() == VLNV::APIDEFINITION)
-    {
-        ApiDefinitionReader reader;
-        return reader.createApiDefinitionFrom(doc);
-    }
-    else if (toCreate.getType() == VLNV::COMDEFINITION)
-    {
-		ComDefinitionReader reader;
-		return reader.createComDefinitionFrom(doc);
-    }
-    else
-    {
-        //emit noticeMessage(tr("Document was not supported type"));
+        //emit noticeMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
         return QSharedPointer<Document>();
     }
+
+    return fileAccess_.readDocument(getPath(vlnv));
 }
 
 //-----------------------------------------------------------------------------
@@ -446,89 +195,125 @@ bool LibraryData::writeFile(QSharedPointer<Document> model, QString const& fileP
         targetPath = pathInfo.symLinkTarget();
     }
 
-    // create a new file
+    // Create a new file.
     fileWatch_->removePath(targetPath);
-    QFile targetFile(targetPath);
-    if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
+    fileAccess_.writeDocument(model, targetPath);
+    fileWatch_->addPath(targetPath);
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::validateDocument()
+//-----------------------------------------------------------------------------
+bool LibraryData::validateDocument(QSharedPointer<Document> document)
+{
+    if (document.isNull())
     {
-        emit errorMessage(tr("Could not open file %1 for writing.").arg(targetPath));
         return false;
     }
 
-    // write the parsed model
-    QXmlStreamWriter xmlWriter(&targetFile);
-    xmlWriter.setAutoFormatting(true);
-    xmlWriter.setAutoFormattingIndent(-1);
+    VLNV documentVLNV = document->getVlnv();
+    QString documentPath = getPath(documentVLNV);
 
-    VLNV::IPXactType documentType = model->getVlnv().getType();
-    if (documentType == VLNV::ABSTRACTIONDEFINITION)
+    Q_ASSERT(!documentPath.isEmpty());
+
+    if (documentPath.isEmpty() || !QFileInfo(documentPath).exists())
     {
-        AbstractionDefinitionWriter writer;
-        QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
-        writer.writeAbstractionDefinition(xmlWriter, absDef);
+        return false;
     }
 
-    else if (documentType == VLNV::BUSDEFINITION)
+    bool documentValid = validator_.validate(document);
+
+    return documentValid && validateDependentVLNVReferencences(document) &&
+        validateDependentDirectories(document, documentPath) &&
+        validateDependentFiles(document, documentPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::findErrorsInDocument()
+//-----------------------------------------------------------------------------
+QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> document)
+{
+    Q_ASSERT(document);
+
+    QVector<QString> errorList;
+
+    QString path = getPath(document->getVlnv());
+    if (!QFileInfo(path).exists())
     {
-        BusDefinitionWriter writer;
-        QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
-        writer.writeBusDefinition(xmlWriter, busDef);
-    }
-    else if (documentType == VLNV::CATALOG)
-    {
-        CatalogWriter writer;
-        QSharedPointer<Catalog> catalog = model.dynamicCast<Catalog>();
-        writer.writeCatalog(xmlWriter, catalog);
-    }
-    else if (documentType == VLNV::COMPONENT)
-    {
-        ComponentWriter writer;
-        QSharedPointer<Component> component = model.dynamicCast<Component>();
-        writer.writeComponent(xmlWriter, component);
-    }
-    else if (documentType == VLNV::DESIGN)
-    {
-        DesignWriter designWriter;
-        QSharedPointer<Design> design = model.dynamicCast<Design>();
-        designWriter.writeDesign(xmlWriter, design);
+        errorList.append(tr("File %1 for the document was not found.").arg(path));
     }
 
-    else if (documentType == VLNV::DESIGNCONFIGURATION)
+    validator_.findErrorsIn(document, errorList);
+
+    findErrorsInDependentVLNVReferencences(document, errorList);
+
+    findErrorsInDependentDirectories(document, path, errorList);
+
+    findErrorsInDependentFiles(document, path, errorList);
+
+    return errorList;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::parseLibrary()
+//-----------------------------------------------------------------------------
+void LibraryData::parseLibrary()
+{
+    // clear the previous items in the library
+    if (!libraryItems_.isEmpty())
     {
-        DesignConfigurationWriter designConfigurationWriter;
-        QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
-        designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
+        fileWatch_->removePaths(libraryItems_.values());
+        libraryItems_.clear();
     }
 
-    else if (documentType == VLNV::APIDEFINITION)
+    QStringList locations = QSettings().value("Library/ActiveLocations", QStringList()).toStringList();
+
+    emit statusMessage(tr("Scanning library. Please wait..."));
+
+    foreach (QString const& location, locations)
     {
-        ApiDefinitionWriter apiDefinitionWriter;
-        QSharedPointer<ApiDefinition> apiDefinition = model.dynamicCast<ApiDefinition>();
-        apiDefinitionWriter.writeApiDefinition(xmlWriter, apiDefinition);
+        performParseLibraryStep(location);
     }
 
-    else if (documentType == VLNV::COMDEFINITION)
+    checkLibraryIntegrity();
+
+    emit resetModel();
+    emit statusMessage(tr("Ready."));
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::checkLibraryIntegrity()
+//-----------------------------------------------------------------------------
+void LibraryData::checkLibraryIntegrity()
+{
+    failedObjects_ = 0;
+    fileCount_ = 0;
+
+    emit statusMessage(tr("Validating items. Please wait..."));
+
+    foreach (VLNV const& documentVLNV, libraryItems_.keys())
     {
-        ComDefinitionWriter comDefinitionWriter;
-        QSharedPointer<ComDefinition> comDefinition = model.dynamicCast<ComDefinition>();
-        comDefinitionWriter.writeComDefinition(xmlWriter, comDefinition);
-    }
-    else
-    {
-        Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");
+        performIntegrityCheck(documentVLNV);     
     }
 
-    targetFile.close();
-    fileWatch_->addPath(targetPath);
-    return true;
+    emit noticeMessage(tr("========== Library integrity check complete =========="));
+    emit noticeMessage(tr("Total library object count: %1").arg(libraryItems_.size()));
+    emit noticeMessage(tr("Total file count in the library: %1").arg(fileCount_));
+
+    // if errors were found then print the summary of error types
+    if (failedObjects_ > 0)
+    {
+        emit errorMessage(tr("Total items containing errors: %1").arg(failedObjects_));
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryData::performParseLibrary()
 //-----------------------------------------------------------------------------
-void LibraryData::performParseLibraryStep()
+void LibraryData::performParseLibraryStep(QString const& location)
 {
-    QString const& location = locations_.at(timerStep_);
     QFileInfo locationInfo(location);
 
     if (locationInfo.isDir())
@@ -539,68 +324,16 @@ void LibraryData::performParseLibraryStep()
     {
         parseFile(location);
     }
-
-    timerStep_++;
-    
-    if  (timerStep_ < timerSteps_)
-    {
-        progressWidget_->setMessage("Scanning location: \n" + locations_.at(timerStep_));
-        progressWidget_->setValue(timerStep_ + 1);
-    }
-    else
-    {
-        timer_->stop();
-        delete timer_;
-        delete progressWidget_;
-    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryData::performIntegrityCheckStep()
 //-----------------------------------------------------------------------------
-void LibraryData::performIntegrityCheckStep()
+void LibraryData::performIntegrityCheck(VLNV const& documentVLNV)
 {
-    if (timerStep_ < timerSteps_)
+    if (!library_->isValid(documentVLNV))
     {
-        QSharedPointer<Document> document = getModel(iterObjects_.key());
-        // if the object could not be parsed
-        if (!document)
-        {
-            // remove the pair from the map and move on
-            QMap<VLNV, QString>::iterator i = libraryItems_.find(iterObjects_.key());
-            iterObjects_++;
-            libraryItems_.erase(i);
-        }
-        else
-        {
-            if (!validateDocument(document))
-            {
-                failedObjects_++;
-            }
-            iterObjects_++;
-        }
-    }
-    else if (timerStep_ == timerSteps_)
-    {
-        // inform tree model that it needs to reset model also
-        emit resetModel();
-    }
-
-    timerStep_++;
-    progressWidget_->setValue(timerStep_);
-
-    if (timerStep_ == timerSteps_)
-    {
-        progressWidget_->setMessage(tr("Updating library view..."));
-    }
-    else if (timerStep_ > timerSteps_)
-    {
-        timer_->stop();
-        delete timer_;
-        timer_ = 0;
-
-        delete progressWidget_;
-        progressWidget_ = 0;
+        failedObjects_++;
     }
 }
 
@@ -616,8 +349,6 @@ void LibraryData::onRemoveVLNV(VLNV const& vlnv)
 
     QString documentPath = getPath(vlnv);
 
-    fileWatch_->removePath(documentPath);
-
     QFile xmlFile(documentPath);
     if (!xmlFile.exists())
     {
@@ -628,6 +359,7 @@ void LibraryData::onRemoveVLNV(VLNV const& vlnv)
         emit errorMessage(tr("Could not remove file %1").arg(documentPath));
     }
 
+    fileWatch_->removePath(documentPath);
     libraryItems_.remove(vlnv);
 }
 
@@ -648,207 +380,6 @@ void LibraryData::onFileChanged(QString const& path)
     {
         VLNV changedDocument = libraryItems_.key(path, VLNV());
         emit updatedVLNV(changedDocument);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::validateDocument()
-//-----------------------------------------------------------------------------
-bool LibraryData::validateDocument(QSharedPointer<Document> document)
-{
-    if (document.isNull())
-    {
-        return false;
-    }
-
-	VLNV documentVLNV = document->getVlnv();
-	QString documentPath = getPath(documentVLNV);
-
-    Q_ASSERT(!documentPath.isEmpty());
-
-    if (documentPath.isEmpty() || !QFileInfo(documentPath).exists())
-    {
-        return false;
-    }
-
-    VLNV::IPXactType documentType = getType(documentVLNV);
-    if (documentType == VLNV::ABSTRACTIONDEFINITION)
-    {
-        AbstractionDefinitionValidator validator(handler_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
-        if (!validator.validate(document.dynamicCast<AbstractionDefinition>()))
-        {
-            return false;
-        }
-    }
-    else if (documentType == VLNV::BUSDEFINITION)
-    {
-        BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
-        if (!validator.validate(document.dynamicCast<BusDefinition>()))
-        {
-            return false;
-        }
-    } 
-    else if (documentType == VLNV::CATALOG)
-    {
-        CatalogValidator validator;
-        if (!validator.validate(document.dynamicCast<Catalog>()))
-        {
-            return false;
-        }
-    }
-	else if (documentType == VLNV::COMPONENT)
-    {
-        QSharedPointer<Component> currentComponent = document.dynamicCast<Component>();
-
-        changeComponentValidatorParameterFinder(currentComponent);
-
-        if (currentComponent && !componentValidator_.validate(currentComponent))
-        {
-            return false;
-        }
-    }
-    else if (documentType == VLNV::DESIGN)
-    {
-        QSharedPointer<Design> currentDesign = document.dynamicCast<Design>();
-        designValidatorFinder_->setParameterList(currentDesign->getParameters());
-
-        if (!designValidator_.validate(currentDesign))
-        {
-            return false;
-        }
-    }
-    else if (documentType == VLNV::DESIGNCONFIGURATION)
-    {
-        QSharedPointer<DesignConfiguration> configuration = document.dynamicCast<DesignConfiguration>();
-
-        if (configuration->getImplementation() == KactusAttribute::SYSTEM)
-        {
-            if (!systemDesignConfigurationValidator_.validate(configuration))
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (!designConfigurationValidator_.validate(configuration))
-            {
-                return false;
-            }
-        }
-    }
-
-    return validateDependentVLNVReferencences(document) &&
-        validateDependentDirectories(document, documentPath) &&
-        validateDependentFiles(document, documentPath);
-}
-
-//-----------------------------------------------------------------------------
-// Function: librarydata::changeComponentValidatorParameterFinder()
-//-----------------------------------------------------------------------------
-void LibraryData::changeComponentValidatorParameterFinder(QSharedPointer<Component> targetComponent)
-{
-    componentValidatorFinder_->setComponent(targetComponent);
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::findErrorsInDocument()
-//-----------------------------------------------------------------------------
-QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> document)
-{
-    Q_ASSERT(document);
-
-    QVector<QString> errorList;
-
-    QString path = getPath(document->getVlnv());
-	if (!QFileInfo(path).exists())
-    {
-        errorList.append(tr("File %1 for the document was not found.").arg(path));
-	}
-
-	// Check if the document xml is valid and if not then print errors of the document.
-    VLNV::IPXactType documentType = getType(document->getVlnv());
-	if (documentType == VLNV::BUSDEFINITION)
-    {
-        findErrorsInBusDefinition(document.dynamicCast<BusDefinition>(), errorList);
-    }
-    else if (documentType == VLNV::ABSTRACTIONDEFINITION)
-    {
-        findErrorsInAbstractionDefinition(document.dynamicCast<AbstractionDefinition>(), errorList);
-    }
-    else if (documentType == VLNV::COMPONENT)
-    {
-        findErrorsInComponent(document.dynamicCast<Component>(), errorList);
-    }
-    else if (documentType == VLNV::DESIGN)
-    {
-        findErrorsInDesign(document.dynamicCast<Design>(), errorList);
-    }
-    else if (documentType == VLNV::DESIGNCONFIGURATION)
-    {
-        findErrorsInDesignConfiguration(document.dynamicCast<DesignConfiguration>(), errorList);
-    }
-
-    findErrorsInDependentVLNVReferencences(document, errorList);
-
-    findErrorsInDependentDirectories(document, path, errorList);
-
-    findErrorsInDependentFiles(document, path, errorList);
-
-	return errorList;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::findErrorsInBusDefinition()
-//-----------------------------------------------------------------------------
-void LibraryData::findErrorsInBusDefinition(QSharedPointer<BusDefinition> busDefinition,
-    QVector<QString>& errorList)
-{
-    BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
-    validator.findErrorsIn(errorList, busDefinition);
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::findErrorsInAbstractionDefinition()
-//-----------------------------------------------------------------------------
-void LibraryData::findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction, QVector<QString>& errorList)
-{
-    AbstractionDefinitionValidator validator(handler_, 
-        QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
-    validator.findErrorsIn(errorList, abstraction);
-}
-
-//-----------------------------------------------------------------------------
-// Function: librarydata::findErrorsInComponent()
-//-----------------------------------------------------------------------------
-void LibraryData::findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList)
-{
-    changeComponentValidatorParameterFinder(component);
-
-    componentValidator_.findErrorsIn(errorList, component);
-}
-
-//-----------------------------------------------------------------------------
-// Function: librarydata::findErrorsInDesign()
-//-----------------------------------------------------------------------------
-void LibraryData::findErrorsInDesign(QSharedPointer<Design> design, QVector<QString>& errorList)
-{
-    designValidatorFinder_->setParameterList(design->getParameters());
-    designValidator_.findErrorsIn(errorList, design);
-}
-
-//-----------------------------------------------------------------------------
-// Function: librarydata::findErrorsInDesignConfiguration()
-//-----------------------------------------------------------------------------
-void LibraryData::findErrorsInDesignConfiguration(QSharedPointer<DesignConfiguration> configuration,
-    QVector<QString>& errorList)
-{
-    if (configuration->getImplementation() == KactusAttribute::SYSTEM)
-    {
-        systemDesignConfigurationValidator_.findErrorsIn(errorList, configuration);
-    }
-    else
-    {
-        designConfigurationValidator_.findErrorsIn(errorList, configuration);
     }
 }
 
@@ -890,9 +421,7 @@ bool LibraryData::validateDependentDirectories(QSharedPointer<Document> document
 {
     foreach (QString const& directory, document->getDependentDirs())
     {
-        QString dirPath = General::getAbsolutePath(documentPath, directory);
-        QFileInfo dirInfo(dirPath);
-
+        QFileInfo dirInfo(General::getAbsolutePath(documentPath, directory));
         if (!dirInfo.exists())
         {
             return false;
@@ -984,38 +513,52 @@ void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> docu
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryData::getVLNV()
+// Function: LibraryData::parseDirectory()
 //-----------------------------------------------------------------------------
-VLNV LibraryData::getDocumentVLNV(QFile& file)
+void LibraryData::parseDirectory(QString const& directoryPath)
 {
-    QXmlStreamReader documentReader(&file);
-    documentReader.readNextStartElement();
-
-    QString type = documentReader.qualifiedName().toString();
-    if (type.startsWith(QLatin1String("spirit:")))
+    if (directoryPath.isEmpty())
     {
-        emit noticeMessage(tr("File %1 contains an IP-XACT description not compatible with the 1685-2014 "
-            "standard and could not be read.").arg(QFileInfo(file).absoluteFilePath()));
-        return VLNV();
+        return;
     }
 
-    // Find the first element of the VLVN.
-    while(documentReader.readNextStartElement() && 
-        documentReader.qualifiedName().compare(QLatin1String("ipxact:vendor")) != 0)
+    QDir directoryHandler(directoryPath);
+    directoryHandler.setNameFilters(QStringList(QLatin1String("*.xml")));
+
+    // Get list of files and folders.
+    foreach (QFileInfo const& entryInfo, 
+        directoryHandler.entryInfoList(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files | QDir::Readable))
     {
-        // Empty loop.
+        if (entryInfo.isFile())
+        {
+            parseFile(entryInfo.absoluteFilePath());
+        }
+        else if (entryInfo.isDir())
+        {
+            parseDirectory(entryInfo.absoluteFilePath());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::parseFile()
+//-----------------------------------------------------------------------------
+void LibraryData::parseFile(QString const& filePath)
+{
+    VLNV vlnv = fileAccess_.getDocumentVLNV(filePath);
+
+    if (!vlnv.isValid())
+    {
+        return;
     }
 
-    QString vendor = documentReader.readElementText();
+    if (libraryItems_.contains(vlnv))
+    {
+        emit noticeMessage(tr("VLNV %1 was already found in the library").arg(vlnv.toString()));
+        return;
+    }
 
-    documentReader.readNextStartElement();
-    QString library = documentReader.readElementText();
-
-    documentReader.readNextStartElement();
-    QString name = documentReader.readElementText();
-
-    documentReader.readNextStartElement();
-    QString version = documentReader.readElementText();
-
-    return VLNV(type, vendor, library, name, version);
+    // add the component to the library if parsing was successful
+    libraryItems_.insert(vlnv, filePath);
+    fileWatch_->addPath(filePath);
 }

@@ -15,7 +15,6 @@
 #include "FileDependencyItem.h"
 #include "FileDependencyDelegate.h"
 
-#include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 #include <common/utils.h>
 
 #include <IPXACTmodels/Component/Component.h>
