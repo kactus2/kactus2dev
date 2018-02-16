@@ -95,47 +95,5 @@ PortmapDialog::~PortmapDialog()
 //-----------------------------------------------------------------------------
 void PortmapDialog::accept()
 {
-    // Check if all required logical ports are not mapped.
-    QVector<QString> missingMappings;
-
-    foreach (QSharedPointer<PortMap> portMap, *otherBusIf_->getPortMaps())
-    {
-        bool found = false;
-        
-        foreach (QSharedPointer<PortMap> localPortMap, *busIf_->getPortMaps())
-        {
-            // The logical port was mapped correctly if the bus interface has a
-            // port map that utilizes the same logical port.
-            if (localPortMap->getLogicalPort()->name_ == portMap->getLogicalPort()->name_)
-            {
-                found = true;
-                break;
-            }
-        }
-
-        // If the corresponding port map was not found, add the logical port to the list of missing mappings.
-        if (!found)
-        {
-            missingMappings.append(portMap->getLogicalPort()->name_);
-        }
-    }
-
-    // If there were missing mapping, show an error message.
-    if (!missingMappings.empty())
-    {
-        QString detailMessage = tr("The following logical ports must be mapped:");
-
-        foreach (QString const& name, missingMappings)
-        {
-            detailMessage += "\n * " + name;
-        }
-
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                           tr("Some required port maps are missing."), QMessageBox::Ok, this);
-        msgBox.setDetailedText(detailMessage);
-        msgBox.exec();
-        return;
-    }
-
     QDialog::accept();
 }

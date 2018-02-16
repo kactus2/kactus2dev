@@ -226,7 +226,7 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString cons
         }
     }
 
-    if (!getDiagram()->setDesign(component, design, designConfiguration))
+    if (!getDiagram()->setDesign(component, viewName, design, designConfiguration))
     {
         return false;
     }
@@ -491,7 +491,7 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
     {
         BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
 
-        foreach(QSharedPointer<Port> port, diagIf->getPorts())
+        foreach(QSharedPointer<Port> port, diagIf->getAllPorts())
         {
             if (!ports.contains(port->name()))
             {

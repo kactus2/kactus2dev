@@ -38,8 +38,7 @@
 //-----------------------------------------------------------------------------
 // Function: VLNVEditor::VLNVEditor()
 //-----------------------------------------------------------------------------
-VLNVEditor::VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd, QWidget* parent,
-    bool compact):
+VLNVEditor::VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd, QWidget* parent):
 QGroupBox(parent),
 type_(type),
 contentTypes_(),
@@ -68,7 +67,7 @@ implementationFilter_(KactusAttribute::HW)
     setTitle(tr("VLNV"));
 
     // Initialize the widgets and the connections between widgets.
-    initWidgets(parentWnd, compact);
+    initWidgets(parentWnd);
     initConnections();
 
 	// accept drops from drag & drop
@@ -188,7 +187,7 @@ void VLNVEditor::updateVersionMatcherItem()
 //-----------------------------------------------------------------------------
 // Function: VLNVEditor::initWidgets()
 //-----------------------------------------------------------------------------
-void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
+void VLNVEditor::initWidgets(QWidget* parentWnd)
 {
     // Create the labels.
     QLabel* vendorLabel = new QLabel(tr("Vendor:"), this);
@@ -222,30 +221,15 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
     nameLayout->addWidget(&nameExtensionLabel_);
     
     // Create the layout and add the widgets to it.
-    if (compact)
-    {
-        QGridLayout* layout = new QGridLayout(this);
-        layout->addWidget(vendorLabel, 0, 0, 1, 1);
-        layout->addWidget(vendorEdit_, 0, 1, 1, 1);
-        layout->addWidget(libraryLabel, 1, 0, 1, 1);
-        layout->addWidget(libraryEdit_, 1, 1, 1, 1);
-        layout->addWidget(nameLabel, 2, 0, 1, 1);
-        layout->addLayout(nameLayout, 2, 1, 1, 1);
-        layout->addWidget(versionLabel, 3, 0, 1, 1);
-        layout->addWidget(versionEdit_, 3, 1, 1, 1);
-    }
-    else
-    {
-        QVBoxLayout* layout = new QVBoxLayout(this);
-        layout->addWidget(vendorLabel);
-        layout->addWidget(vendorEdit_);
-        layout->addWidget(libraryLabel);
-        layout->addWidget(libraryEdit_);
-        layout->addWidget(nameLabel);
-        layout->addLayout(nameLayout);
-        layout->addWidget(versionLabel);
-        layout->addWidget(versionEdit_);
-    }
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(vendorLabel, 0, 0, 1, 1);
+    layout->addWidget(vendorEdit_, 0, 1, 1, 1);
+    layout->addWidget(libraryLabel, 1, 0, 1, 1);
+    layout->addWidget(libraryEdit_, 1, 1, 1, 1);
+    layout->addWidget(nameLabel, 2, 0, 1, 1);
+    layout->addLayout(nameLayout, 2, 1, 1, 1);
+    layout->addWidget(versionLabel, 3, 0, 1, 1);
+    layout->addWidget(versionEdit_, 3, 1, 1, 1);
 }
 
 //-----------------------------------------------------------------------------

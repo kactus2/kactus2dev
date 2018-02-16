@@ -21,19 +21,12 @@
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::MetaInstance()
 //-----------------------------------------------------------------------------
-MetaInstance::MetaInstance(
-    QSharedPointer<ComponentInstance> componentInstance,
-    LibraryInterface* library,
-    MessagePasser* messages,
-    QSharedPointer<Component> component,
-    QSharedPointer<View> activeView) :
-MetaComponent(
-    messages,
-    component,
-    activeView),
-    componentInstance_(componentInstance),
-    library_(library),
-    interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >)
+MetaInstance::MetaInstance(QSharedPointer<ComponentInstance> componentInstance, LibraryInterface* library,
+    MessagePasser* messages, QSharedPointer<Component> component, QSharedPointer<View> activeView) :
+MetaComponent(messages, component, activeView),
+componentInstance_(componentInstance),
+library_(library),
+interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >)
 {
 }
 
@@ -89,11 +82,9 @@ void MetaInstance::cullInterfaces()
     {
         // Find the correct abstraction type.
         QSharedPointer<AbstractionType> absType;
-
-        // TODO: Find the abstraction type by the active view rather than the first one.
-        if (!busInterface->getAbstractionTypes()->isEmpty())
+        if (getActiveView())
         {
-            absType = busInterface->getAbstractionTypes()->first();
+            absType = busInterface->getAbstractionContainingView(getActiveView()->name());
         }
 
         if (!absType)

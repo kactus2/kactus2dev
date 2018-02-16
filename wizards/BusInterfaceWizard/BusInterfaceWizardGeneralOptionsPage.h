@@ -26,6 +26,8 @@ class Component;
 class LibraryInterface;
 class ExpressionParser;
 
+class AbstractionTypeValidator;
+
 //-----------------------------------------------------------------------------
 //! General options page for the interface wizard.
 //-----------------------------------------------------------------------------
@@ -129,6 +131,8 @@ private:
 
     //! Editor for bus interface general options.
     BusIfGeneralTab* generalTab_;
+
+    QSharedPointer<AbstractionTypeValidator> abstractionValidator_;
 };
 
 #endif // BUSINTERFACEWIZARDGENERALOPTIONSPAGE_H

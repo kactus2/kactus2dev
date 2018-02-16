@@ -20,7 +20,8 @@
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndpont::HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, QVector2D const& dir): ConnectionEndpoint(parent)
+HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, QVector2D const& dir):
+ConnectionEndpoint(parent)
 {
     setDirection(dir);
 }

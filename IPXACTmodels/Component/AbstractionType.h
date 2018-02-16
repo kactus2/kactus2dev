@@ -83,8 +83,54 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<PortMap> > > getPortMaps() const;
 
+    /*!
+     *  Get the names of the mapped physical ports.
+     *
+     *      @return A list containing the names of the mapped physical ports.
+     */
+    QStringList getPhysicalPortNames() const;
+
+    /*!
+     *  Get the names of the mapped logical ports.
+     *
+     *      @return A list containing the names of the mapped logical ports.
+     */
+    QStringList getLogicalPortNames() const;
+
+    /*!
+     *  Check if the selected logical port has been mapped.
+     *
+     *      @param [in] portName    Name of the selected logical port.
+     *
+     *      @return True, if the selected logical port has been mapped, false otherwise.
+     */
+    bool hasLogicalPort(QString const& portName) const;
+
+    /*!
+     *  Check if the selected physical port has been mapped.
+     *
+     *      @param [in] portName    Name of the selected physical port.
+     *
+     *      @return True, if the selected physical port has been mapped, false otherwise.
+     */
+    bool hasPhysicalPort(QString const& portName) const;
+
+    /*!
+     *  Get the name of the logical port that has been mapped to the selected physical port.
+     *
+     *      @param [in] physicalPortName    Name of the selected physical port.
+     *
+     *      @return The name of the logical port that has been mapped to the selected physical port.
+     */
+    QString getMappedLogicalPortName(QString const& physicalPortName) const;
+
 private:
 
+    /*!
+     *  Copy the selected view references.
+     *
+     *      @param [in] newViewReferences   The selected view references.
+     */
     void copyViewReferences(QSharedPointer<QStringList> newViewReferences);
 
     //-----------------------------------------------------------------------------

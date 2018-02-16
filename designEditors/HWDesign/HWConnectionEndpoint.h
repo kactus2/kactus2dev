@@ -75,8 +75,6 @@ private:
     // Disable copying.
     HWConnectionEndpoint(HWConnectionEndpoint const& rhs);
     HWConnectionEndpoint& operator=(HWConnectionEndpoint const& rhs);
-
-
 };
 
 //-----------------------------------------------------------------------------

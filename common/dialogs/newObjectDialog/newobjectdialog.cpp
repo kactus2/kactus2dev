@@ -29,7 +29,7 @@ NewObjectDialog::NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactTyp
 QDialog(parent), 
     library_(libInterface),
     attributeEditor_(new KactusAttributeEditor(this)), 
-    vlnvEditor_(new VLNVEditor(type, libInterface, this, this, true)),
+    vlnvEditor_(new VLNVEditor(type, libInterface, this, this)),
     directoryEditor_(new LibrarySelectorWidget(this)), 
     okButton_(new QPushButton(tr("&OK")))
 {

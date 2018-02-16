@@ -74,14 +74,6 @@ public:
 	 */
 	VLNV getBusType() const;
 
-	/*!
-     *  Set the abstraction type mandatory or not.
-	 *
-	 *      @param [in] isMandatory Whether abstraction type is mandatory or not.
-	 */
-    void setAbsTypeMandatory(bool isMandatory);
-
-
     /*!
      *  Locks/unlocks the VLNV selection for bus definition and abstraction definition.
      *

@@ -41,7 +41,7 @@
 ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
 QWidget(parent),
     component_(0),
-    vlnvDisplayer_(new VLNVDisplayer(this)),
+    vlnvDisplayer_(new VLNVDisplayer(this, VLNV(), true)),
     nameGroup_(new NameGroupBox(this, tr("Component instance name"))),
     activeViewLabel_(new QLabel(this)),
     configurableElements_(0),
@@ -151,7 +151,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
     topFinder_->setActiveView(topComponent_->getModel()->findView(activeViewName));    
 
 	// set the vlnv of the component to be displayed
-	vlnvDisplayer_->setVLNV(componentItem->componentModel()->getVlnv(), true);
+    vlnvDisplayer_->setVLNV(componentItem->componentModel()->getVlnv());
 	vlnvDisplayer_->show();
 
 	nameGroup_->setName(componentItem->name());

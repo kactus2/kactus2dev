@@ -608,25 +608,30 @@ void EndpointPropertyValuesChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndPointTypesCommand::EndPointTypesCommand()
 //-----------------------------------------------------------------------------
-EndPointTypesCommand::EndPointTypesCommand(ConnectionEndpoint* endpoint, VLNV const& busType, VLNV const& absType, 
-    QUndoCommand* parent):
+EndPointTypesCommand::EndPointTypesCommand(ConnectionEndpoint* endpoint, VLNV const& busType, VLNV const& absType,
+    QString const& activeView, QUndoCommand* parent /* = 0 */):
 QUndoCommand(parent),
-    endpoint_(endpoint),
-    oldBusType_(),
-    oldAbsType_(),
-    newBusType_(busType),
-    newAbsType_(absType)
+endpoint_(endpoint),
+oldBusType_(),
+oldAbsType_(),
+newBusType_(busType),
+newAbsType_(absType),
+activeView_(activeView)
 {
     if (endpoint_->getBusInterface() != 0)
     {
         oldBusType_ = endpoint_->getBusInterface()->getBusType();
 
-        if (endpoint_->getBusInterface()->getAbstractionTypes() && 
-            !endpoint_->getBusInterface()->getAbstractionTypes()->isEmpty() &&
-            endpoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef())
+        if (endpoint_->getBusInterface()->getAbstractionTypes())
         {
-            oldAbsType_ = *endpoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
+            QSharedPointer<AbstractionType> abstraction =
+                endpoint_->getBusInterface()->getAbstractionContainingView(activeView);
+            if (abstraction && abstraction->getAbstractionRef())
+            {
+                oldAbsType_ = *abstraction->getAbstractionRef().data();
+            }
         }
+
     }
 }
 
@@ -684,11 +689,30 @@ void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
 
     endpoint_->getBusInterface()->setBusType(busType);
 
-    QSharedPointer<AbstractionType> abstraction(new AbstractionType());
-    abstraction->setAbstractionRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(absType)));
+    if (endpoint_->getBusInterface())
+    {
+        QSharedPointer<AbstractionType> abstraction =
+            endpoint_->getBusInterface()->getAbstractionContainingView(activeView_);
+        if (!abstraction)
+        {
+            QSharedPointer<AbstractionType> newAbstraction(new AbstractionType());
+            endpoint_->getBusInterface()->getAbstractionTypes()->append(newAbstraction);
+            abstraction = newAbstraction;
+        }
 
-    endpoint_->getBusInterface()->getAbstractionTypes()->clear();
-    endpoint_->getBusInterface()->getAbstractionTypes()->append(abstraction);
+        QSharedPointer<ConfigurableVLNVReference> newVLNVReference;
+        if (abstraction && abstraction->getAbstractionRef())
+        {
+            newVLNVReference = abstraction->getAbstractionRef();
+        }
+        else
+        {
+            newVLNVReference = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference());
+            abstraction->setAbstractionRef(newVLNVReference);
+        }
+
+        newVLNVReference->setVLNV(absType);
+    }
 
     endpoint_->setTypeLocked(busType.isValid());
 
@@ -717,13 +741,22 @@ void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
 EndPointPortMapCommand::EndPointPortMapCommand(ConnectionEndpoint* endpoint,
     QList< QSharedPointer<PortMap> > newPortMaps, QUndoCommand* parent) :
 QUndoCommand(parent),
-    endpoint_(endpoint),
-    oldPortMaps_(),
-    newPortMaps_(newPortMaps)
+endpoint_(endpoint),
+abstraction_(),
+oldPortMaps_(),
+newPortMaps_(newPortMaps)
 {
-    if (endpoint->getBusInterface()->getPortMaps())
+    QSharedPointer<BusInterface> endPointBus = endpoint->getBusInterface();
+    if (endPointBus && endPointBus->getAbstractionTypes() && endPointBus->getAbstractionTypes()->size() > 0)
     {
-        oldPortMaps_ = *endpoint->getBusInterface()->getPortMaps();
+        abstraction_ = endPointBus->getAbstractionTypes()->first();
+        if (abstraction_->getPortMaps())
+        {
+            foreach (QSharedPointer<PortMap> oldMap, *abstraction_->getPortMaps())
+            {
+                oldPortMaps_.append(oldMap);
+            }
+        }
     }
 }
 
@@ -732,6 +765,7 @@ QUndoCommand(parent),
 //-----------------------------------------------------------------------------
 EndPointPortMapCommand::~EndPointPortMapCommand()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -741,8 +775,12 @@ void EndPointPortMapCommand::undo()
 {
     if (endpoint_->isBus())
     {
-        endpoint_->getBusInterface()->getPortMaps()->clear();
-        endpoint_->getBusInterface()->getPortMaps()->append(oldPortMaps_);
+        abstraction_->getPortMaps()->clear();
+        foreach (QSharedPointer<PortMap> oldMap, oldPortMaps_)
+        {
+            abstraction_->getPortMaps()->append(oldMap);
+        }
+
         endpoint_->updateInterface();
     }
 }
@@ -754,8 +792,12 @@ void EndPointPortMapCommand::redo()
 {
     if (endpoint_->isBus())
     {
-        endpoint_->getBusInterface()->getPortMaps()->clear();
-        endpoint_->getBusInterface()->getPortMaps()->append(newPortMaps_);
+        abstraction_->getPortMaps()->clear();
+        foreach (QSharedPointer<PortMap> newMap, newPortMaps_)
+        {
+            abstraction_->getPortMaps()->append(newMap);
+        }
+
         endpoint_->updateInterface();
     }
 }

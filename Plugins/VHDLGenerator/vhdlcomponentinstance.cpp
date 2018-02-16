@@ -115,10 +115,10 @@ portMap_()
         else
         {
             // try to find the abstraction definition and use it's default value if possible
-            foreach (QSharedPointer<AbstractionType> j, *absTypes)
+            foreach (QSharedPointer<AbstractionType> abstraction, *absTypes)
             {
                 // if the abs def does not exist in the library
-                if (handler->getDocumentType(*j->getAbstractionRef()) != VLNV::ABSTRACTIONDEFINITION)
+                if (handler->getDocumentType(*abstraction->getAbstractionRef()) != VLNV::ABSTRACTIONDEFINITION)
                 {
                     if (!tempDefaults.contains(i.key()))
                     {
@@ -128,7 +128,7 @@ portMap_()
                     continue;
                 }
 
-                QSharedPointer<Document> libComp = handler->getModel(*j->getAbstractionRef());
+                QSharedPointer<Document> libComp = handler->getModel(*abstraction->getAbstractionRef());
                 QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
                 if (!tempDefaults.contains(i.key()))

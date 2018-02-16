@@ -211,8 +211,8 @@ private:
      *
      *      @return True, if the exclude ports are valid, otherwise false.
      */
-    bool excludePortsAreValid(QSharedPointer<const Component> component, QSharedPointer<ActiveInterface> activeInterface)
-        const;
+    bool excludePortsAreValid(QSharedPointer<const Component> component,
+        QSharedPointer<ActiveInterface> activeInterface) const;
 
     /*!
      *  Check if a single exclude port is valid.

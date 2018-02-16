@@ -28,7 +28,7 @@
 NewPage::NewPage(LibraryInterface* libInterface, VLNV::IPXactType vlnvType, QString title, QString description,
     QWidget* parentDlg):
 PropertyPageView(),
-vlnvEditor_(new VLNVEditor(vlnvType, libInterface, parentDlg, this, true)),
+vlnvEditor_(new VLNVEditor(vlnvType, libInterface, parentDlg, this)),
 libInterface_(libInterface),
 librarySelector_(new LibrarySelectorWidget(this)),
 titleLabel_(new QLabel(title,this)),

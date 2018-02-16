@@ -35,7 +35,7 @@ maxMastersEditor_(this),
 maxSlavesEditor_(this),
 systemgroupEditor_(tr("System group names"), this),
 descriptionEditor_(this),
-vlnvDisplay_(new VLNVDisplayer(this)),
+vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendDisplay_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this))
 {
     vlnvDisplay_->setTitle(QStringLiteral("Bus definition VLNV"));

@@ -50,8 +50,8 @@ ItemEditor(component, libHandler, parent),
     designInstantiationSelector_(new ReferenceSelector(this)),
     componentInstantiationDisplay_(new ComponentInstantiationDisplayer(this)),
     hierarchyGroup_(new QGroupBox(tr("Design and configuration"), this)),
-    designConfigurationDisplay_(new VLNVDisplayer(this)),
-    designDisplay_(new VLNVDisplayer(this)),
+    designConfigurationDisplay_(new VLNVDisplayer(this, VLNV())),
+    designDisplay_(new VLNVDisplayer(this, VLNV())),
     moduleParameterEditor_(new ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > >(
     new QList<QSharedPointer<ModuleParameter> >()), component->getChoices(), parameterFinder, expressionFormatter,
     this))

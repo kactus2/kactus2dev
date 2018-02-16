@@ -887,9 +887,9 @@ void VhdlGenerator2::connectInterfaces( const QString& connectionName, const QSt
     QSharedPointer<IPXactSystemVerilogParser> secondParser(new IPXactSystemVerilogParser(secondFinder));
 
 	// Go through the port maps of both interfaces.
-	foreach (QSharedPointer<PortMap> portMap1, *interface1->getPortMaps())
+    foreach (QSharedPointer<PortMap> portMap1, *interface1->getAllPortMaps())
     {
-		foreach(QSharedPointer<PortMap> portMap2, *interface2->getPortMaps())
+        foreach(QSharedPointer<PortMap> portMap2, *interface2->getAllPortMaps())
         {
 			QSharedPointer<PortMap::PhysicalPort> physPort1 = portMap1->getPhysicalPort();
 			QSharedPointer<PortMap::PhysicalPort> physPort2 = portMap2->getPhysicalPort();
@@ -1244,9 +1244,9 @@ void VhdlGenerator2::connectHierInterface( QSharedPointer<VhdlComponentInstance>
     QSharedPointer<ComponentParameterFinder> instanceFinder (new ComponentParameterFinder(instanceComponent));
     QSharedPointer<ExpressionParser> instanceParser (new IPXactSystemVerilogParser(instanceFinder));
 
-	foreach (QSharedPointer<PortMap> instancePortMap, *instanceInterface->getPortMaps())
+    foreach (QSharedPointer<PortMap> instancePortMap, *instanceInterface->getAllPortMaps())
     {
-		foreach(QSharedPointer<PortMap> hierPortMap, *topInterface->getPortMaps())
+		foreach(QSharedPointer<PortMap> hierPortMap, *topInterface->getAllPortMaps())
         {
 			const QString instancePortName = instancePortMap->getPhysicalPort()->name_;
 			const QString hierPortName = hierPortMap->getPhysicalPort()->name_;

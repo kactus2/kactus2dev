@@ -44,11 +44,8 @@ public:
      *      @param [in] libHandler  The library handler.
      *      @param [in] parentWnd   The parent window (having a title bar).
      *      @param [in] parent      The parent widget.
-     *      @param [in] compact     If true, the VLNV layout is made compact (label and edit on the same row).
-     *                              If false, the labels and edits are on different rows.
      */
-    VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd = 0, QWidget* parent = 0,
-        bool compact = true);
+    VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd = 0, QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -238,9 +235,8 @@ private:
      *  Initializes the widgets of the vlnv editor.
      *
      *      @param [in] parentWnd   The parent window.
-     *      @param [in] compact     If true, the layout is made compact.
      */
-    void initWidgets(QWidget* parentWnd, bool compact);
+    void initWidgets(QWidget* parentWnd);
 
     //-----------------------------------------------------------------------------
     // Data.

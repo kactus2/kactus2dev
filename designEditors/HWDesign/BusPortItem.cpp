@@ -11,33 +11,24 @@
 
 #include "BusPortItem.h"
 
-#include "InterfaceGraphics.h"
-
 #include "HWComponentItem.h"
 #include "HWMoveCommands.h"
 #include "HWDesignDiagram.h"
-#include "OffPageConnectorItem.h"
 
 #include <common/IEditProvider.h>
-
 #include <common/graphicsItems/GraphicsConnection.h>
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/NamelabelWidth.h>
 
-#include <IPXACTmodels/common/DirectionTypes.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
-
+#include <IPXACTmodels/Design/ComponentInstance.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
-#include <IPXACTmodels/Design/ComponentInstance.h>
-
-#include <library/LibraryInterface.h>
-
 #include <QFont>
-#include <QGraphicsDropShadowEffect>
 #include <QVector2D>
 #include <QGraphicsScene>
 
@@ -45,40 +36,11 @@
 // Function: BusPortItem::BusPortItem()
 //-----------------------------------------------------------------------------
 BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library, HWComponentItem* parent):
-HWConnectionEndpoint(parent),
-    busInterface_(busIf),
-    parentComponentItem_(parent),
-    library_(library),
-    nameLabel_("",this),
-    oldPos_(), 
-    oldPortPositions_(),
-    offPageConnector_()
+BusInterfaceEndPoint(busIf, parent),
+parentComponentItem_(parent),
+library_(library)
 {
     Q_ASSERT_X(busIf, "BusPortItem constructor", "Null BusInterface pointer given as parameter");
-
-    setType(ENDPOINT_TYPE_BUS);
-
-	QFont font = nameLabel_.font();
-    font.setPointSize(8);
-	nameLabel_.setFont(font);
-	nameLabel_.setFlag(ItemStacksBehindParent);
-
-    QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect;
-    shadow->setXOffset(0);
-    shadow->setYOffset(0);
-    shadow->setBlurRadius(5);
-	nameLabel_.setGraphicsEffect(shadow);
-
-    setFlag(ItemIsMovable);
-    setFlag(ItemIsSelectable);
-    setFlag(ItemSendsGeometryChanges);
-    setFlag(ItemSendsScenePositionChanges);
-
-    // Create the off-page connector.
-    offPageConnector_ = new OffPageConnectorItem(this);
-    offPageConnector_->setPos(0.0, -GridSize * 3);
-    offPageConnector_->setFlag(ItemStacksBehindParent);
-    offPageConnector_->setVisible(false);
 
     updateInterface();
 }
@@ -91,86 +53,15 @@ BusPortItem::~BusPortItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::updateInterface()
+// Function: BusPortItem::updateName()
 //-----------------------------------------------------------------------------
-void BusPortItem::updateInterface()
+void BusPortItem::updateName(QString const& previousName, QString const& newName)
 {
-    HWConnectionEndpoint::updateInterface(); 
-
-    // Determine the bus direction.
-    DirectionTypes::Direction dir = InterfaceGraphics::getInterfaceDirection(busInterface_, getOwnerComponent());
-
-    // Update the polygon shape based on the direction.
-    QPolygonF shape;
-    if (dir == DirectionTypes::IN)
-    {
-        shape = arrowDown();
-    }
-    else if (dir == DirectionTypes::OUT)
-    {
-        shape = arrowUp();
-    }
-    else
-    {
-        shape = doubleArrow();
-    }
-    setPolygon(shape);
-
-    nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
-
-    setLabelPosition();
-
-    offPageConnector_->updateInterface();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::name()
-//-----------------------------------------------------------------------------
-QString BusPortItem::name() const
-{
-    return busInterface_->name();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::setName()
-//-----------------------------------------------------------------------------
-void BusPortItem::setName(QString const& name)
-{
-    beginUpdateConnectionNames();
-
-    QString previousName = busInterface_->name();
-
-    busInterface_->setName(name);
-
-    if (previousName.compare(name) != 0)
+    if (previousName.compare(newName) != 0)
     {
         encompassingComp()->getComponentInstance()->removeBusInterfacePosition(previousName);
-        encompassingComp()->getComponentInstance()->updateBusInterfacePosition(name, pos());
+        encompassingComp()->getComponentInstance()->updateBusInterfacePosition(newName, pos());
     }
-
-	updateInterface();
-    emit contentChanged();
-
-    endUpdateConnectionNames();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::description()
-//-----------------------------------------------------------------------------
-QString BusPortItem::description() const
-{
-    Q_ASSERT(busInterface_);
-    return busInterface_->description();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::setDescription()
-//-----------------------------------------------------------------------------
-void BusPortItem::setDescription( QString const& description )
-{
-    Q_ASSERT(busInterface_);
-    busInterface_->setDescription(description);
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -205,38 +96,28 @@ bool BusPortItem::isConnectionValid(ConnectionEndpoint const* other) const
     // is the same or either of the end point is undefined.
     if (other->isHierarchical())
     {
-        return (otherBusIf->getInterfaceMode() == busInterface_->getInterfaceMode() ||
+        return (otherBusIf->getInterfaceMode() == getBusInterface()->getInterfaceMode() ||
             other->getBusInterface()->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
-            !busInterface_->getBusType().isValid());
+            !getBusInterface()->getBusType().isValid());
     }
 
     // If only one port has a bus definition defined at most, then the end points can be connected.
-    else if (!(busInterface_->getBusType().isValid() && otherBusIf->getBusType().isValid()))
+    else if (!(getBusInterface()->getBusType().isValid() && otherBusIf->getBusType().isValid()))
     {
         return true;
     }
 
     // Otherwise make sure that the bus and abstraction definitions are of the same type.
-    else if (otherBusIf->getBusType() == busInterface_->getBusType() &&
-        *otherBusIf->getAbstractionTypes()->first()->getAbstractionRef() ==
-        *busInterface_->getAbstractionTypes()->first()->getAbstractionRef())
+    else if (otherBusIf->getBusType() == getBusInterface()->getBusType())
     {
-        QList<General::InterfaceMode> compatibleModes = getOpposingModes(busInterface_);
+        QList<General::InterfaceMode> compatibleModes = getOpposingModes(getBusInterface());
         compatibleModes.append(General::SYSTEM);
 
         General::InterfaceMode otherMode = otherBusIf->getInterfaceMode();
 
-        return busInterface_->getInterfaceMode() != General::MONITOR && compatibleModes.contains(otherMode);
+        return getBusInterface()->getInterfaceMode() != General::MONITOR && compatibleModes.contains(otherMode);
     }
 
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::isExclusive()
-//-----------------------------------------------------------------------------
-bool BusPortItem::isExclusive() const
-{
     return false;
 }
 
@@ -254,28 +135,15 @@ ComponentItem* BusPortItem::encompassingComp() const
 QSharedPointer<Component> BusPortItem::getOwnerComponent() const
 {
     ComponentItem* comp = encompassingComp();
-    Q_ASSERT(comp);
 
-    QSharedPointer<Component> compModel = comp->componentModel();
+    QSharedPointer<Component> compModel;
+    if (comp)
+    {
+        compModel = comp->componentModel();
+    }
+
     Q_ASSERT(compModel);
-
     return compModel;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::getBusInterface()
-//-----------------------------------------------------------------------------
-QSharedPointer<BusInterface> BusPortItem::getBusInterface() const
-{
-    return busInterface_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::getPort()
-//-----------------------------------------------------------------------------
-QSharedPointer<Port> BusPortItem::getPort() const
-{
-    return QSharedPointer<Port>();
 }
 
 //-----------------------------------------------------------------------------
@@ -284,41 +152,6 @@ QSharedPointer<Port> BusPortItem::getPort() const
 bool BusPortItem::isHierarchical() const
 {
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::isBus()
-//-----------------------------------------------------------------------------
-bool BusPortItem::isBus() const
-{
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::setInterfaceMode()
-//-----------------------------------------------------------------------------
-void BusPortItem::setInterfaceMode(General::InterfaceMode mode)
-{
-    Q_ASSERT(busInterface_);
-    busInterface_->setInterfaceMode(mode);
-    updateInterface();
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::getInterfaceMode()
-//-----------------------------------------------------------------------------
-General::InterfaceMode BusPortItem::getInterfaceMode() const
-{
-    return busInterface_->getInterfaceMode();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::getOffPageConnector()
-//-----------------------------------------------------------------------------
-ConnectionEndpoint* BusPortItem::getOffPageConnector()
-{
-    return offPageConnector_;
 }
 
 //-----------------------------------------------------------------------------
@@ -343,17 +176,17 @@ bool BusPortItem::isDirectionFixed() const
 //-----------------------------------------------------------------------------
 void BusPortItem::setLabelPosition()
 {
-    qreal nameWidth = nameLabel_.boundingRect().width();
-    qreal nameHeight = nameLabel_.boundingRect().height();
+    qreal nameWidth = getNameLabel()->boundingRect().width();
+    qreal nameHeight = getNameLabel()->boundingRect().height();
 
     // Check if the port is directed to the left.
     if (pos().x() < 0)
     {
-        nameLabel_.setPos(nameHeight/2, GridSize);
+        getNameLabel()->setPos(nameHeight/2, GridSize);
     }
     else // The port is directed to the right.
     {
-        nameLabel_.setPos(-nameHeight/2, GridSize + nameWidth);
+        getNameLabel()->setPos(-nameHeight/2, GridSize + nameWidth);
     }
 }
 
@@ -378,7 +211,7 @@ void BusPortItem::checkDirection()
 //-----------------------------------------------------------------------------
 qreal BusPortItem::getNameLength()
 {
-    QFont font = nameLabel_.font();
+    QFont font = getNameLabel()->font();
     return NamelabelWidth::getTextLength(name(), font);
 }
 
@@ -387,9 +220,9 @@ qreal BusPortItem::getNameLength()
 //-----------------------------------------------------------------------------
 void BusPortItem::shortenNameLabel(qreal width)
 {
-    QString nameLabelText = NamelabelWidth::setNameLabel(name(), nameLabel_.font(), width);
+    QString nameLabelText = NamelabelWidth::setNameLabel(name(), getNameLabel()->font(), width);
 
-    nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + nameLabelText + "</div>");
+    getNameLabel()->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + nameLabelText + "</div>");
     setLabelPosition();
 }
 
@@ -425,7 +258,7 @@ QVariant BusPortItem::itemChange(GraphicsItemChange change, QVariant const& valu
     }
     else if (change == ItemRotationHasChanged)
     {
-        nameLabel_.setRotation(-rotation());
+        getNameLabel()->setRotation(-rotation());
     }
     else if (change == ItemScenePositionHasChanged)
     {
@@ -451,28 +284,11 @@ void BusPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    oldPos_ = pos();
+    setOldPosition(pos());
 
-    // Save old port positions for all ports in the parent component.
-    foreach (QGraphicsItem* item, parentItem()->childItems())
-    {
-        if (dynamic_cast<ConnectionEndpoint*>(item) != 0 && item != this)
-        {
-            ConnectionEndpoint* port = static_cast<ConnectionEndpoint*>(item);
-            oldPortPositions_.insert(port, port->pos());
-        }
-    }
+    saveOldPortPositions(parentItem()->childItems());
 
-    // Begin the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-        if (conn != 0)
-        {
-            conn->beginUpdatePosition();
-        }
-    }
+    beginUpdateConnectionPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -480,15 +296,12 @@ void BusPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void BusPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    // Discard mouse move if the diagram is protected.
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram != 0 && diagram->isProtected())
+    if (!sceneIsLocked())
     {
-        return;
-    }
+        BusInterfaceEndPoint::mouseMoveEvent(event);
 
-    HWConnectionEndpoint::mouseMoveEvent(event);
-    parentComponentItem_->onMovePort(this);
+        parentComponentItem_->onMovePort(this);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -507,9 +320,9 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QSharedPointer<QUndoCommand> moveUndoCommand;
 
     // Check if the port position was really changed.
-    if (oldPos_ != pos())
+    if (getOldPosition() != pos())
     {
-        moveUndoCommand = QSharedPointer<QUndoCommand>(new PortMoveCommand(this, oldPos_));
+        moveUndoCommand = QSharedPointer<QUndoCommand>(new PortMoveCommand(this, getOldPosition()));
     }
     else
     {
@@ -517,8 +330,10 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Determine if the other ports changed their position and create undo commands for them.
-    QMap<ConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions_.begin();
-    while (cur != oldPortPositions_.end())
+    QMap<ConnectionEndpoint*, QPointF> oldPortPositions = getOldPortPositions();
+
+    QMap<ConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions.begin();
+    while (cur != oldPortPositions.end())
     {
         if (cur.key()->pos() != cur.value())
         {
@@ -527,8 +342,8 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
         cur++;
     }
-    oldPortPositions_.clear();
-    
+    clearOldPortPositions();
+
     foreach (QGraphicsItem *item, scene()->items())
     {
         GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
@@ -539,7 +354,7 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Add the undo command to the edit stack only if it has changes.
-    if (moveUndoCommand->childCount() > 0 || oldPos_ != pos())
+    if (moveUndoCommand->childCount() > 0 || getOldPosition() != pos())
     {
         static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(moveUndoCommand);
         moveUndoCommand->redo();
@@ -585,9 +400,9 @@ QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusIn
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::arrowUp()
+// Function: BusPortItem::getDirectionOutShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusPortItem::arrowUp() const
+QPolygonF BusPortItem::getDirectionOutShape() const
 {
     int squareSize = GridSize;
     
@@ -605,9 +420,9 @@ QPolygonF BusPortItem::arrowUp() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::arrowDown()
+// Function: BusPortItem::getDirectionInShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusPortItem::arrowDown() const
+QPolygonF BusPortItem::getDirectionInShape() const
 {
     int squareSize = GridSize;
 
@@ -625,9 +440,9 @@ QPolygonF BusPortItem::arrowDown() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::doubleArrow()
+// Function: BusPortItem::getDirectionInOutShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusPortItem::doubleArrow() const
+QPolygonF BusPortItem::getDirectionInOutShape() const
 {
     int squareSize = GridSize;
 

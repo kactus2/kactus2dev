@@ -75,11 +75,12 @@ public:
     /*!
      *  Opens a design for editing.
      *
-     *      @param [in] component  The component whose design to edit.
-     *      @param [in] design     The design to edit.
-     *      @param [in] designConf The design configuration if one exists.
+     *      @param [in] component       The component whose design to edit.
+     *      @param [in] selectedView    The selected view of the top component.
+     *      @param [in] design          The design to edit.
+     *      @param [in] designConf      The design configuration if one exists.
      */
-    bool setDesign(QSharedPointer<Component> component, QSharedPointer<Design> design,
+    bool setDesign(QSharedPointer<Component> component, QString const& selectedView, QSharedPointer<Design> design,
                    QSharedPointer<DesignConfiguration> designConf = QSharedPointer<DesignConfiguration>());
 
     /*!
@@ -237,6 +238,13 @@ public:
      *      @param [in] baseName The base name for the instance.
      */
     QString createInstanceName(QString const& baseName);
+
+    /*!
+     *  Get the currently active top component view.
+     *
+     *      @return The currently active top component view.
+     */
+    QString getTopView() const;
 
 public slots:
     //! Called when the diagram is shown.
@@ -538,6 +546,9 @@ private:
 
     //! The edit provider for undo/redo.
     QSharedPointer<IEditProvider> editProvider_;
+
+    //! The currently active top component view.
+    QString topView_;
 
     //! The component whose design is being edited.
     QSharedPointer<Component> component_;

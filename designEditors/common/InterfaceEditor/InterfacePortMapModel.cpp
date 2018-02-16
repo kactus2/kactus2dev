@@ -64,7 +64,7 @@ void InterfacePortMapModel::setLock(bool locked)
 //-----------------------------------------------------------------------------
 // Function: InterfacePortMapModel::setData()
 //-----------------------------------------------------------------------------
-void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem,
+void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem, QString const& activeView,
     QList<QSharedPointer<ActiveInterface> > activeInterfaces)
 {
     beginResetModel();
@@ -78,18 +78,17 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem,
         activeInterfaces_ = activeInterfaces;
     }
 
-    if (busItem && busItem->isBus() && busItem->getOwnerComponent() && busItem->getBusInterface() &&
-        busItem->getBusInterface()->getPortMaps())
+    if (busItem && busItem->isBus() && busItem->getOwnerComponent() && busItem->getBusInterface())
     {
         QSharedPointer<BusInterface> busInterface = busItem->getBusInterface();
-        QList<QSharedPointer<PortMap> > portMaps = *busInterface->getPortMaps();
+        QList<QSharedPointer<PortMap> > portMaps = busInterface->getPortMapsForView(activeView);
 
         // get the abstraction def for the interface
         VLNV absDefVLNV;
-        if (busInterface->getAbstractionTypes() && !busInterface->getAbstractionTypes()->isEmpty() &&
-            busInterface->getAbstractionTypes()->first()->getAbstractionRef())
+        QSharedPointer<AbstractionType> abstraction = busInterface->getAbstractionContainingView(activeView);
+        if (abstraction && abstraction->getAbstractionRef())
         {
-            absDefVLNV = *busInterface->getAbstractionTypes()->first()->getAbstractionRef();
+            absDefVLNV = *abstraction->getAbstractionRef().data();
         }
 
         QSharedPointer<AbstractionDefinition> absDef;
