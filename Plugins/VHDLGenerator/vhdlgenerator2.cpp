@@ -39,6 +39,7 @@
 #include <IPXACTmodels/Design/validator/DesignValidator.h>
 #include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
@@ -572,12 +573,13 @@ void VhdlGenerator2::parseTopGenerics(QString const& viewName)
         
         if (cimp)
         {
+            ExpressionFormatterFactoryImplementation formatterFactory;
+            QSharedPointer<ExpressionFormatter> formatter(formatterFactory.makeExpressionFormatter(component_));
+
             foreach (QSharedPointer<ModuleParameter> moduleParam, *cimp->getModuleParameters())
             {
-                QString name = moduleParam->name();
-                QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam.data()));
-
-                topGenerics_.insert(name, generic);
+                QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam, formatter));
+                topGenerics_.insert(moduleParam->name(), generic);
             }
         }
     }
@@ -598,7 +600,7 @@ void VhdlGenerator2::parseTopPorts()
 		}
 
 		// create the actual port
-		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data()));
+		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port, topComponentParser_));
 
         QString busInterfaceName = getContainingBusInterfaceName(component_, port->name());
 
@@ -640,6 +642,13 @@ void VhdlGenerator2::parseInstances()
 			continue;
 		}
 
+        			QSharedPointer<Document> libComp = handler_->getModel(*instance->getComponentRef());
+			QSharedPointer<Component> component = libComp.staticCast<Component>();
+			Q_ASSERT(component);
+
+        QSharedPointer<ParameterFinder> instanceFinder(new ComponentParameterFinder(component));
+        QSharedPointer<ExpressionParser> instanceParser(new IPXactSystemVerilogParser(instanceFinder));
+
 		// pointer to the matching component declaration
 		QSharedPointer<VhdlComponentDeclaration> compDeclaration;
 		
@@ -652,11 +661,8 @@ void VhdlGenerator2::parseInstances()
 		// if component declaration is not yet created then create it
 		else
         {
-			QSharedPointer<Document> libComp = handler_->getModel(*instance->getComponentRef());
-			QSharedPointer<Component> component = libComp.staticCast<Component>();
-			Q_ASSERT(component);
-			compDeclaration = QSharedPointer<VhdlComponentDeclaration>(new VhdlComponentDeclaration(component,""));
 
+			compDeclaration = QSharedPointer<VhdlComponentDeclaration>(new VhdlComponentDeclaration(component, instanceParser));
 			components_.insert(*instance->getComponentRef(), compDeclaration);
 		}
 		Q_ASSERT(compDeclaration);

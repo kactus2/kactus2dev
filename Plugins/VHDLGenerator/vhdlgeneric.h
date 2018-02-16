@@ -12,8 +12,10 @@
 #include "vhdlobject.h"
 
 #include <QString>
+#include <QSharedPointer>
 
 class ModuleParameter;
+class ExpressionFormatter;
 
 /*! \brief VhdlGeneric represents a vhdl generic in a component or entity declaration.
  *
@@ -25,11 +27,11 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parent Pointer to the owner of this vhdl generic.
-	 * \param generic Pointer to the model parameter to create the generic from.
+	 * \param generic   The module parameter to create the generic from.
+	 * \param formatter The formatter to use for expressions in the value.
 	 *
 	*/
-	VhdlGeneric(ModuleParameter* generic);
+	VhdlGeneric(QSharedPointer<ModuleParameter> generic, QSharedPointer<ExpressionFormatter> formatter);
 	
 	//! \brief The destructor
 	virtual ~VhdlGeneric();
@@ -48,6 +50,8 @@ private:
 
 	//! No assignment
 	VhdlGeneric& operator=(const VhdlGeneric& other);
+
+    QSharedPointer<ExpressionFormatter> formatter_;
 };
 
 #endif // VHDLGENERIC_H

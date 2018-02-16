@@ -9,9 +9,11 @@
 
 #include "vhdlgeneral.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <IPXACTmodels/Component/Port.h>
 
-VhdlPort::VhdlPort(Port* port):
+VhdlPort::VhdlPort(QSharedPointer<Port> port, QSharedPointer<ExpressionParser> parser):
 VhdlTypedObject(port->name(),
 		   port->getTypeName(),
 		   port->getDefaultValue(), 
@@ -19,23 +21,21 @@ VhdlTypedObject(port->name(),
 direction_(port->getDirection()),
 left_(port->getLeftBound()),
 right_(port->getRightBound()),
-commentOut_(true) 
-{//TODO:
-	/*Q_ASSERT(port);
-
+commentOut_(true),
+parser_(parser)
+{
 	// if type is not set then use the defaults
-	if (type().isEmpty()) {
-
-		int size = left_ - right_ + 1;
-
-		// if port is scalar
-		if (size == 1) {
+	if (type().isEmpty())
+    {
+		if (size() == 1)
+        {
 			setType(QString("std_logic"));
 		}
-		else {
+		else
+        {
 			setType(QString("std_logic_vector"));
 		}
-	}*/
+	}
 }
 
 VhdlPort::~VhdlPort() {
@@ -49,11 +49,11 @@ void VhdlPort::write( QTextStream& stream ) const {
     stream << getVhdlLegalName().leftJustified(16, ' ');     //align colons (:) at least roughly
 	stream << " : " << DirectionTypes::direction2Str(direction_) << " ";
 
-	//TODO stream << VhdlGeneral::vhdlType2String(type(), left_, right_);
+	stream << VhdlGeneral::vhdlType2String(type(), parser_->parseExpression(left_).toInt(), parser_->parseExpression(right_).toInt());
 }
 
 int VhdlPort::size() const {
-	//TODO:return left_ - right_ + 1;
+    return parser_->parseExpression(left_).toInt() - parser_->parseExpression(right_).toInt() + 1;
 	return 0;
 }
 
@@ -73,11 +73,13 @@ bool VhdlPort::isCommented() const {
 	return commentOut_;
 }
 
-bool VhdlPort::hasRealPorts( const QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >& ports ) {
-	foreach (QSharedPointer<VhdlPort> port, ports) {
-
+bool VhdlPort::hasRealPorts( const QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >& ports )
+{
+	foreach (QSharedPointer<VhdlPort> port, ports)
+    {
 		// if at least one port that is uncommented is found
-		if (!port->isCommented()) {
+		if (!port->isCommented())
+        {
 			return true;
 		}
 	}
@@ -85,4 +87,3 @@ bool VhdlPort::hasRealPorts( const QMap<VhdlPortSorter, QSharedPointer<VhdlPort>
 	// all ports were commented out so they are not in synthesis
 	return false;
 }
-
