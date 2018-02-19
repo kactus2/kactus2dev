@@ -162,7 +162,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, qreal& spaceY
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
     QSharedPointer<QVector<MemoryConnectionItem*> > movedConnectionItems)
 {
-    int yTransfer = 0;
+    qreal yTransfer = 0;
     quint64 spaceItemLowAfter = 0;
 
     QVector<MainMemoryGraphicsItem*> movedSpaceItems;
@@ -178,51 +178,44 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, qreal& spaceY
 
             qreal memoryItemLowBefore = memoryItem->getLowestPointOfConnectedItems();
 
-            if (condenseMemoryItems && !memoryItem->isCompressed())
-            {
-                memoryItem->condenseItemAndChildItems(movedConnectionItems);
-            }
+            memoryItem->condenseItemAndChildItems(movedConnectionItems, condenseMemoryItems);
 
             extendMemoryItem(originalItem, spaceYPlacement);
 
-            if (condenseMemoryItems)
+            AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
+            if (spaceItem && placedSpaceItems->contains(memoryItem) && this == spaceColumn &&
+                !movedSpaceItems.contains(spaceItem))
             {
-                AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
-                if (spaceItem && placedSpaceItems->contains(memoryItem) && this == spaceColumn &&
-                    !movedSpaceItems.contains(spaceItem))
+                quint64 spaceItemTop = spaceItem->sceneBoundingRect().top() + spaceItem->pen().width();
+                if (spaceItemTop != spaceItemLowAfter)
                 {
-                    quint64 spaceItemTop = spaceItem->sceneBoundingRect().top() + spaceItem->pen().width();
-                    if (spaceItemTop != spaceItemLowAfter)
+                    qint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
+
+                    if (spaceInterval < MemoryDesignerConstants::SPACEITEMINTERVAL)
                     {
-                        qint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
-
-                        if (spaceInterval < MemoryDesignerConstants::SPACEITEMINTERVAL)
-                        {
-                            quint64 yMovementAddition = MemoryDesignerConstants::SPACEITEMINTERVAL -
-                                ((spaceItemTop + yTransfer) - spaceItemLowAfter);
-                            yTransfer += yMovementAddition;
-                        }
-
-                        if (!movedSpaceItems.contains(memoryItem))
-                        {
-                            spaceItem->moveItemAndConnectedItems(yTransfer);
-
-                            foreach (MainMemoryGraphicsItem* connectedSpace,
-                                spaceItem->getAllConnectedSpaceItems())
-                            {
-                                movedSpaceItems.append(connectedSpace);
-                            }
-
-                            movedSpaceItems.append(spaceItem);
-                        }
+                        quint64 yMovementAddition = MemoryDesignerConstants::SPACEITEMINTERVAL -
+                            ((spaceItemTop + yTransfer) - spaceItemLowAfter);
+                        yTransfer += yMovementAddition;
                     }
 
-                    spaceItemLowAfter = spaceItem->getLowestPointOfConnectedItems();
+                    if (!movedSpaceItems.contains(memoryItem))
+                    {
+                        spaceItem->moveItemAndConnectedItems(yTransfer);
 
-                    yTransfer = spaceItemLowAfter - memoryItemLowBefore;
+                        foreach (MainMemoryGraphicsItem* connectedSpace, spaceItem->getAllConnectedSpaceItems())
+                        {
+                            movedSpaceItems.append(connectedSpace);
+                        }
 
-                    spaceYPlacement = spaceItemLowAfter + MemoryDesignerConstants::SPACEITEMINTERVAL;
+                        movedSpaceItems.append(spaceItem);
+                    }
                 }
+
+                spaceItemLowAfter = spaceItem->getLowestPointOfConnectedItems();
+
+                yTransfer = spaceItemLowAfter - memoryItemLowBefore;
+
+                spaceYPlacement = spaceItemLowAfter + MemoryDesignerConstants::SPACEITEMINTERVAL;
             }
 
             memoryItem->resizeSubItemNameLabels();

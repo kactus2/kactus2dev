@@ -233,13 +233,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    enum
-    {
-        MIN_Y_PLACEMENT = 60,
-        SPACING = 30,
-        IO_SPACING = 18,
-    };
-
     //! The parent column layout.
     GraphicsColumnLayout* layout_;
 

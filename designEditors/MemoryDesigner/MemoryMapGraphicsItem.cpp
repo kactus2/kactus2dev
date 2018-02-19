@@ -316,7 +316,8 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::condenseItemAndChildItems()
 //-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> >)
+void MemoryMapGraphicsItem::condenseItemAndChildItems(
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections, bool condenseMemoryItems)
 {
     if (!isCompressed())
     {
@@ -325,7 +326,8 @@ void MemoryMapGraphicsItem::condenseItemAndChildItems(QSharedPointer<QVector<Mem
         
         if (getMemoryConnections().isEmpty())
         {
-            memoryMapNewHeight = condenseChildItems(subItemHeight);
+            memoryMapNewHeight =
+                condenseChildItems(getBaseAddress(), getLastAddress(), subItemHeight, condenseMemoryItems);
         }
 
         if (memoryMapNewHeight > 0)

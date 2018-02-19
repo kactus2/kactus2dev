@@ -14,6 +14,8 @@
 
 #include <designEditors/common/diagramgrid.h>
 
+#include <common/graphicsItems/GraphicsColumnConstants.h>
+
 #include <QString>
 #include <QRectF>
 
@@ -25,14 +27,14 @@ namespace MemoryDesignerConstants
     const int MEMORYMAPCOLUMNWIDTH = 1569;
 
     //! Interval of one bit in a memory address.
-    const qreal RANGEINTERVAL = GridSize * 1.5;
+    const qreal RANGEINTERVAL = 15;
 
     //! Minimum interval of address space graphics items.
-    const qreal SPACEITEMINTERVAL = GridSize * 8;
+    const qreal SPACEITEMINTERVAL = GraphicsColumnConstants::MIN_Y_PLACEMENT;
 
     //! Intervals used for unconnected memory items.
-    const unsigned int CONNECTED_UNCONNECTED_INTERVAL = GridSize * 20;
-    const unsigned int UNCONNECTED_ITEM_INTERVAL = GridSize * 2;
+    const unsigned int CONNECTED_UNCONNECTED_INTERVAL = RANGEINTERVAL * 13;
+    const unsigned int UNCONNECTED_ITEM_INTERVAL = RANGEINTERVAL;
 
     //! X-position of the memory map graphics item sub items.
     const qreal MAPSUBITEMPOSITIONX = RANGEINTERVAL * 4.5;
@@ -81,6 +83,33 @@ namespace MemoryDesignerConstants
      *      @return The value with zeros appended to display the value.
      */
     QString getValueWithZerosAdded(QString const& value, int amountOfNumbers);
+
+    /*!
+     *  Get the area size required for the selected address range.
+     *
+     *      @param [in] addressRange    The selected address range.
+     *
+     *      @return The area size for the selected address range.
+     */
+    qreal getAreaSizeForRange(quint64 addressRange);
+
+    /*!
+     *  Get the required rows for the selected address range.
+     *
+     *      @param [in] addressRange    The selected address range.
+     *
+     *      @return The required rows for the selected address range.
+     */
+    int getRequiredRowsForRange(quint64 addressRange);
+
+    /*!
+     *  Get the required area size for the selected area.
+     *
+     *      @param [in] usedArea    The selected area.
+     *
+     *      @return The required area size for the selected area.
+     */
+    qreal getRequiredAreaForUsedArea(qreal usedArea);
 }
 
 #endif // MEMORYDESIGNERCONSTANTS_H

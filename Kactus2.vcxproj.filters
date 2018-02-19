@@ -6171,6 +6171,9 @@
     <CustomBuild Include="designEditors\HWDesign\BusInterfaceEndPoint.h">
       <Filter>Header Files\designEditors\HWDesign</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\GraphicsColumnConstants.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">

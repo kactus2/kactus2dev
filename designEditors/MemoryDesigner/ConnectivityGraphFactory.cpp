@@ -717,13 +717,16 @@ void ConnectivityGraphFactory::createInternalConnectionsForChannel(QSharedPointe
 {
     QStringList channelInterfaces = channel->getInterfaces();
 
-    QString startInterfaceName = channelInterfaces.takeFirst();
-    QSharedPointer<ConnectivityInterface> startInterface = getInterface(startInterfaceName, instanceName, instanceInterfaces);
-
-    foreach (QString const& targetName, channelInterfaces)
+    while (!channelInterfaces.isEmpty())
     {
-        QSharedPointer<ConnectivityInterface> target = getInterface(targetName, instanceName, instanceInterfaces);
-        graph->addConnection(channel->name(), startInterface, target);       
+        QString startInterfaceName = channelInterfaces.takeFirst();
+        QSharedPointer<ConnectivityInterface> startInterface = getInterface(startInterfaceName, instanceName, instanceInterfaces);
+
+        foreach (QString const& targetName, channelInterfaces)
+        {
+            QSharedPointer<ConnectivityInterface> target = getInterface(targetName, instanceName, instanceInterfaces);
+            graph->addConnection(channel->name(), startInterface, target);       
+        }
     }
 }
 

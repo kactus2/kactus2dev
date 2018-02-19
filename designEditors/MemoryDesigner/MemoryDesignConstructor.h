@@ -141,6 +141,20 @@ public:
     bool fieldsAreFiltered() const;
 
     /*!
+     *  Set a new value for filtering the unconnected memory items.
+     *
+     *      @param [in] filterUnconnected   Value for filtering unconnected memory items.
+     */
+    void filterUnconnectedMemoryItems(bool filterUnconnected);
+
+    /*!
+     *  Check if the unconnected memory items are filtered.
+     *
+     *      @return True, if the unconnected memory items are filtered, false otherwise.
+     */
+    bool unconnectedMemoryItemsAreFiltered() const;
+
+    /*!
      *  Construct memory design items from the selected connection graph.
      *
      *      @param [in] connectionGraph     Connection graph containing connection routes.

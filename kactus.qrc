@@ -101,6 +101,7 @@
       <file>common/graphics/filterAddressBlocks.png</file>
       <file>common/graphics/filterRegisters.png</file>
       <file>common/graphics/filterFields.png</file>
+      <file>common/graphics/filterUnconnectedMemoryItems.png</file>
       <file>common/graphics/folder-horizontal-open.png</file>
       <file>common/graphics/catalog.png</file>
       <file>common/graphics/generatorChain.png</file>

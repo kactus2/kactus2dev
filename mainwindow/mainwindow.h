@@ -496,6 +496,13 @@ private slots:
     void onFilterFields(bool filterFields);
 
     /*!
+     *  Set the filtering of the unconnected memory items within a memory design.
+     *
+     *      @param [in] filterUnconnected   Value for the filter.
+     */
+    void onFilterUnconnectedMemoryItems(bool filterUnconnected);
+
+    /*!
      *  Open the document containing the selected component and select the identified component item editor.
      *
      *      @param [in] componentVLNV       VLNV of the selected component.
@@ -829,6 +836,9 @@ private:
 
     //! The action to filter fields in a memory designer.
     QAction* actionFilterFields_;
+
+    //! The action to filter unconnected memory items in a memory design.
+    QAction* actionFilterUnconnectedMemoryItems_;
 
 	//! The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;

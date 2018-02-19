@@ -755,7 +755,8 @@ HEADERS += ./designEditors/HWDesign/InterfaceGraphics.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/HWDesign/BusInterfaceEndPoint.h
+    ./designEditors/HWDesign/BusInterfaceEndPoint.h \
+    ./common/graphicsItems/GraphicsColumnConstants.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \

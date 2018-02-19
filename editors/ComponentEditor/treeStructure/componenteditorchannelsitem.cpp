@@ -86,14 +86,31 @@ QString ComponentEditorChannelsItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorChannelsItem::isValid() const 
 {
-	foreach (QSharedPointer<Channel> channel, *channels_)
+    if (!channels_->isEmpty())
     {
-		if (!validator_->validate(channel))
+        QVector<QString> channelNames;
+        QVector<QString> interfaceNames;
+        foreach (QSharedPointer<Channel> channel, *channels_)
         {
-			return false;
-		}
-	}
+            if (channelNames.contains(channel->name()) || !validator_->validate(channel))
+            {
+                return false;
+            }
+            else
+            {
+                channelNames.append(channel->name());
+                foreach (QString const& busInterface, channel->getInterfaces())
+                {
+                    if (interfaceNames.contains(busInterface))
+                    {
+                        return false;
+                    }
 
-	// all channels were valid
-	return true;
+                    interfaceNames.append(busInterface);
+                }
+            }
+        }
+    }
+
+    return true;
 }

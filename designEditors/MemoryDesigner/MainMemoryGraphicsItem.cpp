@@ -402,28 +402,31 @@ QVector<MainMemoryGraphicsItem*> MainMemoryGraphicsItem::getChainedSpaceItems() 
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::compressToUnCutAddresses()
 //-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER)
+void MainMemoryGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
+    bool memoryItemsAreCompressed)
 {
     if (!subItemsAreFiltered())
     {
-        compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+        compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
     }
 
-    MemoryDesignerGraphicsItem::compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    MemoryDesignerGraphicsItem::compressToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
     setCompressed(true);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::compressToUnCutCoordinates()
 //-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER)
+void MainMemoryGraphicsItem::compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER,
+    bool memoryItemsAreCompressed)
 {
     if (!subItemsAreFiltered())
     {
-        compressSubItemsToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+        compressSubItemsToUnCutCoordinates(unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
     }
 
-    MemoryDesignerGraphicsItem::compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+    MemoryDesignerGraphicsItem::compressToUnCutCoordinates(
+        unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
     setCompressed(true);
 }
 

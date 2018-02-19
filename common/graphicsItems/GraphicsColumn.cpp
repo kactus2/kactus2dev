@@ -20,6 +20,8 @@
 #include <common/layouts/VStackedLayout.h>
 #include <common/layouts/VCollisionLayout.h>
 
+#include <common/graphicsItems/GraphicsColumnConstants.h>
+
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/DesignDiagram.h>
@@ -108,11 +110,13 @@ void GraphicsColumn::setColumnDesc(QSharedPointer<ColumnDesc> desc)
 
     if (desc->getContentType() == ColumnTypes::IO)
     {
-        setItemLayout(QSharedPointer<IVGraphicsLayout<QGraphicsItem> >(new VCollisionLayout<QGraphicsItem>(IO_SPACING)));
+        setItemLayout(QSharedPointer<IVGraphicsLayout<QGraphicsItem> >(
+            new VCollisionLayout<QGraphicsItem>(GraphicsColumnConstants::IO_SPACING)));
     }
     else
     {
-        setItemLayout(QSharedPointer<IVGraphicsLayout<QGraphicsItem> >(new VStackedLayout<QGraphicsItem>(SPACING)));
+        setItemLayout(QSharedPointer<IVGraphicsLayout<QGraphicsItem> >(
+            new VStackedLayout<QGraphicsItem>(GraphicsColumnConstants::SPACING)));
     }
 
     setRect(0, 0, columnData_->getWidth(), HEIGHT);
@@ -235,8 +239,9 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
 
         if (itemLayout_ != 0)
         {
-            itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
-            itemLayout_->setItemPos(items_, item, columnData_->getWidth() / 2, MIN_Y_PLACEMENT);
+            itemLayout_->updateItemMove(items_, item, GraphicsColumnConstants::MIN_Y_PLACEMENT);
+            itemLayout_->setItemPos(
+                items_, item, columnData_->getWidth() / 2, GraphicsColumnConstants::MIN_Y_PLACEMENT);
         }
     }
 }
@@ -250,7 +255,8 @@ void GraphicsColumn::removeItem(QGraphicsItem* item)
 
     if (itemLayout_ != 0)
     {
-        itemLayout_->updateItemPositions(items_, columnData_->getWidth() / 2, MIN_Y_PLACEMENT);
+        itemLayout_->updateItemPositions(
+            items_, columnData_->getWidth() / 2, GraphicsColumnConstants::MIN_Y_PLACEMENT);
     }
 }
 
@@ -261,7 +267,7 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
 {
     if (itemLayout_ != 0)
     {
-        itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
+        itemLayout_->updateItemMove(items_, item, GraphicsColumnConstants::MIN_Y_PLACEMENT);
     }
 
     // Check if any graphics item stack is under the item.
@@ -351,7 +357,8 @@ void GraphicsColumn::onReleaseItem(QGraphicsItem* item)
 
     if (itemLayout_ != 0)
     {
-        itemLayout_->setItemPos(items_, item, columnData_->getWidth() / 2, MIN_Y_PLACEMENT);
+        itemLayout_->setItemPos(
+            items_, item, columnData_->getWidth() / 2, GraphicsColumnConstants::MIN_Y_PLACEMENT);
     }
 }
 
@@ -362,7 +369,8 @@ void GraphicsColumn::updateItemPositions()
 {
     if (itemLayout_ != 0)
     {
-        itemLayout_->updateItemPositions(items_, columnData_->getWidth() / 2, MIN_Y_PLACEMENT);
+        itemLayout_->updateItemPositions(
+            items_, columnData_->getWidth() / 2, GraphicsColumnConstants::MIN_Y_PLACEMENT);
     }
 }
 

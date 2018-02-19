@@ -112,7 +112,6 @@ void MemoryConnectionHandler::createMemoryConnections(QSharedPointer<Connectivit
     }
 
     compressGraphicsItems(placedSpaceItems, spaceYPlacement, spaceColumn);
-
     repositionOverlappingSpaceItems(placedSpaceItems);
 
     if (condenseMemoryItems_)
@@ -421,8 +420,8 @@ void MemoryConnectionHandler::placeMemoryMapItem(quint64 connectionBaseAddress, 
         memoryMapYTransfer += (memoryMapBaseAddress * MemoryDesignerConstants::RANGEINTERVAL);
     }
 
-    connectionEndItem->setPos(
-        connectionEndItem->pos().x(), connectionStartItem->pos().y() + memoryMapYTransfer);
+    qreal newEndItemPositionY = connectionStartItem->pos().y() + memoryMapYTransfer;
+    connectionEndItem->setY(newEndItemPositionY);
 
     qreal startItemPositionBefore = connectionStartItem->pos().y();
 

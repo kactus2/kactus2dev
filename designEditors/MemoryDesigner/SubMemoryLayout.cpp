@@ -178,13 +178,22 @@ QMap<quint64, MemoryDesignerChildGraphicsItem*> SubMemoryLayout::getSubMemoryIte
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::condenseChildItems()
 //-----------------------------------------------------------------------------
-qreal SubMemoryLayout::condenseChildItems(qreal minimumSubItemHeight)
+qreal SubMemoryLayout::condenseChildItems(quint64 itemBaseAddress, quint64 itemLastAddress,
+    qreal minimumSubItemHeight, bool memoryItemsAreCondensed)
 {
     quint64 positionY = 0;
 
     if (filterSubItems_)
     {
-        positionY = minimumSubItemHeight;
+        if (memoryItemsAreCondensed)
+        {
+            positionY = minimumSubItemHeight;
+        }
+        else
+        {
+            quint64 addressRange = itemLastAddress - itemBaseAddress + 1;
+            positionY = MemoryDesignerConstants::getAreaSizeForRange(addressRange);
+        }
     }
     else
     {
@@ -195,7 +204,7 @@ qreal SubMemoryLayout::condenseChildItems(qreal minimumSubItemHeight)
 
             MemoryDesignerChildGraphicsItem* subItem = subMemoryIterator.value();
 
-            positionY = condenseSubItem(subItem, minimumSubItemHeight, positionY);
+            positionY = condenseSubItem(subItem, minimumSubItemHeight, positionY, memoryItemsAreCondensed);
         }
     }
 
@@ -206,22 +215,31 @@ qreal SubMemoryLayout::condenseChildItems(qreal minimumSubItemHeight)
 // Function: SubMemoryLayout::condenseSubItem()
 //-----------------------------------------------------------------------------
 quint64 SubMemoryLayout::condenseSubItem(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight,
-    quint64 positionY)
+    quint64 positionY, bool memoryItemsAreCondensed)
 {
+    quint64 subBaseAddress = subItem->getBaseAddress();
+    quint64 subLastAddress = subItem->getLastAddress();
+
     SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
     if (subLayout)
     {
-        quint64 newSubItemHeight = subLayout->condenseChildItems(minimumSubItemHeight);
+        quint64 newSubItemHeight = subLayout->condenseChildItems(
+            subBaseAddress, subLastAddress, minimumSubItemHeight, memoryItemsAreCondensed);
         subItem->condense(newSubItemHeight);
     }
     else
     {
-        quint64 subBaseAddress = subItem->getBaseAddress();
-        quint64 subLastAddress = subItem->getLastAddress();
-
         if (subLastAddress - subBaseAddress > 1)
         {
-            subItem->condense(minimumSubItemHeight);
+            qreal newSubItemHeight = minimumSubItemHeight;
+
+            if (!memoryItemsAreCondensed)
+            {
+                quint64 addressRange = subLastAddress - subBaseAddress + 1;
+                newSubItemHeight = MemoryDesignerConstants::getAreaSizeForRange(addressRange);
+            }
+
+            subItem->condense(newSubItemHeight);
         }
     }
 
@@ -512,7 +530,8 @@ QVector<qreal> SubMemoryLayout::getUnCutCoordinates() const
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::compressSubItemsToUnCutAddresses()
 //-----------------------------------------------------------------------------
-void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER)
+void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
+    bool memoryItemsAreCompressed)
 {
     quint64 lastAddress = mainGraphicsItem_->getLastAddress();
 
@@ -525,10 +544,10 @@ void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAdd
         SubMemoryLayout* subItemLayout = dynamic_cast<SubMemoryLayout*>(subItem);
         if (subItemLayout)
         {
-            subItemLayout->compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+            subItemLayout->compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
         }
 
-        subItem->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+        subItem->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
 
         quint64 subItemLastAddress = subItem->getLastAddress();
         if (subItemLastAddress > lastAddress)
@@ -544,20 +563,37 @@ void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAdd
     {
         if (areaBegin < lastAddress && areaEnd > itemBaseAddress)
         {
-            qint64 addressDifference = areaEnd - areaBegin - CUTMODIFIER;
+            qint64 addressDifference = areaEnd - areaBegin;
             if (addressDifference > 0)
             {
-                qreal transferY = -addressDifference * MemoryDesignerConstants::RANGEINTERVAL;
-                
-                subItemIterator.toFront();
-                while (subItemIterator.hasNext())
+                qint64 transferRows = 0;
+
+                if (memoryItemsAreCompressed)
                 {
-                    subItemIterator.next();
-                    MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
-                    quint64 subItemBaseAddress = subItem->getBaseAddress();
-                    if (subItemBaseAddress > areaBegin)
+                    transferRows = addressDifference - CUTMODIFIER;
+                }
+                else
+                {
+                    quint64 addressRange = addressDifference + 1;
+                    int requiredRows = MemoryDesignerConstants::getRequiredRowsForRange(addressRange);
+
+                    transferRows = addressRange - requiredRows;
+                }
+
+                if (transferRows > 0)
+                {
+                    qreal transferY = -transferRows * MemoryDesignerConstants::RANGEINTERVAL;
+
+                    subItemIterator.toFront();
+                    while (subItemIterator.hasNext())
                     {
-                        subItem->moveBy(0, transferY);
+                        subItemIterator.next();
+                        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+                        quint64 subItemBaseAddress = subItem->getBaseAddress();
+                        if (subItemBaseAddress > areaBegin)
+                        {
+                            subItem->moveBy(0, transferY);
+                        }
                     }
                 }
             }
@@ -574,7 +610,8 @@ void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAdd
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::compressSubItemsToUnCutCoordinates()
 //-----------------------------------------------------------------------------
-void SubMemoryLayout::compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER)
+void SubMemoryLayout::compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER,
+    bool memoryItemsAreCompressed)
 {
     qreal lastCoordinate = mainGraphicsItem_->sceneBoundingRect().bottom();
 
@@ -587,10 +624,11 @@ void SubMemoryLayout::compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoo
         SubMemoryLayout* subItemLayout = dynamic_cast<SubMemoryLayout*>(subItem);
         if (subItemLayout)
         {
-            subItemLayout->compressSubItemsToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+            subItemLayout->compressSubItemsToUnCutCoordinates(
+                unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
         }
 
-        subItem->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+        subItem->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
 
         qreal subItemLow = subItem->sceneBoundingRect().bottom();
         if (subItemLow > lastCoordinate)
@@ -607,22 +645,35 @@ void SubMemoryLayout::compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoo
     {
         if (areaBegin < lastCoordinate && areaEnd > itemTop)
         {
-            qreal areaDifference = areaEnd - areaBegin - CUTMODIFIER;
+            qreal areaDifference = areaEnd - areaBegin;
             if (areaDifference > 0)
             {
-                qreal transferY = -areaDifference;
-
-                subItemIterator.toFront();
-                while (subItemIterator.hasNext())
+                if (memoryItemsAreCompressed)
                 {
-                    subItemIterator.next();
-                    MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+                    areaDifference = areaDifference - CUTMODIFIER;
+                }
+                else
+                {
+                    qreal requiredArea = MemoryDesignerConstants::getRequiredAreaForUsedArea(areaDifference);
+                    areaDifference = areaDifference - requiredArea;
+                }
 
-                    qreal subItemTop = subItem->sceneBoundingRect().top();
-                    if (subItemTop > areaBegin)
+                if (areaDifference > 0)
+                {
+                    qreal transferY = -areaDifference;
+
+                    subItemIterator.toFront();
+                    while (subItemIterator.hasNext())
                     {
-                        qreal newSubItemTransferValue = subItemTransferValues.value(subItem, 0) + transferY;
-                        subItemTransferValues.insert(subItem, newSubItemTransferValue);
+                        subItemIterator.next();
+                        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+
+                        qreal subItemTop = subItem->sceneBoundingRect().top();
+                        if (subItemTop > areaBegin)
+                        {
+                            qreal newSubItemTransferValue = subItemTransferValues.value(subItem, 0) + transferY;
+                            subItemTransferValues.insert(subItem, newSubItemTransferValue);
+                        }
                     }
                 }
             }

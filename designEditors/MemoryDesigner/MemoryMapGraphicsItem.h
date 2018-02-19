@@ -61,10 +61,11 @@ public:
     /*!
      *  Compress the item and the contained sub items.
      *
-     *      @param [in] movedConnections    Connection items that have already been moved.
+     *      @param [in] movedConnections        Connection items that have already been moved.
+     *      @param [in] condenseMemoryItems     Flag for condensing memory items.
      */
-    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
-
+    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections,
+        bool condenseMemoryItems);
     /*!
      *  Change the width of this item and the contained register graphics items.
      *
