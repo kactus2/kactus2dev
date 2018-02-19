@@ -28,6 +28,7 @@
 #include <QList>
 #include <QTextStream>
 
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! VHDL component declaration.
 //-----------------------------------------------------------------------------
@@ -39,10 +40,11 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component   Pointer to the component model for this vhdl component.
-	 *      @param [in] parent      Pointer to the owner of this declaration.
+	 *      @param [in] component   The component model for this vhdl component.
+	 *      @param [in] parser      Parser for expressions within the declaration.
 	 */
-	VhdlComponentDeclaration(QSharedPointer<Component> component, QString const& viewName);
+	VhdlComponentDeclaration(QSharedPointer<Component> component, 
+        QSharedPointer<ExpressionParser> parser);
 	
 	//! The destructor.
 	virtual ~VhdlComponentDeclaration();
