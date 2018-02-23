@@ -10,17 +10,20 @@
 //-----------------------------------------------------------------------------
 
 #include "PluginUtilityAdapter.h"
+
+#include <common/ui/MessageMediator.h>
+
 #include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: PluginUtilityAdapter::PluginUtilityAdapter()
 //-----------------------------------------------------------------------------
-PluginUtilityAdapter::PluginUtilityAdapter(LibraryInterface* libraryInterface, QWidget* parentWidget, 
-    QString versionString, QObject* parent) : 
-QObject(parent),
-	libraryInterface_(libraryInterface),
-	parentWidget_(parentWidget),
-	versionString_(versionString)	
+PluginUtilityAdapter::PluginUtilityAdapter(LibraryInterface* libraryInterface, MessageMediator* messageChannel,
+    QString const& versionString, QWidget* parentWidget) :
+libraryInterface_(libraryInterface),
+    messageChannel_(messageChannel),
+    parentWidget_(parentWidget),
+    versionString_(versionString)
 {
 
 }
@@ -38,7 +41,7 @@ PluginUtilityAdapter::~PluginUtilityAdapter()
 //-----------------------------------------------------------------------------
 void PluginUtilityAdapter::printError(QString const& message)
 {
-    emit errorMessage(message);
+    messageChannel_->showError(message);
 }
 
 //-----------------------------------------------------------------------------
@@ -46,7 +49,7 @@ void PluginUtilityAdapter::printError(QString const& message)
 //-----------------------------------------------------------------------------
 void PluginUtilityAdapter::printInfo(QString const& message)
 {
-    emit infoMessage(message);
+    messageChannel_->showMessage(message);
 }
 
 //-----------------------------------------------------------------------------

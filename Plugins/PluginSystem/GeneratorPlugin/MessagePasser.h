@@ -12,13 +12,15 @@
 #ifndef MESSAGEPASSER_H
 #define MESSAGEPASSER_H
 
+#include <common/ui/MessageMediator.h>
+
 #include <QString>
 #include <QObject>
 
 //-----------------------------------------------------------------------------
 // Class for passing messages to UI.
 //-----------------------------------------------------------------------------
-class MessagePasser : public QObject
+class MessagePasser : public QObject, public MessageMediator
 {
     Q_OBJECT
 
@@ -28,17 +30,21 @@ public:
     MessagePasser();
 
 	//! The destructor.
-    ~MessagePasser();
-
-    /*!
-     *  Signals the given error message.
-     */
-    void sendError(QString const& message) const;
+    virtual ~MessagePasser();
 
     /*!
      *  Signals the given notice message.
      */
-    void sendNotice(QString const& message) const;
+    virtual void showMessage(QString const& message) const;
+
+    /*!
+     *  Signals the given error message.
+     */
+    virtual void showError(QString const& message) const;
+
+    virtual void showFailure(QString const& error) const;
+
+    virtual void showStatusMessage(QString const& status) const;
 
 signals:
 

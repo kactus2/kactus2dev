@@ -31,77 +31,78 @@ class BusDefinition;
 class Component;
 class Document;
 class LibraryInterface;
+class MessageMediator;
 
 //-----------------------------------------------------------------------------
 //! LibraryData is the data model that manages the actual VLNV library.
 //-----------------------------------------------------------------------------
 class LibraryData : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	/*! The constructor
-	 *
+    /*! The constructor
+     *
      *      @param [in] parent          The parent object of this widget.
-	 *      @param [in] parentWidget    The widget containing the displayed library.
-	*/
-	LibraryData(LibraryInterface* library, QObject* parent);
+     *      @param [in] parentWidget    The widget containing the displayed library.
+    */
+    LibraryData(LibraryInterface* library, MessageMediator* messageChannel, QObject* parent);
 
-	//! The destructor
-	virtual ~LibraryData();
+    //! The destructor
+    virtual ~LibraryData();
 
-	/*! Returns the absolute file path of the specified IP-XACT document.
-	 *
-	 *      @param [in] vlnv The vlnv that specifies the wanted IP-XACT document.
-	 *
-	 *      @return The absolute filepath of the document.
-	*/
-	QString getPath(VLNV const& vlnv);
+    /*! Returns the absolute file path of the specified IP-XACT document.
+     *
+     *      @param [in] vlnv The vlnv that specifies the wanted IP-XACT document.
+     *
+     *      @return The absolute filepath of the document.
+    */
+    QString getPath(VLNV const& vlnv);
 
-	/*! Add the given vlnv to the library
-	 *
-	 *      @param [in] vlnv    The vlnv to be added.
-	 *      @param [in] path    The absolute file path to the file to be added to the library.
-	 *
-	 *      @return True if the vlnv was added, false if not.
-	*/
-	bool addVLNV(VLNV const& vlnv, QString const& path);
+    /*! Add the given vlnv to the library
+     *
+     *      @param [in] vlnv    The vlnv to be added.
+     *      @param [in] path    The absolute file path to the file to be added to the library.
+     *
+     *      @return True if the vlnv was added, false if not.
+    */
+    bool addVLNV(VLNV const& vlnv, QString const& path);
 
-	/*! Checks if the library already contains the specified vlnv
-	 *
-	 *      @param [in] vlnv The vlnv that is searched from the library
-	 *
-	 *      @return True if the vlnv is found in the library
-	*/
-	bool contains(VLNV const& vlnv);
+    /*! Checks if the library already contains the specified vlnv
+     *
+     *      @param [in] vlnv The vlnv that is searched from the library
+     *
+     *      @return True if the vlnv is found in the library
+    */
+    bool contains(VLNV const& vlnv);
 
-	/*! Get the type of the given document.
-	 * 
-	 * If vlnv is not found in the library then VLNV::INVALID is returned.
-	 *
-	 *      @param [in] vlnv    Specifies the document that's type is wanted.
-	 *
-	 *      @return The type of the given document.
-	*/
-	VLNV::IPXactType getType(VLNV const& vlnv) const;
+    /*! Get the type of the given document.
+     * 
+     * If vlnv is not found in the library then VLNV::INVALID is returned.
+     *
+     *      @param [in] vlnv    Specifies the document that's type is wanted.
+     *
+     *      @return The type of the given document.
+    */
+    VLNV::IPXactType getType(VLNV const& vlnv) const;
     
-	/*! Get the library items stored in the model.
-	 *
-	 *      @return All the items.
-	 */
-	QList<VLNV> getItems() const;
+    /*! Get the library items stored in the model.
+     *
+     *      @return All the items.
+     */
+    QList<VLNV> getItems() const;
 
     /*! Get a model that matches given VLNV.
-	 *
-	 * This function can be called to get a model that matches an IP-XACT document.
-	 * 
-	 *      @param [in] vlnv Identifies the desired document.
-	 *
-	 *      @return The model that matches the document. If vlnv is not found, a null pointer is returned.
+     *
+     * This function can be called to get a model that matches an IP-XACT document.
+     * 
+     *      @param [in] vlnv Identifies the desired document.
+     *
+     *      @return The model that matches the document. If vlnv is not found, a null pointer is returned.
      *              The ownership of the parsed object is passed to the caller.
-	*/
-	QSharedPointer<Document> getModel(VLNV const& vlnv);
+    */
+    QSharedPointer<Document> getModel(VLNV const& vlnv);
 
     /*!
      *  Writes a document into a file.
@@ -114,63 +115,54 @@ public:
     bool writeFile(QSharedPointer<Document> model, QString const& filePath = QString());
 
     /*! Check the document validity.
-	 *
-	 *      @param [in] document    The document to check.
      *
-	 *      @return True if the document was valid, otherwise false.
-	 */
+     *      @param [in] document    The document to check.
+     *
+     *      @return True if the document was valid, otherwise false.
+     */
     bool validateDocument(QSharedPointer<Document> document);
 
-	/*! Finds errors in document validity.
-	 *
-	 *      @param [in] document    The document to check.
-	 *      @param [in] path        The path to the document IP-XACT file.
-	 *
-	 *      @return Any errors within the document.
-	*/
-	QVector<QString> findErrorsInDocument(QSharedPointer<Document> document);
+    /*! Finds errors in document validity.
+     *
+     *      @param [in] document    The document to check.
+     *      @param [in] path        The path to the document IP-XACT file.
+     *
+     *      @return Any errors within the document.
+    */
+    QVector<QString> findErrorsInDocument(QSharedPointer<Document> document);
 
-	/*! Search all saved library paths for IP-Xact objects.
-	 * 
-	 * The found objects are displayed in the library.
-	 * When search is complete the library integrity is checked.
-	 * 
-	*/
-	void parseLibrary();
+    /*! Search all saved library paths for IP-Xact objects.
+     * 
+     * The found objects are displayed in the library.
+     * When search is complete the library integrity is checked.
+     * 
+    */
+    void parseLibrary();
 
     //! Check the integrity of the library.
     void checkLibraryIntegrity();
 
 signals:
 
-	//! Emit an error message to be printed to user.
-	void errorMessage(QString const& message);
+    //! Inform tree model that a vlnv is to be removed from the tree.
+    void removeVLNV(VLNV const& vlnv);
 
-	//! Emit a notice message to be printed to user.
-	void noticeMessage(QString const& message);
-
-    //! Emit a change in the library status e.g. loading.
-    void statusMessage(QString const& message);
-
-	//! Inform tree model that a vlnv is to be removed from the tree.
-	void removeVLNV(VLNV const& vlnv);
-
-	//! Inform tree model that a vlnv is to be added to the tree.
-	void addVLNV(VLNV const& vlnv);
+    //! Inform tree model that a vlnv is to be added to the tree.
+    void addVLNV(VLNV const& vlnv);
 
     //! Inform that object has been updated.
     void updatedVLNV(VLNV const& vlnv);
 
-	//! Inform the library model that the model should be reset.
-	void resetModel();    
+    //! Inform the library model that the model should be reset.
+    void resetModel();    
 
 public slots:
    
     //! Remove the specified VLNV from the library
-	void onRemoveVLNV(VLNV const& vlnv);
+    void onRemoveVLNV(VLNV const& vlnv);
 
-	//! Reset the library
-	void resetLibrary();
+    //! Reset the library
+    void resetLibrary();
 
  private slots:
 
@@ -183,11 +175,11 @@ public slots:
 
 private:
 
-	//! No copying
-	LibraryData(const LibraryData& other);
+    //! No copying
+    LibraryData(const LibraryData& other);
 
-	//! No assignment
-	LibraryData& operator=(const LibraryData& other);
+    //! No assignment
+    LibraryData& operator=(const LibraryData& other);
 
     //! Runs one step of the library parsing.
     void performParseLibraryStep(QString const& location);
@@ -196,11 +188,11 @@ private:
     void performIntegrityCheck(VLNV const& documentVLNV);
 
     /*! Check the validity of VLNV references within a document.
-	 *
-	 *      @param [in] document    The document to check.
      *
-	 *      @return True if the VLVN references are valid, otherwise false.
-	 */
+     *      @param [in] document    The document to check.
+     *
+     *      @return True if the VLVN references are valid, otherwise false.
+     */
     bool validateDependentVLNVReferencences(QSharedPointer<Document> document);
     
     /*!
@@ -212,12 +204,12 @@ private:
     void findErrorsInDependentVLNVReferencences(QSharedPointer<const Document> document, QVector<QString>& errorList);
        
     /*! Check the validity of directory references within a document.
-	 *
-	 *      @param [in] document    The document to check.
+     *
+     *      @param [in] document    The document to check.
      *      @param [in] documentPath    The path to the document XML file.
      *
-	 *      @return True if the directory references are valid, otherwise false.
-	 */
+     *      @return True if the directory references are valid, otherwise false.
+     */
     bool validateDependentDirectories(QSharedPointer<Document> document, QString const& documentPath);
         
     /*!
@@ -231,11 +223,11 @@ private:
         QVector<QString>& errorList);
 
     /*! Check the validity of file references within a document.
-	 *
-	 *      @param [in] document    The document to check.
      *
-	 *      @return True if the file references are valid, otherwise false.
-	 */
+     *      @param [in] document    The document to check.
+     *
+     *      @return True if the file references are valid, otherwise false.
+     */
     bool validateDependentFiles(QSharedPointer<Document> document, QString const& documentPath);
             
     /*!
@@ -248,31 +240,33 @@ private:
     void findErrorsInDependentFiles(QSharedPointer<const Document> document, QString const& documentPath,
         QVector<QString>& errorList);
     
-	/*! Search the directory and it's sub-directories for IP-Xact objects.
-	 *
-	 *      @param [in] directoryPath The absolute path of the directory to start the search.
-	*/
-	void parseDirectory(QString const& directoryPath);
+    /*! Search the directory and it's sub-directories for IP-Xact objects.
+     *
+     *      @param [in] directoryPath The absolute path of the directory to start the search.
+    */
+    void parseDirectory(QString const& directoryPath);
 
-	/*! Check if the file in given path is IP-XACT file and if it is then save it.
-	 *
-	 *      @param [in] filePath Absolute file path to the file to check.
-	*/
-	void parseFile(QString const& filePath);
+    /*! Check if the file in given path is IP-XACT file and if it is then save it.
+     *
+     *      @param [in] filePath Absolute file path to the file to check.
+    */
+    void parseFile(QString const& filePath);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	/*! Map containing all the VLNVs that are in the library.
-	 *
-	 * key: VLNV instance containing the vlnv information
-	 * value: filepath of the component
-	 */
-	QMap<VLNV, QString> libraryItems_;
+    /*! Map containing all the VLNVs that are in the library.
+     *
+     * key: VLNV instance containing the vlnv information
+     * value: filepath of the component
+     */
+    QMap<VLNV, QString> libraryItems_;
 
-	//! The LibraryHandler instance that owns this class.
-	LibraryInterface *library_;
+    //! The LibraryHandler instance that owns this class.
+    LibraryInterface *library_;
+
+    MessageMediator* messageChannel_;
 
     //! Number of failed objects found during the integrity check.
     int failedObjects_;

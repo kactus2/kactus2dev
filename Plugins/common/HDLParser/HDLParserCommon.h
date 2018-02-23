@@ -12,25 +12,24 @@
 #ifndef HDLPARSERCOMMON_H
 #define HDLPARSERCOMMON_H
 
-#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
-
 #include <QSharedPointer>
 #include <QString>
 
 #include <QMap>
 #include <QMultiMap>
 
+class AbstractionType;
+class AbstractionDefinition;
+class BusInterface;
 class Component;
 class ComponentInstance;
 class ComponentInstantiation;
 class Design;
 class DesignConfiguration;
-class View;
-class BusInterface;
-class AbstractionType;
-class AbstractionDefinition;
+class MessageMediator;
 class Port;
 class RemapState;
+class View;
 
 struct GenerationTuple
 {
@@ -42,7 +41,7 @@ struct GenerationTuple
     // The design configuration for design, if it is not null.
     QSharedPointer<DesignConfiguration> designConfiguration;
     // The messages.
-    MessagePasser* messages;
+    MessageMediator* messages;
 };
 
 struct MetaPort;

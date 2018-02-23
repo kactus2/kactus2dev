@@ -100,7 +100,11 @@ bool DocumentValidator::validate(QSharedPointer<Document> document)
             return designConfigurationValidator_.validate(configuration);
         }
     }
-
+    else if (documentType == VLNV::APIDEFINITION || documentType == VLNV::COMDEFINITION)
+    {
+        return true;
+    }
+    
     return false;
 }
 

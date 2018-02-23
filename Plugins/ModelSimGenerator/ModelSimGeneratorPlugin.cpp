@@ -15,6 +15,7 @@
 
 #include <Plugins/common/LanguageHighlighter.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
 
 #include <IPXACTmodels/Design/Design.h>

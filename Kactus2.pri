@@ -106,6 +106,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
     ./common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
     ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
+    ./common/ui/ConsoleMediator.h \
+    ./common/ui/GraphicalMessageMediator.h \
+    ./common/ui/MessageMediator.h \
+    ./mainwindow/CommandLineParser.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/ExitScreen.h \
     ./mainwindow/DockWidgetHandler.h \
@@ -184,6 +188,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
     ./Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h \
+    ./Plugins/PluginSystem/CommandLineSupport.h \
     ./Plugins/PluginSystem/PluginSettingsModel.h \
     ./Plugins/PluginSystem/IPlugin.h \
     ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
@@ -836,6 +841,9 @@ SOURCES += ./VersionHelper.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./common/views/EditableTreeView/EditableTreeSortFilter.cpp \
     ./common/views/EditableTreeView/EditableTreeView.cpp \
+    ./common/ui/ConsoleMediator.cpp \
+    ./common/ui/GraphicalMessageMediator.cpp \
+    ./mainwindow/CommandLineParser.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/DockWidgetHandler.cpp \
     ./mainwindow/ExitScreen.cpp \

@@ -24,6 +24,7 @@ class VLNVDialer;
 class HierarchyWidget;
 class LibraryFilter;
 class LibraryTreeWidget;
+class MessageMediator;
 
 //-----------------------------------------------------------------------------
 //! Widget for holding all IP-XACT library widgets.
@@ -38,7 +39,7 @@ public:
      *      @param [in] library    The IP-XACT library interface.
      *      @param [in] parent     The parent widget.
     */
-    LibraryWidget(LibraryHandler* library, QWidget* parent = 0);
+    LibraryWidget(LibraryHandler* library, MessageMediator* messageChannel, QWidget* parent = 0);
 
     //! The destructor.
     virtual ~LibraryWidget();

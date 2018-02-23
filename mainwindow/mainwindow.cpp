@@ -60,6 +60,7 @@
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <Plugins/PluginSystem/ConsolePluginUtility.h>
 
 #include <settings/SettingsDialog.h>
 
@@ -114,11 +115,11 @@
 //-----------------------------------------------------------------------------
 // Function: MainWindow::MainWindow()
 //-----------------------------------------------------------------------------
-MainWindow::MainWindow(LibraryHandler* library, QWidget *parent):
+MainWindow::MainWindow(LibraryHandler* library, MessageMediator* messageChannel, QWidget *parent):
 QMainWindow(parent),
 libraryHandler_(library),
 designTabs_(0),
-dockHandler_(new DockWidgetHandler(library, this)),
+dockHandler_(new DockWidgetHandler(library, messageChannel, this)),
 ribbon_(0),
 actNew_(0),
 actSave_(0),
@@ -172,10 +173,9 @@ actionFilterFields_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
-curWorkspaceName_("Default")
-{
-    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
-
+curWorkspaceName_("Default"),
+messageChannel_(messageChannel)
+{    
     setWindowTitle(QCoreApplication::applicationName());
     setWindowIcon(QIcon(":icons/common/graphics/appicon.png"));
 
@@ -1252,12 +1252,7 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
     Q_ASSERT(plugin != 0);
 
-    PluginUtilityAdapter adapter(libraryHandler_, this, VersionHelper::createVersionString());
-
-    connect(&adapter, SIGNAL(errorMessage(QString const&)),
-        this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
-    connect(&adapter, SIGNAL(infoMessage(QString const&)),
-        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+    PluginUtilityAdapter adapter(libraryHandler_, messageChannel_, VersionHelper::createVersionString(), this);
 
     // Run generator.
     plugin->runGenerator(&adapter, component, design, designConfiguration);

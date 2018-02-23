@@ -35,7 +35,7 @@ public:
 	 *      @param [in] generatorVersion	    The current version of the generator.
 	 */
     ModelSimWriterFactory(LibraryInterface* library, 
-        MessagePasser* messages, GenerationSettings* settings,
+        MessageMediator* messages, GenerationSettings* settings,
         QString const& kactusVersion, QString const& generatorVersion);
 
     //! The destructor.
@@ -90,7 +90,7 @@ private:
     LibraryInterface* library_;
 
     //! The messages.
-    MessagePasser* messages_;
+    MessageMediator* messages_;
 
     //! Points to the settings to be used within the generation.
     GenerationSettings* settings_;

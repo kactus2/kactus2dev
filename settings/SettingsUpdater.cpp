@@ -6,241 +6,226 @@
 // Date: 15.01.2013
 //
 // Description:
-// Settings updater which upgrades Kactus2 settings up-to-date based on a
-// configuration file.
+// Settings updater which upgrades Kactus2 settings up-to-date based on a configuration file.
 //-----------------------------------------------------------------------------
 
 #include "SettingsUpdater.h"
 
 #include <VersionHelper.h>
+
 #include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
 #include <QString>
 #include <QStringList>
-#include <QTextStream>
-#include <QFile>
-#include <QSettings>
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QVariant>
 
 //-----------------------------------------------------------------------------
+// Function: SettingsUpdater::runUpgrade()
+//-----------------------------------------------------------------------------
+void SettingsUpdater::runUpgrade(QSettings& settings, MessageMediator* mediator)
+{   
+    // Retrieve the version number of the settings file and check if it is not up-to-date.
+    QString settingsVersion = 
+        settings.value(QStringLiteral("Platform/Version"), QStringLiteral("1.5.0.0")).toString();
 
-namespace SettingsUpdater
-{
-    namespace
+    if (!Details::isVersionOlderThan(settingsVersion, VersionHelper::versionFull()))
     {
-        /*!
-         *  Compares version numbers.
-         *
-         *      @param [in] lhs The first version to compare.
-         *      @param [in] rhs The second version to compare.
-         *
-         *      @return True, if the first version is older than the second one.
-         */
-        bool isVersionOlder(QString const& lhs, QString const& rhs)
+        // Already up-to-date.
+        return;
+    }
+
+    // Run the upgrade based on the configuration file.
+    QFile* configurationFile = Details::openConfigurationFile(mediator);
+
+    QTextStream fileStream(configurationFile);
+
+    QString versionIterator = QString();
+    while (!fileStream.atEnd())
+    {
+        QString line = fileStream.readLine();
+
+        QTextStream lineStream(&line);
+
+        // Read the command token.
+        QString action;
+        lineStream >> action;
+        action = action.toLower();
+
+        // Skip comments.
+        if (action.startsWith(QLatin1String("//")))
         {
-            QStringList numbers1 = lhs.split('.');
-            QStringList numbers2 = rhs.split('.');
-
-            for (int i = 0; i < 4; ++i)
-            {
-                if (numbers1[i].toUInt() != numbers2[i].toUInt())
-                {
-                    return numbers1[i].toUInt() < numbers2[i].toUInt();
-                }
-            }
-
-            return false;
+            continue;
         }
 
-        /*!
-         *  Parses a QVariant from the given text stream.
-         *
-         *      @param [in] stream The source text stream.
-         *
-         *      @return The parsed QVariant.
-         */
-        QVariant parseVariant(QTextStream& stream)
+        // Update to next found version.
+        if (action == QLatin1String("version"))
         {
-            // Retrieve the variant type.
-            QString type;
-            stream >> type;
-            stream.skipWhiteSpace();
+            lineStream >> versionIterator;
+        }
+        // Otherwise check whether the current version patch needs to be applied.
+        else if (Details::isVersionOlderThan(settingsVersion, versionIterator))
+        {
+            // Perform the upgrade operation based on the command token.
+            if (action.compare(QLatin1String("add")) == 0)
+            {
+                QString key;
+                lineStream >> key;
+                lineStream.skipWhiteSpace();
 
-            if (type == "StringList")
-            {
-                QStringList list = stream.readAll().split(',');
-                return list;
+                if (!settings.contains(key))
+                {
+                    settings.setValue(key, Details::parseVariant(lineStream));
+                }
             }
-            else if (type == "String")
+            else if (action.compare(QLatin1String("remove")) == 0)
             {
-                QString str;
-                str = stream.readAll();
-                return str;
-            }
-            else if (type == "Size")
-            {
-                int w = 0;
-                int h = 0;
-                stream >> w >> h;
-                return QSize(w, h);
-            }
-            else if (type == "Point")
-            {
-                int x = 0;
-                int y = 0;
-                stream >> x >> y;
-                return QPoint(x, y);
-            }
-            else if (type == "Integer")
-            {
-                int i = 0;
-                stream >> i;
-                return i;
-            }
-            else if (type == "Boolean")
-            {
-                QString value;
-                stream >> value;
-                return bool(value == "true");
-            }
-            else if (type == "Font")
-            {
-                QString data = stream.readAll();
-                QStringList arguments = data.split(',');
-                return QFont(arguments[0], arguments[1].toInt());
-            }
-            else if (type == "HighlightStyle")
-            {
-                QString data = stream.readAll();
-                QStringList arguments = data.split(',');
-                return qVariantFromValue(HighlightStyleDesc(QColor(arguments[0]), arguments.contains("bold"),
-                                                            arguments.contains("italic")));
-            }
-            else if (type == "ByteArray")
-            {
-                QString bytes;
-                bytes = stream.readAll();
-                return QVariant(bytes.toLatin1());
-            }
+                QString key;
+                lineStream >> key;
 
-            Q_ASSERT(false);
-            return QVariant();
+                if (settings.contains(key))
+                {
+                    settings.remove(key);
+                }
+            }
+            else if (action.compare(QLatin1String("rename")) == 0)
+            {
+                QString oldKey;
+                QString newKey;
+                lineStream >> oldKey >> newKey;
+
+                QVariant value = settings.value(oldKey);
+                settings.remove(oldKey);
+                settings.setValue(newKey, value);
+            }
+            else if (action.compare(QLatin1String("copy")) == 0)
+            {
+                QString srcKey;
+                QString destKey;
+                lineStream >> srcKey >> destKey;
+
+                QVariant value = settings.value(srcKey);
+                settings.setValue(destKey, value);
+            }
         }
     }
 
-    //-----------------------------------------------------------------------------
-    // Function: runUpgrade()
-    //-----------------------------------------------------------------------------
-    void runUpgrade(QWidget* parent)
+    configurationFile->close();
+    delete configurationFile;
+    configurationFile = 0;
+
+    // Finally update the settings version.
+    settings.setValue(QStringLiteral("Platform/Version"), VersionHelper::versionFull());
+}
+
+//-----------------------------------------------------------------------------
+// Function: SettingsUpdater::Details::isVersionOlderThan()
+//-----------------------------------------------------------------------------
+bool SettingsUpdater::Details::isVersionOlderThan(QString const& version, QString const& comparison)
+{
+    QStringList numbers1 = version.split(QLatin1Char('.'));
+    QStringList numbers2 = comparison.split(QLatin1Char('.'));
+
+    for (int i = 0; i < 4; ++i)
     {
-        QSettings settings;
-
-        // Retrieve the version number of the settings file and check if it is not up-to-date.
-        QString settingsVersion = settings.value("Platform/Version", "1.5.0.0").toString();
-        
-        if (!isVersionOlder(settingsVersion, VersionHelper::versionFull()))
+        if (numbers1.at(i).toUInt() != numbers2.at(i).toUInt())
         {
-            // Already up-to-date.
-            return;
+            return numbers1.at(i).toUInt() < numbers2.at(i).toUInt();
         }
+    }
 
-        // Run the upgrade from the configuration file.
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SettingsUpdater::Details::openConfigurationFile()
+//-----------------------------------------------------------------------------
+QFile* SettingsUpdater::Details::openConfigurationFile(MessageMediator* mediator)
+{        
 #ifdef Q_OS_WIN
-        QFile file(QCoreApplication::applicationDirPath() + QString("/upgrade.cfg"));
+    QFile* configurationFile = new QFile(QCoreApplication::applicationDirPath() + 
+        QStringLiteral("/upgrade.cfg"));
+
 #else
-        QFile file("./upgrade.cfg");
-        
-        if (!file.exists())
-        {
-            file.setFileName("/usr/share/kactus2/upgrade.cfg");
-        }
+    QFile* configurationFile = new QFile(QStringLiteral("./upgrade.cfg"));
+
+    if (!configurationFile->exists())
+    {
+        configurationFile->setFileName(QStringLiteral("/usr/share/kactus2/upgrade.cfg"));
+    }
 #endif
 
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                               QObject::tr("Settings upgrade configuration file was not found. Please reinstall Kactus2."),
-                               QMessageBox::Ok, parent);
-
-            msgBox.exec();
-            return;
-        }
-
-        // Run the upgrade based on the configuration file.
-        QTextStream stream(&file);
-        QString curVersion = "";
-
-        while (!stream.atEnd())
-        {
-            QString line = stream.readLine();
-            QTextStream lineStream(&line);
-
-            // Read the command token.
-            QString token;
-            lineStream >> token;
-            token = token.toLower();
-
-            // Skip comments.
-            if (token.startsWith("//"))
-            {
-                continue;
-            }
-
-            // Take notice of version changes.
-            if (token == "version")
-            {
-                lineStream >> curVersion;
-            }
-            // Otherwise check whether the current version patch needs to be applied.
-            else if (isVersionOlder(settingsVersion, curVersion))
-            {
-                // Perform the upgrade operation based on the command token.
-                if (token == "add")
-                {
-                    QString key;
-                    lineStream >> key;
-                    lineStream.skipWhiteSpace();
-
-                    if (!settings.contains(key))
-                    {
-                        settings.setValue(key, parseVariant(lineStream));
-                    }
-                }
-                else if (token == "remove")
-                {
-                    QString key;
-                    lineStream >> key;
-
-                    if (settings.contains(key))
-                    {
-                        settings.remove(key);
-                    }
-                }
-                else if (token == "rename")
-                {
-                    QString oldKey;
-                    QString newKey;
-                    lineStream >> oldKey >> newKey;
-                    
-                    QVariant value = settings.value(oldKey);
-                    settings.remove(oldKey);
-                    settings.setValue(newKey, value);                    
-                }
-                else if (token == "copy")
-                {
-                    QString srcKey;
-                    QString destKey;
-                    lineStream >> srcKey >> destKey;
-
-                    QVariant value = settings.value(srcKey);
-                    settings.setValue(destKey, value);
-                }
-            }
-        }
-
-        // Finally update the settings version.
-        settings.setValue("Platform/Version", VersionHelper::versionFull());
+    if (!configurationFile->open(QIODevice::ReadOnly))
+    {
+       mediator->showFailure(QObject::tr("Settings upgrade configuration file 'upgrade.cfg' was not found. "
+           "Restoring default settings."));
     }
+
+    return configurationFile;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SettingsUpdater::Details::parseVariant()
+//-----------------------------------------------------------------------------
+QVariant SettingsUpdater::Details::parseVariant(QTextStream& lineStream)
+{
+    // Retrieve the variant type.
+    QString type;
+    lineStream >> type;
+    lineStream.skipWhiteSpace();
+
+    if (type.compare(QLatin1String("StringList")) == 0)
+    {
+        return lineStream.readAll().split(QLatin1Char(','));
+    }
+    else if (type.compare(QLatin1String("String")) == 0)
+    {
+        return lineStream.readAll();
+    }
+    else if (type.compare(QLatin1String("Size")) == 0)
+    {
+        int w = 0;
+        int h = 0;
+        lineStream >> w >> h;
+        return QSize(w, h);
+    }
+    else if (type.compare(QLatin1String("Point")) == 0)
+    {
+        int x = 0;
+        int y = 0;
+        lineStream >> x >> y;
+        return QPoint(x, y);
+    }
+    else if (type.compare(QLatin1String("Integer")) == 0)
+    {
+        int i = 0;
+        lineStream >> i;
+        return i;
+    }
+    else if (type.compare(QLatin1String("Boolean")) == 0)
+    {
+        QString value;
+        lineStream >> value;
+        return bool(value.compare(QLatin1String("true")) == 0);
+    }
+    else if (type.compare(QLatin1String("Font")) == 0)
+    {
+        QStringList arguments = lineStream.readAll().split(QLatin1Char(','));
+        return QFont(arguments.first(), arguments.last().toInt());
+    }
+    else if (type.compare(QLatin1String("HighlightStyle")) == 0)
+    {
+        QStringList arguments = lineStream.readAll().split(QLatin1Char(','));
+        return qVariantFromValue(HighlightStyleDesc(QColor(arguments.first()), 
+            arguments.contains(QStringLiteral("bold")),
+            arguments.contains(QStringLiteral("italic"))));
+    }
+    else if (type.compare(QLatin1String("ByteArray")) == 0)
+    {
+        return QVariant(lineStream.readAll().toLatin1());
+    }
+
+    Q_ASSERT(false);
+    return QVariant();
 }

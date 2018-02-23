@@ -11,6 +11,8 @@
 
 #include "VerilogWriterFactory.h"
 
+#include <common/ui/MessageMediator.h>
+
 #include <library/LibraryInterface.h>
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
@@ -27,7 +29,7 @@
 // Function: VerilogWriterFactory::VerilogWriterFactory()
 //-----------------------------------------------------------------------------
 VerilogWriterFactory::VerilogWriterFactory(LibraryInterface* library,
-    MessagePasser* messages, GenerationSettings* settings,
+    MessageMediator* messages, GenerationSettings* settings,
     QString const& kactusVersion, QString const& generatorVersion) :
     library_(library),
     messages_(messages),
@@ -151,7 +153,7 @@ bool VerilogWriterFactory::readImplementation(QSharedPointer<VerilogDocument> do
     // Must be able to open it for reading.
     if (!outputFile.open(QIODevice::ReadOnly))
     {
-        messages_->errorMessage(QObject::tr("File %1: The output file exists, but could not open it for reading. The path: %2").
+        messages_->showError(QObject::tr("File %1: The output file exists, but could not open it for reading. The path: %2").
             arg(document->fileName_, outputPath));
         return false;
     }
@@ -165,7 +167,7 @@ bool VerilogWriterFactory::readImplementation(QSharedPointer<VerilogDocument> do
     // The document sub class is supposed to know how to find its implementation.
     if (!document->selectImplementation(fileContent, implementation, postModule, error))
     {
-        messages_->errorMessage(QObject::tr("File %1: %2").arg(document->fileName_, error));
+        messages_->showError(QObject::tr("File %1: %2").arg(document->fileName_, error));
 
         return false;
     }

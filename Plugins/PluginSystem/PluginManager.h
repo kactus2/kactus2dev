@@ -15,7 +15,6 @@
 #include <QString>
 #include <QList>
 #include <QObject>
-#include <QPluginLoader>
 
 class IPlugin;
 
@@ -48,8 +47,20 @@ public:
      */
     void setPluginPaths(QStringList const& pluginPaths);
     
+    /*!
+     *  Find all plugins in the given paths.
+     *
+     *      @param [in] pluginPaths   Paths to directories to search for plugins.
+     *
+     *      @return All plugins found in the given directories.
+     */
     static QList<IPlugin*> findPluginsInPaths(QStringList const& pluginPaths);
 
+    /*!
+     *  Get the singleton instance of the PluginManager.
+     *
+     *      @return The PluginManager instance.
+     */
     static PluginManager& getInstance();
 
 private:
@@ -57,7 +68,7 @@ private:
     PluginManager(PluginManager const& rhs);
     PluginManager& operator=(PluginManager const& rhs);
      
-    //! The constructor.
+    //! The constructor. Private to enforce the use of getInstance() to get access.
     PluginManager();
 
     //-----------------------------------------------------------------------------

@@ -11,6 +11,8 @@
 
 #include "MetaComponent.h"
 
+#include <common/ui/MessageMediator.h>
+
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
@@ -22,7 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: MetaComponent::MetaComponent
 //-----------------------------------------------------------------------------
-MetaComponent::MetaComponent(MessagePasser* messages,
+MetaComponent::MetaComponent(MessageMediator* messages,
     QSharedPointer<Component> component,
     QSharedPointer<View> activeView) :
     messages_(messages),

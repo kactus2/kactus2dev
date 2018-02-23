@@ -11,6 +11,8 @@
 
 #include "GenerationControl.h"
 
+#include <common/ui/MessageMediator.h>
+
 #include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/FileSet.h>
@@ -115,7 +117,7 @@ bool GenerationControl::writeDocuments()
         QFile outputFile(absFilePath); 
         if (!outputFile.open(QIODevice::WriteOnly))
         {
-            input_.messages->errorMessage(QObject::tr("Could not open output file for writing: %1").arg(absFilePath));
+            input_.messages->showError(QObject::tr("Could not open output file for writing: %1").arg(absFilePath));
             fails = true;
             continue;
         }
@@ -162,7 +164,7 @@ bool GenerationControl::saveChanges()
 
     // Fail: Report the error, including the path.
     QString savePath = library_->getPath(input_.component->getVlnv());
-    input_.messages->errorMessage(QObject::tr("Could not write component %1 to file %2.").arg(component, savePath));
+    input_.messages->showError(QObject::tr("Could not write component %1 to file %2.").arg(component, savePath));
     return false;
 }
 
@@ -197,7 +199,7 @@ void GenerationControl::parseDocuments()
     if (isDesignGeneration_)
     {
         // Time to write the contents to files
-        input_.messages->sendNotice(QObject::tr("Parsing hierarchy %1.").
+        input_.messages->showMessage(QObject::tr("Parsing hierarchy %1.").
             arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         // Parse the design hierarchy.
@@ -207,12 +209,12 @@ void GenerationControl::parseDocuments()
         // No results -> return.
         if (designs.size() < 1)
         {
-            input_.messages->errorMessage("No parsed designs in the hierarchy!");
+            input_.messages->showError("No parsed designs in the hierarchy!");
             return;
         }
 
         // Write outputs.
-        input_.messages->sendNotice(QObject::tr("Writing content for preview %1.").
+        input_.messages->showMessage(QObject::tr("Writing content for preview %1.").
             arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         // Pass the topmost design.
@@ -236,7 +238,7 @@ void GenerationControl::parseDocuments()
     else
     {
         // Parse component metadata.
-        input_.messages->sendNotice(QObject::tr("Formatting component %1.").
+        input_.messages->showMessage(QObject::tr("Formatting component %1.").
             arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         QSharedPointer<MetaComponent> componentParser
@@ -253,7 +255,7 @@ void GenerationControl::parseDocuments()
         }
 
         // Write outputs.
-        input_.messages->sendNotice(QObject::tr("Writing content for preview %1.").
+        input_.messages->showMessage(QObject::tr("Writing content for preview %1.").
             arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
         output->write(outputControl_->getOutputPath());
 

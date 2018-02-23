@@ -15,6 +15,7 @@
 #include "LibraryHandler.h"
 
 #include <common/utils.h>
+#include <common/ui/MessageMediator.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -47,10 +48,11 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryData::LibraryData()
 //-----------------------------------------------------------------------------
-LibraryData::LibraryData(LibraryInterface* library, QObject* parent):
+LibraryData::LibraryData(LibraryInterface* library, MessageMediator* messageChannel, QObject* parent):
     QObject(parent),
     libraryItems_(),
     library_(library),
+    messageChannel_(messageChannel),
     failedObjects_(0),
     fileCount_(0),
     urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),   
@@ -58,11 +60,6 @@ LibraryData::LibraryData(LibraryInterface* library, QObject* parent):
     validator_(library),
     fileWatch_(new QFileSystemWatcher(this))
 {
-	connect(this, SIGNAL(errorMessage(QString const&)),
-        parent, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(noticeMessage(QString const&)),
-		parent, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
-
     connect(fileWatch_, SIGNAL(fileChanged(QString const&)),
             this, SLOT(onFileChanged(QString const&)), Qt::UniqueConnection);
 }
@@ -72,7 +69,7 @@ LibraryData::LibraryData(LibraryInterface* library, QObject* parent):
 //-----------------------------------------------------------------------------
 LibraryData::~LibraryData()
 {
-	libraryItems_.clear();
+    libraryItems_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,16 +82,16 @@ QString LibraryData::getPath(VLNV const& vlnv)
         return QString();
     }
 
-	if (!libraryItems_.contains(vlnv))
+    if (!libraryItems_.contains(vlnv))
     {
-		emit errorMessage(tr("The VLNV \n"
-			"Vendor: %1\n"
-			"Library: %2\n"
-			"Name: %3\n"
-			"Version: %4\n"
-			"was not found in the library.").arg(
+    	messageChannel_->showError(tr("The VLNV \n"
+    		"Vendor: %1\n"
+    		"Library: %2\n"
+    		"Name: %3\n"
+    		"Version: %4\n"
+    		"was not found in the library.").arg(
             vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), vlnv.getVersion()));
-	}
+    }
 
     return libraryItems_.value(vlnv, QString());
 }
@@ -104,33 +101,33 @@ QString LibraryData::getPath(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 {
-	if (libraryItems_.contains(vlnv))
+    if (libraryItems_.contains(vlnv))
     {
-		emit errorMessage(tr("The VLNV \n"
-			"Vendor: %1\n"
-			"Library: %2\n"
-			"Name: %3\n"
-			"Version: %4\n"
-			"Already existed in the library and was not added.").arg(
-			vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), vlnv.getVersion()));
+    	messageChannel_->showError(tr("The VLNV \n"
+    		"Vendor: %1\n"
+    		"Library: %2\n"
+    		"Name: %3\n"
+    		"Version: %4\n"
+    		"Already existed in the library and was not added.").arg(
+    		vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), vlnv.getVersion()));
 
-		return false;
-	}
+    	return false;
+    }
 
-	QFileInfo fileInfo(path);
-	if (!fileInfo.exists())
+    QFileInfo fileInfo(path);
+    if (!fileInfo.exists())
     {
-		emit errorMessage(tr("File %1 was not found in file system").arg(path));
-		return false;
-	}
+    	messageChannel_->showError(tr("File %1 was not found in file system").arg(path));
+    	return false;
+    }
 
-	// add the component to the library
-	libraryItems_.insert(vlnv, path);
+    // add the component to the library
+    libraryItems_.insert(vlnv, path);
     fileWatch_->addPath(path);
 
-	emit addVLNV(vlnv);
+    emit addVLNV(vlnv);
 
-	return true;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +135,7 @@ bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 //-----------------------------------------------------------------------------
 bool LibraryData::contains(VLNV const& vlnv)
 {
-	return libraryItems_.contains(vlnv);
+    return libraryItems_.contains(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -146,14 +143,14 @@ bool LibraryData::contains(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 VLNV::IPXactType LibraryData::getType(VLNV const& vlnv) const
 {
-	if (!libraryItems_.contains(vlnv))
+    if (!libraryItems_.contains(vlnv))
     {
-		return VLNV::INVALID;
-	}
-	else
+    	return VLNV::INVALID;
+    }
+    else
     {
-		return libraryItems_.find(vlnv).key().getType();
-	}
+    	return libraryItems_.find(vlnv).key().getType();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -270,7 +267,7 @@ void LibraryData::parseLibrary()
 
     QStringList locations = QSettings().value("Library/ActiveLocations", QStringList()).toStringList();
 
-    emit statusMessage(tr("Scanning library. Please wait..."));
+    messageChannel_->showStatusMessage(tr("Scanning library. Please wait..."));
 
     foreach (QString const& location, locations)
     {
@@ -280,7 +277,7 @@ void LibraryData::parseLibrary()
     checkLibraryIntegrity();
 
     emit resetModel();
-    emit statusMessage(tr("Ready."));
+    messageChannel_->showStatusMessage(tr("Ready."));
 }
 
 //-----------------------------------------------------------------------------
@@ -291,21 +288,21 @@ void LibraryData::checkLibraryIntegrity()
     failedObjects_ = 0;
     fileCount_ = 0;
 
-    emit statusMessage(tr("Validating items. Please wait..."));
+    messageChannel_->showStatusMessage(tr("Validating items. Please wait..."));
 
     foreach (VLNV const& documentVLNV, libraryItems_.keys())
     {
         performIntegrityCheck(documentVLNV);     
     }
 
-    emit noticeMessage(tr("========== Library integrity check complete =========="));
-    emit noticeMessage(tr("Total library object count: %1").arg(libraryItems_.size()));
-    emit noticeMessage(tr("Total file count in the library: %1").arg(fileCount_));
+    messageChannel_->showMessage(tr("========== Library integrity check complete =========="));
+    messageChannel_->showMessage(tr("Total library object count: %1").arg(libraryItems_.size()));
+    messageChannel_->showMessage(tr("Total file count in the library: %1").arg(fileCount_));
 
     // if errors were found then print the summary of error types
     if (failedObjects_ > 0)
     {
-        emit errorMessage(tr("Total items containing errors: %1").arg(failedObjects_));
+        messageChannel_->showError(tr("Total items containing errors: %1").arg(failedObjects_));
     }
 }
 
@@ -352,11 +349,11 @@ void LibraryData::onRemoveVLNV(VLNV const& vlnv)
     QFile xmlFile(documentPath);
     if (!xmlFile.exists())
     {
-        emit errorMessage(tr("File %1 was not found in file system").arg(documentPath));
+        messageChannel_->showError(tr("File %1 was not found in file system").arg(documentPath));
     }
     else if (!xmlFile.remove())
     {
-        emit errorMessage(tr("Could not remove file %1").arg(documentPath));
+        messageChannel_->showError(tr("Could not remove file %1").arg(documentPath));
     }
 
     fileWatch_->removePath(documentPath);
@@ -554,7 +551,7 @@ void LibraryData::parseFile(QString const& filePath)
 
     if (libraryItems_.contains(vlnv))
     {
-        emit noticeMessage(tr("VLNV %1 was already found in the library").arg(vlnv.toString()));
+        messageChannel_->showMessage(tr("VLNV %1 was already found in the library").arg(vlnv.toString()));
         return;
     }
 

@@ -11,6 +11,8 @@
 
 #include "LibraryWidget.h"
 
+#include <common/ui/GraphicalMessageMediator.h>
+
 #include "LibraryTreeWidget.h"
 #include "LibraryHandler.h"
 #include "HierarchyView/hierarchymodel.h"
@@ -25,14 +27,18 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::LibraryWidget()
 //-----------------------------------------------------------------------------
-LibraryWidget::LibraryWidget(LibraryHandler* library, QWidget *parent): QWidget(parent),
+LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageChannel, QWidget *parent): QWidget(parent),
     dialer_(new VLNVDialer(this)),
     library_(library),
     hierarchyWidget_(new HierarchyWidget(library_, library_->getHierarchyModel(), this)),
     treeWidget_(new LibraryTreeWidget(library_, library_->getTreeModel(), this)),
     statusBar_(new QStatusBar(this))
 {
-    library_->setParent(this);
+    GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel);
+    if (guiChannel)
+    {
+        guiChannel->setStatusBar(statusBar_);
+    }
 
     dialer_->setRootItem(library_->getTreeRoot());
 

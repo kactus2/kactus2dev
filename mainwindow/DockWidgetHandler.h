@@ -38,6 +38,7 @@ class ComponentItem;
 class ConnectionEndpoint;
 class GraphicsConnection;
 class Design;
+class MessageMediator;
 
 #include <QSharedPointer>
 #include <QDockWidget>
@@ -60,7 +61,7 @@ public:
      *      @param [in] library The used IP-XACT library.
      *      @param [in] parent  The main window.
      */
-    DockWidgetHandler(LibraryHandler* library, QMainWindow* parent);
+    DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, QMainWindow* parent);
 
     /*!
      *  The destructor.
@@ -439,7 +440,8 @@ private:
      *
      *      @return True, if the window type is supported by the active document, false otherwise.
      */
-    bool isSupportedWindowType(int const& tabCount, QWidget* currentTabWidget, TabDocument::SupportedWindows windowType);
+    bool isSupportedWindowType(int const& tabCount, QWidget* currentTabWidget,
+        TabDocument::SupportedWindows windowType);
 
     /*!
      *  Get the supported windows for the currently active tab widget.
@@ -566,6 +568,8 @@ private:
 
     //! The main window that should contain all of the dock widgets constructed in here.
     QMainWindow* mainWindow_;
+
+    MessageMediator* messageChannel_;
 };
 
 #endif // DOCKWIDGETHANDLER_H

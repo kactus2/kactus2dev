@@ -19,6 +19,7 @@
 
 class LibraryInterface;
 class PortMap;
+class MessageMediator;
 
 //-----------------------------------------------------------------------------
 // An instance of a component instance within a hierarchy with its parameters and interfaces parsed.
@@ -39,7 +40,7 @@ public:
     MetaInstance(
         QSharedPointer<ComponentInstance> componentInstance,
         LibraryInterface* library,
-        MessagePasser* messages,
+        MessageMediator* messages,
         QSharedPointer<Component> component,
         QSharedPointer<View> activeView);
 

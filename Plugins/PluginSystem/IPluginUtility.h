@@ -21,24 +21,11 @@ class LibraryInterface;
 class IPluginUtility
 {
 public:
+
     /*!
      *  Destructor.
      */
     virtual ~IPluginUtility() {}
-
-    /*!
-     *  Prints an error message to the console window.
-     *
-     *      @param [in] message The error message to print.
-     */
-    virtual void printError(QString const& message) = 0;
-
-    /*!
-     *  Prints an info message to the console window.
-     *
-     *      @param [in] message The info message to print.
-     */
-    virtual void printInfo(QString const& message) = 0;
 
     /*!
      *  Returns the library interface.
@@ -52,6 +39,20 @@ public:
 
 	//! Returns the current version of the Kactus2 build.
 	virtual QString getKactusVersion() const = 0;
+  
+    /*!
+     *  Prints an error message to the console window.
+     *
+     *      @param [in] message The error message to print.
+     */
+    virtual void printError(QString const& message) = 0;
+
+    /*!
+     *  Prints an info message to the console window.
+     *
+     *      @param [in] message The info message to print.
+     */
+    virtual void printInfo(QString const& message) = 0;
 };
 
 //-----------------------------------------------------------------------------

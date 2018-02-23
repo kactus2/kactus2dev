@@ -23,7 +23,7 @@
 // Function: ModelSimWriterFactory::ModelSimWriterFactory()
 //-----------------------------------------------------------------------------
 ModelSimWriterFactory::ModelSimWriterFactory(LibraryInterface* library,
-    MessagePasser* messages, GenerationSettings* settings,
+    MessageMediator* messages, GenerationSettings* settings,
     QString const& kactusVersion, QString const& generatorVersion) :
     library_(library),
     messages_(messages),
