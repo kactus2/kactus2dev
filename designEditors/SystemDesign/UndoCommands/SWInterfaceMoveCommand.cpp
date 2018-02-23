@@ -19,8 +19,8 @@
 // Function: SWInterfaceMoveCommand::SWInterfaceMoveCommand()
 //-----------------------------------------------------------------------------
 SWInterfaceMoveCommand::SWInterfaceMoveCommand(SWInterfaceItem* item, QPointF const& oldPos,
-                                               IGraphicsItemStack* oldStack, QUndoCommand* parent):
-ItemMoveCommand(item, oldPos, oldStack, parent),
+    IGraphicsItemStack* oldStack, DesignDiagram* diagram, QUndoCommand* parent):
+ItemMoveCommand(item, oldPos, oldStack, diagram, parent),
 interfaceItem_(item),
 oldPosition_(oldPos),
 newPosition_(item->scenePos())
@@ -32,9 +32,9 @@ newPosition_(item->scenePos())
 // Function: SWInterfaceMoveCommand::SWInterfaceMoveCommand()
 //-----------------------------------------------------------------------------
 SWInterfaceMoveCommand::SWInterfaceMoveCommand(SWInterfaceItem* item, QPointF const& oldPos,
-                                               IGraphicsItemStack* oldStack, QPointF const& newPos,
-                                               IGraphicsItemStack* newStack, QUndoCommand* parent):
-ItemMoveCommand(item, oldPos, oldStack, newPos, newStack, parent),
+    IGraphicsItemStack* oldStack, QPointF const& newPos, IGraphicsItemStack* newStack, DesignDiagram* diagram,
+    QUndoCommand* parent):
+ItemMoveCommand(item, oldPos, oldStack, newPos, newStack, diagram, parent),
 interfaceItem_(item),
 oldPosition_(oldPos),
 newPosition_(newPos)

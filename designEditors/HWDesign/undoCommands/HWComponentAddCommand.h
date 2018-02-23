@@ -20,6 +20,7 @@
 class IGraphicsItemStack;
 class ComponentItem;
 class Design;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! Undo add command for component items in HW design.
@@ -33,12 +34,12 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] design  The design containing the hw component.
-     *      @param [in] stack   The stack to which to add the item.
-     *      @param [in] item    The item to add.
-     *      @param [in] parent  The parent command.
+     *      @param [in] diagram     Diagram containing the scene of the component item.
+     *      @param [in] stack       The stack to which to add the item.
+     *      @param [in] item        The item to add.
+     *      @param [in] parent      The parent command.
      */
-    HWComponentAddCommand(QSharedPointer<Design> design, IGraphicsItemStack* stack, ComponentItem* item,
+    HWComponentAddCommand(DesignDiagram* diagram, IGraphicsItemStack* stack, ComponentItem* item,
         QUndoCommand* parent = 0);
 
     /*!
@@ -85,6 +86,9 @@ private:
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;
+
+    //! Diagram containing the scene of the component item.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

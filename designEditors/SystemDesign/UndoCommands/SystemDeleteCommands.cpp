@@ -14,6 +14,7 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ComponentItem.h>
 
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/SystemDesign/SystemColumn.h>
 #include <designEditors/SystemDesign/SystemComponentItem.h>
 #include <designEditors/SystemDesign/SWPortItem.h>
@@ -33,14 +34,13 @@
 //-----------------------------------------------------------------------------
 // Function: SystemColumnDeleteCommand()
 //-----------------------------------------------------------------------------
-SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layout, SystemColumn* column,
-                                                     QSharedPointer<Design> containingDesign,
-                                                     QUndoCommand* parent /* = 0 */):
+SystemColumnDeleteCommand::SystemColumnDeleteCommand(DesignDiagram* diagram, SystemColumn* column,
+    QUndoCommand* parent):
 QUndoCommand(parent),
-layout_(layout),
+layout_(diagram->getLayout().data()),
 graphicalColumn_(column),
 canDelete_(true),
-containingDesign_(containingDesign),
+containingDesign_(diagram->getDesign()),
 removedColumn_(getDeletedColumn())
 {
     // Create child commands for removing connections.

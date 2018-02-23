@@ -21,6 +21,7 @@ class GraphicsColumnLayout;
 class SystemColumn;
 class Design;
 class ColumnDesc;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnDeleteCommand class.
@@ -31,13 +32,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] layout              The column layout.
-     *      @param [in] column              The column to delete.
-     *      @param [in] containingDesign    The design containing the column.
-     *      @param [in] parent              The owner of this command.
+     *      @param [in] diagram     Diagram containing the scene of the column.
+     *      @param [in] column      The column to delete.
+     *      @param [in] parent      The owner of this command.
      */
-    SystemColumnDeleteCommand(GraphicsColumnLayout* layout, SystemColumn* column,
-        QSharedPointer<Design> containingDesign, QUndoCommand* parent = 0);
+    SystemColumnDeleteCommand(DesignDiagram* diagram, SystemColumn* column, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.

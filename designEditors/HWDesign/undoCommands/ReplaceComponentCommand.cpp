@@ -39,17 +39,17 @@
 // Function: ReplaceComponentCommand::ReplaceComponentCommand()
 //-----------------------------------------------------------------------------
 ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp,
-    QSharedPointer<Design> design,
-    QUndoCommand* parent ) :
+    DesignDiagram* diagram, QUndoCommand* parent):
 QUndoCommand(parent),
-    position_(oldComp->scenePos()),
-    newComp_(newComp)
+position_(oldComp->scenePos()),
+newComp_(newComp),
+diagram_(diagram)
 {
     new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(), position_,
-        oldComp->getParentStack(), this);
+        oldComp->getParentStack(), diagram, this);
 
     new ItemMoveCommand(oldComp, position_, oldComp->getParentStack(), newComp_->scenePos(),
-        newComp_->getParentStack(), this);
+        newComp_->getParentStack(), diagram, this);
 
     QStringList connectionNames;
     changeConnections(oldComp, newComp_, connectionNames);
@@ -60,6 +60,7 @@ QUndoCommand(parent),
         new AssociationChangeEndpointCommand(association, oldComp, newComp_, this);
     }
 
+    QSharedPointer<Design> design = diagram->getDesign();
     new ComponentChangeNameCommand(oldComp, newComp_->name(), design, this);
     new ComponentChangeNameCommand(newComp_, oldComp->name(), design, this);
 }
@@ -101,7 +102,7 @@ void ReplaceComponentCommand::createConnectionExchangeCommands(ConnectionEndpoin
     HWConnectionEndpoint* newEndpoint, QStringList& connectionNames)
 {
     // Create a move command to move the port to the same place where it is in the old component.
-    new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
+    new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), diagram_, this);
 
     // Exchange connections between the endpoints.
     foreach (GraphicsConnection* connection, oldEndpoint->getConnections())

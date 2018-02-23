@@ -73,7 +73,7 @@ design_(diagram->getDesign())
     if (targetColumn != 0)
     {
         HWComponentAddCommand* graphicsAddCommand =
-            new HWComponentAddCommand(design_, targetColumn, componentItem, this);
+            new HWComponentAddCommand(diagram, targetColumn, componentItem, this);
 
         QObject::connect(graphicsAddCommand, SIGNAL(componentInstantiated(ComponentItem*)),
             diagram, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);

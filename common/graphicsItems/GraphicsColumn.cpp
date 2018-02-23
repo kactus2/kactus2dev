@@ -36,17 +36,18 @@
 // Function: GraphicsColumn::GraphicsColumn()
 //-----------------------------------------------------------------------------
 GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout,
-    bool itemsCanTransferToOtherColumns)
-    : QGraphicsRectItem(),
-      layout_(layout),
-      columnData_(),
-      nameLabel_(new QGraphicsTextItem(this)),
-      itemLayout_(0),
-      items_(),
-      oldPos_(),
-      mouseNearResizeArea_(false),
-      oldWidth_(0),
-      itemsAreTransferable_(itemsCanTransferToOtherColumns)
+    bool itemsCanTransferToOtherColumns):
+QGraphicsRectItem(),
+layout_(layout),
+columnData_(),
+nameLabel_(new QGraphicsTextItem(this)),
+itemLayout_(0),
+items_(),
+oldPos_(),
+mouseNearResizeArea_(false),
+resizeInProgress_(false),
+oldWidth_(0),
+itemsAreTransferable_(itemsCanTransferToOtherColumns)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -411,9 +412,15 @@ ColumnTypes::ColumnContentType GraphicsColumn::getContentType() const
 //-----------------------------------------------------------------------------
 void GraphicsColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    if (mouseNearResizeArea_)
+    if (static_cast<DesignDiagram*>(scene())->isProtected())
     {
-        // Save the old width before resize.
+        return;
+    }
+
+    qreal cursorPosition = qAbs(event->pos().x() - boundingRect().right());
+    if (cursorPosition <= GridSize)
+    {
+        resizeInProgress_ = true;
         oldWidth_ = columnData_->getWidth();
     }
     else
@@ -437,7 +444,7 @@ void GraphicsColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     }
 
     // If the mouse is moved near the resize area, change the column's width accordingly.
-    if (mouseNearResizeArea_)
+    if (resizeInProgress_)
     {
         // Snap the resize to two grid units.
         qreal snappedRight = (static_cast<int>(event->pos().x() + 10.0) / 20) * 20;
@@ -458,16 +465,20 @@ void GraphicsColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    if (mouseNearResizeArea_ && columnData_->getWidth() != oldWidth_)
+    if (resizeInProgress_ && columnData_->getWidth() != oldWidth_)
     {
         DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
         if (diagram)
         {
-            QSharedPointer<QUndoCommand> cmd(new GraphicsColumnResizeCommand(this, oldWidth_));
+            QSharedPointer<QUndoCommand> cmd(new GraphicsColumnResizeCommand(this, oldWidth_, diagram));
             diagram->getEditProvider()->addCommand(cmd);
+
+            cmd->redo();
         }
+
+        resizeInProgress_ = false;
     }
-    else if (!mouseNearResizeArea_)
+    else if (!resizeInProgress_)
     {
         QGraphicsRectItem::mouseReleaseEvent(event);
 
@@ -494,7 +505,7 @@ void GraphicsColumn::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsRectItem::hoverEnterEvent(event);
 
     if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
-        qAbs(event->pos().x() - boundingRect().right()) <= GridSize &&
+        qAbs(event->pos().x() - boundingRect().right()) <= 10 &&
         !mouseNearResizeArea_)
     {
         QApplication::setOverrideCursor(Qt::SplitHCursor);

@@ -35,19 +35,19 @@
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::DesignWidget()
 //-----------------------------------------------------------------------------
-DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
-    : TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT |
-                          DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300),
-      library_(lh),
-      view_(new QGraphicsView(this)),
-      editedComponent_(),
-      viewName_(),
-      editProvider_(new GenericEditProvider(EDIT_HISTORY_SIZE)),
-      diagram_(0)
+DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent):
+TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT | DOC_PROTECTION_SUPPORT |
+    DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300),
+library_(lh),
+view_(new QGraphicsView(this)),
+editedComponent_(),
+viewName_(),
+editProvider_(new GenericEditProvider(EDIT_HISTORY_SIZE)),
+diagram_(0)
 {
     view_->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     view_->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-  
+    view_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);

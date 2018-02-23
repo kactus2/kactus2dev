@@ -13,6 +13,7 @@
 
 #include <common/graphicsItems/IGraphicsItemStack.h>
 
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
@@ -21,13 +22,14 @@
 //-----------------------------------------------------------------------------
 // Function: HWComponentAddCommand::HWComponentAddCommand()
 //-----------------------------------------------------------------------------
-HWComponentAddCommand::HWComponentAddCommand(QSharedPointer<Design> design, IGraphicsItemStack* stack,
-                                             ComponentItem* item, QUndoCommand* parent /* = 0 */):
+HWComponentAddCommand::HWComponentAddCommand(DesignDiagram* diagram, IGraphicsItemStack* stack,
+    ComponentItem* item, QUndoCommand* parent):
 QUndoCommand(parent),
-containingDesign_(design),
+containingDesign_(diagram->getDesign()),
 item_(item),
 stack_(stack),
-del_(false)
+del_(false),
+diagram_(diagram)
 {
 
 }
@@ -72,4 +74,6 @@ void HWComponentAddCommand::redo()
     containingDesign_->getComponentInstances()->append(itemInstance);
 
     emit componentInstantiated(item_);
+
+    diagram_->resetSceneRectangleForItems();
 }

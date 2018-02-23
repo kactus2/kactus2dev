@@ -322,7 +322,7 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     // Check if the port position was really changed.
     if (getOldPosition() != pos())
     {
-        moveUndoCommand = QSharedPointer<QUndoCommand>(new PortMoveCommand(this, getOldPosition()));
+        moveUndoCommand = QSharedPointer<QUndoCommand>(new PortMoveCommand(this, getOldPosition(), diagram));
     }
     else
     {
@@ -337,7 +337,8 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         if (cur.key()->pos() != cur.value())
         {
-            new PortMoveCommand(static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), moveUndoCommand.data());
+            new PortMoveCommand(
+                static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), diagram, moveUndoCommand.data());
         }
 
         cur++;

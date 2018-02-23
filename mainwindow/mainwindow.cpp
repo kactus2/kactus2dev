@@ -41,6 +41,7 @@
 #include <common/dialogs/listSelectDialog/ListSelectDialog.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <designEditors/common/DesignWidgetFactoryImplementation.h>
 #include <designEditors/HWDesign/HWDesignWidget.h>
@@ -836,21 +837,21 @@ void MainWindow::setupMenus()
     filteringGroup_->addAction(actionFilterAddressBlocks_);
     filteringGroup_->addAction(actionFilterRegisters_);
     filteringGroup_->addAction(actionFilterFields_);
+    filteringGroup_->addAction(actionFilterUnconnectedMemoryItems_);
     filteringGroup_->addAction(actionFilterAddressSpaceChains_);
     filteringGroup_->addAction(actionCondenseMemoryItems_);
     filteringGroup_->addAction(actionCondenseFieldItems_);
     filteringGroup_->addAction(actionExtendFieldItems_);
-    filteringGroup_->addAction(actionFilterUnconnectedMemoryItems_);
 
     filteringGroup_->widgetForAction(actionFilterSegments_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterAddressBlocks_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterRegisters_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterFields_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionFilterUnconnectedMemoryItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterAddressSpaceChains_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionCondenseMemoryItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionCondenseFieldItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionExtendFieldItems_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterUnconnectedMemoryItems_)->installEventFilter(ribbon_);
 
     //! The "View" group.
     RibbonGroup* viewGroup = ribbon_->addGroup(tr("View"));
@@ -1805,10 +1806,14 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     newDesign->setDesignImplementation(KactusAttribute::HW);
     newDesign->setVersion(VersionHelper::versionFileStr());
 
-    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
-    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", ColumnTypes::BUSES, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
-    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Components", ColumnTypes::COMPONENTS, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
-    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+        "IO", ColumnTypes::IO, 0, GraphicsColumnConstants::IO_COLUMN_WIDTH)));
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+        "Buses", ColumnTypes::BUSES, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+        "Components", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+    newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+        "IO", ColumnTypes::IO, 0, GraphicsColumnConstants::IO_COLUMN_WIDTH)));
 
     libraryHandler_->beginSave();
 
@@ -1926,13 +1931,13 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     designConf->setVersion(VersionHelper::versionFileStr());
 
     design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0,
-        SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
     design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", ColumnTypes::COMPONENTS, 0,
-        SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
     design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", ColumnTypes::COMPONENTS, 0,
-        SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
     design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", ColumnTypes::IO, 0,
-        SystemDesignDiagram::IO_COLUMN_WIDTH)));
+        GraphicsColumnConstants::IO_COLUMN_WIDTH)));
 
     // Create the files.
     libraryHandler_->beginSave();
@@ -2044,21 +2049,21 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
 
     if (component->getImplementation() == KactusAttribute::SW)
     {
-        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0,
-            SystemDesignDiagram::SW_COLUMN_WIDTH)));
-        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Middle-level", ColumnTypes::COMPONENTS, 0,
-            SystemDesignDiagram::SW_COLUMN_WIDTH)));
-        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("High-level", ColumnTypes::COMPONENTS, 0,
-            SystemDesignDiagram::SW_COLUMN_WIDTH)));
-        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Out", ColumnTypes::IO, 0,
-            SystemDesignDiagram::IO_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "Low-level", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "Middle-level", ColumnTypes::COMPONENTS, 0,GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "High-level", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "Out", ColumnTypes::IO, 0, GraphicsColumnConstants::IO_COLUMN_WIDTH)));
     }
     else
     {
-        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Pre-mapped SW", ColumnTypes::COMPONENTS, 0,
-            SystemDesignDiagram::SW_COLUMN_WIDTH)));
-        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Pre-mapped SW", ColumnTypes::COMPONENTS, 0,
-            SystemDesignDiagram::SW_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "Pre-mapped SW", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+        newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "Pre-mapped SW", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
     }
 
     libraryHandler_->beginSave();
@@ -2167,9 +2172,9 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     sysDesign->setVersion(VersionHelper::versionFileStr());
 
     sysDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0,
-        SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+        GraphicsColumnConstants::SYSTEM_COLUMN_WIDTH)));
     sysDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0,
-        SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+        GraphicsColumnConstants::SYSTEM_COLUMN_WIDTH)));
 
     generateSystemDesignV2(libraryHandler_, parentComp->getHierRef(viewName), *sysDesign);
 
@@ -2288,9 +2293,9 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     newDesign->setVersion(VersionHelper::versionFileStr());
 
     newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0,
-        SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+        GraphicsColumnConstants::SYSTEM_COLUMN_WIDTH)));
     newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0,
-        SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+        GraphicsColumnConstants::SYSTEM_COLUMN_WIDTH)));
 
     generateSystemDesignV2(libraryHandler_, component->getHierRef(), *newDesign);
 

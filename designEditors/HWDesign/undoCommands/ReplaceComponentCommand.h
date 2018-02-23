@@ -24,8 +24,8 @@ class HWComponentItem;
 class HWConnectionEndpoint;
 class ConnectionEndpoint;
 class GraphicsConnection;
-
 class ComponentInstance;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! Undo command for replacing a HW component instance with another one.
@@ -42,9 +42,10 @@ public:
 	 *      @param [in] diagram     The containing design diagram.
 	 *      @param [in] oldComp     The replaced component.
 	 *      @param [in] newComp     The new component.
+     *      @param [in] diagram     Diagram containing the scene of the component items.
 	 *      @param [in] parent      Owner of this command.
 	 */
-	ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp, QSharedPointer<Design> design,
+    ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp, DesignDiagram* diagram,
         QUndoCommand* parent = 0);
 
 	/*!
@@ -104,6 +105,9 @@ private:
 
     //! The new component that replaces the old one.
     HWComponentItem* newComp_;
+
+    //! Diagram containing the scene of the component items.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

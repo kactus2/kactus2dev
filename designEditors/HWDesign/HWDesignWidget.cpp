@@ -39,6 +39,7 @@
 
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
@@ -910,11 +911,11 @@ void HWDesignWidget::addColumn()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        int columnWidth = HWDesignDiagram::COMPONENT_COLUMN_WIDTH;
+        int columnWidth = GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH;
 
         if (dialog.getContentType() == ColumnTypes::IO)
         {
-            columnWidth = HWDesignDiagram::IO_COLUMN_WIDTH;
+            columnWidth = GraphicsColumnConstants::IO_COLUMN_WIDTH;
         }
 
         QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 

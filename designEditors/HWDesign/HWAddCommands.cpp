@@ -18,6 +18,7 @@
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/GraphicsColumn.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <designEditors/common/DesignDiagram.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -28,13 +29,15 @@
 //-----------------------------------------------------------------------------
 // Function: PortAddCommand()
 //-----------------------------------------------------------------------------
-PortAddCommand::PortAddCommand(HWComponentItem* component, QPointF const& pos, QUndoCommand* parent) :
+PortAddCommand::PortAddCommand(HWComponentItem* component, QPointF const& pos, DesignDiagram* diagram,
+    QUndoCommand* parent):
 QUndoCommand(parent),
-    component_(component),
-    pos_(pos),
-    port_(0), 
-    scene_(component->scene()),
-    del_(false)
+component_(component),
+pos_(pos),
+port_(0), 
+scene_(component->scene()),
+del_(false),
+diagram_(diagram)
 {
 
 }
@@ -86,6 +89,11 @@ void PortAddCommand::redo()
     // Child commands need not be executed because the other ports change their position
     // in a deterministic way.
     //QUndoCommand::redo();
+
+    if (port_->scenePos().y() + GraphicsColumnConstants::MIN_Y_PLACEMENT > diagram_->sceneRect().height())
+    {
+        diagram_->resetSceneRectangleForItems();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -227,6 +235,11 @@ void BusInterfacePasteCommand::redo()
     del_ = false;
 
     interfaceItem_->updateInterface();
+
+    if (interfaceItem_->scenePos().y() + GraphicsColumnConstants::MIN_Y_PLACEMENT > diagram_->sceneRect().height())
+    {
+        diagram_->resetSceneRectangleForItems();
+    }
 }
 
 //-----------------------------------------------------------------------------

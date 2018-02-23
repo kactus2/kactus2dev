@@ -23,6 +23,7 @@ class ComInterconnection;
 class ApiInterconnection;
 class GraphicsConnection;
 class ConnectionEndpoint;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! Undo command for replacing a system component instance with another one.
@@ -41,10 +42,11 @@ public:
 	 *      @param [in] existing            Flag for existence checking.
 	 *      @param [in] keepOld             Flag for keeping the old item.
      *      @param [in] containingDesign    The design containing the system component.
+     *      @param [in] diagram             Diagram containing the scene of the component items.
 	 *      @param [in] parent              Owner of the object.
 	 */
-	ReplaceSystemComponentCommand(SystemComponentItem* oldComp, SystemComponentItem* newComp, bool existing,
-        bool keepOld, QSharedPointer<Design> containingDesign, QUndoCommand* parent = 0);
+    ReplaceSystemComponentCommand(SystemComponentItem* oldComp, SystemComponentItem* newComp, bool existing,
+        bool keepOld, QSharedPointer<Design> containingDesign, DesignDiagram* diagram, QUndoCommand* parent = 0);
 
 	/*!
      *  Destructor.
@@ -113,6 +115,9 @@ private:
 
     //! Replaced component exists?
     bool existing_;
+
+    //! Diagram containing the scene of the component items.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

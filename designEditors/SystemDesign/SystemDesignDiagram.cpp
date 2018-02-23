@@ -29,6 +29,7 @@
 #include <common/graphicsItems/GraphicsColumnAddCommand.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
@@ -726,15 +727,15 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
             if (dialog.exec() == QDialog::Accepted)
             {
-                int columnWidth = SYSTEM_COLUMN_WIDTH;
+                int columnWidth = GraphicsColumnConstants::SYSTEM_COLUMN_WIDTH;
 
                 if (onlySW_)
                 {
-                    columnWidth = SW_COLUMN_WIDTH;
+                    columnWidth = GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH;
 
                     if (dialog.getContentType() == ColumnTypes::IO)
                     {
-                        columnWidth = IO_COLUMN_WIDTH;
+                        columnWidth = GraphicsColumnConstants::IO_COLUMN_WIDTH;
                     }
                 }
 
@@ -747,7 +748,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                     desc->setWidth(column->getColumnDesc()->getWidth());
                 }
 
-                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc, getDesign()));
+                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc, this));
                 getEditProvider()->addCommand(cmd);
                 cmd->redo();
             }
@@ -900,8 +901,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
                 // Create the undo command and execute it.
-                QSharedPointer<SystemComponentAddCommand> cmd(
-                    new SystemComponentAddCommand(stack, item, getDesign()));
+                QSharedPointer<SystemComponentAddCommand> cmd(new SystemComponentAddCommand(stack, item, this));
 
                 connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                     this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -940,7 +940,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             // Perform the replacement.
             QSharedPointer<ReplaceSystemComponentCommand> cmd(new ReplaceSystemComponentCommand(
-                oldCompItem, newCompItem, false, oldCompItem->type() == HWMappingItem::Type, getDesign()));
+                oldCompItem, newCompItem, false, oldCompItem->type() == HWMappingItem::Type, getDesign(), this));
 
             connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                 this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -1478,21 +1478,21 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     {
         if (onlySW_)
         {
-            design->addColumn(QSharedPointer<ColumnDesc>(
-                new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            design->addColumn(QSharedPointer<ColumnDesc>(
-                new ColumnDesc("Middle-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            design->addColumn(QSharedPointer<ColumnDesc>(
-                new ColumnDesc("High-level", ColumnTypes::COMPONENTS, 0, SW_COLUMN_WIDTH)));
-            design->addColumn(QSharedPointer<ColumnDesc>(
-                new ColumnDesc("Out", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+                "Low-level", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+                "Middle-level", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+                "High-level", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+                "Out", ColumnTypes::IO, 0, GraphicsColumnConstants::IO_COLUMN_WIDTH)));
         }
         else
         {
-            design->addColumn(QSharedPointer<ColumnDesc>(
-                new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
-            design->addColumn(QSharedPointer<ColumnDesc>(
-                new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, SYSTEM_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+                "SW Components", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::SYSTEM_COLUMN_WIDTH)));
+            design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+                "SW Components", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::SYSTEM_COLUMN_WIDTH)));
         }
     }
 
@@ -2446,7 +2446,7 @@ void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF c
     {
         if (cur.key()->scenePos() != cur.value())
         {
-            new ItemMoveCommand(cur.key(), cur.value(), column, cmd.data());
+            new ItemMoveCommand(cur.key(), cur.value(), column, this, cmd.data());
         }
 
         ++cur;
@@ -2535,7 +2535,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 }
             }
 
-            QSharedPointer<QUndoCommand> cmd(new SWPortAddCommand(comp, snapPointToGrid(clickedPosition)));
+            QSharedPointer<QUndoCommand> cmd(new SWPortAddCommand(comp, snapPointToGrid(clickedPosition), this));
             cmd->redo();
 
             // Create child undo commands for the changed ports.
@@ -2545,7 +2545,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
             {
                 if (cur.key()->pos() != cur.value())
                 {
-                    new SWPortMoveCommand(cur.key(), cur.value(), cmd.data());
+                    new SWPortMoveCommand(cur.key(), cur.value(), this, cmd.data());
                 }
 
                 ++cur;
@@ -2596,7 +2596,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 connect(swCompItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
                 QSharedPointer<SystemComponentAddCommand> cmd(
-                    new SystemComponentAddCommand(stack, swCompItem, getDesign()));
+                    new SystemComponentAddCommand(stack, swCompItem, this));
 
                 connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                     this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -2630,7 +2630,7 @@ void SystemDesignDiagram::replace(ComponentItem* destComp, ComponentItem* source
     {
         // Perform the replacement. 
         QSharedPointer<ReplaceSystemComponentCommand> cmd(new ReplaceSystemComponentCommand(
-            destSystemComponent, sourceSystemComponent, true, true, getDesign()));
+            destSystemComponent, sourceSystemComponent, true, true, getDesign(), this));
 
         connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -2724,8 +2724,7 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const col
 
         if (targetStack != 0)
         {
-            SystemComponentAddCommand* childCmd =
-                new SystemComponentAddCommand(targetStack, comp,  getDesign(), cmd);
+            SystemComponentAddCommand* childCmd = new SystemComponentAddCommand(targetStack, comp,  this, cmd);
 
             connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
                 this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -2822,7 +2821,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
         }
 
         // Run the actual command for pasting the interface.
-        QUndoCommand* pasteCmd = new SWPortAddCommand(targetComp, port, cmd);
+        QUndoCommand* pasteCmd = new SWPortAddCommand(targetComp, port, this, cmd);
         pasteCmd->redo();
 
         // Determine if the other interfaces changed their position and create undo commands for them.
@@ -2832,7 +2831,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
         {
             if (cur.key()->pos() != cur.value())
             {
-                new SWPortMoveCommand(cur.key(), cur.value(), pasteCmd);
+                new SWPortMoveCommand(cur.key(), cur.value(), this, pasteCmd);
             }
 
             ++cur;
@@ -2905,7 +2904,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                new ItemMoveCommand(cur.key(), cur.value(), stack, addCommand);
+                new ItemMoveCommand(cur.key(), cur.value(), stack, this, addCommand);
             }
 
             ++cur;

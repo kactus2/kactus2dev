@@ -37,6 +37,8 @@ class HWConnection;
 class HWComponentItem;
 class IGraphicsItemStack;
 class Port;
+class DesignDiagram;
+
 //-----------------------------------------------------------------------------
 //! PortAddCommand class.
 //-----------------------------------------------------------------------------
@@ -46,11 +48,13 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The component to which to add a port.
-     *      @param [in] pos        The position where to add the port.
-     *      @param [in] parent     The parent command.
+     *      @param [in] component   The component to which to add a port.
+     *      @param [in] pos         The position where to add the port.
+     *      @param [in] diagram     Diagram containing the scene of the port.
+     *      @param [in] parent      The parent command.
      */
-    PortAddCommand(HWComponentItem* component, QPointF const& pos, QUndoCommand* parent = 0);
+    PortAddCommand(HWComponentItem* component, QPointF const& pos, DesignDiagram* diagram,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -90,6 +94,9 @@ private:
 
     //! Boolean flag for indicating if the port should be deleted in the destructor.
     bool del_;
+
+    //! Diagram containing the scene of the port.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

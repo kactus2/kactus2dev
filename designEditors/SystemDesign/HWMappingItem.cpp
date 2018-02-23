@@ -139,7 +139,8 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     ComponentItem::mouseReleaseEvent(event);
     setZValue(0.0);
 
-    if (oldStack_ != 0)
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram && oldStack_ != 0)
     {
         IGraphicsItemStack* column = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(column != 0);
@@ -149,7 +150,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         if (scenePos() != oldPos_)
         {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldStack_));
+            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldStack_, diagram));
         }
         else
         {
@@ -170,7 +171,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has at least some real changes.
         if (cmd->childCount() > 0 || scenePos() != oldPos_)
         {
-            static_cast<SystemDesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+            diagram->getEditProvider()->addCommand(cmd);
             cmd->redo();
         }
 

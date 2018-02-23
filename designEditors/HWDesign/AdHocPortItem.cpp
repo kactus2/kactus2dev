@@ -314,7 +314,7 @@ void AdHocPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     // Check if the port position was really changed.
     if (oldPos_ != pos())
     {
-        cmd = QSharedPointer<QUndoCommand>(new PortMoveCommand(this, oldPos_));
+        cmd = QSharedPointer<QUndoCommand>(new PortMoveCommand(this, oldPos_, diagram));
     }
     else
     {
@@ -327,7 +327,7 @@ void AdHocPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         if (cur.key()->pos() != cur.value())
         {
-            new PortMoveCommand(static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), cmd.data());
+            new PortMoveCommand(static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), diagram, cmd.data());
         }
 
         cur++;
@@ -348,7 +348,8 @@ void AdHocPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())
     {
-        static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+        diagram->getEditProvider()->addCommand(cmd);
+        cmd->redo();
     }
 }
 

@@ -13,6 +13,7 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/SystemDesign/HWMappingItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
 #include <designEditors/SystemDesign/SystemColumn.h>
@@ -24,26 +25,30 @@
 //-----------------------------------------------------------------------------
 // Function: SWPortAddCommand()
 //-----------------------------------------------------------------------------
-SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, QPointF const& pos, QUndoCommand* parent):
+SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, QPointF const& pos, DesignDiagram* diagram,
+    QUndoCommand* parent):
 QUndoCommand(parent),
 component_(component),
 pos_(pos),
 port_(0),
 scene_(component->scene()),
-del_(false)
+del_(false),
+diagram_(diagram)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: SWPortAddCommand()
 //-----------------------------------------------------------------------------
-SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, QUndoCommand* parent):
+SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, DesignDiagram* diagram,
+    QUndoCommand* parent):
 QUndoCommand(parent),
 component_(component),
 pos_(),
 port_(port),
 scene_(component->scene()),
-del_(false)
+del_(false),
+diagram_(diagram)
 {
 }
 
@@ -94,4 +99,6 @@ void SWPortAddCommand::redo()
     // Child commands need not be executed because the other ports change their position
     // in a deterministic way.
     //QUndoCommand::redo();
+
+    diagram_->resetSceneRectangleForItems();
 }

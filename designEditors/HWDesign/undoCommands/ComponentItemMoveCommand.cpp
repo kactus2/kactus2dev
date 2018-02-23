@@ -14,19 +14,22 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
 
+#include <designEditors/common/DesignDiagram.h>
+
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentItemMoveCommand()
 //-----------------------------------------------------------------------------
 ComponentItemMoveCommand::ComponentItemMoveCommand(ComponentItem* item, QPointF const& oldPos,
-                                 IGraphicsItemStack* oldStack, QUndoCommand* parent)
-                                 : QUndoCommand(parent),
-                                 item_(item),
-                                 oldPos_(oldPos),
-                                 oldStack_(oldStack),
-                                 newPos_(item->scenePos()),
-                                 newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem()))
+    IGraphicsItemStack* oldStack, DesignDiagram* diagram, QUndoCommand* parent):
+QUndoCommand(parent),
+item_(item),
+oldPos_(oldPos),
+oldStack_(oldStack),
+newPos_(item->scenePos()),
+newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem())),
+diagram_(diagram)
 {
 
 }
@@ -67,4 +70,17 @@ void ComponentItemMoveCommand::redo()
      item_->getComponentInstance()->setPosition(newPos_);
     // Execute child commands.
     QUndoCommand::redo();
+
+    resetSceneRectangle();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItemMoveCommand::resetSceneRectangle()
+//-----------------------------------------------------------------------------
+void ComponentItemMoveCommand::resetSceneRectangle()
+{
+    if (oldStack_ != newStack_)
+    {
+        diagram_->resetSceneRectangleForItems();
+    }
 }

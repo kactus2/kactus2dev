@@ -542,7 +542,8 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     SWConnectionEndpoint::mouseReleaseEvent(event);
 
-    if (oldStack_ != 0)
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram && oldStack_ != 0)
     {
         IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(stack != 0);
@@ -553,7 +554,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Check if the interface position was really changed.
         if (oldPos_ != scenePos())
         {
-            cmd = QSharedPointer<QUndoCommand>(new SWInterfaceMoveCommand(this, oldPos_, oldStack_));
+            cmd = QSharedPointer<QUndoCommand>(new SWInterfaceMoveCommand(this, oldPos_, oldStack_, diagram));
         }
         else
         {
@@ -568,7 +569,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             if (cur.key()->scenePos() != cur.value() && cur.key() != this)
             {
                 new SWInterfaceMoveCommand(cur.key(), cur.value(),
-                    dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()), cmd.data());
+                    dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()), diagram, cmd.data());
             }
 
             ++cur;
@@ -590,8 +591,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has changes.
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
         {
-            static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
-
+            diagram->getEditProvider()->addCommand(cmd);
             cmd->redo();
         }
 

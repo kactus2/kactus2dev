@@ -17,9 +17,10 @@
 #include "SWInterfaceItem.h"
 #include "HWMappingItem.h"
 
-#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
+#include <common/graphicsItems/GraphicsConnection.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/common/Association/Association.h>
@@ -341,8 +342,7 @@ void SystemDesignWidget::deleteSelectedSystemColumns(QList<QGraphicsItem*> selec
     foreach (QGraphicsItem* selected, selectedItems)
     {
         SystemColumn* column = static_cast<SystemColumn*>(selected);
-        QUndoCommand* childCmd = new SystemColumnDeleteCommand(
-            getDiagram()->getLayout().data(), column, getDiagram()->getDesign(), cmd.data());
+        QUndoCommand* childCmd = new SystemColumnDeleteCommand(getDiagram(), column, cmd.data());
         childCmd->redo();
     }
 
@@ -543,12 +543,14 @@ void SystemDesignWidget::addColumn()
         {
             if (dialog.getContentType() == ColumnTypes::IO)
             {
-                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::IO_COLUMN_WIDTH));
+                QSharedPointer<ColumnDesc> desc(new ColumnDesc(
+                    dialog.name(), dialog.getContentType(), 0, GraphicsColumnConstants::IO_COLUMN_WIDTH));
                 getDiagram()->addColumn(desc);
             }
             else
             {
-                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+                QSharedPointer<ColumnDesc> desc(new ColumnDesc(
+                    dialog.name(), dialog.getContentType(), 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH));
                 getDiagram()->addColumn(desc);
             }
         }
@@ -561,7 +563,7 @@ void SystemDesignWidget::addColumn()
         if (dialog.exec() == QDialog::Accepted)
         {
             getDiagram()->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(dialog.name(),
-                ColumnTypes::COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
+                ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::SYSTEM_COLUMN_WIDTH)));
         }
     }
 }

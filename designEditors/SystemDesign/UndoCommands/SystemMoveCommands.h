@@ -18,6 +18,7 @@
 
 class SWPortItem;
 class GraphicsConnection;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! SWConnectionMoveCommand class.
@@ -77,21 +78,24 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] port    The port to move.
-     *      @param [in] oldPos  The port's old position.
-     *      @param [in] parent  The parent command.
+     *      @param [in] port        The port to move.
+     *      @param [in] oldPos      The port's old position.
+     *      @param [in] diagram     Diagram containing the scene of the port.
+     *      @param [in] parent      The parent command.
      */
-    SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QUndoCommand* parent = 0);
+    SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Constructor.
      *
-     *      @param [in] port    The port to move.
-     *      @param [in] oldPos  The port's old position.
-     *      @param [in] newPos  The port's new position.
-     *      @param [in] parent  The parent command.
+     *      @param [in] port        The port to move.
+     *      @param [in] oldPos      The port's old position.
+     *      @param [in] newPos      The port's new position.
+     *      @param [in] diagram     Diagram containing the scene of the port.
+     *      @param [in] parent      The parent command.
      */
-    SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QPointF const& newPos, QUndoCommand* parent = 0);
+    SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QPointF const& newPos, DesignDiagram* diagram,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -125,6 +129,9 @@ private:
 
     //! The new position of the port.
     QPointF newPos_;
+
+    //! Diagram containing the scene of the port.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

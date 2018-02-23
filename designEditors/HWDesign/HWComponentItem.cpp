@@ -489,14 +489,15 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     ComponentItem::mouseReleaseEvent(event);
     setZValue(0.0);
 
-    if (oldColumn_ != 0 && scenePos() != oldPos_)
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram && oldColumn_ != 0 && scenePos() != oldPos_)
     {
         HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
         Q_ASSERT(column != 0);
         column->onReleaseItem(this);
 
-        QSharedPointer<QUndoCommand> cmd(new ComponentItemMoveCommand(this, oldPos_, oldColumn_));
-        
+        QSharedPointer<QUndoCommand> cmd(new ComponentItemMoveCommand(this, oldPos_, oldColumn_, diagram));
+
         // End the position update for all connections.
         foreach (QGraphicsItem *item, scene()->items())
         {
@@ -508,7 +509,8 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             }
         }
 
-        static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+        diagram->getEditProvider()->addCommand(cmd);
+        cmd->redo();
 
         oldColumn_ = 0;
     }

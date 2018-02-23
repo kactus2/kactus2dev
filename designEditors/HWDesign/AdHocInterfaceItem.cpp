@@ -309,7 +309,8 @@ void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     HWConnectionEndpoint::mouseReleaseEvent(event);
     setZValue(0.0);
 
-    if (oldColumn_ != 0)
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram && oldColumn_ != 0)
     {
         GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
         Q_ASSERT(column != 0);
@@ -320,7 +321,7 @@ void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         // Check if the interface position was really changed.
         if (oldPos_ != scenePos())
         {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldColumn_));
+            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldColumn_, diagram));
         }
         else
         {
@@ -333,7 +334,7 @@ void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                new ItemMoveCommand(cur.key(), cur.value(), oldColumn_, cmd.data());
+                new ItemMoveCommand(cur.key(), cur.value(), oldColumn_, diagram, cmd.data());
             }
 
             cur++;
@@ -352,7 +353,8 @@ void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         // Add the undo command to the edit stack only if it has changes.
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
         {
-            static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+            diagram->getEditProvider()->addCommand(cmd);
+            cmd->redo();
         }
 
         oldColumn_ = 0;

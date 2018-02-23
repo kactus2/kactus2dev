@@ -13,6 +13,7 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/SystemDesign/HWMappingItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
 #include <designEditors/SystemDesign/SystemComponentItem.h>
@@ -24,14 +25,14 @@
 // Function: SystemComponentAddCommand::SystemComponentAddCommand()
 //-----------------------------------------------------------------------------
 SystemComponentAddCommand::SystemComponentAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item,
-                                                     QSharedPointer<Design> containingDesign,
-                                                     QUndoCommand* parent):
+    DesignDiagram* diagram, QUndoCommand* parent):
 QUndoCommand(parent),
 item_(item),
 stack_(stack),
 del_(false),
 newHwComponentId_(""),
-containingDesign_(containingDesign)
+containingDesign_(diagram->getDesign()),
+diagram_(diagram)
 {
     if (stack_)
     {
@@ -126,4 +127,6 @@ void SystemComponentAddCommand::redo()
     // Child commands need not be executed because the other items change their position
     // in a deterministic way.
     //QUndoCommand::redo();
+
+    diagram_->resetSceneRectangleForItems();
 }
