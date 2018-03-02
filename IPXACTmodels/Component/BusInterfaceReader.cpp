@@ -422,6 +422,11 @@ void BusinterfaceReader::readMasterInterface(QDomElement const& masterInterfaceE
     QDomElement addressSpaceRefElement = masterInterfaceElement.firstChildElement(QStringLiteral("ipxact:addressSpaceRef"));
  
     QString addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("addressSpaceRef"));
+    if (addressSpaceRef.isEmpty())
+    {
+        addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("ipxact:addressSpaceRef"));
+    }
+
     masterInterface->setAddressSpaceRef(XmlUtils::removeWhiteSpace(addressSpaceRef));
 
     QDomElement isPresentElement = addressSpaceRefElement.firstChildElement(QStringLiteral("ipxact:isPresent"));

@@ -19,6 +19,8 @@
 
 #include <designEditors/MemoryDesigner/MemoryDesignDocument.h>
 #include <designEditors/MemoryDesigner/MemoryDesignConstructor.h>
+#include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -164,6 +166,22 @@ bool MemoryDesignerDiagram::fieldsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::filterUnconnectedMemoryItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::filterUnconnectedMemoryItems(bool filterUnconnected)
+{
+    memoryConstructor_->filterUnconnectedMemoryItems(filterUnconnected);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::unconnectedMemoryItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::unconnectedMemoryItemsAreFiltered() const
+{
+    return memoryConstructor_->unconnectedMemoryItemsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::loadDesign()
 //-----------------------------------------------------------------------------
 bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Component> component,
@@ -175,7 +193,17 @@ bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Compo
         instanceLocator_.createConnectivityGraph(component, viewName);
     if (connectionGraph)
     {
-        return memoryConstructor_->constructMemoryDesignItems(connectionGraph);
+        bool constructionIsSuccess = memoryConstructor_->constructMemoryDesignItems(connectionGraph);
+        if (constructionIsSuccess)
+        {
+            QRectF rectangle = itemsBoundingRect();
+            qreal requiredWidth = rectangle.width();
+            qreal requiredHeight = rectangle.height() + MemoryDesignerConstants::SPACEITEMINTERVAL;
+
+            setSceneRect(0, 0, requiredWidth, requiredHeight);
+        }
+
+        return constructionIsSuccess;
     }
 
     return false;

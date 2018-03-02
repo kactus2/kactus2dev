@@ -55,8 +55,12 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
         namingPolicy = BusInterfaceWizardBusDefinitionEditorPage::DESCRIPTION;
     }
 
-    BusInterfaceWizardGeneralOptionsPage* optionsPage = new BusInterfaceWizardGeneralOptionsPage(component, busIf,
-        handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter, expressionParser, this);
+    QSharedPointer<BusInterfaceValidator> busValidator =
+        createBusInterfaceValidator(component, expressionParser, handler);
+
+    BusInterfaceWizardGeneralOptionsPage* optionsPage =
+        new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, !absDefVLNV.isValid(), parameterFinder,
+        expressionFormatter, expressionParser, busValidator, this);
 
     connect(optionsPage, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -68,8 +72,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(component, busIf, handler, portNames, 
         this, absDefVLNV, expressionParser, namingPolicy));
     setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
-        expressionParser, expressionFormatter, parameterFinder, 
-        createBusInterfaceValidator(component, expressionParser, handler), this));
+        expressionParser, expressionFormatter, parameterFinder, busValidator, this));
     setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 

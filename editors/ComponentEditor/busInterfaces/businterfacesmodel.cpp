@@ -173,7 +173,7 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
             }
             else if (!busInterface->getAbstractionTypes()->isEmpty())
             {
-                return QStringLiteral("Multiple");
+                return QStringLiteral("[multiple]");
             }
 
             return QVariant();
@@ -269,14 +269,13 @@ bool BusInterfacesModel::setData(QModelIndex const& index, const QVariant& value
         }
         else if (index.column() == BusInterfaceColumns::ABSDEF)
         {
-            if (busInterface->getAbstractionTypes()->isEmpty())
-            {
-                busInterface->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType()));
-            }
-
             QSharedPointer<ConfigurableVLNVReference> absType(new ConfigurableVLNVReference(VLNV(
                 VLNV::ABSTRACTIONDEFINITION, value.toString(), ":")));
-            busInterface->getAbstractionTypes()->first()->setAbstractionRef(absType);
+
+            QSharedPointer<AbstractionType> abstraction(new AbstractionType());
+            abstraction->setAbstractionRef(absType);
+
+            busInterface->getAbstractionTypes()->append(abstraction);
         }
         else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
         {

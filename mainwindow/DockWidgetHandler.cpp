@@ -615,6 +615,7 @@ void DockWidgetHandler::selectConnectionInterface(QWidget* currentTabWidget, Con
         if (designWidget)
         {
             interfaceEditor_->setInterface(interface, designWidget->getDiagram()->getDesign(),
+                designWidget->getDiagram()->getDesignConfiguration(), designWidget->getOpenViewName(),
                 designWidget->getEditProvider(), designWidget->isProtected());
         }
 

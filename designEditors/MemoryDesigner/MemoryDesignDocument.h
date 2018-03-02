@@ -182,6 +182,20 @@ public:
      */
     bool fieldsAreFiltered() const;
 
+    /*!
+     *  Check whether the unconnected memory items are filtered or not.
+     *
+     *      @return True, if the unconnected memory items are filtered, otherwise false.
+     */
+    bool unconnectedMemoryItemsAreFiltered() const;
+
+    /*!
+     *  Filter the unconnected memory items.
+     *
+     *      @param [in] filterUnconnected   Value for filtering the unconnected memory items.
+     */
+    void filterUnconnectedMemoryItems(bool filterUnconnected);
+
 public slots:
 
     /*!

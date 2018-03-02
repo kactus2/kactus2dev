@@ -108,18 +108,22 @@ public:
     /*!
      *  Compress the contained sub memory items to contain the retained addresses.
      *
-     *      @param [in] unCutAddresses  The retained addresses.
-     *      @param [in] CUTMODIFIER     Modifier for the cut area.
+     *      @param [in] unCutAddresses              The retained addresses.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut area.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
-    void compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+    void compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
+        bool memoryItemsAreCompressed);
 
     /*!
      *  Compress the contained sub memory items to contain the retained coordinates.
      *
-     *      @param [in] unCutCoordinates    The retained coordinates.
-     *      @param [in] CUTMODIFIER         Modifier for the cut area.
+     *      @param [in] unCutCoordinates            The retained coordinates.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut area.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
-    void compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
+    void compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER,
+        bool memoryItemsAreCompressed);
 
     /*!
      *  Get layout height modified by the height of the out of bounds sub memory items.
@@ -163,21 +167,26 @@ protected:
     /*!
      *  Compress the sub items.
      *
-     *      @param [in] minimumSubItemHeight    The minimum height of the sub items.
+     *      @param [in] itemBaseAddress             Base address of the containing item.
+     *      @param [in] itemLastAddress             Last address of the containing item.
+     *      @param [in] minimumSubItemHeight        The minimum height of the sub items.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      *
      *      @return The total height of the condensed sub items.
      */
-    qreal condenseChildItems(qreal minimumSubItemHeight);
+    qreal condenseChildItems(quint64 itemBaseAddress, quint64 itemLastAddress, qreal minimumSubItemHeight,
+        bool memoryItemsAreCondensed);
 
     /*!
      *  Compress the selected sub item.
      *
-     *      @param [in] subItem                 The selected sub item.
-     *      @param [in] minimumSubItemHeight    Minimum height of the sub item.
-     *      @param [in] positionY               Y-coordinate for the sub item.
+     *      @param [in] subItem                     The selected sub item.
+     *      @param [in] minimumSubItemHeight        Minimum height of the sub item.
+     *      @param [in] positionY                   Y-coordinate for the sub item.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
     quint64 condenseSubItem(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight,
-        quint64 positionY);
+        quint64 positionY, bool memoryItemsAreCondensed);
 
 private:
     // Disable copying.

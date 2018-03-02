@@ -715,7 +715,7 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
             stream << "\t\t\t" << DocumentGeneratorHTML::INDENT <<
                 "<strong>Ports used in this interface:</strong>";
 
-            const QList<QSharedPointer<Port> > ports = component->getPorts(interface->name());
+            const QList<QSharedPointer<Port> > ports = component->getPortsMappedInInterface(interface->name());
             if (!ports.isEmpty())
             {
                 stream << endl << "\t\t\t</p>" << endl;

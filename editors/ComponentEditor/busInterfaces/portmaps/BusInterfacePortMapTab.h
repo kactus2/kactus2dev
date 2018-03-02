@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QComboBox>
 
 class BusInterface;
 class Component;
@@ -39,6 +40,7 @@ class ParameterFinder;
 class PortMapTreeDelegate;
 class PortMapValidator;
 class PortMapAutoConnector;
+class AbstractionType;
 
 //-----------------------------------------------------------------------------
 //! Tab for editing and viewing bus interface port maps.
@@ -79,11 +81,9 @@ public:
 	/*!
      *  Set the abstraction type that defines the logical signals to use.
 	 *
-	 *      @param [in] vlnv            VLNV of the new abstraction type.
-     *      @param [in] mode            The interface mode of the bus interface.
-     *      @param [in] systemGroup     The used system group in case of system mode.
+     *      @param [in] abstraction     The selected abstraction type.
 	 */
-	virtual void setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString const& systemGroup);
+    virtual void setAbsType(QSharedPointer<AbstractionType> abstraction);
 
     /*!
      *  Sets a subset of component ports to be visible in the physical port list.
@@ -91,6 +91,11 @@ public:
      *      @param [in] ports   List of port names to show.
      */
     virtual void setPhysicalPorts(QStringList const& ports);
+
+    /*!
+     *  Setup the available abstraction definitions.
+     */
+    void setAbstractionDefinitions();
 
 signals:
 
@@ -151,6 +156,11 @@ private slots:
      *      @param [in] newDirection    The selected direction.
      */
     void onDirectionFilterChanged(QString const& newDirection);
+
+    /*!
+     *  Handle the selection of currently active the abstraction type.
+     */
+    void onAbstractionChanged();
 
 private:
 	
@@ -227,6 +237,12 @@ private:
 
     //! Automatic port map creator.
     PortMapAutoConnector autoConnector_;
+
+    //! Selects the active abstraction type.
+    QComboBox* abstractionSelector_;
+
+    //! List of the available abstraction types.
+    QList<QSharedPointer<AbstractionType> > abstractions_;
 };
 
 #endif // BUSINTERFACEPORTMAPTAB_H

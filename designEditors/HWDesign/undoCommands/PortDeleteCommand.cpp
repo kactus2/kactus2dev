@@ -44,9 +44,9 @@ QUndoCommand(parent),
         new ConnectionDeleteCommand(diagram, static_cast<HWConnection*>(conn), this);
     }
 
-    if (port_->getBusInterface()->getPortMaps())
+    if (port_->getBusInterface()->getAllPortMaps())
     {
-        foreach (QSharedPointer<PortMap> portMap, *port_->getBusInterface()->getPortMaps())
+        foreach (QSharedPointer<PortMap> portMap, *port_->getBusInterface()->getAllPortMaps())
         {
             new DeletePhysicalPortCommand(componentItem_->componentModel(),
                 componentItem_->componentModel()->getPort(portMap->getPhysicalPort()->name_),

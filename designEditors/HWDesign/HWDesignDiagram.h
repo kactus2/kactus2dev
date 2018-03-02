@@ -81,6 +81,7 @@ public:
     {
         QSharedPointer<Component> srcComponent;         //!< The origin component.
         QSharedPointer<BusInterface> busInterface;      //!< The bus interface.
+        ComponentItem* containingItem;                  //!< The containing component item.
         QPointF position;
         bool topLevelIf;                                //!< Top-level or bus port interface.
 
@@ -90,6 +91,7 @@ public:
         BusInterfaceCopyData()
             : srcComponent(),
             busInterface(),
+            containingItem(),
             position(),
             topLevelIf()
         {
@@ -549,11 +551,13 @@ private:
      *
      *      @param [in] sourceComponent     The component containing the bus interface to copy from.
      *      @param [in] sourceInterface     The bus interface to copy from.
+     *      @param [in] sourceInstanceItem  The item containing the copied end point.
      *      @param [in] target              The bus interface item to copy into.
      *      @param [in] parentCommand       The parent undo command.
      */
     void copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sourceComponent, 
-        QSharedPointer<BusInterface> sourceInterface, ConnectionEndpoint* target, QUndoCommand* parentCommand);
+        QSharedPointer<BusInterface> sourceInterface, ComponentItem* sourceInstanceItem,
+        ConnectionEndpoint* target, QUndoCommand* parentCommand);
 
     /*!
      *  Creates a connecting port for opposing the given port.

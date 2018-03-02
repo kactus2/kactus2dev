@@ -29,30 +29,11 @@ name_(this),
 version_(this),
 layout_(new QFormLayout()),
 compactLayout_(new QHBoxLayout()),
-pathLabel_(new QLabel(this))
+pathLabel_(new QLabel(this)),
+compact_(compact)
 {
     setupLayout();
-	setVLNV(vlnv, compact);
-}
-
-//-----------------------------------------------------------------------------
-// Function: vlnvdisplayer::VLNVDisplayer()
-//-----------------------------------------------------------------------------
-VLNVDisplayer::VLNVDisplayer(QWidget* parent):
-QGroupBox(parent),
-vendorLabel_(tr("Vendor:"), this),
-libraryLabel_(tr("Library:"), this),
-nameLabel_(tr("Name:"), this),
-versionLabel_(tr("Version:"), this),
-vendor_(this),
-library_(this),
-name_(this),
-version_(this),
-layout_(new QFormLayout()),
-compactLayout_(new QHBoxLayout()),
-pathLabel_(new QLabel(this))
-{
-    setupLayout();
+    setVLNV(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +88,7 @@ void VLNVDisplayer::setupCompactLayout()
 //-----------------------------------------------------------------------------
 // Function: vlnvdisplayer::setVLNV()
 //-----------------------------------------------------------------------------
-void VLNVDisplayer::setVLNV(const VLNV& vlnv, bool compact)
+void VLNVDisplayer::setVLNV(const VLNV& vlnv)
 {
     vendor_.setText(vlnv.getVendor());
     library_.setText(vlnv.getLibrary());
@@ -135,12 +116,12 @@ void VLNVDisplayer::setVLNV(const VLNV& vlnv, bool compact)
     }
 
     // Show the labels for non-compact layout.
-    vendorLabel_.setVisible(!compact);
-    libraryLabel_.setVisible(!compact);
-    nameLabel_.setVisible(!compact);
-    versionLabel_.setVisible(!compact);
+    vendorLabel_.setVisible(!compact_);
+    libraryLabel_.setVisible(!compact_);
+    nameLabel_.setVisible(!compact_);
+    versionLabel_.setVisible(!compact_);
 
-    if (compact)
+    if (compact_)
     {
         // Set the compact layout.
         setLayout(compactLayout_);

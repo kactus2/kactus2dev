@@ -40,7 +40,7 @@ QVector<QVector<QSharedPointer<ConnectivityInterface> > > MasterSlavePathSearch:
     masterPaths_.clear();
 
     foreach (QSharedPointer<ConnectivityInterface> masterInterface, findInitialMasterInterfaces(graph))
-    {       
+    {
         findPaths(masterInterface, QSharedPointer<ConnectivityConnection>(0), 
             QVector<QSharedPointer<ConnectivityInterface> >(), graph);
     }

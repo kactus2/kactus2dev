@@ -28,15 +28,16 @@
 #include <QGroupBox>
 #include <QString>
 #include <QSharedPointer>
+#include <QStackedWidget>
 
 class DesignDiagram;
 class ExpressionParser;
 class GraphicsConnection;
 class LibraryInterface;
-
 class BusInterface;
 class Component;
-
+class ConnectionEndpoint;
+class ComponentInstance;
 
 //-----------------------------------------------------------------------------
 //! Editor to display/edit details of a connection.
@@ -92,11 +93,12 @@ private:
     /*!
      *  Finds the VLNV for the bus abstraction.
      *
-     *      @param [in] busInterface   The bus interface whose abstraction definition VLNV to find.
+     *      @param [in] endPoint        The selected bus interface end point.
+     *      @param [in] busInterface    The bus interface whose abstraction definition VLNV to find.
      *
      *      @return The VLNV for the given bus interface abstraction definition.
      */
-    VLNV findAbstractionVLNV(QSharedPointer<BusInterface> busInterface) const;
+    VLNV findAbstractionVLNV(ConnectionEndpoint* endPoint, QSharedPointer<BusInterface> busInterface) const;
 
 	//! Set port maps so that editor displays the connected physical ports.
 	void setPortMaps();
@@ -176,8 +178,30 @@ private:
     QPair<int, int> calculateMappedLogicalPortBounds(QSharedPointer<ExpressionParser> parser,
         QSharedPointer<PortMap> containingPortMap);
     
-    //! Sets the editor layout.
+    /*!
+     *  Sets the editor layout.
+     */
     void setupLayout();
+
+    /*!
+     *  Get the port maps for the selected bus interface end point.
+     *
+     *      @param [in] endPoint        The selected end point.
+     *      @param [in] busInterface    The bus interface contained within the selected end point.
+     *
+     *      @return A list of port maps contained within the selected end point
+     */
+    QList<QSharedPointer<PortMap> > getPortMapsForEndPoint(ConnectionEndpoint* endPoint,
+        QSharedPointer<BusInterface> busInterface) const;
+
+    /*!
+     *  Get the active view for the item containing the selected end point item.
+     *
+     *      @param [in] endPoint    The selected end point.
+     *
+     *      @return The name of the active view containing the selected end point item.
+     */
+    QString getActiveViewForEndPoint(ConnectionEndpoint* endPoint) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -230,6 +254,9 @@ private:
 
     //! The ad-hoc bounds model.
     AdHocBoundsModel adHocBoundsModel_;
+
+    //! Stack containing the connection types.
+    QStackedWidget* connectionTypeTable_;
 };
 
 #endif // CONNECTIONEDITOR_H

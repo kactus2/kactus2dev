@@ -39,6 +39,7 @@
 #include <IPXACTmodels/Design/validator/DesignValidator.h>
 #include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
@@ -572,12 +573,13 @@ void VhdlGenerator2::parseTopGenerics(QString const& viewName)
         
         if (cimp)
         {
+            ExpressionFormatterFactoryImplementation formatterFactory;
+            QSharedPointer<ExpressionFormatter> formatter(formatterFactory.makeExpressionFormatter(component_));
+
             foreach (QSharedPointer<ModuleParameter> moduleParam, *cimp->getModuleParameters())
             {
-                QString name = moduleParam->name();
-                QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam.data()));
-
-                topGenerics_.insert(name, generic);
+                QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam, formatter));
+                topGenerics_.insert(moduleParam->name(), generic);
             }
         }
     }
@@ -598,7 +600,7 @@ void VhdlGenerator2::parseTopPorts()
 		}
 
 		// create the actual port
-		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data()));
+		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port, topComponentParser_));
 
         QString busInterfaceName = getContainingBusInterfaceName(component_, port->name());
 
@@ -640,6 +642,13 @@ void VhdlGenerator2::parseInstances()
 			continue;
 		}
 
+        			QSharedPointer<Document> libComp = handler_->getModel(*instance->getComponentRef());
+			QSharedPointer<Component> component = libComp.staticCast<Component>();
+			Q_ASSERT(component);
+
+        QSharedPointer<ParameterFinder> instanceFinder(new ComponentParameterFinder(component));
+        QSharedPointer<ExpressionParser> instanceParser(new IPXactSystemVerilogParser(instanceFinder));
+
 		// pointer to the matching component declaration
 		QSharedPointer<VhdlComponentDeclaration> compDeclaration;
 		
@@ -652,11 +661,8 @@ void VhdlGenerator2::parseInstances()
 		// if component declaration is not yet created then create it
 		else
         {
-			QSharedPointer<Document> libComp = handler_->getModel(*instance->getComponentRef());
-			QSharedPointer<Component> component = libComp.staticCast<Component>();
-			Q_ASSERT(component);
-			compDeclaration = QSharedPointer<VhdlComponentDeclaration>(new VhdlComponentDeclaration(component,""));
 
+			compDeclaration = QSharedPointer<VhdlComponentDeclaration>(new VhdlComponentDeclaration(component, instanceParser));
 			components_.insert(*instance->getComponentRef(), compDeclaration);
 		}
 		Q_ASSERT(compDeclaration);
@@ -881,9 +887,9 @@ void VhdlGenerator2::connectInterfaces( const QString& connectionName, const QSt
     QSharedPointer<IPXactSystemVerilogParser> secondParser(new IPXactSystemVerilogParser(secondFinder));
 
 	// Go through the port maps of both interfaces.
-	foreach (QSharedPointer<PortMap> portMap1, *interface1->getPortMaps())
+    foreach (QSharedPointer<PortMap> portMap1, *interface1->getAllPortMaps())
     {
-		foreach(QSharedPointer<PortMap> portMap2, *interface2->getPortMaps())
+        foreach(QSharedPointer<PortMap> portMap2, *interface2->getAllPortMaps())
         {
 			QSharedPointer<PortMap::PhysicalPort> physPort1 = portMap1->getPhysicalPort();
 			QSharedPointer<PortMap::PhysicalPort> physPort2 = portMap2->getPhysicalPort();
@@ -1238,9 +1244,9 @@ void VhdlGenerator2::connectHierInterface( QSharedPointer<VhdlComponentInstance>
     QSharedPointer<ComponentParameterFinder> instanceFinder (new ComponentParameterFinder(instanceComponent));
     QSharedPointer<ExpressionParser> instanceParser (new IPXactSystemVerilogParser(instanceFinder));
 
-	foreach (QSharedPointer<PortMap> instancePortMap, *instanceInterface->getPortMaps())
+    foreach (QSharedPointer<PortMap> instancePortMap, *instanceInterface->getAllPortMaps())
     {
-		foreach(QSharedPointer<PortMap> hierPortMap, *topInterface->getPortMaps())
+		foreach(QSharedPointer<PortMap> hierPortMap, *topInterface->getAllPortMaps())
         {
 			const QString instancePortName = instancePortMap->getPhysicalPort()->name_;
 			const QString hierPortName = hierPortMap->getPhysicalPort()->name_;

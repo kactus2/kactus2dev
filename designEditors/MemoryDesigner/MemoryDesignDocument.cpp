@@ -43,6 +43,7 @@ designViewName_()
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);
 
+    view_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     view_->verticalScrollBar()->setTracking(true);
     connect(view_->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onVerticalScroll(int)));
 
@@ -165,6 +166,7 @@ void MemoryDesignDocument::setZoomLevel(int level)
 
     double newScale = getZoomLevel() / 100.0;
     QMatrix oldMatrix = view_->matrix();
+
     view_->resetMatrix();
     view_->translate(oldMatrix.dx(), oldMatrix.dy());
     view_->scale(newScale, newScale);
@@ -339,4 +341,20 @@ void MemoryDesignDocument::filterFields(bool filterFields)
 bool MemoryDesignDocument::fieldsAreFiltered() const
 {
     return diagram_->fieldsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::unconnectedMemoryItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::unconnectedMemoryItemsAreFiltered() const
+{
+    return diagram_->unconnectedMemoryItemsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::filterUnconnectedMemoryItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::filterUnconnectedMemoryItems(bool filterUnconnected)
+{
+    diagram_->filterUnconnectedMemoryItems(filterUnconnected);
 }

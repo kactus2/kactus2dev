@@ -59,9 +59,11 @@ public:
     /*!
      *  Compress the sub items contained within the address space and the space item.
      *
-     *      @param [in] movedConnections    Connection items that have already been moved.
+     *      @param [in] movedConnections        Connection items that have already been moved.
+     *      @param [in] condenseMemoryItems     Flag for condensing memory items.
      */
-    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
+    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections,
+        bool condenseMemoryItems);
 
     /*!
      *  Get all the address space graphics items connected to the origin item.
@@ -102,20 +104,23 @@ private:
     /*!
      *  Get the compressed height of an address space graphics item.
      *
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
+     *
      *      @return The compressed height of an address space graphics item.
      */
-    quint64 getFilteredCompressedHeight();
+    quint64 getFilteredCompressedHeight(bool memoryItemsAreCompressed);
 
     /*!
      *  Get the compressed height of an address space graphics item using coordinate positions of the connected
      *  items.
      *
-     *      @param [in] visitedMemoryItems  List of handled memory items.
-     *      @param [in] connectionIterator  Iterator that goes through the memory connections.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
+     *      @param [in] visitedMemoryItems          List of handled memory items.
+     *      @param [in] connectionIterator          Iterator that goes through the memory connections.
      *
      *      @return The compressed height of an address space graphics item.
      */
-    qreal getFilteredCompressedHeightByCoordinates(
+    qreal getFilteredCompressedHeightByCoordinates(bool memoryItemsAreCompressed,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems,
         QMapIterator<quint64, MemoryConnectionItem*> connectionIterator);
 

@@ -159,13 +159,6 @@ public:
 	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
 	/*!
-     *  Get the port maps of this interface.
-	 *
-	 *      @return Pointer to a list holding the port maps for this interface.
-	 */
-    QSharedPointer<QList<QSharedPointer<PortMap> > > getPortMaps() const;
-
-	/*!
      *  Get the abstraction types for this interface.
 	 *
 	 *      @return Pointer to a list containing the abstraction types for this interface.
@@ -331,46 +324,60 @@ public:
 	 */
 	void setAttributes(QMap<QString, QString> const& attributes);
 
-	/*!
-     *  Get list of the physical port names contained in this interface.
-	 *
-	 *      @return QStringList Contains the physical port names.
-	 */
-	QStringList getPhysicalPortNames() const;
+    /*!
+     *  Check if the selected physical port has been mapped in the bus interface.
+     *
+     *      @param [in] portName    Name of the selected physical port.
+     *
+     *      @return True, if the physical port has been mapped, false otherwise.
+     */
+    bool containsMappedPhysicalPort(QString const& portName) const;
 
-	/*!
-     *  Get list of the logical port names contained in this interface.
-	 *
-	 *      @return QStringList Contains the logical port names.
-	 */
-	QStringList getLogicalPortNames() const;
+    /*!
+     *  Check if the selected logical port has been mapped in the bus interface.
+     *
+     *      @param [in] portName    Name of the selected logical port.
+     *
+     *      @return True, if the selected logical port has been mapped in the bus interface.
+     */
+    bool containsMappedlogicalPort(QString const& portName) const;
 
-	/*!
-     *  Check if the bus interface contains the specified logical port.
-	 *
-	 *      @param [in] logicalPortName     Contains the name of the logical port to search for.
-	 *
-	 *      @return True if the logical port is found, false otherwise.
-	 */
-	bool hasLogicalPort(const QString& logicalPortName) const;
+    /*!
+     *  Get the names of all the mapped physical ports.
+     *
+     *      @return A list of the names of all the mapped physical ports.
+     */
+    QStringList getAllMappedPhysicalPorts() const;
 
-	/*!
-     *  Get the name of the logical port mapped to specified physical port.
-	 *
-	 *      @param [in] physicalPortName    The name of the physical port that's mapping is searched.
-	 *
-	 *      @return The name of the logical port mapped with the physical.
-	 */
-	QString getLogicalPortName(const QString& physicalPortName) const;
+    /*!
+     *  Get the port maps.
+     *
+     *      @return A list containing all the port maps.
+     */
+    QSharedPointer<QList<QSharedPointer<PortMap> > > getAllPortMaps() const;
 
-	/*!
-     *  Check if the bus interface contains the specified physical port.
-	 *
-	 *      @param [in] physicalPortName    Contains the name of the physical port to search for.
-	 *
-	 *      @return True if the physical port is found in the port maps, false otherwise.
-	 */
-	bool hasPhysicalPort(const QString& physicalPortName) const;
+    /*!
+     *  Get all the port maps contained within the abstraction type with the selected view reference.
+     *
+     *      @param [in] view    Name of the view referenced by the selected abstraction type.
+     *
+     *      @return Port maps contained within the abstraction type referencing the selected view.
+     */
+    QList<QSharedPointer<PortMap> > getPortMapsForView(QString const& view) const;
+
+    /*!
+     *  Get the abstraction type referencing the selected view.
+     *
+     *      @param [in] view    Name of the selected view referenced by the abstraction type.
+     *
+     *      @return The abstraction type referencing the selected view.
+     */
+    QSharedPointer<AbstractionType> getAbstractionContainingView(QString const& view) const;
+
+    /*!
+     *  Remove all of the port maps contained within all of the abstraction types.
+     */
+    void clearAllPortMaps();
 
     /*!
      *  Sets the MCAPI port ID to the bus interface's parameters.

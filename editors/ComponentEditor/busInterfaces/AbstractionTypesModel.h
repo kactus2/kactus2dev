@@ -20,6 +20,7 @@
 
 class BusInterface;
 class AbstractionType;
+class AbstractionTypeValidator;
 
 //-----------------------------------------------------------------------------
 //! Table model for bus interface abstraction types.
@@ -33,9 +34,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent          Pointer to the owner of this model.
+     *      @param [in] validator   Validator for abstraction types.
+	 *      @param [in] parent      Pointer to the owner of this model.
      */
-    AbstractionTypesModel(QObject* parent);
+    AbstractionTypesModel(QSharedPointer<AbstractionTypeValidator> validator, QObject* parent);
 	
 	/*!
      *  The destructor.
@@ -107,13 +109,6 @@ public:
      *      @param [in] newBus  The new bus interface.
      */
     void onChangeSelectedBusInterface(QSharedPointer<BusInterface> newBus);
-
-    /*!
-     *  Get the abstraction definition VLNV of the first abstraction type.
-     *
-     *      @return The abstraction definition VLNV of the first abstraction type.
-     */
-    QSharedPointer<ConfigurableVLNVReference> getFirstAbstraction() const;
     
     /*!
      *  Returns the supported actions of a drop.
@@ -189,12 +184,36 @@ private:
     AbstractionTypesModel(const AbstractionTypesModel& other);
     AbstractionTypesModel& operator=(const AbstractionTypesModel& other);
 
+    /*!
+     *  Get the color for the indexed abstraction type.
+     *
+     *      @param [in] index           The selected index.
+     *      @param [in] abstraction     The indexed abstraction type.
+     *
+     *      @return Black for valid index, red for invalid index.
+     */
+    QVariant blackForValidRedForInvalid(QModelIndex const& index, QSharedPointer<AbstractionType> abstraction)
+        const;
+
+    /*!
+     *  Validate the indexed abstraction type.
+     *
+     *      @param [in] index           The selected index.
+     *      @param [in] abstraction     Indexed abstraction type.
+     *
+     *      @return True, if the indexed abstraction type is valid, false otherwise.
+     */
+    bool validateIndex(QModelIndex const& index, QSharedPointer<AbstractionType> abstraction) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The contained wire type definitions.
+    //! The contained abstraction types.
     QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractions_;
+
+    //! Validator for abstraction types.
+    QSharedPointer<AbstractionTypeValidator> validator_;
 };
 
 #endif // ABSTRACTIONTYPESMODEL_H

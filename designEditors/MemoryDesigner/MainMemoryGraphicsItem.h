@@ -82,9 +82,11 @@ public:
     /*!
      *  Compress the item and the contained sub items.
      *
-     *      @param [in] movedConnections    Connection items that have already been moved.
+     *      @param [in] movedConnections        Connection items that have already been moved.
+     *      @param [in] condenseMemoryItems     Flag for condensing memory items.
      */
-    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections) = 0;
+    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections,
+        bool condenseMemoryItems) = 0;
 
     /*!
      *  Move memory item and all the connected memory connections and the connected memory items.
@@ -178,18 +180,22 @@ public:
     /*!
      *  Compress this item to the uncut addresses.
      *
-     *      @param [in] unCutAddresses  List of the addresses that are retained after compression.
-     *      @param [in] CUTMODIFIER     The modifier for the size of the cut area.
+     *      @param [in] unCutAddresses              List of the addresses that are retained after compression.
+     *      @param [in] CUTMODIFIER                 The modifier for the size of the cut area.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
-    virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+    virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
+        bool memoryItemsAreCompressed);
 
     /*!
      *  Compress this item to the uncut coordinates.
      *
-     *      @param [in] unCutCoordinates    List of the coordinates that are retained after compression.
-     *      @param [in] CUTMODIFIER         The modifier for the size of the cut area.
+     *      @param [in] unCutCoordinates            List of the coordinates that are retained after compression.
+     *      @param [in] CUTMODIFIER                 The modifier for the size of the cut area.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
-    virtual void compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
+    virtual void compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER,
+        bool memoryItemsAreCompressed);
 
     /*!
      *  Change the address range of this item and its sub items.

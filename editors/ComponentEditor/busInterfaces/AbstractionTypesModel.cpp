@@ -18,15 +18,18 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/AbstractionType.h>
 
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
+
 #include <QFont>
 #include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::AbstractionTypesModel()
 //-----------------------------------------------------------------------------
-AbstractionTypesModel::AbstractionTypesModel(QObject* parent):
+AbstractionTypesModel::AbstractionTypesModel(QSharedPointer<AbstractionTypeValidator> validator, QObject* parent):
 QAbstractTableModel(parent),
-abstractions_(new QList<QSharedPointer<AbstractionType> > ())
+abstractions_(new QList<QSharedPointer<AbstractionType> > ()),
+validator_(validator)
 {
 
 }
@@ -118,7 +121,7 @@ QVariant AbstractionTypesModel::data(QModelIndex const& index, int role) const
         }
         else if (Qt::ForegroundRole == role)
         {
-//             return blackForValidRedForInvalid(index, typeDefinition);
+            return blackForValidRedForInvalid(index, indexedAbstraction);
         }
         else if (role == Qt::BackgroundRole)
         {
@@ -252,20 +255,6 @@ Qt::ItemFlags AbstractionTypesModel::flags(const QModelIndex& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTypesModel::getFirstAbstraction()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConfigurableVLNVReference> AbstractionTypesModel::getFirstAbstraction() const
-{
-    QSharedPointer<ConfigurableVLNVReference> currentVLNV;
-    if (!abstractions_->isEmpty() && abstractions_->first()->getAbstractionRef())
-    {
-        currentVLNV = abstractions_->first()->getAbstractionRef();
-    }
-
-    return currentVLNV;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::supportedDropActions()
 //-----------------------------------------------------------------------------
 Qt::DropActions AbstractionTypesModel::supportedDropActions() const
@@ -342,4 +331,38 @@ void AbstractionTypesModel::addNewAbstractionTypeWithVLNV(VLNV const& newAbstrac
     }
 
     newAbstraction->getAbstractionRef()->setVLNV(newAbstractionVLNV);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypesModel::blackForValidRedForInvalid()
+//-----------------------------------------------------------------------------
+QVariant AbstractionTypesModel::blackForValidRedForInvalid(QModelIndex const& index,
+    QSharedPointer<AbstractionType> abstraction) const
+{
+    if (validateIndex(index, abstraction))
+    {
+        return KactusColors::REGULAR_TEXT;
+    }
+    else
+    {
+        return KactusColors::ERROR;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypesModel::validateIndex()
+//-----------------------------------------------------------------------------
+bool AbstractionTypesModel::validateIndex(QModelIndex const& index, QSharedPointer<AbstractionType> abstraction)
+    const
+{
+    if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
+    {
+        return validator_->hasValidAbstractionReference(abstraction);
+    }
+    else if (index.column() == AbstractionTypesConstants::VIEWREFERENCES)
+    {
+        return validator_->hasValidViewReferences(abstraction, abstractions_);
+    }
+
+    return true;
 }

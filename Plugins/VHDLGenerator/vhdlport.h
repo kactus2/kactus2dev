@@ -11,8 +11,10 @@
 #include "VhdlTypedObject.h"
 #include "vhdlportsorter.h"
 
-class Port;
+#include <QSharedPointer>
 
+class Port;
+class ExpressionParser;
 /*! \brief VhdlPort represents one port declaration in vhdl.
  * 
  * VhdlPort is used within top component entity and component declarations
@@ -25,11 +27,11 @@ public:
 
 	/*! \brief The constructor
 	 *	 
-	 * \param port Pointer to the port that contains the details for this port.
-     * \param parent Pointer to the owner of this port.
+	 * \param port      The port that contains the details for this port.
+     * \param parser    The expression parser to use.
 	 *
 	*/
-	VhdlPort(Port* port);
+	VhdlPort(QSharedPointer<Port> port, QSharedPointer<ExpressionParser> parser);
 	
 	//! \brief The destructor
 	virtual ~VhdlPort();
@@ -100,6 +102,8 @@ private:
 
 	//! If true then the port is commented out when printed to text stream
 	bool commentOut_;
+
+    QSharedPointer<ExpressionParser> parser_;
 };
 
 #endif // VHDLPORT_H

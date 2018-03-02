@@ -281,6 +281,7 @@
     <ClCompile Include="Component\SlaveInterface.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\TransparentBridge.cpp" />
+    <ClCompile Include="Component\validators\AbstractionTypeValidator.cpp" />
     <ClCompile Include="Component\validators\AddressBlockValidator.cpp" />
     <ClCompile Include="Component\validators\AddressSpaceValidator.cpp" />
     <ClCompile Include="Component\validators\BusInterfaceValidator.cpp" />
@@ -2129,6 +2130,7 @@
     <ClInclude Include="Component\SlaveInterface.h" />
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\TransparentBridge.h" />
+    <ClInclude Include="Component\validators\AbstractionTypeValidator.h" />
     <ClInclude Include="Component\validators\AddressBlockValidator.h" />
     <ClInclude Include="Component\validators\AddressSpaceValidator.h" />
     <ClInclude Include="Component\validators\BuildCommandValidator.h" />

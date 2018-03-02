@@ -26,6 +26,8 @@ class Component;
 class LibraryInterface;
 class ExpressionParser;
 
+class AbstractionTypeValidator;
+
 //-----------------------------------------------------------------------------
 //! General options page for the interface wizard.
 //-----------------------------------------------------------------------------
@@ -44,30 +46,27 @@ public:
      *      @param [in] absDefEditable          The editability of abstract definition.
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] busValidator            Validator for bus interfaces.
      *      @param [in] parent                  The parent wizard.
      */
-    BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
-        QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh,
-        bool absDefEditable,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        BusInterfaceWizard* parent);
+    BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
+        LibraryInterface* lh, bool absDefEditable, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<BusInterfaceValidator> busValidator, BusInterfaceWizard* parent);
 
     /*!
-    *  Destructor.
-    */
+     *  Destructor.
+     */
     ~BusInterfaceWizardGeneralOptionsPage();
 
     /*!
-    *  Returns the ID of the next page.
-    */
+     *  Returns the ID of the next page.
+     */
     virtual int nextId() const;
 
     /*!
-    *  Initializes the page.
-    */
+     *  Initializes the page.
+     */
     void initializePage();
 
     /*!
@@ -110,6 +109,13 @@ private:
      */
     void setupLayout();
    
+    /*!
+     *  Check if a valid reference to an existing abstraction definition is found.
+     *
+     *      @return True, if a valid abstraction definition is found, false otherwise.
+     */
+    bool abstractionReferenceIsFound() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -125,6 +131,8 @@ private:
 
     //! Editor for bus interface general options.
     BusIfGeneralTab* generalTab_;
+
+    QSharedPointer<AbstractionTypeValidator> abstractionValidator_;
 };
 
 #endif // BUSINTERFACEWIZARDGENERALOPTIONSPAGE_H

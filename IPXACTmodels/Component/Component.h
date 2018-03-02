@@ -809,7 +809,7 @@ public:
 	 *
 	 *      @return List containing pointers to the ports.
 	 */
-    QList<QSharedPointer<Port> > getPorts(const QString& interfaceName) const;
+    QList<QSharedPointer<Port> > getPortsMappedInInterface(const QString& interfaceName) const;
 
 	/*!
      *  Check if the component has the specified port or not.

@@ -203,7 +203,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         updateSystemDesignV2(getLibraryInterface(), comp->getHierRef(hwViewRef), *design, designConf);
     }
 
-    if (!getDiagram()->setDesign(comp, design, designConf))
+    if (!getDiagram()->setDesign(comp, viewName, design, designConf))
     {
         return false;
     }

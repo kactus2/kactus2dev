@@ -9,21 +9,26 @@
 
 #include <IPXACTmodels/common/ModuleParameter.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QChar>
 
-VhdlGeneric::VhdlGeneric(ModuleParameter* generic):
+VhdlGeneric::VhdlGeneric(QSharedPointer<ModuleParameter> generic,  QSharedPointer<ExpressionFormatter> formatter):
 VhdlTypedObject(generic->name(),
 		        generic->getDataType(),
     	        generic->getValue(),
-		        generic->description()) 
+		        generic->description()),
+                formatter_(formatter)
 {
-	Q_ASSERT(generic);
+
 }
 
-VhdlGeneric::~VhdlGeneric() {
+VhdlGeneric::~VhdlGeneric()
+{
 }
 
-void VhdlGeneric::write( QTextStream& stream ) const {
+void VhdlGeneric::write( QTextStream& stream ) const
+{
 	Q_ASSERT(!name().isEmpty());
 	Q_ASSERT(!type().isEmpty());
 
@@ -31,12 +36,12 @@ void VhdlGeneric::write( QTextStream& stream ) const {
 	stream << getVhdlLegalName().leftJustified(16, ' ');
     stream<< " : " << type();
 
-	// check if type is string then quotations must be used for default value
-	bool addQuotation = type().compare(QString("string"), Qt::CaseInsensitive) == 0;
-	
 	// if a default value has been specified
 	if (!defaultValue().isEmpty()) {
 		stream << " := ";
+	
+	    // check if type is string then quotations must be used for default value
+	    bool addQuotation = type().compare(QString("string"), Qt::CaseInsensitive) == 0;
 		
 		// if default value does not start with quotation
 		if (addQuotation && !defaultValue().startsWith(QChar('"'))) {
@@ -44,7 +49,7 @@ void VhdlGeneric::write( QTextStream& stream ) const {
 		}
 		
 		// write the default value
-		stream << defaultValue();
+		stream << formatter_->formatReferringExpression(defaultValue());
 
 		// if default value does not end with quotation
 		if (addQuotation && !defaultValue().endsWith(QChar('"'))) {

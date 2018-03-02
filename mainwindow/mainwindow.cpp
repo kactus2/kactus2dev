@@ -170,6 +170,7 @@ actionFilterSegments_(0),
 actionFilterAddressBlocks_(0),
 actionFilterRegisters_(0),
 actionFilterFields_(0),
+actionFilterUnconnectedMemoryItems_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
@@ -623,6 +624,13 @@ void MainWindow::setupActions()
     actionFilterFields_->setCheckable(true);
     connect(actionFilterFields_, SIGNAL(triggered(bool)), this, SLOT(onFilterFields(bool)), Qt::UniqueConnection);
 
+    //! Initialize the action to filter unconnected memory items.
+    actionFilterUnconnectedMemoryItems_ = new QAction(QIcon(
+        ":icons/common/graphics/filterUnconnectedMemoryItems.png"), tr("Filter unconnected items"), this);
+    actionFilterUnconnectedMemoryItems_->setCheckable(true);
+    connect(actionFilterUnconnectedMemoryItems_, SIGNAL(triggered(bool)),
+        this, SLOT(onFilterUnconnectedMemoryItems(bool)), Qt::UniqueConnection);
+
     // Initialize the action to zoom in.
     actZoomIn_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_in.png"), tr("Zoom In"), this);
     actZoomIn_->setEnabled(false);
@@ -826,6 +834,7 @@ void MainWindow::setupMenus()
     filteringGroup_->addAction(actionCondenseMemoryItems_);
     filteringGroup_->addAction(actionCondenseFieldItems_);
     filteringGroup_->addAction(actionExtendFieldItems_);
+    filteringGroup_->addAction(actionFilterUnconnectedMemoryItems_);
 
     filteringGroup_->widgetForAction(actionFilterSegments_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterAddressBlocks_)->installEventFilter(ribbon_);
@@ -835,6 +844,7 @@ void MainWindow::setupMenus()
     filteringGroup_->widgetForAction(actionCondenseMemoryItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionCondenseFieldItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionExtendFieldItems_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionFilterUnconnectedMemoryItems_)->installEventFilter(ribbon_);
 
     //! The "View" group.
     RibbonGroup* viewGroup = ribbon_->addGroup(tr("View"));
@@ -1142,6 +1152,7 @@ void MainWindow::updateMenuStrip()
         actionFilterAddressBlocks_->setChecked(memoryDocument->addressBlocksAreFiltered());
         actionFilterRegisters_->setChecked(memoryDocument->addressBlockRegistersAreFiltered());
         actionFilterFields_->setChecked(memoryDocument->fieldsAreFiltered());
+        actionFilterUnconnectedMemoryItems_->setChecked(memoryDocument->unconnectedMemoryItemsAreFiltered());
     }
 
     filteringGroup_->setVisible(isMemoryDesign);
@@ -4047,5 +4058,17 @@ void MainWindow::onFilterFields(bool filterFields)
     if (memoryDocument && !memoryDocument->isProtected())
     {
         memoryDocument->filterFields(filterFields);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onFilterUnconnectedMemoryItems()
+//-----------------------------------------------------------------------------
+void MainWindow::onFilterUnconnectedMemoryItems(bool filterUnconnected)
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
+    {
+        memoryDocument->filterUnconnectedMemoryItems(filterUnconnected);
     }
 }

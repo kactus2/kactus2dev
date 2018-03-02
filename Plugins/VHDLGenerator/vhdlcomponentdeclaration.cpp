@@ -23,8 +23,9 @@
 //-----------------------------------------------------------------------------
 // Function: vhdlcomponentdeclaration::VhdlComponentDeclaration()
 //-----------------------------------------------------------------------------
-VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component, QString const& viewName) :
-VhdlObject(component->getVlnv().getName(), ""),
+VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component, 
+    QSharedPointer<ExpressionParser> parser) :
+VhdlObject(component->getVlnv().getName(), QString()),
 component_(component),
 typeName_(component->getVlnv().getName()),
 generics_(),
@@ -33,39 +34,6 @@ instantations_()
 {
 	Q_ASSERT(component);
 
-	// Look up the view instantiation.
-	QSharedPointer<View> view;
-
-	foreach ( QSharedPointer<View> currentView, *component->getViews() )
-	{
-		if ( currentView->name() == viewName )
-		{
-			view = currentView;
-			break;
-		}
-	}
-
-	if ( view )
-	{
-		// Look up the component instantiation.
-		QSharedPointer<ComponentInstantiation> cimp;
-
-		foreach ( QSharedPointer<ComponentInstantiation> currentInsta, *component->getComponentInstantiations() )
-		{
-			if ( currentInsta->name() == view->getComponentInstantiationRef() )
-			{
-				cimp = currentInsta;
-				break;
-			}
-		}
-
-		// parse the generics for the component declaration
-		foreach (QSharedPointer<ModuleParameter> moduleParam, *cimp->getModuleParameters())
-		{
-			QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(moduleParam.data() ));
-			generics_.insert(generic->name(), generic);
-		}
-	}
 
 	// parse the ports for the component declaration
 	foreach (QSharedPointer<Port> port, *component_->getPorts())
@@ -78,7 +46,7 @@ instantations_()
 		}
 
 		// create the actual port
-		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data() ));
+		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port, parser));
 
 		// create the sorter instance
         QString busName = getContainingBusInterfaceName(port->name());

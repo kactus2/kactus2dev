@@ -138,9 +138,15 @@ void ComponentEditorBusInterfaceItem::openItem()
 {
 	VLNV busdefVLNV = busif_->getBusType();
 
+    VLNV absDefVLNV;
     if (busif_->getAbstractionTypes() && !busif_->getAbstractionTypes()->isEmpty())
     {
-        VLNV absdefVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
-        emit openBus(busdefVLNV, absdefVLNV);
+        if (busif_->getAbstractionTypes()->size() == 1 &&
+            busif_->getAbstractionTypes()->first()->getAbstractionRef())
+        {
+            absDefVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
+        }
     }
+
+    emit openBus(busdefVLNV, absDefVLNV);
 }

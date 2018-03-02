@@ -1325,6 +1325,9 @@
     <ClCompile Include="Component\validators\PortTypeValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\AbstractionTypeValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1847,6 +1850,9 @@
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
     <ClInclude Include="Component\validators\PortTypeValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\AbstractionTypeValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>

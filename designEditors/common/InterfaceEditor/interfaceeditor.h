@@ -29,11 +29,11 @@ class ActiveInterface;
 class ComDefinition;
 class Design;
 class HierInterface;
-
 class ConnectionEndpoint;
 class EditableTableView;
 class IEditProvider;
 class InterfacePortMapModel;
+class DesignConfiguration;
 
 //-----------------------------------------------------------------------------
 //! Editor to display/edit the details of a bus/api/com interface.
@@ -60,8 +60,11 @@ public:
 	 *
 	 *      @param [in] interface           The interface to edit.
      *      @param [in] containingDesign    The design containing the end point.
+     *      @param [in] configuration       Design configuration of the design.
+     *      @param [in] activeTopView       The currently active top component view.
 	 */
 	void setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign,
+        QSharedPointer<DesignConfiguration> configuration, QString const& activeTopView,
         QSharedPointer<IEditProvider> editProvider, bool locked);
 
 signals:
@@ -166,6 +169,9 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The currently active top component view.
+    QString activeTopView_;
+
     //! The instance that manages the library.
     LibraryInterface* library_;
 
@@ -225,6 +231,9 @@ private:
 
     //! The design containing the selected interface.
     QSharedPointer<Design> containingDesign_;
+
+    //! The active design configuration.
+    QSharedPointer<DesignConfiguration> containingConfiguration_;
 
     //! Undo/redo manager to use.
     QSharedPointer<IEditProvider> editProvider_;

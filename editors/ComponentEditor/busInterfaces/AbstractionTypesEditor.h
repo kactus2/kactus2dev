@@ -23,6 +23,7 @@ class Component;
 class ConfigurableVLNVReference;
 class LibraryInterface;
 class VLNV;
+class AbstractionTypeValidator;
 
 //-----------------------------------------------------------------------------
 //! Editor for the bus interface abstraction definitions.
@@ -38,11 +39,12 @@ public:
 	 *
      *      @param [in] component       Component containing the edited port.
      *      @param [in] library         Interface for the VLNV library.
+     *      @param [in] validator       Validator for abstraction types.
      *      @param [in] parentWindow    The main window.
 	 *      @param [in] parent          The owner of the editor.
 	 */
-    AbstractionTypesEditor(QSharedPointer<Component> component, LibraryInterface* library, QWidget* parentWindow,
-        QWidget* parent);
+    AbstractionTypesEditor(QSharedPointer<Component> component, LibraryInterface* library,
+        QSharedPointer<AbstractionTypeValidator> validator, QWidget* parentWindow, QWidget* parent);
 	
 	/*!
      *  The destructor.
@@ -62,13 +64,6 @@ public:
      *      @param [in] newBus  The selected bus interface.
      */
     void setBusForModel(QSharedPointer<BusInterface> newBus);
-
-    /*!
-     *  Get the first abstraction definition of the bus interface.
-     *
-     *      @return The first abstraction definition.
-     */
-    QSharedPointer<ConfigurableVLNVReference> getFirstAbstraction() const;
 
     /*!
      *  Add a new abstraction definition referencing the selected VLNV to the bus interface.

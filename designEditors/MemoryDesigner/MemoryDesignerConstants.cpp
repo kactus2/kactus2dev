@@ -75,3 +75,67 @@ QString MemoryDesignerConstants::getValueWithZerosAdded(QString const& value, in
 
     return zeroedValue;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerConstants::getAreaSizeForRange()
+//-----------------------------------------------------------------------------
+qreal MemoryDesignerConstants::getAreaSizeForRange(quint64 addressRange)
+{
+    int areaMultiplication = getRequiredRowsForRange(addressRange);
+
+    return areaMultiplication * RANGEINTERVAL;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerConstants::getRequiredRowsForRange()
+//-----------------------------------------------------------------------------
+int MemoryDesignerConstants::getRequiredRowsForRange(quint64 addressRange)
+{
+    int requiredRows = 0;
+
+    if (addressRange == 1 || addressRange == 2)
+    {
+        requiredRows = addressRange;
+    }
+    else if (addressRange <= 16)
+    {
+        requiredRows = 3;
+    }
+    else if (addressRange <= 128)
+    {
+        requiredRows = 6;
+    }
+    else if (addressRange <= 1024)
+    {
+        requiredRows = 10;
+    }
+    else if (addressRange <= 16384)
+    {
+        requiredRows = 16;
+    }
+    else if (addressRange <= 1048576)
+    {
+        requiredRows = 26;
+    }
+    else if (addressRange <= 67108864)
+    {
+        requiredRows = 42;
+    }
+    else
+    {
+        requiredRows = 68;
+    }
+
+    return requiredRows;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerConstants::getRequiredAreaForUsedArea()
+//-----------------------------------------------------------------------------
+qreal MemoryDesignerConstants::getRequiredAreaForUsedArea(qreal usedArea)
+{
+    int addressRange = qRound(usedArea / RANGEINTERVAL);
+    qreal requiredArea = getAreaSizeForRange(addressRange);
+
+    return requiredArea;
+}

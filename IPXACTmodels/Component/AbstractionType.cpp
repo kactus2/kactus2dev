@@ -141,3 +141,103 @@ QSharedPointer<QList<QSharedPointer<PortMap> > > AbstractionType::getPortMaps() 
 {
     return portMaps_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionType::getPhysicalPortNames()
+//-----------------------------------------------------------------------------
+QStringList AbstractionType::getPhysicalPortNames() const
+{
+    QStringList portNames;
+
+    if (portMaps_)
+    {
+        foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+        {
+            if (portMap->getPhysicalPort())
+            {
+                portNames.append(portMap->getPhysicalPort()->name_);
+            }
+        }
+    }
+
+    return portNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionType::getLogicalPortNames()
+//-----------------------------------------------------------------------------
+QStringList AbstractionType::getLogicalPortNames() const
+{
+    QStringList portNames;
+
+    if (portMaps_)
+    {
+        foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+        {
+            if (portMap->getLogicalPort())
+            {
+                portNames.append(portMap->getLogicalPort()->name_);
+            }
+        }
+    }
+
+    return portNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionType::hasLogicalPort()
+//-----------------------------------------------------------------------------
+bool AbstractionType::hasLogicalPort(QString const& portName) const
+{
+    if (portMaps_)
+    {
+        foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+        {
+            if (portMap->getLogicalPort() && portMap->getLogicalPort()->name_ == portName)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionType::hasPhysicalPort()
+//-----------------------------------------------------------------------------
+bool AbstractionType::hasPhysicalPort(QString const& portName) const
+{
+    if (portMaps_)
+    {
+        foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+        {
+            if (portMap->getPhysicalPort() && portMap->getPhysicalPort()->name_ == portName)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionType::getMappedLogicalPortName()
+//-----------------------------------------------------------------------------
+QString AbstractionType::getMappedLogicalPortName(QString const& physicalPortName) const
+{
+    if (portMaps_)
+    {
+        foreach (QSharedPointer<PortMap> portMap, *portMaps_)
+        {
+            if (portMap->getPhysicalPort() && portMap->getLogicalPort() &&
+                portMap->getPhysicalPort()->name_.compare(physicalPortName) == 0)
+            {
+                return portMap->getLogicalPort()->name_;
+            }
+        }
+    }
+
+    return QString();
+}

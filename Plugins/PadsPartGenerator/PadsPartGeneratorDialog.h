@@ -229,6 +229,9 @@ private:
     //! Selector for fileset.
     QComboBox* fileSetSelector_;
 
+    //! Selector for views.
+    QComboBox* viewSelector_;
+
     //! Editor for part name.
     QLineEdit* nameEditor_;
 

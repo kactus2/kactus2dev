@@ -19,6 +19,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+
 #include <QHBoxLayout>
 #include <QScrollArea>
 
@@ -28,12 +30,13 @@
 BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<BusInterface> busif,
     QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent, QWidget* parentWnd):
+    QSharedPointer<BusInterfaceValidator> busValidator, QWidget* parent, QWidget* parentWnd):
 QWidget(parent),
 busif_(busif),
 nameEditor_(busif, this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
-abstractionEditor_(new AbstractionTypesEditor(component, libHandler, parentWnd, this)),
+abstractionEditor_(new AbstractionTypesEditor(component, libHandler, busValidator->getAbstractionValidator(),
+    parentWnd, this)),
 modeStack_(busif, component, parameterFinder, libHandler, expressionParser, this),
 details_(busif, this),
 parameters_(busif->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
@@ -90,12 +93,6 @@ void BusIfGeneralTab::refresh()
 	nameEditor_.refresh();
 	busType_.setVLNV(busif_->getBusType());
 
-    VLNV abstractionVLNV;
-    if (!busif_->getAbstractionTypes()->isEmpty() && busif_->getAbstractionTypes()->first()->getAbstractionRef())
-    {
-        abstractionVLNV = *busif_->getAbstractionTypes()->first()->getAbstractionRef();
-    }
-
     abstractionEditor_->setBusForModel(busif_);
 
 	modeStack_.refresh();
@@ -109,29 +106,6 @@ void BusIfGeneralTab::refresh()
 VLNV BusIfGeneralTab::getBusType() const
 {
 	return busType_.getVLNV();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfGeneralTab::getAbsType()
-//-----------------------------------------------------------------------------
-VLNV BusIfGeneralTab::getAbsType() const
-{
-    if (abstractionEditor_->getFirstAbstraction())
-    {
-        return *abstractionEditor_->getFirstAbstraction().data();
-    }
-    else
-    {
-        return VLNV();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfGeneralTab::setAbsTypeMandatory()
-//-----------------------------------------------------------------------------
-void BusIfGeneralTab::setAbsTypeMandatory(bool isMandatory)
-{
-    abstractionEditor_->setProperty("mandatoryField", isMandatory);
 }
 
 //-----------------------------------------------------------------------------

@@ -1495,9 +1495,6 @@
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4459,6 +4456,15 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceEndPoint.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\BusInterfaceEndPoint.cpp">
+      <Filter>Source Files\designEditors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
     <ClCompile Include="library\DocumentFileAccess.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
@@ -6165,6 +6171,12 @@
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\BusInterfaceEndPoint.h">
+      <Filter>Header Files\designEditors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\GraphicsColumnConstants.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
     <CustomBuild Include="Plugins\PluginSystem\IPluginUtility.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
@@ -6763,6 +6775,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\AbstractionTypesConstants.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\InterfaceGraphics.h">
+      <Filter>Header Files\designEditors\HWDesign</Filter>
     </ClInclude>
     <ClInclude Include="library\DocumentFileAccess.h">
       <Filter>Header Files\library</Filter>

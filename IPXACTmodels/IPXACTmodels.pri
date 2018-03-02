@@ -254,7 +254,8 @@ HEADERS += ./XmlUtils.h \
     ./Catalog/IpxactFile.h \
     ./Catalog/CatalogReader.h \
     ./Catalog/CatalogWriter.h \
-    ./Catalog/validators/CatalogValidator.h
+    ./Catalog/validators/CatalogValidator.h \
+    ./Component/validators/AbstractionTypeValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -499,4 +500,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/CatalogReader.cpp \
     ./Catalog/CatalogWriter.cpp \
     ./Catalog/IpxactFile.cpp \
-    ./Catalog/validators/CatalogValidator.cpp
+    ./Catalog/validators/CatalogValidator.cpp \
+    ./Component/validators/AbstractionTypeValidator.cpp

@@ -113,22 +113,24 @@ public:
     /*!
      *  Condense this connection and the connected items to contain the selected addresses.
      *
-     *      @param [in] condensedItems  List of all the items that have already been condensed.
-     *      @param [in] uncutAddresses  The addresses that remain after the compression.
-     *      @param [in] CUTMODIFIER     Modifier for the cut areas.
+     *      @param [in] condensedItems              List of all the items that have already been condensed.
+     *      @param [in] uncutAddresses              The addresses that remain after the compression.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut areas.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
     void condenseToUnCutAddresses(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
-        QVector<quint64> uncutAddresses, const int CUTMODIFIER);
+        QVector<quint64> uncutAddresses, const int CUTMODIFIER, bool memoryItemsAreCompressed);
 
     /*!
      *  Condense this connection and the connected items to contain the selected coordinates.
      *
-     *      @param [in] condensedItems      List of all the items that have already been condensed.
-     *      @param [in] unCutCoordinates    The coordinates that remain after the compression.
-     *      @param [in] CUTMODIFIER         Modifier for the cut areas.
+     *      @param [in] condensedItems              List of all the items that have already been condensed.
+     *      @param [in] unCutCoordinates            The coordinates that remain after the compression.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut areas.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
     void condenseToUnCutCoordinates(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
-        QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
+        QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER, bool memoryItemsAreCompressed);
 
     /*!
      *  Move condensed connection and the connected memory items.
@@ -181,22 +183,24 @@ private:
     /*!
      *  Compress the contained end item using addresses.
      *
-     *      @param [in] condensedItems  Memory items that have already been condensed.
-     *      @param [in] unCutAddresses  The addresses that remain after the compression.
-     *      @param [in] CUTMODIFIER     Modifier for the cut areas.
+     *      @param [in] condensedItems              Memory items that have already been condensed.
+     *      @param [in] unCutAddresses              The addresses that remain after the compression.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut areas.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
     void compressEndItem(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
-        QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+        QVector<quint64> unCutAddresses, const int CUTMODIFIER, bool memoryItemsAreCompressed);
 
     /*!
      *  Compress the contained end item using coordinates.
      *
-     *      @param [in] condensedItems      Memory items that have already been condensed.
-     *      @param [in] unCutCoordinates    The addresses tha remain after the compression.
-     *      @param [in] CUTMODIFIER         Modifier for the cut areas.
+     *      @param [in] condensedItems              Memory items that have already been condensed.
+     *      @param [in] unCutCoordinates            The addresses tha remain after the compression.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut areas.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
     void compressEndItemToCoordinates(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
-        QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
+        QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER, bool memoryItemsAreCompressed);
 
     /*!
      *  Set a new height for the memory connection.

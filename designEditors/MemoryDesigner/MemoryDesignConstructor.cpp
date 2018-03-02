@@ -180,6 +180,22 @@ bool MemoryDesignConstructor::fieldsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignConstructor::filterUnconnectedMemoryItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignConstructor::filterUnconnectedMemoryItems(bool filterUnconnected)
+{
+    itemHandler_->filterUnconnectedMemoryItems(filterUnconnected);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignConstructor::unconnectedMemoryItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignConstructor::unconnectedMemoryItemsAreFiltered() const
+{
+    return itemHandler_->unconnectedMemoryItemsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignConstructor::constructMemoryDesignItems()
 //-----------------------------------------------------------------------------
 bool MemoryDesignConstructor::constructMemoryDesignItems(QSharedPointer<ConnectivityGraph> connectionGraph)
@@ -220,6 +236,9 @@ bool MemoryDesignConstructor::constructMemoryDesignItems(QSharedPointer<Connecti
             itemHandler_->createMemoryItems(connectionGraph, addressSpaceColumn, memoryMapColumn);
             connectionHandler_->createMemoryConnections(connectionGraph, addressSpaceColumn, memoryMapColumn);
             itemHandler_->createFieldOverlapItems();
+
+            filterUnconnectedMemoryItems(unconnectedMemoryItemsAreFiltered());
+
             return true;
         }
     }

@@ -130,7 +130,7 @@ MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(qu
 // Function: AddressSpaceGraphicsItem::condenseSpaceItem()
 //-----------------------------------------------------------------------------
 void AddressSpaceGraphicsItem::condenseItemAndChildItems(
-    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections, bool condenseMemoryItems)
 {
     if (!isCompressed())
     {
@@ -138,11 +138,12 @@ void AddressSpaceGraphicsItem::condenseItemAndChildItems(
 
         if (getMemoryConnections().isEmpty())
         {
-            spaceNewHeight = condenseChildItems(AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT);
+            spaceNewHeight = condenseChildItems(getBaseAddress(), getLastAddress(),
+                AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT, condenseMemoryItems);
         }
         else
         {
-            spaceNewHeight = getFilteredCompressedHeight();
+            spaceNewHeight = getFilteredCompressedHeight(condenseMemoryItems);
         }
 
         if (spaceNewHeight > 0)
@@ -157,7 +158,7 @@ void AddressSpaceGraphicsItem::condenseItemAndChildItems(
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::getFilteredCompressedHeight()
 //-----------------------------------------------------------------------------
-quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
+quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(bool memoryItemsAreCompressed)
 {
     const int CUTMODIFIER = 2;
 
@@ -174,7 +175,8 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
 
     if (hasProblemConnection(connectionIterator))
     {
-        return getFilteredCompressedHeightByCoordinates(visitedMemoryItems, connectionIterator);
+        return getFilteredCompressedHeightByCoordinates(
+            memoryItemsAreCompressed, visitedMemoryItems, connectionIterator);
     }
 
     connectionIterator.toFront();
@@ -186,7 +188,8 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
     {
         connectionIterator.next();
         MemoryConnectionItem* connectionItem = connectionIterator.value();
-        connectionItem->condenseToUnCutAddresses(visitedMemoryItems, unCutAddresses, CUTMODIFIER);
+        connectionItem->condenseToUnCutAddresses(
+            visitedMemoryItems, unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
     }
 
     connectionIterator.toFront();
@@ -199,29 +202,44 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
     foreach (quint64 cutAreaEnd, unCutAddresses)
     {
         quint64 addressDifference = cutAreaEnd - cutAreaBegin;
-        if (addressDifference > CUTMODIFIER)
+        if (addressDifference > 0)
         {
-            addressDifference = addressDifference - CUTMODIFIER;
+            qint64 transferRows = 0;
 
-            if (cutAreaBegin < itemLastAddress)
+            if (memoryItemsAreCompressed)
             {
-                spaceCutArea += addressDifference;
+                transferRows = addressDifference - CUTMODIFIER;
+            }
+            else
+            {
+                quint64 addressRange = addressDifference + 1;
+                int requiredRows = MemoryDesignerConstants::getRequiredRowsForRange(addressRange);
+
+                transferRows = addressRange - requiredRows;
             }
 
-            qreal cutTransfer = addressDifference * MemoryDesignerConstants::RANGEINTERVAL;
-            cutTransfer = -cutTransfer;
-
-            while (connectionIterator.hasNext())
+            if (transferRows > 0)
             {
-                connectionIterator.next();
+                if (cutAreaBegin < itemLastAddress)
+                {
+                    spaceCutArea += transferRows;
+                }
 
-                MemoryConnectionItem* connectionItem = connectionIterator.value();
-                connectionItem->moveCutConnectionAndConnectedItems(
-                    movedItems, this, cutAreaBegin, cutAreaEnd, cutTransfer);
+                qreal cutTransfer = transferRows * MemoryDesignerConstants::RANGEINTERVAL;
+                cutTransfer = -cutTransfer;
+
+                while (connectionIterator.hasNext())
+                {
+                    connectionIterator.next();
+
+                    MemoryConnectionItem* connectionItem = connectionIterator.value();
+                    connectionItem->moveCutConnectionAndConnectedItems(
+                        movedItems, this, cutAreaBegin, cutAreaEnd, cutTransfer);
+                }
+
+                connectionIterator.toFront();
+                movedItems->clear();
             }
-
-            connectionIterator.toFront();
-            movedItems->clear();
         }
 
         cutAreaBegin = cutAreaEnd;
@@ -229,7 +247,7 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
 
     if (!subItemsAreFiltered())
     {
-        compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+        compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
     }
 
     qreal originalHeight = boundingRect().height();
@@ -242,7 +260,7 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates()
 //-----------------------------------------------------------------------------
-qreal AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates(
+qreal AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates(bool memoryItemsAreCompressed,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems,
     QMapIterator<quint64, MemoryConnectionItem*> connectionIterator)
 {
@@ -257,7 +275,8 @@ qreal AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates(
     {
         connectionIterator.next();
         MemoryConnectionItem* connectionItem = connectionIterator.value();
-        connectionItem->condenseToUnCutCoordinates(visitedMemoryItems, unCutCoordinates, CUTMODIFIER);
+        connectionItem->condenseToUnCutCoordinates(
+            visitedMemoryItems, unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
     }
 
     connectionIterator.toFront();
@@ -273,29 +292,40 @@ qreal AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates(
     foreach (qreal cutAreaEnd, unCutCoordinates)
     {
         qreal areaDifference = cutAreaEnd - cutAreaBegin;
-        if (areaDifference > CUTMODIFIER)
+        if (areaDifference > 0)
         {
-            areaDifference = areaDifference - CUTMODIFIER;
-
-            if (cutAreaBegin < itemLow)
+            if (memoryItemsAreCompressed)
             {
-                spaceCutArea += areaDifference;
+                areaDifference = areaDifference - CUTMODIFIER;
+            }
+            else
+            {
+                qreal areaRequired = MemoryDesignerConstants::getRequiredAreaForUsedArea(areaDifference);
+                areaDifference = areaDifference - areaRequired;
             }
 
-            qreal cutTransfer = areaDifference;
-            cutTransfer = -cutTransfer;
-
-            while (connectionIterator.hasNext())
+            if (areaDifference > 0)
             {
-                connectionIterator.next();
+                if (cutAreaBegin < itemLow)
+                {
+                    spaceCutArea += areaDifference;
+                }
 
-                MemoryConnectionItem* connectionItem = connectionIterator.value();
-                connectionItem->modifyMovementValuesForItems(
-                    itemMovementValues, movedItems, this, cutAreaBegin, cutAreaEnd, cutTransfer);
+                qreal cutTransfer = areaDifference;
+                cutTransfer = -cutTransfer;
+
+                while (connectionIterator.hasNext())
+                {
+                    connectionIterator.next();
+
+                    MemoryConnectionItem* connectionItem = connectionIterator.value();
+                    connectionItem->modifyMovementValuesForItems(
+                        itemMovementValues, movedItems, this, cutAreaBegin, cutAreaEnd, cutTransfer);
+                }
+
+                connectionIterator.toFront();
+                movedItems->clear();
             }
-
-            connectionIterator.toFront();
-            movedItems->clear();
         }
 
         cutAreaBegin = cutAreaEnd;
@@ -319,7 +349,7 @@ qreal AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates(
 
     if (!subItemsAreFiltered())
     {
-        compressSubItemsToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+        compressSubItemsToUnCutCoordinates(unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
     }
 
     qreal originalHeight = boundingRect().height();

@@ -167,7 +167,7 @@ qreal MemoryConnectionItem::getConnectionWidth() const
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::condenseToUnCutAddresses(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems, QVector<quint64> uncutAddresses,
-    const int CUTMODIFIER)
+    const int CUTMODIFIER, bool memoryItemsAreCompressed)
 {
     quint64 cutArea = 0;
     quint64 previousAddress = connectionBaseAddress_;
@@ -175,7 +175,19 @@ void MemoryConnectionItem::condenseToUnCutAddresses(
     {
         if (address > connectionBaseAddress_ && address <= connectionLastAddress_)
         {
-            qint64 singleCut = address - previousAddress - CUTMODIFIER;
+            quint64 addressDifference = address - previousAddress;
+            qint64 singleCut = 0;
+
+            if (memoryItemsAreCompressed)
+            {
+                singleCut = addressDifference - CUTMODIFIER;
+            }
+            else
+            {
+                int areaRequiredRows = MemoryDesignerConstants::getRequiredRowsForRange(addressDifference + 1);
+                singleCut = (addressDifference + 1) - areaRequiredRows;
+            }
+
             if (singleCut > 0)
             {
                 cutArea += singleCut;
@@ -196,25 +208,25 @@ void MemoryConnectionItem::condenseToUnCutAddresses(
         setCondensedHeight(condensedHeight);
     }
 
-    compressEndItem(condensedItems, uncutAddresses, CUTMODIFIER);
+    compressEndItem(condensedItems, uncutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::compressEndItem()
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::compressEndItem(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
-    QVector<quint64> unCutAddresses, const int CUTMODIFIER)
+    QVector<quint64> unCutAddresses, const int CUTMODIFIER, bool memoryItemsAreCompressed)
 {
     if (!condensedItems->contains(endItem_))
     {
         condensedItems->append(endItem_);
-        endItem_->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+        endItem_->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
     }
 
     if (!condensedItems->contains(startItem_))
     {
         condensedItems->append(startItem_);
-        startItem_->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+        startItem_->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
     }
 }
 
@@ -223,7 +235,7 @@ void MemoryConnectionItem::compressEndItem(QSharedPointer<QVector<MainMemoryGrap
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::condenseToUnCutCoordinates(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems, QVector<qreal> unCutCoordinates,
-    const qreal CUTMODIFIER)
+    const qreal CUTMODIFIER, bool memoryItemsAreCompressed)
 {
     qreal cutArea = 0;
     qreal connectionTop = sceneBoundingRect().top();
@@ -233,10 +245,23 @@ void MemoryConnectionItem::condenseToUnCutCoordinates(
     {
         if (coordinate > connectionTop && coordinate <= connectionLow)
         {
-            qreal singleCut = coordinate - previousCoordinate - CUTMODIFIER;
+            qreal singleCut = coordinate - previousCoordinate;
             if (singleCut > 0)
             {
-                cutArea += singleCut;
+                if (memoryItemsAreCompressed)
+                {
+                    singleCut = singleCut - CUTMODIFIER;
+                }
+                else
+                {
+                    qreal requiredArea = MemoryDesignerConstants::getRequiredAreaForUsedArea(singleCut);
+                    singleCut = singleCut - requiredArea;
+                }
+
+                if (singleCut > 0)
+                {
+                    cutArea += singleCut;
+                }
             }
 
             previousCoordinate = coordinate;
@@ -254,7 +279,7 @@ void MemoryConnectionItem::condenseToUnCutCoordinates(
         setCondensedHeight(condensedHeight);
     }
 
-    compressEndItemToCoordinates(condensedItems, unCutCoordinates, CUTMODIFIER);
+    compressEndItemToCoordinates(condensedItems, unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
 }
 
 //-----------------------------------------------------------------------------
@@ -262,18 +287,18 @@ void MemoryConnectionItem::condenseToUnCutCoordinates(
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::compressEndItemToCoordinates(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems, QVector<qreal> unCutCoordinates,
-    const qreal CUTMODIFIER)
+    const qreal CUTMODIFIER, bool memoryItemsAreCompressed)
 {
     if (!condensedItems->contains(endItem_))
     {
         condensedItems->append(endItem_);
-        endItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+        endItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
     }
 
     if (!condensedItems->contains(startItem_))
     {
         condensedItems->append(startItem_);
-        startItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER);
+        startItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
     }
 }
 
@@ -736,11 +761,8 @@ quint64 MemoryConnectionItem::getRangeEndValue() const
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::reDrawConnection()
 {
-    if (sceneBoundingRect().right() != getConnectionEndItem()->sceneBoundingRect().left())
-    {
-        createPath();
-        repositionLabels();
-    }
+    createPath();
+    repositionLabels();
 }
 
 //-----------------------------------------------------------------------------

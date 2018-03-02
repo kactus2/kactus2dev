@@ -171,18 +171,22 @@ public:
     /*!
      *  Compress this item to contain the selected addresses.
      *
-     *      @param [in] uncutAddresses  The addresses that remain after the compression.
-     *      @param [in] CUTMODIFIER     Modifier for the cut areas.
+     *      @param [in] uncutAddresses              The addresses that remain after the compression.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut areas.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
-    virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
-    
+    virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
+        bool memoryItemsAreCompressed);
+
     /*!
      *  Compress this item to contain the selected coordinates.
      *
-     *      @param [in] unCutCoordinates    Coordinates that remain after the compression.
-     *      @param [in] CUTMODIFIER         Modifier for the cut area.
+     *      @param [in] unCutCoordinates            Coordinates that remain after the compression.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut area.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
-    virtual void compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER);
+    virtual void compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER,
+        bool memoryItemsAreCompressed);
 
     /*!
      *  Get the identifying information of the memory item.

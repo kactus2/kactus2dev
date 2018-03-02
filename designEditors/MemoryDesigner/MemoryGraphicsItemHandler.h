@@ -19,6 +19,7 @@ class MemoryColumn;
 class MemoryItem;
 class ConnectivityComponent;
 class MemoryMapGraphicsItem;
+class AddressSpaceGraphicsItem;
 class MainMemoryGraphicsItem;
 
 #include <QSharedPointer>
@@ -101,6 +102,20 @@ public:
     bool fieldsAreFiltered() const;
 
     /*!
+     *  Set a new value for filtering the unconnected memory items.
+     *
+     *      @param [in] filterUnconnected   Value for filtering unconnected memory items.
+     */
+    void filterUnconnectedMemoryItems(bool filterUnconnected);
+
+    /*!
+     *  Check if the unconnected memory items are filtered.
+     *
+     *      @return True, if the unconnected memory items are filtered, false otherwise.
+     */
+    bool unconnectedMemoryItemsAreFiltered() const;
+
+    /*!
      *  Create the memory items found in the design.
      *
      *      @param [in] connectionGraph     Graph containing the connection paths.
@@ -161,6 +176,13 @@ private:
      */
     void connectGraphicsItemSignals(MainMemoryGraphicsItem* graphicsItem);
 
+    /*!
+     *  Filter a single unconnected memory item.
+     *
+     *      @param [in] memoryItem  The selected memory item.
+     */
+    void filterUnconnectedMemoryItem(MainMemoryGraphicsItem* memoryItem);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -177,8 +199,14 @@ private:
     //! Value for filtering register fields.
     bool filterFields_;
 
+    //! Value for filtering unconnected memory items.
+    bool filterUnconnectedMemoryItems_;
+
     //! List of all the created memory map graphics items.
     QVector<MemoryMapGraphicsItem*> memoryMapItems_;
+
+    //! List of all the created address space graphics items.
+    QVector<AddressSpaceGraphicsItem*> spaceItems_;
 };
 
 //-----------------------------------------------------------------------------

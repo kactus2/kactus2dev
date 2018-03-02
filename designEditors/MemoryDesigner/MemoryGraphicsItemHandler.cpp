@@ -29,7 +29,9 @@ filterAddressSpaceSegments_(true),
 filterAddressBlocks_(true),
 filterRegisters_(true),
 filterFields_(true),
-memoryMapItems_()
+filterUnconnectedMemoryItems_(true),
+memoryMapItems_(),
+spaceItems_()
 {
 
 }
@@ -107,12 +109,50 @@ bool MemoryGraphicsItemHandler::fieldsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::filterUnconnectedMemoryItems()
+//-----------------------------------------------------------------------------
+void MemoryGraphicsItemHandler::filterUnconnectedMemoryItems(bool filterUnconnected)
+{
+    filterUnconnectedMemoryItems_ = filterUnconnected;
+
+    foreach (AddressSpaceGraphicsItem* spaceItem, spaceItems_)
+    {
+        filterUnconnectedMemoryItem(spaceItem);
+    }
+
+    foreach (MemoryMapGraphicsItem* mapItem, memoryMapItems_)
+    {
+        filterUnconnectedMemoryItem(mapItem);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::filterUnconnectedMemoryItem()
+//-----------------------------------------------------------------------------
+void MemoryGraphicsItemHandler::filterUnconnectedMemoryItem(MainMemoryGraphicsItem* memoryItem)
+{
+    if (memoryItem->getMemoryConnections().isEmpty())
+    {
+        memoryItem->setVisible(!filterUnconnectedMemoryItems_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::unconnectedMemoryItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryGraphicsItemHandler::unconnectedMemoryItemsAreFiltered() const
+{
+    return filterUnconnectedMemoryItems_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryGraphicsItemHandler::createMemoryItems()
 //-----------------------------------------------------------------------------
 void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGraph> connectionGraph,
     MemoryColumn* spaceColumn, MemoryColumn* memoryMapColumn)
 {
     memoryMapItems_.clear();
+    spaceItems_.clear();
 
     QVector<QString> addressSpaceIdentifiers;
     addressSpaceIdentifiers.append(QStringLiteral("Address spaces"));
@@ -151,6 +191,8 @@ void MemoryGraphicsItemHandler::createAddressSpaceItem(QSharedPointer<MemoryItem
         AddressSpaceGraphicsItem* spaceGraphicsItem = new AddressSpaceGraphicsItem(
             spaceItem, identifierChain, containingInstance, filterAddressSpaceSegments_, spaceColumn);
         spaceColumn->addItem(spaceGraphicsItem);
+
+        spaceItems_.append(spaceGraphicsItem);
 
         connectGraphicsItemSignals(spaceGraphicsItem);
 

@@ -273,7 +273,7 @@ QSharedPointer<BusInterface> Component::getInterfaceForPort( const QString& port
 	foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
 	{
 		// If the interface contains the port.
-		if (busif->hasPhysicalPort(portName))
+        if (busif->containsMappedPhysicalPort(portName))
 		{
 			return busif;
 		}
@@ -292,7 +292,7 @@ QSharedPointer<QList<QSharedPointer<BusInterface> > > Component::getInterfacesUs
 
     foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces_)
     {
-        if (busInterface->hasPhysicalPort(portName))
+        if (busInterface->containsMappedPhysicalPort(portName))
         {
             interfaces->append(busInterface);
         }
@@ -1457,7 +1457,7 @@ QSharedPointer<Port> Component::getPort( const QString& name ) const
 //-----------------------------------------------------------------------------
 // Function: Component::getPorts()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<Port> > Component::getPorts( const QString& interfaceName ) const
+QList<QSharedPointer<Port> > Component::getPortsMappedInInterface(const QString& interfaceName) const
 {
     QList<QSharedPointer<Port> > ports;
 
@@ -1469,7 +1469,7 @@ QList<QSharedPointer<Port> > Component::getPorts( const QString& interfaceName )
         if (busif->name() == interfaceName)
         {
             found = true;
-            portNames = busif->getPhysicalPortNames();
+            portNames = busif->getAllMappedPhysicalPorts();
             break;
         }
     }

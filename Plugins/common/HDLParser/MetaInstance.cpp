@@ -91,11 +91,9 @@ void MetaInstance::cullInterfaces()
     {
         // Find the correct abstraction type.
         QSharedPointer<AbstractionType> absType;
-
-        // TODO: Find the abstraction type by the active view rather than the first one.
-        if (!busInterface->getAbstractionTypes()->isEmpty())
+        if (getActiveView())
         {
-            absType = busInterface->getAbstractionTypes()->first();
+            absType = busInterface->getAbstractionContainingView(getActiveView()->name());
         }
 
         if (!absType)

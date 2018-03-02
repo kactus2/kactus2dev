@@ -54,9 +54,11 @@ public:
      *  Sets the interface data source being edited.
      *
      *      @param [in] busItem             The data source.
+     *      @param [in] activeView          The active view of the item containing the selected bus item..
      *      @param [in] activeInterfaces    A list of active interfaces containing a reference to the selected item.
      */
-    void setInterfaceData(ConnectionEndpoint* busItem, QList<QSharedPointer<ActiveInterface> > activeInterfaces);
+    void setInterfaceData(ConnectionEndpoint* busItem, QString const& activeView,
+        QList<QSharedPointer<ActiveInterface> > activeInterfaces);
 
 	/*!
      *  Returns the number of rows in the model.

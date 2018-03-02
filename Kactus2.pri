@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+HEADERS += ./designEditors/HWDesign/InterfaceGraphics.h \
+    ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./VersionHelper.h \
     ./common/NameGenerationPolicy.h \
     ./common/Global.h \
@@ -758,7 +759,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./designEditors/HWDesign/BusInterfaceEndPoint.h \
+    ./common/graphicsItems/GraphicsColumnConstants.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1420,5 +1423,6 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./designEditors/HWDesign/BusInterfaceEndPoint.cpp
 RESOURCES += kactus.qrc

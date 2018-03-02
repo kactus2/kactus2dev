@@ -17,6 +17,7 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
+#include <common/graphicsItems/ConnectionEndpoint.h>
 
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/diagramgrid.h>
@@ -46,18 +47,19 @@
 DesignDiagram::DesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, 
     DesignWidget* parent) : 
 QGraphicsScene(parent),
-    parent_(parent),
-    lh_(lh),
-    editProvider_(editProvider),
-    component_(),
-    design_(),
-    designConf_(),
-    layout_(new GraphicsColumnLayout(this)),
-    mode_(MODE_SELECT),
-    loading_(false),
-    locked_(false),
-    interactionMode_(NORMAL),
-    associationLine_(0)
+parent_(parent),
+lh_(lh),
+editProvider_(editProvider),
+topView_(""),
+component_(),
+design_(),
+designConf_(),
+layout_(new GraphicsColumnLayout(this)),
+mode_(MODE_SELECT),
+loading_(false),
+locked_(false),
+interactionMode_(NORMAL),
+associationLine_(0)
 {
     setSceneRect(0, 0, 100000, 100000);
 
@@ -86,8 +88,8 @@ void DesignDiagram::clearScene()
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::setDesign()
 //-----------------------------------------------------------------------------
-bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointer<Design> design,
-                              QSharedPointer<DesignConfiguration> designConf)
+bool DesignDiagram::setDesign(QSharedPointer<Component> component, QString const& selectedView,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf)
 {
     // Deselect items.
     emit clearItemSelection();
@@ -102,6 +104,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     getParent()->addRelatedVLNV(component->getVlnv());
 
     // Set the new component and open the design.
+    topView_ = selectedView;
     component_ = component;
     design_ = design;
     designConf_ = designConf;
@@ -112,6 +115,14 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     loading_ = false;
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getTopView()
+//-----------------------------------------------------------------------------
+QString DesignDiagram::getTopView() const
+{
+    return topView_;
 }
 
 //-----------------------------------------------------------------------------
