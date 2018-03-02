@@ -25,21 +25,21 @@ class Component;
 //-----------------------------------------------------------------------------
 class ItemEditor : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	/*!
+    /*!
      *  The constructor.
-	 *
-	 *      @param [in] component   Pointer to the component instance that is being edited.
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] parent      Pointer to the owner of this widget.
-	 */
-	ItemEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent = 0);
+     *
+     *      @param [in] component   Pointer to the component instance that is being edited.
+     *      @param [in] handler     Pointer to the instance that manages the library.
+     *      @param [in] parent      Pointer to the owner of this widget.
+     */
+    ItemEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent = 0);
 
-	//! The destructor.
-	virtual ~ItemEditor();
+    //! The destructor.
+    virtual ~ItemEditor();
 
     /*!
      *  Allows/disallows the editor change.
@@ -48,10 +48,10 @@ public:
      */
     virtual bool confirmEditorChange();
 
-	/*!
+    /*!
      *  Reload the information from the model to the editor.
-	 */
-	virtual void refresh() = 0;
+     */
+    virtual void refresh() = 0;
 
     /*!
      *  Sets the protection state of the editor.
@@ -65,49 +65,49 @@ public:
 
 signals:
 
-	/*!
+    /*!
      *  Emitted when the contents of the widget change.
- 	 *
-	 *      @param [in] change  This is set just for convenience so this signal can be connected directly to
+      *
+     *      @param [in] change  This is set just for convenience so this signal can be connected directly to
      *                          a widget to set it enabled. This should always be set to true.
-	 */
-	void contentChanged();
+     */
+    void contentChanged();
 
     /*!
      *  Informs of the necessity to redraw the visualizer.
      */
     void graphicsChanged();
 
-	//! Prints an error message to the user.
-	void errorMessage(const QString& msg) const;
+    //! Prints an error message to the user.
+    void errorMessage(const QString& msg) const;
 
-	//! Prints a notification to the user.
-	void noticeMessage(const QString& msg) const;
+    //! Prints a notification to the user.
+    void noticeMessage(const QString& msg) const;
 
     //! Emitted when a help page should be changed in the context help window.
     void helpUrlRequested(QString const& url);
 
-	/*! 
+    /*! 
      *  Emitted when the editor adds a new item that should be shown in navigation tree.
-	 *
-	 *      @param [in] index   The index of the added item.
-	 */
-	void childAdded(int index);
+     *
+     *      @param [in] index   The index of the added item.
+     */
+    void childAdded(int index);
 
-	/*!
+    /*!
      *  Emitted when the editor removes a child that should also be removed from navigation tree.
-	 *
-	 *      @param [in] index   The index of the removed item.
-	 */
-	void childRemoved(int index);
+     *
+     *      @param [in] index   The index of the removed item.
+     */
+    void childRemoved(int index);
 
-	/*!
+    /*!
      *  Emitted when the editor moves child from one position to another.
-	 *
-	 *      @param [in] source  The index of the moved item.
-	 *      @param [in] target  The index to move the child to.
-	 */
-	void childMoved(int source, int target);
+     *
+     *      @param [in] source  The index of the moved item.
+     *      @param [in] target  The index to move the child to.
+     */
+    void childMoved(int source, int target);
 
     /*!
      *  Increase the amount of references to a parameter with a matching id.
@@ -125,32 +125,32 @@ signals:
 
 protected:
 
-	/*!
+    /*!
      *  Get the the component pointer from the base-class.
-	 *
-	 *      @return Pointer to the component model that is being edited
-	 */
-	QSharedPointer<Component> component() const;
+     *
+     *      @return Pointer to the component model that is being edited
+     */
+    QSharedPointer<Component> component() const;
 
-	/*!
+    /*!
      *  Get pointer to the instance managing the library.
-	 *
-	 *      @return Pointer to the instance managing the library.
-	 */
-	LibraryInterface* handler() const;
+     *
+     *      @return Pointer to the instance managing the library.
+     */
+    LibraryInterface* handler() const;
 
 private:
 
-	//! No copying. No Assignment.
-	ItemEditor(const ItemEditor& other);
-	ItemEditor& operator=(const ItemEditor& other);
+    //! No copying. No Assignment.
+    ItemEditor(const ItemEditor& other);
+    ItemEditor& operator=(const ItemEditor& other);
 
-	//! A pointer to the component that's element is being edited.
-	QSharedPointer<Component> component_;
+    //! A pointer to the component that's element is being edited.
+    QSharedPointer<Component> component_;
 
-	//! Pointer to the instance that manages the library.
-	LibraryInterface* handler_;
-	
+    //! Pointer to the instance that manages the library.
+    LibraryInterface* handler_;
+    
 };
 
 #endif // ITEMEDITOR_H

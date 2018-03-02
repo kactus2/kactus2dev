@@ -529,6 +529,10 @@ void ComponentReader::parseComponentExtensions(QDomNode const& componentNode,
         {
             parseApiInterfaces(singleExtensionNode, newComponent);
         }
+        else if (singleExtensionNode.nodeName() == QLatin1String("kactus2:sourceDirectories"))
+        {
+            parseFilesetSourceDirectories(singleExtensionNode, newComponent);
+        }
         else if (singleExtensionNode.nodeName() == QLatin1String("kactus2:fileDependencies"))
         {
             parseFileDependencies(singleExtensionNode, newComponent);
@@ -752,6 +756,23 @@ void ComponentReader::parseApiInterfaces(QDomNode const& interfaceNode, QSharedP
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentReader::parseFilesetSourceDirectories()
+//-----------------------------------------------------------------------------
+void ComponentReader::parseFilesetSourceDirectories(QDomNode const& singleExtensionNode, 
+    QSharedPointer<Component> newComponent) const
+{
+    QStringList sourceDirectories;
+
+    QDomNodeList dirctoryNodeList = singleExtensionNode.childNodes();
+    for (int i = 0; i < dirctoryNodeList.count(); i++)
+    {
+        sourceDirectories.append(dirctoryNodeList.at(i).firstChild().nodeValue());
+    }
+
+    newComponent->setSourceDirectories(sourceDirectories);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentReader::parseFileDependencies()
 //-----------------------------------------------------------------------------
 void ComponentReader::parseFileDependencies(QDomNode const& fileNode, QSharedPointer<Component> newComponent) const
@@ -806,4 +827,3 @@ void ComponentReader::parseAuthor(QDomNode const& authorNode, QSharedPointer<Com
 {
     newComponent->setAuthor(authorNode.firstChild().nodeValue());
 }
-

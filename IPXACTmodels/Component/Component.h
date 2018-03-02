@@ -486,20 +486,6 @@ public:
     void setSourceDirectories(QStringList const& sourceDirs);
 
     /*!
-     *  Returns the list of ignored files.
-     *
-     *      @return A list of ignored files.
-     */
-    QStringList getIgnoredFiles() const;
-
-    /*!
-     *  Sets ignored files.
-     *
-     *      @param [in] ignoredFiles The names of the ignored files.
-     */
-    void setIgnoredFiles(QStringList const& ignoredFiles);
-
-    /*!
      *  Gets the author of the component.
      *
      *      @return The component author.

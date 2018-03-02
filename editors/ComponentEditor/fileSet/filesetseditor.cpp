@@ -27,47 +27,32 @@
 // Function: FileSetsEditor::FileSetsEditor()
 //-----------------------------------------------------------------------------
 FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface,
-                               QSharedPointer<ParameterFinder> parameterFinder):
+    QSharedPointer<ParameterFinder> parameterFinder):
 ItemEditor(component, libInterface),
-splitter_(Qt::Vertical, this),
-view_(&splitter_),
-model_(component, parameterFinder, this),
-proxy_(this),
-dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), &splitter_),
-firstShow_(true)
-{
-	// display a label on top the table
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("File sets summary"), this);
-
-    QWidget* dependencyWidget = new QWidget(this);
-
-    QVBoxLayout* dependencyLayout = new QVBoxLayout(dependencyWidget);
-    dependencyLayout->setContentsMargins(0, 2, 0, 0);
-    dependencyLayout->addWidget(new SummaryLabel(tr("File dependencies"), this), 0, Qt::AlignCenter);
-    dependencyLayout->addWidget(&dependencyEditor_);
-
-    splitter_.addWidget(&view_);
-    splitter_.addWidget(dependencyWidget);
-
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-	layout->addWidget(&splitter_, 1);
-	layout->setContentsMargins(0, 0, 0, 0);
-
-	proxy_.setSourceModel(&model_);
+    splitter_(Qt::Vertical, this),
+    view_(&splitter_),
+    model_(component, parameterFinder, this),
+    proxy_(this),
+    dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), &splitter_),
+    firstShow_(true)
+{    
+    proxy_.setSourceModel(&model_);
 
     view_.setModel(&proxy_);
     view_.setItemDelegate(new FileSetsDelegate(this));
     view_.setItemsDraggable(false);
-	view_.setAllowImportExport(true);
+    view_.setAllowImportExport(true);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(ItemEditor::component()->getVlnv());
-	QString defPath = QString("%1/fileSetList.csv").arg(compPath);
-	view_.setDefaultImportExportPath(defPath);
+    QString defPath = libInterface->getDirectoryPath(ItemEditor::component()->getVlnv()) + 
+        QStringLiteral("/fileSetList.csv");
 
-	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(fileSetAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(fileSetRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+    view_.setDefaultImportExportPath(defPath);
+
+    setupLayout();
+
+    connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(fileSetAdded(int)),    this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(fileSetRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
     connect(&model_, SIGNAL(contentChanged()), &dependencyEditor_, SLOT(refresh()), Qt::UniqueConnection);
 
@@ -79,9 +64,9 @@ firstShow_(true)
     connect(&dependencyEditor_, SIGNAL(fileAdded(File*)), this, SIGNAL(fileAdded(File*)), Qt::UniqueConnection);
     connect(&dependencyEditor_, SIGNAL(filesUpdated()), this, SIGNAL(filesUpdated()), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+    connect(&view_, SIGNAL(addItem(const QModelIndex&)),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+    connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
         &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&model_, SIGNAL(decreaseReferences(QString)), this,
@@ -101,7 +86,7 @@ FileSetsEditor::~FileSetsEditor()
 //-----------------------------------------------------------------------------
 void FileSetsEditor::refresh()
 {
-	view_.update();
+    view_.update();
 }
 
 //-----------------------------------------------------------------------------
@@ -109,8 +94,8 @@ void FileSetsEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileSetsEditor::showEvent( QShowEvent* event )
 {
-	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/filesets.html");
+    QWidget::showEvent(event);
+    emit helpUrlRequested("componenteditor/filesets.html");
 
     if (firstShow_)
     {
@@ -125,4 +110,27 @@ void FileSetsEditor::showEvent( QShowEvent* event )
 void FileSetsEditor::refreshDependencyModel()
 {
     dependencyEditor_.refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSetsEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void FileSetsEditor::setupLayout()
+{
+    SummaryLabel* summaryLabel = new SummaryLabel(tr("File sets summary"), this);
+
+    QWidget* dependencyWidget = new QWidget(this);
+
+    QVBoxLayout* dependencyLayout = new QVBoxLayout(dependencyWidget);
+    dependencyLayout->setContentsMargins(0, 2, 0, 0);
+    dependencyLayout->addWidget(new SummaryLabel(tr("File dependencies"), this), 0, Qt::AlignCenter);
+    dependencyLayout->addWidget(&dependencyEditor_);
+
+    splitter_.addWidget(&view_);
+    splitter_.addWidget(dependencyWidget);
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    layout->addWidget(&splitter_, 1);
+    layout->setContentsMargins(0, 0, 0, 0);
 }
