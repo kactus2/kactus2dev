@@ -120,11 +120,6 @@ public:
 	 */
 	int getIndexOf(LibraryItem* item);
 
-	/*! Get the row number of this item in item's parent.
-	 *
-	 *      @return The row number of this item.
-	 */
-	int getRow();
 
 	/*! Check if this item has children or not.
 	 *

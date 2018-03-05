@@ -832,6 +832,8 @@ QString FileDependencyModel::calculateMd5forFile(QString const& absPath) const
         while (bytesRead == MAX_BYTES_PER_READ);
     }
 
+    file.close();
+
     return cryptoHash.result().toHex();
 }
 

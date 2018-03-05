@@ -171,14 +171,6 @@ int LibraryItem::getIndexOf(LibraryItem* item)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryItem::getRow()
-//-----------------------------------------------------------------------------
-int LibraryItem::getRow()
-{
-	return parentItem_->getIndexOf(this);
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryItem::hasChildren()
 //-----------------------------------------------------------------------------
 bool LibraryItem::hasChildren() const

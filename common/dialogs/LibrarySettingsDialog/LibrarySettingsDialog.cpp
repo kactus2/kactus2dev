@@ -45,14 +45,14 @@ checkMarkIcon_(":/icons/common/graphics/checkMark.png")
     // Create the library location group box.
     QGroupBox* locationGroup = new QGroupBox(tr("Library locations"), this);
 
-	libLocationsTable_ = new QTableWidget(0, 3, locationGroup);
+    libLocationsTable_ = new QTableWidget(0, 3, locationGroup);
 
-	// the headers for the table
-	QStringList headers;
-	headers.append(tr("Default"));
-	headers.append(tr("Active"));
-	headers.append(tr("Library path"));
-	libLocationsTable_->setHorizontalHeaderLabels(headers);
+    // the headers for the table
+    QStringList headers;
+    headers.append(tr("Default"));
+    headers.append(tr("Active"));
+    headers.append(tr("Library path"));
+    libLocationsTable_->setHorizontalHeaderLabels(headers);
 
     // Cells are resized to match contents.
     libLocationsTable_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
@@ -60,14 +60,14 @@ checkMarkIcon_(":/icons/common/graphics/checkMark.png")
     libLocationsTable_->setAlternatingRowColors(true);
     libLocationsTable_->verticalHeader()->hide();
 
-	// Set the height of a row to be smaller than default.
-	libLocationsTable_->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
+    // Set the height of a row to be smaller than default.
+    libLocationsTable_->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
 
-	libLocationsTable_->setMinimumWidth(500);
+    libLocationsTable_->setMinimumWidth(500);
     libLocationsTable_->setColumnWidth(LibrarySettingsColumns::DEFAULT, 50);
     libLocationsTable_->setColumnWidth(LibrarySettingsColumns::ACTIVE, 50);
 
-	libLocationsTable_->setItemDelegate(new LibrarySettingsDelegate(this));
+    libLocationsTable_->setItemDelegate(new LibrarySettingsDelegate(this));
 
     removeLocationButton_->setEnabled(false);
 
@@ -160,21 +160,21 @@ void LibrarySettingsDialog::addLocation()
 //-----------------------------------------------------------------------------
 void LibrarySettingsDialog::removeLocation()
 {
-	int row = libLocationsTable_->currentRow();
+    int row = libLocationsTable_->currentRow();
 
-	if (row >= 0)
+    if (row >= 0)
     {
         QTableWidgetItem* defItem = libLocationsTable_->takeItem(row, LibrarySettingsColumns::DEFAULT);
-		delete defItem;
+        delete defItem;
 
         QTableWidgetItem* activeItem = libLocationsTable_->takeItem(row, LibrarySettingsColumns::ACTIVE);
-		delete activeItem;
+        delete activeItem;
 
         QTableWidgetItem* pathItem = libLocationsTable_->takeItem(row, LibrarySettingsColumns::PATH);
-		delete pathItem;
+        delete pathItem;
 
-		libLocationsTable_->removeRow(row);
-	}
+        libLocationsTable_->removeRow(row);
+    }
 
     changed_ = true;
 }
@@ -265,35 +265,35 @@ void LibrarySettingsDialog::accept()
     // Create a string list containing all the locations and save it to the settings.
     QStringList locations;
 
-	// the active locations used to search for IP-XACT objects
-	QStringList activeLocations;
+    // the active locations used to search for IP-XACT objects
+    QStringList activeLocations;
 
     // the checked item in the list is the default location
     QString defaultLocation;
 
-	for (int i = 0; i < libLocationsTable_->rowCount(); ++i)
+    for (int i = 0; i < libLocationsTable_->rowCount(); ++i)
     {
         QTableWidgetItem* defItem = libLocationsTable_->item(i, LibrarySettingsColumns::DEFAULT);
         QTableWidgetItem* activeItem = libLocationsTable_->item(i, LibrarySettingsColumns::ACTIVE);
         QTableWidgetItem* pathItem = libLocationsTable_->item(i, LibrarySettingsColumns::PATH);
-		
-		// if the row contains the default library
+        
+        // if the row contains the default library
         if (!defItem->icon().isNull())
         {
-			defaultLocation = pathItem->text();
-		}
+            defaultLocation = pathItem->text();
+        }
         if (!activeItem->icon().isNull())
         {
-			activeLocations.append(pathItem->text());
-		}
+            activeLocations.append(pathItem->text());
+        }
 
-		// add the library path to the known library locations
-		locations.append(pathItem->text());
-	}
+        // add the library path to the known library locations
+        locations.append(pathItem->text());
+    }
 
     settings_.setValue("Library/Locations", locations);
     settings_.setValue("Library/DefaultLocation", defaultLocation);
-	settings_.setValue("Library/ActiveLocations", activeLocations);
+    settings_.setValue("Library/ActiveLocations", activeLocations);
 
     if (changed_)
     {
@@ -309,21 +309,21 @@ void LibrarySettingsDialog::accept()
 void LibrarySettingsDialog::loadSettings()
 {
     // Load the library locations.
-    QString defaultLocation = settings_.value("Library/DefaultLocation", QString()).toString();
+    QString defaultLocation = settings_.value(QStringLiteral("Library/DefaultLocation")).toString();
+    QStringList activeLocations = settings_.value(QStringLiteral("Library/ActiveLocations")).toStringList();
+    QStringList locations = settings_.value(QStringLiteral("Library/Locations")).toStringList();
 
-    QStringList activeLocations = settings_.value("Library/ActiveLocations", QStringList()).toStringList();
-
-    QStringList locations = settings_.value("Library/Locations", QStringList()).toStringList();
     foreach (QString const& location, locations)
     {
         QString fullLocation = location;
 
-        if (!QFileInfo(location).isAbsolute())
+        if (QFileInfo(location).isRelative())
         {
             fullLocation = QFileInfo(location).absoluteFilePath();
         }
 
-        createRowForDirectory(fullLocation, activeLocations.contains(location), location == defaultLocation);
+        bool isDefaultLocation = location.compare(defaultLocation) == 0;
+        createRowForDirectory(fullLocation, activeLocations.contains(location), isDefaultLocation);
     }
 
     libLocationsTable_->setCurrentIndex(QModelIndex());
@@ -372,7 +372,7 @@ void LibrarySettingsDialog::createRowForDirectory(QString const& directory, bool
     }
     else
     {
-        pathItem->setIcon(QIcon(":/icons/common/graphics/exclamation--frame.png"));
+        pathItem->setIcon(QIcon(QStringLiteral(":/icons/common/graphics/exclamation--frame.png")));
     }
 
     libLocationsTable_->setItem(rowNumber, LibrarySettingsColumns::PATH, pathItem);

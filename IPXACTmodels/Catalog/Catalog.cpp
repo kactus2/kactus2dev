@@ -57,9 +57,9 @@ Document(other),
 //-----------------------------------------------------------------------------
 Catalog & Catalog::operator=(Catalog const& other)
 {
-	if (this != &other)
+    if (this != &other)
     {
-		Document::operator=(other);
+        Document::operator=(other);
         
         catalogs_->clear();
         busDefinitions_->clear();
@@ -71,9 +71,9 @@ Catalog & Catalog::operator=(Catalog const& other)
         generatorChains_->clear();
 
         copyIpxactFiles(other);
-	}
+    }
 
-	return *this;
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ Catalog::~Catalog()
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> Catalog::clone() const
 {
-	return QSharedPointer<Document>(new Catalog(*this));
+    return QSharedPointer<Document>(new Catalog(*this));
 }
 
 //-----------------------------------------------------------------------------

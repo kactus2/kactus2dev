@@ -171,7 +171,7 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 {
     if (path.isEmpty())
     {
-    	return false;
+        return false;
     }
 
     VLNV vlnv = model->getVlnv();
@@ -194,15 +194,15 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 
     if (!saveInProgress_)
     {
-    	// tell library to register the vlnv
-    	data_->addVLNV(vlnv, filePath);
+        // tell library to register the vlnv
+        data_->addVLNV(vlnv, filePath);
 
-    	// the hierarchy model must be re-built
-    	hierarchyModel_->onResetModel();
+        // the hierarchy model must be re-built
+        hierarchyModel_->onResetModel();
     }
     else
     {
-    	itemsToAdd_.insert(vlnv, filePath);
+        itemsToAdd_.insert(vlnv, filePath);
     }
 
     return true;
@@ -227,7 +227,7 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 
     if (!saveInProgress_)
     {
-    	onItemSaved(objectVLNV);
+        onItemSaved(objectVLNV);
     }
     else
     {
@@ -453,7 +453,7 @@ QSharedPointer<Design> LibraryHandler::getDesign(VLNV const& hierarchyRef)
 // Function: LibraryHandler::isValid()
 //-----------------------------------------------------------------------------
 bool LibraryHandler::isValid(VLNV const& vlnv)
-{	
+{    
     if (objectValidity_.contains(vlnv))
     {
         return objectValidity_.value(vlnv);
@@ -588,7 +588,7 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onExportItem()
 //-----------------------------------------------------------------------------
-void LibraryHandler::onExportItem(VLNV const vlnv)
+void LibraryHandler::onExportItem(VLNV const& vlnv)
 {  
     onExportItems(QList<VLNV>() << vlnv);
 }
@@ -1348,8 +1348,8 @@ void LibraryHandler::copyFiles(QDir const& target, const VLNV& vlnv, fileList& h
     // Parse the vlnv to get the dependencies and also copy them.
     QSharedPointer<Document> document = getModel(vlnv);
     if (!document)
-    {	
-    	return;
+    {    
+        return;
     }
 
     // save the current working directory to be restored later
@@ -1361,11 +1361,11 @@ void LibraryHandler::copyFiles(QDir const& target, const VLNV& vlnv, fileList& h
     QString directoryPath = vlnv.toString("/");
     if (!vlnvTargetDirectory.mkpath(directoryPath))
     {
-    	messageChannel_->showError(tr("Could not create directory structure, aborting."));
+        messageChannel_->showError(tr("Could not create directory structure, aborting."));
 
-    	// restore the previous working directory to avoid messing with caller function
-    	QDir::setCurrent(savedWorkingDir.absolutePath());
-    	return;
+        // restore the previous working directory to avoid messing with caller function
+        QDir::setCurrent(savedWorkingDir.absolutePath());
+        return;
     }
 
     vlnvTargetDirectory.setPath(directoryPath);
@@ -1373,9 +1373,9 @@ void LibraryHandler::copyFiles(QDir const& target, const VLNV& vlnv, fileList& h
     QString documentPath = data_->getPath(vlnv);
     if (documentPath.isEmpty())
     {
-    	// restore the previous working directory to avoid messing with caller function
-    	QDir::setCurrent(savedWorkingDir.absolutePath());
-    	return;
+        // restore the previous working directory to avoid messing with caller function
+        QDir::setCurrent(savedWorkingDir.absolutePath());
+        return;
     }
     QFileInfo documentFileInfo(documentPath);
 
@@ -1388,7 +1388,7 @@ void LibraryHandler::copyFiles(QDir const& target, const VLNV& vlnv, fileList& h
 
     foreach (VLNV const& dependentVLNV, document->getDependentVLNVs()) 
     {
-    	copyFiles(target, dependentVLNV, handledFiles, yesToAll, noToAll);
+        copyFiles(target, dependentVLNV, handledFiles, yesToAll, noToAll);
     }
 
     // restore the previous working directory to avoid messing with caller function
@@ -1444,7 +1444,7 @@ bool LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& h
 
     if (!source.exists())
     {
-    	messageChannel_->showError(tr("Could not find file: %1").arg(source.fileName()));
+        messageChannel_->showError(tr("Could not find file: %1").arg(source.fileName()));
         return false;
     }
 
@@ -1458,60 +1458,61 @@ bool LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& h
 
     if (QFile::exists(source.fileName()))
     {
-    	QMessageBox::StandardButton answer = QMessageBox::Yes;
+        QMessageBox::StandardButton answer = QMessageBox::Yes;
 
-    	if (noToAll)
+        if (noToAll)
         {
-    		answer = QMessageBox::No;
-    	}
+            answer = QMessageBox::No;
+        }
 
-    	// if "yes to all" or "no to all" has not been clicked then ask user what to do
-    	else if (!yesToAll && !noToAll)
+        // if "yes to all" or "no to all" has not been clicked then ask user what to do
+        else if (!yesToAll && !noToAll)
         {
-    		QString title = tr("overwrite file?");
+            QString title = tr("overwrite file?");
             QString text = tr("The file ") + source.fileName() + tr(" already exists, would you like "
                 "to overwrite the file?");
 
-    		// ask the user to overwrite the file, if user says no we quit the function and return false
-            answer = QMessageBox::question(parentWidget_, title, text, QMessageBox::Yes | QMessageBox::No |
-    			QMessageBox::YesToAll | QMessageBox::NoToAll ,	QMessageBox::No);
-    	}
+            // ask the user to overwrite the file, if user says no we quit the function and return false
+            answer = QMessageBox::question(parentWidget_, title, text, 
+                QMessageBox::Yes | QMessageBox::No | QMessageBox::YesToAll | QMessageBox::NoToAll,
+                QMessageBox::No);
+        }
 
-    	if (answer == QMessageBox::No)
+        if (answer == QMessageBox::No)
         {
-    		// restore the current directory to the state it was before this function
-    		QDir::setCurrent(savedCurrentDir.absolutePath());
+            // restore the current directory to the state it was before this function
+            QDir::setCurrent(savedCurrentDir.absolutePath());
             return false;
-    	}
+        }
 
-    	else if (answer == QMessageBox::YesToAll)
+        else if (answer == QMessageBox::YesToAll)
         {
-    		yesToAll = true;
-    		noToAll = false;
-    	}
+            yesToAll = true;
+            noToAll = false;
+        }
 
-    	else if (answer == QMessageBox::NoToAll)
+        else if (answer == QMessageBox::NoToAll)
         {
-    		yesToAll = false;
-    		noToAll = true;
+            yesToAll = false;
+            noToAll = true;
 
-    		// restore the current directory to the state it was before this function
-    		QDir::setCurrent(savedCurrentDir.absolutePath());
+            // restore the current directory to the state it was before this function
+            QDir::setCurrent(savedCurrentDir.absolutePath());
             return false;
-    	}
+        }
 
-    	if (answer == QMessageBox::Yes || answer == QMessageBox::YesToAll)
+        if (answer == QMessageBox::Yes || answer == QMessageBox::YesToAll)
         {
-    		QFile fileToOverwrite(source.fileName());
-    		fileToOverwrite.remove();
-    	}
+            QFile fileToOverwrite(source.fileName());
+            fileToOverwrite.remove();
+        }
     }
 
     QFile sourceFile(source.filePath());
 
     if (!sourceFile.copy(source.fileName()))
     {
-    	messageChannel_->showError(tr("File %1 couldn't be copied").arg(source.fileName()));
+        messageChannel_->showError(tr("File %1 couldn't be copied").arg(source.fileName()));
     }
 
     // restore the current directory to the state it was before this function
@@ -1539,14 +1540,16 @@ void LibraryHandler::syncronizeModels()
     connect(data_.data(), SIGNAL(addVLNV(const VLNV&)),
         treeModel_, SLOT(onAddVLNV(const VLNV&)), Qt::UniqueConnection);
 
-    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)), this, SLOT(onItemSaved(VLNV const&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+        this, SLOT(onItemSaved(VLNV const&)), Qt::UniqueConnection);
 
     connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
             treeModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
     connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
             hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
-    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)), this, SIGNAL(updatedVLNV(VLNV const&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+        this, SIGNAL(updatedVLNV(VLNV const&)), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
@@ -1631,8 +1634,8 @@ void LibraryHandler::syncronizeModels()
     connect(hierarchyModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_, SIGNAL(exportItem(const VLNV)),
-        this, SLOT(onExportItem(const VLNV)), Qt::UniqueConnection);
+    connect(hierarchyModel_, SIGNAL(exportItem(VLNV const&)),
+        this, SLOT(onExportItem(VLNV const& )), Qt::UniqueConnection);
 
     connect(hierarchyModel_, SIGNAL(removeVLNV(QList<VLNV>)),
         this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
@@ -1649,20 +1652,20 @@ void LibraryHandler::clearDirectoryStructure(QString const& dirPath, QStringList
     QDir dir(dirPath);
     
     while (containsPath(QDir::cleanPath(dir.absolutePath()), libraryLocations))
-    {	
+    {    
         QString directoryName = dir.dirName();
 
         // if not possible to move up anymore (the dir could possibly have been destroyed already).
-    	if (!dir.cdUp())
+        if (!dir.cdUp())
         {
-    		return;
-    	}
+            return;
+        }
 
-    	// if the directory is not empty then it can't be removed and we can stop.
+        // if the directory is not empty then it can't be removed and we can stop.
         if (!dir.rmdir(directoryName))
         {
-    		return;
-    	}
+            return;
+        }
     }
 }
 
@@ -1673,12 +1676,12 @@ bool LibraryHandler::containsPath(QString const& path, QStringList const& pathsT
 {
     foreach (QString const& searchPath, pathsToSearch)
     {
-    	// As long as the path is not the same as search path but still contains the search path,
+        // As long as the path is not the same as search path but still contains the search path,
         // it is a parent directory of the path.
-    	if (path.contains(searchPath) && path != searchPath)
+        if (path.contains(searchPath) && path != searchPath)
         {
-    		return true;
-    	}
+            return true;
+        }
     }
 
     // None of the paths to search were contained in the path.

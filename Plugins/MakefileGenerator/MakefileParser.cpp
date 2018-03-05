@@ -220,8 +220,8 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component,
 	QSharedPointer<MakeObjectData> &mod, QSharedPointer<MakeFileData> makeData) const
 {
 	QString cFlags;
-	int fileReplaceFlags;
-	int fileSetReplaceFlags;
+	int fileReplaceFlags = 0;
+	int fileSetReplaceFlags = 0;
 
 	QSharedPointer<ListParameterFinder> finder (new ListParameterFinder());
 	finder->setParameterList(component->getParameters());

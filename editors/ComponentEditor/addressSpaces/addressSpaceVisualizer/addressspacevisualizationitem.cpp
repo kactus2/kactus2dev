@@ -26,6 +26,7 @@ AddressSpaceVisualizationItem::AddressSpaceVisualizationItem(QString const& addr
 VisualizerItem(parent),
 expressionParser_(expressionParser),
 addressSpaceWidth_(addressSpaceWidth),
+conflicted_(false),
 overlapped_(false)
 {
     setRect(0, 0, VisualizerItem::DEFAULT_WIDTH, AddressSpaceVisualizationItem::SEGMENT_HEIGHT);

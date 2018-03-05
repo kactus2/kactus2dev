@@ -641,7 +641,7 @@ void PortsModel::lockPort(QSharedPointer<Port> port)
     QModelIndex directionIndex = nameIndex.sibling(portIndex.row(), PortColumns::DIRECTION);
     QModelIndex typeIndex = nameIndex.sibling(portIndex.row(), PortColumns::TYPE_NAME);
 
-    if (nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid())
+    if (nameIndex.isValid() && directionIndex.isValid() && typeIndex.isValid())
     {     
         lockIndex(nameIndex);  
         lockIndex(directionIndex);  
@@ -658,7 +658,7 @@ void PortsModel::unlockPort(QSharedPointer<Port> port)
     QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(), PortColumns::DIRECTION);
     QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(), PortColumns::TYPE_NAME);
    
-    if (nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid())
+    if (nameIndex.isValid() && directionIndex.isValid() && typeIndex.isValid())
     {     
         unlockIndex(nameIndex);  
         unlockIndex(directionIndex);  

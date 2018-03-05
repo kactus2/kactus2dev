@@ -281,7 +281,7 @@ public slots:
      *      @param [in] vlnv VLNV tag that identifies the top item to export.
      *
     */
-    virtual void onExportItem(const VLNV vlnv);
+    virtual void onExportItem(VLNV const& vlnv);
     
     /*! Export a group of items to a new location
      *
@@ -315,8 +315,8 @@ public slots:
 
     /*! Open the specified component design
      *
-     *      @param [in] vlnv 		Identifies the component that's design is wanted
-     *      @param [in] viewName 	Identifies the view for the design.
+     *      @param [in] vlnv         Identifies the component that's design is wanted
+     *      @param [in] viewName     Identifies the view for the design.
      *
     */
     virtual void onOpenDesign(VLNV const& vlnv, QString const& viewName);
@@ -524,7 +524,7 @@ private:
      *      @param [in/out] noToAll         Info is user has selected "No to all" to overwrite
      *
     */
-    void copyFiles(QDir const& target, VLNV const& vlnv, fileList& handledFiles, bool& yesToAll,	bool& noToAll);
+    void copyFiles(QDir const& target, VLNV const& vlnv, fileList& handledFiles, bool& yesToAll,    bool& noToAll);
 
     /*! Copy list of files to a new location.
      *

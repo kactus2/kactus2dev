@@ -91,7 +91,7 @@ bool View::hasEnvIdentifier(QSharedPointer<View::EnvironmentIdentifier> envIdent
 	{
 		if (identifier->language == envIdentifier->language &&
 			identifier->tool == envIdentifier->tool &&
-			identifier->vendorSpecific == identifier->vendorSpecific)
+			identifier->vendorSpecific == envIdentifier->vendorSpecific)
 		{
 			return true;
 		}

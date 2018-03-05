@@ -47,14 +47,14 @@ Extendable(other),
 //-----------------------------------------------------------------------------
 IpxactFile & IpxactFile::operator=(IpxactFile const& other)
 {
-	if (this != &other)
+    if (this != &other)
     {
-		Extendable::operator=(other);
+        Extendable::operator=(other);
         vlnv_ = other.vlnv_;
         name_ = other.name_;
-	}
+    }
 
-	return *this;
+    return *this;
 }
 
 //-----------------------------------------------------------------------------

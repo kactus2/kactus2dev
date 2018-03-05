@@ -39,53 +39,54 @@ DirListManager::~DirListManager()
 //-----------------------------------------------------------------------------
 void DirListManager::initialize( const QStringList& items /*= QStringList()*/ )
 {
-	// remove the previous model and view if there are one
-	if (model_)
+    // remove the previous model and view if there are one
+    if (model_)
     {
-		delete model_;
-		model_ = 0;
-	}
-	if (view_)
+        delete model_;
+        model_ = 0;
+    }
+
+    if (view_)
     {
-		delete view_;
-		view_ = 0;
-	}
+        delete view_;
+        view_ = 0;
+    }
 
-	// create new model and view
-	model_ = new DirListManagerModel(basePath_, items, this);
+    // create new model and view
+    model_ = new DirListManagerModel(basePath_, items, this);
 
-	view_ = new EditableListView(this);
+    view_ = new EditableListView(this);
 
-	// the signals from the view
-	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
+    // the signals from the view
+    connect(view_, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(view_, SIGNAL(addItem(const QModelIndex&)),
+    connect(view_, SIGNAL(addItem(const QModelIndex&)),
         model_, SLOT(addItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
+    connect(view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
         model_, SLOT(moveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
 
-	// the signals from the model
-	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    // the signals from the model
+    connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+    connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	QLayout* topLayout = layout();
+    QLayout* topLayout = layout();
 
-	if (!topLayout)
+    if (topLayout == 0)
     {
-		// the top layout of the widget
-		topLayout = new QHBoxLayout(this);
-	}
+        // the top layout of the widget
+        topLayout = new QHBoxLayout(this);
+    }
 
-	// add the view on the left side
-	topLayout->addWidget(view_);
+    // add the view on the left side
+    topLayout->addWidget(view_);
 
-	// connect the model to the view
-	view_->setModel(model_);
+    // connect the model to the view
+    view_->setModel(model_);
 
-	view_->setItemDelegate(new LineEditDelegate(this));
+    view_->setItemDelegate(new LineEditDelegate(this));
 }
 

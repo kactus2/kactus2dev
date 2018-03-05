@@ -494,12 +494,6 @@
     <Filter Include="Header Files\designEditors\SystemDesign\SystemDetailsEditor">
       <UniqueIdentifier>{bd961281-bac8-4b4e-9228-9b9ae077a8d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\designEditors\HWDesign\AddressEditor">
-      <UniqueIdentifier>{ee35da27-a35a-40db-bba2-f097f5b28492}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\designEditors\HWDesign\AddressEditor">
-      <UniqueIdentifier>{7d233129-b394-406f-a685-e12be4d6bb83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\mainwindow\MessageConsole">
       <UniqueIdentifier>{d0c9547c-34a4-4a9f-9160-deefc67f0b9a}</UniqueIdentifier>
     </Filter>
@@ -1734,33 +1728,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemDetailsEditor.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressTableView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressDelegate.cpp">
-      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressEditor.cpp">
-      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressEntry.cpp">
-      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressModel.cpp">
-      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressTableView.cpp">
-      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\MessageConsole\messageconsole.cpp">
       <Filter>Source Files\mainwindow\MessageConsole</Filter>
@@ -4887,18 +4854,6 @@
     <CustomBuild Include="designEditors\SystemDesign\SystemDetailsEditor\SystemDetailsEditor.h">
       <Filter>Header Files\designEditors\SystemDesign\SystemDetailsEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressDelegate.h">
-      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressEditor.h">
-      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressModel.h">
-      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressTableView.h">
-      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="mainwindow\MessageConsole\messageconsole.h">
       <Filter>Header Files\mainwindow\MessageConsole</Filter>
     </CustomBuild>
@@ -6301,9 +6256,6 @@
     </ClInclude>
     <ClInclude Include="designEditors\SystemDesign\HWMappingItem.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\AddressEditor\AddressEntry.h">
-      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>

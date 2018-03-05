@@ -274,7 +274,7 @@ signals:
     void createApiDef(VLNV const& vlnv);
 
     //! Export an item to a new location.
-    void exportItem(const VLNV vlnv);
+    void exportItem(VLNV const& vlnv);
 
     //! Remove the specified VLNV from the library
     void removeVLNV(QList<VLNV> vlnv);

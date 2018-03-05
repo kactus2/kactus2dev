@@ -24,7 +24,7 @@
 // Function: dirlistmanagermodel::DirListManagerModel()
 //-----------------------------------------------------------------------------
 DirListManagerModel::DirListManagerModel(QString const& basePath, QStringList const& items, QObject* parent):
-ListManagerModel(parent, items),
+ListManagerModel(items, parent),
     basePath_(basePath)
 {
     if (!basePath_.endsWith(QLatin1Char('/')))
@@ -44,15 +44,15 @@ DirListManagerModel::~DirListManagerModel()
 //-----------------------------------------------------------------------------
 // Function: dirlistmanagermodel::data()
 //-----------------------------------------------------------------------------
-QVariant DirListManagerModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
+QVariant DirListManagerModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid())
+    if (!index.isValid())
     {
-		return QVariant();
-	}
+        return QVariant();
+    }
 
-	// if there are items to display then check the validity of them
-	else if (role == Qt::ForegroundRole && !items_.isEmpty())
+    // if there are items to display then check the validity of them
+    else if (role == Qt::ForegroundRole && items_.isEmpty() == false)
     {
         if (directoryExistsForPath(items_.at(index.row())))
         {
@@ -62,11 +62,11 @@ QVariant DirListManagerModel::data(QModelIndex const& index, int role /*= Qt::Di
         {
             return KactusColors::ERROR;
         }
-	}
+    }
 
     else if (role == Qt::DecorationRole && !items_.isEmpty())
     {
-        if (!directoryExistsForPath(items_.at(index.row())))
+        if (directoryExistsForPath(items_.at(index.row())) == false)
         {
             return QIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
         }
@@ -76,11 +76,11 @@ QVariant DirListManagerModel::data(QModelIndex const& index, int role /*= Qt::Di
         }
     }
 
-	// other than fore ground role use the base class implementation
-	else
+    // other than fore ground role use the base class implementation
+    else
     {
-		return ListManagerModel::data(index, role);
-	}
+        return ListManagerModel::data(index, role);
+    }
 }
 
 //-----------------------------------------------------------------------------
