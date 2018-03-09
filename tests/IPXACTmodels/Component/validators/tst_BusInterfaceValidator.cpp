@@ -387,7 +387,7 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeViewRef()
 
     QSharedPointer<AbstractionType> testAbstraction(new AbstractionType());
     testAbstraction->setAbstractionRef(abstractionReference);
-    testAbstraction->setViewRef(viewName);
+    testAbstraction->getViewReferences()->append(viewName);
 
     QSharedPointer<BusInterface> testBus (new BusInterface());
     testBus->setName("testBus");

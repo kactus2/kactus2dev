@@ -15,6 +15,7 @@ TARGET = tst_IndirectInterfaceWriter
 
 QT += core xml gui testlib
 CONFIG += testcase console
+DEFINES += IPXACTMODELS_LIB
 
 win32:CONFIG(release, debug|release) {
     DESTDIR = ./release

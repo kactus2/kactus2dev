@@ -437,10 +437,10 @@ void tst_ComponentPortReader::readWireTypeDefinitions()
     QCOMPARE(testPort->getWire()->getWireTypeDefs()->size(), 1);
     QSharedPointer<WireTypeDef> typeDefinition = testPort->getWire()->getWireTypeDefs()->first();
     QCOMPARE(typeDefinition->getTypeName(), QString("testType"));
-    QCOMPARE(typeDefinition->getTypeDefinitions().size(), 1);
-    QCOMPARE(typeDefinition->getTypeDefinitions().first(), QString("testTypeDefinition"));
-    QCOMPARE(typeDefinition->getViewRefs().size(), 1);
-    QCOMPARE(typeDefinition->getViewRefs().first(), QString("testView"));
+    QCOMPARE(typeDefinition->getTypeDefinitions()->size(), 1);
+    QCOMPARE(typeDefinition->getTypeDefinitions()->first(), QString("testTypeDefinition"));
+    QCOMPARE(typeDefinition->getViewRefs()->size(), 1);
+    QCOMPARE(typeDefinition->getViewRefs()->first(), QString("testView"));
 }
 
 //-----------------------------------------------------------------------------
@@ -709,10 +709,10 @@ void tst_ComponentPortReader::readTransactionalTypeDefinitions()
     QSharedPointer<WireTypeDef> transTypeDefinition = testPort->getTransactional()->getTransTypeDef()->first();
     QCOMPARE(transTypeDefinition->getTypeName(), QString("testType"));
     QCOMPARE(transTypeDefinition->isConstrained(), true);
-    QCOMPARE(transTypeDefinition->getTypeDefinitions().size(), 1);
-    QCOMPARE(transTypeDefinition->getTypeDefinitions().first(), QString("testTypeDefinition"));
-    QCOMPARE(transTypeDefinition->getViewRefs().size(), 1);
-    QCOMPARE(transTypeDefinition->getViewRefs().first(), QString("testView"));
+    QCOMPARE(transTypeDefinition->getTypeDefinitions()->size(), 1);
+    QCOMPARE(transTypeDefinition->getTypeDefinitions()->first(), QString("testTypeDefinition"));
+    QCOMPARE(transTypeDefinition->getViewRefs()->size(), 1);
+    QCOMPARE(transTypeDefinition->getViewRefs()->first(), QString("testView"));
 }
 
 //-----------------------------------------------------------------------------

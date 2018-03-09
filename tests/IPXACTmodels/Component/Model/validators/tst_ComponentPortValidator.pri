@@ -40,7 +40,9 @@ HEADERS += ../../../../../IPXACTmodels/common/Array.h \
     ../../../../../IPXACTmodels/common/Vector.h \
     ../../../../../IPXACTmodels/Component/View.h \
     ../../../../../IPXACTmodels/Component/Wire.h \
-    ../../../../../IPXACTmodels/Component/WireTypeDef.h
+    ../../../../../IPXACTmodels/Component/WireTypeDef.h \
+    ../../../../../IPXACTmodels/Component/validators/PortTypeValidator.h \
+    ../../../../../IPXACTmodels/common/DirectionTypes.h
 SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/common/Assertion.cpp \
     ../../../../../IPXACTmodels/common/BooleanValue.cpp \
@@ -74,4 +76,6 @@ SOURCES += ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/Component/View.cpp \
     ../../../../../IPXACTmodels/Component/Wire.cpp \
     ../../../../../IPXACTmodels/Component/WireTypeDef.cpp \
-    ./tst_ComponentPortValidator.cpp
+    ./tst_ComponentPortValidator.cpp \
+    ../../../../../IPXACTmodels/Component/validators/PortTypeValidator.cpp \
+    ../../../../../IPXACTmodels/common/DirectionTypes.cpp

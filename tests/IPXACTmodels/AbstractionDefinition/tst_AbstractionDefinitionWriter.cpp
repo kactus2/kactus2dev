@@ -29,12 +29,12 @@
 #include <IPXACTmodels/AbstractionDefinition/WirePort.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 
-class tst_AbstractionDefinition : public QObject
+class tst_AbstractionDefinitionWriter : public QObject
 {
     Q_OBJECT
 
 public:
-    tst_AbstractionDefinition();
+    tst_AbstractionDefinitionWriter();
 
 private slots:
     void testWriteAbstractionDefinitionWithoutPorts();
@@ -61,14 +61,14 @@ private slots:
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionWriter::tst_AbstractionDefinition()
 //-----------------------------------------------------------------------------
-tst_AbstractionDefinition::tst_AbstractionDefinition()
+tst_AbstractionDefinitionWriter::tst_AbstractionDefinitionWriter()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionWriter::testWriteAbstractionDefinitionWithoutPorts()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteAbstractionDefinitionWithoutPorts()
+void tst_AbstractionDefinitionWriter::testWriteAbstractionDefinitionWithoutPorts()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -89,7 +89,7 @@ void tst_AbstractionDefinition::testWriteAbstractionDefinitionWithoutPorts()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -103,7 +103,7 @@ void tst_AbstractionDefinition::testWriteAbstractionDefinitionWithoutPorts()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testTopCommentsAreWritten()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testTopCommentsAreWritten()
+void tst_AbstractionDefinitionWriter::testTopCommentsAreWritten()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -125,7 +125,7 @@ void tst_AbstractionDefinition::testTopCommentsAreWritten()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -138,7 +138,7 @@ void tst_AbstractionDefinition::testTopCommentsAreWritten()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testProcessingInstructionsAreWritten()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testProcessingInstructionsAreWritten()
+void tst_AbstractionDefinitionWriter::testProcessingInstructionsAreWritten()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -160,7 +160,7 @@ void tst_AbstractionDefinition::testProcessingInstructionsAreWritten()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -173,7 +173,7 @@ void tst_AbstractionDefinition::testProcessingInstructionsAreWritten()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionWriter::testWriteExtendingAbstractionDefinition()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteExtendingAbstractionDefinition()
+void tst_AbstractionDefinitionWriter::testWriteExtendingAbstractionDefinition()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -196,7 +196,7 @@ void tst_AbstractionDefinition::testWriteExtendingAbstractionDefinition()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -210,7 +210,7 @@ void tst_AbstractionDefinition::testWriteExtendingAbstractionDefinition()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteSimpleWirePort()
+void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -251,7 +251,7 @@ void tst_AbstractionDefinition::testWriteSimpleWirePort()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -281,7 +281,7 @@ void tst_AbstractionDefinition::testWriteSimpleWirePort()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteWirePortForAllModes()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteWirePortForAllModes()
+void tst_AbstractionDefinitionWriter::testWriteWirePortForAllModes()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -332,7 +332,7 @@ void tst_AbstractionDefinition::testWriteWirePortForAllModes()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -371,7 +371,7 @@ void tst_AbstractionDefinition::testWriteWirePortForAllModes()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
+void tst_AbstractionDefinitionWriter::testWriteMultipleSystemWirePorts()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -415,7 +415,7 @@ void tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -447,7 +447,7 @@ void tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWireConstraints()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWireConstraints()
+void tst_AbstractionDefinitionWriter::testWireConstraints()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -493,7 +493,7 @@ void tst_AbstractionDefinition::testWireConstraints()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -528,7 +528,7 @@ void tst_AbstractionDefinition::testWireConstraints()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWireMirroredConstraints()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWireMirroredConstraints()
+void tst_AbstractionDefinitionWriter::testWireMirroredConstraints()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -574,7 +574,7 @@ void tst_AbstractionDefinition::testWireMirroredConstraints()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -609,7 +609,7 @@ void tst_AbstractionDefinition::testWireMirroredConstraints()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteSimpleTransactionalPort()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteSimpleTransactionalPort()
+void tst_AbstractionDefinitionWriter::testWriteSimpleTransactionalPort()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -637,7 +637,7 @@ void tst_AbstractionDefinition::testWriteSimpleTransactionalPort()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -660,7 +660,7 @@ void tst_AbstractionDefinition::testWriteSimpleTransactionalPort()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteTransactionalPortForAllModes()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteTransactionalPortForAllModes()
+void tst_AbstractionDefinitionWriter::testWriteTransactionalPortForAllModes()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -711,7 +711,7 @@ void tst_AbstractionDefinition::testWriteTransactionalPortForAllModes()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -750,7 +750,7 @@ void tst_AbstractionDefinition::testWriteTransactionalPortForAllModes()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteTransactionalPortWithProtocol()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteTransactionalPortWithProtocol()
+void tst_AbstractionDefinitionWriter::testWriteTransactionalPortWithProtocol()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -797,7 +797,7 @@ void tst_AbstractionDefinition::testWriteTransactionalPortWithProtocol()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -830,7 +830,7 @@ void tst_AbstractionDefinition::testWriteTransactionalPortWithProtocol()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteParameters()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteParameters()
+void tst_AbstractionDefinitionWriter::testWriteParameters()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -864,7 +864,7 @@ void tst_AbstractionDefinition::testWriteParameters()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -887,7 +887,7 @@ void tst_AbstractionDefinition::testWriteParameters()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteAssertions()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testWriteAssertions()
+void tst_AbstractionDefinitionWriter::testWriteAssertions()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -920,7 +920,7 @@ void tst_AbstractionDefinition::testWriteAssertions()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
         "<ipxact:vendor>TUT</ipxact:vendor>"
         "<ipxact:library>TestLibrary</ipxact:library>"
@@ -945,7 +945,7 @@ void tst_AbstractionDefinition::testWriteAssertions()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testVendorExtensions()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinition::testVendorExtensions()
+void tst_AbstractionDefinitionWriter::testVendorExtensions()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
@@ -975,7 +975,7 @@ void tst_AbstractionDefinition::testVendorExtensions()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -989,6 +989,6 @@ void tst_AbstractionDefinition::testVendorExtensions()
         "</ipxact:abstractionDefinition>\n"));
 }
 
-QTEST_APPLESS_MAIN(tst_AbstractionDefinition)
+QTEST_APPLESS_MAIN(tst_AbstractionDefinitionWriter)
 
 #include "tst_AbstractionDefinitionWriter.moc"

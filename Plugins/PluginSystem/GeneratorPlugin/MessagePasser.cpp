@@ -52,7 +52,7 @@ void MessagePasser::showFailure(QString const& error) const
 //-----------------------------------------------------------------------------
 // Function: MessagePasser::showStatusMessage()
 //-----------------------------------------------------------------------------
-void MessagePasser::showStatusMessage(QString const& status) const
+void MessagePasser::showStatusMessage(QString const& /*status*/) const
 {
 
 }

@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
+    ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/AddressSpace.h \
     ../../../IPXACTmodels/Component/AlternateRegister.h \
@@ -52,9 +53,9 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/common/ModuleParameterReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/Component/RegisterReader.h \
-    ../../../IPXACTmodels/common/AccessTypes.h
-SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
+    ../../../IPXACTmodels/Component/RegisterReader.h
+SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
+    ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/AddressBlockReader.cpp \
     ../../../IPXACTmodels/Component/AddressSpace.cpp \
     ../../../IPXACTmodels/Component/AddressSpaceReader.cpp \
@@ -99,5 +100,4 @@ SOURCES += ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_AddressSpaceReader.cpp \
-    ../../../IPXACTmodels/common/AccessTypes.cpp
+    ./tst_AddressSpaceReader.cpp

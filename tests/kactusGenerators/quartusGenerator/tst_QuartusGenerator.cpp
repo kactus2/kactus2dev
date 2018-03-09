@@ -19,20 +19,14 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
-#include <IPXACTmodels/Design/design.h>
-#include <IPXACTmodels/Component/fileset.h>
-#include <IPXACTmodels/Component/file.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Model.h>
 
 #include <QtTest>
 #include <QDateTime>
-
-namespace
-{
-    const QString PROJECTFILE = ".qpf";
-    const QString SETTINGSFILE = ".qsf";
-};
 
 class tst_QuartusGenerator : public QObject, public IPluginUtility
 {
@@ -92,6 +86,10 @@ private:
 
     void setFileTypesForFileSet(QSharedPointer<FileSet> selectedFileset, QSharedPointer<QStringList> fileTypes);
  
+    QString projectFile() const;
+
+    QString settingsFile() const;
+
     QSharedPointer<Component> topComponent_;
 
     LibraryMock library_;
@@ -186,12 +184,12 @@ void tst_QuartusGenerator::init()
 
     topComponent_ = createTestComponent("topComponent");
 
-    if (QFile::exists(targetEntity_ + PROJECTFILE))
+    if (QFile::exists(targetEntity_ + projectFile()))
     {
         QWARN("Quartus project file already exists.");
     }
 
-    if (QFile::exists(targetEntity_ + SETTINGSFILE))
+    if (QFile::exists(targetEntity_ + settingsFile()))
     {
         QWARN("Quartus settings file already exists.");
     }
@@ -208,8 +206,8 @@ void tst_QuartusGenerator::cleanup()
     delete quartusGenerator_;
     quartusGenerator_ = 0;
 
-    QFile::remove(targetEntity_ + PROJECTFILE);
-    QFile::remove(targetEntity_ + SETTINGSFILE);
+    QFile::remove(targetEntity_ + projectFile());
+    QFile::remove(targetEntity_ + settingsFile());
 }
 
 //-----------------------------------------------------------------------------
@@ -229,13 +227,13 @@ void tst_QuartusGenerator::testGeneratorWithoutFilesets()
         "\n"
         "PROJECT_REVISION = \"generatorOutput\"");
 
-    compareOutputToExpected(PROJECTFILE, expectedProjectOutput);
+    compareOutputToExpected(projectFile(), expectedProjectOutput);
 
     QString expectedSettingsOutput ( getQuartusHeader(currentTime) +
         "set_global_assignment -name TOP_LEVEL_ENTITY generatorOutput\n"
         "set_global_assignment -name ORIGINAL_QUARTUS_VERSION \"10.0 SP1\"");
 
-    compareOutputToExpected(SETTINGSFILE, expectedSettingsOutput);
+    compareOutputToExpected(settingsFile(), expectedSettingsOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -280,7 +278,7 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingTopComponentVerilogF
         "\n"
         "PROJECT_REVISION = \"generatorOutput\"");
 
-    compareOutputToExpected(PROJECTFILE, expectedProjectOutput);
+    compareOutputToExpected(projectFile(), expectedProjectOutput);
 
     QString expectedSettingsOutput ( getQuartusHeader(currentTime) +
         "set_global_assignment -name TOP_LEVEL_ENTITY generatorOutput\n"
@@ -288,7 +286,7 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingTopComponentVerilogF
         "set_global_assignment -name VERILOG_FILE " + QFileInfo(*topVerilogFile).absoluteFilePath() + "\n"
         );
 
-    compareOutputToExpected(SETTINGSFILE, expectedSettingsOutput);
+    compareOutputToExpected(settingsFile(), expectedSettingsOutput);
 
     QFile::remove(topVerilogFile->fileName());
 }
@@ -395,7 +393,7 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
         "\n"
         "PROJECT_REVISION = \"generatorOutput\"");
 
-    compareOutputToExpected(PROJECTFILE, expectedProjectOutput);
+    compareOutputToExpected(projectFile(), expectedProjectOutput);
 
     QString expectedSettingsOutput ( getQuartusHeader(currentTime) +
         "set_global_assignment -name TOP_LEVEL_ENTITY generatorOutput\n"
@@ -406,7 +404,7 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
         "set_global_assignment -name VERILOG_FILE " + QFileInfo(*topVerilogFile).absoluteFilePath() + "\n"
         );
 
-    compareOutputToExpected(SETTINGSFILE, expectedSettingsOutput);
+    compareOutputToExpected(settingsFile(), expectedSettingsOutput);
 
     QFile::remove(topVerilogFile->fileName());
     QFile::remove(componentOneVhdlFile->fileName());
@@ -505,7 +503,7 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
         "\n"
         "PROJECT_REVISION = \"generatorOutput\"");
 
-    compareOutputToExpected(PROJECTFILE, expectedProjectOutput);
+    compareOutputToExpected(projectFile(), expectedProjectOutput);
 
     QString expectedSettingsOutput ( getQuartusHeader(currentTime) +
         "set_global_assignment -name TOP_LEVEL_ENTITY generatorOutput\n"
@@ -514,7 +512,7 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
         "set_global_assignment -name VHDL_FILE " + QFileInfo(*componentOneVhdlFile).absoluteFilePath() + "\n"
         );
 
-    compareOutputToExpected(SETTINGSFILE, expectedSettingsOutput);
+    compareOutputToExpected(settingsFile(), expectedSettingsOutput);
 
     QFile::remove(componentOneVhdlFile->fileName());
     QFile::remove(componentTwoQipFile->fileName());
@@ -617,7 +615,7 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
         "\n"
         "PROJECT_REVISION = \"generatorOutput\"");
 
-    compareOutputToExpected(PROJECTFILE, expectedProjectOutput);
+    compareOutputToExpected(projectFile(), expectedProjectOutput);
 
     QString expectedSettingsOutput ( getQuartusHeader(currentTime) +
         "set_global_assignment -name TOP_LEVEL_ENTITY generatorOutput\n"
@@ -627,7 +625,7 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
         "set_global_assignment -name QIP_FILE " + QFileInfo(*componentTwoQipFile).absoluteFilePath() + "\n"
         );
 
-    compareOutputToExpected(SETTINGSFILE, expectedSettingsOutput);
+    compareOutputToExpected(settingsFile(), expectedSettingsOutput);
 
     QFile::remove(componentOneVhdlFile->fileName());
     QFile::remove(componentTwoQipFile->fileName());
@@ -841,6 +839,24 @@ void tst_QuartusGenerator::setFileTypesForFileSet(QSharedPointer<FileSet> select
     {
         currentFile->setFileTypes(fileTypes);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_QuartusGenerator::projectFile()
+//-----------------------------------------------------------------------------
+QString tst_QuartusGenerator::projectFile() const
+{
+    static const QString PROJECTFILE(".qpf");
+    return PROJECTFILE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_QuartusGenerator::settingsFile()
+//-----------------------------------------------------------------------------
+QString tst_QuartusGenerator::settingsFile() const
+{
+    static const QString SETTINGSFILE(".qsf");
+    return SETTINGSFILE;
 }
 
 //QTEST_APPLESS_MAIN(tst_QuartusGenerator)

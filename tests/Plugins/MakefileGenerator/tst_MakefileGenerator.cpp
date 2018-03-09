@@ -19,6 +19,7 @@
 #include <Plugins/MakefileGenerator/SWStackParser.h>
 #include <Plugins/MakefileGenerator/MakefileParser.h>
 #include <Plugins/MakefileGenerator/MakefileGenerator.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
 #include <common/NameGenerationPolicy.h>
 
@@ -115,11 +116,14 @@ private:
     //! Output directory for the generator
     QString outputDir_;
 
+    MessagePasser messageChannel_;
+
     //! Mock utility to be used in tests
-    PluginUtilityAdapter utilityMock_;
+    PluginUtilityAdapter utilityMock_;    
 };
 
-tst_MakefileGenerator::tst_MakefileGenerator(): library_( this ), utilityMock_(&library_, 0, "", this)
+tst_MakefileGenerator::tst_MakefileGenerator(): library_( this ), messageChannel_(), 
+    utilityMock_(&library_, &messageChannel_, QString(), 0)
 {
 }
 
@@ -1581,7 +1585,7 @@ void tst_MakefileGenerator::basicGeneration()
 	SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	MakefileParser makeParser( &library_, stackParser );
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
-	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
+	QSharedPointer<MakeFileData> makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
 	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
@@ -1622,7 +1626,7 @@ void tst_MakefileGenerator::multiObjectGeneration()
 	SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	MakefileParser makeParser( &library_, stackParser );
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
-	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
+	QSharedPointer<MakeFileData> makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
 	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
@@ -1663,7 +1667,7 @@ void tst_MakefileGenerator::multiFileGeneration()
 	SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	MakefileParser makeParser( &library_, stackParser );
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
-	auto makeData1 = QSharedPointer<MakeFileData>( new MakeFileData );
+	QSharedPointer<MakeFileData> makeData1 = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData1);
 
 	makeData1->hardPart = QSharedPointer<StackPart>( new StackPart );
@@ -1680,7 +1684,7 @@ void tst_MakefileGenerator::multiFileGeneration()
 	mod1->compiler = "gcc";
 	mod1->flags = "-sw -hw";
 
-	auto makeData2 = QSharedPointer<MakeFileData>( new MakeFileData );
+	QSharedPointer<MakeFileData> makeData2 = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData2);
 
 	makeData2->hardPart = QSharedPointer<StackPart>(new StackPart);
@@ -1725,7 +1729,7 @@ void tst_MakefileGenerator::noCompiler()
 	SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	MakefileParser makeParser( &library_, stackParser );
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
-	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
+	QSharedPointer<MakeFileData> makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
 	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );

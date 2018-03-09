@@ -223,10 +223,12 @@ void tst_VerilogSourceAnalyzer::testFileInclude_data()
 //-----------------------------------------------------------------------------
 void tst_VerilogSourceAnalyzer::testFileIncludeFromFilesetReturnsRelativePath()
 {
+    QSettings settings;
+
     QSharedPointer<Component> targetComponent(new Component);
     QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets = targetComponent->getFileSets();
 	QSharedPointer<FileSet> targetFileSet( new FileSet("includes") );
-	targetFileSet->addFile("../includes/globals.v", QSettings());
+	targetFileSet->addFile(QStringLiteral("../includes/globals.v"), settings);
 	fileSets->append( targetFileSet );
 
     writeTestFile("`include \"globals.v\"\n");
@@ -278,13 +280,15 @@ void tst_VerilogSourceAnalyzer::testAbsoluteFilePath()
 //-----------------------------------------------------------------------------
 void tst_VerilogSourceAnalyzer::testSimilarFileNamesInFilesets()
 {
+    QSettings settings;
+
     QSharedPointer<Component> targetComponent(new Component);
 
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets = targetComponent->getFileSets();
 	QSharedPointer<FileSet> wrongFileSet( new FileSet("wrong") );
 	QSharedPointer<FileSet> targetFileSet( new FileSet("includes") );
-	wrongFileSet->addFile("../includes/m_globals.v", QSettings());
-	targetFileSet->addFile("globals.v", QSettings());
+	wrongFileSet->addFile("../includes/m_globals.v", settings);
+	targetFileSet->addFile("globals.v", settings);
 	fileSets->append( wrongFileSet );
 	fileSets->append( targetFileSet );
 

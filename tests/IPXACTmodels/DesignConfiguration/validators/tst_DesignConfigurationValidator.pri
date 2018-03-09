@@ -47,6 +47,7 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/common/FileTypes.h \
     ../../../../IPXACTmodels/Component/Function.h \
     ../../../../IPXACTmodels/Design/HierInterface.h \
+    ../../../../IPXACTmodels/Component/IndirectInterface.h \
     ../../../../IPXACTmodels/Design/Interconnection.h \
     ../../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
     ../../../../IPXACTmodels/designConfiguration/validators/InterconnectionConfigurationValidator.h \
@@ -99,7 +100,11 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../../IPXACTmodels/Component/IndirectInterface.h
+    ../../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
+    ../../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
+    ../../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h \
+    ../../../../IPXACTmodels/kactusExtensions/FileDependency.h \
+    ../../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h
 SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../../IPXACTmodels/Design/ActiveInterface.cpp \
@@ -140,6 +145,7 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../../IPXACTmodels/Component/Function.cpp \
     ../../../../IPXACTmodels/Design/HierInterface.cpp \
+    ../../../../IPXACTmodels/Component/IndirectInterface.cpp \
     ../../../../IPXACTmodels/Design/Interconnection.cpp \
     ../../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
     ../../../../IPXACTmodels/designConfiguration/validators/InterconnectionConfigurationValidator.cpp \
@@ -181,6 +187,7 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
     ../../../../IPXACTmodels/Component/Transactional.cpp \
     ../../../../IPXACTmodels/common/TransactionalTypes.cpp \
+    ../../../../IPXACTmodels/Component/TransparentBridge.cpp \
     ../../../../IPXACTmodels/common/VLNV.cpp \
     ../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
     ../../../../IPXACTmodels/common/Vector.cpp \
@@ -193,5 +200,8 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_DesignConfigurationValidator.cpp \
-    ../../../../IPXACTmodels/Component/TransparentBridge.cpp \
-    ../../../../IPXACTmodels/Component/IndirectInterface.cpp
+    ../../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/FileDependency.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp

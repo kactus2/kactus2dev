@@ -7,15 +7,14 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Component/RemapStateReader.h \
-    ../../../IPXACTmodels/Component/RemapState.h \
+HEADERS += ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/Component/RemapPort.h \
-    ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/common/NameGroupReader.h
-SOURCES += ./tst_RemapStateReader.cpp \
-    ../../../IPXACTmodels/Component/RemapStateReader.cpp \
-    ../../../IPXACTmodels/Component/RemapState.cpp \
+    ../../../IPXACTmodels/Component/RemapState.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h \
+    ../../../IPXACTmodels/Component/RemapStateReader.h
+SOURCES += ../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/Component/RemapPort.cpp \
-    ../../../IPXACTmodels/common/NameGroup.cpp \
-    ../../../IPXACTmodels/common/NameGroupReader.cpp
+    ../../../IPXACTmodels/Component/RemapState.cpp \
+    ../../../IPXACTmodels/Component/RemapStateReader.cpp \
+    ./tst_RemapStateReader.cpp

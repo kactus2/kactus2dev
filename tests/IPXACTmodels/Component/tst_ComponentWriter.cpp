@@ -12,9 +12,9 @@
 #include <IPXACTmodels/Component/ComponentWriter.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <IPXACTmodels/Component/businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
-#include <IPXACTmodels/Component/channel.h>
+#include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
@@ -24,10 +24,10 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
-#include <IPXACTmodels/Component/choice.h>
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/Component/FileSet.h>
-#include <IPXACTmodels/Component/cpu.h>
+#include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
@@ -158,7 +158,7 @@ void tst_ComponentWriter::writeSimpleComponent()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -194,7 +194,7 @@ void tst_ComponentWriter::writeXMLProcessingInstructions()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -229,7 +229,7 @@ void tst_ComponentWriter::writeXMLNameSpaces()
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xmlns:bogusvendor=\"http://bogus.tld/info.txt\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
         "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -268,7 +268,7 @@ void tst_ComponentWriter::writeBusInterfaces()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -315,7 +315,7 @@ void tst_ComponentWriter::writeIndirectInterfaces()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
         "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -364,7 +364,7 @@ void tst_ComponentWriter::writeChannels()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
         "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -411,7 +411,7 @@ void tst_ComponentWriter::writeRemapStates()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
         "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -455,7 +455,7 @@ void tst_ComponentWriter::writeAddressSpace()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -498,7 +498,7 @@ void tst_ComponentWriter::writeMemoryMap()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -539,7 +539,7 @@ void tst_ComponentWriter::writeView()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -597,7 +597,7 @@ void tst_ComponentWriter::writeInstantiations()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -650,7 +650,7 @@ void tst_ComponentWriter::writePorts()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -698,7 +698,7 @@ void tst_ComponentWriter::writeComponentGenerators()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -745,7 +745,7 @@ void tst_ComponentWriter::writeChoices()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -787,7 +787,7 @@ void tst_ComponentWriter::writeFileSets()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -832,7 +832,7 @@ void tst_ComponentWriter::writeCPUs()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -883,7 +883,7 @@ void tst_ComponentWriter::writeOtherClockDrivers()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -930,7 +930,7 @@ void tst_ComponentWriter::writeParameters()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -976,7 +976,7 @@ void tst_ComponentWriter::writeAssertions()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -1027,7 +1027,7 @@ void tst_ComponentWriter::writeVendorExtensions()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -1065,7 +1065,7 @@ void tst_ComponentWriter::writeKactusAttributes()
             "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
             "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
             "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-            "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+            "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
             "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
                 "<ipxact:vendor>TUT</ipxact:vendor>"
                 "<ipxact:library>TestLibrary</ipxact:library>"
@@ -1117,7 +1117,7 @@ void tst_ComponentWriter::writeSwProperties()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -1174,7 +1174,7 @@ void tst_ComponentWriter::writeSystemViews()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -1241,7 +1241,7 @@ void tst_ComponentWriter::writeComInterfaces()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -1305,7 +1305,7 @@ void tst_ComponentWriter::writeApiInterfaces()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
@@ -1362,7 +1362,7 @@ void tst_ComponentWriter::writeFileDependencies()
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
             "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"

@@ -113,7 +113,7 @@ public:
      *
      *      @return True, if the selected view reference is valid, false otherwise.
      */
-    bool referencedViewIsValid(QString* viewReference,
+    bool referencedViewIsValid(QString const& viewReference,
         QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionList) const;
 
     /*!
@@ -153,7 +153,7 @@ private:
      *
      *      @return True, if the view reference exists, false otherwise.
      */
-    bool referencedViewExists(QString* viewReference) const;
+    bool referencedViewExists(QString const& viewReference) const;
 
     /*!
      *  Check if the selected view reference is used only once in the containing bus interface.
@@ -163,7 +163,7 @@ private:
      *
      *      @return True, if the selected view is referenced once, false otherwise.
      */
-    bool viewIsReferencedOnce(QString* viewReference,
+    bool viewIsReferencedOnce(QString const& viewReference,
         QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionList) const;
 
     /*!

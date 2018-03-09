@@ -7,6 +7,6 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../editors/ComponentEditor/common/ValueFormatter.h
-SOURCES += ./tst_ValueFormatter.cpp \
-    ../../../../editors/ComponentEditor/common/ValueFormatter.cpp
+HEADERS += ../../../../IPXACTmodels/common/validators/ValueFormatter.h
+SOURCES += ../../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
+    ./tst_ValueFormatter.cpp

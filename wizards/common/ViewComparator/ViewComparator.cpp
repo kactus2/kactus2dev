@@ -75,18 +75,21 @@ QList<QSharedPointer<IPXactDiff> > ViewComparator::diffFields(QSharedPointer<con
     QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), reference->name()));
     add->setChangeType(IPXactDiff::MODIFICATION);
 
-	QString refIds;
-	QString subIds;
+    QStringList references;
+	QStringList subjects;
 
 	foreach (QSharedPointer<View::EnvironmentIdentifier> identifier, *reference->getEnvIdentifiers())
 	{
-		refIds += identifier->toString() + ", ";
+		references.append(identifier->toString());
 	}
 
 	foreach (QSharedPointer<View::EnvironmentIdentifier> identifier, *subject->getEnvIdentifiers())
 	{
-		subIds += identifier->toString() + ", ";
+		subjects.append(identifier->toString());
 	}
+
+    QString refIds = references.join(QStringLiteral(", "));
+    QString subIds = subjects.join(QStringLiteral(", "));
 
     add->checkForChange("environment identifiers", refIds, subIds );
     add->checkForChange("component instantiation reference", reference->getComponentInstantiationRef(),
@@ -127,9 +130,9 @@ bool ViewComparator::compareLists(QSharedPointer<QList<QSharedPointer<View::Envi
 	for (int i = 0; i < first->size(); ++i)
 	{
 		QSharedPointer<View::EnvironmentIdentifier> item1 = first->at(i);
-		QSharedPointer<View::EnvironmentIdentifier> item2 = first->at(i);
+		QSharedPointer<View::EnvironmentIdentifier> item2 = second->at(i);
 
-		if ( item1->language != item2->language ||
+		if (item1->language != item2->language ||
 			item1->tool != item2->tool ||
 			item1->vendorSpecific != item2->vendorSpecific )
 		{

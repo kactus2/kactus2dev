@@ -95,13 +95,13 @@ void tst_CPUValidator::testNameIsNotEmpty()
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
     CPUValidator validator(parameterValidator, parser, noSpaces);
 
-    QSharedPointer<Cpu> Cpu( new Cpu );
-    Cpu->setName("");
+    QSharedPointer<Cpu> cpu( new Cpu() );
+    cpu->setName("");
 
     QVector<QString> errorList;
-    validator.findErrorsIn(errorList, Cpu, "test");
+    validator.findErrorsIn(errorList, cpu, "test");
 
-    QVERIFY(!validator.validate(Cpu));
+    QVERIFY(!validator.validate(cpu));
     QVERIFY(errorList.size() > 0);
     QCOMPARE(errorList.first(), QString("Invalid name '' set for CPU within test."));
 }
@@ -117,13 +117,13 @@ void tst_CPUValidator::noRef()
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
     CPUValidator validator(parameterValidator, parser, noSpaces);
 
-    QSharedPointer<Cpu> Cpu( new Cpu );
-    Cpu->setName("testCpu");
+    QSharedPointer<Cpu> cpu( new Cpu() );
+    cpu->setName("testCpu");
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, Cpu, "test");
+	validator.findErrorsIn(errorList, cpu, "test");
 
-	QVERIFY(!validator.validate(Cpu));
+	QVERIFY(!validator.validate(cpu));
 	QVERIFY(errorList.size() > 0);
     QCOMPARE(errorList.first(), QString("No address space reference set for CPU testCpu within test."));
 }
@@ -167,7 +167,7 @@ void tst_CPUValidator::failParameter()
 
     CPUValidator validator(parameterValidator, parser, singleSpace);
 
-    QSharedPointer<Cpu> cpu( new Cpu);
+    QSharedPointer<Cpu> cpu( new Cpu());
     cpu->setName("testCpu");
 
 	QSharedPointer<Parameter> parameter (new Parameter());
@@ -201,7 +201,7 @@ void tst_CPUValidator::failPresense()
 
     CPUValidator validator(parameterValidator, parser, singleSpace);
 
-    QSharedPointer<Cpu> cpu( new Cpu);
+    QSharedPointer<Cpu> cpu( new Cpu());
     cpu->setName("testCpu");
 	cpu->setIsPresent("alabama-man");
 
@@ -230,17 +230,17 @@ void tst_CPUValidator::failRefPresense()
 
     CPUValidator validator(parameterValidator, parser, singleSpace);
 
-    QSharedPointer<Cpu> Cpu( new Cpu);
-    Cpu->setName("testCpu");
+    QSharedPointer<Cpu> cpu( new Cpu());
+    cpu->setName("testCpu");
 
 	QSharedPointer<Cpu::AddressSpaceRef> aref(new Cpu::AddressSpaceRef("testSpace"));
 	aref->setIsPresent("ohio");
-	Cpu->getAddressSpaceReferences()->append( aref );
+	cpu->getAddressSpaceReferences()->append( aref );
 
 	QVector<QString> errorList;
-	validator.findErrorsIn(errorList, Cpu, "test");
+	validator.findErrorsIn(errorList, cpu, "test");
 
-	QVERIFY(!validator.validate(Cpu));
+	QVERIFY(!validator.validate(cpu));
 	QCOMPARE(errorList.size(), 1);
     QCOMPARE(errorList.first(), 
         QString("Is present expression 'ohio' for address space reference testSpace in cpu testCpu is invalid."));

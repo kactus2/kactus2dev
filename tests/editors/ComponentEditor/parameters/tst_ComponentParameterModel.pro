@@ -15,6 +15,7 @@ TARGET = tst_ComponentParameterModel
 
 QT += core xml gui testlib widgets
 CONFIG += testcase console
+DEFINES += IPXACTMODELS_LIB
 
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels

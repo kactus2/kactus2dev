@@ -13,6 +13,8 @@
 
 #include <Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h>
 
+#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
+
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <Plugins/common/HDLParser/MetaDesign.h>
@@ -81,19 +83,24 @@ private:
         QSharedPointer<MetaInterface> second,
         QString name);
 
-    QSharedPointer<MetaWire> addWireToDesign(QString name, QString leftBound, QString rightBound, QSharedPointer<MetaInterconnection> mInterconnect = QSharedPointer<MetaInterconnection>::QSharedPointer());
+    QSharedPointer<MetaWire> addWireToDesign(QString name, QString leftBound, QString rightBound, 
+        QSharedPointer<MetaInterconnection> mInterconnect = QSharedPointer<MetaInterconnection>());
 
     QSharedPointer<MetaPort> addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
-        QSharedPointer<MetaComponent> component, QSharedPointer<MetaInterface> mInterface = QSharedPointer<MetaInterface>::QSharedPointer());
+        QSharedPointer<MetaComponent> component,
+        QSharedPointer<MetaInterface> mInterface = QSharedPointer<MetaInterface>());
 
-    QSharedPointer<Parameter> addParameter(QString const& name, QString const& value, QSharedPointer<MetaComponent> mComponent);
+    QSharedPointer<Parameter> addParameter(QString const& name, QString const& value, 
+        QSharedPointer<MetaComponent> mComponent);
 
     void runGenerator(bool useDesign);
 
     void createPortAssignment(QSharedPointer<MetaPort> mPort, QSharedPointer<MetaWire> wire, bool up,
-        QString const& logicalLeft, QString const& logicalRight, QString const& physicalLeft, QString const& physicalRight);
+        QString const& logicalLeft, QString const& logicalRight, QString const& physicalLeft, 
+        QString const& physicalRight);
 
-    void createWirePortAssignment(QSharedPointer<MetaPort> port, QSharedPointer<MetaWire> wire, QSharedPointer<MetaInstance> instance, QString const& leftBound, QString const& rightBound);
+    void createWirePortAssignment(QSharedPointer<MetaPort> port, QSharedPointer<MetaWire> wire,
+        QSharedPointer<MetaInstance> instance, QString const& leftBound, QString const& rightBound);
 
     QSharedPointer<Component> addTestComponentToLibrary(VLNV vlnv);
 
@@ -101,9 +108,11 @@ private:
 
     void addInterfacesToInstance(QSharedPointer<MetaInstance> mInstance);
 
-    void createInterface(QSharedPointer<MetaPort> port, QString const& interfaceName, QSharedPointer<MetaInstance> component);
+    void createInterface(QSharedPointer<MetaPort> port, QString const& interfaceName,
+        QSharedPointer<MetaInstance> component);
     
-    QSharedPointer<MetaInterface> addInterfaceToComponent(QString const& interfaceName, QSharedPointer<MetaInstance> component);
+    QSharedPointer<MetaInterface> addInterfaceToComponent(QString const& interfaceName,
+        QSharedPointer<MetaInstance> component);
 
     QSharedPointer<MetaInstance> addSender(QString const& instanceName);
 
@@ -164,15 +173,15 @@ void tst_VerilogWriterFactory::init()
     MessagePasser messages;
 
     topComponent_ =  QSharedPointer<MetaInstance>(new MetaInstance(QSharedPointer<ComponentInstance>(),
-        &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
+        &library_, &messages, component, QSharedPointer<View>()));
 
     design_ = QSharedPointer<MetaDesign>(new MetaDesign(&library_,&messages,
-        QSharedPointer<Design>::QSharedPointer(), QSharedPointer<DesignInstantiation>::QSharedPointer(),
-        QSharedPointer<DesignConfiguration>::QSharedPointer(),
+        QSharedPointer<Design>(), QSharedPointer<DesignInstantiation>(),
+        QSharedPointer<DesignConfiguration>(),
         topComponent_));
 
     flatComponent_ = QSharedPointer<MetaComponent>(
-        new MetaComponent(&messages, component, QSharedPointer<View>::QSharedPointer()));
+        new MetaComponent(&messages, component, QSharedPointer<View>()));
 
     library_.clear();
 }
@@ -228,7 +237,7 @@ void tst_VerilogWriterFactory::testTopLevelComponent()
 //-----------------------------------------------------------------------------
 QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portName, int portSize, 
     DirectionTypes::Direction direction, QSharedPointer<MetaComponent> component,
-    QSharedPointer<MetaInterface> mInterface /*= QSharedPointer<MetaInterface>::QSharedPointer()*/)
+    QSharedPointer<MetaInterface> mInterface /*= QSharedPointer<MetaInterface>()*/)
 {
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction));
     port->setPortSize(portSize);
@@ -566,8 +575,8 @@ void tst_VerilogWriterFactory::testTopSlicedHierarchicalConnections()
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::addInterconnectToDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<MetaInterconnection> tst_VerilogWriterFactory::addInterconnectToDesign(QSharedPointer<MetaInterface> first,
-    QSharedPointer<MetaInterface> second, QString name)
+QSharedPointer<MetaInterconnection> tst_VerilogWriterFactory::addInterconnectToDesign(
+    QSharedPointer<MetaInterface> first, QSharedPointer<MetaInterface> second, QString name)
 {
     QSharedPointer<MetaInterconnection> mInterconnect(new MetaInterconnection);
     design_->getInterconnections()->append(mInterconnect);
@@ -583,7 +592,7 @@ QSharedPointer<MetaInterconnection> tst_VerilogWriterFactory::addInterconnectToD
 // Function: tst_VerilogWriterFactory::addWireToDesign()
 //-----------------------------------------------------------------------------
 QSharedPointer<MetaWire> tst_VerilogWriterFactory::addWireToDesign(QString name,
-    QString leftBound, QString rightBound, QSharedPointer<MetaInterconnection> mInterconnect /*= QSharedPointer<MetaInterconnection>::QSharedPointer()*/)
+    QString leftBound, QString rightBound, QSharedPointer<MetaInterconnection> mInterconnect)
 {
     QSharedPointer<MetaWire> gw(new MetaWire);
     gw->name_ = name;
@@ -665,7 +674,8 @@ QSharedPointer<Component> tst_VerilogWriterFactory::addTestComponentToLibrary(VL
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::addInstanceToDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<MetaInstance> tst_VerilogWriterFactory::addInstanceToDesign(QString instanceName, QSharedPointer<Component> component)
+QSharedPointer<MetaInstance> tst_VerilogWriterFactory::addInstanceToDesign(QString instanceName,
+    QSharedPointer<Component> component)
 {
     QSharedPointer<ConfigurableVLNVReference> componentVLNV (new ConfigurableVLNVReference(component->getVlnv()));
     QSharedPointer<ComponentInstance> instance (new ComponentInstance(instanceName, componentVLNV));
@@ -673,7 +683,7 @@ QSharedPointer<MetaInstance> tst_VerilogWriterFactory::addInstanceToDesign(QStri
     MessagePasser messages;
 
     QSharedPointer<MetaInstance> mInstance(new MetaInstance(instance,
-        &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
+        &library_, &messages, component, QSharedPointer<View>()));
     mInstance->parseInstance();
 
     design_->getInstances()->insert(instanceName, mInstance);
@@ -710,7 +720,8 @@ void tst_VerilogWriterFactory::testMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> senderIf = senderInstance->getInterfaces()->value("data_if");
     QSharedPointer<MetaInterface> recvIf = receiverInstance->getInterfaces()->value("data_if");
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
+    QSharedPointer<MetaInterconnection> mInterconnect = 
+        addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
@@ -760,7 +771,8 @@ void tst_VerilogWriterFactory::testOneBitSlicing()
     QSharedPointer<MetaInterface> senderIf = senderInstance->getInterfaces()->value("data_if");
     QSharedPointer<MetaInterface> recvIf = receiverInstance->getInterfaces()->value("data_if");
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
+    QSharedPointer<MetaInterconnection> mInterconnect =
+        addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
 
@@ -802,7 +814,8 @@ void tst_VerilogWriterFactory::testPhysicalSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> senderIf = senderInstance->getInterfaces()->value("data_if");
     QSharedPointer<MetaInterface> recvIf = receiverInstance->getInterfaces()->value("data_if");
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
+    QSharedPointer<MetaInterconnection> mInterconnect =
+        addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
@@ -856,7 +869,8 @@ void tst_VerilogWriterFactory::testLogicalSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> senderIf = senderInstance->getInterfaces()->value("data_if");
     QSharedPointer<MetaInterface> recvIf = receiverInstance->getInterfaces()->value("data_if");
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
+    QSharedPointer<MetaInterconnection> mInterconnect =
+        addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire1 = addWireToDesign("sender_to_receiver_DATA1","3","0",mInterconnect);
     QSharedPointer<MetaWire> dataWire2 = addWireToDesign("sender_to_receiver_DATA2","3","0",mInterconnect);
@@ -914,7 +928,8 @@ void tst_VerilogWriterFactory::testPortSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> recvIf = receiverInstance->getInterfaces()->value("data_if");
     addPort("data_in2", 4, DirectionTypes::IN, receiverInstance, recvIf);
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
+    QSharedPointer<MetaInterconnection> mInterconnect =
+        addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
@@ -1008,8 +1023,10 @@ void tst_VerilogWriterFactory::testMasterToMultipleSlavesInterconnections()
     QSharedPointer<MetaInterface> recvIf1 = receiverInstance1->getInterfaces()->value("data_if");
     QSharedPointer<MetaInterface> recvIf2 = receiverInstance2->getInterfaces()->value("data_if");
 
-    QSharedPointer<MetaInterconnection> data_connection = addInterconnectToDesign(senderIf, recvIf1, "data_connection");
-    QSharedPointer<MetaInterconnection> ena_connection = addInterconnectToDesign(senderIf, recvIf2, "ena_connection");
+    QSharedPointer<MetaInterconnection> data_connection =
+        addInterconnectToDesign(senderIf, recvIf1, "data_connection");
+    QSharedPointer<MetaInterconnection> ena_connection =
+        addInterconnectToDesign(senderIf, recvIf2, "ena_connection");
 
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",data_connection);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",ena_connection);

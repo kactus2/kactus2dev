@@ -175,18 +175,23 @@ void tst_InterfaceDirectionNameSorter::testPortsOrderedByInterfaceThenDirection(
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentVerilogWriter::addInterface()
+// Function: tst_InterfaceDirectionNameSorter::addInterface()
 //-----------------------------------------------------------------------------
 void tst_InterfaceDirectionNameSorter::addInterface( QString const& interfaceName )
 {
     QSharedPointer<BusInterface> busIf = QSharedPointer<BusInterface>(new BusInterface());
     busIf->setName(interfaceName);
 
+    QSharedPointer<AbstractionType> abstraction(new AbstractionType());
+    abstraction->setAbstractionRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference()));
+
+    busIf->getAbstractionTypes()->append(abstraction);
+
     component_->getBusInterfaces()->append(busIf);
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentVerilogWriter::mapPortToInterface()
+// Function: tst_InterfaceDirectionNameSorter::mapPortToInterface()
 //-----------------------------------------------------------------------------
 void tst_InterfaceDirectionNameSorter::mapPortToInterface( QString const& portName, QString const& interfaceName )
 {
@@ -201,7 +206,7 @@ void tst_InterfaceDirectionNameSorter::mapPortToInterface( QString const& portNa
     portMap->setPhysicalPort(thePhysical);
 
     QSharedPointer<QList<QSharedPointer<PortMap> > > portMapList =
-        component_->getBusInterface(interfaceName)->getPortMaps();
+        component_->getBusInterface(interfaceName)->getAbstractionTypes()->first()->getPortMaps();
 
     if (!portMapList)
     {
@@ -213,8 +218,7 @@ void tst_InterfaceDirectionNameSorter::mapPortToInterface( QString const& portNa
             component_->getBusInterface(interfaceName)->getAbstractionTypes()->append(testAbstraction);
         }
 
-        component_->getBusInterface(interfaceName)->setPortMaps(newPortMapList);
-        portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
+        portMapList = component_->getBusInterface(interfaceName)->getAbstractionTypes()->first()->getPortMaps();
     }
 
     portMapList->append(portMap);

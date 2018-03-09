@@ -446,7 +446,7 @@ void tst_ComponentValidator::testHasValidChannels()
         }
         else if (copyChannel)
         {
-            expectedError = QObject::tr("Channel name %1 within component %2 is not unique.")
+            expectedError = QObject::tr("Channel name '%1' within component %2 is not unique.")
                 .arg(testChannel->name()).arg(testComponent->getVlnv().toString());
         }
 

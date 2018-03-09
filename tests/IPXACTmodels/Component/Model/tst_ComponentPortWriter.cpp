@@ -394,7 +394,7 @@ void tst_ComponentPortWriter::writeWireTypeDefinitions()
     testTypeDefinition->setConstrained(true);
     QStringList typeDefinitions;
     typeDefinitions.append("testTypeDefinition");
-    testTypeDefinition->setTypeDefinitions(typeDefinitions);
+    testTypeDefinition->getTypeDefinitions()->append(typeDefinitions);
 
     testPort->getWire()->getWireTypeDefs()->append(testTypeDefinition);
 
@@ -433,7 +433,7 @@ void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
     testTypeDefinition->setConstrained(true);
     QStringList typeDefinitions;
     typeDefinitions.append("testTypeDefinition");
-    testTypeDefinition->setTypeDefinitions(typeDefinitions);
+    testTypeDefinition->getTypeDefinitions()->append(typeDefinitions);
 
     testPort->getWire()->getWireTypeDefs()->append(testTypeDefinition);
 
@@ -460,14 +460,18 @@ void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
     output.clear();
     QSharedPointer<WireTypeDef> testWireDefinition = testPort->getWire()->getWireTypeDefs()->first();
     testWireDefinition->setTypeName(QStringLiteral(""));
-    testWireDefinition->setTypeDefinitions(QStringList());
-    testWireDefinition->setViewRefs(QStringList());
 
     expectedOutput =
         "<ipxact:port>"
             "<ipxact:name>testPort</ipxact:name>"
             "<ipxact:wire>"
                 "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:wireTypeDefs>"
+                    "<ipxact:wireTypeDef>"
+                        "<ipxact:typeDefinition>testTypeDefinition</ipxact:typeDefinition>"
+                        "<ipxact:viewRef>testView</ipxact:viewRef>"
+                    "</ipxact:wireTypeDef>"
+                "</ipxact:wireTypeDefs>"
             "</ipxact:wire>"
         "</ipxact:port>";
 
@@ -704,7 +708,7 @@ void tst_ComponentPortWriter::writeTransactionalTypeDefinitions()
     testTypeDefinition->setConstrained(true);
     QStringList typeDefinitions;
     typeDefinitions.append("testTypeDefinition");
-    testTypeDefinition->setTypeDefinitions(typeDefinitions);
+    testTypeDefinition->getTypeDefinitions()->append(typeDefinitions);
 
     QSharedPointer<Transactional> testTransactional(new Transactional());
     testTransactional->setInitiative("provides");

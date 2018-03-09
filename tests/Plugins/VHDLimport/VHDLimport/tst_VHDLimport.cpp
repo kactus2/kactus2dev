@@ -622,13 +622,15 @@ void tst_VHDLimport::testModelParameterAsPortBoundary()
 //-----------------------------------------------------------------------------
 void tst_VHDLimport::testModelParameterIsAssignedToModelParameter()
 {
-    runParser(QString(
+    QString fileContent(
         "entity test is\n"
         "   generic (\n"
         "       width_g : integer := 8;\n"
         "       dataWidth_g : integer := width_g\n"        
         "   );\n"
-        "end test;"));
+        "end test;");
+
+    runParser(fileContent);
 
     QVERIFY2(!importComponent_->getComponentInstantiations()->isEmpty(), "Did not create a component instantiation.");
 

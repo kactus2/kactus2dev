@@ -314,7 +314,8 @@ void tst_ComponentComparator::testDiffMultipleViewsChanged()
 
     QSharedPointer<Component> subject(new Component());    
     subject->getViews()->append(QSharedPointer<View>(new View("view2")));    
-    //subject->getViews()->first()->setModelName("model");
+    subject->getViews()->first()->addEnvIdentifier(
+        QSharedPointer<View::EnvironmentIdentifier>(new View::EnvironmentIdentifier(QStringLiteral("lang"))));
     subject->getViews()->append(QSharedPointer<View>(new View("view3")));    
     subject->getViews()->append(QSharedPointer<View>(new View("view4")));    
 

@@ -14,10 +14,7 @@
 #include <QStringList>
 #include <QRegularExpression>
 
-namespace
-{
-    const QRegularExpression NON_ALPHA_CHARACTERS("[^a-zA-Z0-9:_.]+");
-}
+
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionFormatter::ExpressionFormatter()
@@ -41,6 +38,8 @@ ExpressionFormatter::~ExpressionFormatter()
 //-----------------------------------------------------------------------------
 QString ExpressionFormatter::formatReferringExpression(QString const& expression) const
 {
+    static const QRegularExpression NON_ALPHA_CHARACTERS("[^a-zA-Z0-9:_.]+");
+
     QString formattedExpression = expression;
 
     foreach (QString const& valueID, expression.split(NON_ALPHA_CHARACTERS, QString::SkipEmptyParts))

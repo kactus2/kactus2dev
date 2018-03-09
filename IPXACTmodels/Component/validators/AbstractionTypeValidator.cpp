@@ -101,7 +101,7 @@ bool AbstractionTypeValidator::hasValidAbstractionReference(QSharedPointer<Abstr
 bool AbstractionTypeValidator::hasValidViewReferences(QSharedPointer<AbstractionType> abstraction,
     QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionList) const
 {
-    if (abstraction->getViewReferences()->isEmpty() && abstractionList->size() != 1)
+    if (abstraction->getViewReferences()->isEmpty() && abstractionList->size() > 1)
     {
         return false;
     }
@@ -110,8 +110,12 @@ bool AbstractionTypeValidator::hasValidViewReferences(QSharedPointer<Abstraction
     {
         for (int i = 0; i < abstraction->getViewReferences()->size(); ++i)
         {
-            QString* view = &(*abstraction->getViewReferences())[i];
-            if (!referencedViewIsValid(view, abstractionList))
+            QString view = abstraction->getViewReferences()->at(i);
+            if (view.isEmpty() == abstraction->getViewReferences()->size() == 1)
+            {
+                return true;
+            }
+            if (referencedViewIsValid(view, abstractionList) == false)
             {
                 return false;
             }
@@ -124,22 +128,21 @@ bool AbstractionTypeValidator::hasValidViewReferences(QSharedPointer<Abstraction
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypeValidator::referencedViewIsValid()
 //-----------------------------------------------------------------------------
-bool AbstractionTypeValidator::referencedViewIsValid(QString* viewReference,
+bool AbstractionTypeValidator::referencedViewIsValid(QString const& viewReference,
     QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionList) const
 {
-    return !viewReference->isEmpty() && referencedViewExists(viewReference) &&
+    return !viewReference.isEmpty() && referencedViewExists(viewReference) &&
         viewIsReferencedOnce(viewReference, abstractionList);
 }
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypeValidator::referencedViewExists()
 //-----------------------------------------------------------------------------
-bool AbstractionTypeValidator::referencedViewExists(QString* viewReference) const
+bool AbstractionTypeValidator::referencedViewExists(QString const& viewReference) const
 {
-    if (!viewReference->isEmpty())
     foreach (QSharedPointer<View> view, *availableViews_)
     {
-        if (view->name() == viewReference)
+        if (view->name().compare(viewReference) == 0)
         {
             return true;
         }
@@ -151,15 +154,15 @@ bool AbstractionTypeValidator::referencedViewExists(QString* viewReference) cons
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypeValidator::viewIsReferencedOnce()
 //-----------------------------------------------------------------------------
-bool AbstractionTypeValidator::viewIsReferencedOnce(QString* viewReference,
+bool AbstractionTypeValidator::viewIsReferencedOnce(QString const& viewReference,
     QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionList) const
 {
     foreach (QSharedPointer<AbstractionType> abstraction, *abstractionList)
     {
         for (int i = 0; i < abstraction->getViewReferences()->size(); ++i)
         {
-            QString* abstractionView = &(*abstraction->getViewReferences())[i];
-            if (abstractionView != viewReference && QString::compare(*abstractionView, *viewReference) == 0)
+            QString abstractionView = abstraction->getViewReferences()->at(i);
+            if (abstractionView != viewReference && QString::compare(abstractionView, viewReference) == 0)
             {
                 return false;
             }
@@ -352,7 +355,7 @@ void AbstractionTypeValidator::findErrorsInReferencedViews(QVector<QString>& err
     QSharedPointer<AbstractionType> abstraction,
     QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionList, QString const& context) const
 {
-    if (abstraction->getViewReferences()->isEmpty() && abstractionList->size() != 1)
+    if (abstraction->getViewReferences()->isEmpty() && abstractionList->size() > 1)
     {
         QString newError = QObject::tr(
             "Abstraction with no view references should be the only abstraction definition in %1").arg(context);
@@ -365,11 +368,11 @@ void AbstractionTypeValidator::findErrorsInReferencedViews(QVector<QString>& err
     {
         for (int i = 0; i < abstraction->getViewReferences()->size(); ++i)
         {
-            QString* abstractionView = &(*abstraction->getViewReferences())[i];
+            QString abstractionView = abstraction->getViewReferences()->at(i);
             if (!referencedViewExists(abstractionView))
             {
                 QString newError = QObject::tr("Invalid view reference %1 set for abstraction type in %2")
-                    .arg(*abstractionView).arg(context);
+                    .arg(abstractionView).arg(context);
                 if (!errors.contains(newError))
                 {
                     errors.append(newError);
@@ -379,7 +382,7 @@ void AbstractionTypeValidator::findErrorsInReferencedViews(QVector<QString>& err
             {
                 QString newError =
                     QObject::tr("View %1 has been referenced multiple times in abstraction types in %2")
-                    .arg(*abstractionView).arg(context);
+                    .arg(abstractionView).arg(context);
                 if (!errors.contains(newError))
                 {
                     errors.append(newError);

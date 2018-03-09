@@ -13,6 +13,7 @@
 
 #include <Plugins/MemoryMapHeaderGenerator/memorymapheadergenerator.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -24,7 +25,7 @@
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
-#include <IPXACTmodels/Component/Businterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
@@ -38,8 +39,6 @@
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
-
-//#include <IPXACTmodels/subspacemap.h>
 
 #include <QFile>
 
@@ -111,7 +110,7 @@ private:
         QSharedPointer<Component> middleComponent);
 
     QSharedPointer<Component> createTestBridgeComponent(QString const& componentName,
-        QString const& masterBaseAddress, bool bridgeIsOpaque, QString const& bridgeReference);
+        QString const& masterBaseAddress, QString const& bridgeReference);
 
     void addConfigurableElementValueToInstance(QSharedPointer<ComponentInstance> instance,
         QString const& referenceID, QString const& configurableValue);
@@ -224,11 +223,14 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapHeaderGeneration()
     headerGenerator_->setLocalSaveFileOptions(localMemoryMap, saveFileInfo, "swView");
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
-    QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
 
-    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(), QSharedPointer<DesignConfiguration>());
+    QSignalSpy generatorSpy(&messageChannel, SIGNAL(noticeMessage(QString const&)));
+
+    headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(),
+        QSharedPointer<DesignConfiguration>());
 
     QCOMPARE(generatorSpy.count(), 4);
 
@@ -349,7 +351,9 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithHexadecimalRegisterOffset()
     headerGenerator_->setLocalSaveFileOptions(localMemoryMap, saveFileInfo, "swView");
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(), QSharedPointer<DesignConfiguration>());
 
@@ -448,7 +452,8 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithReferencingRegisterOffset()
     headerGenerator_->setLocalSaveFileOptions(localMemoryMap, saveFileInfo, "swView");
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(), QSharedPointer<DesignConfiguration>());
 
@@ -561,7 +566,8 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapAddressBlockIsMemoryOrReser
     headerGenerator_->setLocalSaveFileOptions(localMemoryMap, saveFileInfo, "swView");
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Design>(), QSharedPointer<DesignConfiguration>());
 
@@ -668,9 +674,10 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderGeneration()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
 
-    QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
+    QSignalSpy generatorSpy(&messageChannel, SIGNAL(noticeMessage(QString const&)));
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
@@ -844,7 +851,9 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
@@ -987,7 +996,9 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithReferences()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
+
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
@@ -1098,7 +1109,9 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithMasterReference(
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
+
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
@@ -1262,7 +1275,9 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
+
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, headerDesignConfiguration);
 
@@ -1378,7 +1393,9 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithChannel()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
+
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
@@ -1496,7 +1513,8 @@ void tst_MemoryMapHeaderGenerator::testChannelDesignWithReferences()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
@@ -1575,7 +1593,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithBridge()
 {
     QSharedPointer<Component> masterComponent = createTestMasterComponent("masterComponent", "4");
     QSharedPointer<Component> slaveComponent = createTestSlaveComponent("slaveComponent", "4");
-    QSharedPointer<Component> bridgeComponent = createTestBridgeComponent("bridgeComponent", "16", false, "");
+    QSharedPointer<Component> bridgeComponent = createTestBridgeComponent("bridgeComponent", "16", "");
 
     QSharedPointer<Design> headerDesign = createTestMiddleDesign("bridgeDesign", masterComponent, slaveComponent,
         bridgeComponent);
@@ -1604,7 +1622,8 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithBridge()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
+    MessagePasser messageChannel;
+    PluginUtilityAdapter adapter(&library_, &messageChannel, QString(), &parentWidget);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesign, QSharedPointer<DesignConfiguration>());
 
@@ -2176,7 +2195,7 @@ QSharedPointer<Design> tst_MemoryMapHeaderGenerator::createTestMiddleDesign(QStr
 // Function: tst_MemoryMapHeaderGenerator::createTestBridgeComponent()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestBridgeComponent(QString const& componentName,
-    QString const& masterBaseAddress, bool bridgeIsOpaque, QString const& bridgeReference)
+    QString const& masterBaseAddress, QString const& bridgeReference)
 {
     QSharedPointer<Component> newBridgeComponent (new Component(VLNV(VLNV::COMPONENT, "TUT", "TestLibrary",
         componentName, "1.0")));

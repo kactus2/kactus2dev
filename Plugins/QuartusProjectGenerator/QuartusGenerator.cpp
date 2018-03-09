@@ -349,10 +349,9 @@ void QuartusGenerator::parseSingleFile(QSharedPointer<File> currentFile, QString
     QString const& componentVLNV)
 {
 	QString absolutePath = General::getAbsolutePath(basePath, currentFile->name());
-	QString relativePath = General::getRelativePath(outputPath_, absolutePath);
-    QFileInfo filePathInfo(absolutePath);
 
-    if (relativePath.isEmpty())
+    QFileInfo filePathInfo(absolutePath);
+    if (absolutePath.isEmpty())
     {
         utility_->printError(tr("The file %1 was not found within %2").arg(currentFile->getFileName(), absolutePath));
         return;
@@ -365,9 +364,9 @@ void QuartusGenerator::parseSingleFile(QSharedPointer<File> currentFile, QString
         return;
     }
 
-    if (!files_.contains(relativePath))
+    if (!files_.contains(absolutePath))
     {
-        files_.append(relativePath);
+        files_.append(absolutePath);
     }
 }
 
@@ -390,24 +389,10 @@ void QuartusGenerator::parseBlindFileSet(QSharedPointer<Component> component)
 	{
 		foreach (QSharedPointer<File> file, *fileSet->getFiles())
 		{
-			if ( !file->isRTLFile() )
+			if ( file->isRTLFile() )
 			{
-				continue;
-			}
-
-			QString absolutePath = General::getAbsolutePath(basePath, file->name());
-
-			QFileInfo fileInfo(absolutePath);
-			if (!fileInfo.exists())
-			{
-				utility_->printError(tr("The file %1 needed by component %2 was not found in the file system.").
-					arg(absolutePath, component->getVlnv().toString()));
-				continue;
-			}
-			if (!files_.contains(absolutePath))
-			{
-				files_.append(absolutePath);
-			}
+                parseSingleFile(file, basePath, component->getVlnv().toString());
+            }
 		}
 	}
 }

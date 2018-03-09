@@ -52,7 +52,7 @@ bool PortTypeValidator::validate(QSharedPointer<WireTypeDef> typeDefinition,
 //-----------------------------------------------------------------------------
 bool PortTypeValidator::hasValidtype(QSharedPointer<WireTypeDef> typeDefinition) const
 {
-    return !typeDefinition->getTypeName().isEmpty();
+    return true;
 }
 
 //-----------------------------------------------------------------------------

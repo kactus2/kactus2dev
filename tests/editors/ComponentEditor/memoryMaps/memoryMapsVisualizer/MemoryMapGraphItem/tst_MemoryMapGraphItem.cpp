@@ -90,7 +90,7 @@ void tst_MemoryMapGraphItem::testConstructor()
     QCOMPARE(memoryMapItem->getDisplayOffset(), quint64(0));
     QCOMPARE(memoryMapItem->getDisplayLastAddress(), quint64(0));
 
-    QCOMPARE(memoryMapItem->getAddressUnitSize(), unsigned int(8));
+    QCOMPARE(memoryMapItem->getAddressUnitSize(), uint(8));
     QCOMPARE(memoryMapItem->getBitWidth(), 0);
 
     QCOMPARE(memoryMapItem->pos().y(), qreal(0));

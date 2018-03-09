@@ -38,6 +38,7 @@ HEADERS += ../../../../../IPXACTmodels/designConfiguration/AbstractorInstance.h 
     ../../../../../IPXACTmodels/Component/validators/InstantiationsValidator.h \
     ../../../../../IPXACTmodels/Design/Interconnection.h \
     ../../../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
+    ../../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h \
     ../../../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
@@ -63,7 +64,10 @@ HEADERS += ../../../../../IPXACTmodels/designConfiguration/AbstractorInstance.h 
     ../../../../../IPXACTmodels/XmlUtils.h \
     ../../../../MockObjects/LibraryMock.h \
     ../../../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h
+    ../../../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
+    ../../../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
+    ../../../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h \
+    ../../../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h
 SOURCES += ../../../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../../../IPXACTmodels/Design/AdHocConnection.cpp \
@@ -94,6 +98,7 @@ SOURCES += ../../../../../IPXACTmodels/designConfiguration/AbstractorInstance.cp
     ../../../../../IPXACTmodels/Component/validators/InstantiationsValidator.cpp \
     ../../../../../IPXACTmodels/Design/Interconnection.cpp \
     ../../../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp \
     ../../../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
@@ -120,4 +125,7 @@ SOURCES += ../../../../../IPXACTmodels/designConfiguration/AbstractorInstance.cp
     ../../../../../IPXACTmodels/XmlUtils.cpp \
     ../../../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_InstantiationsValidator.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp
+    ../../../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp

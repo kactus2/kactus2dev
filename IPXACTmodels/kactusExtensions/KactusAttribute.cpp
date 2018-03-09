@@ -11,33 +11,6 @@
 
 #include "KactusAttribute.h"
 
-namespace
-{
-    QString const PROD_HIER_NAMES[KactusAttribute::KTS_PRODHIER_COUNT] =
-    {
-        QLatin1String("Flat"),
-        QLatin1String("Product"),
-        QLatin1String("Board"),
-        QLatin1String("Chip"),
-        QLatin1String("SoC"),
-        QLatin1String("IP")
-    };
-
-    QString const FIRMNESS_NAMES[KactusAttribute::KTS_REUSE_LEVEL_COUNT] =
-    {
-        QLatin1String("Mutable"),
-        QLatin1String("Template"),
-        QLatin1String("Fixed")
-    };
-
-    QString const IMPLEMENTATION_NAMES[KactusAttribute::KTS_IMPLEMENTATION_COUNT] =
-    {
-        QLatin1String("HW"),
-        QLatin1String("SW"),
-        QLatin1String("SYS")
-    };
-}
-
 //-----------------------------------------------------------------------------
 // Function: KactusAttribute::KactusAttribute()
 //-----------------------------------------------------------------------------
@@ -154,7 +127,7 @@ KactusAttribute::ProductHierarchy KactusAttribute::hierarchyFrom(QString const& 
     QString lowStr = string.toLower();
     for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
     {
-        if (lowStr == PROD_HIER_NAMES[i].toLower())
+        if (lowStr == hierarchyToString(static_cast<ProductHierarchy>(i)).toLower())
         {
             return static_cast<ProductHierarchy>(i);
         }
@@ -172,7 +145,7 @@ KactusAttribute::Implementation KactusAttribute::implementationFrom(QString cons
 
     for (unsigned int i = 0; i < KactusAttribute::KTS_IMPLEMENTATION_COUNT; i++)
     {
-        if (lowStr == IMPLEMENTATION_NAMES[i].toLower())
+        if (lowStr == implementationToString(static_cast<Implementation>(i)).toLower())
         {
             return static_cast<KactusAttribute::Implementation>(i);            
         }
@@ -190,7 +163,7 @@ KactusAttribute::Firmness KactusAttribute::firmnessFrom(QString const& string)
 
     for (unsigned int i = 0; i < KactusAttribute::KTS_REUSE_LEVEL_COUNT; ++i)
     {
-        if (lowStr == FIRMNESS_NAMES[i].toLower())
+        if (lowStr == firmnessToString(static_cast<Firmness>(i)).toLower())
         {
             return static_cast<Firmness>(i);
             
@@ -210,6 +183,16 @@ QString KactusAttribute::hierarchyToString(ProductHierarchy prodHier)
         return QString();
     }
 
+    static QString const PROD_HIER_NAMES[KactusAttribute::KTS_PRODHIER_COUNT] =
+    {
+        QLatin1String("Flat"),
+        QLatin1String("Product"),
+        QLatin1String("Board"),
+        QLatin1String("Chip"),
+        QLatin1String("SoC"),
+        QLatin1String("IP")
+    };
+
     return PROD_HIER_NAMES[prodHier];
 }
 
@@ -223,6 +206,13 @@ QString KactusAttribute::firmnessToString(Firmness firmness)
         return QString();
     }
 
+    static QString const FIRMNESS_NAMES[KactusAttribute::KTS_REUSE_LEVEL_COUNT] =
+    {
+        QLatin1String("Mutable"),
+        QLatin1String("Template"),
+        QLatin1String("Fixed")
+    };
+
     return FIRMNESS_NAMES[firmness];
 }
 
@@ -235,6 +225,13 @@ QString KactusAttribute::implementationToString(Implementation implementation)
     {
         return QString();
     }
+
+    static QString const IMPLEMENTATION_NAMES[KactusAttribute::KTS_IMPLEMENTATION_COUNT] =
+    {
+        QLatin1String("HW"),
+        QLatin1String("SW"),
+        QLatin1String("SYS")
+    };
 
     return IMPLEMENTATION_NAMES[implementation];
 }

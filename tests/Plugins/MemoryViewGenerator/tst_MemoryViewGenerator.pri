@@ -19,13 +19,15 @@ HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../designEditors/MemoryDesigner/MemoryItem.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.h \
     ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../designEditors/common/ComponentInstanceParameterFinder.h \
     ../../MockObjects/LibraryMock.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
     ../../../editors/ComponentEditor/common/ParameterCache.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../../../designEditors/common/ComponentInstanceParameterFinder.h
-SOURCES += ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.h
+SOURCES += ../../../designEditors/common/ComponentInstanceParameterFinder.cpp \
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
@@ -42,4 +44,4 @@ SOURCES += ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp 
     ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./tst_MemoryViewGenerator.cpp \
-    ../../../designEditors/common/ComponentInstanceParameterFinder.cpp
+    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp

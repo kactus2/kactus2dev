@@ -7,7 +7,19 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../common/utils.h \
+HEADERS += ../../../Plugins/MemoryMapHeaderGenerator/BaseMemoryMapHeaderWriter.h \
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../../Plugins/MemoryMapHeaderGenerator/GlobalMemoryMapHeaderWriter.h \
+    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../../../Plugins/MemoryMapHeaderGenerator/LocalMemoryMapHeaderWriter.h \
+    ../../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ../../../Plugins/MemoryMapHeaderGenerator/SystemMemoryMapHeaderWriter.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../common/utils.h \
+    ../../MockObjects/LibraryMock.h \
     ../../../Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.h \
     ../../../Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialogview.h \
     ../../../Plugins/MemoryMapHeaderGenerator/globalheadersavemodel.h \
@@ -16,19 +28,19 @@ HEADERS += ../../../common/utils.h \
     ../../../Plugins/MemoryMapHeaderGenerator/memorymapheadergenerator.h \
     ../../../Plugins/MemoryMapHeaderGenerator/systemheadersavemodel.h \
     ../../../common/widgets/viewSelector/viewselector.h \
-    ../../MockObjects/LibraryMock.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
-    ../../../Plugins/MemoryMapHeaderGenerator/BaseMemoryMapHeaderWriter.h \
-    ../../../Plugins/MemoryMapHeaderGenerator/LocalMemoryMapHeaderWriter.h \
-    ../../../Plugins/MemoryMapHeaderGenerator/GlobalMemoryMapHeaderWriter.h \
-    ../../../Plugins/MemoryMapHeaderGenerator/SystemMemoryMapHeaderWriter.h \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
-    ../../../editors/ComponentEditor/common/ParameterFinder.h
-SOURCES += ../../../Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.cpp \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h
+SOURCES += ../../../Plugins/MemoryMapHeaderGenerator/BaseMemoryMapHeaderWriter.cpp \
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../../Plugins/MemoryMapHeaderGenerator/GlobalMemoryMapHeaderWriter.cpp \
+    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../MockObjects/LibraryMock.cpp \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
+    ../../../Plugins/MemoryMapHeaderGenerator/LocalMemoryMapHeaderWriter.cpp \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
+    ../../../Plugins/MemoryMapHeaderGenerator/SystemMemoryMapHeaderWriter.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.cpp \
     ../../../Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialogview.cpp \
     ../../../Plugins/MemoryMapHeaderGenerator/globalheadersavemodel.cpp \
     ../../../Plugins/MemoryMapHeaderGenerator/localheadersavedelegate.cpp \
@@ -38,14 +50,4 @@ SOURCES += ../../../Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedial
     ./tst_MemoryMapHeaderGenerator.cpp \
     ../../../common/utils.cpp \
     ../../../common/widgets/viewSelector/viewselector.cpp \
-    ../../MockObjects/LibraryMock.cpp \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
-    ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../../Plugins/MemoryMapHeaderGenerator/BaseMemoryMapHeaderWriter.cpp \
-    ../../../Plugins/MemoryMapHeaderGenerator/LocalMemoryMapHeaderWriter.cpp \
-    ../../../Plugins/MemoryMapHeaderGenerator/GlobalMemoryMapHeaderWriter.cpp \
-    ../../../Plugins/MemoryMapHeaderGenerator/SystemMemoryMapHeaderWriter.cpp \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp
+    ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.cpp

@@ -87,7 +87,10 @@ HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../../IPXACTmodels/Component/Wire.h \
     ../../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../../../IPXACTmodels/generaldeclarations.h
+    ../../../../../IPXACTmodels/generaldeclarations.h \
+    ../../../../../IPXACTmodels/Component/TransparentBridge.h \
+    ../../../../../IPXACTmodels/Component/IndirectInterface.h \
+    ../../../../../IPXACTmodels/kactusExtensions/FileDependency.h
 SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
@@ -169,4 +172,7 @@ SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_FieldValidator.cpp
+    ./tst_FieldValidator.cpp \
+    ../../../../../IPXACTmodels/Component/TransparentBridge.cpp \
+    ../../../../../IPXACTmodels/Component/IndirectInterface.cpp \
+    ../../../../../IPXACTmodels/kactusExtensions/FileDependency.cpp

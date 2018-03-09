@@ -12,6 +12,7 @@
 #include <QtTest>
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
+#include <kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 #include <tests/MockObjects/DesignWidgetFactoryMock.h>
@@ -23,12 +24,12 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Fileset.h>
+#include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Model.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/View.h>
-#include <IPXACTmodels/Component/Memorymap.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
@@ -165,6 +166,10 @@ private:
 
     //! Get the string used to describe valid w3c strict.
     QString getValidW3CStrictString();
+    //-----------------------------------------------------------------------------
+    // Function: createViewGenerator()
+    //-----------------------------------------------------------------------------
+    ViewDocumentGenerator* createViewGenerator();
 
     QSharedPointer<Component> topComponent_;
 
@@ -480,21 +485,33 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
         "\t\t\t" + getTableString() + "List of parameters defined for the component\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Name</th>\n"
+        "\t\t\t\t\t<th>Type</th>\n"
         "\t\t\t\t\t<th>Value</th>\n"
+        "\t\t\t\t\t<th>Resolve</th>\n"
+        "\t\t\t\t\t<th>Bit vector left</th>\n"
+        "\t\t\t\t\t<th>Bit vector right</th>\n"
         "\t\t\t\t\t<th>Array left</th>\n"
         "\t\t\t\t\t<th>Array right</th>\n"
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<td>" + parameter->name() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->getType() + "</td>\n"
         "\t\t\t\t\t<td>" + parameter->getValue() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->getValueResolve() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->getVectorLeft() + "</td>\n"
+        "\t\t\t\t\t<td>" + parameter->getVectorRight() + "</td>\n"
         "\t\t\t\t\t<td>" + parameter->getArrayLeft() + "</td>\n"
         "\t\t\t\t\t<td>" + parameter->getArrayRight() + "</td>\n"
         "\t\t\t\t\t<td>" + parameter->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<td>" + refParameter->name() + "</td>\n"
-        "\t\t\t\t\t<td>parameter</td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td>parameter</td>\n"        
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td></td>\n"
         "\t\t\t\t\t<td></td>\n"
         "\t\t\t\t\t<td></td>\n"
         "\t\t\t\t\t<td>" + refParameter->description() + "</td>\n"
@@ -1222,7 +1239,7 @@ void tst_documentGenerator::testBusInterfacesWrittenWithoutPorts()
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Interface mode:</strong> " +
         General::interfaceMode2Str(busInterface->getInterfaceMode()) + "<br>\n"
-        "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong>\n"
+        "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong> None\n"
         );
 
     readOutputFile();
@@ -1333,8 +1350,6 @@ void tst_documentGenerator::testFileSetsWrittenForTopComponent()
 //-----------------------------------------------------------------------------
 void tst_documentGenerator::testViewsWrittenForTopComponent()
 {
-    DocumentGenerator* generator = createTestGenerator();
-
     QSharedPointer<View> flatView(new View());
 
     topComponent_->getViews()->append(flatView);
@@ -1346,6 +1361,9 @@ void tst_documentGenerator::testViewsWrittenForTopComponent()
     int subHeaderNumber = 1;
     QStringList pictureList;
 
+    ViewDocumentGenerator* generator = createViewGenerator();
+
+    generator->setComponent(topComponent_, subHeaderNumber, QString());
     generator->writeViews(stream, subHeaderNumber, pictureList);
 
     targetFile.close();
@@ -1354,10 +1372,10 @@ void tst_documentGenerator::testViewsWrittenForTopComponent()
     generator = 0;
 
     QString expectedOutput(
-        "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".views\">0.1 Views</a></h2>\n"
-        "\t\t\t<h3>0.1.1 View: " + flatView->name() + "</h3>\n"
+        "\t\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".views\">1.1 Views</a></h2>\n"
+        "\t\t\t<h3>1.1.1 View: " + flatView->name() + "</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t<strong>" + getIndentString() + "Type: </strong>non-hierarchical<br>\n"
+        "\t\t\t</p>"
         );
 
     readOutputFile();
@@ -1434,44 +1452,36 @@ void tst_documentGenerator::testDesignIsWritten()
 
     topComponent_->getDesignInstantiations()->append(designInstantiation);
 
-    DocumentGenerator* generator = createTestGenerator();
+    ViewDocumentGenerator* generator = createViewGenerator();
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
     int subHeaderNumber = 1;
+    QStringList files;
 
-    generator->writeView(hierarchicalView, stream, subHeaderNumber, subHeaderNumber);
+    generator->setComponent(topComponent_, subHeaderNumber, QString());
+    generator->writeViews(stream, subHeaderNumber, files);
 
     targetFile.close();
     delete generator;
     generator = 0;
 
     QString expectedOutput(
-        "\t\t\t<h4>0.1.1.2 Design " + design->getVlnv().toString(" - ") + "</h4>\n"
+        "\t\t\t<h2><a id=\"Test:TestLibrary:TestComponent:1.0.views\">1.1 Views</a></h2>\n"
+        "\t\t\t<h3>1.1.1 View: HierarchicalView</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t<strong>" + getIndentString() + "IP-Xact file: </strong><a href=\"\">TestDesign.1.0.xml</a><br>\n"
-        "\t\t\t<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "Component instantiations within this design\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Instance name</th>\n"
-        "\t\t\t\t\t<th>Component type</th>\n"
-        "\t\t\t\t\t<th>Configurable values</th>\n"
-        "\t\t\t\t\t<th>Active view</th>\n"
-        "\t\t\t\t\t<th>Description</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + firstInstance->getInstanceName() + "</td>\n"
-        "\t\t\t\t\t<td><a href=\"#" + firstVlnv.toString(":") + "\">" + firstVlnv.toString(" - ") + "</a></td>\n"
-        "\t\t\t\t\t<td>\n"
-        "\t\t\t\t\t" + targetParameter->name() + " = " + targetParameter->getValue() + "<br>\n"
-        "\t\t\t\t\t" + referParameter->name() + " = " + targetParameter->name() + "\n"
-        "\t\t\t\t\t</td>\n"
-        "\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t<td>" + firstInstance->getDescription() + "</td>\n"
-        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<h4>1.1.1.1 Design instantiation: design_instantiation</h4>\n"
+        "\t\t\t\t<p>\n"
+        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Design: </strong>Test:TestLibrary:TestDesign:1.0<br>\n"
+        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>IP-Xact file: </strong><a href=\"\">TestDesign.1.0.xml</a><br>\n"
+        "\t\t\t\t</p>\n"
+        "\t\t\t<br>\n"
+        "\t\t\tDiagram of design Test:TestLibrary:TestDesign:1.0:<br>\n"
+        "\t\t\t<img src=\"Test.TestLibrary.TestComponent.1.0.HierarchicalView.png\" alt=\"View: HierarchicalView preview picture\"><br>\n"
+        "\t\t\t<br>\n"
         );
 
     readOutputFile();
@@ -1569,6 +1579,17 @@ DocumentGenerator* tst_documentGenerator::createTestGenerator()
 
     DocumentGenerator* generator (new DocumentGenerator(&library_, topComponentVlnv_, &designWidgetFactory_, 
         &expressionFormatterFactory_, generatorParentWidget_));
+
+    return generator;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::createViewGenerator()
+//-----------------------------------------------------------------------------
+ViewDocumentGenerator* tst_documentGenerator::createViewGenerator()
+{
+    ViewDocumentGenerator* generator(new ViewDocumentGenerator(&library_, &expressionFormatterFactory_, 
+        &designWidgetFactory_));
 
     return generator;
 }
@@ -1752,7 +1773,7 @@ QString tst_documentGenerator::getTableString()
 //-----------------------------------------------------------------------------
 QString tst_documentGenerator::getEncodingString()
 {
-    return QString("<meta http-equiv=\"Content-Type\"content=\"text/html; charset=utf-8\">");
+    return QString("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
 }
 
 //-----------------------------------------------------------------------------
@@ -1769,7 +1790,7 @@ QString tst_documentGenerator::getDoctypeString()
 QString tst_documentGenerator::getValidW3CStrictString()
 {
     return QString("\t\t<p>\n"
-        "\t\t\t<a href=\"http://validator.w3.org/check?uri=referer\">\n"
+        "\t\t\t<a href=\"https://validator.w3.org/#validate_by_upload\">\n"
         "\t\t\t<img src=\"http://www.w3.org/Icons/valid-html401\""
         "alt=\"Valid HTML 4.01 Strict\" height=\"31\""
         "width=\"88\">\n"

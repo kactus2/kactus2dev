@@ -92,7 +92,7 @@ void tst_ApiDefinitionWriter::baseCase()
 		"<kactus2:apiDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 		" xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\""
 		" xmlns:kactus2=\"http://kactus2.cs.tut.fi\""
-		" xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/"
+		" xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014"
 		" http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
 		"<ipxact:vendor>me</ipxact:vendor>"
 		"<ipxact:library>kurjasto</ipxact:library>"

@@ -250,8 +250,8 @@ void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Comp
     QSharedPointer<View> flatView = findOrCreateFlatView(targetComponent);
 
 	// Create environment identifiers for the view as needed.
-    QSharedPointer<View::EnvironmentIdentifier> envIdentifierForImport(new View::EnvironmentIdentifier);
-	envIdentifierForImport->language = "Verilog";
+    QSharedPointer<View::EnvironmentIdentifier> envIdentifierForImport(
+        new View::EnvironmentIdentifier(QStringLiteral("Verilog")));
 	envIdentifierForImport->tool = VerilogSyntax::TOOL_NAME;
 
     if (!flatView->hasEnvIdentifier(envIdentifierForImport))

@@ -371,7 +371,7 @@ void tst_businterfaceWriter::testWriteAbstractionReference()
 	QXmlStreamWriter xmlStreamWriter(&output);
 
     QSharedPointer<AbstractionType> abstractionType(new AbstractionType());
-    abstractionType->setViewRef("rtl_view");
+    abstractionType->getViewReferences()->append(QStringLiteral("rtl_view"));
     abstractionType->setAbstractionRef(QSharedPointer<ConfigurableVLNVReference>(
         new ConfigurableVLNVReference(VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "testName", "1.0")));
 
@@ -507,7 +507,7 @@ void tst_businterfaceWriter::testWriteMaster()
 		    "<ipxact:name>testbusinterface</ipxact:name>"
 		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
 		    "<ipxact:master>"
-		        "<ipxact:addressSpaceRef ipxact:addressSpaceRef=\"apb\"/>"
+		        "<ipxact:addressSpaceRef addressSpaceRef=\"apb\"/>"
 		    "</ipxact:master>"
 		"</ipxact:busInterface>"
 	);
@@ -730,4 +730,4 @@ void tst_businterfaceWriter::testWriteMirroredMaster()
 
 QTEST_APPLESS_MAIN(tst_businterfaceWriter)
 
-#include "tst_businterfaceWriter.moc"
+#include "tst_BusInterfaceWriter.moc"

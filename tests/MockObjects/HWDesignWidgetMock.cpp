@@ -37,7 +37,8 @@ HWDesignWidgetMock::HWDesignWidgetMock(LibraryInterface *lh, QWidget* parent): D
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
 		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW);
 
-    setDiagram(new HWDesignDiagram(lh, getEditProvider(), this));
+    setDiagram(new HWDesignDiagram(lh, getEditProvider(), QSharedPointer<MultipleParameterFinder>(), 
+        QSharedPointer<ListParameterFinder>(), this));
     getDiagram()->setProtection(false);
     getDiagram()->setMode(MODE_SELECT);
     
@@ -178,10 +179,11 @@ bool HWDesignWidgetMock::setDesign(QSharedPointer<Component> comp, const QString
         }
     }
 
-    if (!getDiagram()->setDesign(comp, design, designConf))
+    if (!getDiagram()->setDesign(comp, targetView->name(), design, designConf))
     {
         return false;
     }
+
     DesignWidget::setDesign(comp, viewName);
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 

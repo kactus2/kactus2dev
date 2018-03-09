@@ -13,11 +13,12 @@ HEADERS += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../Plugins/MakefileGenerator/MakefileGenerator.h \
     ../../../Plugins/MakefileGenerator/MakefileParser.h \
     ../../../common/NameGenerationPolicy.h \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../Plugins/MakefileGenerator/SWStackParser.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ../../MockObjects/LibraryMock.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h
+    ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h
 SOURCES += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
@@ -27,4 +28,5 @@ SOURCES += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp
     ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ../../../Plugins/MakefileGenerator/SWStackParser.cpp \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./tst_MakefileGenerator.cpp
+    ./tst_MakefileGenerator.cpp \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.cpp

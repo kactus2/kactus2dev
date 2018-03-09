@@ -12,8 +12,8 @@
 #include <IPXACTmodels/Component/ComponentReader.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
-#include <IPXACTmodels/Component/businterface.h>
-#include <IPXACTmodels/Component/channel.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
@@ -23,9 +23,9 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
-#include <IPXACTmodels/Component/choice.h>
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
-#include <IPXACTmodels/Component/cpu.h>
+#include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
 

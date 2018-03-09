@@ -232,7 +232,7 @@ void ViewDocumentGenerator::writeImplementationDetails(QTextStream& stream, QStr
 
         if (!language.isEmpty())
         {
-            stream << instantiationItemTabs << DocumentGeneratorHTML::INDENT << "<strong>Language: </strong>" <<
+            stream << instantiationItemTabs << DocumentGeneratorHTML::indent() << "<strong>Language: </strong>" <<
                 language;
 
             if (instantiation->isLanguageStrict())
@@ -244,27 +244,27 @@ void ViewDocumentGenerator::writeImplementationDetails(QTextStream& stream, QStr
         }
         if (!library.isEmpty())
         {
-            stream << instantiationItemTabs << DocumentGeneratorHTML::INDENT << "<strong>Library: </strong>" <<
+            stream << instantiationItemTabs << DocumentGeneratorHTML::indent() << "<strong>Library: </strong>" <<
                 library << "<br>" << endl;
         }
         if (!package.isEmpty())
         {
-            stream << instantiationItemTabs << DocumentGeneratorHTML::INDENT << "<strong>Package: </strong>" <<
+            stream << instantiationItemTabs << DocumentGeneratorHTML::indent() << "<strong>Package: </strong>" <<
                 package << "<br>" << endl;
         }
         if (!module.isEmpty())
         {
-            stream << instantiationItemTabs << DocumentGeneratorHTML::INDENT << "<strong>Module name: </strong>" <<
+            stream << instantiationItemTabs << DocumentGeneratorHTML::indent() << "<strong>Module name: </strong>" <<
                 module << "<br>" << endl;
         }
         if (!architecture.isEmpty())
         {
-            stream << instantiationItemTabs << DocumentGeneratorHTML::INDENT <<
+            stream << instantiationItemTabs << DocumentGeneratorHTML::indent() <<
                 "<strong>Architecture: </strong>" << architecture << "<br>" << endl;
         }
         if (!configuration.isEmpty())
         {
-            stream << instantiationItemTabs << DocumentGeneratorHTML::INDENT <<
+            stream << instantiationItemTabs << DocumentGeneratorHTML::indent() <<
                 "<strong>Configuration: </strong>" << configuration << "<br>" << endl;
         }
 
@@ -435,13 +435,13 @@ void ViewDocumentGenerator::writeDocumentReference(QTextStream& stream, QString 
         {
             QString documentReferenceTabs = instantiationItemTabs + "\t";
             stream << instantiationItemTabs << "<p>" << endl;
-            stream << documentReferenceTabs << DocumentGeneratorHTML::INDENT <<
+            stream << documentReferenceTabs << DocumentGeneratorHTML::indent() <<
                 "<strong>" << documentType << ": </strong>" << vlnvReference->toString() << "<br>" << endl;
 
             QFileInfo vlnvXMLInfo(getLibraryHandler()->getPath(*vlnvReference.data()));
             QString relativeXmlPath = General::getRelativePath(getTargetPath(), vlnvXMLInfo.absoluteFilePath());
 
-            stream << documentReferenceTabs <<  DocumentGeneratorHTML::INDENT << "<strong>" <<
+            stream << documentReferenceTabs <<  DocumentGeneratorHTML::indent() << "<strong>" <<
                 "IP-Xact file: </strong><a href=\"" << relativeXmlPath << "\">" << vlnvXMLInfo.fileName() <<
                 "</a><br>" << endl;
             stream << instantiationItemTabs << "</p>" << endl;
@@ -805,7 +805,7 @@ void ViewDocumentGenerator::writeDescription(QTextStream& stream, QString const&
 {
     if (!description.isEmpty())
     {
-        stream << descriptionTabs << DocumentGeneratorHTML::INDENT << "<strong>Description: </strong>" <<
+        stream << descriptionTabs << DocumentGeneratorHTML::indent() << "<strong>Description: </strong>" <<
             description << "<br>" << endl;
     }
 }

@@ -132,7 +132,7 @@ void tst_ComponentPortValidator::wireFail()
 	QSharedPointer<WireTypeDef> wiredef( new WireTypeDef );
 	QStringList refs;
 	refs.append("bogus view");
-	wiredef->setViewRefs(refs);
+	wiredef->getViewRefs()->append(refs);
 	wire->getWireTypeDefs()->append(wiredef);
 
 	QVector<QString> errorList;
@@ -159,9 +159,10 @@ void tst_ComponentPortValidator::wireSuccess()
 	port->setWire(wire);
 
 	QSharedPointer<WireTypeDef> wiredef( new WireTypeDef );
+    wiredef->setTypeName("wire");
 	QStringList refs;
 	refs.append("test_view");
-	wiredef->setViewRefs(refs);
+	wiredef->getViewRefs()->append(refs);
 	wire->getWireTypeDefs()->append(wiredef);
 
 	QVector<QString> errorList;
@@ -235,7 +236,7 @@ void tst_ComponentPortValidator::transactionalFail()
 	QSharedPointer<WireTypeDef> wiredef( new WireTypeDef );
 	QStringList refs;
 	refs.append("bogus view");
-	wiredef->setViewRefs(refs);
+	wiredef->getViewRefs()->append(refs);
 	trans->getTransTypeDef()->append(wiredef);
 
 	QVector<QString> errorList;
@@ -265,7 +266,7 @@ void tst_ComponentPortValidator::transactionalSuccess()
 	QSharedPointer<WireTypeDef> wiredef( new WireTypeDef );
 	QStringList refs;
 	refs.append("test_view");
-	wiredef->setViewRefs(refs);
+	wiredef->getViewRefs()->append(refs);
 	trans->getTransTypeDef()->append(wiredef);
 
 	QVector<QString> errorList;

@@ -10,13 +10,13 @@ message("You are running qmake on a generated .pro file. This may not work!")
 HEADERS += ../../../../../IPXACTmodels/common/Extendable.h \
     ../../../../../IPXACTmodels/common/NameGroup.h \
     ../../../../../IPXACTmodels/Component/EnumeratedValue.h \
-    ../../../../../IPXACTmodels/Component/Validators/EnumeratedValueValidator.h \
+    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
 SOURCES += ../../../../../IPXACTmodels/common/Extendable.cpp \
     ../../../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../../../IPXACTmodels/Component/EnumeratedValue.cpp \
-    ../../../../../IPXACTmodels/Component/Validators/EnumeratedValueValidator.cpp \
+    ../../../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ./tst_EnumeratedValueValidator.cpp \
     ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp

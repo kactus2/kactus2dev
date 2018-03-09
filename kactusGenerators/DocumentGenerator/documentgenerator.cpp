@@ -264,10 +264,10 @@ void DocumentGenerator::writeHtmlHeader(QTextStream& stream)
     QSettings settings;
 
     // write the top of the html document
-    stream << DocumentGeneratorHTML::DOCTYPE << endl;
+    stream << DocumentGeneratorHTML::docType() << endl;
     stream << "<html>" << endl;
     stream << "\t<head>" << endl;
-    stream << "\t" << DocumentGeneratorHTML::ENCODING << endl;
+    stream << "\t" << DocumentGeneratorHTML::encoding() << endl;
     stream << "\t\t<title>Kactus2 generated documentation for component " <<
         getComponent()->getVlnv().getName() << " " << getComponent()->getVlnv().getVersion() << "</title>" << endl;
     stream << "\t</head>" << endl;
@@ -287,10 +287,10 @@ void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTex
     setNumber(componentNumber);
 
     QSharedPointer<Component> component = getComponent();
-    QString vlnvHeader = "\t\t" + DocumentGeneratorHTML::INDENT + "<a href=\"#" + component->getVlnv().toString();
+    QString vlnvHeader = "\t\t" + DocumentGeneratorHTML::indent() + "<a href=\"#" + component->getVlnv().toString();
 
     stream << "\t\t<a href=\"#" << component->getVlnv().toString() << "\">" << myNumber() << ". Component" <<
-        DocumentGeneratorHTML::SPACE << component->getVlnv().toString(" - ") << "</a><br>" << endl;
+        DocumentGeneratorHTML::space() << component->getVlnv().toString(" - ") << "</a><br>" << endl;
 
 	// subHeader is running number that counts the number of sub headers for component
 	int subHeader = 1;
@@ -410,13 +410,13 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
     QSharedPointer<Component> component = getComponent();
 
 	stream << "\t\t<p>" << endl;
-	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::INDENT << "Product hierarchy: </strong>" <<
+	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Product hierarchy: </strong>" <<
         KactusAttribute::hierarchyToString(component->getHierarchy()) << "<br>" << endl;
 	
-	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::INDENT << "Component implementation: </strong>" <<
+	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component implementation: </strong>" <<
         KactusAttribute::implementationToString(component->getImplementation()) << "<br>" << endl;
 
-	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::INDENT << "Component firmness: </strong>" <<
+	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component firmness: </strong>" <<
         KactusAttribute::firmnessToString(component->getFirmness()) << "<br>" << endl;
 
 	stream << "\t\t</p>" << endl;
@@ -455,11 +455,11 @@ void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumbe
 
             if (!memoryMap->description().isEmpty())
             {
-                stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Description:</strong> " <<
+                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " <<
                     memoryMap->description() << "<br>" << endl;
             }
 
-            stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Address unit bits (AUB):</strong> " <<
+            stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Address unit bits (AUB):</strong> " <<
                 memoryMap->getAddressUnitBits() << "<br>" << endl;
 
             stream << "\t\t\t</p>" << endl;
@@ -504,7 +504,7 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
             if (!currentAddressBlock->description().isEmpty())
             {
                 stream << "\t\t\t<p>" << endl;
-                stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Description:</strong> " <<
+                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " <<
                     currentAddressBlock->description() << "<br>" << endl;
                 stream << "\t\t\t</p>" << endl;
             }
@@ -566,7 +566,7 @@ void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > register
             if (!currentRegister->description().isEmpty())
             {
                 stream << "\t\t\t<p>" << endl;
-                stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Description:</strong> " <<
+                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " <<
                     currentRegister->description() << "<br>" << endl;
                 stream << "\t\t\t</p>" << endl;
             }
@@ -704,15 +704,15 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 
 			if (!interface->description().isEmpty())
             {
-				stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Description:</strong> " << 
+				stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " << 
 					interface->description() << "<br>" << endl;
 			}
 
 			// write the interface mode of the interface
-			stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Interface mode:</strong> " << 
+			stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Interface mode:</strong> " << 
 				General::interfaceMode2Str(interface->getInterfaceMode()) << "<br>" << endl;
 
-            stream << "\t\t\t" << DocumentGeneratorHTML::INDENT <<
+            stream << "\t\t\t" << DocumentGeneratorHTML::indent() <<
                 "<strong>Ports used in this interface:</strong>";
 
             const QList<QSharedPointer<Port> > ports = component->getPortsMappedInInterface(interface->name());
@@ -754,13 +754,13 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 
 			if (!fileSet->description().isEmpty())
             {
-				stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Description:</strong> " << 
+				stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " << 
 					fileSet->description() << "<br>" << endl;
 			}
 
 			// write the group identifiers
 			QStringList groups = *fileSet->getGroups().data();
-			stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Identifiers:</strong> ";
+			stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Identifiers:</strong> ";
 			for (int i = 0; i < groups.size(); ++i)
             {
 				stream << groups.at(i);
@@ -776,7 +776,7 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
             QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders = fileSet->getDefaultFileBuilders();
             if (!fileBuilders->isEmpty())
             {
-				stream << "\t\t\t" << DocumentGeneratorHTML::INDENT << "<strong>Default file builders:</strong>" <<
+				stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Default file builders:</strong>" <<
                     endl;
 				stream << "\t\t\t</p>" << endl;
 
@@ -789,7 +789,7 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 
             if (!fileSet->getFiles()->isEmpty())
             {
-                stream << "\t\t\t" << "<h4>" << DocumentGeneratorHTML::INDENT << myNumber() << "." <<
+                stream << "\t\t\t" << "<h4>" << DocumentGeneratorHTML::indent() << myNumber() << "." <<
                     subHeaderNumber << "." << fileSetNumber << ".1 Files</h4>" << endl;
 
                 QStringList fileHeaders;
@@ -820,7 +820,7 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
 {
-    stream << DocumentGeneratorHTML::VALID_W3C_STRICT << endl;
+    stream << DocumentGeneratorHTML::valid3wStrict() << endl;
     stream << "\t</body>" << endl;
     stream << "</html>" << endl;
 }

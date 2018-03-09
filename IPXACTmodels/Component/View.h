@@ -35,12 +35,21 @@ public:
 		QString tool;
 		QString vendorSpecific;
 		
+        EnvironmentIdentifier(): language(), tool(), vendorSpecific() {}
+
+        EnvironmentIdentifier(QString const& IdentifierLanguage, QString const& identifierTool = QString(),
+            QString const& identifierVendorSpecific = QString()):
+        language(IdentifierLanguage), tool(identifierTool), vendorSpecific(identifierVendorSpecific)
+        {
+
+        }
+
 		/*!
 		 *  Returns the environment identifier in its ipxact format: language:tool:vendorSpecific.
 		 */
 		QString toString()
 		{
-			return language + QStringLiteral(":") + tool + QStringLiteral(":") + vendorSpecific;
+			return language + QLatin1Char(':') + tool + QLatin1Char(':') + vendorSpecific;
 		}
 	};
 

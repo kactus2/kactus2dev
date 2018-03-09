@@ -14,7 +14,6 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
-#include <IPXACTmodels/validators/namevalidator.h>
 
 #include <QRegExpValidator>
 #include <QUuid>

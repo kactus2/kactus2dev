@@ -39,14 +39,14 @@ tst_ComDefinitionValidator::tst_ComDefinitionValidator()
 //-----------------------------------------------------------------------------
 void tst_ComDefinitionValidator::baseCase()
 {
-	QSharedPointer<ComDefinition> ComDefinition(new ComDefinition);
-	ComDefinition->setVlnv(VLNV(VLNV::COMDEFINITION,"me","kurjasto","def","0.11"));
+	QSharedPointer<ComDefinition> comDefinition(new ComDefinition);
+	comDefinition->setVlnv(VLNV(VLNV::COMDEFINITION,"me","kurjasto","def","0.11"));
 
 	QVector<QString> errorList;
     ComDefinitionValidator validator;
-	validator.findErrorsIn(errorList, ComDefinition);
+	validator.findErrorsIn(errorList, comDefinition);
 
-	QVERIFY(validator.validate(ComDefinition));
+	QVERIFY(validator.validate(comDefinition));
     QCOMPARE(errorList.size(), 0);
 }
 

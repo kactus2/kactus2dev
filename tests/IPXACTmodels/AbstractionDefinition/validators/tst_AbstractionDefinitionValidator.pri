@@ -65,7 +65,8 @@ HEADERS += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/XmlUtils.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
     ../../../MockObjects/LibraryMock.h \
-    ../../../../IPXACTmodels/validators/namevalidator.h
+    ../../../../IPXACTmodels/validators/namevalidator.h \
+    ../../../../IPXACTmodels/kactusExtensions/ComInterconnection.h
 SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../../IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.cpp \
     ../../../../IPXACTmodels/Design/ActiveInterface.cpp \
@@ -125,4 +126,5 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/XmlUtils.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../../IPXACTmodels/validators/namevalidator.cpp \
-    ./tst_AbstractionDefinitionValidator.cpp
+    ./tst_AbstractionDefinitionValidator.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp

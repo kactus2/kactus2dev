@@ -12,7 +12,7 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += memoryMapsVisualizer/MemoryMapGraphItem/tst_memoryMapGraphItem.pro \
+SUBDIRS += memoryMapsVisualizer/MemoryMapGraphItem/tst_MemoryMapGraphItem.pro \
 		   memoryMapsVisualizer/AddressBlockGraphItem/tst_AddressBlockGraphItem.pro \
 		   memoryMapsVisualizer/RegisterGraphItem/tst_RegisterGraphItem.pro \
 		   memoryMapsVisualizer/FieldGraphItem/tst_FieldGraphItem.pro

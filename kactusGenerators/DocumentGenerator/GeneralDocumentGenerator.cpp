@@ -47,7 +47,7 @@ void GeneralDocumentGenerator::writeTableElement(const QStringList& headers, con
     QString headerTabs = tableTabs + "\t";
     QString headerRowTabs = headerTabs + "\t";
 
-    stream << tableTabs << DocumentGeneratorHTML::TABLE << title << "\">" << endl;
+    stream << tableTabs << DocumentGeneratorHTML::table() << title << "\">" << endl;
     stream << headerTabs << "<tr>" << endl;
     foreach (QString header, headers)
     {

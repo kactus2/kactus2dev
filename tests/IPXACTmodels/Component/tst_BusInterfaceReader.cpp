@@ -11,6 +11,7 @@
 
 #include <IPXACTmodels/Component/BusInterfaceReader.h>
 
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
@@ -453,7 +454,7 @@ void tst_businterfaceReader::testReadEndianness()
 	BusinterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getEndianness(), BusInterface::Endianness::BIG);
+	QCOMPARE(testbusinterface->getEndianness(), BusInterface::BIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -549,8 +550,8 @@ void tst_businterfaceReader::testReadAbstractionReference()
 	BusinterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-    QSharedPointer<AbstractionType> abstraction = testbusinterface->getAbstractionTypes()->first();
-	QCOMPARE(abstraction->getViewRef(), QString("testView"));
+    QSharedPointer<AbstractionType> abstraction = testbusinterface->getAbstractionTypes()->first();    
+	QCOMPARE(abstraction->getViewReferences()->first(), QString("testView"));
 	QCOMPARE(abstraction->getAbstractionRef()->getVendor(), QString("testVendor"));	
 	QCOMPARE(abstraction->getAbstractionRef()->getLibrary(), QString("testLibrary"));
     QCOMPARE(abstraction->getAbstractionRef()->getName(), QString("testName"));
@@ -622,4 +623,4 @@ void tst_businterfaceReader::testReadPortMaps()
 
 QTEST_APPLESS_MAIN(tst_businterfaceReader)
 
-#include "tst_businterfaceReader.moc"
+#include "tst_BusInterfaceReader.moc"

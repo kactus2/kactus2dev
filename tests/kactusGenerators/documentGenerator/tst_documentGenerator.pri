@@ -23,7 +23,6 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
     ../../../common/graphicsItems/ConnectionUndoCommands.h \
     ../../../designEditors/common/DesignDiagramResolver.h \
-    ../../../library/LibraryItem.h \
     ../../MockObjects/DesignWidgetFactoryMock.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
@@ -46,7 +45,6 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../common/widgets/vlnvEditor/VLNVContentMatcher.h \
     ../../../common/widgets/vlnvEditor/VLNVDataTree.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistmodel.h \
     ../../../designEditors/HWDesign/AdHocConnectionItem.h \
     ../../../designEditors/HWDesign/AdHocInterfaceItem.h \
     ../../../designEditors/HWDesign/AdHocItem.h \
@@ -85,6 +83,7 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../MockObjects/HWDesignWidgetMock.h \
     ../../../common/IEditProvider.h \
     ../../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
+    ../../../library/LibraryItem.h \
     ../../MockObjects/LibraryMock.h \
     ../../../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ../../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
@@ -121,7 +120,19 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
     ../../../common/delegates/LineEditDelegate/lineeditdelegate.h \
     ../../../common/dialogs/newObjectDialog/newobjectdialog.h \
-    ../../../common/widgets/vlnvEditor/vlnveditor.h
+    ../../../common/widgets/vlnvEditor/vlnveditor.h \
+    ../../../kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
+    ../../../designEditors/HWDesign/BusInterfaceEndPoint.h \
+    ../../../common/views/EditableTreeView/EditableTreeView.h \
+    ../../../designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.h \
+    ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ../../../kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../../../designEditors/common/DefaultRouting.h \
+    ../../../designEditors/HWDesign/undoCommands/HWColumnAddCommand.h \
+    ../../../common/views/EditableTreeView/EditableTreeSortFilter.h \
+    ../../../common/graphicsItems/GraphicsColumnAddCommand.h \
+    ../../../kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h
 SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../../designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
     ../../../designEditors/HWDesign/AdHocConnectionItem.cpp \
@@ -160,7 +171,6 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/common/DesignDiagram.cpp \
     ../../../designEditors/common/DesignDiagramResolver.cpp \
     ../../../designEditors/common/DesignWidget.cpp \
-    ../../../library/LibraryItem.cpp \
     ../../MockObjects/DesignWidgetFactoryMock.cpp \
     ../../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
@@ -185,6 +195,7 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.cpp \
     ../../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
+    ../../../library/LibraryItem.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ../../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
@@ -235,4 +246,15 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/delegates/LineEditDelegate/lineeditdelegate.cpp \
     ../../../common/dialogs/newObjectDialog/newobjectdialog.cpp \
     ./tst_documentGenerator.cpp \
-    ../../../common/widgets/vlnvEditor/vlnveditor.cpp
+    ../../../common/widgets/vlnvEditor/vlnveditor.cpp \
+    ../../../kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ../../../designEditors/HWDesign/BusInterfaceEndPoint.cpp \
+    ../../../common/views/EditableTreeView/EditableTreeView.cpp \
+    ../../../designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.cpp \
+    ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
+    ../../../kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
+    ../../../designEditors/common/DefaultRouting.cpp \
+    ../../../designEditors/HWDesign/undoCommands/HWColumnAddCommand.cpp \
+    ../../../common/views/EditableTreeView/EditableTreeSortFilter.cpp \
+    ../../../common/graphicsItems/GraphicsColumnAddCommand.cpp
