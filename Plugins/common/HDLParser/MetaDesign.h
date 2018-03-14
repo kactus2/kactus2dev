@@ -17,6 +17,7 @@
 class Design;
 class DesignConfiguration;
 class AdHocConnection;
+class MessageMediator;
 class PartSelect;
 
 //-----------------------------------------------------------------------------
@@ -35,7 +36,7 @@ public:
      *      @param [in] topInstance         The parsed meta instance of the top component.
      */
     MetaDesign(LibraryInterface* library,
-        MessagePasser* messages,
+        MessageMediator* messages,
         QSharedPointer<Design const> design,
         QSharedPointer<DesignInstantiation const> designInstantiation,
         QSharedPointer<DesignConfiguration const> designConf,
@@ -235,7 +236,7 @@ private:
     LibraryInterface* library_;
 
     //! The messages.
-    MessagePasser* messages_;
+    MessageMediator* messages_;
 
     //! The design to parse.
     QSharedPointer<Design const> design_;

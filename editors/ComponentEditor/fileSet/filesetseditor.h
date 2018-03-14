@@ -30,31 +30,25 @@ class ParameterFinder;
 //-----------------------------------------------------------------------------
 class FileSetsEditor : public ItemEditor
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	//! The default width of the name column.
-	static const int NAME_COLUMN_WIDTH = 200;
-
-	//! The default width of the description column.
-	static const int DESC_COLUMN_WIDTH = 300;
-
-	/*! The constructor
-	 *
-	 *      @param [in] component           The component being edited.
+    /*! The constructor
+     *
+     *      @param [in] component           The component being edited.
      *      @param [in] libraryInterface    The library interface.
      *      @param [in] parameterFinder     Finder used to identify parameters.
      *      @param [in] pluginMgr           The plugin manager.    
-	 */
+     */
     FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface,
         QSharedPointer<ParameterFinder> parameterFinder);
-	
-	//! The destructor
-	~FileSetsEditor();
+    
+    //! The destructor
+    ~FileSetsEditor();
 
-	//! Reload the information from the model to the editor.
-	virtual void refresh();
+    //! Reload the information from the model to the editor.
+    virtual void refresh();
 
 signals:
     //! Emitted when a file has been added to any file set.
@@ -73,26 +67,29 @@ public slots:
     void refreshDependencyModel();
 
 protected:
-	//! Handler for widget's show event
-	virtual void showEvent(QShowEvent* event);
+    //! Handler for widget's show event
+    virtual void showEvent(QShowEvent* event);
 
 private:
 
-	//! No copying
-	FileSetsEditor(const FileSetsEditor& other);
-	FileSetsEditor& operator=(const FileSetsEditor& other);
+    //! No copying
+    FileSetsEditor(const FileSetsEditor& other);    
+    FileSetsEditor& operator=(const FileSetsEditor& other);
+
+    //! Sets the widget layout.
+    void setupLayout();
 
     //! Splitter for the fileset table and dependency graph.
     QSplitter splitter_;
     
-	//! The view to display the file sets.
-	EditableTableView view_;
+    //! The view to display the file sets.
+    EditableTableView view_;
 
-	//! The model that manages the file set objects for the view.
-	FileSetsModel model_;
+    //! The model that manages the file set objects for the view.
+    FileSetsModel model_;
 
-	//! The proxy to do the sorting.
-	QSortFilterProxyModel proxy_;
+    //! The proxy to do the sorting.
+    QSortFilterProxyModel proxy_;
 
     //! The file dependency editor.
     FileDependencyEditor dependencyEditor_;

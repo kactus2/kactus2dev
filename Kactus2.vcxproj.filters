@@ -74,9 +74,6 @@
     <Filter Include="Source Files\common\widgets\booleanComboBox">
       <UniqueIdentifier>{996434f3-7697-4fb2-9356-3df1f317ec3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\ScanProgressWidget">
-      <UniqueIdentifier>{e3ef319b-6662-4df0-a9d8-691d3d45b236}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\ParameterGroupBox">
       <UniqueIdentifier>{ad13bc80-2bc0-4bec-96bc-d47541c21bde}</UniqueIdentifier>
     </Filter>
@@ -185,9 +182,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\componentPreviewBox">
       <UniqueIdentifier>{b5d5c333-036b-4276-a7ef-a400082b82be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\ScanProgressWidget">
-      <UniqueIdentifier>{2dce8bcc-4b84-4cbc-a486-4180e81a598a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ParameterGroupBox">
       <UniqueIdentifier>{84b4b9a9-cae5-43bc-bac4-f574ebe3ece8}</UniqueIdentifier>
@@ -923,6 +917,12 @@
     <Filter Include="Source Files\common\views\EditableTreeView">
       <UniqueIdentifier>{b85af0c9-7149-4008-9c0c-40fe9e875e07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\ui">
+      <UniqueIdentifier>{8dc23ac2-3118-4a28-8b12-565ef28553d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\ui">
+      <UniqueIdentifier>{06c71fd6-81fc-4a20-bbbf-6ae3a08cfa38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -1023,9 +1023,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\booleanComboBox\booleancombobox.cpp">
       <Filter>Source Files\common\widgets\booleanComboBox</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\ScanProgressWidget\scanprogresswidget.cpp">
-      <Filter>Source Files\common\widgets\ScanProgressWidget</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\nameGroupEditor\namegroupeditor.cpp">
       <Filter>Source Files\common\widgets\nameGroupEditor</Filter>
@@ -1175,9 +1172,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SettingsDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_scanprogresswidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_readactioncombobox.cpp">
@@ -2819,9 +2813,6 @@
       <Filter>Source Files\settings</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SettingsPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PluginUtilityAdapter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp">
@@ -4468,6 +4459,21 @@
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="library\DocumentFileAccess.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\DocumentValidator.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\CommandLineParser.cpp">
+      <Filter>Source Files\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ui\ConsoleMediator.cpp">
+      <Filter>Source Files\common\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ui\GraphicalMessageMediator.cpp">
+      <Filter>Source Files\common\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4631,9 +4637,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\readActionComboBox\readactioncombobox.h">
       <Filter>Header Files\common\widgets\readActionComboBox</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\ScanProgressWidget\scanprogresswidget.h">
-      <Filter>Header Files\common\widgets\ScanProgressWidget</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\SnippetTextEdit\SnippetTextEdit.h">
       <Filter>Header Files\common\widgets\SnippetTextEdit</Filter>
@@ -6165,6 +6168,9 @@
     <CustomBuild Include="common\graphicsItems\GraphicsColumnConstants.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
+    <CustomBuild Include="Plugins\PluginSystem\IPluginUtility.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6263,9 +6269,6 @@
     <ClInclude Include="Plugins\PluginSystem\IPlugin.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\IPluginUtility.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ISourceAnalyzerPlugin.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
@@ -6309,9 +6312,6 @@
       <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\CSourceEditor\CSourceContentMatcher.h">
-      <Filter>Header Files\editors\CSourceEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\CSourceEditor\MCAPIDesignerTypes.h">
       <Filter>Header Files\editors\CSourceEditor</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteMoveCommand.h">
@@ -6769,6 +6769,27 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\InterfaceGraphics.h">
       <Filter>Header Files\designEditors\HWDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="library\DocumentFileAccess.h">
+      <Filter>Header Files\library</Filter>
+    </ClInclude>
+    <ClInclude Include="library\DocumentValidator.h">
+      <Filter>Header Files\library</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\CommandLineParser.h">
+      <Filter>Header Files\mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\CommandLineSupport.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ui\GraphicalMessageMediator.h">
+      <Filter>Header Files\common\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ui\MessageMediator.h">
+      <Filter>Header Files\common\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ui\ConsoleMediator.h">
+      <Filter>Header Files\common\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -78,12 +78,6 @@ void FileDependencyDelegate::setEditorData(QWidget* editor, QModelIndex const& i
         // Retrieve the file sets used by the item.
         QStringList fileSetNames = index.data(Qt::UserRole).toStringList();
 
-        // Update the contents of the editor accordingly.
-        if (fileSetNames.contains("[multiple]"))
-        {
-            collectionEditor->addItem("[multiple]", true);
-        }
-
         foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
         {
             collectionEditor->addItem(fileSet->name(), fileSetNames.contains(fileSet->name()));

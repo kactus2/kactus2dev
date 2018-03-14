@@ -11,6 +11,8 @@
 
 #include "MetaInstance.h"
 
+#include <common/ui/MessageMediator.h>
+
 #include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
@@ -21,12 +23,19 @@
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::MetaInstance()
 //-----------------------------------------------------------------------------
-MetaInstance::MetaInstance(QSharedPointer<ComponentInstance> componentInstance, LibraryInterface* library,
-    MessagePasser* messages, QSharedPointer<Component> component, QSharedPointer<View> activeView) :
-MetaComponent(messages, component, activeView),
-componentInstance_(componentInstance),
-library_(library),
-interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >)
+MetaInstance::MetaInstance(
+    QSharedPointer<ComponentInstance> componentInstance,
+    LibraryInterface* library,
+    MessageMediator* messages,
+    QSharedPointer<Component> component,
+    QSharedPointer<View> activeView) :
+MetaComponent(
+    messages,
+    component,
+    activeView),
+    componentInstance_(componentInstance),
+    library_(library),
+    interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >)
 {
 }
 
@@ -89,7 +98,7 @@ void MetaInstance::cullInterfaces()
 
         if (!absType)
         {
-            messages_->errorMessage(QObject::tr
+            messages_->showError(QObject::tr
                 ("Component %1: Bus interface %2 does not have an abstraction type!")
                 .arg(getComponent()->getVlnv().toString(),
                 busInterface->name()));
@@ -101,7 +110,7 @@ void MetaInstance::cullInterfaces()
 
         if (!absRef)
         {
-            messages_->errorMessage(QObject::tr
+            messages_->showError(QObject::tr
                 ("Component %1: Abstraction type of bus interface %2 does not have abstraction reference!")
                 .arg(getComponent()->getVlnv().toString(),
                 busInterface->name()));
@@ -114,7 +123,7 @@ void MetaInstance::cullInterfaces()
 
         if (!absDef)
         {
-            messages_->errorMessage(QObject::tr
+            messages_->showError(QObject::tr
                 ("Component %1: Abstraction definition for bus interface %2 was not found: %3")
                 .arg(getComponent()->getVlnv().toString(),
                 busInterface->name(),
@@ -198,7 +207,7 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
 
             if (!portAbstraction)
             {
-                messages_->errorMessage(QObject::tr("Component %1, Bus interface %2: Port abstraction"
+                messages_->showError(QObject::tr("Component %1, Bus interface %2: Port abstraction"
                     " was not found for logical port %3 at abstraction definition %4.")
                     .arg(getComponent()->getVlnv().toString(),
                     mInterface->interface_->name(),

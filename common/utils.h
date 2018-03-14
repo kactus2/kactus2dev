@@ -2,10 +2,10 @@
  *
  *  Created on: 7.2.2011
  *      Author: Antti Kamppi
- * 		filename: utils.h
- * 		
- * 		Description: This file contains declarations for general purpose 
- * 		functions that can be used in the whole software.
+ *         filename: utils.h
+ *         
+ *         Description: This file contains declarations for general purpose 
+ *         functions that can be used in the whole software.
  */
 
 #ifndef UTILS_H
@@ -16,82 +16,82 @@
 #include <QRegularExpression>
 #include <QObject>
 
-namespace Utils {
+namespace Utils
+{
+    //! Contains firmness search settings.
+    struct ImplementationOptions
+    {
+        //! If true then hardware components should be included in search.
+        bool hw_;
 
-	//! Contains firmness search settings.
-	struct ImplementationOptions {
-	
-		//! If true then hardware components should be included in search.
-		bool hw_;
+        //! If true then software components should be included in search.
+        bool sw_;
 
-		//! If true then software components should be included in search.
-		bool sw_;
+        //! If true then system components should be included in search.
+        bool system_;
 
-		//! If true then system components should be included in search.
-		bool system_;
+        /*! The default constructor
+         *
+         * Constructs struct with all options set to true.
+        */
+        ImplementationOptions();
+    };
 
-		/*! The default constructor
-		 *
-		 * Constructs struct with all options set to true.
-		*/
-		ImplementationOptions();
-	};
+    //! Contains the search settings for hierarchy.
+    struct HierarchyOptions
+    {
+        //! If true then global objects should be included in search.
+        bool flat_;
 
-	//! Contains the search settings for hierarchy.
-	struct HierarchyOptions {
+        //! If true then product objects should be included in search.
+        bool product_;
 
-		//! If true then global objects should be included in search.
-		bool flat_;
+        //! If true then board objects should be included in search.
+        bool board_;
 
-		//! If true then product objects should be included in search.
-		bool product_;
+        //! If true then chip objects should be included in search.
+        bool chip_;
 
-		//! If true then board objects should be included in search.
-		bool board_;
+        //! If true then soc objects should be included in search.
+        bool soc_;
 
-		//! If true then chip objects should be included in search.
-		bool chip_;
+        //! If true then ip objects should be included in search.
+        bool ip_;
 
-		//! If true then soc objects should be included in search.
-		bool soc_;
+        /*! The default constructor.
+         *
+         * Constructs struct with all options set to true.
+        */
+        HierarchyOptions();
+    };
 
-		//! If true then ip objects should be included in search.
-		bool ip_;
+    //! Contains the Re-usability search filters.
+    struct FirmnessOptions
+    {
+        //! If true then templates should be included in search.
+        bool templates_;
 
-		/*! The default constructor.
-		 *
-		 * Constructs struct with all options set to true.
-		*/
-		HierarchyOptions();
-	};
+        //! If true then mutables should be included in search.
+        bool mutable_;
 
-	//! Contains the Re-usability search filters.
-	struct FirmnessOptions {
+        //! If true then fixeds should be included in search.
+        bool fixed_;
 
-		//! If true then templates should be included in search.
-		bool templates_;
+        /*! The default constructor
+         *
+         * Constructs struct with all options set to true
+        */
+        FirmnessOptions();
+    };
 
-		//! If true then mutables should be included in search.
-		bool mutable_;
+    //! Contains the search options for document types.
+    struct TypeOptions
+    {
+        //! If true then components should be included in search.
+        bool components_;
 
-		//! If true then fixeds should be included in search.
-		bool fixed_;
-
-		/*! The default constructor
-		 *
-		 * Constructs struct with all options set to true
-		*/
-		FirmnessOptions();
-	};
-
-	//! Contains the search options for document types.
-	struct TypeOptions {
-
-		//! If true then components should be included in search.
-		bool components_;
-
-		//! If true then bus definitions should be included in search.
-		bool buses_;
+        //! If true then bus definitions should be included in search.
+        bool buses_;
 
         //! If true then catalogs should be included in search.
         bool catalogs_;
@@ -99,67 +99,67 @@ namespace Utils {
         //! If true then APIs/Coms should be included in search.
         bool apis_;
 
-		//! If true then other IP-Xact types should be included in search.
-		bool advanced_;
+        //! If true then other IP-Xact types should be included in search.
+        bool advanced_;
 
-		/*! The default constructor
-		 *
-		 * Constructs struct with all options set to true.
-		*/
-		TypeOptions();
-	};
+        /*! The default constructor
+         *
+         * Constructs struct with all options set to true.
+        */
+        TypeOptions();
+    };
 
     struct FilterOptions
     {
-	    //! Contains Type settings.
+        //! Contains Type settings.
         Utils::TypeOptions type;
 
-	    //! Contains Implementation settings.
+        //! Contains Implementation settings.
         Utils::ImplementationOptions implementation;
 
-	    //! Contains Hierarchy settings.
+        //! Contains Hierarchy settings.
         Utils::HierarchyOptions hierarchy;
 
-	    //! Contains Firmness settings.
+        //! Contains Firmness settings.
         Utils::FirmnessOptions firmness;
 
-		/*! The default constructor
-		 *
-		 * Constructs struct with all options set to true.
-		*/
+        /*! The default constructor
+         *
+         * Constructs struct with all options set to true.
+        */
         FilterOptions() : type(), implementation(), hierarchy(), firmness() {};
     };
 
 
-	/*! Convert a string to unsigned int format.
-	 * 
-	 * The multiples in the string are converted as following:
-	 * k/K = 2^10
-	 * M   = 2^20
-	 * G   = 2^30
-	 * T   = 2^40
-	 * P   = 2^50
-	 * 
-	 * \param str The string to convert.
-	 *
-	 * \return The result of the conversion.
-	*/
-	KACTUS2_API quint64 str2Uint(const QString& str);
+    /*! Convert a string to unsigned int format.
+     * 
+     * The multiples in the string are converted as following:
+     * k/K = 2^10
+     * M   = 2^20
+     * G   = 2^30
+     * T   = 2^40
+     * P   = 2^50
+     * 
+     * \param str The string to convert.
+     *
+     * \return The result of the conversion.
+    */
+    KACTUS2_API quint64 str2Uint(const QString& str);
 
-	/*! Convert a string to int format.
-	 * 
-	 * The multiples in the string are converted as following:
-	 * k/K = 2^10
-	 * M   = 2^20
-	 * G   = 2^30
-	 * T   = 2^40
-	 * P   = 2^50
-	 * 
-	 * \param str The string to convert.
-	 *
-	 * \return The result of the conversion.
-	*/
-	KACTUS2_API qint64 str2Int(const QString& str);
+    /*! Convert a string to int format.
+     * 
+     * The multiples in the string are converted as following:
+     * k/K = 2^10
+     * M   = 2^20
+     * G   = 2^30
+     * T   = 2^40
+     * P   = 2^50
+     * 
+     * \param str The string to convert.
+     *
+     * \return The result of the conversion.
+    */
+    KACTUS2_API qint64 str2Int(const QString& str);
 
     //! Regular expression to validate URLs.
     const QRegularExpression URL_VALIDITY_REG_EXP = QRegularExpression(

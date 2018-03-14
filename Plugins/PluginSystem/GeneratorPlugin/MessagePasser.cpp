@@ -28,7 +28,7 @@ MessagePasser::~MessagePasser()
 //-----------------------------------------------------------------------------
 // Function: MessagePasser::sendError()
 //-----------------------------------------------------------------------------
-void MessagePasser::sendError(QString const& message) const
+void MessagePasser::showError(QString const& message) const
 {
     emit errorMessage(message);
 }
@@ -36,7 +36,23 @@ void MessagePasser::sendError(QString const& message) const
 //-----------------------------------------------------------------------------
 // Function: MessagePasser::sendNotice()
 //-----------------------------------------------------------------------------
-void MessagePasser::sendNotice(QString const& message) const
+void MessagePasser::showMessage(QString const& message) const
 {
     emit noticeMessage(message);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MessagePasser::showFailure()
+//-----------------------------------------------------------------------------
+void MessagePasser::showFailure(QString const& error) const
+{
+    emit errorMessage(error);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MessagePasser::showStatusMessage()
+//-----------------------------------------------------------------------------
+void MessagePasser::showStatusMessage(QString const& status) const
+{
+
 }

@@ -13,6 +13,8 @@
 #define LIBRARYWIDGET_H
 
 #include <QWidget>
+#include <QStatusBar>
+#include <QProgressBar>
 
 #include <common/utils.h>
 
@@ -22,6 +24,7 @@ class VLNVDialer;
 class HierarchyWidget;
 class LibraryFilter;
 class LibraryTreeWidget;
+class MessageMediator;
 
 //-----------------------------------------------------------------------------
 //! Widget for holding all IP-XACT library widgets.
@@ -36,7 +39,7 @@ public:
      *      @param [in] library    The IP-XACT library interface.
      *      @param [in] parent     The parent widget.
     */
-    LibraryWidget( QWidget* parent = 0);
+    LibraryWidget(LibraryHandler* library, MessageMediator* messageChannel, QWidget* parent = 0);
 
     //! The destructor.
     virtual ~LibraryWidget();
@@ -58,6 +61,10 @@ public:
      *      @return     The current library filters.
     */
     Utils::FilterOptions getFilters() const;
+
+private slots:
+
+    void statusMessage(QString const& message);
 
 private:
     //! No copying
@@ -90,6 +97,9 @@ private:
 
     //! The widget containing the library items in a tree-like view.
     LibraryTreeWidget* treeWidget_;
+
+    QStatusBar* statusBar_;
+
 };
 
 #endif // LIBRARYWIDGET_H

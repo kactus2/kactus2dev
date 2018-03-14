@@ -836,51 +836,6 @@ void Component::setSourceDirectories(QStringList const& sourceDirs)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Component::getIgnoredFiles()
-//-----------------------------------------------------------------------------
-QStringList Component::getIgnoredFiles() const
-{
-    QList<QSharedPointer<VendorExtension> > ignoredFileExtensions =
-        getGroupedExtensionsByType(QStringLiteral("kactus2:ignoredFiles"), QStringLiteral("kactus2:ignoredFile"));
-
-    QStringList ignoredFiles;
-    foreach (QSharedPointer<VendorExtension> extension, ignoredFileExtensions)
-    {
-        QSharedPointer<Kactus2Value> ignoredFile = extension.dynamicCast<Kactus2Value>();
-        ignoredFiles.append(ignoredFile->value());
-    }
-
-    return ignoredFiles;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::setIgnoredFiles()
-//-----------------------------------------------------------------------------
-void Component::setIgnoredFiles(QStringList const& ignoredFiles)
-{
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:ignoredFiles"))
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
-
-    if (!ignoredFiles.isEmpty())
-    {
-        QSharedPointer<Kactus2Group> newIgnoredFilesGroup (new Kactus2Group(QStringLiteral("kactus2:ignoredFiles")));
-        foreach (QString ignoredFile, ignoredFiles)
-        {
-            QSharedPointer<Kactus2Value> ignoredFileExtension (
-                new Kactus2Value(QStringLiteral("kactus2:ignoredFile"), ignoredFile));
-            newIgnoredFilesGroup->addToGroup(ignoredFileExtension);
-        }
-        getVendorExtensions()->append(newIgnoredFilesGroup);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: Component::getAuthor()
 //-----------------------------------------------------------------------------
 QString Component::getAuthor() const

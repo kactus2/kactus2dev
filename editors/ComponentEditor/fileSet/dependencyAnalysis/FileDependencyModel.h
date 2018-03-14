@@ -295,6 +295,15 @@ private:
     void analyze(FileDependencyItem* fileItem);
 
     /*!
+     *  Calculates an Md5 sum for a given file. Changes in Md5 indicate change in file content.
+     *
+     *      @param [in] absPath   Absolute path to the file to calculate Md5 for.
+     *
+     *      @return The calculated Md5 sum.
+     */
+    QString calculateMd5forFile(QString const& absPath) const;
+
+    /*!
      *  Searches for a dependency between the given files in the given container.
      *
      *      @param [in] dependencies  The list of dependencies.

@@ -19,6 +19,8 @@
 #include <library/LibraryWidget.h>
 #include <library/LibraryHandler.h>
 
+#include <common/ui/GraphicalMessageMediator.h>
+
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
@@ -49,8 +51,8 @@
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::DockWidgetHandler()
 //-----------------------------------------------------------------------------
-DockWidgetHandler::DockWidgetHandler(QMainWindow* parent):
-libraryHandler_(0),
+DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, QMainWindow* parent):
+libraryHandler_(library),
 libraryDock_(0),
 libraryWidget_(0),
 previewBox_(0),
@@ -81,7 +83,8 @@ connectionEditor_(0),
 connectionDock_(0),
 helpWnd_(0),
 visibilities_(),
-mainWindow_(parent)
+mainWindow_(parent),
+messageChannel_(messageChannel)
 {
 
 }
@@ -135,13 +138,19 @@ void DockWidgetHandler::setupMessageConsole()
     consoleDock_->setWidget(console_);
     mainWindow_->addDockWidget(Qt::BottomDockWidgetArea, consoleDock_);
 
+    GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel_);
+    if (guiChannel)
+    {
+        guiChannel->setMessageConsole(console_);
+    }
+
     connect(this, SIGNAL(errorMessage(const QString&)),
         console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
     connect(this, SIGNAL(noticeMessage(const QString&)),
         console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+
     // Force console visible on new messages.
-    connect(this, SIGNAL(errorMessage(const QString&)), consoleDock_, SLOT(show()), Qt::UniqueConnection);
-    connect(this, SIGNAL(noticeMessage(const QString&)), consoleDock_, SLOT(show()), Qt::UniqueConnection);
+    connect(this, SIGNAL(errorMessage(const QString&)), consoleDock_, SLOT(show()), Qt::UniqueConnection);    
 }
 
 //-----------------------------------------------------------------------------
@@ -195,8 +204,7 @@ void DockWidgetHandler::setupLibraryDock()
 
 
     // create a container widget for dialer and library display
-    libraryWidget_ = new LibraryWidget(mainWindow_);
-    libraryHandler_ = libraryWidget_->getLibraryHandler();
+    libraryWidget_ = new LibraryWidget(libraryHandler_, messageChannel_, mainWindow_);
 
     libraryDock_->setWidget(libraryWidget_);
 

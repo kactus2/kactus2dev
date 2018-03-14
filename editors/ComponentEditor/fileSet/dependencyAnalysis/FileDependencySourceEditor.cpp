@@ -23,7 +23,7 @@ FileDependencySourceEditor::FileDependencySourceEditor(QString const& basePath, 
 DirListManager(tr("File set source directories"), basePath, parent),
     basePath_(basePath)
 {   
-    if (!basePath_.endsWith(QLatin1Char('/')))
+    if (basePath_.endsWith(QLatin1Char('/')) == false)
     {
         basePath_.append(QLatin1Char('/'));
     }
@@ -77,10 +77,10 @@ void FileDependencySourceEditor::addSource()
 
     if (newDirectory.isEmpty())
     {
-        newDirectory = ".";
+        newDirectory = QStringLiteral(".");
     }
 
-    if (!checkIfSelectedDirectoryHasBeenPreviouslyAdded(newDirectory))
+    if (checkIfSelectedDirectoryHasBeenPreviouslyAdded(newDirectory) == false)
     {
         removeUnnecessaryDirectories(newDirectory);
 
@@ -132,7 +132,7 @@ void FileDependencySourceEditor::removeUnnecessaryDirectories(QString const& new
     // Checking if unnecessary directories exist in the list.
     for (int i = 0; i < oldDirectoriesAbs.count(); ++i)
     {
-        if (!oldDirectoriesAbs.at(i).startsWith(newDirAbs))
+        if (oldDirectoriesAbs.at(i).startsWith(newDirAbs) == false)
         {
             tempDirectoryList.append(items().at(i));
         }

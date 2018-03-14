@@ -11,6 +11,8 @@
 
 #include "MetaDesign.h"
 
+#include <common/ui/MessageMediator.h>
+
 #include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
@@ -28,7 +30,7 @@
 // Function: MetaDesign::MetaDesign()
 //-----------------------------------------------------------------------------
 MetaDesign::MetaDesign(LibraryInterface* library,
-    MessagePasser* messages,
+    MessageMediator* messages,
     QSharedPointer<Design const> design,
     QSharedPointer<DesignInstantiation const> designInstantiation,
     QSharedPointer<DesignConfiguration const> designConf,
@@ -120,7 +122,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
          // Must not have too many.
          if (countOfSubDesigns >= MAXIMUM_SUBDESIGNS)
          {
-             input.messages->errorMessage(QObject::tr("Hit the limit: %1 DESIGNS IN ONE HIERARCHY!!!")
+             input.messages->showError(QObject::tr("Exceeded maximum number of designs in one hierarchy: %1.")
                  .arg(MAXIMUM_SUBDESIGNS));
              return retval;
          }
@@ -260,7 +262,7 @@ void MetaDesign::cullInstances()
 
         if (!component)
         {
-            messages_->errorMessage(QObject::tr("Design %1: Component of instance %2 was not found: %3")
+            messages_->showError(QObject::tr("Design %1: Component of instance %2 was not found: %3")
                 .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
             continue;   
         }
@@ -283,7 +285,7 @@ void MetaDesign::cullInstances()
             }
             else
             {
-                messages_->errorMessage(QObject::tr("Design %1: Instance %2 did not have specified active view, "
+                messages_->showError(QObject::tr("Design %1: Instance %2 did not have specified active view, "
                     "and its component %3 has multiple possible views, so no active view was chosen.")
                     .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
             }
@@ -416,7 +418,7 @@ void MetaDesign::parseInterconnections()
 
             if (!mInstance)
             {
-                messages_->errorMessage(QObject::tr("Design %1: Instance %2 referred by interconnection %3"
+                messages_->showError(QObject::tr("Design %1: Instance %2 referred by interconnection %3"
                     " does not exist.")
                     .arg(design_->getVlnv().toString(),
                     connectionInterface->getComponentReference(),
@@ -430,7 +432,7 @@ void MetaDesign::parseInterconnections()
 
             if (!mInterface)
             {
-                messages_->errorMessage(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3"
+                messages_->showError(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3"
                     " does not exist within component %4.")
                     .arg(design_->getVlnv().toString(),
                     connectionInterface->getBusReference(),
@@ -454,7 +456,7 @@ void MetaDesign::parseInterconnections()
 
             if (!mInterface)
             {
-                messages_->errorMessage(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3"
+                messages_->showError(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3"
                     " does not exist within component %4.")
                     .arg(design_->getVlnv().toString(),
                     connectionInterface->getBusReference(),
@@ -472,7 +474,7 @@ void MetaDesign::parseInterconnections()
         // If not enough interfaces are in the interconnect, drop it.
         if (foundInterInterfaces.size() + foundHierInterfaces.size() < 2)
         {
-            messages_->errorMessage(QObject::tr("Design %1: No bus interfaces were found for ad-hoc"
+            messages_->showError(QObject::tr("Design %1: No bus interfaces were found for ad-hoc"
                 " interconnection %2.")
                 .arg(design_->getVlnv().toString(),
                 connection->name()));
@@ -604,7 +606,7 @@ void MetaDesign::parseAdHocs()
         // If not enough ports are in the connection, drop it.
         if (foundPorts.size() < 1)
         {
-            messages_->errorMessage(QObject::tr("Design %1: No ports were found for ad-hoc connection %2.")
+            messages_->showError(QObject::tr("Design %1: No ports were found for ad-hoc connection %2.")
                 .arg(design_->getVlnv().toString(),
                 connection->name()));
             continue;
@@ -668,7 +670,7 @@ void MetaDesign::parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
     {
         if (defaultValue.isEmpty() )
         {
-            messages_->errorMessage(QObject::tr
+            messages_->showError(QObject::tr
                 ("Design %1: Ad-hoc connection %2 needs either more ports or a tie-off.")
                 .arg(design_->getVlnv().toString(),
                 connection->name()));
@@ -746,7 +748,7 @@ void MetaDesign::findHierarchicalPortsInAdHoc(QSharedPointer<AdHocConnection> co
 
         if (!mPort)
         {
-            messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3"
+            messages_->showError(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3"
                 " does not exist within component %4.")
                 .arg(design_->getVlnv().toString(),
                 portRef->getPortRef(),
@@ -777,7 +779,7 @@ void MetaDesign::findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
 
         if (!mInstance)
         {
-            messages_->errorMessage(QObject::tr("Design %1: Instance %2 referred by ad-hoc connection %3 does not exist.")
+            messages_->showError(QObject::tr("Design %1: Instance %2 referred by ad-hoc connection %3 does not exist.")
                 .arg(design_->getVlnv().toString(),
                 portRef->getComponentRef(),
                 connection->name()));
@@ -789,7 +791,7 @@ void MetaDesign::findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
 
         if (!mPort)
         {
-            messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3 does"
+            messages_->showError(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3 does"
                 " not exist within component %4.")
                 .arg(design_->getVlnv().toString(),
                 portRef->getPortRef(),
@@ -964,7 +966,7 @@ QSharedPointer<DesignConfiguration> MetaDesign::findDesignConfigurationFromInsan
         // If instantiation exists, the referred document must exist!
         if (!referredDesignConfiguration)
         {
-            messages_->errorMessage(QObject::tr
+            messages_->showError(QObject::tr
                 ("Design %1: Design configuration referred by instantiation did not exist: %2")
                 .arg(design_->getVlnv().toString(),
                 disg->getDesignConfigurationReference()->toString()));
@@ -975,7 +977,7 @@ QSharedPointer<DesignConfiguration> MetaDesign::findDesignConfigurationFromInsan
             // If the design is already found, check for discrepancy.
             if (referredDesignConfiguration->getDesignRef() != subDesign->getVlnv())
             {
-                messages_->errorMessage(QObject::tr
+                messages_->showError(QObject::tr
                     ("Design %1: Design configuration %2 of sub design %3 refers to different VLNV: %4")
                     .arg(design_->getVlnv().toString(),
                     referredDesignConfiguration->getVlnv().toString(),
@@ -1008,7 +1010,7 @@ QSharedPointer<Design> MetaDesign::findDesignFromInstantiation(QSharedPointer<De
         // If instantiation exists, the referred document must exist!
         if (!referredDesign)
         {
-            messages_->errorMessage(QObject::tr
+            messages_->showError(QObject::tr
                 ("Design %1: Subdesign referred by instantiation did not exist: %2")
                 .arg(design_->getVlnv().toString(),
                 dis->getDesignReference()->toString()));

@@ -15,9 +15,9 @@
 
 #include <IPXACTmodels/XmlUtils.h>
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QDir>
-
+#include <QPluginLoader>
 
 //-----------------------------------------------------------------------------
 // Function: PluginManager::~PluginManager()
@@ -44,7 +44,8 @@ QList<IPlugin*> PluginManager::getActivePlugins() const
 
     foreach (IPlugin* plugin, plugins_)
     {
-        if (settings.value("PluginSettings/" + XmlUtils::removeWhiteSpace(plugin->getName()) + "/Active", true).toBool())
+        if (settings.value(QStringLiteral("PluginSettings/") + XmlUtils::removeWhiteSpace(plugin->getName()) + 
+            QStringLiteral("/Active"), true).toBool())
         {
             activePlugins.append(plugin);
         }
@@ -70,16 +71,17 @@ QList<IPlugin*> PluginManager::findPluginsInPaths(QStringList const& pluginPaths
     QList<IPlugin*> plugins;
 
     QSettings settings;
-    settings.beginGroup("PluginSettings");
+    settings.beginGroup(QStringLiteral("PluginSettings"));
 
-    foreach(QString dirName, pluginPaths)
+    foreach (QString const& dirName, pluginPaths)
     {
-        if (QFileInfo(dirName).isRelative())
+        QDir pluginDirectory(dirName);
+        if (pluginDirectory.isRelative())
         {
-            dirName = QApplication::applicationDirPath() + "/" + dirName;
+            pluginDirectory.setPath(QCoreApplication::applicationDirPath() + QLatin1Char('/') + dirName);
         }        
 
-        foreach (QFileInfo const& fileInfo, QDir(dirName).entryInfoList(QDir::Files))
+        foreach (QFileInfo const& fileInfo, pluginDirectory.entryInfoList(QDir::Files))
         {
             QPluginLoader loader(fileInfo.absoluteFilePath());
             IPlugin* plugin = qobject_cast<IPlugin*>(loader.instance());

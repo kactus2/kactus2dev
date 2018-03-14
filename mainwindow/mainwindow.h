@@ -36,6 +36,7 @@ class GraphicsConnection;
 class Ribbon;
 class RibbonGroup;
 class DockWidgetHandler;
+class MessageMediator;
 
 //-----------------------------------------------------------------------------
 //! The main window of Kactus2.
@@ -49,9 +50,10 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] library   The used IP-XACT library instance.
      *      @param [in] parent    The parent widget.
      */
-    MainWindow(QWidget *parent = 0);
+    MainWindow(LibraryHandler* library, MessageMediator* messageChannel, QWidget *parent = 0);
     
 	/*!
      *  The destructor.
@@ -851,9 +853,8 @@ private:
 
     //! The name of the currently active workspace.
     QString curWorkspaceName_;
-
-    //! The plugin manager.
-    QSharedPointer<PluginManager> pluginMgr_;
+    
+    MessageMediator* messageChannel_;
 };
 
 #endif // MAINWINDOW_H

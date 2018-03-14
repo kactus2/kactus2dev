@@ -61,6 +61,7 @@
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+// #include <Plugins/PluginSystem/ConsolePluginUtility.h>
 
 #include <settings/SettingsDialog.h>
 
@@ -113,13 +114,13 @@
 #include <QDateTime>
 
 //-----------------------------------------------------------------------------
-// Function: mainwindow::MainWindow()
+// Function: MainWindow::MainWindow()
 //-----------------------------------------------------------------------------
-MainWindow::MainWindow(QWidget *parent):
+MainWindow::MainWindow(LibraryHandler* library, MessageMediator* messageChannel, QWidget *parent):
 QMainWindow(parent),
-libraryHandler_(0),
+libraryHandler_(library),
 designTabs_(0),
-dockHandler_(new DockWidgetHandler(this)),
+dockHandler_(new DockWidgetHandler(library, messageChannel, this)),
 ribbon_(0),
 actNew_(0),
 actSave_(0),
@@ -174,10 +175,9 @@ actionFilterUnconnectedMemoryItems_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
-curWorkspaceName_("Default")
-{
-    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
-
+curWorkspaceName_("Default"),
+messageChannel_(messageChannel)
+{    
     setWindowTitle(QCoreApplication::applicationName());
     setWindowIcon(QIcon(":icons/common/graphics/appicon.png"));
 
@@ -201,11 +201,6 @@ curWorkspaceName_("Default")
     dockHandler_->setupDockWidgets();
     connectDockHandler();
     setupAndConnectLibraryHandler();
-
-    // Load plugins.
-
-
-
 
     // some actions need the editors so set them up before the actions
     setupActions();
@@ -233,10 +228,9 @@ MainWindow::~MainWindow()
 //-----------------------------------------------------------------------------
 void MainWindow::onLibrarySearch()
 {
-    if (libraryHandler_)
-    {
-        libraryHandler_->searchForIPXactFiles();
-    }
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    libraryHandler_->searchForIPXactFiles();
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------
@@ -949,9 +943,6 @@ void MainWindow::connectDockHandler()
 //-----------------------------------------------------------------------------
 void MainWindow::setupAndConnectLibraryHandler()
 {
-//     libraryHandler_ = libraryWidget_->getLibraryHandler();
-    libraryHandler_ = dockHandler_->getLibraryHandler();
-
     connect(libraryHandler_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(noticeMessage(const QString&)),
@@ -1273,12 +1264,7 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
     Q_ASSERT(plugin != 0);
 
-    PluginUtilityAdapter adapter(libraryHandler_, this, VersionHelper::createVersionString());
-
-    connect(&adapter, SIGNAL(errorMessage(QString const&)),
-        this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
-    connect(&adapter, SIGNAL(infoMessage(QString const&)),
-        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+    PluginUtilityAdapter adapter(libraryHandler_, messageChannel_, VersionHelper::createVersionString(), this);
 
     // Run generator.
     plugin->runGenerator(&adapter, component, design, designConfiguration);

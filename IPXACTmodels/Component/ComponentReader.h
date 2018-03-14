@@ -254,6 +254,15 @@ private:
     void parseApiInterfaces(QDomNode const& interfaceNode, QSharedPointer<Component> newComponent) const;
 
     /*!
+     *  Reades the source directories for file sets.
+     *
+     *      @param [in] singleExtensionNode     XML description of the file source directories.
+     *      @param [in] newComponent            The new component.
+     */
+    void parseFilesetSourceDirectories(QDomNode const& singleExtensionNode, 
+        QSharedPointer<Component> newComponent) const;
+
+    /*!
      *  Reads the file dependency extensions.
      *
      *      @param [in] fileNode        XML description of the file dependencies.
@@ -269,6 +278,7 @@ private:
      */
     void parseAuthor(QDomNode const& authorNode, QSharedPointer<Component> newComponent) const;
     
+
 };
 
 #endif // COMPONENTREADER_H

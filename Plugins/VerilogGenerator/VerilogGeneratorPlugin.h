@@ -15,12 +15,17 @@
 #include "veriloggeneratorplugin_global.h"
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/CommandLineSupport.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
+
+#include <QCommandLineOption>
+#include <QCommandLineParser>
 
 //-----------------------------------------------------------------------------
 //! Plugin for structural Verilog generation.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT VerilogGeneratorPlugin : public QObject, public IGeneratorPlugin
+class VERILOGGENERATORPLUGIN_EXPORT VerilogGeneratorPlugin : public QObject, public IGeneratorPlugin, 
+    public CommandLineSupport
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.veriloggeneratorplugin" FILE "veriloggeneratorplugin.json")
@@ -115,6 +120,13 @@ public:
         QSharedPointer<Design> design,
         QSharedPointer<DesignConfiguration> designConfiguration);
 
+    virtual QString getCommand() const;
+    
+    virtual void process(QStringList const& arguments, IPluginUtility* utility);
+    
+    QCommandLineParser* createCommandParser();
+
+   
 private:
 	// Disable copying.
 	VerilogGeneratorPlugin(VerilogGeneratorPlugin const& rhs);

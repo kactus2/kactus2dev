@@ -36,18 +36,19 @@ protected:
     //! Draws the contents of the splash screen.
     virtual void drawContents(QPainter *painter);
 
-	//! Event handler for mouse clicks
-	virtual void mousePressEvent(QMouseEvent* event);
+    //! Event handler for mouse clicks
+    virtual void mousePressEvent(QMouseEvent* event);
 
-	//! Handler for key press events
-	virtual void keyPressEvent(QKeyEvent* event);
+    //! Handler for key press events
+    virtual void keyPressEvent(QKeyEvent* event);
 
 private:
     // Disable copying.
     SplashScreen(SplashScreen const& rhs);
     SplashScreen& operator=(SplashScreen const& rhs);
 
-	QString versionString_;
+    //! Current version to display.
+    QString versionString_;
 };
 
 //-----------------------------------------------------------------------------

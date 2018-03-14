@@ -39,7 +39,7 @@ ItemEditor::~ItemEditor()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> ItemEditor::component() const
 {
-	return component_;
+    return component_;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,5 +64,5 @@ void ItemEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 LibraryInterface* ItemEditor::handler() const
 {
-	return handler_;
+    return handler_;
 }

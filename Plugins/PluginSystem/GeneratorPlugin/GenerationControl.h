@@ -144,8 +144,7 @@ private:
 
     //! The plugin utility to use.
     LibraryInterface* library_;
-    //! The messages.
-    QSharedPointer<MessagePasser> messages_;
+
     //! The language dependent factory for this generation session.
     IWriterFactory* factory_;
     //! Has the input objects for the generation.

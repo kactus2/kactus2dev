@@ -19,6 +19,7 @@
 #include <QTextStream>
 
 class ExpressionFormatter;
+class MessageMediator;
 
 //-----------------------------------------------------------------------------
 // Class used to parse relevant information from IP-XACT component for HDL generation.
@@ -34,7 +35,7 @@ public:
 	 *      @param [in] component           The instantiated component.
      *      @param [in] activeView          The active view for the component. May be null
 	 */
-    MetaComponent(MessagePasser* messages,
+    MetaComponent(MessageMediator* messages,
         QSharedPointer<Component> component,
         QSharedPointer<View> activeView);
 
@@ -108,7 +109,7 @@ protected:
     void cullMetaParameters();
 
     //! The messages.
-    MessagePasser* messages_;
+    MessageMediator* messages_;
 
 private:
 	// Disable copying.

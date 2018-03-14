@@ -16,9 +16,9 @@
 #include <QBitmap>
 
 //-----------------------------------------------------------------------------
-// Function: SplashScreen()
+// Function: SplashScreen::SplashScreen()
 //-----------------------------------------------------------------------------
-SplashScreen::SplashScreen(QString const& versionString, QWidget* parent /*= 0*/) : 
+SplashScreen::SplashScreen(QString const& versionString, QWidget* parent /*= 0*/):
 QSplashScreen(parent, QPixmap(":/common/graphics/splash.png")),
     versionString_(versionString)
 {
@@ -26,7 +26,7 @@ QSplashScreen(parent, QPixmap(":/common/graphics/splash.png")),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~SplashScreen()
+// Function: SplashScreen::~SplashScreen()
 //-----------------------------------------------------------------------------
 SplashScreen::~SplashScreen()
 {
@@ -47,31 +47,39 @@ void SplashScreen::drawContents(QPainter *painter)
     painter->setFont(font);
 
     painter->drawText(QRectF(5, 220, 590, 35), Qt::AlignCenter,
-		tr("Version %1\nQt version %2")
-		.arg(versionString_, qVersion()));
+        tr("Version %1\nQt version %2")
+        .arg(versionString_, qVersion()));
 
     // Draw the other information.
     font.setPixelSize(12);
     font.setBold(false);
-    painter->setFont(font);    
+    painter->setFont(font);
  
     painter->drawText(QRectF(5, 240, 590, 160), Qt::AlignCenter,
-        QString::fromLatin1("Copyright 2010-2018 Tampere University of Technology,\n" 
+        QString::fromLatin1("Copyright 2010-2018 Tampere University of Technology,\n"
                             "Korkeakoulunkatu 10, FI-33720 Tampere, Finland\n"
                             "http://funbase.cs.tut.fi\n"
-                            "kactus2@cs.tut.fi\n" 
+                            "kactus2@cs.tut.fi\n"
                             "Kactus2 is available for dual licensing.\n"
                             "This software is licensed under the General Public License Version 2.\n"
                             "Contributors: Antti Kamppi, Esko Pekkarinen, Janne Virtanen, Joni-Matti Määttä, \n"
                             "Juho Järvinen, Lauri Matilainen, Mikko Teuho, Timo D. Hämäläinen"));
 }
 
-void SplashScreen::mousePressEvent( QMouseEvent* event ) {
-	event->accept();
-	close();
+//-----------------------------------------------------------------------------
+// Function: SplashScreen::mousePressEvent()
+//-----------------------------------------------------------------------------
+void SplashScreen::mousePressEvent( QMouseEvent* event )
+{
+    event->accept();
+    close();
 }
 
-void SplashScreen::keyPressEvent(QKeyEvent* event) {
-	event->accept();
-	close();
+//-----------------------------------------------------------------------------
+// Function: SplashScreen::keyPressEvent()
+//-----------------------------------------------------------------------------
+void SplashScreen::keyPressEvent(QKeyEvent* event)
+{
+    event->accept();
+    close();
 }
