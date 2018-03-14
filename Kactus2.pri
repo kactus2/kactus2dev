@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./designEditors/HWDesign/InterfaceGraphics.h \
-    ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./VersionHelper.h \
     ./common/NameGenerationPolicy.h \
     ./common/Global.h \
@@ -76,6 +75,7 @@ HEADERS += ./designEditors/HWDesign/InterfaceGraphics.h \
     ./common/graphicsItems/GraphicsColumnUndoCommands.h \
     ./common/graphicsItems/GraphicsItemTypes.h \
     ./common/graphicsItems/IGraphicsItemStack.h \
+    ./common/graphicsItems/GraphicsColumnConstants.h \
     ./common/graphicsItems/visualizeritem.h \
     ./common/graphicsItems/GraphicsRectButton.h \
     ./common/graphicsItems/GraphicsLineEdit.h \
@@ -590,7 +590,6 @@ HEADERS += ./designEditors/HWDesign/InterfaceGraphics.h \
     ./designEditors/SystemDesign/SWComponentItem.h \
     ./designEditors/SystemDesign/SWConnectionEndpoint.h \
     ./designEditors/SystemDesign/SWInterfaceItem.h \
-    ./designEditors/SystemDesign/SWOffPageConnectorItem.h \
     ./designEditors/SystemDesign/SWPortItem.h \
     ./designEditors/SystemDesign/SystemColumn.h \
     ./designEditors/SystemDesign/SystemComponentItem.h \
@@ -645,12 +644,14 @@ HEADERS += ./designEditors/HWDesign/InterfaceGraphics.h \
     ./designEditors/MemoryDesigner/MemoryMapGraphicsItem.h \
     ./designEditors/MemoryDesigner/RegisterGraphicsItem.h \
     ./designEditors/MemoryDesigner/MemoryColumn.h \
+    ./designEditors/HWDesign/InterfaceGraphics.h \
     ./designEditors/HWDesign/AdHocEnabled.h \
     ./designEditors/HWDesign/HWAddCommands.h \
     ./designEditors/HWDesign/HWMoveCommands.h \
     ./designEditors/HWDesign/PortmapDialog.h \
     ./designEditors/HWDesign/AdHocConnectionItem.h \
     ./designEditors/HWDesign/AdHocItem.h \
+    ./designEditors/HWDesign/BusInterfaceEndPoint.h \
     ./designEditors/HWDesign/AdHocInterfaceItem.h \
     ./designEditors/HWDesign/AdHocPortItem.h \
     ./designEditors/HWDesign/BusInterfaceDialog.h \
@@ -754,9 +755,7 @@ HEADERS += ./designEditors/HWDesign/InterfaceGraphics.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/HWDesign/BusInterfaceEndPoint.h \
-    ./common/graphicsItems/GraphicsColumnConstants.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1258,6 +1257,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/HWDesign/AdHocItem.cpp \
     ./designEditors/HWDesign/AdHocPortItem.cpp \
     ./designEditors/HWDesign/BusInterfaceDialog.cpp \
+    ./designEditors/HWDesign/BusInterfaceEndPoint.cpp \
     ./designEditors/HWDesign/BusInterfaceItem.cpp \
     ./designEditors/HWDesign/BusPortItem.cpp \
     ./designEditors/HWDesign/HWAddCommands.cpp \
@@ -1342,7 +1342,6 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/SystemDesign/SWComponentItem.cpp \
     ./designEditors/SystemDesign/SWConnectionEndpoint.cpp \
     ./designEditors/SystemDesign/SWInterfaceItem.cpp \
-    ./designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
     ./designEditors/SystemDesign/SWPortItem.cpp \
     ./designEditors/SystemDesign/SystemColumn.cpp \
     ./designEditors/SystemDesign/SystemComponentItem.cpp \
@@ -1414,6 +1413,5 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./designEditors/HWDesign/BusInterfaceEndPoint.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
 RESOURCES += kactus.qrc

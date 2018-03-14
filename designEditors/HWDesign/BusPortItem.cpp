@@ -36,8 +36,7 @@
 // Function: BusPortItem::BusPortItem()
 //-----------------------------------------------------------------------------
 BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library, HWComponentItem* parent):
-BusInterfaceEndPoint(busIf, parent),
-parentComponentItem_(parent),
+BusInterfaceEndPoint(busIf, parent->componentModel(), parent),
 library_(library)
 {
     Q_ASSERT_X(busIf, "BusPortItem constructor", "Null BusInterface pointer given as parameter");
@@ -65,85 +64,56 @@ void BusPortItem::updateName(QString const& previousName, QString const& newName
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::onConnect()
+// Function: BusPortItem::createMoveCommandForClashedItem()
 //-----------------------------------------------------------------------------
-bool BusPortItem::onConnect(ConnectionEndpoint const* other)
+void BusPortItem::createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
+    DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand)
 {
-    return other != 0;
+    if (endPoint)
+    {
+        HWConnectionEndpoint* hwEndPoint = dynamic_cast<HWConnectionEndpoint*>(endPoint);
+        if (hwEndPoint && endPoint->pos() != endPointPosition)
+        {
+            new PortMoveCommand(hwEndPoint, endPointPosition, diagram, parentCommand.data());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::onDisconnect()
+// Function: BusPortItem::canConnectToInterface()
 //-----------------------------------------------------------------------------
-void BusPortItem::onDisconnect(ConnectionEndpoint const*)
+bool BusPortItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const
 {
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: isConnectionValid()
-//-----------------------------------------------------------------------------
-bool BusPortItem::isConnectionValid(ConnectionEndpoint const* other) const
-{
-    if (!HWConnectionEndpoint::isConnectionValid(other) || !other->isBus())
+    QSharedPointer<BusInterface> otherInterface = otherEndPoint->getBusInterface();
+    if (otherInterface)
     {
-        return false;
-    }
+        if (otherEndPoint->isHierarchical())
+        {
+            return (otherInterface->getInterfaceMode() == getBusInterface()->getInterfaceMode() ||
+                otherInterface->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
+                !getBusInterface()->getBusType().isValid());
+        }
 
-    QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
+        // If only one port has a bus definition defined at most, then the end points can be connected.
+        else if (!(getBusInterface()->getBusType().isValid() && otherInterface->getBusType().isValid()))
+        {
+            return true;
+        }
 
-    // If the other end point is hierarchical, we can connect to it if the interface mode
-    // is the same or either of the end point is undefined.
-    if (other->isHierarchical())
-    {
-        return (otherBusIf->getInterfaceMode() == getBusInterface()->getInterfaceMode() ||
-            other->getBusInterface()->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
-            !getBusInterface()->getBusType().isValid());
-    }
+        // Otherwise make sure that the bus and abstraction definitions are of the same type.
+        else if (otherInterface->getBusType() == getBusInterface()->getBusType())
+        {
+            QList<General::InterfaceMode> compatibleModes = getOpposingModes(getBusInterface());
+            compatibleModes.append(General::SYSTEM);
 
-    // If only one port has a bus definition defined at most, then the end points can be connected.
-    else if (!(getBusInterface()->getBusType().isValid() && otherBusIf->getBusType().isValid()))
-    {
-        return true;
-    }
+            General::InterfaceMode otherMode = otherInterface->getInterfaceMode();
 
-    // Otherwise make sure that the bus and abstraction definitions are of the same type.
-    else if (otherBusIf->getBusType() == getBusInterface()->getBusType())
-    {
-        QList<General::InterfaceMode> compatibleModes = getOpposingModes(getBusInterface());
-        compatibleModes.append(General::SYSTEM);
-
-        General::InterfaceMode otherMode = otherBusIf->getInterfaceMode();
-
-        return getBusInterface()->getInterfaceMode() != General::MONITOR && compatibleModes.contains(otherMode);
+            return getBusInterface()->getInterfaceMode() !=
+                General::MONITOR && compatibleModes.contains(otherMode);
+        }
     }
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::encompassingComp()
-//-----------------------------------------------------------------------------
-ComponentItem* BusPortItem::encompassingComp() const
-{
-    return parentComponentItem_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::getOwnerComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> BusPortItem::getOwnerComponent() const
-{
-    ComponentItem* comp = encompassingComp();
-
-    QSharedPointer<Component> compModel;
-    if (comp)
-    {
-        compModel = comp->componentModel();
-    }
-
-    Q_ASSERT(compModel);
-    return compModel;
 }
 
 //-----------------------------------------------------------------------------
@@ -237,7 +207,7 @@ QVariant BusPortItem::itemChange(GraphicsItemChange change, QVariant const& valu
 
         if (parentItem())
         {
-            QRectF parentRect = parentComponentItem_->rect();
+            QRectF parentRect = encompassingComp()->rect();
 
             if (pos.x() < 0)
             {
@@ -278,45 +248,30 @@ void BusPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     HWConnectionEndpoint::mousePressEvent(event);  
 
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram != 0 && diagram->isProtected())
+    if (sceneIsLocked())
     {
         return;
     }
 
     setOldPosition(pos());
-
     saveOldPortPositions(parentItem()->childItems());
 
     beginUpdateConnectionPositions();
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::mouseMoveEvent()
+// Function: BusPortItem::moveItemByMouse()
 //-----------------------------------------------------------------------------
-void BusPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void BusPortItem::moveItemByMouse()
 {
-    if (!sceneIsLocked())
-    {
-        BusInterfaceEndPoint::mouseMoveEvent(event);
-
-        parentComponentItem_->onMovePort(this);
-    }
+    encompassingComp()->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::mouseReleaseEvent()
+// Function: BusPortItem::createMouseMoveCommand()
 //-----------------------------------------------------------------------------
-void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+QSharedPointer<QUndoCommand> BusPortItem::createMouseMoveCommand(DesignDiagram* diagram)
 {
-    HWConnectionEndpoint::mouseReleaseEvent(event);
-
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram == 0 || diagram->isProtected())
-    {
-        return;
-    }
-
     QSharedPointer<QUndoCommand> moveUndoCommand;
 
     // Check if the port position was really changed.
@@ -329,37 +284,7 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         moveUndoCommand = QSharedPointer<QUndoCommand>(new QUndoCommand());
     }
 
-    // Determine if the other ports changed their position and create undo commands for them.
-    QMap<ConnectionEndpoint*, QPointF> oldPortPositions = getOldPortPositions();
-
-    QMap<ConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions.begin();
-    while (cur != oldPortPositions.end())
-    {
-        if (cur.key()->pos() != cur.value())
-        {
-            new PortMoveCommand(
-                static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), diagram, moveUndoCommand.data());
-        }
-
-        cur++;
-    }
-    clearOldPortPositions();
-
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-        if (conn != 0)
-        {
-            conn->endUpdatePosition(moveUndoCommand.data());
-        }
-    }
-
-    // Add the undo command to the edit stack only if it has changes.
-    if (moveUndoCommand->childCount() > 0 || getOldPosition() != pos())
-    {
-        static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(moveUndoCommand);
-        moveUndoCommand->redo();
-    }
+    return moveUndoCommand;
 }
 
 //-----------------------------------------------------------------------------
@@ -401,63 +326,9 @@ QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusIn
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::getDirectionOutShape()
+// Function: BusPortItem::getCurrentPosition()
 //-----------------------------------------------------------------------------
-QPolygonF BusPortItem::getDirectionOutShape() const
+QPointF BusPortItem::getCurrentPosition() const
 {
-    int squareSize = GridSize;
-    
-    /*  /\
-     *  ||
-     */
-    QPolygonF shape;
-    shape << QPointF(-squareSize/2, squareSize/2)
-        << QPointF(-squareSize/2, 0)
-        << QPointF(0, -squareSize/2)
-        << QPointF(squareSize/2, 0)
-        << QPointF(squareSize/2, squareSize/2);
-
-    return shape;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::getDirectionInShape()
-//-----------------------------------------------------------------------------
-QPolygonF BusPortItem::getDirectionInShape() const
-{
-    int squareSize = GridSize;
-
-    /*  ||
-     *  \/
-     */
-    QPolygonF shape;
-    shape << QPointF(-squareSize/2, 0)
-        << QPointF(-squareSize/2, -squareSize/2)
-        << QPointF(squareSize/2, -squareSize/2)
-        << QPointF(squareSize/2, 0)
-        << QPointF(0, squareSize/2);
-
-    return shape;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortItem::getDirectionInOutShape()
-//-----------------------------------------------------------------------------
-QPolygonF BusPortItem::getDirectionInOutShape() const
-{
-    int squareSize = GridSize;
-
-    QPolygonF shape;
-    /*  /\
-     *  ||
-     *  \/
-     */
-    shape << QPointF(-squareSize/2, squareSize/2)
-        << QPointF(-squareSize/2, 0)
-        << QPointF(0, -squareSize/2)
-        << QPointF(squareSize/2, 0)
-        << QPointF(squareSize/2, squareSize/2)
-        << QPointF(0, squareSize);
-
-    return shape;
+    return pos();
 }

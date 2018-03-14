@@ -14,10 +14,9 @@
 #include "GraphicsConnection.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
-
-#include <IPXACTmodels/Component/Component.h>
 
 #include <common/KactusColors.h>
 
@@ -26,13 +25,13 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::ConnectionEndpoint()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent /*= 0*/) : QGraphicsPolygonItem(parent),
-       dir_(),
-       type_(ENDPOINT_TYPE_UNDEFINED),
-       connections_(),
-       temporary_(false),
-       typeLocked_(true),
-       connUpdateList_()
+ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent /*= 0*/) :
+QGraphicsPolygonItem(parent),
+dir_(),
+connections_(),
+temporary_(false),
+typeLocked_(true),
+connUpdateList_()
 {
 }
 
@@ -225,7 +224,7 @@ QSharedPointer<Port> ConnectionEndpoint::getPort() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isBus() const
 {
-    return (type_ == ENDPOINT_TYPE_BUS);
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -233,7 +232,7 @@ bool ConnectionEndpoint::isBus() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isAdHoc() const
 {
-    return (type_ == ENDPOINT_TYPE_ADHOC);
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -241,7 +240,7 @@ bool ConnectionEndpoint::isAdHoc() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isCom() const
 {
-    return (type_ == ENDPOINT_TYPE_COM);
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -249,15 +248,7 @@ bool ConnectionEndpoint::isCom() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isApi() const
 {
-    return (type_ == ENDPOINT_TYPE_API);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConnectionEndpoint::setType()
-//-----------------------------------------------------------------------------
-void ConnectionEndpoint::setType(EndpointType type)
-{
-    type_ = type;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -265,7 +256,7 @@ void ConnectionEndpoint::setType(EndpointType type)
 //-----------------------------------------------------------------------------
 ConnectionEndpoint::EndpointType ConnectionEndpoint::getType() const
 {
-    return type_;
+    return ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED;
 }
 
 //-----------------------------------------------------------------------------
@@ -385,4 +376,28 @@ void ConnectionEndpoint::endUpdateConnectionNames()
     }
 
     connUpdateList_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::getInterfaceMode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode ConnectionEndpoint::getInterfaceMode() const
+{
+    return General::INTERFACE_MODE_COUNT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::getNameLength()
+//-----------------------------------------------------------------------------
+qreal ConnectionEndpoint::getNameLength()
+{
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::shortenNameLabel()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::shortenNameLabel( qreal /*width */)
+{
+
 }

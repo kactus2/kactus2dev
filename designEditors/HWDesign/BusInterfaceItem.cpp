@@ -27,8 +27,6 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Port.h>
-#include <IPXACTmodels/Component/PortMap.h>
 
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
@@ -39,8 +37,7 @@
 //-----------------------------------------------------------------------------
 BusInterfaceItem::BusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
     QSharedPointer<InterfaceGraphicsData> dataGroup, QGraphicsItem *parent):
-BusInterfaceEndPoint(busIf, parent, QVector2D(1.0f, 0.0f)),
-component_(component),
+BusInterfaceEndPoint(busIf, component, parent),
 dataGroup_(dataGroup),
 oldColumn_(0)
 {
@@ -78,134 +75,40 @@ BusInterfaceItem::~BusInterfaceItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::define()
-//-----------------------------------------------------------------------------
-void BusInterfaceItem::define(QSharedPointer<BusInterface> busIf)
-{
-    // Add the bus interface to the component.
-    component_->getBusInterfaces()->append(busIf);
-    setBusInterface(busIf);
-
-    // Update the interface visuals.
-    updateInterface();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::getPortsForView()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<Port> > BusInterfaceItem::getPortsForView(QString const& activeView) const
-{
-    Q_ASSERT(getBusInterface() != 0);
-    QList<QSharedPointer<Port> > ports;
-
-    foreach (QSharedPointer<PortMap> portMap, getBusInterface()->getPortMapsForView(activeView))
-    {
-        if (portMap->getPhysicalPort())
-        {
-            QSharedPointer<Port> port = component_->getPort(portMap->getPhysicalPort()->name_);
-            if (port)
-            {
-                ports.append(port);
-            }
-        }
-    }
-
-    return ports;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::getAllPorts()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<Port> > BusInterfaceItem::getAllPorts() const
-{
-    QList<QSharedPointer<Port> > ports;
-
-    foreach (QSharedPointer<PortMap> portMap, *getBusInterface()->getAllPortMaps())
-    {
-        if (portMap->getPhysicalPort())
-        {
-            QSharedPointer<Port> port = component_->getPort(portMap->getPhysicalPort()->name_);
-            if (port)
-            {
-                ports.append(port);
-            }
-        }
-    }
-
-    return ports;
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusInterfaceItem::updateName()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::updateName(QString const& /*previousName*/, QString const& newName)
+void BusInterfaceItem::updateName(QString const&, QString const& newName)
 {
     dataGroup_->setName(newName);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::onConnect()
+// Function: BusInterfaceItem::createMoveCommandForClashedItem()
 //-----------------------------------------------------------------------------
-bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
+void BusInterfaceItem::createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
+    DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand)
 {
-    if (static_cast<HWDesignDiagram*>(scene())->isLoading())
+    if (endPoint && endPoint->isHierarchical() && endPoint->pos() != endPointPosition)
     {
-        return true;
+        HWColumn* itemColumn = dynamic_cast<HWColumn*>(endPoint->parentItem());
+        if (itemColumn)
+        {
+            new ItemMoveCommand(endPoint, endPointPosition, itemColumn, diagram, parentCommand.data());
+        }
     }
-
-    updateInterface();
-
-    return other != 0;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::onDisonnect()
+// Function: BusInterfaceItem::canConnectToInterface()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::onDisconnect(ConnectionEndpoint const*)
+bool BusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const
 {
-    if (!getConnections().empty() ||
-        getBusInterface()->getInterfaceMode() == General::INTERFACE_MODE_COUNT || isTypeLocked())
-    {
-        // Don't do anything.
-        return;
-    }
+    QSharedPointer<BusInterface> otherInterface = otherEndPoint->getBusInterface();
 
-    // Update the interface visuals.
-    updateInterface();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::isConnectionValid()
-//-----------------------------------------------------------------------------
-bool BusInterfaceItem::isConnectionValid(ConnectionEndpoint const* other) const
-{
-    if (!HWConnectionEndpoint::isConnectionValid(other) || !other->isBus() || other->getBusInterface() == 0)
-    {
-        return false;
-    }
-
-    QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
-
-    return (getBusInterface()->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
-        !otherBusIf->getBusType().isValid() ||
-        (otherBusIf->getBusType() == getBusInterface()->getBusType()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::encompassingComp()
-//-----------------------------------------------------------------------------
-ComponentItem* BusInterfaceItem::encompassingComp() const
-{
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::getOwnerComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> BusInterfaceItem::getOwnerComponent() const
-{
-    Q_ASSERT(component_);
-    return component_;
+    return (otherInterface &&
+        (getBusInterface()->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
+        !otherInterface->getBusType().isValid() ||
+        (otherInterface->getBusType() == getBusInterface()->getBusType())));
 }
 
 //-----------------------------------------------------------------------------
@@ -301,156 +204,55 @@ void BusInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::mouseMoveEvent()
+// Function: BusInterfaceItem::moveItemByMouse()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+void BusInterfaceItem::moveItemByMouse()
 {
-    if (!sceneIsLocked())
+    QPointF currentPosition = pos();
+    QPointF mappedPosition = oldColumn_->mapToScene(pos());
+
+    setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
+
+    HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
+    if (column)
     {
-        BusInterfaceEndPoint::mouseMoveEvent(event);
-
-        setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
-
-        HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
-        if (column)
-        {
-            column->onMoveItem(this);
-        }
+        column->onMoveItem(this);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::mouseReleaseEvent()
+// Function: BusInterfaceItem::createMouseMoveCommand()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+QSharedPointer<QUndoCommand> BusInterfaceItem::createMouseMoveCommand(DesignDiagram* diagram)
 {
-    if (sceneIsLocked())
+    if (!oldColumn_)
     {
-        return;
+        return QSharedPointer<QUndoCommand>();
     }
 
-    HWConnectionEndpoint::mouseReleaseEvent(event);
-    setZValue(0.0);
+    HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
+    Q_ASSERT(column != 0);
+    column->onReleaseItem(this);
 
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram && oldColumn_ != 0)
+    QSharedPointer<QUndoCommand> cmd;
+
+    // Check if the interface position was really changed.
+    if (getOldPosition() != scenePos())
     {
-        HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
-        Q_ASSERT(column != 0);
-        column->onReleaseItem(this);
-
-        QSharedPointer<QUndoCommand> cmd;
-
-        // Check if the interface position was really changed.
-        if (getOldPosition() != scenePos())
-        {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, getOldPosition(), oldColumn_, diagram));
-        }
-        else
-        {
-            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
-        }
-
-        // Determine if the other interfaces changed their position and create undo commands for them.
-        QMap<ConnectionEndpoint*, QPointF> oldPortPositions = getOldPortPositions();
-        QMap<ConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions.begin();
-        while (cur != oldPortPositions.end())
-        {
-            ConnectionEndpoint* endPointItem = cur.key();
-            if (endPointItem->isHierarchical() && endPointItem->scenePos() != cur.value())
-            {
-                HWColumn* itemColumn = dynamic_cast<HWColumn*>(endPointItem->parentItem());
-                if (itemColumn)
-                {
-                    new ItemMoveCommand(cur.key(), cur.value(), itemColumn, diagram, cmd.data());
-                }
-            }
-
-            ++cur;
-        }
-
-        clearOldPortPositions();
-
-        // End the position update for all connections.
-        foreach (QGraphicsItem *item, scene()->items())
-        {
-            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-            if (conn != 0)
-            {
-                conn->endUpdatePosition(cmd.data());
-            }
-        }
-
-        // Add the undo command to the edit stack only if it has changes.
-        if (cmd->childCount() > 0 || getOldPosition() != scenePos())
-        {
-            diagram->getEditProvider()->addCommand(cmd);
-            cmd->redo();
-        }
-
-        oldColumn_ = 0;
+        cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, getOldPosition(), oldColumn_, diagram));
     }
+    else
+    {
+        cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+    }
+
+    return cmd;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::getDirectionInShape()
+// Function: BusInterfaceItem::getCurrentPosition()
 //-----------------------------------------------------------------------------
-QPolygonF BusInterfaceItem::getDirectionInShape() const
+QPointF BusInterfaceItem::getCurrentPosition() const
 {
-    int squareSize = GridSize;
-    
-    /*  /\
-     *  ||
-     */
-    QPolygonF shape;
-    shape << QPointF(-squareSize/2, squareSize)
-        << QPointF(-squareSize/2, -squareSize / 2)
-        << QPointF(0, -squareSize)
-        << QPointF(squareSize/2, -squareSize / 2)
-        << QPointF(squareSize/2, squareSize);
-
-    return shape;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::getDirectionOutShape()
-//-----------------------------------------------------------------------------
-QPolygonF BusInterfaceItem::getDirectionOutShape() const
-{
-    int squareSize = GridSize;
-
-    /*  ||
-     *  \/
-     */
-    QPolygonF shape;
-    shape << QPointF(-squareSize/2, squareSize / 2)
-        << QPointF(-squareSize/2, -squareSize)
-        << QPointF(squareSize/2, -squareSize)
-        << QPointF(squareSize/2, squareSize / 2)
-        << QPointF(0, squareSize);
-
-    return shape;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::getDirectionInOutShape()
-//-----------------------------------------------------------------------------
-QPolygonF BusInterfaceItem::getDirectionInOutShape() const
-{
-    int squareSize = GridSize;
-
-    QPolygonF shape;
-    /*  /\
-     *  ||
-     *  \/
-     */
-    shape << QPointF(-squareSize/2, squareSize / 2)
-        << QPointF(-squareSize/2, -squareSize / 2)
-        << QPointF(0, -squareSize)
-        << QPointF(squareSize/2, -squareSize / 2)
-        << QPointF(squareSize/2, squareSize / 2)
-        << QPointF(0, squareSize);
-
-    return shape;
+    return scenePos();
 }

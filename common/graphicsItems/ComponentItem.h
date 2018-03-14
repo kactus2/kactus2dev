@@ -161,6 +161,13 @@ public:
      */
     virtual void setDraft() = 0;
 	
+    /*!
+     *  Handle the movement of a connection end point item.
+     *
+     *      @param [in] port    The selected connection end point item.
+     */
+    virtual void onMovePort(ConnectionEndpoint* port) = 0;
+
     // The basic width of the components.
     static const int COMPONENTWIDTH = 220;
 

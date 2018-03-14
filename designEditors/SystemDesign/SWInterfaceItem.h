@@ -20,7 +20,6 @@
 #include <QVector2D>
 
 class IGraphicsItemStack;
-class SWOffPageConnectorItem;
 class InterfaceGraphicsData;
 class Design;
 
@@ -194,16 +193,6 @@ public:
     virtual bool isExclusive() const;
 
     /*! 
-     *  Returns the encompassing component.
-     */
-    virtual ComponentItem* encompassingComp() const;
-
-	/*!
-     *  Returns a pointer to the top component that owns this interface.
-	 */
-	virtual QSharedPointer<Component> getOwnerComponent() const;
-
-    /*! 
      *  Returns the COM interface model of the endpoint.
      *
      *      @remarks The function returns a null pointer if the endpoint is not a COM interface.
@@ -224,11 +213,6 @@ public:
      */
     virtual bool isHierarchical() const;
 
-    /*!
-     *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
-     */
-    virtual ConnectionEndpoint* getOffPageConnector();
-
 	/*!
 	 *  Set the position of the name label.
 	 */
@@ -241,24 +225,59 @@ public:
      */
     QSharedPointer<InterfaceGraphicsData> getInterfaceGraphicsData() const;
 
-protected:
-    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    /*!
+     *  Returns true if the endpoint is a COM interface endpoint.
+     */
+    virtual bool isCom() const;
 
-private:
+    /*!
+     *  Returns true if the endpoint is an API interface endpoint.
+     */
+    virtual bool isApi() const;
+
+protected:
+
+    /*!
+     *  Handles item changes.
+     *
+     *      @param [in] change  The change.
+     *      @param [in] value   Value for change.
+     *
+     *      @return The item change.
+     */
+    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
+
+    /*!
+     *  Handles mouse press events.
+     *
+     *      @param [in] event   The mouse press event.
+     */
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+    /*!
+     *  Handles mouse move events.
+     *
+     *      @param [in] event   The mouse move event.
+     */
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
+    /*!
+     *  Handles mouse release events.
+     *
+     *      @param [in] event   The mouse release event.
+     */
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    
     /*!
      *  Makes basic initializations common to all constructors.
      */
-    void initialize();
+    virtual void initialize();
+
+private:
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The name label.
-    QGraphicsTextItem nameLabel_;
 
     //! The top-level component.
     QSharedPointer<Component> component_;
@@ -277,9 +296,6 @@ private:
 
     //! The old positions of the other interfaces before mouse move.
     QMap<SWInterfaceItem*, QPointF> oldInterfacePositions_;
-
-    //! The off-page connector.
-    SWOffPageConnectorItem* offPageConnector_;
 
     //! The container for the graphical data.
     QSharedPointer<InterfaceGraphicsData> graphicsData_;

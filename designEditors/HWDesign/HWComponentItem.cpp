@@ -33,7 +33,6 @@
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
@@ -53,7 +52,7 @@ QGraphicsItem* parent) :
 ComponentItem(QRectF(), libInterface, instance, component, parent),
 hierIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"), this)),
 oldColumn_(0),
-portLayout_(new VCollisionLayout<HWConnectionEndpoint>(SPACING)),
+portLayout_(new VCollisionLayout<ConnectionEndpoint>(SPACING)),
 leftPorts_(),
 rightPorts_(),
 oldPos_()
@@ -321,11 +320,11 @@ BusPortItem* HWComponentItem::getBusPort(QString const& name) const
 //-----------------------------------------------------------------------------
 AdHocPortItem* HWComponentItem::getAdHocPort(QString const& portName) const
 {
-    QList<HWConnectionEndpoint*> allInterfaces;
+    QList<ConnectionEndpoint*> allInterfaces;
     allInterfaces.append(leftPorts_);
     allInterfaces.append(rightPorts_);
 
-    foreach (HWConnectionEndpoint* endpoint, allInterfaces)
+    foreach (ConnectionEndpoint* endpoint, allInterfaces)
     {
         if (dynamic_cast<AdHocPortItem*>(endpoint) != 0 && endpoint->name() == portName)
         {
@@ -339,7 +338,7 @@ AdHocPortItem* HWComponentItem::getAdHocPort(QString const& portName) const
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::onMovePort()
 //-----------------------------------------------------------------------------
-void HWComponentItem::onMovePort(HWConnectionEndpoint* port)
+void HWComponentItem::onMovePort(ConnectionEndpoint* port)
 {
     // Remove the port from the stacks (this simplifies code).
     leftPorts_.removeAll(port);
@@ -594,9 +593,9 @@ void HWComponentItem::addPortToRight(HWConnectionEndpoint* port)
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::checkPortLabelSize()
 //-----------------------------------------------------------------------------
-void HWComponentItem::checkPortLabelSize(HWConnectionEndpoint* port, QList<HWConnectionEndpoint*> otherSide)
+void HWComponentItem::checkPortLabelSize( ConnectionEndpoint* port, QList<ConnectionEndpoint*> otherSide )
 {
-	foreach (HWConnectionEndpoint* otherSidePort, otherSide)
+    foreach (ConnectionEndpoint* otherSidePort, otherSide)
 	{ 
 		if (port->y() == otherSidePort->y())
 		{

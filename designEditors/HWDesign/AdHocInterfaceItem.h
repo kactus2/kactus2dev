@@ -50,11 +50,6 @@ public:
      */
 	virtual ~AdHocInterfaceItem();
 
-    /*!
-     *  Updates the graphics to match the IP-XACT port.
-     */
-    virtual void updateInterface();
-
 	/*!
 	 *  Get the type of this graphics item.
 	 *
@@ -65,33 +60,6 @@ public:
     //-----------------------------------------------------------------------------
     // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
-
-	/*!
-     *  Sets the name of the ad-hoc port.
-     *
-     *      @param [in] name The name to set.
-     */
-	virtual void setName(const QString& name);
-
-    /*!
-     *  Returns true if a connection is valid between the two endpoints.
-     *
-     *      @param [in] other The other endpoint.
-     *
-     *      @remarks Does not take existing connections into account but simply validates whether a connection 
-     *               between the endpoints would be valid in a general case.
-     */
-    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
-
-    /*! 
-     *  Returns the encompassing component. if this port represents a bus interface on a component.
-     */
-    virtual ComponentItem* encompassingComp() const;
-
-	/*!
-     *  Returns a pointer to the top component that owns this interface
-	 */
-	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*! 
      *  Returns true if the port represents a hierarchical connection.
@@ -113,15 +81,8 @@ public:
 	/*!
 	 *  Set the position of the name label.
 	 */
-	void setLabelPosition();
+	virtual void setLabelPosition();
     
-    /*!
-     *  Check if the ad hoc port is valid.
-     *
-     *      @return True, if the port is valid, otherwise false.
-     */
-    bool adhocPortIsValid() const;
-
     /*!
      *  Get the visibility data group of the item.
      *
@@ -147,20 +108,6 @@ protected:
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
     /*!
-     *  Event for mouse press.
-     *
-     *      @param [in] event   The pressed mouse button.
-     */
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
-    /*!
-     *  Event for mouse move.
-     *
-     *      @param [in] event   The movement event.
-     */
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-
-    /*!
      *  Event for mouse button release.
      *
      *      @param [in] event   The release event.
@@ -170,36 +117,25 @@ protected:
 private:
 
     /*!
-     *  Get the shape of an in port.
-     *
-     *      @param [in] squareSize  The size of a square in the design grid.
-     *
-     *      @return Polygon containing the shape of an in port.
-     */
-    virtual QPolygonF getInPortShape(const int squareSize) const;
-
-    /*!
-     *  Get the shape of an out port.
-     *
-     *      @param [in] squareSize  The size of a square in the design grid.
-     *
-     *      @return Polygon containing the shape of an out port.
-     */
-    virtual QPolygonF getOutPortShape(const int squareSize) const;
-
-    /*!
      *  Check whether the label should be drawn on the left side of the interface.
      *
      *      @return True, if the label should be drawn to the left side.
      */
     virtual bool labelShouldBeDrawnLeft() const;
 
+    /*!
+     *  Move the ad hoc item by dragging with the mouse.
+     */
+    virtual void moveItemByMouse();
+
+    /*!
+     *  Save the positions of the other associated ports.
+     */
+    virtual void saveOldPortPositions();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The top-level component.
-    QSharedPointer<Component> component_;
 
     //! The visibility data group of the item.
     QSharedPointer<Kactus2Placeholder> dataGroup_;

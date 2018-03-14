@@ -131,7 +131,7 @@ public:
      *
      *      @param [in] port The port that is being moved.
      */
-    void onMovePort(HWConnectionEndpoint* port);
+    virtual void onMovePort(ConnectionEndpoint* port);
 
     /*!
      *  Returns the bus interface positions.
@@ -228,7 +228,7 @@ private:
 	 *      @param [in] port       The port that is compared to the other stack.
 	 *      @param [in] otherSide  The stack containing the ports of the other side.
 	 */
-	void checkPortLabelSize( HWConnectionEndpoint* port, QList<HWConnectionEndpoint*> otherSide );
+    void checkPortLabelSize( ConnectionEndpoint* port, QList<ConnectionEndpoint*> otherSide );
    
     //! Positions the bus interface items for the component.        
     void positionBusInterfaceTerminals();
@@ -268,13 +268,13 @@ private:
     HWColumn* oldColumn_;
 
     //! The layout for ports.
-    QSharedPointer< IVGraphicsLayout<HWConnectionEndpoint> > portLayout_;
+    QSharedPointer< IVGraphicsLayout<ConnectionEndpoint> > portLayout_;
 
     //! The left and right port stacks.
-    QList<HWConnectionEndpoint*> leftPorts_;
+    QList<ConnectionEndpoint*> leftPorts_;
+    QList<ConnectionEndpoint*> rightPorts_;
 
-    QList<HWConnectionEndpoint*> rightPorts_;
-
+    //! The old position.
     QPointF oldPos_;
 };
 

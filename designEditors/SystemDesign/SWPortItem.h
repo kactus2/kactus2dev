@@ -19,8 +19,6 @@
 #include <QSharedPointer>
 #include <QPen>
 
-class SWOffPageConnectorItem;
-
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing API/COM interfaces as ports of a component.
 //-----------------------------------------------------------------------------
@@ -33,18 +31,32 @@ public:
 
     /*!
      *  Constructor which creates a graphics item for an undefined interface.
+     *
+     *      @param [in] name                    Name of the item.
+     *      @param [in] containingComponent     Component containing the item.
+     *      @param [in] parent                  The parent item.
      */
-    SWPortItem(QString const& name, QGraphicsItem *parent);
+    SWPortItem(QString const& name, QSharedPointer<Component> containingComponent, QGraphicsItem *parent);
 
     /*!
      *  Constructor which creates a graphics item for an API interface.
+     *
+     *      @param [in] apiIf                   The API interface.
+     *      @param [in] containingComponent     Component containing the item.
+     *      @param [in] parent                  The parent item.
      */
-    SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent = 0);
+    SWPortItem(QSharedPointer<ApiInterface> apiIf,
+        QSharedPointer<Component> containingComponent = QSharedPointer<Component>(), QGraphicsItem *parent = 0);
 
     /*!
      *  Constructor which creates a graphics item for a COM interface.
+     *
+     *      @param [in] comIf                   The COM interface.
+     *      @param [in] containingComponent     Component containing the item.
+     *      @param [in] parent                  The parent item.
      */
-    SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent = 0);
+    SWPortItem(QSharedPointer<ComInterface> comIf,
+        QSharedPointer<Component> containingComponent = QSharedPointer<Component>(), QGraphicsItem *parent = 0);
     
     /*!
      *  Destructor.
@@ -167,16 +179,6 @@ public:
     virtual bool isExclusive() const;
 
     /*! 
-     *  Returns the encompassing component.
-     */
-    virtual ComponentItem* encompassingComp() const;
-
-	/*!
-     *  Returns a pointer to the top component that owns this interface.
-	 */
-	virtual QSharedPointer<Component> getOwnerComponent() const;
-
-    /*! 
      *  Returns the COM interface model of the endpoint.
      *
      *      @remarks The function returns a null pointer if the endpoint is not a COM interface.
@@ -197,11 +199,6 @@ public:
      */
     virtual bool isHierarchical() const;
 
-    /*!
-     *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
-     */
-    virtual ConnectionEndpoint* getOffPageConnector();
-
 	/*!
 	 *  Set the position of the name label.
 	 */
@@ -215,14 +212,24 @@ public:
 	/*!
 	 *  Return the correct length of the name label.
 	 */
-	qreal getNameLength();
+	virtual qreal getNameLength();
 
 	/*!
 	 *  Shorten the name label to better fit the component.
 	 *  
 	 *      @param [in] width   The width of the shortened name.
 	 */
-	void shortenNameLabel( qreal width );
+	virtual void shortenNameLabel( qreal width );
+
+    /*!
+     *  Returns true if the endpoint is a COM interface endpoint.
+     */
+    virtual bool isCom() const;
+
+    /*!
+     *  Returns true if the endpoint is an API interface endpoint.
+     */
+    virtual bool isApi() const;
 
 protected:
     
@@ -255,11 +262,12 @@ protected:
      */
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-private:
     /*!
      *  Initializes the port graphics.
      */
-    void initialize();
+    virtual void initialize();
+
+private:
 
     /*!
      *  Returns true if the port has invalid connections.
@@ -269,9 +277,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The name label.
-    QGraphicsTextItem nameLabel_;
 
     //! The COM interface, or null if not set.
     QSharedPointer<ComInterface> comInterface_;
@@ -290,9 +295,6 @@ private:
 
     //! Default pen for the stub line.
     QPen stubLineDefaultPen_;
-
-    //! The off-page connector.
-    SWOffPageConnectorItem* offPageConnector_;
 };
 
 //-----------------------------------------------------------------------------

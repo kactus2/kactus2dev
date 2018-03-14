@@ -47,11 +47,6 @@ public:
      */
 	virtual ~AdHocPortItem();
 
-    /*!
-     *  Updates the graphics to match the IP-XACT port.
-     */
-    void updateInterface();
-
 	/*!
 	 *  Get the type of this graphics item.
 	 *
@@ -79,16 +74,6 @@ public:
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
-    /*! 
-     *  Returns the encompassing component. if this port represents a bus interface on a component.
-     */
-    virtual ComponentItem* encompassingComp() const;
-
-	/*!
-     *  Returns a pointer to the component referenced by the instance that owns this item.
-	 */
-	virtual QSharedPointer<Component> getOwnerComponent() const;
-
     /*!
      *  Check if the port is hierarchical.
      *
@@ -99,7 +84,7 @@ public:
 	/*!
 	 *  Set the position of the name label.
 	 */
-	void setLabelPosition();
+	virtual void setLabelPosition();
 
 	/*!
 	 *  Check the direction of the port and change it if necessary.
@@ -118,13 +103,6 @@ public:
 	 */
     void shortenNameLabel(qreal width);
 
-    /*!
-     *  Check if an ad hoc port exists in the containing component.
-     *
-     *      @return True, if the port exists in the containing component, otherwise false.
-     */
-    bool adHocPortExists() const;
-
 protected:
 
     /*!
@@ -136,20 +114,6 @@ protected:
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
     /*!
-     *  Event for mouse press.
-     *
-     *      @param [in] event   The pressed mouse button.
-     */
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    
-    /*!
-     *  Event for mouse move.
-     *
-     *      @param [in] event   The movement event.
-     */
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    
-    /*!
      *  Event for mouse button release.
      *
      *      @param [in] event   The release event.
@@ -159,36 +123,25 @@ protected:
 private:
 
     /*!
-     *  Get the shape of an in port.
-     *
-     *      @param [in] squareSize  The size of a square in the design grid.
-     *
-     *      @return Polygon containing the shape of an in port.
-     */
-    virtual QPolygonF getInPortShape(const int squareSize) const;
-
-    /*!
-     *  Get the shape of an out port.
-     *
-     *      @param [in] squareSize  The size of a square in the design grid.
-     *
-     *      @return Polygon containing the shape of an out port.
-     */
-    virtual QPolygonF getOutPortShape(const int squareSize) const;
-
-    /*!
      *  Check whether the label should be drawn on the left side of the interface.
      *
      *      @return True, if the label should be drawn to the left side.
      */
     virtual bool labelShouldBeDrawnLeft() const;
 
+    /*!
+     *  Move the ad hoc item by dragging with the mouse.
+     */
+    virtual void moveItemByMouse();
+
+    /*!
+     *  Save the positions of the other associated ports.
+     */
+    virtual void saveOldPortPositions();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The component item containing this port item.
-    HWComponentItem* parentComponentItem_;
 
     //! The position of the port before mouse move.
     QPointF oldPos_;

@@ -12,8 +12,7 @@
 #ifndef OFFPAGECONNECTORITEM_H
 #define OFFPAGECONNECTORITEM_H
 
-#include "HWConnectionEndpoint.h"
-
+#include <common/graphicsItems/ConnectionEndpoint.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QSharedPointer>
@@ -28,7 +27,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! OffPageConnectorItem class.
 //-----------------------------------------------------------------------------
-class OffPageConnectorItem : public HWConnectionEndpoint
+class OffPageConnectorItem : public ConnectionEndpoint
 {
     Q_OBJECT
 
@@ -39,14 +38,14 @@ public:
     };
 
     /*!
-     *  Constructor.
+     *  The constructor.
      *
-     *      @param [in] parent The parent diagram connection endpoint.
+     *      @param [in] parent  The parent connection endpoint.
      */
-    OffPageConnectorItem(HWConnectionEndpoint* parent);
+    OffPageConnectorItem(ConnectionEndpoint* parent);
 
 	/*!
-     *  Destructor.
+     *  The destructor.
      */
 	virtual ~OffPageConnectorItem();
 
@@ -178,22 +177,79 @@ public:
      */
     virtual QSharedPointer<Port> getPort() const;
 
+    /*! 
+     *  Returns the COM interface model of the endpoint.
+     *
+     *      @remarks The function returns a null pointer if the endpoint is not a COM interface.
+     *               Use isCom() function to check for COM interface support.
+     */
+    virtual QSharedPointer<ComInterface> getComInterface() const;
+
+    /*! 
+     *  Returns the API interface model of the endpoint.
+     *
+     *      @remarks The function returns a null pointer if the endpoint is not a API interface.
+     *               Use isApi() function to check for API interface support.
+     */
+    virtual QSharedPointer<ApiInterface> getApiInterface() const;
+
     /*!
      *  Returns true if the port represents a hierarchical connection.
      */
     virtual bool isHierarchical() const;
 
-    /*! 
-	 *  Sets the interface mode for the endpoint.
-	 *
-     *      @param [in] The interface mode to set.
-	 *
-	*/
-    virtual void setInterfaceMode(General::InterfaceMode mode);
-
+    /*!
+     *  Get the bus interface mode of the end point item.
+     *
+     *      @return The bus interface mode.
+     */
     virtual General::InterfaceMode getInterfaceMode() const;
 
+    /*!
+     *  Get the type of the end point item.
+     *
+     *      @return The type of the end point item.
+     */
+    virtual ConnectionEndpoint::EndpointType getType() const;
+    
+    /*!
+     *  Check if the end point is a bus interface.
+     *
+     *      @return True, if the end point is a bus interface end point, otherwise false.
+     */
+    virtual bool isBus() const;
+
+    /*!
+     *  Check if the end point is an ad hoc.
+     *
+     *      @return True if the endpoint is an ad-hoc port, otherwise false.
+     */
+    virtual bool isAdHoc() const;
+
+    /*!
+     *  Check if the end point is a com interface.
+     *
+     *      @return True if the endpoint is a COM interface endpoint, otherwise false.
+     */
+    bool isCom() const;
+
+    /*!
+     *  Check if the end point is an api interface.
+     *
+     *      @return True if the endpoint is an API interface endpoint, otherwise false.
+     */
+    bool isApi() const;
+
 protected:
+
+    /*!
+     *  Handle the item changes.
+     *
+     *      @param [in] change  The change in the item.
+     *      @param [in] value   Value for change.
+     *
+     *      @return The item change.
+     */
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
 private:
@@ -206,7 +262,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The parent diagram connection endpoint.
-    HWConnectionEndpoint* parent_;
+    ConnectionEndpoint* parent_;
 };
 
 //-----------------------------------------------------------------------------

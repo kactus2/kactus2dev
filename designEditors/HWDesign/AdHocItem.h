@@ -18,7 +18,6 @@
 #include <QVector2D>
 #include <QPolygonF>
 
-class OffPageConnectorItem;
 class Port;
 
 //-----------------------------------------------------------------------------
@@ -33,11 +32,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] port    The selected port.
-     *      @param [in] parent  The owner of this item.
-     *      @param [in] dir     The direction of the item.
+     *      @param [in] port                    The selected port.
+     *      @param [in] containingComponent     Component containing the port.
+     *      @param [in] parent                  The owner of this item.
+     *      @param [in] dir                     The direction of the item.
      */
-    AdHocItem(QSharedPointer<Port> port, QGraphicsItem* parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
+    AdHocItem(QSharedPointer<Port> port, QSharedPointer<Component> containingComponent, QGraphicsItem* parent = 0,
+        QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
 	/*!
      *  The destructor.
@@ -45,18 +46,11 @@ public:
 	virtual ~AdHocItem();
 
     /*!
-     *  Sets the bus and abstraction types and the interface mode for the end point.
+     *  Check if the ad hoc port is valid or not.
      *
-     *      @param [in] busType  The bus type (bus definition VLNV).
-     *      @param [in] absType  The abstraction type (abstraction definition VLNV).
-     *      @param [in] mode     The interface mode.
+     *      @return True, if the port is valid, otherwise false.
      */
-    virtual void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
-
-    /*!
-     *  Updates the graphics to match the IP-XACT port.
-     */
-    virtual void updateInterface() = 0;
+    bool adhocPortIsValid() const;
 
     //-----------------------------------------------------------------------------
     // HWConnectionEndpoint implementation.
@@ -68,13 +62,6 @@ public:
      *      @return The name of the ad hoc port.
      */
     virtual QString name() const;
-
-	/*!
-     *  Sets the name of the ad-hoc port.
-     *
-     *      @param [in] name The name to set.
-     */
-	virtual void setName(const QString& name);
 
 	/*!
      *  Returns the description of the port.
@@ -131,11 +118,16 @@ public:
     virtual QSharedPointer<Port> getPort() const;
 
     /*!
-     *  Check if the item is a bus interface.
+     *  Check if the end point is an ad hoc port.
      *
-     *      @return False, ad hoc ports are not bus interfaces.
+     *      @return True, if the end point is an ad hoc port, false otherwise.
      */
-    virtual bool isBus() const;
+    virtual bool isAdHoc() const;
+
+    /*!
+     *  Returns the type of the endpoint (API/COM/bus/ad-hoc/undefined).
+     */
+    virtual ConnectionEndpoint::EndpointType getType() const;
 
 	/*!
      *  Sets the interface mode for the port.
@@ -143,15 +135,6 @@ public:
      *      @param [in] mode The mode to set.
      */
     virtual void setInterfaceMode(General::InterfaceMode mode);
-
-    virtual General::InterfaceMode getInterfaceMode() const;
-
-    /*!
-     *  Get the off page connector item.
-     *
-     *      @return The corresponding off-page connector or a null pointer if the end point does not have one.
-     */
-    virtual ConnectionEndpoint* getOffPageConnector();
 
     /*!
      *  Create or change the current tie off label.
@@ -167,14 +150,16 @@ public:
      */
     void removeTieOffItem();
 
-protected:
-
     /*!
-     *  Get the name label of the item.
+     *  Check if a connection to the selected connection end point is valid.
      *
-     *      @return The text item containing the name of the port.
+     *      @param [in] other   The selected connection end point.
+     *
+     *      @return True, if the connection can be created, false otherwise.
      */
-    QGraphicsTextItem& getNameLabel();
+    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
+
+protected:
 
     /*!
      *  Get the shape of the item.
@@ -195,6 +180,13 @@ protected:
      */
     void setTieOffLabelPosition();
 
+    /*!
+     *  Event handling for mouse press.
+     *
+     *      @param [in] event   The mouse press event.
+     */
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
 private:
 
     /*!
@@ -204,7 +196,7 @@ private:
      *
      *      @return Polygon containing the shape of an in port.
      */
-    virtual QPolygonF getInPortShape(const int squareSize) const = 0;
+    virtual QPolygonF getInPortShape(const int squareSize) const;
 
     /*!
      *  Get the shape of an out port.
@@ -213,7 +205,7 @@ private:
      *
      *      @return Polygon containing the shape of an out port.
      */
-    virtual QPolygonF getOutPortShape(const int squareSize) const = 0;
+    virtual QPolygonF getOutPortShape(const int squareSize) const;
 
     /*!
      *  Create the tie off label.
@@ -232,18 +224,22 @@ private:
      */
     virtual bool labelShouldBeDrawnLeft() const = 0;
 
+    /*!
+     *  Store the positions of the associated end points.
+     */
+    virtual void saveOldPortPositions() = 0;
+
+    /*!
+     *  Update the graphics of the end point.
+     */
+    virtual void updateEndPointGraphics();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The name label.
-	QGraphicsTextItem nameLabel_;
-
     //! The port contained within the item.
     QSharedPointer<Port> port_;
-
-    //! The off-page connector.
-    OffPageConnectorItem* offPageConnector_;
 
     //! The tie off label.
     QGraphicsTextItem* tieOffLabel_;

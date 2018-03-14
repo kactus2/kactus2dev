@@ -61,9 +61,11 @@ PortMoveCommand::~PortMoveCommand()
 void PortMoveCommand::undo()
 {
     HWComponentItem* comp = static_cast<HWComponentItem*>(port_->parentItem());
-
-    port_->setPos(oldPos_);
-    comp->onMovePort(port_);
+    if (comp)
+    {
+        port_->setPos(oldPos_);
+        comp->onMovePort(port_);
+    }
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -75,9 +77,11 @@ void PortMoveCommand::undo()
 void PortMoveCommand::redo()
 {
     HWComponentItem* comp = static_cast<HWComponentItem*>(port_->parentItem());
-
-    port_->setPos(newPos_);
-    comp->onMovePort(port_);
+    if (comp)
+    {
+        port_->setPos(newPos_);
+        comp->onMovePort(port_);
+    }
 
     // Execute child commands.
     QUndoCommand::redo();

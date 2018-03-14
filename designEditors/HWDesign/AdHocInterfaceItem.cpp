@@ -18,9 +18,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
-#include <designEditors/HWDesign/OffPageConnectorItem.h>
 
-#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
 #include <QBrush>
@@ -32,8 +30,7 @@
 //-----------------------------------------------------------------------------
 AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component, QSharedPointer<Port> port,
                                        QSharedPointer<Kactus2Placeholder> dataGroup, QGraphicsItem* parent):
-AdHocItem(port, parent, QVector2D(1.0f, 0.0f)),
-component_(component),
+AdHocItem(port, component, parent, QVector2D(1.0f, 0.0f)),
 dataGroup_(dataGroup),
 oldColumn_(0),
 oldInterfacePositions_(),
@@ -50,47 +47,11 @@ oldPos_()
         setPos(position);
     }
 
-    getNameLabel().setRotation(-rotation());
+    getNameLabel()->setRotation(-rotation());
 
     setPolygon(getPortShape());
 
     updateInterface();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::getInPortShape()
-//-----------------------------------------------------------------------------
-QPolygonF AdHocInterfaceItem::getInPortShape(const int squareSize) const
-{
-    QPolygonF shape;
-    
-    int halfSquare = squareSize / 2;
-
-    shape << QPointF(-halfSquare, halfSquare)
-        << QPointF(-halfSquare, -halfSquare)
-        << QPointF(0, -squareSize)
-        << QPointF(halfSquare, -halfSquare)
-        << QPointF(halfSquare, halfSquare);
-
-    return shape;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::getOutPortShape()
-//-----------------------------------------------------------------------------
-QPolygonF AdHocInterfaceItem::getOutPortShape(const int squareSize) const
-{
-    QPolygonF shape;
-
-    int halfSquare = squareSize / 2;
-
-    shape << QPointF(-halfSquare, halfSquare)
-        << QPointF(-halfSquare, -halfSquare)
-        << QPointF(halfSquare, -halfSquare)
-        << QPointF(halfSquare, halfSquare)
-        << QPointF(0, squareSize);
-
-    return shape;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,79 +60,6 @@ QPolygonF AdHocInterfaceItem::getOutPortShape(const int squareSize) const
 AdHocInterfaceItem::~AdHocInterfaceItem()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::updateInterface()
-//-----------------------------------------------------------------------------
-void AdHocInterfaceItem::updateInterface()
-{
-    HWConnectionEndpoint::updateInterface();
-
-    if (adhocPortIsValid())
-    {
-        setBrush(QBrush(Qt::black));
-    }
-    else
-    {
-        setBrush(QBrush(Qt::red));
-    }
-
-    getNameLabel().setHtml(
-        "<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + getPort()->name() + "</div>");
-
-    setLabelPosition();
-    setTieOffLabelPosition();
-
-    getOffPageConnector()->updateInterface();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::adhocPortIsValid()
-//-----------------------------------------------------------------------------
-bool AdHocInterfaceItem::adhocPortIsValid() const
-{
-    if (component_->getPort(getPort()->name()))
-    {
-        return true;
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::setName()
-//-----------------------------------------------------------------------------
-void AdHocInterfaceItem::setName(QString const& name)
-{
-    dataGroup_->setAttribute("portName", name);
-
-    AdHocItem::setName(name);
-}
-
-//-----------------------------------------------------------------------------
-// Function: isConnectionValid()
-//-----------------------------------------------------------------------------
-bool AdHocInterfaceItem::isConnectionValid(ConnectionEndpoint const* other) const
-{
-    // Ad-hoc connection is not possible to a bus end point.
-    return HWConnectionEndpoint::isConnectionValid(other) && !other->isBus();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::encompassingComp()
-//-----------------------------------------------------------------------------
-ComponentItem* AdHocInterfaceItem::encompassingComp() const
-{
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::getOwnerComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> AdHocInterfaceItem::getOwnerComponent() const
-{
-    return component_;
 }
 
 //-----------------------------------------------------------------------------
@@ -205,17 +93,17 @@ bool AdHocInterfaceItem::isDirectionFixed() const
 //-----------------------------------------------------------------------------
 void AdHocInterfaceItem::setLabelPosition()
 {
-    qreal nameWidth = getNameLabel().boundingRect().width();
+    qreal nameWidth = getNameLabel()->boundingRect().width();
 
     // Check if the port is directed to the left.
     if (getDirection().x() < 0)
     {
-        getNameLabel().setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
+        getNameLabel()->setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
     }
     // Otherwise the port is directed to the right.
     else
     {
-        getNameLabel().setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
+        getNameLabel()->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
     }
 }
 
@@ -230,7 +118,7 @@ QVariant AdHocInterfaceItem::itemChange(GraphicsItemChange change, QVariant cons
     }
     else if (change == ItemRotationHasChanged)
     {
-        getNameLabel().setRotation(-rotation());
+        getNameLabel()->setRotation(-rotation());
         if (getTieOffLabel() != 0)
         {
             getTieOffLabel()->setRotation(-rotation());
@@ -251,11 +139,10 @@ QVariant AdHocInterfaceItem::itemChange(GraphicsItemChange change, QVariant cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::mousePressEvent()
+// Function: AdHocInterfaceItem::saveOldPortPositions()
 //-----------------------------------------------------------------------------
-void AdHocInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void AdHocInterfaceItem::saveOldPortPositions()
 {
-    HWConnectionEndpoint::mousePressEvent(event);
     setZValue(1001.0);
 
     oldColumn_ = dynamic_cast<GraphicsColumn*>(parentItem());
@@ -269,31 +156,13 @@ void AdHocInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
             oldInterfacePositions_.insert(item, item->scenePos());
         }
     }
-
-    // Begin the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-        if (conn != 0)
-        {
-            conn->beginUpdatePosition();
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::mouseMoveEvent()
+// Function: AdHocInterfaceItem::moveItemByMouse()
 //-----------------------------------------------------------------------------
-void AdHocInterfaceItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void AdHocInterfaceItem::moveItemByMouse()
 {
-    // Discard mouse move if the diagram is protected.
-    if (static_cast<DesignDiagram*>(scene())->isProtected())
-    {
-        return;
-    }
-
-    HWConnectionEndpoint::mouseMoveEvent(event);
-
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
     GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());

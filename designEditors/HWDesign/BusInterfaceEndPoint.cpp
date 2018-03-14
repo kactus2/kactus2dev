@@ -12,16 +12,17 @@
 #include "BusInterfaceEndPoint.h"
 
 #include <common/graphicsItems/GraphicsConnection.h>
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+#include <common/IEditProvider.h>
 
-#include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
-
-#include <designEditors/HWDesign/OffPageConnectorItem.h>
+#include <designEditors/common/diagramgrid.h>
 #include <designEditors/HWDesign/InterfaceGraphics.h>
+#include <designEditors/HWDesign/HWMoveCommands.h>
+#include <designEditors/HWDesign/columnview/HWColumn.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/PortMap.h>
 
 #include <QFont>
 #include <QGraphicsDropShadowEffect>
@@ -30,36 +31,13 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::BusInterfaceEndPoint()
 //-----------------------------------------------------------------------------
-BusInterfaceEndPoint::BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QGraphicsItem *parent,
-    QVector2D const& dir):
-HWConnectionEndpoint(parent, dir),
-nameLabel_(new QGraphicsTextItem("", this)),
+BusInterfaceEndPoint::BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
+    QGraphicsItem *parent, QVector2D const& dir):
+HWConnectionEndpoint(component, parent, dir),
 busInterface_(busIf),
-oldPos_(),
-offPageConnector_()
+oldPos_()
 {
-    setType(ENDPOINT_TYPE_BUS);
 
-    QFont font = nameLabel_->font();
-    font.setPointSize(8);
-    nameLabel_->setFont(font);
-    nameLabel_->setFlag(ItemStacksBehindParent);
-
-    QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect;
-    shadow->setXOffset(0);
-    shadow->setYOffset(0);
-    shadow->setBlurRadius(5);
-    nameLabel_->setGraphicsEffect(shadow);
-
-    setFlag(ItemIsMovable);
-    setFlag(ItemIsSelectable);
-    setFlag(ItemSendsGeometryChanges);
-    setFlag(ItemSendsScenePositionChanges);
-
-    offPageConnector_ = new OffPageConnectorItem(this);
-    offPageConnector_->setPos(0.0, -GridSize * 3);
-    offPageConnector_->setFlag(ItemStacksBehindParent);
-    offPageConnector_->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -79,31 +57,15 @@ QSharedPointer<BusInterface> BusInterfaceEndPoint::getBusInterface() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::getNameLabel()
+// Function: BusInterfaceEndPoint::updateEndPointGraphics()
 //-----------------------------------------------------------------------------
-QGraphicsTextItem* BusInterfaceEndPoint::getNameLabel() const
+void BusInterfaceEndPoint::updateEndPointGraphics()
 {
-    return nameLabel_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::updateInterface()
-//-----------------------------------------------------------------------------
-void BusInterfaceEndPoint::updateInterface()
-{
-    HWConnectionEndpoint::updateInterface(); 
-
     DirectionTypes::Direction direction =
         InterfaceGraphics::getInterfaceDirection(busInterface_, getOwnerComponent());
 
     QPolygonF shape = getInterfaceShape(direction);
     setPolygon(shape);
-
-    nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
-
-    setLabelPosition();
-
-    offPageConnector_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
@@ -113,11 +75,25 @@ QPolygonF BusInterfaceEndPoint::getInterfaceShape(DirectionTypes::Direction dire
 {
     if (direction == DirectionTypes::IN)
     {
-        return getDirectionInShape();
+        if (isHierarchical())
+        {
+            return getDirectionOutShape();
+        }
+        else
+        {
+            return getDirectionInShape();
+        }
     }
     else if (direction == DirectionTypes::OUT)
     {
-        return getDirectionOutShape();
+        if (isHierarchical())
+        {
+            return getDirectionInShape();
+        }
+        else
+        {
+            return getDirectionOutShape();
+        }
     }
     else
     {
@@ -196,19 +172,19 @@ bool BusInterfaceEndPoint::isExclusive() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::getPort()
-//-----------------------------------------------------------------------------
-QSharedPointer<Port> BusInterfaceEndPoint::getPort() const
-{
-    return QSharedPointer<Port>();
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::isBus()
 //-----------------------------------------------------------------------------
 bool BusInterfaceEndPoint::isBus() const
 {
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getType()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint::EndpointType BusInterfaceEndPoint::getType() const
+{
+    return ConnectionEndpoint::ENDPOINT_TYPE_BUS;
 }
 
 //-----------------------------------------------------------------------------
@@ -230,14 +206,6 @@ void BusInterfaceEndPoint::setInterfaceMode(General::InterfaceMode mode)
 General::InterfaceMode BusInterfaceEndPoint::getInterfaceMode() const
 {
     return busInterface_->getInterfaceMode();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::getOffPageConnector()
-//-----------------------------------------------------------------------------
-ConnectionEndpoint* BusInterfaceEndPoint::getOffPageConnector()
-{
-    return offPageConnector_;
 }
 
 //-----------------------------------------------------------------------------
@@ -304,17 +272,135 @@ void BusInterfaceEndPoint::beginUpdateConnectionPositions()
     }
 }
 
-
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::sceneIsLocked()
+// Function: BusInterfaceEndPoint::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-bool BusInterfaceEndPoint::sceneIsLocked() const
+void BusInterfaceEndPoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram != 0 && diagram->isProtected())
+    if (sceneIsLocked())
     {
-        return true;
+        return;
     }
 
-    return false;
+    HWConnectionEndpoint::mouseReleaseEvent(event);
+    setZValue(0.0);
+
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram)
+    {
+        QSharedPointer<QUndoCommand> moveCommand = createMouseMoveCommand(diagram);
+        if (moveCommand)
+        {
+            QMap<ConnectionEndpoint*, QPointF> oldPortPositions = getOldPortPositions();
+            QMap<ConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions.begin();
+            while (cur != oldPortPositions.end())
+            {
+                createMoveCommandForClashedItem(cur.key(), cur.value(), diagram, moveCommand);
+                ++cur;
+            }
+
+            clearOldPortPositions();
+
+            // End the position update for all connections.
+            foreach (QGraphicsItem *item, scene()->items())
+            {
+                GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+                if (conn != 0)
+                {
+                    conn->endUpdatePosition(moveCommand.data());
+                }
+            }
+
+            // Add the undo command to the edit stack only if it has changes.
+            if (moveCommand->childCount() > 0 || getOldPosition() != getCurrentPosition())
+            {
+                diagram->getEditProvider()->addCommand(moveCommand);
+                moveCommand->redo();
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::isConnectionValid()
+//-----------------------------------------------------------------------------
+bool BusInterfaceEndPoint::isConnectionValid(ConnectionEndpoint const* other) const
+{
+    if (!HWConnectionEndpoint::isConnectionValid(other) || !other->isBus() || other->getBusInterface() == 0)
+    {
+        return false;
+    }
+
+    return canConnectToInterface(other);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::onDisconnect()
+//-----------------------------------------------------------------------------
+void BusInterfaceEndPoint::onDisconnect(ConnectionEndpoint const*)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::onConnect()
+//-----------------------------------------------------------------------------
+bool BusInterfaceEndPoint::onConnect(ConnectionEndpoint const* other)
+{
+    updateInterface();
+
+    return other != 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getDirectionOutShape()
+//-----------------------------------------------------------------------------
+QPolygonF BusInterfaceEndPoint::getDirectionOutShape() const
+{
+    int squareSize = GridSize;
+    QPolygonF shape;
+    shape << QPointF(-squareSize/2, squareSize/2)
+        << QPointF(-squareSize/2, 0)
+        << QPointF(0, -squareSize/2)
+        << QPointF(squareSize/2, 0)
+        << QPointF(squareSize/2, squareSize/2);
+
+    return shape;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getDirectionInShape()
+//-----------------------------------------------------------------------------
+QPolygonF BusInterfaceEndPoint::getDirectionInShape() const
+{
+    QPolygonF shape;
+
+    int squareSize = GridSize;
+
+    shape << QPointF(-squareSize/2, 0)
+        << QPointF(-squareSize/2, -squareSize/2)
+        << QPointF(squareSize/2, -squareSize/2)
+        << QPointF(squareSize/2, 0)
+        << QPointF(0, squareSize/2);
+
+    return shape;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getDirectionInOutShape()
+//-----------------------------------------------------------------------------
+QPolygonF BusInterfaceEndPoint::getDirectionInOutShape() const
+{
+    int squareSize = GridSize;
+
+    QPolygonF shape;
+    shape << QPointF(-squareSize/2, squareSize/2)
+        << QPointF(-squareSize/2, 0)
+        << QPointF(0, -squareSize/2)
+        << QPointF(squareSize/2, 0)
+        << QPointF(squareSize/2, squareSize/2)
+        << QPointF(0, squareSize);
+
+    return shape;
 }

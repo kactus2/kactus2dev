@@ -15,15 +15,36 @@
 
 #include <common/KactusColors.h>
 
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/HWDesign/OffPageConnectorItem.h>
+#include <designEditors/SystemDesign/SWComponentItem.h>
+
 #include <QPen>
+#include <QFont>
+#include <QGraphicsDropShadowEffect>
 
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-SWConnectionEndpoint::SWConnectionEndpoint(QGraphicsItem* parent, QVector2D const& dir)
-    : ConnectionEndpoint(parent)
+SWConnectionEndpoint::SWConnectionEndpoint(QSharedPointer<Component> component, QString const& name,
+    QGraphicsItem* parent, QVector2D const& dir):
+ConnectionEndpoint(parent),
+type_(ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED),
+nameLabel_(new QGraphicsTextItem(name, this)),
+offPageConnector_(),
+parentItem_(),
+containingComponent_(component)
 {
     setDirection(dir);
+
+    if (parent)
+    {
+        SystemComponentItem* parentSW = dynamic_cast<SystemComponentItem*>(parent);
+        if (parentSW)
+        {
+            parentItem_ = parentSW;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -31,6 +52,38 @@ SWConnectionEndpoint::SWConnectionEndpoint(QGraphicsItem* parent, QVector2D cons
 //-----------------------------------------------------------------------------
 SWConnectionEndpoint::~SWConnectionEndpoint()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::encompassingComp()
+//-----------------------------------------------------------------------------
+ComponentItem* SWConnectionEndpoint::encompassingComp() const
+{
+    return parentItem_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::getOwnerComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> SWConnectionEndpoint::getOwnerComponent() const
+{
+    return containingComponent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::getNameLabel()
+//-----------------------------------------------------------------------------
+QGraphicsTextItem* SWConnectionEndpoint::getNameLabel() const
+{
+    return nameLabel_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::getOffPageConnector()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SWConnectionEndpoint::getOffPageConnector()
+{
+    return offPageConnector_;
 }
 
 //-----------------------------------------------------------------------------
@@ -92,4 +145,79 @@ bool SWConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) co
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::isCom()
+//-----------------------------------------------------------------------------
+bool SWConnectionEndpoint::isCom() const
+{
+    if (type_ == ConnectionEndpoint::ENDPOINT_TYPE_COM)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::isApi()
+//-----------------------------------------------------------------------------
+bool SWConnectionEndpoint::isApi() const
+{
+    if (type_ == ConnectionEndpoint::ENDPOINT_TYPE_API)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::getType()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint::EndpointType SWConnectionEndpoint::getType() const
+{
+    return type_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::setType()
+//-----------------------------------------------------------------------------
+void SWConnectionEndpoint::setType(ConnectionEndpoint::EndpointType newType)
+{
+    type_ = newType;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::initialize()
+//-----------------------------------------------------------------------------
+void SWConnectionEndpoint::initialize()
+{
+    QFont font = nameLabel_->font();
+    font.setPointSize(8);
+    nameLabel_->setFont(font);
+    nameLabel_->setFlag(ItemStacksBehindParent);
+    nameLabel_->setRotation(-rotation());
+
+    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
+    shadow->setXOffset(0);
+    shadow->setYOffset(0);
+    shadow->setBlurRadius(5);
+    nameLabel_->setGraphicsEffect(shadow);
+
+    setFlag(ItemIsMovable);
+    setFlag(ItemIsSelectable);
+    setFlag(ItemSendsGeometryChanges);
+    setFlag(ItemSendsScenePositionChanges);
+
+    // Create the off-page connector.
+    offPageConnector_ = new OffPageConnectorItem(this);
+    offPageConnector_->setPos(0.0, -GridSize * 3);
+    offPageConnector_->setFlag(ItemStacksBehindParent);
+    offPageConnector_->setVisible(false);
 }

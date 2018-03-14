@@ -33,7 +33,7 @@ SystemComponentItem::SystemComponentItem(QRectF const& size, LibraryInterface* l
 ComponentItem(QRectF(), libInterface, instance, component, parent),
 imported_(false),
 importRef_(),
-portLayout_(new VCollisionLayout<SWPortItem>(SPACING)),
+portLayout_(new VCollisionLayout<ConnectionEndpoint>(SPACING)),
 connUpdateDisabled_(false)
 {
     setRect(size);
@@ -63,7 +63,7 @@ void SystemComponentItem::positionAPIInterfaceTerminals()
         // Create graphics items for API interfaces.
         foreach (QSharedPointer<ApiInterface> apiIf, componentModel()->getApiInterfaces())
         {
-            SWPortItem* port = new SWPortItem(apiIf, this);
+            SWPortItem* port = new SWPortItem(apiIf, componentModel(), this);
 
             // Check if the default position has been specified.
             if (!apiIf->getDefaultPos().isNull())
@@ -90,7 +90,7 @@ void SystemComponentItem::positionAPIInterfaceTerminals()
             QSharedPointer<ApiInterface> apiInterface(new ApiInterface());
             apiInterface->setName(interfaceName);
 
-            SWPortItem* port = new SWPortItem(apiInterface->name(), this);
+            SWPortItem* port = new SWPortItem(apiInterface->name(), componentModel(), this);
 
             port->setPos(apiInterfacePositions.value(interfaceName));
             addPortToSideByPosition(port);
@@ -110,7 +110,7 @@ void SystemComponentItem::positionCOMInterfaceTerminals()
         // Create graphics items for COM interfaces.
         foreach (QSharedPointer<ComInterface> comIf, componentModel()->getComInterfaces())
         {
-            SWPortItem* port = new SWPortItem(comIf, this);
+            SWPortItem* port = new SWPortItem(comIf, componentModel(), this);
 
             // Check if the default position has been specified.
             if (!comIf->getDefaultPos().isNull())
@@ -136,7 +136,7 @@ void SystemComponentItem::positionCOMInterfaceTerminals()
             QSharedPointer<ComInterface> comInterface(new ComInterface());
             comInterface->setName(interfaceName);
 
-            SWPortItem* port = new SWPortItem(comInterface->name(), this);
+            SWPortItem* port = new SWPortItem(comInterface->name(), componentModel(), this);
 
             port->setPos(comInterfacePositions.value(interfaceName));
             addPortToSideByPosition(port);
@@ -212,7 +212,7 @@ SWPortItem* SystemComponentItem::addPort(QPointF const& pos)
     }
 
     // Create the visualization for the bus interface.
-    SWPortItem* port = new SWPortItem(name, this);
+    SWPortItem* port = new SWPortItem(name, componentModel(), this);
 
     port->setName(name);
     port->setPos(mapFromScene(pos));
@@ -341,7 +341,7 @@ void SystemComponentItem::onAddPort(SWPortItem* port, PortDirection dir)
 //-----------------------------------------------------------------------------
 // Function: onMovePort()
 //-----------------------------------------------------------------------------
-void SystemComponentItem::onMovePort(SWPortItem* port)
+void SystemComponentItem::onMovePort(ConnectionEndpoint* port)
 {
     // Remove the port from the stacks (this simplifies code).
     leftPorts_.removeAll(port);
@@ -382,7 +382,7 @@ void SystemComponentItem::onMovePort(SWPortItem* port)
 //-----------------------------------------------------------------------------
 // Function: SystemComponentItem::checkPortLabelSize()
 //-----------------------------------------------------------------------------
-void SystemComponentItem::checkPortLabelSize( SWPortItem* port, QList<SWPortItem*> otherSide )
+void SystemComponentItem::checkPortLabelSize(ConnectionEndpoint* port, QList<ConnectionEndpoint*> otherSide)
 {
 	for ( int i = 0; i < otherSide.size(); ++i)
 	{ 
@@ -530,7 +530,7 @@ void SystemComponentItem::offsetPortPositions(qreal minY)
 
     qreal offset = minY - curMinY;
 
-    foreach (SWPortItem* port, leftPorts_)
+    foreach (ConnectionEndpoint* port, leftPorts_)
     {
         if (port->y() < minY)
         {
@@ -538,7 +538,7 @@ void SystemComponentItem::offsetPortPositions(qreal minY)
         }
     }
 
-    foreach (SWPortItem* port, rightPorts_)
+    foreach (ConnectionEndpoint* port, rightPorts_)
     {
         if (port->y() < minY)
         {
@@ -634,7 +634,7 @@ void SystemComponentItem::setApiInterfacePositions(QMap<QString, QPointF> const&
                 continue;
             }
 
-            port = new SWPortItem(itrPortPos.key(), this);
+            port = new SWPortItem(itrPortPos.key(), componentModel(), this);
             addPort(port);
         }
 
@@ -663,7 +663,7 @@ void SystemComponentItem::setComInterfacePositions(QMap<QString, QPointF> const&
                 continue;
             }
 
-            port = new SWPortItem(itrPortPos.key(), this);
+            port = new SWPortItem(itrPortPos.key(), componentModel(), this);
             addPort(port);
         }
 

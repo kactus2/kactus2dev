@@ -492,11 +492,11 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
     {
         BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
 
-        foreach(QSharedPointer<Port> port, diagIf->getAllPorts())
+        foreach (QString portName, diagIf->getBusInterface()->getAllMappedPhysicalPorts())
         {
-            if (!ports.contains(port->name()))
+            if (!ports.contains(portName))
             {
-                ports.append(port->name());
+                ports.append(portName);
             }
         }
     }
@@ -719,7 +719,7 @@ void HWDesignWidget::deleteSelectedAdHocPorts(QList<QGraphicsItem*> selectedItem
     foreach (QGraphicsItem* selected, selectedItems)
     {
         AdHocPortItem* adHocItem = static_cast<AdHocPortItem*>(selected);
-        if (adHocItem && !adHocItem->adHocPortExists())
+        if (adHocItem && !adHocItem->adhocPortIsValid())
         {
             adhocDeleteList.append(adHocItem);
         }

@@ -120,9 +120,9 @@ public:
     /*!
      *  Called when a port is being moved.
      *
-     *      @param [in] port The port that is being moved.
+     *      @param [in] port    The port that is being moved.
      */
-    void onMovePort(SWPortItem* port);
+    virtual void onMovePort(ConnectionEndpoint* port);
 
     /*!
      *  Returns true if the connections should not be updated automatically in the port's itemChange() function.
@@ -262,7 +262,7 @@ private:
 	 *      @param [in] port       The port that is compared to the other stack.
 	 *      @param [in] otherSide  The stack containing the ports of the other side.
 	 */
-	void checkPortLabelSize( SWPortItem* port, QList<SWPortItem*> otherSide );
+    void checkPortLabelSize(ConnectionEndpoint* port, QList<ConnectionEndpoint*> otherSide);
 
     enum
     {
@@ -282,11 +282,11 @@ private:
     QString importRef_;
 
     //! Layout for ports.
-    QSharedPointer< IVGraphicsLayout<SWPortItem> > portLayout_;
+    QSharedPointer< IVGraphicsLayout<ConnectionEndpoint> > portLayout_;
 
     //! The left and right port stacks.
-    QList<SWPortItem*> leftPorts_;
-    QList<SWPortItem*> rightPorts_;
+    QList<ConnectionEndpoint*> leftPorts_;
+    QList<ConnectionEndpoint*> rightPorts_;
 
     //! If true, connection updates coming from ports are disabled.
     bool connUpdateDisabled_;

@@ -174,10 +174,13 @@ void PortListSortProxyModel::addConnectedPortsFromAbstraction(QSharedPointer<Abs
     {
         foreach (QSharedPointer<PortMap> portMap, *abstraction->getPortMaps())
         {
-            QString physicalName = portMap->getPhysicalPort()->name_;
-            if (!connectedPorts_.contains(physicalName))
+            if (portMap->getPhysicalPort())
             {
-                connectedPorts_.append(physicalName);
+                QString physicalName = portMap->getPhysicalPort()->name_;
+                if (!connectedPorts_.contains(physicalName))
+                {
+                    connectedPorts_.append(physicalName);
+                }
             }
         }
     }

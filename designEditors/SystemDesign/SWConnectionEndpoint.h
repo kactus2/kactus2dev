@@ -18,6 +18,8 @@
 #include <QSharedPointer>
 
 class VLNV;
+class OffPageConnectorItem;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Common interface for SW connection endpoints.
@@ -30,10 +32,13 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent     The parent graphics item.
-     *      @param [in] dir        The initial direction for the endpoint.
+     *      @param [in] component   Component containing the end point.
+     *      @param [in] name        Name of the item.
+     *      @param [in] parent      The parent graphics item.
+     *      @param [in] dir         The initial direction for the endpoint.
      */
-    SWConnectionEndpoint(QGraphicsItem* parent = 0, QVector2D const& rhs = QVector2D(0.0f, -1.0f));
+    SWConnectionEndpoint(QSharedPointer<Component> component, QString const& name = QString(""),
+        QGraphicsItem* parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
     /*!
      *  Destructor.
@@ -78,10 +83,74 @@ public:
      */
     virtual void updateInterface();
 
+    /*!
+     *  Returns true if the endpoint is a COM interface endpoint.
+     */
+    bool isCom() const;
+
+    /*!
+     *  Returns true if the endpoint is an API interface endpoint.
+     */
+    bool isApi() const;
+
+    virtual ConnectionEndpoint::EndpointType getType() const;
+
+    virtual ConnectionEndpoint* getOffPageConnector();
+    
+    /*! 
+     *  Returns the encompassing component.
+     */
+    virtual ComponentItem* encompassingComp() const;
+
+	/*!
+     *  Returns a pointer to the top component that owns this interface.
+	 */
+	virtual QSharedPointer<Component> getOwnerComponent() const;
+
+protected:
+
+    /*!
+     *  Set the type for the end point.
+     *
+     *      @param [in] newType     The new end point type.
+     */
+    void setType(ConnectionEndpoint::EndpointType newType);
+
+    /*!
+     *  Get the name label.
+     *
+     *      @return The name label.
+     */
+    QGraphicsTextItem* getNameLabel() const;
+
+    /*!
+     *  Makes basic initializations common to all constructors.
+     */
+    virtual void initialize();
+
 private:
     // Disable copying.
     SWConnectionEndpoint(SWConnectionEndpoint const& rhs);
     SWConnectionEndpoint& operator=(SWConnectionEndpoint const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The type of the end point.
+    ConnectionEndpoint::EndpointType type_;
+
+    //! The name label.
+    QGraphicsTextItem* nameLabel_;
+
+    //! The off page connector item.
+    OffPageConnectorItem* offPageConnector_;
+
+    //! Component item containing this end point item.
+    ComponentItem* parentItem_;
+
+    //! Component containing this item.
+    QSharedPointer<Component> containingComponent_;
 };
 
 //-----------------------------------------------------------------------------

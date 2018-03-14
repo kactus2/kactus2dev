@@ -16,13 +16,14 @@
 
 #include <QSharedPointer>
 #include <QGraphicsTextItem>
+#include <QUndoCommand>
 
 class InterfaceGraphicsData;
 class Component;
 class BusInterface;
-
-class OffPageConnectorItem;
 class Port;
+class DesignDiagram;
+class HWComponentItem;
 
 //-----------------------------------------------------------------------------
 //! Parent interface class for HW bus interfaces.
@@ -36,27 +37,18 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] busIf   The bus interface this item represents.
-     *      @param [in] parent  The parent object.
-     *      @param [in] dir     Direction for the end point graphics.
+     *      @param [in] busIf       The bus interface this item represents.
+     *      @param [in] component   Component containing the bus interface.
+     *      @param [in] parent      The parent object.
+     *      @param [in] dir         Direction for the end point graphics.
      */
-    BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QGraphicsItem *parent = 0,
-        QVector2D const& dir = QVector2D(0.0f, -1.0f));
+    BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
+        QGraphicsItem *parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
 	/*!
      *  The destructor.
      */
     virtual ~BusInterfaceEndPoint();
-
-    /*!
-     *  Update the bus interface graphics item.
-     */
-    virtual void updateInterface();
-
-    /*!
-     *  Set the position for the bus interface name label.
-     */
-    virtual void setLabelPosition() = 0;
 
     /*!
      *  Get the name of the bus interface.
@@ -99,18 +91,18 @@ public:
     virtual bool isExclusive() const;
 
     /*!
-     *  Get the port for the end point.
-     *
-     *      @return Empty port for bus interfaces.
-     */
-    virtual QSharedPointer<Port> getPort() const;
-
-    /*!
      *  Check if the end point is a bus interface.
      *
      *      @return True.
      */
     virtual bool isBus() const;
+
+    /*!
+     *  Get the type of the connection end point.
+     *
+     *      @return This end point is a bus interface.
+     */
+    virtual ConnectionEndpoint::EndpointType getType() const;
 
     /*!
      *  Set the interface mode for the end point.
@@ -127,13 +119,29 @@ public:
     virtual General::InterfaceMode getInterfaceMode() const;
 
     /*!
-     *  Get the off page connector item.
+     *  Check if a connection can be made to the selected end point.
      *
-     *      @return The corresponding off-page connector or a null pointer if the bus interface does not have one.
+     *      @param [in] other   The end point to be connected.
+     *
+     *      @return True, if the connection can be made, false otherwise.
      */
-    virtual ConnectionEndpoint* getOffPageConnector();
+    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
-protected:
+    /*!
+     *  Handles the disconnecting of the connection end points.
+     *
+     *      @param [in] other   The other end of the connection.
+     */
+    virtual void onDisconnect(ConnectionEndpoint const* other);
+
+    /*!
+     *  Handles the connecting of the connection end points.
+     *
+     *      @param [in] other   The other end of the conenction.
+     *
+     *      @return True, if the connection was made successfully, false otherwise.
+     */
+    virtual bool onConnect(ConnectionEndpoint const* other);
 
     /*!
      *  Set a new bus interface.
@@ -142,12 +150,7 @@ protected:
      */
     void setBusInterface(QSharedPointer<BusInterface> newBus);
 
-    /*!
-     *  Get the label containing the name of the bus interface.
-     *
-     *      @return The label containing the name of the bus interface.
-     */
-    QGraphicsTextItem* getNameLabel() const;
+protected:
 
     /*!
      *  Get the position of the bus interface item before moving it.
@@ -188,11 +191,32 @@ protected:
     void beginUpdateConnectionPositions();
 
     /*!
-     *  Check if the containing diagram is locked.
+     *  Handle the mouse release events.
      *
-     *      @return True, if the diagram is locked, false otherwise.
+     *      @param [in] event   The mouse release event.
      */
-    bool sceneIsLocked() const;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    
+    /*!
+     *  Get the shape of the bus interface with direction in.
+     *
+     *      @return The shape of the bus interface with direction in.
+     */
+    virtual QPolygonF getDirectionInShape() const;
+
+    /*!
+     *  Get the shape of the bus interface with direction out.
+     *
+     *      @return The shape of the bus interface with direction out.
+     */
+    virtual QPolygonF getDirectionOutShape() const;
+
+    /*!
+     *  Get the shape of the bus interface with direction in/out.
+     *
+     *      @return The shape of the bus interface with direction in/out.
+     */
+    virtual QPolygonF getDirectionInOutShape() const;
 
 private:
 
@@ -218,32 +242,49 @@ private:
     virtual void updateName(QString const& previousName, QString const& newName) = 0;
 
     /*!
-     *  Get the shape of the bus interface with direction in.
+     *  Create a move command for this end point item.
      *
-     *      @return The shape of the bus interface with direction in.
+     *      @param [in] diagram     The containing design diagram.
+     *
+     *      @return The created move command.
      */
-    virtual QPolygonF getDirectionInShape() const = 0;
+    virtual QSharedPointer<QUndoCommand> createMouseMoveCommand(DesignDiagram* diagram) = 0;
 
     /*!
-     *  Get the shape of the bus interface with direction out.
+     *  Create move command for an end point that has been moved by the movement of this end point.
      *
-     *      @return The shape of the bus interface with direction out.
+     *      @param [in] endPoint            The selected end point.
+     *      @param [in] endPointPosition    The new position of the end point.
+     *      @param [in] diagram             Design diagram containing the end point.
+     *      @param [in] parentCommand       Parent command.
      */
-    virtual QPolygonF getDirectionOutShape() const = 0;
+    virtual void createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
+        DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand) = 0;
 
     /*!
-     *  Get the shape of the bus interface with direction in/out.
+     *  Check if a connection can be made to the selected connection end point.
      *
-     *      @return The shape of the bus interface with direction in/out.
+     *      @param [in] otherEndPoint   The selected connection end point.
+     *
+     *      @return True, if the connection can be made, false otherwise.
      */
-    virtual QPolygonF getDirectionInOutShape() const = 0;
+    virtual bool canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const = 0;
+
+    /*!
+     *  Update the end point item graphics.
+     */
+    virtual void updateEndPointGraphics();
+
+    /*!
+     *  Get the current position of the end point.
+     *
+     *      @return The current position of the end point.
+     */
+    virtual QPointF getCurrentPosition() const = 0;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! Label containing the bus interface name.
-    QGraphicsTextItem* nameLabel_;
 
     //! The bus interface.
     QSharedPointer<BusInterface> busInterface_;
@@ -253,9 +294,6 @@ private:
 
     //! Old positions of the associated end points.
     QMap<ConnectionEndpoint*, QPointF> oldPortPositions_;
-
-    //! The off page connector item.
-    OffPageConnectorItem* offPageConnector_;
 };
 
 #endif // BUSINTERFACEENDPOINT_H

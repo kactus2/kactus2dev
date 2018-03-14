@@ -22,14 +22,13 @@
 #include <QSharedPointer>
 #include <QVector2D>
 
-class Port;
 class BusInterface;
-class OffPageConnectorItem;
 class HWComponentItem;
 class HWColumn;
 class Component;
 class LibraryInterface;
 class InterfaceGraphicsData;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! BusInterfaceItem class.
@@ -49,38 +48,13 @@ public:
      *      @param [in] dataGroup   The container for the item data.
      *      @param [in] parent      The parent object.
      */
-    BusInterfaceItem(QSharedPointer<Component> component,
-                     QSharedPointer<BusInterface> busIf,
-                     QSharedPointer<InterfaceGraphicsData> dataGroup,
-                     QGraphicsItem *parent = 0);
+    BusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
+        QSharedPointer<InterfaceGraphicsData> dataGroup, QGraphicsItem *parent = 0);
 
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~BusInterfaceItem();
-
-    /*!
-     *  Defines the interface.
-     *
-     *      @param [in] busIf     The bus interface.
-     *      @param [in] addPorts  If true, the given ports are added to the parent component.
-     *      @param [in] ports     The related ports.
-     */
-    void define(QSharedPointer<BusInterface> busIf);
-
-    /*!
-     *  Returns the ports in the top-level component that are related to view.
-     *
-     *      @param [in] activeView  The currently active view.
-     *
-     *      @return List of ports related to the selected view.
-     */
-    QList<QSharedPointer<Port> > getPortsForView(QString const& activeView) const;
-
-    /*!
-     *  Get all of the ports mapped within the bus interface.
-     *
-     *      @return A list of ports mapped within the bus interface.
-     */
-    QList<QSharedPointer<Port> > getAllPorts() const;
 
     /*!
      *  Get the graphics item type of this item.
@@ -92,44 +66,6 @@ public:
     //-----------------------------------------------------------------------------
     // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
-
-    /*!
-     *  Called when a connection between this and another end point is done.
-     *
-     *      @param [in] other The other end point of the connection.
-     *
-     *      @return False if there was an error in the connection. Otherwise true.
-     */
-    virtual bool onConnect(ConnectionEndpoint const* other);
-
-    /*!
-     *  Called when a connection has been removed from between this and another end point.
-     *
-     *      @param [in] other The other end point of the connection.
-     */
-    virtual void onDisconnect(ConnectionEndpoint const* other);
-
-    /*!
-     *  Returns true if a connection is valid between the two endpoints.
-     *
-     *      @param [in] other The other endpoint.
-     *
-     *      @remarks Does not take existing connections into account but simply validates whether a connection 
-     *               between the endpoints would be valid in a general case.
-     */
-    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
-
-    /*! 
-     *  Returns the encompassing component. if this port represents a bus interface on a component.
-     */
-    virtual ComponentItem* encompassingComp() const;
-
-	/*!
-     *  Returns pointer to the top component that owns this interface.
-	 *
-	 *      @return The component to which this interface belongs to.
-	 */
-	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*!
      *  Returns true if the port represents a hierarchical connection
@@ -172,21 +108,6 @@ protected:
      */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
-    /*!
-     *  Event for mouse move.
-     *
-     *      @param [in] event   The movement event.
-     */
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-
-    /*!
-     *  Event for mouse button release.
-     *
-     *      @param [in] event   The release event.
-     */
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
-
-
 private:
 
     /*!
@@ -198,32 +119,49 @@ private:
     virtual void updateName(QString const& previousName, QString const& newName);
 
     /*!
-     *  Get the polygon shape of the in direction.
-     *
-     *      @return The in direction shape of the interface.
+     *  Move by dragging with the mouse.
      */
-    virtual QPolygonF getDirectionInShape() const;
+    virtual void moveItemByMouse();
 
     /*!
-     *  Get the polygon shape of the out direction.
+     *  Create a move command for this end point item.
      *
-     *      @return The out direction shape of the interface.
+     *      @param [in] diagram     The containing design diagram.
+     *
+     *      @return The created move command.
      */
-    virtual QPolygonF getDirectionOutShape() const;
+    virtual QSharedPointer<QUndoCommand> createMouseMoveCommand(DesignDiagram* diagram);
 
     /*!
-     *  Get the polygon shape of the in/out direction.
+     *  Create move command for an end point that has been moved by the movement of this end point.
      *
-     *      @return The in/out direction shape of the interface.
+     *      @param [in] endPoint            The selected end point.
+     *      @param [in] endPointPosition    The new position of the end point.
+     *      @param [in] diagram             Design diagram containing the end point.
+     *      @param [in] parentCommand       Parent command.
      */
-    virtual QPolygonF getDirectionInOutShape() const;
+    virtual void createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
+        DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand);
+
+    /*!
+     *  Check if a connection can be made to the selected connection end point.
+     *
+     *      @param [in] otherEndPoint   The selected connection end point.
+     *
+     *      @return True, if the connection can be made, false otherwise.
+     */
+    virtual bool canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const;
+
+    /*!
+     *  Get the current position of the end point.
+     *
+     *      @return The current position of the end point.
+     */
+    virtual QPointF getCurrentPosition() const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The top-level component.
-    QSharedPointer<Component> component_;
 
     //! The data extension for the item.
     QSharedPointer<InterfaceGraphicsData> dataGroup_;

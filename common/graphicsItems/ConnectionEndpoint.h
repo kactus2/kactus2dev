@@ -268,19 +268,12 @@ public:
     /*!
      *  Returns true if the endpoint is a COM interface endpoint.
      */
-    bool isCom() const;
+    virtual bool isCom() const;
 
     /*!
      *  Returns true if the endpoint is an API interface endpoint.
      */
-    bool isApi() const;
-
-    /*!
-     *  Sets the endpoint type.
-     *
-     *      @param [in] type The endpoint type to set.
-     */
-    void setType(EndpointType type);
+    virtual bool isApi() const;
 
     /*!
      *  Returns the type of the endpoint (API/COM/bus/ad-hoc/undefined).
@@ -317,6 +310,25 @@ public:
      */
     bool isTypeLocked() const;
 
+    /*!
+     *  Get the interface mode of the connected bus interface.
+     *
+     *      @return The interface mode of the end point.
+     */
+    virtual General::InterfaceMode getInterfaceMode() const;
+    
+    /*!
+	 *  Return the correct length of the name label.
+	 */
+	virtual qreal getNameLength();
+
+	/*!
+	 *  Shorten the name label to better fit the component.
+	 *  
+	 *      @param [in] width   The width of the shortened name.
+	 */
+	virtual void shortenNameLabel( qreal width );
+
 signals:
     //! Signals that the contents of the interface have been changed.
     void contentChanged();
@@ -349,9 +361,6 @@ private:
 
     //! The endpoint's direction.
     QVector2D dir_;
-
-    //! The endpoint's type.
-    EndpointType type_;
 
     //! The connections to this endpoint.
     QList<GraphicsConnection*> connections_;

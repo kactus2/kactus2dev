@@ -11,7 +11,6 @@
 
 #include "SystemDesignDiagram.h"
 
-#include "SWOffPageConnectorItem.h"
 #include "SystemColumn.h"
 #include "HWMappingItem.h"
 #include "SWComponentItem.h"
@@ -37,6 +36,7 @@
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/HWDesign/OffPageConnectorItem.h>
 
 #include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemAddCommands.h>
@@ -1382,7 +1382,7 @@ int SystemDesignDiagram::componentType() const
 //-----------------------------------------------------------------------------
 int SystemDesignDiagram::offpageConnectorType() const
 {
-    return SWOffPageConnectorItem::Type;
+    return OffPageConnectorItem::Type;
 }
 
 //-----------------------------------------------------------------------------
@@ -1518,6 +1518,12 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
             QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
+            // Only hardware components are applicable in this loop.
+            if (instance->isDraft() || component->getImplementation() != KactusAttribute::HW)
+            {
+                continue;
+            }
+
             if (!component)
             {
                 emit errorMessage(tr("The component '%1' instantiated in the design '%2' was not found in " 
@@ -1526,12 +1532,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 // Create an unpackaged component so that we can still visualize the component instance->
                 component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
                 component->setImplementation(KactusAttribute::HW);
-            }
-
-            // Only hardware components are applicable in this loop.
-            if (component->getImplementation() != KactusAttribute::HW)
-            {
-                continue;
             }
 
             HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance); //instance->getConfigurableElementValues());
@@ -2040,7 +2040,7 @@ SystemComponentItem* SystemDesignDiagram::getComponent(QString const& instanceNa
 SWPortItem* SystemDesignDiagram::createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
                                                    SystemComponentItem* component, QSharedPointer<Design> design)
 {
-    SWPortItem* port = new SWPortItem(portName, component);
+    SWPortItem* port = new SWPortItem(portName, component->componentModel(), component);
     component->addPort(port);
 
     foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
@@ -2791,18 +2791,18 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
             QSharedPointer<ApiInterface> apiIf(new ApiInterface(*portData.apiInterface));
             apiIf->setName(uniqueName);
 
-            port = new SWPortItem(apiIf, targetComp);
+            port = new SWPortItem(apiIf, targetComp->componentModel(), targetComp);
         }
         else if (portData.comInterface != 0)
         {
             QSharedPointer<ComInterface> comIf(new ComInterface(*portData.comInterface));
             comIf->setName(uniqueName);
 
-            port = new SWPortItem(comIf, targetComp);
+            port = new SWPortItem(comIf, targetComp->componentModel(), targetComp);
         }
         else
         {
-            port = new SWPortItem(uniqueName, targetComp);
+            port = new SWPortItem(uniqueName, targetComp->componentModel(), targetComp);
         }
 
         QPointF pos = snapPointToGrid(targetComp->mapFromScene(findCursorPositionMappedToScene()));

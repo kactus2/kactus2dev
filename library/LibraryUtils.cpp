@@ -247,7 +247,8 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
                 QSharedPointer<Component> swComponent = componentDoc.dynamicCast<Component>();
 
                 // Only software components are applicable in this loop.
-                if (!swComponent || swComponent->getImplementation() != KactusAttribute::SW)
+                if (!instance->isDraft() &&
+                    (!swComponent || swComponent->getImplementation() != KactusAttribute::SW))
                 {
                     continue;
                 }
@@ -433,7 +434,8 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
         QSharedPointer<Component> swComponent = componentDoc.dynamicCast<Component>();
 
         // Only software components are applicable in this loop.
-        if (!swComponent || swComponent->getImplementation() != KactusAttribute::SW)
+        if (!swInstance->isDraft() &&
+            (!swComponent || swComponent->getImplementation() != KactusAttribute::SW))
         {
             continue;
         }
@@ -479,7 +481,8 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                 QSharedPointer<Component> swComponent = componentDoc.dynamicCast<Component>();
 
                 // Only software components are applicable in this loop.
-                if (!swComponent || swComponent->getImplementation() != KactusAttribute::SW)
+                if (!swInstance->isDraft() &&
+                    (!swComponent || swComponent->getImplementation() != KactusAttribute::SW))
                 {
                     continue;
                 }
