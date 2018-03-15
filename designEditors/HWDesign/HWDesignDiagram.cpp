@@ -36,6 +36,7 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
@@ -129,12 +130,14 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     QList<QSharedPointer<ColumnDesc> > designColumns = design->getColumns();
     if (designColumns.isEmpty())
     {
-        loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
-        loadColumn(
-            QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", ColumnTypes::BUSES, 0, COMPONENT_COLUMN_WIDTH)));
-        loadColumn(QSharedPointer<ColumnDesc>(
-            new ColumnDesc("Components", ColumnTypes::COMPONENTS, 0, COMPONENT_COLUMN_WIDTH)));
-        loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
+        loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "IO", ColumnTypes::IO, 0, GraphicsColumnConstants::IO_COLUMN_WIDTH)));
+        loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "Buses", ColumnTypes::BUSES, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+        loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "Components", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+        loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
+            "IO", ColumnTypes::IO, 0, GraphicsColumnConstants::IO_COLUMN_WIDTH)));
     }
     else
     {
@@ -685,11 +688,11 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
 
             if (dialog.exec() == QDialog::Accepted)
             {
-                int columnWidth = COMPONENT_COLUMN_WIDTH;
+                int columnWidth = GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH;
 
                 if (dialog.getContentType() == ColumnTypes::IO)
                 {
-                    columnWidth = IO_COLUMN_WIDTH;
+                    columnWidth = GraphicsColumnConstants::IO_COLUMN_WIDTH;
                 }
 
                 QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(),
@@ -701,7 +704,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
                     desc->setWidth(column->getColumnDesc()->getWidth());
                 }
 
-                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc, getDesign()));
+                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc, this));
                 getEditProvider()->addCommand(cmd);
                 cmd->redo();
             }
@@ -921,8 +924,8 @@ void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QShar
             parentCommand.data());
 
         // Perform the replacement.
-        ReplaceComponentCommand* replaceCommand(new ReplaceComponentCommand(previousItem, newCompItem, getDesign(),
-            parentCommand.data()));
+        ReplaceComponentCommand* replaceCommand(
+            new ReplaceComponentCommand(previousItem, newCompItem, this, parentCommand.data()));
 
         connect(replaceCommand, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -1732,7 +1735,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
         }
     }
 
-    QSharedPointer<QUndoCommand> cmd(new ItemAddCommand(column, newItem));
+    QSharedPointer<QUndoCommand> cmd(new ItemAddCommand(column, newItem, this));
     cmd->redo();
 
     // Determine if the other interfaces changed their position and create undo commands for them.
@@ -1743,7 +1746,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                new ItemMoveCommand(cur.key(), cur.value(), column, cmd.data());
+                new ItemMoveCommand(cur.key(), cur.value(), column, this, cmd.data());
             }
         }
     }
@@ -1840,7 +1843,7 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
     diagComp->setDraft();
     diagComp->setPos(snapPointToGrid(position));
 
-    QSharedPointer<HWComponentAddCommand> addCommand(new HWComponentAddCommand(getDesign(), column, diagComp));
+    QSharedPointer<HWComponentAddCommand> addCommand(new HWComponentAddCommand(this, column, diagComp));
 
     connect(addCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
         this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -1871,7 +1874,7 @@ void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponen
             }
         }
 
-        QSharedPointer<QUndoCommand> cmd(new PortAddCommand(targetComponent, snapPointToGrid(position)));
+        QSharedPointer<QUndoCommand> cmd(new PortAddCommand(targetComponent, snapPointToGrid(position), this));
         cmd->redo();
 
         // Create child undo commands for the ports with changed position.
@@ -1880,7 +1883,7 @@ void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponen
         {
             if (current.key()->pos() != current.value())
             {
-                new PortMoveCommand(current.key(), current.value(), cmd.data());
+                new PortMoveCommand(current.key(), current.value(), this, cmd.data());
             }
         }
 
@@ -1899,8 +1902,8 @@ void HWDesignDiagram::replace(ComponentItem* destComp, ComponentItem* sourceComp
 
     if (destHWComponent && sourceHWComponent)
     {
-        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(destHWComponent, sourceHWComponent,
-            getDesign()));
+        QSharedPointer<ReplaceComponentCommand> cmd(
+            new ReplaceComponentCommand(destHWComponent, sourceHWComponent, this));
 
         connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -1988,7 +1991,7 @@ HWComponentItem* HWDesignDiagram::createComponentItem(QSharedPointer<Component> 
         HWComponentItem* newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
         newItem->setPos(snapPointToGrid(position));
 
-        HWComponentAddCommand* addCommand(new HWComponentAddCommand(getDesign(), column, newItem, parentCommand));
+        HWComponentAddCommand* addCommand(new HWComponentAddCommand(this, column, newItem, parentCommand));
 
         connect(addCommand, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -2630,7 +2633,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 
         QMap<QString, QPointF> oldLocations = component->getBusInterfacePositions();
 
-        PortPasteCommand* pasteCmd = new PortPasteCommand(component, interfaceItem, cmd);
+        PortPasteCommand* pasteCmd = new PortPasteCommand(component, interfaceItem, this, cmd);
 
         if (!component->isDraft())
         {
@@ -2645,7 +2648,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
         {
             if (component->getBusPort(current.key())->pos() != current.value())
             {
-                new PortMoveCommand(component->getBusPort(current.key()), current.value(), pasteCmd);
+                new PortMoveCommand(component->getBusPort(current.key()), current.value(), this, pasteCmd);
             }
             current++;
         }  
@@ -2727,7 +2730,7 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
             {
                 if (cur.key()->scenePos() != cur.value())
                 {
-                    new ItemMoveCommand(cur.key(), cur.value(), targetColumn, pasteCmd);
+                    new ItemMoveCommand(cur.key(), cur.value(), targetColumn, this, pasteCmd);
                 }
                 cur++;
             }  

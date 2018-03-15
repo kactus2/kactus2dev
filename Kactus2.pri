@@ -595,7 +595,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./designEditors/SystemDesign/SWComponentItem.h \
     ./designEditors/SystemDesign/SWConnectionEndpoint.h \
     ./designEditors/SystemDesign/SWInterfaceItem.h \
-    ./designEditors/SystemDesign/SWOffPageConnectorItem.h \
     ./designEditors/SystemDesign/SWPortItem.h \
     ./designEditors/SystemDesign/SystemColumn.h \
     ./designEditors/SystemDesign/SystemComponentItem.h \
@@ -1342,7 +1341,6 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/SystemDesign/SWComponentItem.cpp \
     ./designEditors/SystemDesign/SWConnectionEndpoint.cpp \
     ./designEditors/SystemDesign/SWInterfaceItem.cpp \
-    ./designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
     ./designEditors/SystemDesign/SWPortItem.cpp \
     ./designEditors/SystemDesign/SystemColumn.cpp \
     ./designEditors/SystemDesign/SystemComponentItem.cpp \

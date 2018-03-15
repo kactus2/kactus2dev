@@ -89,6 +89,11 @@ public:
     virtual void updateHierComponent() = 0;
 
     /*!
+     *  Recalculate the required width and height of the scene rectangle.
+     */
+    void resetSceneRectangleForItems();
+
+    /*!
      *  Attaches the data source to an ad-hoc editor.
      */
     virtual void attach(AdHocVisibilityEditor* editor);

@@ -39,6 +39,7 @@
 
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
@@ -491,11 +492,11 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
     {
         BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
 
-        foreach(QSharedPointer<Port> port, diagIf->getAllPorts())
+        foreach (QString portName, diagIf->getBusInterface()->getAllMappedPhysicalPorts())
         {
-            if (!ports.contains(port->name()))
+            if (!ports.contains(portName))
             {
-                ports.append(port->name());
+                ports.append(portName);
             }
         }
     }
@@ -718,7 +719,7 @@ void HWDesignWidget::deleteSelectedAdHocPorts(QList<QGraphicsItem*> selectedItem
     foreach (QGraphicsItem* selected, selectedItems)
     {
         AdHocPortItem* adHocItem = static_cast<AdHocPortItem*>(selected);
-        if (adHocItem && !adHocItem->adHocPortExists())
+        if (adHocItem && !adHocItem->adhocPortIsValid())
         {
             adhocDeleteList.append(adHocItem);
         }
@@ -910,11 +911,11 @@ void HWDesignWidget::addColumn()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        int columnWidth = HWDesignDiagram::COMPONENT_COLUMN_WIDTH;
+        int columnWidth = GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH;
 
         if (dialog.getContentType() == ColumnTypes::IO)
         {
-            columnWidth = HWDesignDiagram::IO_COLUMN_WIDTH;
+            columnWidth = GraphicsColumnConstants::IO_COLUMN_WIDTH;
         }
 
         QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 

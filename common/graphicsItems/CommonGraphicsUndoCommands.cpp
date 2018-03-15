@@ -13,6 +13,9 @@
 
 #include "IGraphicsItemStack.h"
 
+#include <common/graphicsItems/GraphicsColumnConstants.h>
+
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/SystemDesign/HWMappingItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
@@ -22,11 +25,13 @@
 //-----------------------------------------------------------------------------
 // Function: ItemAddCommand()
 //-----------------------------------------------------------------------------
-ItemAddCommand::ItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, QUndoCommand* parent) :
+ItemAddCommand::ItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, DesignDiagram* diagram,
+    QUndoCommand* parent):
 QUndoCommand(parent),
 item_(item),
 stack_(stack),
-del_(false)
+del_(false),
+diagram_(diagram)
 {
 }
 
@@ -67,19 +72,25 @@ void ItemAddCommand::redo()
     // Child commands need not be executed because the other items change their position
     // in a deterministic way.
     //QUndoCommand::redo();
+
+    if (item_->scenePos().y() + GraphicsColumnConstants::MIN_Y_PLACEMENT > item_->scene()->height())
+    {
+        diagram_->resetSceneRectangleForItems();
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
 ItemMoveCommand::ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
-                                 QUndoCommand* parent):
+    DesignDiagram* diagram, QUndoCommand* parent):
 QUndoCommand(parent),
 item_(item),
 oldPos_(oldPos),
 oldStack_(oldStack),
 newPos_(item->scenePos()),
-newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem()))
+newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem())),
+diagram_(diagram)
 {
     Q_ASSERT(oldStack != 0);
 }
@@ -88,14 +99,14 @@ newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem()))
 // Function: ItemMoveCommand::ItemMoveCommand()
 //-----------------------------------------------------------------------------
 ItemMoveCommand::ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
-                                 QPointF const& newPos, IGraphicsItemStack* newStack,
-                                 QUndoCommand* parent /*= 0*/):
+    QPointF const& newPos, IGraphicsItemStack* newStack, DesignDiagram* diagram, QUndoCommand* parent):
 QUndoCommand(parent),
 item_(item),
 oldPos_(oldPos),
 oldStack_(oldStack),
 newPos_(newPos),
-newStack_(newStack)
+newStack_(newStack),
+diagram_(diagram)
 {
     Q_ASSERT(oldStack != 0);
     Q_ASSERT(newStack != 0);
@@ -172,4 +183,9 @@ void ItemMoveCommand::redo()
 
     // Execute child commands.
     QUndoCommand::redo();
+
+    if (item_->scenePos().y() + GraphicsColumnConstants::MIN_Y_PLACEMENT > item_->scene()->height())
+    {
+        diagram_->resetSceneRectangleForItems();
+    }
 }

@@ -19,6 +19,7 @@
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 
 class SWInterfaceItem;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! Undo move command for SW interface.
@@ -30,26 +31,28 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item      The item to move.
-     *      @param [in] oldPos    The item's old position.
-     *      @param [in] oldStack  The item's old stack.
-     *      @param [in] parent    The parent command.
+     *      @param [in] item        The item to move.
+     *      @param [in] oldPos      The item's old position.
+     *      @param [in] oldStack    The item's old stack.
+     *      @param [in] diagram     Diagram containing the scene of the interface.
+     *      @param [in] parent      The parent command.
      */
     SWInterfaceMoveCommand(SWInterfaceItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
-        QUndoCommand* parent = 0);
+        DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Constructor.
      *
-     *      @param [in] item      The item to move.
-     *      @param [in] oldPos    The item's old position.
-     *      @param [in] oldStack  The item's old stack.
-     *      @param [in] oldPos    The item's new position.
-     *      @param [in] oldStack  The item's new stack.
-     *      @param [in] parent    The parent command.
+     *      @param [in] item        The item to move.
+     *      @param [in] oldPos      The item's old position.
+     *      @param [in] oldStack    The item's old stack.
+     *      @param [in] oldPos      The item's new position.
+     *      @param [in] oldStack    The item's new stack.
+     *      @param [in] diagram     Diagram containing the scene of the interface.
+     *      @param [in] parent      The parent command.
      */
     SWInterfaceMoveCommand(SWInterfaceItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
-                    QPointF const& newPos, IGraphicsItemStack* newStack, QUndoCommand* parent = 0);
+        QPointF const& newPos, IGraphicsItemStack* newStack, DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.

@@ -11,19 +11,62 @@
 
 #include "HWConnectionEndpoint.h"
 
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DesignDiagram.h>
+
+#include <designEditors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/OffPageConnectorItem.h>
+
 #include <common/KactusColors.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QPen>
+#include <QFont>
+#include <QGraphicsDropShadowEffect>
 
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndpont::HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, QVector2D const& dir):
-ConnectionEndpoint(parent)
+HWConnectionEndpoint::HWConnectionEndpoint(QSharedPointer<Component> containingComponent, QGraphicsItem* parent,
+    QVector2D const& dir):
+ConnectionEndpoint(parent),
+containingComponent_(containingComponent),
+parentComponentItem_(0),
+nameLabel_(new QGraphicsTextItem("", this)),
+offPageConnector_()
 {
     setDirection(dir);
+
+    QFont font = nameLabel_->font();
+    font.setPointSize(8);
+    nameLabel_->setFont(font);
+    nameLabel_->setFlag(ItemStacksBehindParent);
+
+    QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect;
+    shadow->setXOffset(0);
+    shadow->setYOffset(0);
+    shadow->setBlurRadius(5);
+    nameLabel_->setGraphicsEffect(shadow);
+
+    setFlag(ItemIsMovable);
+    setFlag(ItemIsSelectable);
+    setFlag(ItemSendsGeometryChanges);
+    setFlag(ItemSendsScenePositionChanges);
+
+    offPageConnector_ = new OffPageConnectorItem(this);
+    offPageConnector_->setPos(0.0, -GridSize * 3);
+    offPageConnector_->setFlag(ItemStacksBehindParent);
+    offPageConnector_->setVisible(false);
+
+    if (parent)
+    {
+        HWComponentItem* parentHW = dynamic_cast<HWComponentItem*>(parent);
+        if (parentHW)
+        {
+            parentComponentItem_ = parentHW;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -31,6 +74,14 @@ ConnectionEndpoint(parent)
 //-----------------------------------------------------------------------------
 HWConnectionEndpoint::~HWConnectionEndpoint()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::HWConnectionEndpoint()
+//-----------------------------------------------------------------------------
+ComponentItem* HWConnectionEndpoint::encompassingComp() const
+{
+    return parentComponentItem_;
 }
 
 //-----------------------------------------------------------------------------
@@ -74,6 +125,14 @@ void HWConnectionEndpoint::updateInterface()
     {
         setBrush(QBrush(KactusColors::INVALID_INTERFACE));
     }
+
+    updateEndPointGraphics();
+
+    nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
+
+    setLabelPosition();
+
+    offPageConnector_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,9 +144,68 @@ qreal HWConnectionEndpoint::getNameLength()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::getNameLabel()
+//-----------------------------------------------------------------------------
+QGraphicsTextItem* HWConnectionEndpoint::getNameLabel() const
+{
+    return nameLabel_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWConnectionEndpont::shortenNameLabel()
 //-----------------------------------------------------------------------------
 void HWConnectionEndpoint::shortenNameLabel(qreal /*width*/)
 {
 	
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::getOwnerComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> HWConnectionEndpoint::getOwnerComponent() const
+{
+    return containingComponent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::getOffPageConnector()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* HWConnectionEndpoint::getOffPageConnector()
+{
+    return offPageConnector_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::sceneIsLocked()
+//-----------------------------------------------------------------------------
+bool HWConnectionEndpoint::sceneIsLocked() const
+{
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram != 0 && diagram->isProtected())
+    {
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::mouseMoveEvent()
+//-----------------------------------------------------------------------------
+void HWConnectionEndpoint::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (!sceneIsLocked())
+    {
+        ConnectionEndpoint::mouseMoveEvent(event);
+
+        moveItemByMouse();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::setName()
+//-----------------------------------------------------------------------------
+void HWConnectionEndpoint::setName(QString const& /*name*/)
+{
+
 }

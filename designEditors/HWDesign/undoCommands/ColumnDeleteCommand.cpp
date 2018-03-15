@@ -36,10 +36,10 @@
 ColumnDeleteCommand::ColumnDeleteCommand(DesignDiagram* diagram, GraphicsColumnLayout* layout,
     GraphicsColumn* column, QUndoCommand* parent): 
 QUndoCommand(parent),
-    design_(diagram->getDesign()),
-    layout_(layout), 
-    columnItem_(column), 
-    del_(true)
+design_(diagram->getDesign()),
+layout_(layout),
+columnItem_(column),
+del_(true)
 {
     // Create child commands for removing interconnections.
     QList<GraphicsConnection*> connections;

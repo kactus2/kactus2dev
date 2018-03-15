@@ -20,6 +20,11 @@ namespace GraphicsColumnConstants
     const int SPACING = 30;
 
     const int IO_SPACING = 10;
+
+    //! Widths for design columns.
+    const int SYSTEM_COLUMN_WIDTH = 379;
+    const int COMPONENT_COLUMN_WIDTH = 319;
+    const int IO_COLUMN_WIDTH = 119;
 }
 
 #endif // GRAPHICSCOLUMNCONSTANTS_H

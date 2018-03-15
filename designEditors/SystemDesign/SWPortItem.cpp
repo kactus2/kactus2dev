@@ -13,7 +13,6 @@
 
 #include "SystemComponentItem.h"
 #include "HWMappingItem.h"
-#include "SWOffPageConnectorItem.h"
 
 #include <common/KactusColors.h>
 #include <common/graphicsItems/GraphicsConnection.h>
@@ -36,16 +35,14 @@
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
-      nameLabel_(name, this),
-      comInterface_(),
-      apiInterface_(),
-      oldPos_(),
-      oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this),
-      stubLineDefaultPen_(),
-      offPageConnector_(0)
+SWPortItem::SWPortItem(QString const& name, QSharedPointer<Component> containingComponent, QGraphicsItem *parent):
+SWConnectionEndpoint(containingComponent, name, parent),
+comInterface_(),
+apiInterface_(),
+oldPos_(),
+oldPortPositions_(),
+stubLine_(0, 0, 0, -GridSize, this),
+stubLineDefaultPen_()
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
@@ -56,16 +53,15 @@ SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
-      nameLabel_(this),
-      comInterface_(),
-      apiInterface_(apiIf),
-      oldPos_(),
-      oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this),
-      stubLineDefaultPen_(),
-      offPageConnector_(0)
+SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QSharedPointer<Component> containingComponent,
+    QGraphicsItem *parent):
+SWConnectionEndpoint(containingComponent, QString(""), parent),
+comInterface_(),
+apiInterface_(apiIf),
+oldPos_(),
+oldPortPositions_(),
+stubLine_(0, 0, 0, -GridSize, this),
+stubLineDefaultPen_()
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
@@ -76,16 +72,15 @@ SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
-      nameLabel_(this),
-      comInterface_(comIf),
-      apiInterface_(),
-      oldPos_(),
-      oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this),
-      stubLineDefaultPen_(),
-      offPageConnector_(0)
+SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QSharedPointer<Component> containingComponent,
+    QGraphicsItem *parent):
+SWConnectionEndpoint(containingComponent, QString(""), parent),
+comInterface_(comIf),
+apiInterface_(),
+oldPos_(),
+oldPortPositions_(),
+stubLine_(0, 0, 0, -GridSize, this),
+stubLineDefaultPen_()
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -115,7 +110,7 @@ QString SWPortItem::name() const
     }
     else
     {
-        return nameLabel_.toPlainText();
+        return getNameLabel()->toPlainText();
     }
 }
 
@@ -136,7 +131,7 @@ void SWPortItem::setName(const QString& name)
     }
     else
     {
-        nameLabel_.setPlainText(name);
+        getNameLabel()->setPlainText(name);
     }
 
 	updateInterface();
@@ -266,11 +261,11 @@ void SWPortItem::updateInterface()
     setPolygon(shape);
 
     // Update the name label.
-    nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
+    getNameLabel()->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
 
 	setLabelPosition();
 
-    offPageConnector_->updateInterface();
+    getOffPageConnector()->updateInterface();
     emit contentChanged();
 }
 
@@ -293,7 +288,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
         if (other->getType() == ENDPOINT_TYPE_API)
         {
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(nameLabel_.toPlainText());
+            apiInterface_->setName(getNameLabel()->toPlainText());
             apiInterface_->setApiType(other->getApiInterface()->getApiType());
             
             if (other->isHierarchical())
@@ -317,7 +312,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
         else if (other->getType() == ENDPOINT_TYPE_COM)
         {
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(nameLabel_.toPlainText());
+            comInterface_->setName(getNameLabel()->toPlainText());
             comInterface_->setComType(other->getComInterface()->getComType());
             comInterface_->setTransferType(other->getComInterface()->getTransferType());
 
@@ -450,27 +445,6 @@ bool SWPortItem::isConnectionValid(ConnectionEndpoint const* other) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::encompassingComp()
-//-----------------------------------------------------------------------------
-ComponentItem* SWPortItem::encompassingComp() const
-{
-    return static_cast<ComponentItem*>(parentItem());
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWPortItem::getOwnerComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> SWPortItem::getOwnerComponent() const
-{
-	ComponentItem* comp = encompassingComp();
-	Q_ASSERT(comp);
-
-	QSharedPointer<Component> compModel = comp->componentModel();
-	Q_ASSERT(compModel);
-	return compModel;
-}
-
-//-----------------------------------------------------------------------------
 // Function: addConnection()
 //-----------------------------------------------------------------------------
 void SWPortItem::addConnection(GraphicsConnection* connection)
@@ -556,7 +530,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
     }
     else if (change == ItemRotationHasChanged)
     {
-        nameLabel_.setRotation(-rotation());
+        getNameLabel()->setRotation(-rotation());
     }
     else if (change == ItemScenePositionHasChanged)
     {
@@ -682,7 +656,7 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     // Check if the port position was really changed.
     if (oldPos_ != pos())
     {
-        cmd = QSharedPointer<QUndoCommand>(new SWPortMoveCommand(this, oldPos_));
+        cmd = QSharedPointer<QUndoCommand>(new SWPortMoveCommand(this, oldPos_, diagram));
     }
     else
     {
@@ -696,7 +670,7 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     {
         if (cur.key()->pos() != cur.value())
         {
-            new SWPortMoveCommand(cur.key(), cur.value(), cmd.data());
+            new SWPortMoveCommand(cur.key(), cur.value(), diagram, cmd.data());
         }
 
         ++cur;
@@ -718,7 +692,8 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())
     {
-        static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+        diagram->getEditProvider()->addCommand(cmd);
+        cmd->redo();
     }
 }
 
@@ -770,27 +745,7 @@ void SWPortItem::initialize()
     stubLineDefaultPen_.setWidth(3);
     stubLine_.setPen(stubLineDefaultPen_);
 
-    QFont font = nameLabel_.font();
-    font.setPointSize(8);
-    nameLabel_.setFont(font);
-    nameLabel_.setFlag(ItemStacksBehindParent);
-
-    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
-    shadow->setXOffset(0);
-    shadow->setYOffset(0);
-    shadow->setBlurRadius(5);
-    nameLabel_.setGraphicsEffect(shadow);
-
-    setFlag(ItemIsMovable);
-    setFlag(ItemIsSelectable);
-    setFlag(ItemSendsGeometryChanges);
-    setFlag(ItemSendsScenePositionChanges);
-
-    // Create the off-page connector.
-    offPageConnector_ = new SWOffPageConnectorItem(this);
-    offPageConnector_->setPos(0.0, -GridSize * 3);
-    offPageConnector_->setFlag(ItemStacksBehindParent);
-    offPageConnector_->setVisible(false);
+    SWConnectionEndpoint::initialize();
 
     updateInterface();
 }
@@ -863,7 +818,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         if (type.getType() == VLNV::APIDEFINITION)
         {
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(nameLabel_.toPlainText());
+            apiInterface_->setName(getNameLabel()->toPlainText());
             apiInterface_->setApiType(type);
 
             getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
@@ -874,7 +829,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         else if (type.getType() == VLNV::COMDEFINITION)
         {
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(nameLabel_.toPlainText());
+            comInterface_->setName(getNameLabel()->toPlainText());
             comInterface_->setComType(type);
             getOwnerComponent()->getVendorExtensions()->append(comInterface_);
 
@@ -963,14 +918,6 @@ bool SWPortItem::isExclusive() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::getOffPageConnector()
-//-----------------------------------------------------------------------------
-ConnectionEndpoint* SWPortItem::getOffPageConnector()
-{
-    return offPageConnector_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SWPortItem::hasInvalidConnections()
 //-----------------------------------------------------------------------------
 bool SWPortItem::hasInvalidConnections()
@@ -993,17 +940,17 @@ bool SWPortItem::hasInvalidConnections()
 //-----------------------------------------------------------------------------
 void SWPortItem::setLabelPosition()
 {
-	qreal nameWidth = nameLabel_.boundingRect().width();
-	qreal nameHeight = nameLabel_.boundingRect().height();
+    qreal nameWidth = getNameLabel()->boundingRect().width();
+    qreal nameHeight = getNameLabel()->boundingRect().height();
 
 	if (pos().x() < 0)
 	{
-		nameLabel_.setPos(nameHeight/2, GridSize);
+        getNameLabel()->setPos(nameHeight/2, GridSize);
 	}
 	// Otherwise the port is directed to the right.
 	else
 	{
-		nameLabel_.setPos(-nameHeight/2, GridSize + nameWidth);
+        getNameLabel()->setPos(-nameHeight/2, GridSize + nameWidth);
 	}
 }
 
@@ -1028,7 +975,7 @@ void SWPortItem::checkDirection()
 //-----------------------------------------------------------------------------
 qreal SWPortItem::getNameLength()
 {
-	QFont font = nameLabel_.font();
+    QFont font = getNameLabel()->font();
 
 	return NamelabelWidth::getTextLength( name(), font);
 }
@@ -1038,10 +985,40 @@ qreal SWPortItem::getNameLength()
 //-----------------------------------------------------------------------------
 void SWPortItem::shortenNameLabel( qreal width )
 {
-	QFont font = nameLabel_.font();
+    QFont font = getNameLabel()->font();
 	QString nameLabelText = NamelabelWidth::setNameLabel( name(), font, width);
-	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
-		+ nameLabelText + "</div>");
+    getNameLabel()->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + nameLabelText +
+        "</div>");
 
 	setLabelPosition();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::isCom()
+//-----------------------------------------------------------------------------
+bool SWPortItem::isCom() const
+{
+    if (comInterface_)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::isApi()
+//-----------------------------------------------------------------------------
+bool SWPortItem::isApi() const
+{
+    if (apiInterface_)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

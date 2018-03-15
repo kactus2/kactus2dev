@@ -17,6 +17,7 @@
 #include <designEditors/HWDesign/undoCommands/HWColumnAddCommand.h>
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <IPXACTmodels/Design/AdHocConnection.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -81,7 +82,8 @@ void TopAdHocVisibilityChangeCommand::setupColumnAddition(HWDesignDiagram* diagr
     }
 
     QSharedPointer<ColumnDesc> newColumnDescription(
-        new ColumnDesc(QString("IO"), ColumnTypes::IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH));
+        new ColumnDesc(QString("IO"), ColumnTypes::IO, 0, GraphicsColumnConstants::IO_COLUMN_WIDTH));
+
     HWColumn* newColumn(new HWColumn(newColumnDescription, diagramLayout));
 
     new HWColumnAddCommand(diagramLayout, newColumn, diagram, this);

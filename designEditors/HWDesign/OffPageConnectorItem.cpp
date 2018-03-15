@@ -23,18 +23,13 @@
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::OffPageConnectorItem()
 //-----------------------------------------------------------------------------
-OffPageConnectorItem::OffPageConnectorItem(HWConnectionEndpoint* parent)
-    : HWConnectionEndpoint(parent),
-      parent_(parent)        
+OffPageConnectorItem::OffPageConnectorItem(ConnectionEndpoint* parent):
+ConnectionEndpoint(parent),
+parent_(parent)
 {
     Q_ASSERT(parent != 0);
 
-    setType(parent->getType());
-
     int squareSize = GridSize;
-    /*  /\
-     *  ||
-     */
     QPolygonF shape;
     shape << QPointF(-squareSize / 2,  squareSize / 2)
           << QPointF(-squareSize / 2, -squareSize / 2)
@@ -111,7 +106,7 @@ void OffPageConnectorItem::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 void OffPageConnectorItem::addConnection(GraphicsConnection* connection)
 {
-    HWConnectionEndpoint::addConnection(connection);
+    ConnectionEndpoint::addConnection(connection);
     connection->setRoutingMode(GraphicsConnection::ROUTING_MODE_OFFPAGE);
 
     setVisible(true);
@@ -122,7 +117,7 @@ void OffPageConnectorItem::addConnection(GraphicsConnection* connection)
 //-----------------------------------------------------------------------------
 void OffPageConnectorItem::removeConnection(GraphicsConnection* connection)
 {
-    HWConnectionEndpoint::removeConnection(connection);
+    ConnectionEndpoint::removeConnection(connection);
     connection->setRoutingMode(GraphicsConnection::ROUTING_MODE_NORMAL);
 
     if (getConnections().size() == 0)
@@ -235,19 +230,27 @@ QSharedPointer<Port> OffPageConnectorItem::getPort() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: OffPageConnectorItem::onConnect()
+// Function: OffPageConnectorItem::getComInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComInterface> OffPageConnectorItem::getComInterface() const
+{
+    return parent_->getComInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::getApiInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<ApiInterface> OffPageConnectorItem::getApiInterface() const
+{
+    return parent_->getApiInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::isHierarchical()
 //-----------------------------------------------------------------------------
 bool OffPageConnectorItem::isHierarchical() const
 {
     return parent_->isHierarchical();
-}
-
-//-----------------------------------------------------------------------------
-// Function: OffPageConnectorItem::setInterfaceMode()
-//-----------------------------------------------------------------------------
-void OffPageConnectorItem::setInterfaceMode(General::InterfaceMode mode)
-{
-    parent_->setInterfaceMode(mode);
 }
 
 //-----------------------------------------------------------------------------
@@ -272,4 +275,44 @@ QVariant OffPageConnectorItem::itemChange(GraphicsItemChange change, QVariant co
     }
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::getType()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint::EndpointType OffPageConnectorItem::getType() const
+{
+    return parent_->getType();
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::isBus()
+//-----------------------------------------------------------------------------
+bool OffPageConnectorItem::isBus() const
+{
+    return parent_->isBus();
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::isAdHoc()
+//-----------------------------------------------------------------------------
+bool OffPageConnectorItem::isAdHoc() const
+{
+    return parent_->isAdHoc();
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::isCom()
+//-----------------------------------------------------------------------------
+bool OffPageConnectorItem::isCom() const
+{
+    return parent_->isCom();
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::isApi()
+//-----------------------------------------------------------------------------
+bool OffPageConnectorItem::isApi() const
+{
+    return parent_->isApi();
 }

@@ -21,6 +21,7 @@ class ComponentItem;
 class IGraphicsItemStack;
 class SystemComponentItem;
 class SWPortItem;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! SWPortAddCommand class.
@@ -31,20 +32,24 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The component to which to add a port.
-     *      @param [in] pos        The position where to add the port.
-     *      @param [in] parent     The parent command.
+     *      @param [in] component   The component to which to add a port.
+     *      @param [in] pos         The position where to add the port.
+     *      @param [in] diagram     Diagram containing the scene of the component.
+     *      @param [in] parent      The parent command.
      */
-    SWPortAddCommand(SystemComponentItem* component, QPointF const& pos, QUndoCommand* parent = 0);
+    SWPortAddCommand(SystemComponentItem* component, QPointF const& pos, DesignDiagram* diagram,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The component to which to add a port.
-     *      @param [in] port       The port to add.
-     *      @param [in] parent     The parent command.
+     *      @param [in] component   The component to which to add a port.
+     *      @param [in] port        The port to add.
+     *      @param [in] diagram     Diagram containing the scene of the component.
+     *      @param [in] parent      The parent command.
      */
-    SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, QUndoCommand* parent = 0);
+    SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, DesignDiagram* diagram,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -84,6 +89,9 @@ private:
 
     //! Boolean flag for indicating if the port should be deleted in the destructor.
     bool del_;
+
+    //! Diagram containing the scene of the component.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

@@ -15,6 +15,7 @@
 class Component;
 class HWComponentItem;
 class BusPortItem;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! PortPasteCommand class.
@@ -27,11 +28,13 @@ public:
      *
 	 *      Creates the child commands for adding physical ports to the component model. 
 	 *
-     *      @param [in] destComponent  The component to which to copy a port.
-	 *      @param [in] port           The port to paste.
-     *      @param [in] parent         The parent command.
+     *      @param [in] destComponent   The component to which to copy a port.
+	 *      @param [in] port            The port to paste.
+     *      @param [in] diagram         Diagram containing the scene of the port.
+     *      @param [in] parent          The parent command.
      */
-    PortPasteCommand(HWComponentItem* destComponent, BusPortItem* port, QUndoCommand* parent = 0);
+    PortPasteCommand(HWComponentItem* destComponent, BusPortItem* port, DesignDiagram* diagram,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -63,9 +66,9 @@ private:
     //! The diagram port.
     BusPortItem* port_;
 
-    //! The graphics scene.
-    QGraphicsScene* scene_;
-
 	//! Boolean flag for indicating if the port should be deleted in the destructor.
     bool del_;
+
+    //! Diagram containing the scene of the port.
+    DesignDiagram* diagram_;
 };

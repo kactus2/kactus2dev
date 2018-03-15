@@ -46,10 +46,12 @@ del_(true)
     if (removePorts)
     {
         // Create copies of the related ports and remove commands for them.
-        QList<QSharedPointer<Port> > ports = interface_->getAllPorts();
+        QList<QSharedPointer<Port> > ports =
+            interface_->getOwnerComponent()->getPortsMappedInInterface(busIf_->name());
         foreach (QSharedPointer<Port> port, ports)
         {
-            DeletePhysicalPortCommand* delCmd = new DeletePhysicalPortCommand(interface_->getOwnerComponent(), port, this);
+            DeletePhysicalPortCommand* delCmd =
+                new DeletePhysicalPortCommand(interface_->getOwnerComponent(), port, this);
 
             // If the port is visible as ad-hoc in the current design, it must be hidden.
             if (diagram->getDiagramAdHocPort(port->name()) != 0)
@@ -94,7 +96,9 @@ void InterfaceDeleteCommand::undo()
     // Redefine the interface.
     if (busIf_ != 0)
     {
-        interface_->define(busIf_);
+        interface_->getOwnerComponent()->getBusInterfaces()->append(busIf_);
+        interface_->setBusInterface(busIf_);
+        interface_->updateInterface();
 
         diagram_->getDesign()->getVendorExtensions()->append(interface_->getDataExtension());
     }

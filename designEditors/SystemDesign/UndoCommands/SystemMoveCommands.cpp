@@ -11,6 +11,7 @@
 
 #include "SystemMoveCommands.h"
 
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/SystemDesign/SystemComponentItem.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
@@ -54,11 +55,13 @@ void SWConnectionMoveCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
-SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QUndoCommand* parent):
+SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, DesignDiagram* diagram,
+    QUndoCommand* parent):
 QUndoCommand(parent),
 port_(port),
 oldPos_(oldPos),
-newPos_(port->pos())
+newPos_(port->pos()),
+diagram_(diagram)
 {
 }
 
@@ -66,11 +69,12 @@ newPos_(port->pos())
 // Function: SWPortMoveCommand::SWPortMoveCommand()
 //-----------------------------------------------------------------------------
 SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QPointF const& newPos,
-    QUndoCommand* parent /*= 0*/):
+    DesignDiagram* diagram, QUndoCommand* parent):
 QUndoCommand(parent),
 port_(port),
 oldPos_(oldPos),
-newPos_(newPos)
+newPos_(newPos),
+diagram_(diagram)
 {
 
 }
@@ -108,4 +112,6 @@ void SWPortMoveCommand::redo()
 
     // Execute child commands.
     QUndoCommand::redo();
+
+    diagram_->resetSceneRectangleForItems();
 }

@@ -21,6 +21,8 @@
 class GraphicsColumnLayout;
 class GraphicsColumn;
 class Design;
+class DesignDiagram;
+
 //-----------------------------------------------------------------------------
 //! GraphicsColumnMoveCommand class.
 //-----------------------------------------------------------------------------
@@ -84,11 +86,12 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] column   The column.
-     *      @param [in] newDesc  The column's new description.
+     *      @param [in] column      The column.
+     *      @param [in] newDesc     The column's new description.
+     *      @param [in] diagram     Diagram containing the scene of the column.
      */
     GraphicsColumnChangeCommand(GraphicsColumn* column, QSharedPointer<ColumnDesc> newDesc,
-        QSharedPointer<Design> containingDesign, QUndoCommand* parent = 0);
+        DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -130,6 +133,9 @@ private:
 
     //! The design containing the modified column.
     QSharedPointer<Design> containingDesign_;
+
+    //! Diagram containing the scene of the column.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------
@@ -141,11 +147,12 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] column    The column.
-     *      @param [in] oldWidth  The column's old width.
+     *      @param [in] column      The column.
+     *      @param [in] oldWidth    The column's old width.
+     *      @param [in] diagram     Diagram containing the scene of the column.
      */
-    GraphicsColumnResizeCommand(GraphicsColumn* column, unsigned int oldWidth,
-                                QUndoCommand* parent = 0);
+    GraphicsColumnResizeCommand(GraphicsColumn* column, unsigned int oldWidth, DesignDiagram* diagram,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -167,6 +174,13 @@ private:
     GraphicsColumnResizeCommand(GraphicsColumnResizeCommand const& rhs);
     GraphicsColumnResizeCommand& operator=(GraphicsColumnResizeCommand const& rhs);
 
+    /*!
+     *  Change the width of the column.
+     *
+     *      @param [in] selectedWidth   The new width for the column.
+     */
+    void changeWidth(unsigned int selectedWidth);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -179,6 +193,9 @@ private:
 
     //! The new width.
     unsigned int newWidth_;
+
+    //! Diagram containing the scene of the column.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

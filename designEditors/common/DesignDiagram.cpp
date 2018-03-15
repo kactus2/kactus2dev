@@ -18,6 +18,7 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
+#include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/diagramgrid.h>
@@ -112,9 +113,24 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QString const
     loading_ = true;
     loadDesign(design);
     loadStickyNotes();
+
+    resetSceneRectangleForItems();
+
     loading_ = false;
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::resetSceneRectangleForItems()
+//-----------------------------------------------------------------------------
+void DesignDiagram::resetSceneRectangleForItems()
+{
+    QRectF requiredRectangle = itemsBoundingRect();
+    qreal requiredWidth = requiredRectangle.width() + GraphicsColumnConstants::MIN_Y_PLACEMENT;
+    qreal requiredHeight = requiredRectangle.height() + GraphicsColumnConstants::MIN_Y_PLACEMENT;
+
+    setSceneRect(0, 0, requiredWidth, requiredHeight + GraphicsColumnConstants::MIN_Y_PLACEMENT);
 }
 
 //-----------------------------------------------------------------------------

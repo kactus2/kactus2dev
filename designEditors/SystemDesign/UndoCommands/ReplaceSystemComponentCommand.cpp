@@ -36,13 +36,13 @@
 // Function: ReplaceSystemComponentCommand::ReplaceSystemComponentCommand()
 //-----------------------------------------------------------------------------
 ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem* oldComp,
-                                                             SystemComponentItem* newComp, bool existing,
-                                                             bool keepOld, QSharedPointer<Design> containingDesign,
-                                                             QUndoCommand* parent):
+    SystemComponentItem* newComp, bool existing, bool keepOld, QSharedPointer<Design> containingDesign,
+    DesignDiagram* diagram, QUndoCommand* parent):
 QUndoCommand(parent),
 oldComp_(oldComp),
 newComp_(newComp),
-existing_(existing)
+existing_(existing),
+diagram_(diagram)
 {
     // Create a move/add command for the new component.
     if (existing)
@@ -50,19 +50,19 @@ existing_(existing)
         if (oldComp_->type() == newComp_->type())
         {
             new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(), oldComp_->scenePos(),
-                oldComp_->getParentStack(), this);
+                oldComp_->getParentStack(), diagram, this);
 
             if (keepOld)
             {
                 new ItemMoveCommand(oldComp_, oldComp_->scenePos(), oldComp_->getParentStack(),
-                    newComp_->scenePos(), newComp_->getParentStack(), this);
+                    newComp_->scenePos(), newComp_->getParentStack(), diagram, this);
             }
         }
     }
     else
     {
         SystemComponentAddCommand* addCmd =
-            new SystemComponentAddCommand(oldComp_->getParentStack(), newComp_, containingDesign, this);
+            new SystemComponentAddCommand(oldComp_->getParentStack(), newComp_, diagram, this);
 
         connect(addCmd, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -112,7 +112,7 @@ void ReplaceSystemComponentCommand::changeConnections(SystemComponentItem* oldCo
             if (newEndpoint != 0)
             {
                 // Create a move command to move the port to the same place where it is in the old component.
-                new SWPortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
+                new SWPortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), diagram_, this);
 
                 // Exchange connections between the endpoints.
                 foreach (GraphicsConnection* connection, oldEndpoint->getConnections())

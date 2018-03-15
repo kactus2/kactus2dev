@@ -14,6 +14,8 @@
 #include "GraphicsColumn.h"
 #include "GraphicsColumnLayout.h"
 
+#include <designEditors/common/DesignDiagram.h>
+
 #include <IPXACTmodels/Design/Design.h>
 
 //-----------------------------------------------------------------------------
@@ -66,15 +68,14 @@ void GraphicsColumnMoveCommand::redo()
 // Function: GraphicsColumnChangeCommand()
 //-----------------------------------------------------------------------------
 GraphicsColumnChangeCommand::GraphicsColumnChangeCommand(GraphicsColumn* column,
-                                                         QSharedPointer<ColumnDesc> newDesc,
-                                                         QSharedPointer<Design> containingDesign,
-                                                         QUndoCommand* parent):
+    QSharedPointer<ColumnDesc> newDesc, DesignDiagram* diagram, QUndoCommand* parent):
 QUndoCommand(parent),
 columnItem_(column),
 columnDesc_(column->getColumnDesc()),
 oldDesc_(new ColumnDesc(*column->getColumnDesc().data())),
 newDesc_(newDesc),
-containingDesign_(containingDesign)
+containingDesign_(diagram->getDesign()),
+diagram_(diagram)
 {
 }
 
@@ -113,17 +114,23 @@ void GraphicsColumnChangeCommand::changeModifiedColumnInDesign(QSharedPointer<Co
     columnDesc_->setWidth(newColumn->getWidth());
 
     columnItem_->setColumnDesc(columnDesc_);
+
+    if (newDesc_ && oldDesc_ && newDesc_->getWidth() != oldDesc_->getWidth())
+    {
+        diagram_->resetSceneRectangleForItems();
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumnResizeCommand::GraphicsColumnResizeCommand()
 //-----------------------------------------------------------------------------
 GraphicsColumnResizeCommand::GraphicsColumnResizeCommand(GraphicsColumn* column, unsigned int oldWidth,
-                                                         QUndoCommand* parent)
-    : QUndoCommand(parent),
-      column_(column),
-      oldWidth_(oldWidth),
-      newWidth_(column_->getColumnDesc()->getWidth())
+    DesignDiagram* diagram, QUndoCommand* parent):
+QUndoCommand(parent),
+column_(column),
+oldWidth_(oldWidth),
+newWidth_(column_->getColumnDesc()->getWidth()),
+diagram_(diagram)
 {
 }
 
@@ -140,7 +147,7 @@ GraphicsColumnResizeCommand::~GraphicsColumnResizeCommand()
 //-----------------------------------------------------------------------------
 void GraphicsColumnResizeCommand::undo()
 {
-    column_->setWidth(oldWidth_);
+    changeWidth(oldWidth_);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,5 +155,18 @@ void GraphicsColumnResizeCommand::undo()
 //-----------------------------------------------------------------------------
 void GraphicsColumnResizeCommand::redo()
 {
-    column_->setWidth(newWidth_);
+    changeWidth(newWidth_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnUndoCommands::changeWidth()
+//-----------------------------------------------------------------------------
+void GraphicsColumnResizeCommand::changeWidth(unsigned int selectedWidth)
+{
+    column_->setWidth(selectedWidth);
+
+    if (oldWidth_ != newWidth_)
+    {
+        diagram_->resetSceneRectangleForItems();
+    }
 }

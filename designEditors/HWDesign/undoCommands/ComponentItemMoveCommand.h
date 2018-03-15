@@ -20,6 +20,7 @@
 
 class IGraphicsItemStack;
 class ComponentItem;
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! Undo command for moving component instances in a design.
@@ -30,13 +31,14 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item      The component item to move.
-     *      @param [in] oldPos    The item's old position.
-     *      @param [in] oldStack  The item's old stack.
-     *      @param [in] parent    The parent command.
+     *      @param [in] item        The component item to move.
+     *      @param [in] oldPos      The item's old position.
+     *      @param [in] oldStack    The item's old stack.
+     *      @param [in] diagram     Diagram containing the scene of the component item.
+     *      @param [in] parent      The parent command.
      */
     ComponentItemMoveCommand(ComponentItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
-        QUndoCommand* parent = 0);
+        DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     //! The destructor.
     ~ComponentItemMoveCommand();
@@ -51,6 +53,11 @@ private:
     // Disable copying.
     ComponentItemMoveCommand(ComponentItemMoveCommand const& rhs);
     ComponentItemMoveCommand& operator=(ComponentItemMoveCommand const& rhs);
+
+    /*!
+     *  Reset the scene area.
+     */
+    void resetSceneRectangle();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -70,6 +77,9 @@ private:
 
     //! The new parent stack.
     IGraphicsItemStack* newStack_;
+
+    //! Diagram containing the scene of the component item.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

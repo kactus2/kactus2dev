@@ -45,14 +45,6 @@ class SystemDesignDiagram : public ComponentDesignDiagram
     Q_OBJECT
 
 public:
-    // Column widths.
-    enum
-    {
-		SYSTEM_COLUMN_WIDTH = 379,
-        SW_COLUMN_WIDTH = 319,
-		IO_COLUMN_WIDTH = 119
-    };
-
 
     //-----------------------------------------------------------------------------
     //! Clipboard copy data for a single API/COM port.

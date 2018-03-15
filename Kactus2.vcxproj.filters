@@ -1603,9 +1603,6 @@
     <ClCompile Include="GeneratedFiles\moc_SWInterfaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SWOffPageConnectorItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SWPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1631,9 +1628,6 @@
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\SWInterfaceItem.cpp">
-      <Filter>Source Files\designEditors\SystemDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\SystemDesign\SWOffPageConnectorItem.cpp">
       <Filter>Source Files\designEditors\SystemDesign</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\SWPortItem.cpp">
@@ -4792,9 +4786,6 @@
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SWInterfaceItem.h">
-      <Filter>Header Files\designEditors\SystemDesign</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\SystemDesign\SWOffPageConnectorItem.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SWPortItem.h">

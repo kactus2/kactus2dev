@@ -11,6 +11,9 @@
 
 #include "PortPasteCommand.h"
 
+#include <common/graphicsItems/GraphicsColumnConstants.h>
+
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/BusPortItem.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 
@@ -20,11 +23,12 @@
 //-----------------------------------------------------------------------------
 // Function: PortPasteCommand::PortPasteCommand()
 //-----------------------------------------------------------------------------
-PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, BusPortItem* port, QUndoCommand* parent) : 
+PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, BusPortItem* port, DesignDiagram* diagram,
+    QUndoCommand* parent):
 QUndoCommand(parent),
-    component_(destComponent), 
-    port_(port), 
-    scene_(destComponent->scene())
+component_(destComponent),
+port_(port),
+diagram_(diagram)
 {
    
 }
@@ -49,7 +53,7 @@ void PortPasteCommand::undo()
 
     // Remove the port from the component and from the scene
     component_->removePort(port_);
-    scene_->removeItem(port_);
+    diagram_->removeItem(port_);
 
     del_ = true;
 
@@ -71,4 +75,9 @@ void PortPasteCommand::redo()
     port_->updateInterface();
 
     del_ = false;
+
+    if (port_->scenePos().y() + GraphicsColumnConstants::MIN_Y_PLACEMENT > diagram_->sceneRect().height())
+    {
+        diagram_->resetSceneRectangleForItems();
+    }
 }

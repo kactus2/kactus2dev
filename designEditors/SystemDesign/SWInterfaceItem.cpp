@@ -11,8 +11,6 @@
 
 #include "SWInterfaceItem.h"
 
-#include "SWOffPageConnectorItem.h"
-
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
@@ -20,6 +18,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/HWDesign/OffPageConnectorItem.h>
 #include <designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -36,15 +35,13 @@
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QString const& name,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
-nameLabel_(name, this),
+SWConnectionEndpoint(component, name, parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 comInterface_(),
 apiInterface_(),
 oldPos_(),
 oldStack_(0),
 oldInterfacePositions_(),
-offPageConnector_(0),
 graphicsData_(interfaceGraphics)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
@@ -57,15 +54,13 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
-nameLabel_(this),
+SWConnectionEndpoint(component, QString(""), parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 comInterface_(),
 apiInterface_(apiIf),
 oldPos_(),
 oldStack_(0),
 oldInterfacePositions_(),
-offPageConnector_(0),
 graphicsData_(interfaceGraphics)
 {
     Q_ASSERT(apiIf != 0);
@@ -79,15 +74,13 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
-nameLabel_(this),
+SWConnectionEndpoint(component, QString(""), parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 comInterface_(comIf),
 apiInterface_(),
 oldPos_(),
 oldStack_(0),
 oldInterfacePositions_(),
-offPageConnector_(0),
 graphicsData_(interfaceGraphics)
 {
     Q_ASSERT(comIf != 0);
@@ -118,7 +111,7 @@ QString SWInterfaceItem::name() const
     }
     else
     {
-        return nameLabel_.toPlainText();
+        return getNameLabel()->toPlainText();
     }
 }
 
@@ -139,7 +132,7 @@ void SWInterfaceItem::setName(const QString& name)
     }
     else
     {
-        nameLabel_.setPlainText(name);
+        getNameLabel()->setPlainText(name);
     }
 
     graphicsData_->setName(name);
@@ -255,11 +248,11 @@ void SWInterfaceItem::updateInterface()
     setPolygon(shape);
 
     // Update the name label.
-    nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
+    getNameLabel()->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
 
 	setLabelPosition();
 
-    offPageConnector_->updateInterface();
+    getOffPageConnector()->updateInterface();
     emit contentChanged();
 }
 
@@ -420,22 +413,6 @@ bool SWInterfaceItem::isConnectionValid(ConnectionEndpoint const* other) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWInterfaceItem::encompassingComp()
-//-----------------------------------------------------------------------------
-ComponentItem* SWInterfaceItem::encompassingComp() const
-{
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWInterfaceItem::getOwnerComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> SWInterfaceItem::getOwnerComponent() const
-{
-	return component_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::getInterfaceGraphicsData()
 //-----------------------------------------------------------------------------
 QSharedPointer<InterfaceGraphicsData> SWInterfaceItem::getInterfaceGraphicsData() const
@@ -454,7 +431,7 @@ QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& 
     }
     else if (change == ItemRotationHasChanged)
     {
-        nameLabel_.setRotation(-rotation());
+        getNameLabel()->setRotation(-rotation());
 
         graphicsData_->setDirection(getDirection());
     }
@@ -542,7 +519,8 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     SWConnectionEndpoint::mouseReleaseEvent(event);
 
-    if (oldStack_ != 0)
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram && oldStack_ != 0)
     {
         IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(stack != 0);
@@ -553,7 +531,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Check if the interface position was really changed.
         if (oldPos_ != scenePos())
         {
-            cmd = QSharedPointer<QUndoCommand>(new SWInterfaceMoveCommand(this, oldPos_, oldStack_));
+            cmd = QSharedPointer<QUndoCommand>(new SWInterfaceMoveCommand(this, oldPos_, oldStack_, diagram));
         }
         else
         {
@@ -568,7 +546,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             if (cur.key()->scenePos() != cur.value() && cur.key() != this)
             {
                 new SWInterfaceMoveCommand(cur.key(), cur.value(),
-                    dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()), cmd.data());
+                    dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()), diagram, cmd.data());
             }
 
             ++cur;
@@ -590,8 +568,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has changes.
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
         {
-            static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
-
+            diagram->getEditProvider()->addCommand(cmd);
             cmd->redo();
         }
 
@@ -640,28 +617,7 @@ void SWInterfaceItem::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 void SWInterfaceItem::initialize()
 {
-    QFont font = nameLabel_.font();
-    font.setPointSize(8);
-    nameLabel_.setFont(font);
-    nameLabel_.setFlag(ItemStacksBehindParent);
-    nameLabel_.setRotation(-rotation());
-
-    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
-    shadow->setXOffset(0);
-    shadow->setYOffset(0);
-    shadow->setBlurRadius(5);
-    nameLabel_.setGraphicsEffect(shadow);
-
-    setFlag(ItemIsMovable);
-    setFlag(ItemIsSelectable);
-    setFlag(ItemSendsGeometryChanges);
-    setFlag(ItemSendsScenePositionChanges);
-
-    // Create the off-page connector.
-    offPageConnector_ = new SWOffPageConnectorItem(this);
-    offPageConnector_->setPos(0.0, -GridSize * 3);
-    offPageConnector_->setFlag(ItemStacksBehindParent);
-    offPageConnector_->setVisible(false);
+    SWConnectionEndpoint::initialize();
 
     graphicsData_->setName(name());
 
@@ -723,7 +679,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
         if (type.getType() == VLNV::APIDEFINITION)
         {
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(nameLabel_.toPlainText());
+            apiInterface_->setName(getNameLabel()->toPlainText());
             apiInterface_->setApiType(type);
             getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
 
@@ -733,7 +689,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
         else if (type.getType() == VLNV::COMDEFINITION)
         {
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(nameLabel_.toPlainText());
+            comInterface_->setName(getNameLabel()->toPlainText());
             comInterface_->setComType(type);
             getOwnerComponent()->getVendorExtensions()->append(comInterface_);
 
@@ -831,14 +787,6 @@ bool SWInterfaceItem::isExclusive() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWInterfaceItem::getOffPageConnector()
-//-----------------------------------------------------------------------------
-ConnectionEndpoint* SWInterfaceItem::getOffPageConnector()
-{
-    return offPageConnector_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::define()
 //-----------------------------------------------------------------------------
 void SWInterfaceItem::define(QSharedPointer<ApiInterface> apiIf)
@@ -885,16 +833,46 @@ void SWInterfaceItem::undefine()
 //-----------------------------------------------------------------------------
 void SWInterfaceItem::setLabelPosition()
 {
-	qreal nameWidth = nameLabel_.boundingRect().width();
+    qreal nameWidth = getNameLabel()->boundingRect().width();
 
 	// Check if the port is directed to the left.
 	if (getDirection().x() < 0)
 	{
-		nameLabel_.setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
+        getNameLabel()->setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
 	}
 	// Otherwise the port is directed to the right.
 	else
 	{
-		nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
+        getNameLabel()->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::isCom()
+//-----------------------------------------------------------------------------
+bool SWInterfaceItem::isCom() const
+{
+    if (comInterface_)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::isApi()
+//-----------------------------------------------------------------------------
+bool SWInterfaceItem::isApi() const
+{
+    if (apiInterface_)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

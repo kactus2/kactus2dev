@@ -67,12 +67,6 @@ class HWDesignDiagram : public ComponentDesignDiagram
     Q_OBJECT
 
 public:
-    // Column widths.
-    enum
-    {
-		COMPONENT_COLUMN_WIDTH = 319,
-        IO_COLUMN_WIDTH = 119
-    };		
 
     //-----------------------------------------------------------------------------
     //! Clipboard copy data for a single bus interface instance.

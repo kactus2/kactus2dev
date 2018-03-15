@@ -70,6 +70,8 @@ void GraphicsColumnAddCommand::redo()
     diagram_->getDesign()->addColumn(column_->getColumnDesc());
 
     QUndoCommand::redo();
+
+    diagram_->resetSceneRectangleForItems();
 }
 
 //-----------------------------------------------------------------------------
