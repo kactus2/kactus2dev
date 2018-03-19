@@ -1,0 +1,13 @@
+language : cpp
+addons:
+  apt:
+    packages:
+      - libqt5sql5-sqlite
+      - qt5-default
+      - qttools5-private-dev
+      - qttools5-dev-tools
+script:
+  - ./configure
+  - make -j2
+git:
+  depth: 1
