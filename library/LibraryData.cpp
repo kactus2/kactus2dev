@@ -6,7 +6,7 @@
 // Date: 20.12.2010
 //
 // Description:
-// LibraryData is the data model that manages the actual VLNV library.
+// LibraryData is the data model that manages the file access for VLNV items.
 //-----------------------------------------------------------------------------
 
 #include "LibraryData.h"
@@ -40,7 +40,6 @@
 #include <QFileInfo>
 #include <QList>
 #include <QObject>
-#include <QSettings>
 #include <QSharedPointer>
 #include <QString>
 #include <QStringList>
@@ -50,17 +49,17 @@
 //-----------------------------------------------------------------------------
 LibraryData::LibraryData(LibraryInterface* library, MessageMediator* messageChannel, QObject* parent):
     QObject(parent),
-    libraryItems_(),
     library_(library),
     messageChannel_(messageChannel),
+    libraryItems_(),
     failedObjects_(0),
     fileCount_(0),
-    urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),   
-    fileAccess_(),
+    urlTester_(Utils::URL_VALIDITY_REG_EXP, this),   
+    fileAccess_(messageChannel),
     validator_(library),
-    fileWatch_(new QFileSystemWatcher(this))
+    fileWatch_(this)
 {
-    connect(fileWatch_, SIGNAL(fileChanged(QString const&)),
+    connect(&fileWatch_, SIGNAL(fileChanged(QString const&)),
             this, SLOT(onFileChanged(QString const&)), Qt::UniqueConnection);
 }
 
@@ -69,20 +68,20 @@ LibraryData::LibraryData(LibraryInterface* library, MessageMediator* messageChan
 //-----------------------------------------------------------------------------
 LibraryData::~LibraryData()
 {
-    libraryItems_.clear();
+    
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryData::getPath()
 //-----------------------------------------------------------------------------
-QString LibraryData::getPath(VLNV const& vlnv)
+QString LibraryData::getPath(VLNV const& vlnv) const
 {
     if (!vlnv.isValid())
     {
         return QString();
     }
 
-    if (!libraryItems_.contains(vlnv))
+    if (!contains(vlnv))
     {
     	messageChannel_->showError(tr("The VLNV \n"
     		"Vendor: %1\n"
@@ -101,7 +100,7 @@ QString LibraryData::getPath(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 {
-    if (libraryItems_.contains(vlnv))
+    if (contains(vlnv))
     {
     	messageChannel_->showError(tr("The VLNV \n"
     		"Vendor: %1\n"
@@ -123,7 +122,7 @@ bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 
     // add the component to the library
     libraryItems_.insert(vlnv, path);
-    fileWatch_->addPath(path);
+    fileWatch_.addPath(path);
 
     emit addVLNV(vlnv);
 
@@ -133,24 +132,9 @@ bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 //-----------------------------------------------------------------------------
 // Function: LibraryData::contains()
 //-----------------------------------------------------------------------------
-bool LibraryData::contains(VLNV const& vlnv)
+bool LibraryData::contains(VLNV const& vlnv) const
 {
     return libraryItems_.contains(vlnv);
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::getType()
-//-----------------------------------------------------------------------------
-VLNV::IPXactType LibraryData::getType(VLNV const& vlnv) const
-{
-    if (!libraryItems_.contains(vlnv))
-    {
-    	return VLNV::INVALID;
-    }
-    else
-    {
-    	return libraryItems_.find(vlnv).key().getType();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -166,9 +150,9 @@ QList<VLNV> LibraryData::getItems() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
 {
-    if (!libraryItems_.contains(vlnv))
+    if (!contains(vlnv))
     {
-        //emit noticeMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
+        messageChannel_->showMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
         return QSharedPointer<Document>();
     }
 
@@ -192,10 +176,9 @@ bool LibraryData::writeFile(QSharedPointer<Document> model, QString const& fileP
         targetPath = pathInfo.symLinkTarget();
     }
 
-    // Create a new file.
-    fileWatch_->removePath(targetPath);
+    fileWatch_.removePath(targetPath);
     fileAccess_.writeDocument(model, targetPath);
-    fileWatch_->addPath(targetPath);
+    fileWatch_.addPath(targetPath);
 
     return true;
 }
@@ -215,7 +198,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
 
     Q_ASSERT(!documentPath.isEmpty());
 
-    if (documentPath.isEmpty() || !QFileInfo(documentPath).exists())
+    if (!QFileInfo(documentPath).exists())
     {
         return false;
     }
@@ -235,7 +218,7 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> docu
     Q_ASSERT(document);
 
     QVector<QString> errorList;
-
+    
     QString path = getPath(document->getVlnv());
     if (!QFileInfo(path).exists())
     {
@@ -256,28 +239,19 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> docu
 //-----------------------------------------------------------------------------
 // Function: LibraryData::parseLibrary()
 //-----------------------------------------------------------------------------
-void LibraryData::parseLibrary()
+void LibraryData::parseLibrary(QStringList const& locations)
 {
     // clear the previous items in the library
     if (!libraryItems_.isEmpty())
     {
-        fileWatch_->removePaths(libraryItems_.values());
+        fileWatch_.removePaths(libraryItems_.values());
         libraryItems_.clear();
     }
-
-    QStringList locations = QSettings().value("Library/ActiveLocations", QStringList()).toStringList();
-
-    messageChannel_->showStatusMessage(tr("Scanning library. Please wait..."));
-
+    
     foreach (QString const& location, locations)
     {
         performParseLibraryStep(location);
     }
-
-    checkLibraryIntegrity();
-
-    emit resetModel();
-    messageChannel_->showStatusMessage(tr("Ready."));
 }
 
 //-----------------------------------------------------------------------------
@@ -287,8 +261,6 @@ void LibraryData::checkLibraryIntegrity()
 {
     failedObjects_ = 0;
     fileCount_ = 0;
-
-    messageChannel_->showStatusMessage(tr("Validating items. Please wait..."));
 
     foreach (VLNV const& documentVLNV, libraryItems_.keys())
     {
@@ -339,7 +311,7 @@ void LibraryData::performIntegrityCheck(VLNV const& documentVLNV)
 //-----------------------------------------------------------------------------
 void LibraryData::onRemoveVLNV(VLNV const& vlnv)
 {
-    if (!libraryItems_.contains(vlnv))
+    if (!contains(vlnv))
     {
         return;
     }
@@ -356,16 +328,8 @@ void LibraryData::onRemoveVLNV(VLNV const& vlnv)
         messageChannel_->showError(tr("Could not remove file %1").arg(documentPath));
     }
 
-    fileWatch_->removePath(documentPath);
+    fileWatch_.removePath(documentPath);
     libraryItems_.remove(vlnv);
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryData::resetLibrary()
-//-----------------------------------------------------------------------------
-void LibraryData::resetLibrary()
-{
-    emit resetModel();
 }
 
 //-----------------------------------------------------------------------------
@@ -387,7 +351,7 @@ bool LibraryData::validateDependentVLNVReferencences(QSharedPointer<Document> do
 {
     foreach (VLNV const& vlnv, document->getDependentVLNVs())
     {
-        if (!libraryItems_.contains(vlnv))
+        if (!contains(vlnv))
         {
            return false;
         }
@@ -404,7 +368,7 @@ void LibraryData::findErrorsInDependentVLNVReferencences(QSharedPointer<const Do
 {
     foreach (VLNV const& vlnv, document->getDependentVLNVs())
     {
-        if (!libraryItems_.contains(vlnv))
+        if (contains(vlnv) == false)
         {
             errorList.append(tr("The referenced VLNV was not found in the library: %1").arg(vlnv.toString()));
         }
@@ -419,7 +383,7 @@ bool LibraryData::validateDependentDirectories(QSharedPointer<Document> document
     foreach (QString const& directory, document->getDependentDirs())
     {
         QFileInfo dirInfo(General::getAbsolutePath(documentPath, directory));
-        if (!dirInfo.exists())
+        if (dirInfo.exists() == false)
         {
             return false;
         }
@@ -438,7 +402,7 @@ void LibraryData::findErrorsInDependentDirectories(QSharedPointer<const Document
     {
         QString dirPath = General::getAbsolutePath(documentPath, directory);
 
-        if (!QFileInfo(dirPath).exists())
+        if (QFileInfo(dirPath).exists() == false)
         {
             errorList.append(tr("\tDirectory %1 was not found in the file system.").arg(dirPath));
         }
@@ -453,16 +417,16 @@ bool LibraryData::validateDependentFiles(QSharedPointer<Document> document, QStr
     foreach (QString filePath, document->getDependentFiles())
     {
         int pos = 0;
-        if (urlTester_->validate(filePath, pos) != QValidator::Acceptable)
+        if (urlTester_.validate(filePath, pos) != QValidator::Acceptable)
         {
             QString absolutePath = filePath;
-
+            QFileInfo pathInfo(filePath);
             if (QFileInfo(filePath).isRelative())
             {
                 absolutePath = General::getAbsolutePath(documentPath, filePath);
             }
 
-            if (!QFileInfo(absolutePath).exists())
+            if (QFileInfo(absolutePath).exists() == false)
             {
                 return false;
             }
@@ -482,7 +446,7 @@ void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> docu
     {
         // Check if the path is actually a URL to (external) location.
         int pos = 0;
-        if (urlTester_->validate(filePath, pos) == QValidator::Acceptable)
+        if (urlTester_.validate(filePath, pos) == QValidator::Acceptable)
         {
             fileCount_++;
         }
@@ -491,8 +455,7 @@ void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> docu
         else 
         {
             QString absolutePath = filePath;
-
-            if (QFileInfo(filePath).isRelative())
+            if (QFileInfo(absolutePath).isRelative())
             {
                 absolutePath = General::getAbsolutePath(documentPath, filePath);
             }
@@ -514,11 +477,6 @@ void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> docu
 //-----------------------------------------------------------------------------
 void LibraryData::parseDirectory(QString const& directoryPath)
 {
-    if (directoryPath.isEmpty())
-    {
-        return;
-    }
-
     QDir directoryHandler(directoryPath);
     directoryHandler.setNameFilters(QStringList(QLatin1String("*.xml")));
 
@@ -544,12 +502,12 @@ void LibraryData::parseFile(QString const& filePath)
 {
     VLNV vlnv = fileAccess_.getDocumentVLNV(filePath);
 
-    if (!vlnv.isValid())
+    if (vlnv.isValid() == false)
     {
         return;
     }
 
-    if (libraryItems_.contains(vlnv))
+    if (contains(vlnv))
     {
         messageChannel_->showMessage(tr("VLNV %1 was already found in the library").arg(vlnv.toString()));
         return;
@@ -557,5 +515,5 @@ void LibraryData::parseFile(QString const& filePath)
 
     // add the component to the library if parsing was successful
     libraryItems_.insert(vlnv, filePath);
-    fileWatch_->addPath(filePath);
+    fileWatch_.addPath(filePath);
 }

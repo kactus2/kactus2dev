@@ -513,6 +513,7 @@ void Document::addDefaultNameSpaces()
 //-----------------------------------------------------------------------------
 void Document::copyParameters(Document const& other)
 {
+    parameters_->reserve(other.parameters_->count());
     foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
     {
         QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
@@ -525,6 +526,7 @@ void Document::copyParameters(Document const& other)
 //-----------------------------------------------------------------------------
 void Document::copyAssertions(Document const& other)
 {
+    assertions_->reserve(other.assertions_->count());
     foreach (QSharedPointer<Assertion> assertion, *other.assertions_)
     {
         if (assertion)

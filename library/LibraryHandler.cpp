@@ -39,8 +39,6 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <QApplication>
-#include <QCoreApplication>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -60,15 +58,12 @@ LibraryHandler::LibraryHandler(QWidget* parentWidget, MessageMediator* messageCh
 QObject(parent),
     parentWidget_(parentWidget),
     messageChannel_(messageChannel),
-    data_(new LibraryData(this, messageChannel, this)),
+    objects_(),
+    data_(this, messageChannel, this),
     treeModel_(new LibraryTreeModel(this, this)),
     hierarchyModel_(new HierarchyModel(this, this)),
     integrityWidget_(0),
-    objects_(),
-    objectValidity_(),
-    saveInProgress_(false),
-    itemsToAdd_(),
-    modifiedItems_()
+    saveInProgress_(false)
 {
     // create the connections between models and library handler
     syncronizeModels();
@@ -89,23 +84,11 @@ QSharedPointer<Document> LibraryHandler::getModel(VLNV const& vlnv)
     // if object has already been previously parsed
     if (objects_.contains(vlnv))
     {
-        QSharedPointer<Document> copy = objects_.value(vlnv)->clone();
+        QSharedPointer<Document> copy = objects_.value(vlnv).first->clone();
         return copy;
     }
-    else
-    {
-        QSharedPointer<Document> document = data_->getModel(vlnv);
-        if (document)
-        {
-            // save the parsed item to the map and return pointer to it
-            objects_.insert(vlnv, document);
-            QSharedPointer<Document> copy = document->clone();
-            return copy;
-        }
 
-        // if item was not found
-        return document;
-    }
+    return QSharedPointer<Document>();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,18 +98,10 @@ QSharedPointer<Document const> LibraryHandler::getModelReadOnly(VLNV const& vlnv
 {
     if (objects_.contains(vlnv))
     {
-        return objects_.value(vlnv);
+        return objects_.value(vlnv).first;
     }
-    else
-    { 
-        QSharedPointer<Document> document = data_->getModel(vlnv);
-        if (document)
-        {
-            objects_.insert(vlnv, document);
-        }
-
-        return document;
-    }
+    
+    return QSharedPointer<Document const>();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +109,7 @@ QSharedPointer<Document const> LibraryHandler::getModelReadOnly(VLNV const& vlnv
 //-----------------------------------------------------------------------------
 QList<VLNV> LibraryHandler::getAllVLNVs() const
 {
-    return data_->getItems();
+    return objects_.keys();
 }
 
 //-----------------------------------------------------------------------------
@@ -142,7 +117,7 @@ QList<VLNV> LibraryHandler::getAllVLNVs() const
 //-----------------------------------------------------------------------------
 bool LibraryHandler::contains(const VLNV& vlnv)
 {
-    return objects_.contains(vlnv) || data_->contains(vlnv);
+    return objects_.contains(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +125,7 @@ bool LibraryHandler::contains(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 const QString LibraryHandler::getPath(VLNV const& vlnv) const
 {
-    return data_->getPath(vlnv);
+    return data_.getPath(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -175,10 +150,10 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
     }
 
     VLNV vlnv = model->getVlnv();
-    Q_ASSERT(!data_->contains(vlnv));
-    Q_ASSERT(!objects_.contains(vlnv));
-    objectValidity_.remove(vlnv);
+    Q_ASSERT(!contains(vlnv));
+    Q_ASSERT(!contains(vlnv));
 
+    
     // Create the path if it does not exist.
     if (!QDir(path).exists() && !QDir().mkpath(path))
     {
@@ -187,22 +162,19 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
     }
 
     QString filePath = path + "/" + vlnv.getName() + "." + vlnv.getVersion() + ".xml";
-    if (!data_->writeFile(model, filePath))
+    if (!data_.writeFile(model, filePath))
     {
         return false;
     }
 
-    if (!saveInProgress_)
-    {
-        // tell library to register the vlnv
-        data_->addVLNV(vlnv, filePath);
-
+    data_.addVLNV(vlnv, filePath);
+   
+    objects_.insert(vlnv, qMakePair<QSharedPointer<Document>, bool>(model, data_.validateDocument(model)));
+    
+    if (saveInProgress_ == false)
+    {    
         // the hierarchy model must be re-built
         hierarchyModel_->onResetModel();
-    }
-    else
-    {
-        itemsToAdd_.insert(vlnv, filePath);
     }
 
     return true;
@@ -213,25 +185,20 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 //-----------------------------------------------------------------------------
 bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 {
-    Q_ASSERT(data_->contains(model->getVlnv()));
-
-    // Make sure the object is parsed again next time.
     VLNV objectVLNV = model->getVlnv();
-    objects_.remove(objectVLNV);
-    objectValidity_.remove(objectVLNV);
-
-    if (!data_->writeFile(model))
+    
+    if (data_.writeFile(model) == false)
     {
         return false;
     }
-
-    if (!saveInProgress_)
+    
+    if (saveInProgress_ == false)
     {
         onItemSaved(objectVLNV);
     }
     else
     {
-        modifiedItems_.append(objectVLNV);
+        objects_.insert(objectVLNV, qMakePair<QSharedPointer<Document>, bool>(model, data_.validateDocument(model)));
     }
 
     return true;
@@ -243,9 +210,27 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 void LibraryHandler::searchForIPXactFiles()
 {
     objects_.clear();
-    objectValidity_.clear();
 
-    data_->parseLibrary();
+    messageChannel_->showStatusMessage(tr("Scanning library. Please wait..."));
+    
+    QStringList locations = QSettings().value("Library/ActiveLocations", QStringList()).toStringList();
+    data_.parseLibrary(locations);
+    
+    // Read all items into objects_ befor validation.
+    // Validation will check for VLNVs in the library, so they must be available before validation.
+    const QList<VLNV> vlnvs = data_.getItems();
+    for (QList<VLNV>::const_iterator it = vlnvs.constBegin(); it != vlnvs.constEnd(); it++)
+    {
+        QSharedPointer<Document> model = data_.getModel(*it);
+        objects_.insert(*it, qMakePair<QSharedPointer<Document>, bool>(model, false));
+    }
+
+    onCheckLibraryIntegrity();
+    
+    messageChannel_->showStatusMessage(tr("Updating library view. Please wait..."));
+    hierarchyModel_->onResetModel();
+    treeModel_->onResetModel();
+    messageChannel_->showStatusMessage(tr("Ready."));
 }
 
 //-----------------------------------------------------------------------------
@@ -259,7 +244,7 @@ void LibraryHandler::getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list)
     }
 
     QSharedPointer<const Document> document = getModelReadOnly(vlnv);
-    if (!document)
+    if (document.isNull())
     {
         messageChannel_->showError(tr("No item with following info was found in library: \n"
             "Vendor: %1\n"
@@ -275,7 +260,7 @@ void LibraryHandler::getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list)
     // Search recursively for VLNVs.
     foreach (VLNV const& dependentVLNV, document->getDependentVLNVs())
     {
-        if (!list.contains(dependentVLNV))
+        if (list.contains(dependentVLNV) == false)
         {
             getNeededVLNVs(dependentVLNV, list);
         }
@@ -290,24 +275,19 @@ void LibraryHandler::getDependencyFiles(VLNV const& vlnv, QStringList& list)
     QSharedPointer<const Document> document = getModelReadOnly(vlnv);
 
     // Get path to the IP-Xact document that is used as base for relative file paths.
-    QFileInfo documentFile(data_->getPath(vlnv));
-    if (!documentFile.exists())
-    {
-        emit errorMessage(tr("File %1 can't be found in file system").arg(documentFile.filePath()));
-        return;
-    }
+    QFileInfo documentFile(data_.getPath(vlnv));
 
     QDir documentDirectory(documentFile.absolutePath());
 
     // Convert all relative file path to an absolute to make the file accessible in the caller function.
     foreach (QString const& relativePath, document->getDependentFiles())
     {
-        QString absolutePath = documentDirectory.absoluteFilePath(relativePath);
-
-        QFileInfo dependentFile(absolutePath);
-        if (dependentFile.exists() && !list.contains(dependentFile.canonicalFilePath()))
+        QFileInfo dependentFile(documentDirectory.absoluteFilePath(relativePath));
+        
+        QString path = dependentFile.canonicalFilePath();
+        if (dependentFile.exists() && list.contains(path) == false)
         {
-            list.append(dependentFile.canonicalFilePath());
+            list.append(path);
         }
     }
 }
@@ -341,12 +321,14 @@ LibraryItem const* LibraryHandler::getTreeRoot() const
 //-----------------------------------------------------------------------------
 VLNV::IPXactType LibraryHandler::getDocumentType(VLNV const& vlnv)
 {
-    if (!vlnv.isValid())
+    QMap<VLNV, QPair<QSharedPointer<Document>, bool> >::const_iterator it = objects_.constFind(vlnv);
+
+    if (it == objects_.constEnd())
     {
         return VLNV::INVALID;
     }
 
-    return data_->getType(vlnv);
+    return it.key().getType();
 }
 
 //-----------------------------------------------------------------------------
@@ -371,7 +353,7 @@ int LibraryHandler::getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const
 //-----------------------------------------------------------------------------
 int LibraryHandler::getChildren(QList<VLNV>& list, VLNV const& vlnvToSearch) const
 {
-    if (!vlnvToSearch.isValid())
+    if (vlnvToSearch.isValid() == false)
     {
         return 0;
     }
@@ -385,26 +367,26 @@ int LibraryHandler::getChildren(QList<VLNV>& list, VLNV const& vlnvToSearch) con
 //-----------------------------------------------------------------------------
 VLNV LibraryHandler::getDesignVLNV(VLNV const& hierarchyRef)
 {
-    if (!data_->contains(hierarchyRef))
+    if (contains(hierarchyRef) == false)
     {
         messageChannel_->showError(tr("VLNV: %1 was not found in library.").arg(hierarchyRef.toString()));
         return VLNV();
     }
 
-    if (data_->getType(hierarchyRef) == VLNV::DESIGNCONFIGURATION)
+    if (getDocumentType(hierarchyRef) == VLNV::DESIGNCONFIGURATION)
     {
         QSharedPointer<const DesignConfiguration> desConf = 
             getModelReadOnly(hierarchyRef).staticCast<const DesignConfiguration>();
 
         VLNV designVLNV = desConf->getDesignRef();
-        if (!data_->contains(designVLNV)) 
+        if (!data_.contains(designVLNV)) 
         {
             QString errorMsg(tr("VLNV: %1 was not found in library.").arg(designVLNV.toString()));
             messageChannel_->showError(errorMsg);
             return VLNV();
         }
 
-        else if (data_->getType(designVLNV) != VLNV::DESIGN)
+        else if (getDocumentType(designVLNV) != VLNV::DESIGN)
         {
             QString errorMsg(tr("VLNV: %1 was not for design.").arg(designVLNV.toString()));
             messageChannel_->showError(errorMsg);
@@ -415,7 +397,7 @@ VLNV LibraryHandler::getDesignVLNV(VLNV const& hierarchyRef)
         return designVLNV;
     }
 
-    else if (data_->getType(hierarchyRef) == VLNV::DESIGN)
+    else if (getDocumentType(hierarchyRef) == VLNV::DESIGN)
     {
         return hierarchyRef;
     }
@@ -432,21 +414,15 @@ VLNV LibraryHandler::getDesignVLNV(VLNV const& hierarchyRef)
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> LibraryHandler::getDesign(VLNV const& hierarchyRef)
 {
-    if (!data_->contains(hierarchyRef))
+    if (contains(hierarchyRef) == false)
     {
         messageChannel_->showError(tr("VLNV: %1 was not found in library.").arg(hierarchyRef.toString()));
         return QSharedPointer<Design>();
     }
 
     VLNV designVlnv = getDesignVLNV(hierarchyRef);
-    if (designVlnv.isValid())
-    {
-        return getModel(designVlnv).staticCast<Design>();
-    }
-    else
-    {
-        return QSharedPointer<Design>();
-    }
+    
+    return getModel(designVlnv).staticCast<Design>();
 }
 
 //-----------------------------------------------------------------------------
@@ -454,24 +430,7 @@ QSharedPointer<Design> LibraryHandler::getDesign(VLNV const& hierarchyRef)
 //-----------------------------------------------------------------------------
 bool LibraryHandler::isValid(VLNV const& vlnv)
 {    
-    if (objectValidity_.contains(vlnv))
-    {
-        return objectValidity_.value(vlnv);
-    }
-
-    QSharedPointer<Document> document;
-    if (objects_.contains(vlnv))
-    {
-        document = objects_.value(vlnv);
-    }
-    else 
-    {
-        document = getModel(vlnv);
-    }
-
-    bool valid = data_->validateDocument(document);
-    objectValidity_.insert(vlnv, valid);
-    return valid;
+    return objects_.value(vlnv).second;
 }
 
 //-----------------------------------------------------------------------------
@@ -495,24 +454,31 @@ LibraryTreeModel* LibraryHandler::getTreeModel()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onCheckLibraryIntegrity()
 {
-    saveInProgress_ = false;
+    messageChannel_->showStatusMessage(tr("Validating items. Please wait..."));
+    
+    for (QMap<VLNV, QPair<QSharedPointer<Document>, bool> >::const_iterator it = objects_.constBegin();
+        it != objects_.constEnd(); it++)
+    {
+        QSharedPointer<Document> model = it->first;
+        objects_.insert(it.key(), qMakePair<QSharedPointer<Document>, bool>(model, data_.validateDocument(model)));
+    }
 
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    data_->checkLibraryIntegrity();
-    QApplication::restoreOverrideCursor();
-}
+    data_.checkLibraryIntegrity();
+    messageChannel_->showStatusMessage(tr("Ready."));
+
+ }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onEditItem()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onEditItem(VLNV const& vlnv)
 {
-    if (!vlnv.isValid())
+    if (vlnv.isValid() == false)
     {
         return;
     }
 
-    VLNV::IPXactType documentType = data_->getType(vlnv);
+    VLNV::IPXactType documentType = getDocumentType(vlnv);
     if (documentType == VLNV::COMPONENT)
     {
         emit openComponent(vlnv);
@@ -556,7 +522,7 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
 
         VLNV busDefVLNV = absDef->getBusType();
 
-        if (!data_->contains(busDefVLNV))
+        if (contains(busDefVLNV) == false)
         {
             QString message(tr("Library does not contain bus definition %1 "
                 "required by abstraction definition %2").arg(busDefVLNV.toString(), vlnv.toString()));
@@ -652,13 +618,11 @@ QPair<int, int> LibraryHandler::exportSelectedObjects(QVector<ObjectSelectionLis
                 vlnvCounter++;
             }
         }
-        else
+        else if (copyFile(QFileInfo(exportedItem->getPath()), destinationFolder, handledFiles, yesToAll, noToAll))
         {
-            if (copyFile(QFileInfo(exportedItem->getPath()), destinationFolder, handledFiles, yesToAll, noToAll))
-            {
-                fileCounter++;
-            }
+            fileCounter++;
         }
+
     }
 
     return qMakePair(vlnvCounter, fileCounter);
@@ -719,34 +683,33 @@ void LibraryHandler::constructItemsForSelectionDialog(ObjectSelectionDialog* exp
         }
 
         // if the vlnv is not found in the library
-        if (!data_->contains(exportVLNV))
+        if (!data_.contains(exportVLNV))
         {
             objects_.remove(exportVLNV);
-            objectValidity_.remove(exportVLNV);
             continue;
         }
 
         exportDialog->createItem(exportVLNV.toString(), exportVLNV, true);
 
-        VLNV::IPXactType vlnvType = data_->getType(exportVLNV);
+        VLNV::IPXactType vlnvType = getDocumentType(exportVLNV);
         if (vlnvType == VLNV::COMPONENT)
         {
-            QSharedPointer<const Component> componentToRemove =
+            QSharedPointer<const Component> componentToExport =
                 getModelReadOnly(exportVLNV).staticCast<const Component>();
 
-            foreach (VLNV const& ref, componentToRemove->getHierRefs())
+            foreach (VLNV const& ref, componentToExport->getHierRefs())
             {
-                if (data_->contains(ref))
+                if (contains(ref))
                 {
                     exportDialog->createItem(ref.toString(), ref);
 
-                    if (data_->getType(ref) == VLNV::DESIGNCONFIGURATION)
+                    if (getDocumentType(ref) == VLNV::DESIGNCONFIGURATION)
                     {
                         QSharedPointer<const DesignConfiguration> desConf =
                             getModelReadOnly(ref).staticCast<const DesignConfiguration>();
 
                         VLNV designVLNV = desConf->getDesignRef();
-                        if (data_->contains(designVLNV))
+                        if (contains(designVLNV))
                         {
                             exportDialog->createItem(designVLNV.toString(), designVLNV);
                         }
@@ -756,12 +719,12 @@ void LibraryHandler::constructItemsForSelectionDialog(ObjectSelectionDialog* exp
 
             // ask the component for all it's file references.
             QStringList componentFiles;
-            foreach (QSharedPointer<FileSet> fileset, *componentToRemove->getFileSets())
+            foreach (QSharedPointer<FileSet> fileset, *componentToExport->getFileSets())
             {
                 componentFiles.append(fileset->getFileNames());
             }
 
-            QString componentPath = data_->getPath(exportVLNV);
+            QString componentPath = data_.getPath(exportVLNV);
             foreach (QString const& relativeFilePath, componentFiles)
             {
                 QString absoluteFilePath = General::getAbsolutePath(componentPath, relativeFilePath);
@@ -778,7 +741,7 @@ void LibraryHandler::constructItemsForSelectionDialog(ObjectSelectionDialog* exp
                 getModelReadOnly(exportVLNV).staticCast<const DesignConfiguration>();
 
             VLNV designVLNV = desConf->getDesignRef();
-            if (data_->contains(designVLNV))
+            if (contains(designVLNV))
             {
                 exportDialog->createItem(designVLNV.toString(), designVLNV);
             }
@@ -792,7 +755,7 @@ void LibraryHandler::constructItemsForSelectionDialog(ObjectSelectionDialog* exp
             // If a bus definition is removed then ask to remove all it's abstraction definitions also.
             foreach (VLNV const& absDefVLNV, absDefVLNVs)
             {
-                if (data_->contains(absDefVLNV))
+                if (contains(absDefVLNV))
                 {
                     exportDialog->createItem(absDefVLNV.toString(), absDefVLNV);
                 }
@@ -805,7 +768,7 @@ void LibraryHandler::constructItemsForSelectionDialog(ObjectSelectionDialog* exp
                 getModelReadOnly(exportVLNV).staticCast<const AbstractionDefinition>();
 
             VLNV busDefVLNV = absDef->getBusType();
-            if (data_->contains(busDefVLNV))
+            if (contains(busDefVLNV))
             {
                 QList<VLNV> absDefVLNVs;
                 hierarchyModel_->getChildren(absDefVLNVs, busDefVLNV);
@@ -832,7 +795,7 @@ bool LibraryHandler::exportSelectedVLNVObject(QDir const& destinationFolder, VLN
         return false;
     }
 
-    QDir savedWorkingDir = QDir::current();
+    const QDir savedWorkingDir = QDir::current();
 
     QDir::setCurrent(destinationFolder.absolutePath());
     QDir vlnvTargetDirectory;
@@ -847,7 +810,7 @@ bool LibraryHandler::exportSelectedVLNVObject(QDir const& destinationFolder, VLN
 
     vlnvTargetDirectory.setPath(directoryPath);
 
-    QString documentPath = data_->getPath(vlnv);
+    QString documentPath = data_.getPath(vlnv);
     if (documentPath.isEmpty())
     {
         QDir::setCurrent(savedWorkingDir.absolutePath());
@@ -868,7 +831,7 @@ bool LibraryHandler::exportSelectedVLNVObject(QDir const& destinationFolder, VLN
 //-----------------------------------------------------------------------------
 void LibraryHandler::onShowErrors(VLNV const& vlnv)
 {
-    if (!vlnv.isValid())
+    if (vlnv.isValid() == false)
     {
         return;
     }
@@ -883,7 +846,7 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
         dialog->resize(700, 350);
 
         LibraryErrorModel* model = new LibraryErrorModel(dialog);
-        model->addErrors(data_->findErrorsInDocument(document), vlnv.toString());
+        model->addErrors(data_.findErrorsInDocument(document), vlnv.toString());
 
         dialog->show();
 
@@ -898,8 +861,6 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onGenerateIntegrityReport()
 {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-
     if (!integrityWidget_)
     {
         integrityWidget_ = new TableViewDialog(parentWidget_);
@@ -909,12 +870,15 @@ void LibraryHandler::onGenerateIntegrityReport()
 
         LibraryErrorModel* model = new LibraryErrorModel(integrityWidget_);
 
-        foreach (VLNV const& vlnv, data_->getItems())
+        
+        QMap<VLNV, QPair<QSharedPointer<Document>, bool> >::const_iterator end = objects_.constEnd();
+        
+        for (QMap<VLNV, QPair<QSharedPointer<Document>, bool> >::const_iterator it = objects_.constBegin();
+            it != end; ++it)
         {
-            QSharedPointer<Document> document = getModel(vlnv);
-            if (document != 0)
+            if (it->second == false)
             {
-                model->addErrors(data_->findErrorsInDocument(document), vlnv.toString());
+                model->addErrors(data_.findErrorsInDocument(it->first), it.key().toString());
             }
         }             
 
@@ -924,8 +888,6 @@ void LibraryHandler::onGenerateIntegrityReport()
 
         connect(integrityWidget_, SIGNAL(finished(int)), this, SLOT(onCloseIntegrityReport()));
     }
-
-    QApplication::restoreOverrideCursor();   
 
     integrityWidget_->raise();
 }
@@ -951,14 +913,13 @@ void LibraryHandler::onClearSelection()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenDesign(VLNV const& vlnv, QString const& viewName)
 {
-    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
-    if (!document)
+    if (contains(vlnv) == false)
     {
         emit errorMessage(tr("Component was not found"));
         return;
     }
 
-    if (document->getVlnv().getType() == VLNV::COMPONENT)
+    if (getDocumentType(vlnv) == VLNV::COMPONENT)
     {
          emit openDesign(vlnv, viewName);
     }
@@ -969,22 +930,16 @@ void LibraryHandler::onOpenDesign(VLNV const& vlnv, QString const& viewName)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv, QString const& activeView)
 {
-    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
-    if (!document)
+    QSharedPointer<const Component> component = getModelReadOnly(vlnv).dynamicCast<const Component>();
+    if (component.isNull())
     {
         emit errorMessage(tr("Component was not found"));
         return;
     }
-
-    if (document->getVlnv().getType() == VLNV::COMPONENT)
+       
+    if (component->getHierViews().contains(activeView))
     {
-        QSharedPointer<const Component> component = document.staticCast<const Component>();
-
-        QStringList views = component->getHierViews();
-        if (views.contains(activeView))
-        {
-            emit openMemoryDesign(vlnv, activeView);
-        }
+        emit openMemoryDesign(vlnv, activeView);
     }
 }
 
@@ -993,35 +948,23 @@ void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv, QString const& activeV
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
 {
-    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
-    if (!document)
+    QSharedPointer<const Component> component = getModelReadOnly(vlnv).dynamicCast<const Component>();
+    if (component.isNull())
     {
         emit errorMessage(tr("Component was not found"));
         return;
     }
 
-    if (document->getVlnv().getType() == VLNV::COMPONENT)
+    foreach(QSharedPointer<View> view, *component->getViews())
     {
-        QSharedPointer<const Component> component = document.staticCast<const Component>();
+        VLNV reference = component->getModel()->getHierRef(view->name());
 
-        QSharedPointer<View> swView;
+        QSharedPointer<const Document> docu = getModelReadOnly(reference);
 
-        foreach(QSharedPointer<View> view, *component->getViews())
+        if (docu && docu->getImplementation() == KactusAttribute::SW)
         {
-            VLNV reference = component->getModel()->getHierRef(view->name());
-
-            QSharedPointer<const Document> docu = getModelReadOnly(reference);
-
-            if (docu && docu->getImplementation() == KactusAttribute::SW)
-            {
-                swView = view;
-                break;
-            }
-        }
-
-        if (swView)
-        {
-            emit openSWDesign(vlnv, swView->name());
+            emit openSWDesign(vlnv, view->name());
+            return;
         }
     }
 }
@@ -1031,22 +974,17 @@ void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenSystemDesign(VLNV const& vlnv)
 {
-    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
-    if (!document)
+    QSharedPointer<const Component> component = getModelReadOnly(vlnv).dynamicCast<const Component>();
+    if (component.isNull())
     {
         emit errorMessage(tr("Component was not found"));
         return;
     }
 
-    if (document->getVlnv().getType() == VLNV::COMPONENT)
+    QStringList systemViews = component->getSystemViewNames();
+    if (!systemViews.isEmpty())
     {
-        QSharedPointer<const Component> component = document.staticCast<const Component>();
-
-        QStringList systemViews = component->getSystemViewNames();
-        if (!systemViews.isEmpty())
-        {
-            emit openSystemDesign(vlnv, systemViews.first());
-        }
+        emit openSystemDesign(vlnv, systemViews.first());
     }
 }
 
@@ -1137,18 +1075,17 @@ void LibraryHandler::onCreateDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::removeObject(VLNV const& vlnv)
 {
-    if (!vlnv.isValid() || !data_->contains(vlnv))
+    if (vlnv.isValid() == false || contains(vlnv))
     {
         return;
     }
 
     objects_.remove(vlnv);
-    objectValidity_.remove(vlnv);
 
     // tell each model to remove the object
     treeModel_->onRemoveVLNV(vlnv);
     hierarchyModel_->onRemoveVLNV(vlnv);
-    data_->onRemoveVLNV(vlnv);
+    data_.onRemoveVLNV(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -1173,27 +1110,6 @@ void LibraryHandler::beginSave()
 void LibraryHandler::endSave()
 {
     saveInProgress_ = false;
-
-    if (!itemsToAdd_.isEmpty())
-    {
-        for (QMap<VLNV, QString>::iterator i = itemsToAdd_.begin(); i != itemsToAdd_.end(); ++i)
-        {
-            data_->addVLNV(i.key(), i.value());
-
-        }
-
-        itemsToAdd_.clear();
-    }
-
-    if (!modifiedItems_.isEmpty())
-    {
-        foreach (VLNV const& modifiedVLNV, modifiedItems_)
-        {
-            objectValidity_.remove(modifiedVLNV);
-        }
-
-        modifiedItems_.clear();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1207,9 +1123,9 @@ void LibraryHandler::onCreateAbsDef(VLNV const& busDefVLNV)
     }
 
     Q_ASSERT(getDocumentType(busDefVLNV) == VLNV::BUSDEFINITION);
-    Q_ASSERT(data_->contains(busDefVLNV));
+    Q_ASSERT(contains(busDefVLNV));
 
-    QFileInfo busDefInfo(data_->getPath(busDefVLNV));
+    QFileInfo busDefInfo(data_.getPath(busDefVLNV));
     QString directory = busDefInfo.absolutePath();
 
     QList<VLNV> absDefVLNVs;
@@ -1248,7 +1164,7 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
     {
         if (removedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
         {
-            changedDirectories.append(QFileInfo(data_->getPath(removedItem->getVLNV())).absolutePath());
+            changedDirectories.append(QFileInfo(data_.getPath(removedItem->getVLNV())).absolutePath());
             removeObject(removedItem->getVLNV());
             vlnvCounter++;
         }
@@ -1258,7 +1174,7 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
             if (fileInfo.exists())
             {
                 changedDirectories.append(fileInfo.absolutePath());
-
+                
                 QFile file(removedItem->getPath());
                 if (!file.remove())
                 {
@@ -1273,8 +1189,7 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
         }
     }
 
-    QSettings settings;
-    QStringList libraryLocations = settings.value("Library/Locations", QStringList()).toStringList();
+    QStringList libraryLocations = QSettings().value("Library/Locations", QStringList()).toStringList();
 
     changedDirectories.removeDuplicates();
     foreach (QString const& changedDirectory, changedDirectories)
@@ -1320,11 +1235,11 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
     }
 
     VLNV savedItem = vlnv;
-    savedItem.setType(data_->getType(vlnv));
+    savedItem.setType(getDocumentType(vlnv));
 
-    // make sure the model is parsed again next time to make all changes available
-    objects_.remove(vlnv);
-    objectValidity_.remove(vlnv);
+    // Replace overwritten item with new and check validity.
+    QSharedPointer<Document> model = data_.getModel(vlnv);
+    objects_.insert(vlnv, qMakePair<QSharedPointer<Document>, bool>(model, data_.validateDocument(model)));
     
     treeModel_->onDocumentUpdated(vlnv);
     hierarchyModel_->onDocumentUpdated(vlnv);
@@ -1370,7 +1285,7 @@ void LibraryHandler::copyFiles(QDir const& target, const VLNV& vlnv, fileList& h
 
     vlnvTargetDirectory.setPath(directoryPath);
 
-    QString documentPath = data_->getPath(vlnv);
+    QString documentPath = data_.getPath(vlnv);
     if (documentPath.isEmpty())
     {
         // restore the previous working directory to avoid messing with caller function
@@ -1527,28 +1442,23 @@ bool LibraryHandler::copyFile(QFileInfo const& source, QDir& target, fileList& h
 void LibraryHandler::syncronizeModels()
 {
     // connect the signals from the data model
-    connect(data_.data(), SIGNAL(removeVLNV(const VLNV&)),
+    connect(&data_, SIGNAL(removeVLNV(const VLNV&)),
         treeModel_, SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
-    connect(data_.data(), SIGNAL(removeVLNV(const VLNV&)),
+    connect(&data_, SIGNAL(removeVLNV(const VLNV&)),
         hierarchyModel_, SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
 
-    connect(data_.data(), SIGNAL(resetModel()),
-        hierarchyModel_, SLOT(onResetModel()), Qt::UniqueConnection);
-    connect(data_.data(), SIGNAL(resetModel()),
-        treeModel_, SLOT(onResetModel()), Qt::UniqueConnection);
-
-    connect(data_.data(), SIGNAL(addVLNV(const VLNV&)),
+    connect(&data_, SIGNAL(addVLNV(const VLNV&)),
         treeModel_, SLOT(onAddVLNV(const VLNV&)), Qt::UniqueConnection);
 
-    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+    connect(&data_, SIGNAL(updatedVLNV(VLNV const&)),
         this, SLOT(onItemSaved(VLNV const&)), Qt::UniqueConnection);
 
-    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+    connect(&data_, SIGNAL(updatedVLNV(VLNV const&)),
             treeModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
-    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+    connect(&data_, SIGNAL(updatedVLNV(VLNV const&)),
             hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
-    connect(data_.data(), SIGNAL(updatedVLNV(VLNV const&)),
+    connect(&data_, SIGNAL(updatedVLNV(VLNV const&)),
         this, SIGNAL(updatedVLNV(VLNV const&)), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
@@ -1678,7 +1588,7 @@ bool LibraryHandler::containsPath(QString const& path, QStringList const& pathsT
     {
         // As long as the path is not the same as search path but still contains the search path,
         // it is a parent directory of the path.
-        if (path.contains(searchPath) && path != searchPath)
+        if (path.contains(searchPath) && path.compare(searchPath) != 0)
         {
             return true;
         }

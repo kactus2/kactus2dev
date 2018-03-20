@@ -6,7 +6,7 @@
 // Date: 20.12.2010
 //
 // Description:
-// LibraryData is the data model that manages the actual VLNV library.
+// LibraryData is the data model that manages the file access for VLNV items
 //-----------------------------------------------------------------------------
 
 #ifndef LIBRARYDATA_H
@@ -34,7 +34,7 @@ class LibraryInterface;
 class MessageMediator;
 
 //-----------------------------------------------------------------------------
-//! LibraryData is the data model that manages the actual VLNV library.
+//! LibraryData is the data model that manages the file access for VLNV items
 //-----------------------------------------------------------------------------
 class LibraryData : public QObject
 {
@@ -44,9 +44,10 @@ public:
 
     /*! The constructor
      *
-     *      @param [in] parent          The parent object of this widget.
-     *      @param [in] parentWidget    The widget containing the displayed library.
-    */
+     *      @param [in] library         The library owning this data object.
+     *      @param [in] messageChannel  Channel for user messages.
+     *      @param [in] parent          The parent object.
+     */
     LibraryData(LibraryInterface* library, MessageMediator* messageChannel, QObject* parent);
 
     //! The destructor
@@ -58,7 +59,7 @@ public:
      *
      *      @return The absolute filepath of the document.
     */
-    QString getPath(VLNV const& vlnv);
+    QString getPath(VLNV const& vlnv) const;
 
     /*! Add the given vlnv to the library
      *
@@ -75,17 +76,7 @@ public:
      *
      *      @return True if the vlnv is found in the library
     */
-    bool contains(VLNV const& vlnv);
-
-    /*! Get the type of the given document.
-     * 
-     * If vlnv is not found in the library then VLNV::INVALID is returned.
-     *
-     *      @param [in] vlnv    Specifies the document that's type is wanted.
-     *
-     *      @return The type of the given document.
-    */
-    VLNV::IPXactType getType(VLNV const& vlnv) const;
+    bool contains(VLNV const& vlnv) const;
     
     /*! Get the library items stored in the model.
      *
@@ -137,7 +128,7 @@ public:
      * When search is complete the library integrity is checked.
      * 
     */
-    void parseLibrary();
+    void parseLibrary(QStringList const& locations);
 
     //! Check the integrity of the library.
     void checkLibraryIntegrity();
@@ -153,16 +144,10 @@ signals:
     //! Inform that object has been updated.
     void updatedVLNV(VLNV const& vlnv);
 
-    //! Inform the library model that the model should be reset.
-    void resetModel();    
-
 public slots:
    
     //! Remove the specified VLNV from the library
     void onRemoveVLNV(VLNV const& vlnv);
-
-    //! Reset the library
-    void resetLibrary();
 
  private slots:
 
@@ -256,6 +241,12 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The LibraryHandler instance that owns this class.
+    LibraryInterface* library_;
+
+    //! Channel for notice and error messages to the user.
+    MessageMediator* messageChannel_;
+
     /*! Map containing all the VLNVs that are in the library.
      *
      * key: VLNV instance containing the vlnv information
@@ -263,11 +254,7 @@ private:
      */
     QMap<VLNV, QString> libraryItems_;
 
-    //! The LibraryHandler instance that owns this class.
-    LibraryInterface *library_;
-
-    MessageMediator* messageChannel_;
-
+    
     //! Number of failed objects found during the integrity check.
     int failedObjects_;
 
@@ -275,14 +262,14 @@ private:
     int fileCount_;
 
     //! Checks if the given string is a URL (invalids are allowed) or not.
-    QRegularExpressionValidator* urlTester_;
+    QRegularExpressionValidator urlTester_;
 
     DocumentFileAccess fileAccess_;
 
     DocumentValidator validator_;
 
     //! Watch for changes in the IP-XACT files.
-    QFileSystemWatcher* fileWatch_;
+    QFileSystemWatcher fileWatch_;
 
 };
 

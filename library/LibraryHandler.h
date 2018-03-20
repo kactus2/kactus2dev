@@ -637,7 +637,14 @@ private:
     MessageMediator* messageChannel_;
 
     //! The data model that contains the library and is model for search view
-    QSharedPointer<LibraryData> data_;
+    LibraryData data_;
+
+    /*! Contains the library objects that have been parsed.
+     *
+     * Key = VLNV that identifies the library object.
+     * Value = pointer to the library object that has been parsed.
+     */
+    QMap<VLNV, QPair<QSharedPointer<Document>, bool> > objects_;
 
     //! The model for the tree view
     LibraryTreeModel* treeModel_;
@@ -648,24 +655,8 @@ private:
     //! Widget for showing integrity report on-demand.
     TableViewDialog* integrityWidget_;
 
-    /*! Contains the library objects that have been parsed.
-     *
-     * Key = VLNV that identifies the library object.
-     * Value = pointer to the library object that has been parsed.
-     */
-    QMap<VLNV, QSharedPointer<Document> > objects_;
-
-    //! Validity status for library objects.
-    QMap<VLNV, bool> objectValidity_;
-
     //! If true then items are being saved and library is not refreshed
     bool saveInProgress_;
-
-    //! Contains the IP-Xact items to be added to the library.
-    QMap<VLNV, QString> itemsToAdd_;
-
-    //! Contains the IP-Xact items that have been saved, but not updated in library views yet.
-    QVector<VLNV> modifiedItems_;
 
 };
 

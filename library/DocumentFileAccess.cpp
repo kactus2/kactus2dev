@@ -47,7 +47,8 @@
 //-----------------------------------------------------------------------------
 // Function: DocumentFileAccess::DocumentFileAccess()
 //-----------------------------------------------------------------------------
-DocumentFileAccess::DocumentFileAccess()
+DocumentFileAccess::DocumentFileAccess(MessageMediator* messageChannel) :
+    messageChannel_(messageChannel)
 {
 
 }
@@ -122,7 +123,7 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     }
     else
     {
-        //emit noticeMessage(tr("Document was not supported type"));
+        messageChannel_->showMessage(QObject::tr("Document was not supported type"));
         return QSharedPointer<Document>();
     }
 }
@@ -135,7 +136,7 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
     QFile targetFile(path);
     if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
     {
-        //emit errorMessage(QObject::tr("Could not open file %1 for writing.").arg(path));
+        messageChannel_->showError(QObject::tr("Could not open file %1 for writing.").arg(path));
         return false;
     }
 
@@ -199,7 +200,7 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
     }
     else
     {
-        Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");
+        Q_ASSERT_X(false, "DocumentFileAccess::writeDocument().", "Trying to write unknown document type to file.");
         targetFile.close();
         return false;
     }
@@ -216,7 +217,7 @@ VLNV DocumentFileAccess::getDocumentVLNV(QString const& path)
     QFile documentFile(path);
     if (!documentFile.open(QFile::ReadOnly))
     {
-        //emit errorMessage(tr("File %1 could not be read.").arg(path));        
+        messageChannel_->showError(QObject::tr("File %1 could not be read.").arg(path));        
         return VLNV();
     }
 
@@ -226,8 +227,8 @@ VLNV DocumentFileAccess::getDocumentVLNV(QString const& path)
     QString type = documentReader.qualifiedName().toString();
     if (type.startsWith(QLatin1String("spirit:")))
     {
-        //emit noticeMessage(tr("File %1 contains an IP-XACT description not compatible with the 1685-2014 "
-        //    "standard and could not be read.").arg(QFileInfo(documentFile).absoluteFilePath()));
+        messageChannel_->showMessage(QObject::tr("File %1 contains an IP-XACT description not compatible "
+            "with the 1685-2014 standard and could not be read.").arg(path));
         documentFile.close();
         return VLNV();
     }
