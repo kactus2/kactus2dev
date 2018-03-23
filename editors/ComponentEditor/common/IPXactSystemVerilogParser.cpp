@@ -82,8 +82,11 @@ QString IPXactSystemVerilogParser::parseReferencesIn(QString const& expression, 
         return QStringLiteral("x");
     }
 
+    const QStringList expressionList = toStringList(expression);
     QString evaluatedExpression;
-    foreach (QString const& term, toStringList(expression))
+    evaluatedExpression.reserve(expressionList.size());
+
+    foreach (QString const& term, expressionList)
     {
         if (finder_->hasId(term))
         {
@@ -109,8 +112,11 @@ QString IPXactSystemVerilogParser::replaceReferencesWithValues(QString const& ex
         return QStringLiteral("x");
     }
 
+    const QStringList expressionList = toStringList(expression);
     QString evaluatedExpression;
-    foreach (QString const& term, toStringList(expression))
+    evaluatedExpression.reserve(expressionList.size());
+
+    foreach (QString const& term, expressionList)
     {
         if (finder_->hasId(term))
         {

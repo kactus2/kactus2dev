@@ -56,6 +56,8 @@ private slots:
     void testParseComparison();
     void testParseComparison_data();
 
+    void testParserPerformance();
+    void testParserPerformance_data();
 };
 
 //-----------------------------------------------------------------------------
@@ -86,7 +88,7 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::addColumn<QString>("constant");
     QTest::addColumn<QString>("expectedValue");
 
-    QTest::newRow("Empty value evaluates to unknown") << "" << "x";
+    QTest::newRow("Empty value evaluates to empty") << "" << "";
 
 	//! Booleans
 	QTest::newRow("Boolean true should evaluate to 1") << "true" << "1";
@@ -104,9 +106,9 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Inadequate array of {1,} should evaluate to unknown") << "{1,}" << "x";
     QTest::newRow("Inadequate array of ,1} should evaluate to unknown") << ",1}" << "x";
     QTest::newRow("Hexadecimal values in array are evaluated as decimal values") << "{'h10,'h14}" << "{16,20}";
-    QTest::newRow("Array '{1,1} should evaluate to an array of {1,1}") << "'{1,1}" << "{1,1}";
-    //QTest::newRow("Array consisting of multiple types of data is unknown") << "{1.1,1,\"helloWorld\"}" << "x";
-    //QTest::newRow("Array inside an array is ok") << "{1,{1,1}}" << "{1,{1,1}}";
+    QTest::newRow("Array {1,1} should evaluate to an array of {1,1}") << "{1,1}" << "{1,1}";
+    QTest::newRow("Array consisting of multiple types of data is unknown") << "{1.1,1,\"helloWorld\"}" << "x";
+    QTest::newRow("Array inside an array is ok") << "{1,{1,1}}" << "{1,{1,1}}";
 
     //! Decimal numbers.
     QTest::newRow("Decimal number 0 should evaluate to 0") << "0" << "0";
@@ -200,12 +202,12 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Octal number with multiple underscores should evaluate to decimal without underscores") 
         << "'o1_0_0" << "64";
 
-    QTest::newRow("Empty string literal") << "\"\"" << "\"\"";
+    /*QTest::newRow("Empty string literal") << "\"\"" << "\"\"";
     QTest::newRow("Non-empty string literal") << "\"text\"" << "\"text\"";
     QTest::newRow("Non-empty string literal with whitespace") << "\" text \"" << "\" text \"";
     QTest::newRow("Whitespace before and after string is ignored") << "  \"text\" " << "\"text\"";
 
-    QTest::newRow("String missing a double quote is unknown") << "\"text" << "x";
+    QTest::newRow("String missing a double quote is unknown") << "\"text" << "x";*/
 }
 
 //-----------------------------------------------------------------------------
@@ -254,11 +256,11 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::newRow("Sum of large decimal values 1000003+1000003") << "1000003+1000003" << "2000006";
 
     //! Fixed-point numbers.
-    QTest::newRow("One plus one equals exactly two") << "1.0+1.0" << "2";
-    QTest::newRow("One plus decimal two equals three") << "1.0+2" << "3";
-    QTest::newRow("Decimal one plus real two equals three") << "1+2.0" << "3";
+    QTest::newRow("One plus one equals exactly two") << "1.0+1.0" << "2.0";
+    QTest::newRow("One plus decimal two equals three") << "1.0+2" << "3.0";
+    QTest::newRow("Decimal one plus real two equals three") << "1+2.0" << "3.0";
     QTest::newRow("Half plus one quarter equals 0.75") << "0.5 + 0.25" << "0.75";
-    QTest::newRow("Four quarters equals 1") << "0.25 + 0.25 + 0.25 + 0.25" << "1";
+    QTest::newRow("Four quarters equals 1") << "0.25 + 0.25 + 0.25 + 0.25" << "1.00";
     QTest::newRow("Real sum 1000004.012 + 1.84444444") << "1000004.012 + 1.84444444" << "1000005.85644444";
 
     //! Hexadecimal numbers.
@@ -386,9 +388,9 @@ void tst_SystemVerilogExpressionParser::testParseMultiply_data()
     QTest::newRow("Positive constant times negative constant gives negative value") << "2*-2" << "-4";
 
     //! Fixed-point numbers.
-    QTest::newRow("Two times one half equals one") << "2*0.5" << "1";
-    QTest::newRow("Multiple fraction digits") << "0.250*0.25" << "0.0625";
-    QTest::newRow("Zero times anything is zero") << "0.0*42" << "0";
+    QTest::newRow("Two times one half equals one") << "2*0.5" << "1.0";
+    QTest::newRow("Multiple fraction digits") << "0.250*0.25" << "0.062";
+    QTest::newRow("Zero times anything is zero") << "0.0*42" << "0.0";
     QTest::newRow("Large real multiplication 10000.1 * 20002") << "10000.1 * 20002" << "200022000.2";
 
     //! Hexadecimal numbers.
@@ -541,8 +543,8 @@ void tst_SystemVerilogExpressionParser::testParsePower_data()
     //! Fixed-point numbers.
     QTest::newRow("Real gives real reciprocal") << "2.0 ** -1" << "0.5";
     QTest::newRow("2.5 to the power of two") << "2.50 ** 2" << "6.25";
-    QTest::newRow("Large real in power 10000.1 ** 2") << "10000.1 ** 2" << "100002000.01";
-    QTest::newRow("Large real in larger power 10000.1**3") << "10000.1**3" << "1000030000300.001";
+    QTest::newRow("Large real in power 10000.1 ** 2") << "10000.1 ** 2" << "100002000.0";
+    QTest::newRow("Large real in larger power 10000.1**3") << "10000.1**3" << "1000030000300.0";
 }
 
 //-----------------------------------------------------------------------------
@@ -584,8 +586,9 @@ void tst_SystemVerilogExpressionParser::testClog2Function_data()
     QTest::newRow("Simple expression as argument") << "$clog2(2 + 2)" << "2";
     QTest::newRow("Expression as argument") << "$clog2(2**12)" << "12";
 
+    QTest::newRow("Nested clog2s") << "$clog2($clog2(256))" << "3";
     //! Arrays.
-    //QTest::newRow("$clog(3) inside an array equals 2") << "{$clog2(3),1,1,1}" << "{2,1,1,1}";
+    QTest::newRow("$clog(3) inside an array equals 2") << "{$clog2(3),1,1,1}" << "{2,1,1,1}";
 }
 
 //-----------------------------------------------------------------------------
@@ -652,7 +655,7 @@ void tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("expectedResult");
 
-    QTest::newRow("Empty parenthesis") << "()" << "x" ;
+    QTest::newRow("Empty parenthesis") << "()" << "" ;
     QTest::newRow("Single constant in parenthesis") << "(1)" << "1" ;
     QTest::newRow("Single operation in parenthesis") << "(1+1)" << "2" ;
     QTest::newRow("Single operation and whitespace in parenthesis") << " ( 1 + 1 ) " << "2" ;
@@ -821,6 +824,42 @@ void tst_SystemVerilogExpressionParser::testParseComparison_data()
 
     QTest::newRow("Expression: 2+1-2 is not equal to 10/2 returns 1") << "2+1-2!=10/2" << 1;
     QTest::newRow("Expression: 2*3-1 is not equal to 10/2 returns 0") << "2*3-1!=10/2" << 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParserPerformance()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParserPerformance()
+{
+    QFETCH(QString, expression);
+    QFETCH(int, expectedResult);
+
+    SystemVerilogExpressionParser parser;
+
+    QString parserResult;
+
+    QBENCHMARK
+    {
+        parserResult = parser.parseExpression(expression);
+    }
+
+    QCOMPARE(parserResult.toInt(), expectedResult);
+    
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParserPerformance_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParserPerformance_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<int>("expectedResult");
+
+    QTest::newRow("Basic operations") << "12*12 + 8/2 -8" << 140;
+    QTest::newRow("clog2 operations") << "$clog2(256) - $clog2(8)" << 5;
+    QTest::newRow("Nested clog2 operations") << "$clog2($clog2(256))" << 3;
+    QTest::newRow("Sum of multiple values of different bases") << "'hA + 'b1010 + 'o12 + 10" << 40;
+
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)

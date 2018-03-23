@@ -418,7 +418,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferenc
     QTest::addColumn<QString>("expectedResult");
 
     QTest::newRow("Two parameters multiplication, integer and floating point") <<
-        "firstValue * secondValue" << "22.53";
+        "firstValue * secondValue" << "22.530";
     QTest::newRow("Parameters division, integer and floating point") << "firstValue / secondValue" << "39";
     QTest::newRow("Parameters addition, integer and floating point") << "firstValue + secondValue" << "30.751";
     QTest::newRow("Parameters subtraction, integer and floating point") << "firstValue - secondValue" << "29.249";

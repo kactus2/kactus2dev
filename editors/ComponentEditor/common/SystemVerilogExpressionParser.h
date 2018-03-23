@@ -37,7 +37,7 @@ public:
      *      @return The decimal value of the constant.
      */
     virtual QString parseExpression(QString const& expression) const;
-
+    
     /*!
      *  Checks if the given expression is valid for parsing.
      *
@@ -84,6 +84,8 @@ protected:
      *      @return The real value of the constant.
      */
     virtual qreal parseConstantToDecimal(QString const& constantNumber) const;
+    
+     QString parseConstant(QString const& constantNumber) const;
 
         /*!
      *  Splits the given expression to string list with terms and operations as separate items.
