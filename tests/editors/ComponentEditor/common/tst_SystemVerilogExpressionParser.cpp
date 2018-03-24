@@ -797,8 +797,9 @@ void tst_SystemVerilogExpressionParser::testParseComparison_data()
     QTest::newRow("Expression: 14*2 is lesser than 2-3*2+8 returns 0") << "10 < 2" << 0;
     QTest::newRow("Expression: 2-3*2+8 is lesser than 14*2 returns 1") << "2 < 10" << 1;
 
-    QTest::newRow("Single value: 10 is equal to 10 returns 1") << "10==10" << 1;
+    QTest::newRow("Single value: 10 is equal to 10 returns 1") << "21==21" << 1;
     QTest::newRow("Single value: 10 is equal to 2 returns 0") << "10==2" << 0;
+    QTest::newRow("Single value: 10 is equal to 2 returns 0") << "1==(8==8)" << 1;
 
     QTest::newRow("Expression: 14-2*2 is equal to 2*5 returns 1") << "14-2*2 == 2*5" << 1;
     QTest::newRow("Expression: 14-2*2+1 is equal to 2*5 returns 0") << "14-2*2+1 == 2*5" << 0;

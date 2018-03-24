@@ -16,6 +16,7 @@
 
 #include <QSharedPointer>
 #include <QString>
+#include <QStringList>
 
 class ParameterFinder;
 
@@ -36,32 +37,10 @@ public:
     //! The destructor.
     virtual ~IPXactSystemVerilogParser();
     
-    /*!
-     *  Parses an expression to decimal number.
-     *
-     *      @param [in] expression   The expression to parse.
-     *
-     *      @return The decimal value of the constant.
-     */
-    virtual QString parseExpression(QString const& expression) const;
+    virtual bool isSymbol(QString const& expression) const override;
 
-    /*!
-     *  Checks if the given expression is not valid for parsing.
-     *
-     *      @param [in] expression   The expression to check.
-     *
-     *      @return True, if the expression is not in valid format, otherwise false.
-     */
-    virtual bool isValidExpression(QString const& expression) const;
+    virtual QString findSymbolValue(QString const& expression) const override;
 
-    /*!
-     *  Finds the common base in the expression.
-     *
-     *      @param [in] expression   The expression to search in.
-     *
-     *      @return The common base for the expression.
-     */
-    virtual int baseForExpression(QString const& expression) const;
 
 protected:
 
@@ -74,26 +53,6 @@ private:
     IPXactSystemVerilogParser(IPXactSystemVerilogParser const& rhs);
     IPXactSystemVerilogParser& operator=(IPXactSystemVerilogParser const& rhs);
 
-    /*!
-     *  Evaluates the values of referenced parameters in the given expression recursively.
-     *
-     *      @param [in] expression              The expression to evaluate.
-     *      @param [in] recursionStep           The current depth in recursion.
-     *
-     *      @return The expression where the references have been replaced with the evaluated values.
-     */
-    QString parseReferencesIn(QString const& expression, unsigned int recursionStep = 0) const;
-
-    /*!
-     *  Recursively replaces all references with their values without evaluating the expressions.
-     *
-     *      @param [in] expression      The expression to replace references in.
-     *      @param [in] recursionStep   The current depth in recursion.
-     *
-     *      @return The expression where the references have been replaced with their values.
-     */
-    QString replaceReferencesWithValues(QString const& expression, unsigned int recursionStep = 0) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -103,6 +62,8 @@ private:
     
     //! The finder for parameters available in the SystemVerilog expressions.
     QSharedPointer<ParameterFinder> finder_;
+
+    QStringList* symbolStack_;
 };
 
 #endif // IPXACTSYSTEMVERILOGPARSER_H

@@ -20,7 +20,7 @@
 // Function: IPXactSystemVerilogParser::IPXactSystemVerilogParser()
 //-----------------------------------------------------------------------------
 IPXactSystemVerilogParser::IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder):
-SystemVerilogExpressionParser(), finder_(finder)
+SystemVerilogExpressionParser(), finder_(finder), symbolStack_(new QStringList())
 {
 
 }
@@ -30,103 +30,32 @@ SystemVerilogExpressionParser(), finder_(finder)
 //-----------------------------------------------------------------------------
 IPXactSystemVerilogParser::~IPXactSystemVerilogParser()
 {
-
+    delete symbolStack_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::parseExpression()
+// Function: IPXactSystemVerilogParser::isSymbol()
 //-----------------------------------------------------------------------------
-QString IPXactSystemVerilogParser::parseExpression(QString const& expression) const
+bool IPXactSystemVerilogParser::isSymbol(QString const& expression) const
 {
-    if (SystemVerilogExpressionParser::isValidExpression(expression))
-    {
-        return SystemVerilogExpressionParser::parseExpression(expression);
-    }
-
-    return SystemVerilogExpressionParser::parseExpression(parseReferencesIn(expression));
+    return finder_->hasId(expression);
 }
 
 //-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::isValidExpression()
+// Function: IPXactSystemVerilogParser::findSymbolValue()
 //-----------------------------------------------------------------------------
-bool IPXactSystemVerilogParser::isValidExpression(QString const& expression) const
+QString IPXactSystemVerilogParser::findSymbolValue(QString const& expression) const
 {
-    if (SystemVerilogExpressionParser::isValidExpression(expression))
+    // Check for ring references.
+    if (symbolStack_->contains(expression))
     {
-        return true;
-    }
-
-    return SystemVerilogExpressionParser::isValidExpression(replaceReferencesWithValues(expression));
-}
-
-//-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::baseForExpression()
-//-----------------------------------------------------------------------------
-int IPXactSystemVerilogParser::baseForExpression(QString const& expression) const
-{
-    if (SystemVerilogExpressionParser::isValidExpression(expression))
-    {
-        return SystemVerilogExpressionParser::baseForExpression(expression);
-    }
-
-    return SystemVerilogExpressionParser::baseForExpression(replaceReferencesWithValues(expression));
-}
-
-//-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::parseReferencesIn()
-//-----------------------------------------------------------------------------
-QString IPXactSystemVerilogParser::parseReferencesIn(QString const& expression, unsigned int recursionStep) const
-{
-    if (recursionStep == MAX_EVALUATION_STEPS)
-    {
+        symbolStack_->clear();
         return QStringLiteral("x");
     }
 
-    const QStringList expressionList = toStringList(expression);
-    QString evaluatedExpression;
-    evaluatedExpression.reserve(expressionList.size());
+    symbolStack_->append(expression);
+    QString value = parseExpression(finder_->valueForId(expression));
 
-    foreach (QString const& term, expressionList)
-    {
-        if (finder_->hasId(term))
-        {
-            QString value = parseReferencesIn(finder_->valueForId(term), recursionStep + 1);
-            evaluatedExpression.append(SystemVerilogExpressionParser::parseExpression(value));
-        }
-        else
-        {
-            evaluatedExpression.append(term);
-        }
-    }
-
-    return evaluatedExpression;
-}
-
-//-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::replaceReferencesWithValues()
-//-----------------------------------------------------------------------------
-QString IPXactSystemVerilogParser::replaceReferencesWithValues(QString const& expression, unsigned int recursionStep) const
-{
-    if (recursionStep == MAX_EVALUATION_STEPS)
-    {
-        return QStringLiteral("x");
-    }
-
-    const QStringList expressionList = toStringList(expression);
-    QString evaluatedExpression;
-    evaluatedExpression.reserve(expressionList.size());
-
-    foreach (QString const& term, expressionList)
-    {
-        if (finder_->hasId(term))
-        {
-            evaluatedExpression.append(replaceReferencesWithValues(finder_->valueForId(term), recursionStep + 1));
-        }
-        else
-        {
-            evaluatedExpression.append(term);
-        }
-    }
-
-    return evaluatedExpression;
+    symbolStack_->removeOne(expression);
+    return value;
 }
