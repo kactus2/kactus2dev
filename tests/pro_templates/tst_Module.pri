@@ -1,9 +1,9 @@
 #-----------------------------------------------------------------------------
-# File: unittest.pri
+# File: tst_<Module>.pri
 #-----------------------------------------------------------------------------
-# Project: Kactus 2
+# Project: Kactus2
 # Author: Esko Pekkarinen
-# Date: 28.7.2014
+# Date: 28.03.2018
 #
 # Description:
 # Qt project include file template.

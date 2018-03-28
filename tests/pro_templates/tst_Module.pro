@@ -1,9 +1,9 @@
 #-----------------------------------------------------------------------------
-# File: unittest.pro
+# File: tst_<Module>.pro
 #-----------------------------------------------------------------------------
-# Project: Kactus 2
+# Project: Kactus2
 # Author: Esko Pekkarinen
-# Date: 24.7.2014
+# Date: 28.03.2018
 #
 # Description:
 # Qt project file template for running unit tests for a single module.
@@ -11,7 +11,7 @@
 
 TEMPLATE = app
 
-TARGET = <module_name>
+TARGET = tst_<Module>
 
 QT += core xml gui testlib
 CONFIG += testcase console
@@ -35,4 +35,4 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(<module_name>.pri)
+include(tst_<Module>.pri)
