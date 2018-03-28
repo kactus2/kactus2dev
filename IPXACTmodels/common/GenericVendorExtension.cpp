@@ -81,7 +81,7 @@ void GenericVendorExtension::writeAttributes(QDomNode const& node, QXmlStreamWri
 {
     QDomNamedNodeMap attributes = node.attributes();
 
-    int attributeCount = node.attributes().length();
+    const int attributeCount = attributes.length();
     for (int i = 0; i < attributeCount; i++)
     {
         QDomNode attribute = attributes.item(i);
@@ -94,7 +94,7 @@ void GenericVendorExtension::writeAttributes(QDomNode const& node, QXmlStreamWri
 //-----------------------------------------------------------------------------
 void GenericVendorExtension::writeChildNodes(QDomNode const& node, QXmlStreamWriter& writer) const
 {
-    int childCount = node.childNodes().count();    
+    const int childCount = node.childNodes().count();    
     for (int i = 0; i < childCount; i++)
     {
         QDomNode childNode = node.childNodes().at(i);
