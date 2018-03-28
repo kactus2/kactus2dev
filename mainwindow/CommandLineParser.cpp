@@ -35,8 +35,9 @@ bool CommandLineParser::helpOrVersionOptionSet(QStringList const& arguments)
 //-----------------------------------------------------------------------------
 // Function: CommandLineParser::process()
 //-----------------------------------------------------------------------------
-int CommandLineParser::process(IPluginUtility* utility, QStringList const& arguments)
+int CommandLineParser::process(QStringList const& arguments, IPluginUtility* utility)
 {
+    
     QCommandLineParser optionParser;      
     optionParser.setApplicationDescription(
         "Kactus2 is a design environment for IP-XACT based SoC design.\n"
@@ -51,8 +52,20 @@ int CommandLineParser::process(IPluginUtility* utility, QStringList const& argum
 
     optionParser.parse(arguments);
 
-    QString command = optionParser.value(commandOption);
-   
+    if (optionParser.isSet(helpOption))
+    {
+        utility->printInfo(optionParser.helpText());
+        return 0;
+    }
+
+    if (optionParser.isSet(versionOption))
+    {
+        utility->printInfo(QStringLiteral("Kactus2 ") + utility->getKactusVersion());
+        return 0;
+    }
+
+    QString command = optionParser.value(commandOption);       
+
     PluginManager& pluginManager = PluginManager::getInstance();
     foreach (IPlugin* plugin, pluginManager.getAllPlugins())
     {        
@@ -63,7 +76,8 @@ int CommandLineParser::process(IPluginUtility* utility, QStringList const& argum
             return 0;
         }
     }
+     
 
-    optionParser.process(arguments);
+    //optionParser.process(arguments);
     return 0;
 }

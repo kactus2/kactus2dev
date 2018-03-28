@@ -34,12 +34,12 @@ namespace CommandLineParser
     /*!
      *  Processes the given command line arguments and executes accordingly.
      *
-     *      @param [in] utility     Utilities for library access and user notifications.
      *      @param [in] arguments   The command line arguments to process.
+     *      @param [in] utility     Utilities for library access and user notifications.     
      *
      *      @return 0 for a successful run, any other value for errors.
      */
-    int process(IPluginUtility* utility, QStringList const& arguments);
+    int process(QStringList const& arguments, IPluginUtility* utility);
 }
 
 #endif 
