@@ -1,0 +1,6 @@
+# Ignore all generated project files in tests
+tests/**/*.vcxproj
+tests/**/*.vcxproj.filters
+tests/**/*.vcxproj.user
+
+
