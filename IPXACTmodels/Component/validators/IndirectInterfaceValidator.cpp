@@ -156,7 +156,9 @@ bool IndirectInterfaceValidator::hasValidBitsInLau(QSharedPointer<IndirectInterf
         return true;
     }
 
-    if (!expressionParser_->isValidExpression(indirectInterface->getBitsInLau()))
+    bool isValidBits = false;
+    expressionParser_->parseExpression(indirectInterface->getBitsInLau(), &isValidBits);
+    if (isValidBits == false)
     {
         return false;
     }

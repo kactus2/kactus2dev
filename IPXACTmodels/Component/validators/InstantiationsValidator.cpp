@@ -270,8 +270,8 @@ bool InstantiationsValidator::fileBuilderReplaceDefaultFlagsIsValid(QSharedPoint
     QString replaceDefaultFlags = fileBuilder->getReplaceDefaultFlags();
     if (!replaceDefaultFlags.isEmpty())
     {
-        bool replaceFlagsOk = expressionParser_->isValidExpression(replaceDefaultFlags);
-        int replaceFlagsInt = expressionParser_->parseExpression(replaceDefaultFlags).toInt();
+        bool replaceFlagsOk = false;
+        int replaceFlagsInt = expressionParser_->parseExpression(replaceDefaultFlags, &replaceFlagsOk).toInt();
 
         return replaceFlagsOk && (replaceFlagsInt == 0 || replaceFlagsInt == 1);
     }
@@ -437,8 +437,10 @@ bool InstantiationsValidator::moduleParameterHasValidUsageType(QSharedPointer<Mo
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::moduleParameterHasValidPresence(QSharedPointer<ModuleParameter> parameter) const
 {
-	if ( !parameter->getIsPresent().isEmpty() &&
-        !expressionParser_->isValidExpression( parameter->getIsPresent() ) )
+    bool isValidPresence = false;
+    expressionParser_->parseExpression(parameter->getIsPresent(), &isValidPresence);
+    
+	if (isValidPresence == false)
 	{
 		return false;
 	}

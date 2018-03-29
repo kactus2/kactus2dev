@@ -13,6 +13,7 @@
 #define EXPRESSIONPARSER_H
 
 #include <QString>
+#include <QPair>
 
 //-----------------------------------------------------------------------------
 //! Interface for expression parsers.
@@ -31,17 +32,9 @@ public:
      *
      *      @return The decimal value of the constant.
      */
-    virtual QString parseExpression(QString const& expression) const = 0;
+    virtual QString parseExpression(QString const& expression, bool* validExpression = nullptr) const = 0;
 
-    /*!
-     *  Checks if the given expression is valid for parsing.
-     *
-     *      @param [in] expression   The expression to check.
-     *
-     *      @return True, if the expression is in valid format, otherwise false.
-     */
-    virtual bool isValidExpression(QString const& expression) const = 0;
-    
+   
     /*!
      *  Checks if the given expression is a plain value and does not need evaluation.
      *
@@ -58,7 +51,7 @@ public:
      *
      *      @return True, if the expression is an array, otherwise false.
      */
-    virtual bool isArrayExpression(QString const& expression) const = 0;
+    //virtual bool isArrayExpression(QString const& expression) const = 0;
 
     /*!
      *  Finds the common base in the expression.

@@ -11,9 +11,12 @@
 
 #include "ExpressionFormatter.h"
 
+#include "ExpressionParser.h"
+
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+
 #include <QStringList>
 #include <QRegularExpression>
-
 
 
 //-----------------------------------------------------------------------------
@@ -31,6 +34,25 @@ parameterFinder_(parameterFinder)
 ExpressionFormatter::~ExpressionFormatter()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionFormatter::format()
+//-----------------------------------------------------------------------------
+QString ExpressionFormatter::format(QString const& expression, QSharedPointer<ExpressionParser> parser)
+{
+    bool isValidExpression = false;
+    QString value = parser->parseExpression(expression, &isValidExpression);
+
+    if (isValidExpression)
+    {
+        ValueFormatter formatter;
+        return formatter.format(value, parser->baseForExpression(expression));
+    }
+    else
+    {
+        return "n/a";
+    }
 }
 
 //-----------------------------------------------------------------------------

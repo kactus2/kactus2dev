@@ -405,15 +405,13 @@ QString ConfigurableElementsModel::evaluateValue(int column, QString const& choi
 //-----------------------------------------------------------------------------
 QString ConfigurableElementsModel::formattedValueFor(QString const& expression) const
 {
-    if (defaultValueParser_->isValidExpression(expression))
+    bool isValidExpression = false;
+    QString value = defaultValueParser_->parseExpression(expression, &isValidExpression);
+    if (isValidExpression)
     {
         ValueFormatter formatter;
-        return formatter.format(defaultValueParser_->parseExpression(expression),
+        return formatter.format(value,
             defaultValueParser_->baseForExpression(expression));
-    }
-    else if (defaultValueParser_->isPlainValue(expression))
-    {
-        return expression;
     }
     else
     {

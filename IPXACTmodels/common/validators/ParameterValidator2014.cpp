@@ -108,22 +108,13 @@ bool ParameterValidator2014::hasValidType(QSharedPointer<const Parameter> parame
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidValueForType(QString const& value, QString const& type) const
 {
-    if (!expressionParser_->isValidExpression(value))
+    if (type.isEmpty() || type.compare(QLatin1String("string")) == 0)
     {
-        return false;
+        return true;
     }
 
-    if (expressionParser_->isArrayExpression(value))
-    {
-        return isArrayValidForType(value, type);
-    }
-
-    QString solvedValue = expressionParser_->parseExpression(value);
-
-    if (type.isEmpty())
-    {
-        return solvedValue != QLatin1String("x");
-    }
+    bool isValidValue = false;
+    QString solvedValue = expressionParser_->parseExpression(value, &isValidValue);
 
     bool canConvert = false;
     if (type == QLatin1String("bit"))
@@ -364,8 +355,7 @@ void ParameterValidator2014::findErrorsIn(QVector<QString>& errors, QSharedPoint
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::shouldCompareValueAndBoundary(QString const& boundaryValue, QString const& type) const
 {
-     return expressionParser_->isValidExpression(boundaryValue) && 
-         (!type.isEmpty() && type != QLatin1String("bit") && type != QLatin1String("string"));
+     return !type.isEmpty() && type != QLatin1String("bit") && type != QLatin1String("string");
 }
 
 //-----------------------------------------------------------------------------
@@ -491,7 +481,7 @@ void ParameterValidator2014::findErrorsInMaximumValue(QVector<QString>& errors, 
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidValueForFormat(QString const& value) const
 {
-    return expressionParser_->isValidExpression(value);
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -540,8 +530,7 @@ bool ParameterValidator2014::valueIsLessThanMinimum(QSharedPointer<const Paramet
     QString const& solvedValue, QString const& type) const
 {
     QString minimum = parameter->getMinimumValue();
-    if (expressionParser_->isArrayExpression(solvedValue) && type != QLatin1String("bit") &&
-        type != QLatin1String("string") && !type.isEmpty())
+    if (type != QLatin1String("bit") && type != QLatin1String("string") && !type.isEmpty())
     {
         QStringList subValues = splitArrayToList(solvedValue);
 
@@ -567,8 +556,7 @@ bool ParameterValidator2014::valueIsGreaterThanMaximum(QSharedPointer<const Para
 {
     QString maximum = parameter->getMaximumValue();
 
-    if (expressionParser_->isArrayExpression(solvedValue) && type != QLatin1String("bit") && 
-        type != QLatin1String("string") && !type.isEmpty())
+    if (type != QLatin1String("bit") && type != QLatin1String("string") && !type.isEmpty())
     {
         QStringList subValues = splitArrayToList(solvedValue);
 

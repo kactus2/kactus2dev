@@ -17,13 +17,13 @@
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
-#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <QFormLayout>
 #include <QScrollArea>
@@ -184,20 +184,7 @@ void SingleAddressBlockEditor::onIsPresentEdited()
 //-----------------------------------------------------------------------------
 QString SingleAddressBlockEditor::formattedValueFor(QString const& expression) const
 {
-    if (expressionParser_->isValidExpression(expression))
-    {
-        ValueFormatter formatter;
-        return formatter.format(expressionParser_->parseExpression(expression),
-            expressionParser_->baseForExpression(expression));
-    }
-    else if (expressionParser_->isPlainValue(expression))
-    {
-        return expression;
-    }
-    else
-    {
-        return "n/a";
-    }
+    return ExpressionFormatter::format(expression, expressionParser_);
 }
 
 //-----------------------------------------------------------------------------

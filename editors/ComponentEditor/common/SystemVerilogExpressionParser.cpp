@@ -70,12 +70,13 @@ SystemVerilogExpressionParser::~SystemVerilogExpressionParser()
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::parseExpression()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::parseExpression(QString const& expression) const
+QString SystemVerilogExpressionParser::parseExpression(QString const& expression, bool* validExpression) const
 {
     QStringList output = toRPN(expression);
     
     //qDebug() << output;
     
+    bool isValid = true;
     QStringList resultStack;
     foreach (QString const& s, output)
     {
@@ -114,10 +115,16 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
         }
         else
         {
-            return "x";
+            isValid = false;
+            break;
         }
     }
     
+    if (validExpression != nullptr)
+    {
+        *validExpression = isValid;
+    }
+
     return resultStack.join(QString());
 }
 
@@ -128,7 +135,6 @@ QStringList SystemVerilogExpressionParser::toRPN(QString const& expression) cons
 {
     // Convert expression to Reverse Polish Notation (RPN) using a modified Shunting Yard algorithm.
     // RPN is used to ensure the operations are calculated in the correct precedence order.
-
     QStringList output;
     QStringList stack;
    
@@ -222,15 +228,17 @@ QStringList SystemVerilogExpressionParser::toRPN(QString const& expression) cons
             }
 
             openParenthesis--;
-            lastWasOperator = true;
+            lastWasOperator = false;
             index++;
             
         }
         else
         {
-            QString unknown = expression.mid(index, match.capturedStart() - index);
+            QRegularExpression separator(COMBINED_OPERATOR.pattern() + "|[(){}]");
+            QString unknown = expression.mid(index, separator.match(expression, index).capturedStart() - index);
             output.append(unknown.trimmed());
             index += unknown.length();
+            lastWasOperator = false;
         }
     }
 
@@ -259,9 +267,9 @@ bool SystemVerilogExpressionParser::isComparison(QString const& expression) cons
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isValidExpression()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isValidExpression(QString const& expression) const
+/*bool SystemVerilogExpressionParser::isValidExpression(QString const& expression) const
 {    
-    /*static QString stringOrExpression ("\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
+    static QString stringOrExpression ("\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
         "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*))\\s*");
 
     static QString arrayExpression("('?{" + stringOrExpression + "(," + stringOrExpression + ")*})");
@@ -279,9 +287,9 @@ bool SystemVerilogExpressionParser::isValidExpression(QString const& expression)
     return validatingExp.match(expression).hasMatch() && 
         openParenthesisCount == closeParenthesisCount &&
         arrayOpenCount == arrayCloseCount;
-        */
+   
     return true;
-}
+}*/
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isPlainValue()

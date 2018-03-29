@@ -175,8 +175,9 @@ QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(QSharedPoin
     {
         QMap<QString, double> availableWeightedPorts;
 
-        QString logicalWidth = getLogicalPortWidth(logicalPort);
-        if (!logicalWidth.isEmpty() && parser_->isValidExpression(logicalWidth))
+        bool isValidWidth = false;
+        QString logicalWidth = parser_->parseExpression(getLogicalPortWidth(logicalPort), &isValidWidth);
+        if (isValidWidth)
         {
             int logicalWidthInt = parser_->parseExpression(logicalWidth).toInt();
             availableWeightedPorts = getPortsByLogicalWidth(logicalWidthInt, availablePorts);

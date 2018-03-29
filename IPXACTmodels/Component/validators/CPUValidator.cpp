@@ -59,7 +59,10 @@ bool CPUValidator::validate(QSharedPointer<Cpu> cpu) const
 	{
 		return false;
 	}
-	else if (!cpu->getIsPresent().isEmpty() && !expressionParser_->isValidExpression(cpu->getIsPresent()))
+
+	bool isValidPresence = false;
+    expressionParser_->parseExpression(cpu->getIsPresent(), &isValidPresence);
+    if (isValidPresence == false)
 	{
 		return false;
 	}
@@ -97,8 +100,10 @@ bool CPUValidator::hasValidAddressSpaceReferences(QSharedPointer<Cpu> cpu) const
         {
             return false;
         }
-        else if (!currentRef->getIsPresent().isEmpty() && 
-            !expressionParser_->isValidExpression(currentRef->getIsPresent()))
+        
+	    bool isValidPresence = false;
+        expressionParser_->parseExpression(currentRef->getIsPresent(), &isValidPresence);
+        if (isValidPresence == false)
         {
             return false;
         }
@@ -118,7 +123,9 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cp
         errors.append(QObject::tr("Invalid name '%1' set for CPU within %2.").arg(cpu->name()).arg(context));
 	}
 
-	if (!cpu->getIsPresent().isEmpty() && !expressionParser_->isValidExpression( cpu->getIsPresent()))
+	bool isValidPresence = false;
+    expressionParser_->parseExpression(cpu->getIsPresent(), &isValidPresence);
+	if (isValidPresence == false)
 	{
 		errors.append(QObject::tr("Is present expression '%1' in cpu %2 is invalid.").arg(
             cpu->getIsPresent(), cpu->name()));
@@ -138,8 +145,10 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cp
                 currentRef->getAddressSpaceRef(), cpu->name()));
         }
 		
-		if (!currentRef->getIsPresent().isEmpty() &&
-            !expressionParser_->isValidExpression(currentRef->getIsPresent()))
+        
+	    bool isValidPresence = false;
+        expressionParser_->parseExpression(currentRef->getIsPresent(), &isValidPresence);
+		if (isValidPresence == false)
 		{
 			errors.append(QObject::tr(
                 "Is present expression '%1' for address space reference %2 in cpu %3 is invalid."

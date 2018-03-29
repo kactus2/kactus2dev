@@ -46,8 +46,10 @@ bool FileValidator::validate(QSharedPointer<File> file) const
 	{
 		return false;
 	}
-	
-	if (!file->getIsPresent().isEmpty() && !expressionParser_->isValidExpression(file->getIsPresent()))
+
+    bool isValidPresence = false;
+    expressionParser_->parseExpression(file->getIsPresent(), &isValidPresence);
+	if (isValidPresence == false)
 	{
 		return false;
 	}
@@ -104,7 +106,9 @@ void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> 
 		errors.append(QObject::tr("The file name '%1' is invalid within %2.").arg(file->name(), context));
 	}
 
-	if (!file->getIsPresent().isEmpty() && !expressionParser_->isValidExpression(file->getIsPresent()))
+    bool isValidPresence = false;
+    expressionParser_->parseExpression(file->getIsPresent(), &isValidPresence);
+	if (isValidPresence == false)
 	{
 		errors.append(QObject::tr("The presence '%1' is invalid in file %2.").arg(file->getIsPresent(), 
             file->name()));
