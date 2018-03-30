@@ -33,20 +33,12 @@ public:
     /*!
      *  Parses an expression to decimal number.
      *
-     *      @param [in] expression   The expression to parse.
+     *      @param [in]  expression         The expression to parse.
+     *      @param [out] validExpression    Set to true, if the parsing was successful, otherwise false.
      *
-     *      @return The decimal value of the constant.
+     *      @return The decimal value of the evaluated expression.
      */
     virtual QString parseExpression(QString const& expression, bool* validExpression = nullptr) const;
-    
-    /*!
-     *  Checks if the given expression is valid for parsing.
-     *
-     *      @param [in] expression   The expression to check.
-     *
-     *      @return True, if the expression is in valid format, otherwise false.
-     */
-    //virtual bool isValidExpression(QString const& expression) const;
 
     /*!
      *  Check if the given expression is an array.
@@ -100,6 +92,8 @@ private:
 
     QStringList toRPN(QString const& expression) const;
 
+    QString solveRPN(QStringList const& rpn, bool* validExpression) const;
+
     /*!
      *  Checks if the given expression is a string.
      *
@@ -119,14 +113,44 @@ private:
     bool isLiteral(QString const& expression) const;
 
     /*!
-     *  Check if the selected expression is a comparison.
+     *  Checks if the given token is a unary operator.
      *
-     *      @param [in] expression  The selected expression.
+     *      @param [in] expression   The token to check.
      *
-     *      @return True, if the selected expression is a comparison, otherwise false.
+     *      @return True, if the token is a unary operator, otherwise false.
      */
-    bool isComparison(QString const& expression) const;
- 
+    bool isUnaryOperator(QString const& token) const;
+
+    /*!
+     *  Checks if the given token is a binary operator.
+     *
+     *      @param [in] expression   The token to check.
+     *
+     *      @return True, if the token is a binary operator, otherwise false.
+     */
+    bool isBinaryOperator(QString const& token) const;
+
+    /*!
+     *  Solves a binary operation.
+     *
+     *      @param [in] operation   The operation to solve.
+     *      @param [in] leftTerm    The first term of the operation.
+     *      @param [in] rightTerm   The second term of the operation.
+     *
+     *      @return The result of the operation.
+     */
+    QString solveBinary(QString const& operation, QString const& leftTerm, QString const& rightTerm) const;
+
+    /*!
+     *  Solves a binary operation.
+     *
+     *      @param [in] operation    The operation to solve.
+     *      @param [in] term         The term for the operation.
+     *
+     *      @return The result of the operation.
+     */
+    QString solveUnary(QString const& operation, QString const& term) const;
+
     /*!
      *  Solves the SystemVerilog $clog2 function.
      *
@@ -135,18 +159,6 @@ private:
      *      @return The solved value.
      */
     QString solveClog2(QString const& value) const;
-
-    /*!
-    *  Solves a binary operation.
-    *
-    *      @param [in] firstTerm   The first term of the operation.
-    *      @param [in] operation   The operation to solve.
-    *      @param [in] secondTerm  The second term of the operation.
-    *
-    *      @return The result of the operation.
-    */
-    QString solve(QString const& firstTerm, QString const& operation, QString const& secondTerm) const;
-       
     /*!
      *  Get the precision used from the terms.
      *

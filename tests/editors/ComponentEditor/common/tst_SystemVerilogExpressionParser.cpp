@@ -56,6 +56,9 @@ private slots:
     void testParseComparison();
     void testParseComparison_data();
 
+    void testParseMathFunctions();
+    void testParseMathFunctions_data();
+
     void testParserPerformance();
     void testParserPerformance_data();
 };
@@ -109,6 +112,7 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Array {1,1} should evaluate to an array of {1,1}") << "{1,1}" << "{1,1}";
     QTest::newRow("Array consisting of multiple types of data is unknown") << "{1.1,1,\"helloWorld\"}" << "x";
     QTest::newRow("Array inside an array is ok") << "{1,{1,1}}" << "{1,{1,1}}";
+    QTest::newRow("Array inside an array as first is ok") << "{{1,1},1}" << "{{1,1},1}";
 
     //! Decimal numbers.
     QTest::newRow("Decimal number 0 should evaluate to 0") << "0" << "0";
@@ -825,6 +829,42 @@ void tst_SystemVerilogExpressionParser::testParseComparison_data()
 
     QTest::newRow("Expression: 2+1-2 is not equal to 10/2 returns 1") << "2+1-2!=10/2" << 1;
     QTest::newRow("Expression: 2*3-1 is not equal to 10/2 returns 0") << "2*3-1!=10/2" << 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParseMathFunctions()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParseMathFunctions()
+{
+    QFETCH(QString, expression);
+    QFETCH(int, expectedResult);
+    QFETCH(bool, expectedValid);
+
+    SystemVerilogExpressionParser parser;
+
+    bool isValid = false;
+    QString parserResult = parser.parseExpression(expression, &isValid);
+
+    QCOMPARE(isValid, expectedValid);
+    if (expectedValid)
+    {
+        QCOMPARE(parserResult.toInt(), expectedResult);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParseMathFunctions_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParseMathFunctions_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<int>("expectedResult");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("System function $clog2(), ceil of log2") << "$clog2(17)" << 5 << true;
+
+    QTest::newRow("Power as function") << "$pow(2, 3)" << 8 << true;
+
 }
 
 //-----------------------------------------------------------------------------

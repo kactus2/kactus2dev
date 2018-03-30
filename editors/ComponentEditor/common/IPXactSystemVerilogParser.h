@@ -41,7 +41,6 @@ public:
 
     virtual QString findSymbolValue(QString const& expression) const override;
 
-
 protected:
 
    //virtual qreal parseConstantToDecimal(QString const& constantNumber) const;

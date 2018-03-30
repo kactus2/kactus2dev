@@ -2,17 +2,20 @@
 // File: tst_LibraryHandler.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: <Name>
-// Date: <Date in the format dd.mm.yyyy>
+// Author: Esko Pekkarinen
+// Date: 30.03.2018
 //
 // Description:
 // Unit test for class LibraryHandler.
 //-----------------------------------------------------------------------------
 
 #include <QtTest>
+#include <QDebug>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <library/LibraryHandler.h>
+
+void noMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg) {}
 
 class tst_LibraryHandler : public QObject
 {
@@ -22,7 +25,7 @@ public:
     tst_LibraryHandler();
 
 private:
-    
+
     LibraryHandler* createLibraryHandler();
 
     void setupTestLibrary();
@@ -30,7 +33,9 @@ private:
     MessagePasser messageChannel_;
 
 private slots:
-    
+
+    void initTestcase();
+
     void testLibraryDoesNotContainItem();
 
     void testLibraryContainsItem();
@@ -38,9 +43,6 @@ private slots:
     void testLibraryGetModel();
 
     void testDocumentsInLocationAreRead();
-
-
-
 };
 
 tst_LibraryHandler::tst_LibraryHandler()
@@ -105,7 +107,7 @@ void tst_LibraryHandler::testLibraryGetModel()
 void tst_LibraryHandler::testDocumentsInLocationAreRead()
 {
     LibraryHandler* library = createLibraryHandler();
-    
+
     QVERIFY(library->getAllVLNVs().count() == 0);
 
     setupTestLibrary();
@@ -129,9 +131,16 @@ void tst_LibraryHandler::setupTestLibrary()
     QCoreApplication::setOrganizationName(QStringLiteral("TUT"));
     QCoreApplication::setApplicationName(QStringLiteral("Kactus2_tests"));
 
-    QSettings settings("tests.ini", QSettings::IniFormat, 0);
-    settings.setValue("Library/ActiveLocations", QStringList("C:/Users/pekkarie/Local/Data/kactus_test_libraries/ipxactexamplelib"));
+    QSettings settings;
+    settings.setPath(QSettings::IniFormat, QSettings::UserScope, "tests.ini");
+    settings.setValue("Library/ActiveLocations", QStringList("C:/dev/k2lib/ipxactexamplelib"));
 }
+
+void tst_LibraryHandler::initTestcase()
+{
+    qInstallMessageHandler(noMessageOutput);
+}
+
 
 QTEST_APPLESS_MAIN(tst_LibraryHandler)
 
