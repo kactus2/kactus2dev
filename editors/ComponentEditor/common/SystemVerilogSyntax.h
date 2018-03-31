@@ -16,6 +16,8 @@ namespace SystemVerilogSyntax
     const QString SIZE = "[1-9]?[0-9]*";
     const QString SIGNED = "[sS]?";
 
+    const QString BOOLEAN_VALUE = "(?i)true|(?i)false";
+    const QString REAL_NUMBER("[-+]?[0-9_]+[.][0-9_]+");
     const QString DECIMAL_NUMBER = "(?:" + SIZE + "'" + SIGNED + "[dD]?)?[0-9_]{1,18}";
     const QString HEXADECIMAL_NUMBER = SIZE + "'" + SIGNED + "[hH][0-9a-fA-F_]{1,15}";
     const QString OCTAL_NUMBER = SIZE + "'" + SIGNED + "[oO][0-7_]{1,20}";

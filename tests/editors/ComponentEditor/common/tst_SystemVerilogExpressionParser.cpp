@@ -756,8 +756,6 @@ void tst_SystemVerilogExpressionParser::testIsPlainValue_data()
     QTest::newRow("Power is not plain") << "2**8" << false;
     QTest::newRow("clog2 function is not plain") << "$clog2(8)" << false;
 
-    QTest::newRow("Constant in parentheses is plain") << "(8)" << true;
-    QTest::newRow("Constant in parentheses with spaces is plain") << " ( 8 ) " << true;
     QTest::newRow("Addition in parentheses is not plain") << "(8 + 2)" << false;
 
     QTest::newRow("Large negative number is plain") << "-99999" << true;

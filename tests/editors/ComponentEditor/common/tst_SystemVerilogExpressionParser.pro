@@ -14,7 +14,7 @@ TEMPLATE = app
 TARGET = tst_SystemVerilogExpressionParser
 
 QT += core xml gui testlib
-CONFIG += testcase console
+CONFIG += testcase console c++11
 
 win32:CONFIG(release, debug|release) {
     DESTDIR = ./release

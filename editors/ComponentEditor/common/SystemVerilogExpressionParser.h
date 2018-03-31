@@ -28,7 +28,7 @@ public:
 	SystemVerilogExpressionParser();
 
 	//! The destructor.
-	virtual ~SystemVerilogExpressionParser();
+    virtual ~SystemVerilogExpressionParser() = default;
 
     /*!
      *  Parses an expression to decimal number.
@@ -76,13 +76,25 @@ protected:
      *
      *      @return The real value of the constant.
      */
-    virtual qreal parseConstantToDecimal(QString const& constantNumber) const;
-    
     QString parseConstant(QString const& constantNumber) const;
 
+    /*!
+     *  Checks if the given expression is a symbol e.g. reference.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is a symbol, otherwise false.
+     */
     virtual bool isSymbol(QString const& expression) const;
 
-    virtual QString findSymbolValue(QString const& expression) const;
+    /*!
+     *  Finds the value for given symbol.
+     *
+     *      @param [in] symbol  The symbol whose value to find.
+     *
+     *      @return The found symbol value.
+     */
+    virtual QString findSymbolValue(QString const& symbol) const;
 
 private:
 
@@ -90,8 +102,24 @@ private:
 	SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs);
 	SystemVerilogExpressionParser& operator=(SystemVerilogExpressionParser const& rhs);
 
-    QStringList toRPN(QString const& expression) const;
+    /*!
+     *  Converts the given expression to Reverse Polish Notation (RPN) format.
+     *  RPN is used to ensure the operations are calculated in the correct precedence order.
+     *
+     *      @param [in] expression   The expression to convert.
+     *
+     *      @return The conversion result.
+     */
+    QStringList convertToRPN(QString const& expression) const;
 
+    /*!
+     *  Solves the given RPN expression.
+     *
+     *      @param [in]     rpn                The expression to solve.
+     *      @param [out]    validExpression    Set to true, if the parsing was successful, otherwise false.
+     *
+     *      @return The solved result.
+     */
     QString solveRPN(QStringList const& rpn, bool* validExpression) const;
 
     /*!
@@ -178,16 +206,12 @@ private:
      */
     int getBaseForNumber(QString const& constantNumber) const;
 
-    /*!
-     *  Converts the base format to the base number e.g. h to 16.
-     *
-     *      @param [in] baseFormat   The format to convert.
-     *
-     *      @return The base number for the format.
-     */
-    int baseForFormat(QString const& baseFormat) const;
+    // Operator precedence mapping. The operator is the key and the precedence is the value.
+    // A greater value implies greater precedence.
+    static QMap<QString, int> operator_precedence;
 
-    QMap<QString, int> op_precedence;
+    // Base format mapping for SystemVerilog numeric formats.
+    static QMap<QString, int> base_formats;
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

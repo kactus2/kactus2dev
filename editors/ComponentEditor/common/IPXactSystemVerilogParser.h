@@ -37,14 +37,23 @@ public:
     //! The destructor.
     virtual ~IPXactSystemVerilogParser();
     
-    virtual bool isSymbol(QString const& expression) const override;
+    /*!
+     *  Checks if the given expression is a symbol e.g. reference.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is a symbol, otherwise false.
+     */
+    virtual bool isSymbol(QString const& expression) const override final;
 
-    virtual QString findSymbolValue(QString const& expression) const override;
-
-protected:
-
-   //virtual qreal parseConstantToDecimal(QString const& constantNumber) const;
-
+    /*!
+     *  Finds the value for given symbol.
+     *
+     *      @param [in] symbol  The symbol whose value to find.
+     *
+     *      @return The found symbol value.
+     */
+    virtual QString findSymbolValue(QString const& symbol) const  override final;
 
 private:
 
@@ -55,13 +64,11 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! Maximum number of steps in evaluating a value for a parameter.
-    static const int MAX_EVALUATION_STEPS = 25;
     
     //! The finder for parameters available in the SystemVerilog expressions.
     QSharedPointer<ParameterFinder> finder_;
 
+    //! Stack for tracking already evaluated symbols to check for loops in references.
     QStringList* symbolStack_;
 };
 
