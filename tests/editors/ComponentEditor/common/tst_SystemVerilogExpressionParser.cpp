@@ -835,7 +835,7 @@ void tst_SystemVerilogExpressionParser::testParseComparison_data()
 void tst_SystemVerilogExpressionParser::testParseMathFunctions()
 {
     QFETCH(QString, expression);
-    QFETCH(int, expectedResult);
+    QFETCH(QString, expectedResult);
     QFETCH(bool, expectedValid);
 
     SystemVerilogExpressionParser parser;
@@ -846,7 +846,7 @@ void tst_SystemVerilogExpressionParser::testParseMathFunctions()
     QCOMPARE(isValid, expectedValid);
     if (expectedValid)
     {
-        QCOMPARE(parserResult.toInt(), expectedResult);
+        QCOMPARE(parserResult, expectedResult);
     }
 }
 
@@ -856,13 +856,20 @@ void tst_SystemVerilogExpressionParser::testParseMathFunctions()
 void tst_SystemVerilogExpressionParser::testParseMathFunctions_data()
 {
     QTest::addColumn<QString>("expression");
-    QTest::addColumn<int>("expectedResult");
+    QTest::addColumn<QString>("expectedResult");
     QTest::addColumn<bool>("expectedValid");
 
-    QTest::newRow("System function $clog2(), ceil of log2") << "$clog2(17)" << 5 << true;
+    QTest::newRow("System function $clog2(), ceil of log2") << "$clog2(17)" << "5" << true;
 
-    QTest::newRow("Power as function") << "$pow(2, 3)" << 8 << true;
+    QTest::newRow("Simple power function") << "$pow(2, 3)" << "8" << true;
 
+    QTest::newRow("Square root of 0 is 0") << "$sqrt(0)" << "0" << true;
+    QTest::newRow("Square root of 4 equals 2") << "$sqrt(4)" << "2" << true;
+    QTest::newRow("Square root of negative value is invalid") << "$sqrt(-2)" << "x" << false;
+
+    QTest::newRow("Exp() of 0 is 1") << "$exp(0)" << "1" << true;
+    QTest::newRow("Exp() of 1") << "$exp(1)" << QString::number(qExp(1)) << true;
+    QTest::newRow("Exp() of -2") << "$exp(-2)" << QString::number(qExp(-2)) << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -877,12 +884,12 @@ void tst_SystemVerilogExpressionParser::testParserPerformance()
 
     QString parserResult;
 
-    QBENCHMARK
+    /*QBENCHMARK
     {
         parserResult = parser.parseExpression(expression);
     }
 
-    QCOMPARE(parserResult.toInt(), expectedResult);
+    QCOMPARE(parserResult.toInt(), expectedResult);*/
     
 }
 

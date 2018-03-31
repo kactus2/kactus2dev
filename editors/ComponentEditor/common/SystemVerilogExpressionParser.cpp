@@ -29,7 +29,7 @@ namespace
 
     const QRegularExpression BINARY_OPERATOR("[/*][/*]|[-+/*//]|[<>]=?|[!=]=|[$]pow");
 
-    const QRegularExpression UNARY_OPERATOR("[$]clog2");
+    const QRegularExpression UNARY_OPERATOR("[$]clog2|[$]exp|[$]sqrt");
 
     const QChar OPEN_PARENTHESIS('(');
     const QChar CLOSE_PARENTHESIS(')');
@@ -159,23 +159,24 @@ QStringList SystemVerilogExpressionParser::convertToRPN(QString const& expressio
                 output.append(stack.takeLast());
             }
 
+            bool isArray = expression.at(index) == CLOSE_ARRAY;
             if (stack.size() != 0)
             {
                 QString last(stack.takeLast());
-                if (expression.at(index) == CLOSE_ARRAY)
+                if (isArray)
                 {
                     output.append(last);
                 }
             }
 
-            if (expression.at(index) == CLOSE_ARRAY)
+            if (isArray)
             {
                 stack.append(expression.at(index));
             }
 
             index++;
             openParenthesis--;
-            lastWasOperator = true;
+            lastWasOperator = isArray;
         }
         else if (expression.at(index) == ',')
         {
@@ -218,7 +219,7 @@ QString SystemVerilogExpressionParser::solveRPN(QStringList const& rpn, bool* va
 {
     //qDebug() << rpn;
     QStringList resultStack;
-    bool isValid = true;
+    bool isWellFormed = true;
 
     for (QString const& token : rpn)
     {
@@ -233,7 +234,7 @@ QString SystemVerilogExpressionParser::solveRPN(QStringList const& rpn, bool* va
         {
             if (resultStack.size() < 2)
             {
-                isValid = false;
+                isWellFormed = false;
                 break;
             }
 
@@ -243,7 +244,7 @@ QString SystemVerilogExpressionParser::solveRPN(QStringList const& rpn, bool* va
         {
             if (resultStack.size() < 1)
             {
-                isValid = false;
+                isWellFormed = false;
                 break;
             }
 
@@ -263,7 +264,7 @@ QString SystemVerilogExpressionParser::solveRPN(QStringList const& rpn, bool* va
 
             if (resultStack.size() == 0)
             {
-                isValid = false;
+                isWellFormed = false;
                 break;
             }
 
@@ -279,14 +280,14 @@ QString SystemVerilogExpressionParser::solveRPN(QStringList const& rpn, bool* va
         }
         else
         {
-            isValid = false;
+            isWellFormed = false;
             break;
         }
     }
 
     if (validExpression != nullptr)
     {
-        *validExpression = isValid;
+        *validExpression = isWellFormed and not resultStack.contains(QStringLiteral("x"));
     }
 
     return resultStack.join(QString());
@@ -430,7 +431,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
     }
     else
     {
-        return QString::number(result, 'f', getDecimalPrecision(leftTerm, rightTerm));
+        return QString::number(result, 'f', qMax(getDecimalPrecision(leftTerm), getDecimalPrecision(rightTerm)));
     }
 }
 
@@ -442,6 +443,14 @@ QString SystemVerilogExpressionParser::solveUnary(QString const& operation, QStr
     if (operation.compare(QLatin1String("$clog2")) == 0)
     {
         return solveClog2(term);
+    }
+    else if (operation.compare(QLatin1String("$exp")) == 0)
+    {
+        return QString::number(qExp(term.toLongLong()));
+    }
+    else if (operation.compare(QLatin1String("$sqrt")) == 0)
+    {
+        return solveSqrt(term);
     }
 
     return QStringLiteral("x");
@@ -471,6 +480,19 @@ QString SystemVerilogExpressionParser::solveClog2(QString const& value) const
     }
 
     return QString::number(answer);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::solveSqrt()
+//-----------------------------------------------------------------------------
+QString SystemVerilogExpressionParser::solveSqrt(QString const& value) const
+{
+    qreal radicand = value.toLongLong();
+    if (radicand < 0)
+    {
+        return QStringLiteral("x");
+    }
+    return QString::number(qSqrt(radicand));
 }
 
 //-----------------------------------------------------------------------------
@@ -526,23 +548,16 @@ QString SystemVerilogExpressionParser::findSymbolValue(QString const& symbol) co
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getDecimalPrecision()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::getDecimalPrecision(QString const& firstTerm, QString const& secondTerm) const
+int SystemVerilogExpressionParser::getDecimalPrecision(QString const& term) const
 {
-    int firstDecimalLength = 0;
-    int firstPosition = firstTerm.indexOf(QLatin1Char('.'));
-    if  (firstPosition != -1)
+    int decimalLength = 0;
+    int commaPosition = term.indexOf(QLatin1Char('.'));
+    if  (commaPosition != -1)
     {
-        firstDecimalLength = firstTerm.length() - firstPosition - 1;
+        decimalLength = term.length() - commaPosition - 1;
     }
 
-    int secondDecimalLength = 0;
-    int secondPosition = secondTerm.indexOf(QLatin1Char('.'));
-    if  (secondPosition != -1)
-    {
-        secondDecimalLength = secondTerm.length() - secondPosition - 1;
-    }
-
-    return qMax(firstDecimalLength, secondDecimalLength);
+    return decimalLength;
 }
 
 //-----------------------------------------------------------------------------

@@ -187,6 +187,16 @@ private:
      *      @return The solved value.
      */
     QString solveClog2(QString const& value) const;
+
+    /*!
+     *  Solves the SystemVerilog $sqrt function.
+     *
+     *      @param [in] value   The value for which the function is called.
+     *
+     *      @return The solved value.
+     */
+    QString solveSqrt(QString const& value) const;
+
     /*!
      *  Get the precision used from the terms.
      *
@@ -195,7 +205,7 @@ private:
      *
      *      @return The precision of the decimal used in the terms of the operation.
      */
-    int getDecimalPrecision(QString const& firstTerm, QString const& secondTerm) const;
+    int getDecimalPrecision(QString const& term) const;
 
     /*!
      *  Get the base for a given number.
