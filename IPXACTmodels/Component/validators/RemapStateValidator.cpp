@@ -134,10 +134,11 @@ bool RemapStateValidator::remapPortHasValidIndex(QSharedPointer<RemapPort> remap
 //-----------------------------------------------------------------------------
 bool RemapStateValidator::remapPortHasValidValue(QSharedPointer<RemapPort> remapPort) const
 {
+    bool valueValid = false;
     bool valueIsOk = true;
-    quint64 value = expressionParser_->parseExpression(remapPort->getValue()).toULongLong(&valueIsOk);
+    expressionParser_->parseExpression(remapPort->getValue(), &valueValid).toULongLong(&valueIsOk);
 
-    return valueIsOk;
+    return valueValid && valueIsOk;
 }
 
 //-----------------------------------------------------------------------------

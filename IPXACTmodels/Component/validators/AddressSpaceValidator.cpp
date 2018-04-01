@@ -183,8 +183,7 @@ bool AddressSpaceValidator::segmentHasValidAddressOffset(QSharedPointer<Segment>
     if (!segment->getAddressOffset().isEmpty())
     {
         bool offsetOk = true;
-        quint64 addressOffset =
-            expressionParser_->parseExpression(segment->getAddressOffset()).toULongLong(&offsetOk);
+        expressionParser_->parseExpression(segment->getAddressOffset()).toULongLong(&offsetOk);
 
         return offsetOk;
     }

@@ -43,28 +43,28 @@ BusDefinitionValidator::~BusDefinitionValidator()
 //-----------------------------------------------------------------------------
 bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDefinition) const
 {
-	if (!busDefinition->getVlnv().isValid())
+    if (busDefinition->getVlnv().isValid() == false)
 	{
 		return false;
 	}
     
     bool validMasters = false;
     expressionParser_->parseExpression(busDefinition->getMaxMasters(), &validMasters);
-	if (validMasters == false)
+    if (validMasters == false)
 	{
 		return false;
 	}
     
     bool validSlaves = false;
     expressionParser_->parseExpression(busDefinition->getMaxSlaves(), &validSlaves);
-	if (validSlaves)
+    if (validSlaves == false)
 	{
 		return false;
 	}
 
  	foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
 	{
-		if (!parameterValidator_->validate(currentParameter))
+        if (parameterValidator_->validate(currentParameter) == false)
 		{
 			return false;
 		}

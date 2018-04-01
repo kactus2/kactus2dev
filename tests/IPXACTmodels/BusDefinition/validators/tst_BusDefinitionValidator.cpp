@@ -29,7 +29,8 @@ private slots:
 	void failVLNV();
 	void failParameter();
 	void maxFail();
-	void maxPass();
+    void maxPass();
+    void testEmptyMaximumMastersAndSlaves();
 };
 
 //-----------------------------------------------------------------------------
@@ -46,7 +47,7 @@ tst_BusDefinitionValidator::tst_BusDefinitionValidator()
 void tst_BusDefinitionValidator::baseCase()
 {
 	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-	busDefinition->setVlnv(VLNV("tyyppi", "vendori", "kurjasto", "jaska", "eka"));
+    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka"));
 
     QSharedPointer<Parameter> parameter(new Parameter());
     parameter->setName("param");
@@ -87,7 +88,7 @@ void tst_BusDefinitionValidator::failVLNV()
 void tst_BusDefinitionValidator::failParameter()
 {
 	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-	busDefinition->setVlnv(VLNV("tyyppi", "vendori", "kurjasto", "jaska", "eka"));
+    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka"));
 
     QSharedPointer<Parameter> parameter (new Parameter());
     parameter->setName("param");
@@ -112,7 +113,7 @@ void tst_BusDefinitionValidator::failParameter()
 void tst_BusDefinitionValidator::maxFail()
 {
 	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV("tyyppi", "vendori", "kurjasto", "jaska", "eka"));
+    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka"));
     busDefinition->setMaxMasters("ghhhk,");
     busDefinition->setMaxSlaves("jii oku");
 
@@ -131,7 +132,7 @@ void tst_BusDefinitionValidator::maxFail()
 void tst_BusDefinitionValidator::maxPass()
 {
 	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV("tyyppi","vendori","kurjasto","jaska","eka"));
+    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION,"vendori","kurjasto","jaska","eka"));
     busDefinition->setMaxMasters("1337");
     busDefinition->setMaxSlaves("5");
 
@@ -142,6 +143,25 @@ void tst_BusDefinitionValidator::maxPass()
 
 	QVERIFY(validator.validate(busDefinition));
 	QCOMPARE(errorList.size(), 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusDefinitionValidator::testEmptyMaximumMastersAndSlaves()
+//-----------------------------------------------------------------------------
+void tst_BusDefinitionValidator::testEmptyMaximumMastersAndSlaves()
+{
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
+    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendor", "library", "name", "version"));
+    busDefinition->setMaxMasters("");
+    busDefinition->setMaxSlaves("");
+
+    BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, busDefinition);
+
+    QVERIFY(validator.validate(busDefinition));
+    QCOMPARE(errorList.size(), 0);
 }
 
 QTEST_APPLESS_MAIN(tst_BusDefinitionValidator)

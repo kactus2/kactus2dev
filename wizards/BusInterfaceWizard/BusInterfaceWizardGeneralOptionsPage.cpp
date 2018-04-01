@@ -109,22 +109,12 @@ bool BusInterfaceWizardGeneralOptionsPage::abstractionReferenceIsFound() const
 {
     if (busIf_->getAbstractionTypes() && !busIf_->getAbstractionTypes()->isEmpty())
     {
-/*
-        foreach (QSharedPointer<AbstractionType> abstraction, *busIf_->getAbstractionTypes())
-        {
-            if (abstraction->getAbstractionRef() && handler_->contains(*abstraction->getAbstractionRef().data()))
-            {
-                return true;
-            }
-        }
-*/
-
         foreach (QSharedPointer<AbstractionType> abstraction, *busIf_->getAbstractionTypes())
         {
             if (!abstraction->getAbstractionRef() || 
                 (abstraction->getAbstractionRef() &&
-                !handler_->contains(*abstraction->getAbstractionRef().data()) ||
-                !abstractionValidator_->hasValidViewReferences(abstraction, busIf_->getAbstractionTypes())))
+                (!handler_->contains(*abstraction->getAbstractionRef().data()) ||
+                !abstractionValidator_->hasValidViewReferences(abstraction, busIf_->getAbstractionTypes()))))
             {
                 return false;
             }

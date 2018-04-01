@@ -355,7 +355,14 @@ void ParameterValidator2014::findErrorsIn(QVector<QString>& errors, QSharedPoint
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::shouldCompareValueAndBoundary(QString const& boundaryValue, QString const& type) const
 {
-     return !type.isEmpty() && type != QLatin1String("bit") && type != QLatin1String("string");
+    if (boundaryValue.isEmpty() || type.isEmpty())
+    {
+        return false;
+    }
+
+    bool isValidBoundary = false;
+    expressionParser_->parseExpression(boundaryValue, &isValidBoundary);
+    return isValidBoundary && type != QLatin1String("bit") && type != QLatin1String("string");
 }
 
 //-----------------------------------------------------------------------------
