@@ -53,7 +53,16 @@ public:
      *
      *      @return The found symbol value.
      */
-    virtual QString findSymbolValue(QString const& symbol) const  override final;
+    virtual QString findSymbolValue(QString const& symbol) const override final;
+
+    /*!
+     *  Finds the base in the symbol.
+     *
+     *      @param [in] symbol   The symbol whose base to find.
+     *
+     *      @return The base for the symbol.
+     */
+    virtual int getBaseForSymbol(QString const& symbol) const override final;
 
 private:
 

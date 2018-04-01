@@ -55,7 +55,15 @@ QString IPXactSystemVerilogParser::findSymbolValue(QString const& expression) co
 
     symbolStack_->append(expression);
     QString value = parseExpression(finder_->valueForId(expression));
-
     symbolStack_->removeOne(expression);
+
     return value;
+}
+
+//-----------------------------------------------------------------------------
+// Function: IPXactSystemVerilogParser::findSymbolValue()
+//-----------------------------------------------------------------------------
+int IPXactSystemVerilogParser::getBaseForSymbol(QString const& symbol) const
+{
+    return baseForExpression(finder_->valueForId(symbol));
 }

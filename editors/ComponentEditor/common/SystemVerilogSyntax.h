@@ -26,5 +26,5 @@ namespace SystemVerilogSyntax
     const QString INTEGRAL_NUMBER("[+-]?(?:" + HEXADECIMAL_NUMBER + "|" +
         OCTAL_NUMBER + "|" + BINARY_NUMBER + "|" + DECIMAL_NUMBER + ")");
 
-    const QString STRING_LITERAL("\".*\"");
+    const QString STRING_LITERAL("\"[^\"]*\"");
 }

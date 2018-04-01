@@ -70,13 +70,13 @@ public:
 protected:
      
     /*!
-     *  Parses a constant number to a real number.
+     *  Parses a token to a decimal number or string.
      *
-     *      @param [in] constantNumber   The constant to parse.
+     *      @param [in] token   The constant to parse.
      *
-     *      @return The real value of the constant.
+     *      @return The decimal value of the constant or the given string.
      */
-    QString parseConstant(QString const& constantNumber) const;
+    QString parseConstant(QString const& token) const;
 
     /*!
      *  Checks if the given expression is a symbol e.g. reference.
@@ -95,6 +95,15 @@ protected:
      *      @return The found symbol value.
      */
     virtual QString findSymbolValue(QString const& symbol) const;
+
+    /*!
+     *  Finds the base in the symbol.
+     *
+     *      @param [in] symbol   The symbol whose base to find.
+     *
+     *      @return The base for the symbol.
+     */
+    virtual int getBaseForSymbol(QString const& symbol) const;
 
 private:
 
