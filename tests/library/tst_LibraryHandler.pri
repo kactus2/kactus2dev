@@ -25,7 +25,6 @@ HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../common/widgets/vlnvEditor/VLNVDataTree.h \
     ../../common/widgets/assistedLineEdit/AssistedLineEdit.h \
     ../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
-    ../../library/LibraryData.h \
     ../../library/LibraryErrorModel.h \
     ../../library/LibraryHandler.h \
     ../../library/LibraryItem.h \
@@ -52,7 +51,6 @@ SOURCES += ../../common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ../../library/DocumentValidator.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
-    ../../library/LibraryData.cpp \
     ../../library/LibraryErrorModel.cpp \
     ../../library/LibraryHandler.cpp \
     ../../library/LibraryItem.cpp \

@@ -78,7 +78,7 @@ private:
     QSharedPointer<ParameterFinder> finder_;
 
     //! Stack for tracking already evaluated symbols to check for loops in references.
-    QStringList* symbolStack_;
+    mutable QStringList symbolStack_;
 };
 
 #endif // IPXACTSYSTEMVERILOGPARSER_H

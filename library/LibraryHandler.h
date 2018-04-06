@@ -14,8 +14,10 @@
 
 #include "LibraryInterface.h"
 #include "LibraryTreeWidget.h"
-#include "LibraryData.h"
 #include "LibraryTreeModel.h"
+
+#include "DocumentFileAccess.h"
+#include "DocumentValidator.h"
 
 #include "HierarchyView/hierarchymodel.h"
 #include "HierarchyView/hierarchywidget.h"
@@ -28,6 +30,7 @@
 #include <QDir>
 #include <QList>
 #include <QFileInfo>
+#include <QFileSystemWatcher>
 #include <QSharedPointer>
 #include <QMap>
 #include <QObject>
@@ -473,6 +476,13 @@ signals:
     //! Inform that object has been updated.
     void updatedVLNV(VLNV const& vlnv);
 
+    //! Inform tree model that a vlnv is to be added to the tree.
+    void addVLNV(VLNV const& vlnv);
+
+    //! Inform tree model that a vlnv is to be removed from the tree.
+    void removeVLNV(VLNV const& vlnv);
+
+
 private slots:
     
     /*! Create a new abstraction definition for given bus definition.
@@ -503,6 +513,7 @@ private slots:
     //! Closes the integrity report widget.
     void onCloseIntegrityReport();
 
+    void onFileChanged(const QString &path);
 private:
 
     //! No copying
@@ -514,6 +525,59 @@ private:
     //-----------------------------------------------------------------------------
     // The private functions used by public class methods
     //-----------------------------------------------------------------------------
+
+    /*! Check the validity of VLNV references within a document.
+     *
+     *      @param [in] document    The document to check.
+     *
+     *      @return True if the VLVN references are valid, otherwise false.
+     */
+    bool validateDependentVLNVReferencences(QSharedPointer<Document> document);
+
+    /*!
+     *  Finds any errors within a given document VLNV references.
+     *
+     *      @param [in] document    The document whose VLNV references to check.
+     *      @param [out] errorList  The list of errors to add any found errors.
+     */
+    void findErrorsInDependentVLNVReferencences(QSharedPointer<const Document> document, QVector<QString>& errorList);
+
+    /*! Check the validity of directory references within a document.
+     *
+     *      @param [in] document    The document to check.
+     *      @param [in] documentPath    The path to the document XML file.
+     *
+     *      @return True if the directory references are valid, otherwise false.
+     */
+    bool validateDependentDirectories(QSharedPointer<Document> document, QString const& documentPath);
+
+    /*!
+     *  Finds any errors within a given document directory references.
+     *
+     *      @param [in] document        The document whose directory references to check.
+     *      @param [in] documentPath    The path to the document XML file.
+     *      @param [out] errorList      The list of errors to add any found errors.
+     */
+    void findErrorsInDependentDirectories(QSharedPointer<const Document> document, QString const& documentPath,
+        QVector<QString>& errorList);
+
+    /*! Check the validity of file references within a document.
+     *
+     *      @param [in] document    The document to check.
+     *
+     *      @return True if the file references are valid, otherwise false.
+     */
+    bool validateDependentFiles(QSharedPointer<Document> document, QString const& documentPath);
+
+    /*!
+     *  Finds any errors within a given document file references.
+     *
+     *      @param [in] document        The document whose file references to check.
+     *      @param [in] documentPath    The path to the document XML file.
+     *      @param [out] errorList      The list of errors to add any found errors.
+     */
+    void findErrorsInDependentFiles(QSharedPointer<const Document> document, QString const& documentPath,
+        QVector<QString>& errorList);
 
     /*! Copy the files associated with specified IP-Xact object.
      *
@@ -636,15 +700,36 @@ private:
     
     MessageMediator* messageChannel_;
 
-    //! The data model that contains the library and is model for search view
-    LibraryData data_;
+    DocumentFileAccess fileAccess_;
+
+    struct DocumentInfo
+    {
+        QSharedPointer<Document> document;
+        QString path;
+        bool isValid;
+
+        DocumentInfo(QString const& filePath = QString(), QSharedPointer<Document> doc = nullptr, bool valid = false):
+            document(doc), path(filePath), isValid(valid) {}
+    };
+
+    struct CheckStatistics
+    {
+        int totalFileCount;
+        int invalidDocumentCount;
+    };
 
     /*! Contains the library objects that have been parsed.
      *
      * Key = VLNV that identifies the library object.
      * Value = pointer to the library object that has been parsed.
      */
-    QMap<VLNV, QPair<QSharedPointer<Document>, bool> > objects_;
+    QMap<VLNV, DocumentInfo> documentCache_;
+
+
+    //! Checks if the given string is a URL (invalids are allowed) or not.
+    QRegularExpressionValidator urlTester_;
+
+    DocumentValidator validator_;
 
     //! The model for the tree view
     LibraryTreeModel* treeModel_;
@@ -658,6 +743,20 @@ private:
     //! If true then items are being saved and library is not refreshed
     bool saveInProgress_;
 
+    bool writeFile(QSharedPointer<Document> model, const QString &filePath);
+    void parseLibrary(const QStringList &locations);
+    void parseDirectory(const QString &directoryPath);
+    void parseFile(const QString &filePath);
+    bool validateDocument(QSharedPointer<Document> document, const QString &documentPath);
+    QVector<QString> findErrorsInDocument(QSharedPointer<Document> document, const QString &path);
+
+    //! Watch for changes in the IP-XACT files.
+    QFileSystemWatcher fileWatch_;
+
+    CheckStatistics checkResults_;
+
+
+    void showNotFoundError(VLNV const& vlnv);
 };
 
 #endif // LIBRARYHANDLER_H

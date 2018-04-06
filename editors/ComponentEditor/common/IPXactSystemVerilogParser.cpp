@@ -20,7 +20,7 @@
 // Function: IPXactSystemVerilogParser::IPXactSystemVerilogParser()
 //-----------------------------------------------------------------------------
 IPXactSystemVerilogParser::IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder):
-SystemVerilogExpressionParser(), finder_(finder), symbolStack_(new QStringList())
+SystemVerilogExpressionParser(), finder_(finder), symbolStack_()
 {
 
 }
@@ -30,7 +30,7 @@ SystemVerilogExpressionParser(), finder_(finder), symbolStack_(new QStringList()
 //-----------------------------------------------------------------------------
 IPXactSystemVerilogParser::~IPXactSystemVerilogParser()
 {
-    delete symbolStack_;
+
 }
 
 //-----------------------------------------------------------------------------
@@ -47,15 +47,15 @@ bool IPXactSystemVerilogParser::isSymbol(QString const& expression) const
 QString IPXactSystemVerilogParser::findSymbolValue(QString const& expression) const
 {
     // Check for ring references.
-    if (symbolStack_->contains(expression))
+    if (symbolStack_.contains(expression))
     {
-        symbolStack_->clear();
+        symbolStack_.clear();
         return QStringLiteral("x");
     }
 
-    symbolStack_->append(expression);
+    symbolStack_.append(expression);
     QString value = parseExpression(finder_->valueForId(expression));
-    symbolStack_->removeOne(expression);
+    symbolStack_.removeOne(expression);
 
     return value;
 }

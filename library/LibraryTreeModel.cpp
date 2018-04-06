@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include "LibraryTreeModel.h"
-#include "LibraryData.h"
 #include "LibraryItem.h"
 #include "LibraryInterface.h"
 

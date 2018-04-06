@@ -215,7 +215,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./library/TableViewDialog.h \
     ./library/LibraryFilter.h \
     ./library/LibraryHandler.h \
-    ./library/LibraryData.h \
     ./library/LibraryErrorModel.h \
     ./library/LibraryItem.h \
     ./library/LibraryTreeFilter.h \
@@ -920,7 +919,6 @@ SOURCES += ./VersionHelper.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
     ./library/DocumentFileAccess.cpp \
     ./library/DocumentValidator.cpp \
-    ./library/LibraryData.cpp \
     ./library/LibraryErrorModel.cpp \
     ./library/LibraryFilter.cpp \
     ./library/LibraryHandler.cpp \
