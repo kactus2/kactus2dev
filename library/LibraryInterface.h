@@ -53,7 +53,7 @@ public:
      *
      *      @return True if the vlnv was found, otherwise false.
     */
-    virtual bool contains(VLNV const& vlnv) = 0;
+    virtual bool contains(VLNV const& vlnv) const = 0;
 
     /*! Gets all the VLNVs currently in the library.
      *

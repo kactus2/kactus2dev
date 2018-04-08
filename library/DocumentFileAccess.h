@@ -40,8 +40,8 @@ public:
     //! Writes to document model to the given path.
     bool writeDocument(QSharedPointer<Document> model, QString const& path);
 
-    //! Gets the VLVN of the document in the given path.
-    VLNV getDocumentVLNV(QString const& path);
+    //! Gets the VLVN type of the document in the given path.
+    VLNV::IPXactType getDocumentVLNV(QDomDocument const& doc);
 
 private:
 

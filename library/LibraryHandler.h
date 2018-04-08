@@ -13,6 +13,7 @@
 #define LIBRARYHANDLER_H
 
 #include "LibraryInterface.h"
+#include "LibraryLoader.h"
 #include "LibraryTreeWidget.h"
 #include "LibraryTreeModel.h"
 
@@ -62,7 +63,7 @@ public:
     LibraryHandler(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent = 0);
 
     //! The destructor
-    virtual ~LibraryHandler();
+    virtual ~LibraryHandler() = default;
 
     /*! Get a model that matches given VLNV.
      *
@@ -96,7 +97,7 @@ public:
      *
      *      @return True if the vlnv was found
     */
-    virtual bool contains(VLNV const& vlnv);
+    virtual bool contains(VLNV const& vlnv) const;
 
     /*! Get a path to the specified IP-Xact document.
      *
@@ -497,7 +498,7 @@ private slots:
      *      @param [in] vlnv Identifies the library object to remove.
      *
     */
-    void onRemoveVLNV(const QList<VLNV> vlnvs);
+    void onRemoveVLNV(QList<VLNV> const& vlnvs);
 
     /*! This function should be called every time an object is written to disk.
     * 
@@ -521,6 +522,28 @@ private:
 
     //! No assignment
     LibraryHandler &operator=(const LibraryHandler &other);
+
+    struct DocumentInfo
+    {
+        QSharedPointer<Document> document;
+        QString path;
+        bool isValid;
+
+        DocumentInfo(QString const& filePath = QString(), QSharedPointer<Document> doc = nullptr, bool valid = false):
+            document(doc), path(filePath), isValid(valid) {}
+    };
+
+    struct DocumentStatistics
+    {
+        int fileCount = 0;
+        int documentCount = 0;
+    };
+
+    struct InputSelection
+    {
+        bool yesToAll = false;
+        bool noToAll = false;
+    };
 
     //-----------------------------------------------------------------------------
     // The private functions used by public class methods
@@ -579,71 +602,31 @@ private:
     void findErrorsInDependentFiles(QSharedPointer<const Document> document, QString const& documentPath,
         QVector<QString>& errorList);
 
-    /*! Copy the files associated with specified IP-Xact object.
-     *
-     *      @param [in] target              Directory where the files are copied to
-     *      @param [in] vlnv                Specifies the IP-Xact object that's files are copied.
-     *      @param [in/out] handledFiles    List of files that have been copied
-     *      @param [in/out] yesToAll        Info if user has selected "yes to all" to overwrite
-     *      @param [in/out] noToAll         Info is user has selected "No to all" to overwrite
-     *
-    */
-    void copyFiles(QDir const& target, VLNV const& vlnv, fileList& handledFiles, bool& yesToAll,    bool& noToAll);
-
-    /*! Copy list of files to a new location.
-     *
-     *      @param [in] files           List of files to copy
-     *      @param [in/out] sourceDir   The directory that is used as source directory for relative file paths.
-     *      @param [in/out] targetDir   The target directory that is used to generate the correct relative paths.
-     *      @param [in/out] handledFiles    List of files that have been copied
-     *      @param [in/out] yesToAll        Info if user has selected "yes to all" to overwrite
-     *      @param [in/out] noToAll         Info is user has selected "No to all" to overwrite
-     *
-    */
-    void copyFiles(const QStringList& files, QDir& sourceDir, QDir& targetDir, fileList& handledFiles, 
-        bool& yesToAll, bool& noToAll);
-
     /*! Copy a single file
      *
      *      @param [in] source              The source file to be copied
-     *      @param [in/out] target T        he directory where the file is copied to.
+     *      @param [in/out] targetDirectory The directory where the file is copied to.
      *      @param [in/out] handledFiles    List of files that have been copied
      *      @param [in/out] yesToAll        Info if user has selected "yes to all" to overwrite
      *      @param [in/out] noToAll         Info is user has selected "No to all" to overwrite
      *
      *      @return True, if the file was copied, false otherwise.
      */
-    bool copyFile(QFileInfo const& source, QDir& target, fileList& handledFiles, bool& yesToAll, bool& noToAll);
+    bool copyFile(QFileInfo const& source, QDir& targetDirectory, fileList& handledFiles,
+        InputSelection& selections);
 
     /*! Connect the signals and slots that keep the data models synchronized.
      *
     */
     void syncronizeModels();
 
-
-    /*! Clear the empty directories from the disk within given path.
-     *
-     *      @param [in] dirPath The path that is removed until one of the base library locations is reached.
-     *      @param [in] libraryLocations Contains the base library locations user has defined.
-     *
-    */
-    void clearDirectoryStructure(QString const& dirPath, QStringList const& libraryLocations);
-
-    /*! Check if the path contains one of the given paths.
-     *
-     *      @param [in] path The path to a directory.
-     *      @param [in] pathsToSearch Paths that are checked if they are contained in the given path.
-     *
-    */
-    bool containsPath(const QString& path, const QStringList& pathsToSearch) const;
-    
     /*!
      *  Construct the items for the selection dialog.
      *
-     *      @param [in] exportDialog    The selection dialog.
-     *      @param [in] exportedVLNVs   List of selectable VLNVs.
+     *      @param [in] dialog    The selection dialog.
+     *      @param [in] vlvns     List of selectable VLNVs.
      */
-    void constructItemsForSelectionDialog(ObjectSelectionDialog* exportDialog, const QList<VLNV> exportedVLNVs);
+    void constructItemsForSelectionDialog(ObjectSelectionDialog* dialog, QList<VLNV> const& vlvns);
 
     /*!
      *  Export the selected VLNV object.
@@ -657,7 +640,7 @@ private:
      *      @return True, if the selected VLNV object was exported, false otherwise.
      */
     bool exportSelectedVLNVObject(QDir const& destinationFolder, VLNV const& vlnv, fileList& handledFiles,
-        bool& yesToAll, bool& noToAll);
+        InputSelection &selections);
 
     /*!
      *  Export the selected objects.
@@ -667,7 +650,7 @@ private:
      *
      *      @return The count of the exported items in a pair of 1. VLNVs and 2. files.
      */
-    QPair<int, int> exportSelectedObjects(QVector<ObjectSelectionListItem*> exportedItems,
+    DocumentStatistics exportSelectedObjects(QVector<ObjectSelectionListItem*> exportedItems,
         QString const& destinationPath);
 
     /*!
@@ -679,7 +662,7 @@ private:
      *
      *      @return The constructed export message.
      */
-    QString createExportMessage(int vlnvCount, int fileCount, QString const& destinationPath) const;
+    QString createExportMessage(DocumentStatistics const& exportStatistics, QString const& destinationPath) const;
 
     /*!
      *  Create the delete message.
@@ -689,7 +672,7 @@ private:
      *
      *      @return The constructed delete message.
      */
-    QString createDeleteMessage(int vlnvCount, int fileCount) const;
+    QString createDeleteMessage(DocumentStatistics const& statistics) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -702,21 +685,9 @@ private:
 
     DocumentFileAccess fileAccess_;
 
-    struct DocumentInfo
-    {
-        QSharedPointer<Document> document;
-        QString path;
-        bool isValid;
+    LibraryLoader loader_;
 
-        DocumentInfo(QString const& filePath = QString(), QSharedPointer<Document> doc = nullptr, bool valid = false):
-            document(doc), path(filePath), isValid(valid) {}
-    };
 
-    struct CheckStatistics
-    {
-        int totalFileCount;
-        int invalidDocumentCount;
-    };
 
     /*! Contains the library objects that have been parsed.
      *
@@ -743,20 +714,25 @@ private:
     //! If true then items are being saved and library is not refreshed
     bool saveInProgress_;
 
-    bool writeFile(QSharedPointer<Document> model, const QString &filePath);
-    void parseLibrary(const QStringList &locations);
-    void parseDirectory(const QString &directoryPath);
-    void parseFile(const QString &filePath);
+    bool saveDocument(QSharedPointer<Document> model, const QString &filePath);
     bool validateDocument(QSharedPointer<Document> document, const QString &documentPath);
     QVector<QString> findErrorsInDocument(QSharedPointer<Document> document, const QString &path);
 
     //! Watch for changes in the IP-XACT files.
     QFileSystemWatcher fileWatch_;
 
-    CheckStatistics checkResults_;
+    DocumentStatistics checkResults_;
 
 
     void showNotFoundError(VLNV const& vlnv);
+    void loadAvailableVLNVs();
+    void resetModels();
+    void clearCache();
+    void showIntegrityResults();
+    void addDesignItemForConfiguration(ObjectSelectionDialog *dialog, const VLNV &configurationVLNV);
+    void addComponentFilesAndDesignItems(ObjectSelectionDialog *dialog, const VLNV &componentVLNV);
+    void addAbstractionDefinitionItems(ObjectSelectionDialog *dialog, const VLNV &busDefinitionVLNV);
+    void addBusDefintionItemIfOnlyAbstraction(ObjectSelectionDialog *dialog, const VLNV &abstractionVLNV);
 };
 
 #endif // LIBRARYHANDLER_H

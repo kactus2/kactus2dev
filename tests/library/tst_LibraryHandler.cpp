@@ -52,7 +52,7 @@ tst_LibraryHandler::tst_LibraryHandler()
 
 void tst_LibraryHandler::testLibraryDoesNotContainItem()
 {
-    LibraryHandler* library = createLibraryHandler();
+    QScopedPointer<LibraryHandler> library(createLibraryHandler());
 
     setupTestLibrary();
 
@@ -69,7 +69,7 @@ void tst_LibraryHandler::testLibraryDoesNotContainItem()
 
 void tst_LibraryHandler::testLibraryContainsItem()
 {
-    LibraryHandler* library = createLibraryHandler();
+    QScopedPointer<LibraryHandler> library(createLibraryHandler());
 
     setupTestLibrary();
     library->searchForIPXactFiles();
@@ -85,10 +85,9 @@ void tst_LibraryHandler::testLibraryContainsItem()
     QVERIFY(result == true);
 }
 
-
 void tst_LibraryHandler::testLibraryGetModel()
 {
-    LibraryHandler* library = createLibraryHandler();
+    QScopedPointer<LibraryHandler> library(createLibraryHandler());
 
     setupTestLibrary();
     library->searchForIPXactFiles();
@@ -106,7 +105,7 @@ void tst_LibraryHandler::testLibraryGetModel()
 
 void tst_LibraryHandler::testDocumentsInLocationAreRead()
 {
-    LibraryHandler* library = createLibraryHandler();
+    QScopedPointer<LibraryHandler> library(createLibraryHandler());
 
     QVERIFY(library->getAllVLNVs().count() == 0);
 

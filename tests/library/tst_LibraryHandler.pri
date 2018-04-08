@@ -11,6 +11,7 @@ HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../common/ui/ConsoleMediator.h \
     ../../library/DocumentFileAccess.h \
     ../../library/DocumentValidator.h \
+    ../../library/LibraryLoader.h \
     ../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../library/LibraryInterface.h \
@@ -49,6 +50,7 @@ SOURCES += ../../common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ../../common/ui/ConsoleMediator.cpp \
     ../../library/DocumentFileAccess.cpp \
     ../../library/DocumentValidator.cpp \
+    ../../library/LibraryLoader.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
     ../../library/LibraryErrorModel.cpp \
