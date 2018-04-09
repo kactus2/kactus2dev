@@ -135,7 +135,7 @@ private:
      *      @param [in] placedSpaceItems        A list of placed address space items.
      *      @param [in] spaceColumn             The column containing the address spaces.
      */
-    void createConnection(QVector<QSharedPointer<ConnectivityInterface> > connectionPath,
+    void createConnection(QVector<QSharedPointer<ConnectivityInterface const> > const& connectionPath,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
         qreal& spaceYPlacement, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
         MemoryColumn* spaceColumn);
@@ -147,8 +147,8 @@ private:
      *
      *      @return The starting interface for the connection.
      */
-    QSharedPointer<ConnectivityInterface> getStartInterface(
-        QVector<QSharedPointer<ConnectivityInterface> > connectionPath);
+    QSharedPointer<ConnectivityInterface const> getStartInterface(
+        QVector<QSharedPointer<ConnectivityInterface const> > connectionPath);
 
     /*!
      *  Get the end item for the memory connection.
@@ -158,8 +158,8 @@ private:
      *
      *      @return The end item of the memory connection.
      */
-    MainMemoryGraphicsItem* getConnectionEndItem(QSharedPointer<ConnectivityInterface> startInterface,
-        QSharedPointer<ConnectivityInterface> endInterface) const;
+    MainMemoryGraphicsItem* getConnectionEndItem(QSharedPointer<ConnectivityInterface const> startInterface,
+        QSharedPointer<ConnectivityInterface const> endInterface) const;
 
     /*!
      *  Get the starting base address of the memory connection.
@@ -169,8 +169,8 @@ private:
      *
      *      @return Starting base address of the memory connection.
      */
-    quint64 getStartingBaseAddress(QSharedPointer<ConnectivityInterface> startInterface,
-        QSharedPointer<ConnectivityInterface> endInterface) const;
+    quint64 getStartingBaseAddress(QSharedPointer<ConnectivityInterface const> startInterface,
+        QSharedPointer<ConnectivityInterface const> endInterface) const;
 
     /*!
      *  Examine the connection path for master or mirrored slave interfaces..
@@ -189,8 +189,9 @@ private:
      */
     ConnectionPathVariables examineConnectionPath(quint64 baseAddressNumber,
         MainMemoryGraphicsItem* connectionStartItem, MainMemoryGraphicsItem* connectionEndItem,
-        QSharedPointer<ConnectivityInterface> startInterface, QSharedPointer<ConnectivityInterface> endInterface,
-        QVector<QSharedPointer<ConnectivityInterface> > connectionPath, MemoryColumn* spaceColumn,
+        QSharedPointer<ConnectivityInterface const> startInterface,
+        QSharedPointer<ConnectivityInterface const> endInterface,
+        QVector<QSharedPointer<ConnectivityInterface const> > connectionPath, MemoryColumn* spaceColumn,
         QSharedPointer<QVector<MainMemoryGraphicsItem* > > placedSpaceItems, qreal& spaceYPlacement);
 
     /*!
@@ -249,6 +250,7 @@ private:
     /*!
      *  Create the memory connection item.
      *
+     *      @param [in] connectionPath          The path of the memory connection.
      *      @param [in] connectionStartItem     Start item of the memory connection.
      *      @param [in] connectionEndItem       End item of the memory connection.
      *      @param [in] remappedAddress         Remapped base address of the memory connection.
@@ -258,9 +260,10 @@ private:
      *      @param [in] yTransfer               Memory connection transfer in y-coordinate.
      *      @param [in] spaceYPlacement         Y-coordinate for the address space item.
      */
-    void createMemoryConnectionItem(MainMemoryGraphicsItem* connectionStartItem,
-        MainMemoryGraphicsItem* connectionEndItem, quint64 remappedAddress, quint64 remappedEndAddress,
-        quint64 memoryMapBaseAddress, bool hasRemapRange, qreal yTransfer, qreal& spaceYPlacement);
+    void createMemoryConnectionItem(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
+        MainMemoryGraphicsItem* connectionStartItem, MainMemoryGraphicsItem* connectionEndItem,
+        quint64 remappedAddress, quint64 remappedEndAddress, quint64 memoryMapBaseAddress, bool hasRemapRange,
+        qreal yTransfer, qreal& spaceYPlacement);
 
     /*!
      *  Check and reposition a memory map to a memory map overlap column if needed.
@@ -374,7 +377,7 @@ private:
      *
      *      @return The found main graphics item.
      */
-    MainMemoryGraphicsItem* getMainGraphicsItem(QSharedPointer<ConnectivityInterface> connectionInterface,
+    MainMemoryGraphicsItem* getMainGraphicsItem(QSharedPointer<ConnectivityInterface const> connectionInterface,
         QString columnType) const;
 
     /*!
@@ -384,19 +387,20 @@ private:
      *
      *      @return The local memory map graphics item of contained within the selected interface node.
      */
-    MainMemoryGraphicsItem* getLocalMemoryMapItem(QSharedPointer<ConnectivityInterface> spaceInterface) const;
+    MainMemoryGraphicsItem* getLocalMemoryMapItem(QSharedPointer<ConnectivityInterface const> spaceInterface) const;
 
     /*!
      *  Get the memory item node referencing the selected local memory map.
      *
      *      @param [in] spaceInterface  Interface node containing the selected local memory map.
      */
-    QSharedPointer<MemoryItem> getMemoryItemForLocalMap(QSharedPointer<ConnectivityInterface> spaceInterface)
-        const;
+    QSharedPointer<MemoryItem const> getMemoryItemForLocalMap(
+        QSharedPointer<ConnectivityInterface const> spaceInterface) const;
 
     /*!
      *  Create a connection between two address space items.
      *
+     *      @param [in] connectionPath          Path of the memory connection.
      *      @param [in] connectionStartItem     Start item of the connection.
      *      @param [in] connectionBaseAddress   Base address of the connection.
      *      @param [in] connectionMiddleItem    The second address space item.
@@ -406,9 +410,10 @@ private:
      *      @param [in] spaceItemChain          Connection chain of address space items.
      *      @param [in] spaceYPlacement         Y coordinate of the address space placement.
      */
-    void createSpaceConnection(MainMemoryGraphicsItem* connectionStartItem, quint64 connectionBaseAddress,
-        MainMemoryGraphicsItem* connectionMiddleItem, QSharedPointer<ConnectivityInterface> newSpaceInterface,
-        MemoryColumn* spaceColumn, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
+    void createSpaceConnection(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
+        MainMemoryGraphicsItem* connectionStartItem, quint64 connectionBaseAddress,
+        MainMemoryGraphicsItem* connectionMiddleItem, MemoryColumn* spaceColumn,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
         QVector<MainMemoryGraphicsItem*> spaceItemChain, qreal& spaceYPlacement);
 
     /*!

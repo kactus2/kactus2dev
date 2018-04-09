@@ -13,7 +13,6 @@
 #define INTERFACE_H
 
 #include <QString>
-
 #include <QSharedPointer>
 
 class ConnectivityComponent;
@@ -33,7 +32,9 @@ public:
 	 */
 	ConnectivityInterface(QString const& name);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	~ConnectivityInterface();
 
     /*!
@@ -111,7 +112,7 @@ public:
      *
      *      @return The instance containing the interface.
      */
-    QSharedPointer<ConnectivityComponent> getInstance() const;
+    QSharedPointer<ConnectivityComponent const> getInstance() const;
 
     /*!
      *  Checks if the interface is associated with a memory.

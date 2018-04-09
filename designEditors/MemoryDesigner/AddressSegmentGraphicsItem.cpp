@@ -22,9 +22,9 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSegmentGraphicsItem::AddressSegmentGraphicsItem()
 //-----------------------------------------------------------------------------
-AddressSegmentGraphicsItem::AddressSegmentGraphicsItem(QSharedPointer<MemoryItem> segmentItem, bool isEmptySegment,
-    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
-    AddressSpaceGraphicsItem* spaceItem):
+AddressSegmentGraphicsItem::AddressSegmentGraphicsItem(QSharedPointer<MemoryItem const> segmentItem,
+    bool isEmptySegment, QVector<QString> identifierChain,
+    QSharedPointer<ConnectivityComponent const> containingInstance, AddressSpaceGraphicsItem* spaceItem):
 MemoryDesignerChildGraphicsItem(segmentItem, QStringLiteral("Segment"), segmentItem->getOffset().toULongLong(),
     segmentItem->getRange().toULongLong(), getSegmentItemWidth(spaceItem), identifierChain, containingInstance,
     spaceItem)

@@ -19,12 +19,12 @@ HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../designEditors/MemoryDesigner/MemoryItem.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.h \
     ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../designEditors/common/ComponentInstanceParameterFinder.h \
     ../../MockObjects/LibraryMock.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
     ../../../editors/ComponentEditor/common/ParameterCache.h \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../editors/ComponentEditor/common/ListParameterFinder.h
 SOURCES += ../../../designEditors/common/ComponentInstanceParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \

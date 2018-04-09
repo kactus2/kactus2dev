@@ -35,7 +35,7 @@ namespace MemoryMapItemConstants
 //-----------------------------------------------------------------------------
 MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
     QVector<QString> identifierChain, bool filterAddressBlocks, bool filterRegisters, bool filterFields,
-    QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
+    QSharedPointer<ConnectivityComponent const> containingInstance, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
     filterAddressBlocks, identifierChain, parent),
 addressUnitBits_(memoryItem->getAUB()),
@@ -102,7 +102,7 @@ void MemoryMapGraphicsItem::setupSubItems(qreal blockXPosition, QSharedPointer<M
         usedMemoryItem = QSharedPointer<MemoryItem>(new MemoryItem(memoryItem->getName(), memoryItem->getType()));
         usedMemoryItem->setAUB(memoryItem->getAUB());
 
-        foreach (QSharedPointer<MemoryItem> subItem, memoryItem->getChildItems())
+        foreach (QSharedPointer<MemoryItem const> subItem, memoryItem->getChildItems())
         {
             if (subItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
             {
@@ -130,7 +130,7 @@ void MemoryMapGraphicsItem::setupSubItems(qreal blockXPosition, QSharedPointer<M
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::getMemoryRanges()
 //-----------------------------------------------------------------------------
-QPair<quint64, quint64> MemoryMapGraphicsItem::getMemoryRanges(QSharedPointer<MemoryItem> memoryItem) const
+QPair<quint64, quint64> MemoryMapGraphicsItem::getMemoryRanges(QSharedPointer<MemoryItem const> memoryItem) const
 {
     quint64 baseAddress = 0;
     quint64 lastAddress = 0;
@@ -138,7 +138,7 @@ QPair<quint64, quint64> MemoryMapGraphicsItem::getMemoryRanges(QSharedPointer<Me
     {
         bool firstBlock = true;
 
-        foreach (QSharedPointer<MemoryItem> blockItem, memoryItem->getChildItems())
+        foreach (QSharedPointer<MemoryItem const> blockItem, memoryItem->getChildItems())
         {
             if (blockItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
             {
@@ -212,8 +212,8 @@ void MemoryMapGraphicsItem::setLabelPositions()
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::createNewSubItem()
 //-----------------------------------------------------------------------------
-MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
-    bool isEmpty)
+MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(
+    QSharedPointer<MemoryItem const> subMemoryItem, bool isEmpty)
 {
     MemoryDesignerChildGraphicsItem* childItem = 0;
 

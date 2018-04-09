@@ -160,8 +160,9 @@ void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGra
     QVector<QString> memoryMapIdentifiers;
     memoryMapIdentifiers.append(QStringLiteral("Memory maps"));
 
-    foreach (QSharedPointer<ConnectivityComponent> componentInstance, connectionGraph->getInstances())
+    for (int i = 0; i < connectionGraph->getInstances().size(); ++i)
     {
+        QSharedPointer<ConnectivityComponent const> componentInstance = connectionGraph->getInstances().at(i);
         foreach (QSharedPointer<MemoryItem> memoryItem, componentInstance->getMemories())
         {
             if (memoryItem->getType().compare(
@@ -182,8 +183,8 @@ void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGra
 //-----------------------------------------------------------------------------
 // Function: MemoryGraphicsItemHandler::createAddressSpaceItem()
 //-----------------------------------------------------------------------------
-void MemoryGraphicsItemHandler::createAddressSpaceItem(QSharedPointer<MemoryItem> spaceItem,
-    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+void MemoryGraphicsItemHandler::createAddressSpaceItem(QSharedPointer<MemoryItem const> spaceItem,
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> containingInstance,
     MemoryColumn* spaceColumn, MemoryColumn* mapColumn)
 {
     if (spaceColumn)
@@ -212,7 +213,7 @@ void MemoryGraphicsItemHandler::createAddressSpaceItem(QSharedPointer<MemoryItem
 // Function: MemoryGraphicsItemHandler::createMemoryMapItem()
 //-----------------------------------------------------------------------------
 void MemoryGraphicsItemHandler::createMemoryMapItem(QSharedPointer<MemoryItem> mapItem,
-    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> containingInstance,
     MemoryColumn* containingColumn)
 {
     if (containingColumn)

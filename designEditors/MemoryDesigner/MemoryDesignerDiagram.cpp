@@ -36,13 +36,11 @@ QGraphicsScene(parent),
 parentDocument_(parent),
 layout_(new GraphicsColumnLayout(this)),
 libraryHandler_(library),
-instanceLocator_(library),
+graphFactory_(library),
 memoryConstructor_(new MemoryDesignConstructor(layout_))
 {
     connect(memoryConstructor_, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
         this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
-
-    setSceneRect(0, 0, 100000, 100000);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +188,7 @@ bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Compo
     clearScene();
 
     QSharedPointer<ConnectivityGraph> connectionGraph =
-        instanceLocator_.createConnectivityGraph(component, viewName);
+        graphFactory_.createConnectivityGraph(component, viewName);
     if (connectionGraph)
     {
         bool constructionIsSuccess = memoryConstructor_->constructMemoryDesignItems(connectionGraph);

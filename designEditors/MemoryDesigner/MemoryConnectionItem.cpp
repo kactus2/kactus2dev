@@ -28,10 +28,11 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::MemoryConnectionItem()
 //-----------------------------------------------------------------------------
-MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, quint64 firstStartValue,
-    quint64 firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer,
-    QGraphicsItem* parent):
+MemoryConnectionItem::MemoryConnectionItem(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
+    MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
+    MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer, QGraphicsItem* parent):
 QGraphicsPathItem(parent),
+connectionPath_(connectionPath),
 firstItemStartLabel_(new QGraphicsTextItem(this)),
 firstItemEndLabel_(new QGraphicsTextItem(this)),
 secondItemStartLabel_(new QGraphicsTextItem(this)),
@@ -137,10 +138,10 @@ QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, 
 //-----------------------------------------------------------------------------
 bool MemoryConnectionItem::isLocalMapConnection() const
 {
-    QSharedPointer<MemoryItem> startMemory = startItem_->getMemoryItem();
-    QSharedPointer<MemoryItem> endMemory = endItem_->getMemoryItem();
+    QSharedPointer<MemoryItem const> startMemory = startItem_->getMemoryItem();
+    QSharedPointer<MemoryItem const> endMemory = endItem_->getMemoryItem();
 
-    foreach (QSharedPointer<MemoryItem> startSubMemory, startMemory->getChildItems())
+    foreach (QSharedPointer<MemoryItem const> startSubMemory, startMemory->getChildItems())
     {
         if (startSubMemory == endMemory)
         {

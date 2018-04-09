@@ -44,9 +44,9 @@ public:
      *      @param [in] identifierChain     Chain of strings identifying this item.
      *      @param [in] parent              The parent item.
      */
-    MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
-        QSharedPointer<ConnectivityComponent> containingInstance, QString const& subItemType, bool filterSubItems,
-        QVector<QString> identifierChain, QGraphicsItem* parent = 0);
+    MainMemoryGraphicsItem(QSharedPointer<MemoryItem const> memoryItem,
+        QSharedPointer<ConnectivityComponent const> containingInstance, QString const& subItemType,
+        bool filterSubItems, QVector<QString> identifierChain, QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -154,7 +154,7 @@ public:
      *
      *      @return The contained memory item.
      */
-    QSharedPointer<MemoryItem> getMemoryItem() const;
+    QSharedPointer<MemoryItem const> getMemoryItem() const;
 
     /*!
      *  Create collision markers for overlapping connections.
@@ -281,7 +281,7 @@ private:
     QGraphicsTextItem* instanceNameLabel_;
 
     //! The memory item from which this graphics item has been constructed from.
-    QSharedPointer<MemoryItem> memoryItem_;
+    QSharedPointer<MemoryItem const> memoryItem_;
 
     //! A list of memory collisions connected to this memory item.
     QVector<MemoryCollisionItem*> memoryCollisions_;

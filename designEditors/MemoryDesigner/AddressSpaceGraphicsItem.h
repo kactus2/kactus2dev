@@ -43,8 +43,9 @@ public:
      *      @param [in] filterSegments      Value for filtering address space segments.
      *      @param [in] parent              The parent item.
      */
-    AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QVector<QString> identifierChain,
-        QSharedPointer<ConnectivityComponent> containingInstance, bool filterSegments, QGraphicsItem* parent = 0);
+    AddressSpaceGraphicsItem(QSharedPointer<MemoryItem const> memoryItem, QVector<QString> identifierChain,
+        QSharedPointer<ConnectivityComponent const> containingInstance, bool filterSegments,
+        QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -88,7 +89,7 @@ private:
      *
      *      @return The created address segment graphics item.
      */
-    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
+    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
         bool isEmpty);
 
     /*!

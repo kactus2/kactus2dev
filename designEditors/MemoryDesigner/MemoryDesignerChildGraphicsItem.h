@@ -37,9 +37,9 @@ public:
      *      @param [in] containingInstance  Component instance containing the sub memory item.
      *      @param [in] parent              The parent item.
      */
-    MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem> subMemoryItem, QString const& toolTipType,
+    MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem const> subMemoryItem, QString const& toolTipType,
         quint64 baseAddress, quint64 range, qreal blockWidth, QVector<QString> identifierChain,
-        QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent);
+        QSharedPointer<ConnectivityComponent const> containingInstance, QGraphicsItem* parent);
 
 	/*!
      *  The destructor.

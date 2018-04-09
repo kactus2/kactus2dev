@@ -29,9 +29,9 @@
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::MainMemoryGraphicsItem()
 //-----------------------------------------------------------------------------
-MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
-    QSharedPointer<ConnectivityComponent> containingInstance, QString const& subItemType, bool filterSubItems,
-    QVector<QString> identifierChain, QGraphicsItem* parent):
+MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem const> memoryItem,
+    QSharedPointer<ConnectivityComponent const> containingInstance, QString const& subItemType,
+    bool filterSubItems, QVector<QString> identifierChain, QGraphicsItem* parent):
 MemoryDesignerGraphicsItem(memoryItem->getName(), memoryItem->getDisplayName(), identifierChain,
     containingInstance, parent),
 SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
@@ -276,7 +276,7 @@ void MainMemoryGraphicsItem::hideFirstAndLastSegmentRange()
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::getMemoryItem()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryItem> MainMemoryGraphicsItem::getMemoryItem() const
+QSharedPointer<MemoryItem const> MainMemoryGraphicsItem::getMemoryItem() const
 {
     return memoryItem_;
 }

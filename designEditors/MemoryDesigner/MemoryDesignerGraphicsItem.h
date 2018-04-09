@@ -48,7 +48,7 @@ public:
      *      @param [in] parent              The parent item.
      */
     MemoryDesignerGraphicsItem(QString const& itemName, QString const& displayName,
-        QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> componentInstance,
+        QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> componentInstance,
         QGraphicsItem* parent = 0);
 
 	/*!
@@ -159,7 +159,7 @@ public:
      *
      *      @return The containing component instance.
      */
-    QSharedPointer<ConnectivityComponent> getContainingInstance() const;
+    QSharedPointer<ConnectivityComponent const> getContainingInstance() const;
 
     /*!
      *  Change the address range of the memory item.
@@ -368,7 +368,7 @@ private:
     QString displayName_;
 
     //! The containing component instance.
-    QSharedPointer<ConnectivityComponent> containingInstance_;
+    QSharedPointer<ConnectivityComponent const> containingInstance_;
 
     //! Map containing memory connection items and their base addresses.
     QMap<quint64, MemoryConnectionItem*> memoryConnections_;

@@ -25,12 +25,25 @@ class ConnectivityComponent
 {
 public:
 
-	//! The constructor.
+	/*!
+     *  The constructor.
+     *
+     *      @param [in] name    Name for the component instance.
+     */
 	ConnectivityComponent(QString const& name);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	~ConnectivityComponent();
-        
+
+    /*!
+     *  Set a new name for the component instance.
+     *
+     *      @param [in] newName     The new name.
+     */
+    void setName(QString const& newName);
+
     /*!
      *  Gets the name of the instance.
      *

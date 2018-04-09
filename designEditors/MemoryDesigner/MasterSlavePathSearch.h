@@ -39,7 +39,7 @@ public:
      *
      *      @return All paths from master interfaces.
      */
-    QVector<QVector<QSharedPointer<ConnectivityInterface> > > findMasterSlavePaths(
+    QVector<QVector<QSharedPointer<ConnectivityInterface const> > > findMasterSlavePaths(
         QSharedPointer<const ConnectivityGraph> graph);
 
 private:
@@ -55,7 +55,7 @@ private:
      *
      *      @return The master interfaces for path start points.
      */
-    QVector<QSharedPointer<ConnectivityInterface> > findInitialMasterInterfaces(
+    QVector<QSharedPointer<ConnectivityInterface const> > findInitialMasterInterfaces(
         QSharedPointer<const ConnectivityGraph> graph) const;
 
     /*!
@@ -68,9 +68,9 @@ private:
      *
      *      @return <Description>.
      */
-    void findPaths(QSharedPointer<ConnectivityInterface> startVertex, 
-        QSharedPointer<ConnectivityConnection> previousEdge, 
-        QVector<QSharedPointer<ConnectivityInterface> > existingPath, 
+    void findPaths(QSharedPointer<ConnectivityInterface const> startVertex,
+        QSharedPointer<ConnectivityConnection const> previousEdge, 
+        QVector<QSharedPointer<ConnectivityInterface const> > existingPath,
         QSharedPointer<const ConnectivityGraph> graph);
 
     /*!
@@ -81,8 +81,9 @@ private:
      *
      *      @return The interface connected to the selected interface.
      */
-    QSharedPointer<ConnectivityInterface> findConnectedInterface(
-        QSharedPointer<ConnectivityInterface> startInterface, QSharedPointer<ConnectivityConnection> edge) const;
+    QSharedPointer<ConnectivityInterface const> findConnectedInterface(
+        QSharedPointer<ConnectivityInterface const> startInterface,
+        QSharedPointer<ConnectivityConnection const> edge) const;
 
     /*!
      *  Check if the selected interfaces can be connected.
@@ -92,15 +93,15 @@ private:
      *
      *      @return True, if the interfaces can be connected, false otherwise.
      */
-    bool canConnectInterfaces(QSharedPointer<ConnectivityInterface> startVertex,
-        QSharedPointer<ConnectivityInterface> endVertex) const;
+    bool canConnectInterfaces(QSharedPointer<ConnectivityInterface const> startVertex,
+        QSharedPointer<ConnectivityInterface const> endVertex) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Connection paths from master interfaces.
-    QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterPaths_;
+    QVector<QVector<QSharedPointer<ConnectivityInterface const> > > masterPaths_;
 };
 
 #endif // MASTERSLAVEPATHSEARCH_H

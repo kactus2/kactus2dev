@@ -39,8 +39,8 @@ public:
      *      @param [in] containingInstance  Name of the containing component instance.
      *      @param [in] spaceItem           The address space item containing the address segment.
      */
-    AddressSegmentGraphicsItem(QSharedPointer<MemoryItem> segmentItem, bool isEmptySegment,
-        QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+    AddressSegmentGraphicsItem(QSharedPointer<MemoryItem const> segmentItem, bool isEmptySegment,
+        QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> containingInstance,
         AddressSpaceGraphicsItem* spaceItem);
 
 	/*!

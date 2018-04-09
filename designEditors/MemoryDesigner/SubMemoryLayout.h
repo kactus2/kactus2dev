@@ -38,7 +38,7 @@ public:
      *      @param [in] filterSubItems      Value for filtering memory sub items.
      *      @param [in] mainGraphicsItem    The main graphics item.
      */
-    SubMemoryLayout(QSharedPointer<MemoryItem> memoryItem, QString const& subItemType, bool filterSubItems,
+    SubMemoryLayout(QSharedPointer<MemoryItem const> memoryItem, QString const& subItemType, bool filterSubItems,
         MemoryDesignerGraphicsItem* mainGraphicsItem);
 
 	/*!
@@ -162,7 +162,8 @@ protected:
      *      @param [in] subItemType         Type of the memory sub items.
      *      @param [in] memoryItem          The memory item containing the sub items.
      */
-    void setupSubItems(qreal subItemPositionX, QString const& subItemType, QSharedPointer<MemoryItem> memoryItem);
+    void setupSubItems(qreal subItemPositionX, QString const& subItemType,
+        QSharedPointer<MemoryItem const> memoryItem);
 
     /*!
      *  Compress the sub items.
@@ -201,7 +202,7 @@ private:
      *
      *      @return The created sub memory graphics item.
      */
-    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
+    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
         bool isEmpty) = 0;
 
     /*!

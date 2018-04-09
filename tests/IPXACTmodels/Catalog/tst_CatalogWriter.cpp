@@ -662,19 +662,6 @@ void tst_CatalogWriter::testVendorExtensions()
                 "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
             "</ipxact:vendorExtensions>"
         "</ipxact:catalog>\n"));
-
-    "<?xml version="1.0"?>
-        <ipxact:catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:kactus2="http://kactus2.cs.tut.fi" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd">
-        <ipxact:vendor>tut.fi</ipxact:vendor>
-        <ipxact:library>TestLibrary</ipxact:library>
-        <ipxact:name>TestCatalog</ipxact:name>
-        <ipxact:version>1.0</ipxact:version>
-        <ipxact:vendorExtensions>
-        <kactus2:version>3.0.0</kactus2:version>
-        <testExtension vendorAttribute="extension"/>
-        </ipxact:vendorExtensions>
-        </ipxact:catalog>
-
 }
 
 //-----------------------------------------------------------------------------

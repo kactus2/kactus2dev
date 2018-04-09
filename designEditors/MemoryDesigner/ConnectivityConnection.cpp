@@ -11,11 +11,16 @@
 
 #include "ConnectivityConnection.h"
 
+#include "ConnectivityInterface.h"
+
 //-----------------------------------------------------------------------------
 // Function: ConnectivityConnection::ConnectivityConnection()
 //-----------------------------------------------------------------------------
-ConnectivityConnection::ConnectivityConnection(QString const& name, QSharedPointer<ConnectivityInterface> startPoint, 
-    QSharedPointer<ConnectivityInterface> endPoint): name_(name), firstInterface_(startPoint), secondInterface_(endPoint)
+ConnectivityConnection::ConnectivityConnection(QString const& name,
+    QSharedPointer<ConnectivityInterface const> startPoint, QSharedPointer<ConnectivityInterface const> endPoint):
+name_(name),
+firstInterface_(startPoint),
+secondInterface_(endPoint)
 {
 
 }
@@ -39,7 +44,7 @@ QString ConnectivityConnection::getName() const
 //-----------------------------------------------------------------------------
 // Function: ConnectivityConnection::getFirstInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityInterface> ConnectivityConnection::getFirstInterface() const
+QSharedPointer<ConnectivityInterface const> ConnectivityConnection::getFirstInterface() const
 {
     return firstInterface_;
 }
@@ -47,7 +52,7 @@ QSharedPointer<ConnectivityInterface> ConnectivityConnection::getFirstInterface(
 //-----------------------------------------------------------------------------
 // Function: ConnectivityConnection::getSecondInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityInterface> ConnectivityConnection::getSecondInterface() const
+QSharedPointer<ConnectivityInterface const> ConnectivityConnection::getSecondInterface() const
 {
     return secondInterface_;
 }

@@ -57,7 +57,8 @@ public:
      *
      *      @return Memory graphics item matching the selected memory item.
      */
-    MainMemoryGraphicsItem* findGraphicsItemByMemoryItem(QSharedPointer<MemoryItem> containedMemoryItem) const;
+    MainMemoryGraphicsItem* findGraphicsItemByMemoryItem(QSharedPointer<MemoryItem const> containedMemoryItem)
+        const;
 
     /*!
      *  Get the type of this item.

@@ -19,9 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem()
 //-----------------------------------------------------------------------------
-MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem> subMemoryItem,
+MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem const> subMemoryItem,
     QString const& toolTipType, quint64 baseAddress, quint64 range, qreal blockWidth,
-    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> containingInstance,
     QGraphicsItem* parent):
 MemoryDesignerGraphicsItem(subMemoryItem->getName(), subMemoryItem->getDisplayName(), identifierChain,
     containingInstance, parent)

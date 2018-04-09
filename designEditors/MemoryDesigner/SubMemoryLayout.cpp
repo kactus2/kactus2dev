@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::SubMemoryLayout()
 //-----------------------------------------------------------------------------
-SubMemoryLayout::SubMemoryLayout(QSharedPointer<MemoryItem> memoryItem, QString const& subItemType,
+SubMemoryLayout::SubMemoryLayout(QSharedPointer<MemoryItem const> memoryItem, QString const& subItemType,
     bool filterSubItems, MemoryDesignerGraphicsItem* mainGraphicsItem):
 subMemoryItems_(),
 itemType_(memoryItem->getType()),
@@ -56,7 +56,7 @@ QString SubMemoryLayout::getSubItemType() const
 // Function: SubMemoryLayout::setupSubItems()
 //-----------------------------------------------------------------------------
 void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subItemType,
-    QSharedPointer<MemoryItem> memoryItem)
+    QSharedPointer<MemoryItem const> memoryItem)
 {
     if (!filterSubItems_)
     {
@@ -67,7 +67,7 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
         {
             QMap<quint64, MemoryDesignerChildGraphicsItem*> subItemsInOrder;
 
-            foreach (QSharedPointer<MemoryItem> subMemoryItem, memoryItem->getChildItems())
+            foreach (QSharedPointer<MemoryItem const> subMemoryItem, memoryItem->getChildItems())
             {
                 if (subMemoryItem->getType().compare(subItemType, Qt::CaseInsensitive) == 0)
                 {

@@ -46,7 +46,7 @@ public:
      */
     MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QVector<QString> identifierChain,
         bool filterAddressBlocks, bool filterRegisters, bool filterFields,
-        QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent = 0);
+        QSharedPointer<ConnectivityComponent const> containingInstance, QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -98,7 +98,7 @@ private:
      *
      *      @return The memory range. First is base address, second is last address.
      */
-    QPair<quint64, quint64> getMemoryRanges(QSharedPointer<MemoryItem> memoryItem) const;
+    QPair<quint64, quint64> getMemoryRanges(QSharedPointer<MemoryItem const> memoryItem) const;
 
     /*!
      *  Set the label positions.
@@ -113,7 +113,7 @@ private:
      *
      *      @return The created address block graphics item.
      */
-    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
+    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
         bool isEmpty);
 
     /*!

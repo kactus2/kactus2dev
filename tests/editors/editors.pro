@@ -12,4 +12,5 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += ComponentEditor/ComponentEditor.pro
+SUBDIRS += ComponentEditor/ComponentEditor.pro \
+	MemoryDesigner/MemoryDesigner.pro

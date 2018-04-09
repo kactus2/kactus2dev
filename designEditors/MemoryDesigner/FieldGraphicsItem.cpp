@@ -26,10 +26,11 @@
 //-----------------------------------------------------------------------------
 // Function: FieldGraphicsItem::FieldGraphicsItem()
 //-----------------------------------------------------------------------------
-FieldGraphicsItem::FieldGraphicsItem(QSharedPointer<MemoryItem> fieldItem, quint64 fieldOffset,
+FieldGraphicsItem::FieldGraphicsItem(QSharedPointer<MemoryItem const> fieldItem, quint64 fieldOffset,
     quint64 fieldLastBit, qreal fieldWidth, quint64 fieldHeight, bool isEmptyField,
-    QVector<QString> identifierChain, QFont labelFont, QSharedPointer<ConnectivityComponent> containingInstance,
-    bool isOutsideRegister, MemoryDesignerGraphicsItem* parentItem):
+    QVector<QString> identifierChain, QFont labelFont,
+    QSharedPointer<ConnectivityComponent const> containingInstance, bool isOutsideRegister,
+    MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(fieldItem, QStringLiteral("Field"), fieldOffset, fieldHeight, fieldWidth,
     identifierChain, containingInstance, parentItem),
 combinedRangeLabel_(new QGraphicsTextItem("", this)),

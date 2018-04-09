@@ -64,8 +64,8 @@ bool MemoryColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems)
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::findGraphicsItemByMemoryItem()
 //-----------------------------------------------------------------------------
-MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemByMemoryItem(QSharedPointer<MemoryItem> containedMemoryItem)
-    const
+MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemByMemoryItem(
+    QSharedPointer<MemoryItem const> containedMemoryItem) const
 {
     if (containedMemoryItem)
     {

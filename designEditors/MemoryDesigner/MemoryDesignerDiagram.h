@@ -232,7 +232,7 @@ private:
     LibraryInterface* libraryHandler_;
 
     //! Factory for creating the connectivity graph.
-    ConnectivityGraphFactory instanceLocator_;
+    ConnectivityGraphFactory graphFactory_;
 
     //! Constructor for memory design graphics items.
     MemoryDesignConstructor* memoryConstructor_;

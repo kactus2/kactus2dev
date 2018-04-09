@@ -31,9 +31,12 @@ public:
 	 *      @param [in] startPoint  The starting interface in the connection.
 	 *      @param [in] endPoint    The end interface in the connection.
 	 */
-	ConnectivityConnection(QString const& name, QSharedPointer<ConnectivityInterface> startPoint, QSharedPointer<ConnectivityInterface> endPoint);
+    ConnectivityConnection(QString const& name, QSharedPointer<ConnectivityInterface const> startPoint,
+        QSharedPointer<ConnectivityInterface const> endPoint);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	~ConnectivityConnection();
 
     /*!
@@ -48,14 +51,14 @@ public:
      *
      *      @return The first interface in the connection.
      */
-    QSharedPointer<ConnectivityInterface> getFirstInterface() const;
+    QSharedPointer<ConnectivityInterface const> getFirstInterface() const;
 
     /*!
      *  Gets the second interface in the connection.
      *
      *      @return The second interface in the connection.
      */
-    QSharedPointer<ConnectivityInterface> getSecondInterface() const;
+    QSharedPointer<ConnectivityInterface const> getSecondInterface() const;
 
 private:
 
@@ -67,10 +70,10 @@ private:
     QString name_;
 
     //! The first interface in the connection.
-    QSharedPointer<ConnectivityInterface> firstInterface_;
+    QSharedPointer<ConnectivityInterface const> firstInterface_;
 
     //! The second interface in the connection.
-    QSharedPointer<ConnectivityInterface> secondInterface_;
+    QSharedPointer<ConnectivityInterface const> secondInterface_;
 };
 
 #endif // CONNECTION_H

@@ -24,9 +24,9 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::RegisterGraphicsItem()
 //-----------------------------------------------------------------------------
-RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister,
+RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem const> registerItem, bool isEmptyRegister,
     qreal registerWidth, QVector<QString> identifierChain, bool filterFields,
-    QSharedPointer<ConnectivityComponent> containingInstance, MemoryDesignerGraphicsItem* parentItem):
+    QSharedPointer<ConnectivityComponent const> containingInstance, MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(registerItem, QStringLiteral("Register"), registerItem->getAddress().toULongLong(),
     getRegisterEnd(registerItem->getAUB().toUInt(), registerItem->getSize().toULongLong()), registerWidth,
     identifierChain, containingInstance, parentItem),
@@ -113,7 +113,7 @@ void RegisterGraphicsItem::condense(qreal newItemHeight)
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::setupFields()
 //-----------------------------------------------------------------------------
-void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
+void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem const> registerItem)
 {
     quint64 registerEnd = getRegisterEnd(addressUnitBits_, registerSize_);
     QString registerName = getNameLabel()->toPlainText();
@@ -135,7 +135,7 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
         subItemIterator.previous();
 
         RegisterGraphicsItem::FieldMemoryItem fieldMemory = subItemIterator.value();
-        QSharedPointer<MemoryItem> fieldItem = fieldMemory.fieldMemoryItem;
+        QSharedPointer<MemoryItem const> fieldItem = fieldMemory.fieldMemoryItem;
         quint64 fieldOffset = fieldMemory.fieldOffset;
         quint64 fieldWidth = fieldMemory.fieldWidth;
         quint64 lastBit = subItemIterator.key();
@@ -167,13 +167,13 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
 // Function: RegisterGraphicsItem::getFieldItemsInLastBitOrder()
 //-----------------------------------------------------------------------------
 QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> RegisterGraphicsItem::getFieldItemsInLastBitOrder(
-    QSharedPointer<MemoryItem> registerItem) const
+    QSharedPointer<MemoryItem const> registerItem) const
 {
     QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> fieldMap;
 
     quint64 registerOffset = registerItem->getAddress().toULongLong();
 
-    foreach (QSharedPointer<MemoryItem> fieldItem, registerItem->getChildItems())
+    foreach (QSharedPointer<MemoryItem const> fieldItem, registerItem->getChildItems())
     {
         if (fieldItem->getType().compare(MemoryDesignerConstants::FIELD_TYPE, Qt::CaseInsensitive) == 0)
         {
@@ -208,8 +208,8 @@ void RegisterGraphicsItem::createEmptyFieldItem(quint64 currentOffset, quint64 l
 {
     quint64 fieldWidth = lastBit - currentOffset + 1;
 
-    QSharedPointer<MemoryItem> newEmptyFieldItem (new MemoryItem(MemoryDesignerConstants::RESERVED_NAME,
-        MemoryDesignerConstants::FIELD_TYPE));
+    QSharedPointer<MemoryItem const> newEmptyFieldItem
+        (new MemoryItem(MemoryDesignerConstants::RESERVED_NAME, MemoryDesignerConstants::FIELD_TYPE));
 
     createFieldGraphicsItem(newEmptyFieldItem, currentOffset, fieldWidth, true, oneBitWidth, registerEnd,
         fieldsStartPosition, fieldFont);
@@ -218,7 +218,7 @@ void RegisterGraphicsItem::createEmptyFieldItem(quint64 currentOffset, quint64 l
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::createFieldGraphicsItem()
 //-----------------------------------------------------------------------------
-void RegisterGraphicsItem::createFieldGraphicsItem(QSharedPointer<MemoryItem> fieldItem, quint64 fieldOffset,
+void RegisterGraphicsItem::createFieldGraphicsItem(QSharedPointer<MemoryItem const> fieldItem, quint64 fieldOffset,
     quint64 fieldWidth, bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal fieldsStartPosition,
     QFont fieldFont)
 {

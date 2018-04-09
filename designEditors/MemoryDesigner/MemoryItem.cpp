@@ -14,8 +14,17 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryItem::MemoryItem()
 //-----------------------------------------------------------------------------
-MemoryItem::MemoryItem(QString const& name, QString const& type): name_(name), displayName_(),
-    type_(type), identifier_(), address_(), range_(), width_(), size_(), offset_(), childItems_()
+MemoryItem::MemoryItem(QString const& name, QString const& type):
+name_(name),
+displayName_(),
+type_(type),
+identifier_(),
+address_(),
+range_(),
+width_(),
+size_(),
+offset_(),
+childItems_()
 {
 
 }
@@ -183,7 +192,7 @@ void MemoryItem::addChild(QSharedPointer<MemoryItem> child)
 //-----------------------------------------------------------------------------
 // Function: MemoryItem::getChildItems()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<MemoryItem> > MemoryItem::getChildItems()
+QVector<QSharedPointer<MemoryItem> > MemoryItem::getChildItems() const
 {
     return childItems_;         
 }

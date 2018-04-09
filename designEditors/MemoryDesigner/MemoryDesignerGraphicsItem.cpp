@@ -28,7 +28,7 @@
 // Function: MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem()
 //-----------------------------------------------------------------------------
 MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem(QString const& itemName, QString const& displayName,
-    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> componentInstance,
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> componentInstance,
     QGraphicsItem* parent):
 QObject(),
 QGraphicsRectItem(parent),
@@ -390,7 +390,7 @@ bool MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem*
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::getContainingInstance()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityComponent> MemoryDesignerGraphicsItem::getContainingInstance() const
+QSharedPointer<ConnectivityComponent const> MemoryDesignerGraphicsItem::getContainingInstance() const
 {
     return containingInstance_;
 }

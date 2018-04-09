@@ -43,9 +43,9 @@ public:
      *      @param [in] containingInstance  Name of the containing component instance.
      *      @param [in] parentItem          The parent memory graphics item.
      */
-    RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister, qreal registerWidth,
+    RegisterGraphicsItem(QSharedPointer<MemoryItem const> registerItem, bool isEmptyRegister, qreal registerWidth,
         QVector<QString> identifierChain, bool filterFields,
-        QSharedPointer<ConnectivityComponent> containingInstance, MemoryDesignerGraphicsItem* parentItem);
+        QSharedPointer<ConnectivityComponent const> containingInstance, MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.
@@ -105,7 +105,7 @@ private:
         quint64 fieldWidth;
 
         //! Memory item containing the field item data.
-        QSharedPointer<MemoryItem> fieldMemoryItem;
+        QSharedPointer<MemoryItem const> fieldMemoryItem;
     };
 
     /*!
@@ -128,7 +128,7 @@ private:
      *
      *      @param [in] registerItem    The selected register memory item.
      */
-    void setupFields(QSharedPointer<MemoryItem> registerItem);
+    void setupFields(QSharedPointer<MemoryItem const> registerItem);
 
     /*!
      *  Get the field items in last bit order.
@@ -138,7 +138,7 @@ private:
      *      @return Field items in last bit order with calculated offsets and widths.
      */
     QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> getFieldItemsInLastBitOrder(
-        QSharedPointer<MemoryItem> registerItem) const;
+        QSharedPointer<MemoryItem const> registerItem) const;
 
     /*!
      *  Create an empty field graphics item.
@@ -165,7 +165,7 @@ private:
      *      @param [in] fieldsStartPosition     The start coordinate for the field graphics items.
      *      @param [in] fieldFont               Font used in fields.
      */
-    void createFieldGraphicsItem(QSharedPointer<MemoryItem> fieldItem, quint64 fieldOffset, quint64 fieldWidth,
+    void createFieldGraphicsItem(QSharedPointer<MemoryItem const> fieldItem, quint64 fieldOffset, quint64 fieldWidth,
         bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal fieldsStartPosition, QFont fieldFont);
 
     /*!

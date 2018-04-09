@@ -154,8 +154,8 @@ private:
      *      @param [in] spaceColumn         The address space column.
      *      @param [in] mapColumn           The memory map column.
      */
-    void createAddressSpaceItem(QSharedPointer<MemoryItem> spaceItem, QVector<QString> identifierChain,
-        QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* spaceColumn,
+    void createAddressSpaceItem(QSharedPointer<MemoryItem const> spaceItem, QVector<QString> identifierChain,
+        QSharedPointer<ConnectivityComponent const> containingInstance, MemoryColumn* spaceColumn,
         MemoryColumn* mapColumn);
 
     /*!
@@ -167,7 +167,7 @@ private:
      *      @param [in] containingColumn    The memory map column.
      */
     void createMemoryMapItem(QSharedPointer<MemoryItem> mapItem, QVector<QString> identifierChain,
-        QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn);
+        QSharedPointer<ConnectivityComponent const> containingInstance, MemoryColumn* containingColumn);
 
     /*!
      *  Connect the signals from the selected memory graphics item.

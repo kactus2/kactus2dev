@@ -14,8 +14,15 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectivityInterface::ConnectivityInterface()
 //-----------------------------------------------------------------------------
-ConnectivityInterface::ConnectivityInterface(QString const& name): name_(name), mode_(), baseAddress_(),
-    remapAddress_(), instance_(), memory_(), hierarchical_(false), bridged_(false)
+ConnectivityInterface::ConnectivityInterface(QString const& name):
+name_(name),
+mode_(),
+baseAddress_(),
+remapAddress_(),
+instance_(),
+memory_(),
+hierarchical_(false),
+bridged_(false)
 {
 
 }
@@ -111,7 +118,7 @@ void ConnectivityInterface::setInstance(QSharedPointer<ConnectivityComponent> in
 //-----------------------------------------------------------------------------
 // Function: ConnectivityInterface::getInstance()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityComponent> ConnectivityInterface::getInstance() const
+QSharedPointer<ConnectivityComponent const> ConnectivityInterface::getInstance() const
 {
     return instance_;
 }

@@ -74,8 +74,8 @@ QSharedPointer<ConnectivityGraph> ConnectivityGraphFactory::createConnectivityGr
     {
         parameterFinder_->addFinder(QSharedPointer<ParameterFinder>(new ParameterCache(topComponent)));
 
-        QSharedPointer<ConnectivityComponent> instanceNode = createInstanceData(QSharedPointer<ComponentInstance>(0), 
-            topComponent, activeView, graph);
+        QSharedPointer<ConnectivityComponent> instanceNode =
+            createInstanceData(QSharedPointer<ComponentInstance>(0), topComponent, activeView, graph);
 
         QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces =
             createInterfacesForInstance(topComponent, instanceNode, graph);
@@ -90,9 +90,9 @@ QSharedPointer<ConnectivityGraph> ConnectivityGraphFactory::createConnectivityGr
 // Function: ConnectivityGraphFactory::analyzeDesign()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design,
-    QSharedPointer<const DesignConfiguration> designConfiguration, 
-    QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces, 
-    QSharedPointer<ConnectivityGraph> graph) const
+    QSharedPointer<const DesignConfiguration> designConfiguration,
+    QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces, QSharedPointer<ConnectivityGraph> graph)
+    const
 {
     QSharedPointer<ListParameterFinder> designParameterFinder(new ListParameterFinder());
     designParameterFinder->setParameterList(design->getParameters());
@@ -146,15 +146,14 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design
 // Function: ConnectivityGraphFactory::getInstanceData()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConnectivityComponent> ConnectivityGraphFactory::createInstanceData(
-    QSharedPointer<ComponentInstance> instance,
-    QSharedPointer<const Component> component,
-    QString const& activeView,
-    QSharedPointer<ConnectivityGraph> graph) const
+    QSharedPointer<ComponentInstance> instance, QSharedPointer<const Component> component,
+    QString const& activeView, QSharedPointer<ConnectivityGraph> graph) const
 {
     QSharedPointer<ConnectivityComponent> newInstance;
     if (instance)
     {
-        newInstance = QSharedPointer<ConnectivityComponent>(new ConnectivityComponent(instance->getInstanceName()));
+        newInstance =
+            QSharedPointer<ConnectivityComponent>(new ConnectivityComponent(instance->getInstanceName()));
         newInstance->setInstanceUuid(instance->getUuid());
         newInstance->setVlnv(instance->getComponentRef()->toString());
     }
@@ -171,15 +170,14 @@ QSharedPointer<ConnectivityComponent> ConnectivityGraphFactory::createInstanceDa
 
     addMemoryMapMemories(newInstance, component);
 
-    graph->addInstance(newInstance);
-
+    graph->getInstances().append(newInstance);
     return newInstance;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::addAddressSpaceMemories()
 //-----------------------------------------------------------------------------
-void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<ConnectivityComponent> newInstance, 
+void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<ConnectivityComponent> newInstance,
     QSharedPointer<const Component> component) const
 {
     QString instanceIdentifier = newInstance->getVlnv().replace(':', '.') + "." + newInstance->getInstanceUuid() +
@@ -296,8 +294,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
 // Function: ConnectivityGraphFactory::createMemoryBlock()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
-    QSharedPointer<const AddressBlock> addressBlock,
-    QString const& mapIdentifier, int addressableUnitBits) const
+    QSharedPointer<const AddressBlock> addressBlock, QString const& mapIdentifier, int addressableUnitBits) const
 {
     QString blockIdentifier = mapIdentifier + "." + addressBlock->name();
     int baseAddress = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toInt();
@@ -387,14 +384,16 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::addMemoryRemapData()
 //-----------------------------------------------------------------------------
-void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<const MemoryMap> map, 
-    QSharedPointer<MemoryItem> mapItem, int addressableUnitBits, 
+void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<const MemoryMap> map,
+    QSharedPointer<MemoryItem> mapItem, int addressableUnitBits,
     QSharedPointer<ConnectivityComponent> containingInstance) const
 {
+    QString remapPrefix =  containingInstance->getVlnv().replace(':', '.') + "." +
+        containingInstance->getInstanceUuid() + "." + containingInstance->getName() + ".";
+
     foreach (QSharedPointer<MemoryRemap> remap, *map->getMemoryRemaps())
     {
-        QString remapIdentifier =  containingInstance->getVlnv().replace(':', '.') + "." + 
-            containingInstance->getInstanceUuid() + "." + containingInstance->getName() + "." + remap->name();
+        QString remapIdentifier = remapPrefix + remap->name();
 
         QSharedPointer<MemoryItem> remapItem(new MemoryItem(remap->name(), "memoryRemap"));
         remapItem->setDisplayName(remap->displayName());
@@ -420,18 +419,15 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<const MemoryMap
 // Function: ConnectivityGraphFactory::createInterfacesForInstance()
 //-----------------------------------------------------------------------------
 QVector<QSharedPointer<ConnectivityInterface> > ConnectivityGraphFactory::createInterfacesForInstance(
-    QSharedPointer<const Component> instancedComponent, 
-    QSharedPointer<ConnectivityComponent> instanceNode, 
+    QSharedPointer<Component const> instancedComponent, QSharedPointer<ConnectivityComponent> instanceNode,
     QSharedPointer<ConnectivityGraph> graph) const
 {
     QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces;
 
     foreach (QSharedPointer<const BusInterface> busInterface, *instancedComponent->getBusInterfaces())
     {
-        QSharedPointer<ConnectivityInterface> node = createInterfaceData(busInterface, instanceNode);
+        QSharedPointer<ConnectivityInterface> node = createInterfaceData(busInterface, instanceNode, graph);
         instanceInterfaces.append(node);
-
-        graph->addInterface(node);
     }
 
     return instanceInterfaces;
@@ -441,8 +437,8 @@ QVector<QSharedPointer<ConnectivityInterface> > ConnectivityGraphFactory::create
 // Function: ConnectivityGraphFactory::createInterfaceData()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceData(
-    QSharedPointer<const BusInterface> busInterface,
-    QSharedPointer<ConnectivityComponent> instanceNode) const
+    QSharedPointer<const BusInterface> busInterface, QSharedPointer<ConnectivityComponent> instanceNode,
+    QSharedPointer<ConnectivityGraph> graph) const
 {
     QSharedPointer<ConnectivityInterface> interfaceNode(new ConnectivityInterface(busInterface->name()));
     interfaceNode->setMode(General::interfaceMode2Str(busInterface->getInterfaceMode()));                   
@@ -452,7 +448,8 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
 
     if (busInterface->getInterfaceMode() == General::MASTER)
     {
-        interfaceNode->setBaseAddress(expressionParser_->parseExpression(busInterface->getMaster()->getBaseAddress()));
+        interfaceNode->setBaseAddress(
+            expressionParser_->parseExpression(busInterface->getMaster()->getBaseAddress()));
         memoryReference = busInterface->getAddressSpaceRef();
     }
 
@@ -467,14 +464,16 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
         interfaceNode->setRemapAddress(expressionParser_->parseExpression(
             busInterface->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_));
 
-        interfaceNode->setRemapRange(expressionParser_->parseExpression(
-            busInterface->getMirroredSlave()->getRange()));
+        interfaceNode->setRemapRange(
+            expressionParser_->parseExpression(busInterface->getMirroredSlave()->getRange()));
     }
 
     if (!memoryReference.isEmpty())
     {
-        foreach (QSharedPointer<MemoryItem> memory, instanceNode->getMemories())
+        QVector<QSharedPointer<MemoryItem> > instanceMemories = instanceNode->getMemories();
+        for (int i = 0; i < instanceMemories.size(); ++i)
         {
+            QSharedPointer<MemoryItem> memory = instanceMemories.at(i);
             if (memory->getName().compare(memoryReference) == 0)
             {
                 interfaceNode->setConnectedMemory(memory);
@@ -482,6 +481,7 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
         }
     }
 
+    graph->getInterfaces().append(interfaceNode);
     return interfaceNode;
 }
 
@@ -540,20 +540,33 @@ void ConnectivityGraphFactory::createInternalSpaceMapConnection(QSharedPointer<c
         QSharedPointer<MemoryItem> interfacedMemory = getMemoryItemNode(addressSpace->name(), instanceNode);
         if (interfacedMemory)
         {
-            localConnectionInterface = QSharedPointer<ConnectivityInterface>(new ConnectivityInterface(
-                addressSpace->name() + QStringLiteral(" interface")));
-
-            localConnectionInterface->setConnectedMemory(interfacedMemory);
-            localConnectionInterface->setInstance(instanceNode);
-
-            graph->addInterface(localConnectionInterface);
+            localConnectionInterface =
+                createLocalInterfaceData(addressSpace, interfacedMemory, instanceNode, graph);
         }
     }
 
     QString connectionName =
         addressSpace->name() + "_to_local_memory_map_" + addressSpace->getLocalMemoryMap()->name();
 
-    graph->addConnection(connectionName, localConnectionInterface, localConnectionInterface);
+    createConnectionData(connectionName, localConnectionInterface, localConnectionInterface, graph);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createLocalInterfaceData()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createLocalInterfaceData(
+    QSharedPointer<AddressSpace> addressSpace, QSharedPointer<MemoryItem> interfacedMemory,
+    QSharedPointer<ConnectivityComponent> instanceNode, QSharedPointer<ConnectivityGraph> graph) const
+{
+    QSharedPointer<ConnectivityInterface> localConnectionInterface(
+        new ConnectivityInterface(addressSpace->name() + QStringLiteral(" interface")));
+
+    localConnectionInterface->setConnectedMemory(interfacedMemory);
+    localConnectionInterface->setInstance(instanceNode);
+
+    graph->getInterfaces().append(localConnectionInterface);
+
+    return localConnectionInterface;
 }
 
 //-----------------------------------------------------------------------------
@@ -579,8 +592,10 @@ QSharedPointer<BusInterface> ConnectivityGraphFactory::getBusInterfaceReferencin
 QSharedPointer<MemoryItem> ConnectivityGraphFactory::getMemoryItemNode(QString const& memoryReference,
     QSharedPointer<ConnectivityComponent> instanceNode) const
 {
-    foreach (QSharedPointer<MemoryItem> memory, instanceNode->getMemories())
+    QVector<QSharedPointer<MemoryItem> > instanceMemories = instanceNode->getMemories();
+    for (int i = 0; i < instanceMemories.size(); ++i)
     {
+        QSharedPointer<MemoryItem> memory = instanceMemories.at(i);
         if (memory->getName().compare(memoryReference) == 0)
         {
             return memory;
@@ -624,29 +639,28 @@ void ConnectivityGraphFactory::createConnectionsForDesign(QSharedPointer<const C
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::createConnectionsForInterconnection(
     QSharedPointer<const Interconnection> interconnection,
-    QVector<QSharedPointer<ConnectivityInterface> > designInterfaces, 
+    QVector<QSharedPointer<ConnectivityInterface> > designInterfaces,
     QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces,
     QSharedPointer<ConnectivityGraph> graph) const
 {
     QSharedPointer<ActiveInterface> start = interconnection->getStartInterface();
 
-    QSharedPointer<ConnectivityInterface> startInterface = getInterface(start->getBusReference(),
-        start->getComponentReference(), designInterfaces);
+    QSharedPointer<ConnectivityInterface> startInterface =
+        getInterface(start->getBusReference(), start->getComponentReference(), designInterfaces);
 
     foreach (QSharedPointer<HierInterface> hierInterface, *interconnection->getHierInterfaces())
     {
-        QSharedPointer<ConnectivityInterface> target = getTopInterface(hierInterface->getBusReference(),  
-            topInterfaces);
+        QSharedPointer<ConnectivityInterface> target = getTopInterface(hierInterface->getBusReference(), topInterfaces);
 
-        graph->addConnection(interconnection->name(), startInterface, target);
+        createConnectionData(interconnection->name(), startInterface, target, graph);
     }
 
     foreach (QSharedPointer<ActiveInterface> activeInterface, *interconnection->getActiveInterfaces())
     {                
-        QSharedPointer<ConnectivityInterface> target = getInterface(activeInterface->getBusReference(), 
+        QSharedPointer<ConnectivityInterface> target = getInterface(activeInterface->getBusReference(),
             activeInterface->getComponentReference(), designInterfaces);
 
-        graph->addConnection(interconnection->name(), startInterface, target);               
+        createConnectionData(interconnection->name(), startInterface, target, graph);
     }
 }
 
@@ -656,12 +670,13 @@ void ConnectivityGraphFactory::createConnectionsForInterconnection(
 QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::getInterface(QString const& interfaceName,
     QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces) const
 {
-    foreach (QSharedPointer<ConnectivityInterface> interface, instanceInterfaces)
+    for (int i = 0; i < instanceInterfaces.size(); ++i)
     {
-        if (interface->getName().compare(interfaceName) == 0 &&
-            interface->getInstance()->getName().compare(instanceName) == 0)
+        QSharedPointer<ConnectivityInterface> currentInterface = instanceInterfaces[i];
+        if (currentInterface->getName().compare(interfaceName) == 0 &&
+            currentInterface->getInstance()->getName().compare(instanceName) == 0)
         {
-            return interface;
+            return currentInterface;
         }
     }
 
@@ -674,8 +689,9 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::getInterface(QSt
 QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::getTopInterface(QString const& interfaceName,
     QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces) const
 {
-    foreach (QSharedPointer<ConnectivityInterface> interface, topInterfaces)
+    for (int i = 0; i < topInterfaces.size(); ++i)
     {
+        QSharedPointer<ConnectivityInterface> interface = topInterfaces[i];
         if (interface->getName().compare(interfaceName) == 0)
         {
             return interface;
@@ -711,8 +727,7 @@ QSharedPointer<View> ConnectivityGraphFactory::findView(QSharedPointer<const Com
 // Function: ConnectivityGraphFactory::createInternalConnectionsForChannel()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::createInternalConnectionsForChannel(QSharedPointer<const Channel> channel, 
-    QString const& instanceName, 
-    QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces,
+    QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
     QSharedPointer<ConnectivityGraph> graph) const
 {
     QStringList channelInterfaces = channel->getInterfaces();
@@ -720,12 +735,14 @@ void ConnectivityGraphFactory::createInternalConnectionsForChannel(QSharedPointe
     while (!channelInterfaces.isEmpty())
     {
         QString startInterfaceName = channelInterfaces.takeFirst();
-        QSharedPointer<ConnectivityInterface> startInterface = getInterface(startInterfaceName, instanceName, instanceInterfaces);
+        QSharedPointer<ConnectivityInterface> startInterface =
+            getInterface(startInterfaceName, instanceName, instanceInterfaces);
 
         foreach (QString const& targetName, channelInterfaces)
         {
-            QSharedPointer<ConnectivityInterface> target = getInterface(targetName, instanceName, instanceInterfaces);
-            graph->addConnection(channel->name(), startInterface, target);       
+            QSharedPointer<ConnectivityInterface> target =
+                getInterface(targetName, instanceName, instanceInterfaces);
+            createConnectionData(channel->name(), startInterface, target, graph);
         }
     }
 }
@@ -737,20 +754,21 @@ void ConnectivityGraphFactory::createInternalConnectionsForBridge(QSharedPointer
     QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces,
     QSharedPointer<ConnectivityGraph> graph) const
 {
-    QSharedPointer<ConnectivityInterface> startInterface = getInterface(busInterface->name(), instanceName,
-        instanceInterfaces);
+    QSharedPointer<ConnectivityInterface> startInterface =
+        getInterface(busInterface->name(), instanceName, instanceInterfaces);
     startInterface->setBridged();
 
     foreach (QSharedPointer<TransparentBridge> bridge, *busInterface->getSlave()->getBridges())
     {
-        QSharedPointer<ConnectivityInterface> endInterface = getInterface(bridge->getMasterRef(), 
-            instanceName, instanceInterfaces);
+        QSharedPointer<ConnectivityInterface> endInterface =
+            getInterface(bridge->getMasterRef(), instanceName, instanceInterfaces);
 
         if (endInterface)
         {
             endInterface->setBridged();
 
-            graph->addConnection(busInterface->name() + QObject::tr("_bridge"), startInterface, endInterface);
+            QString bridgeName = startInterface->getName() + "_bridge_to_" + endInterface->getName();
+            createConnectionData(bridgeName, startInterface, endInterface, graph);
         }
     }
 }
@@ -824,4 +842,20 @@ VLNV ConnectivityGraphFactory::getHierarchicalDesignVLNV(QSharedPointer<const Co
     }
 
     return VLNV();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createConnectionData()
+//-----------------------------------------------------------------------------
+void ConnectivityGraphFactory::createConnectionData(QString const& connectionName,
+    QSharedPointer<ConnectivityInterface> startPoint, QSharedPointer<ConnectivityInterface> endPoint,
+    QSharedPointer<ConnectivityGraph> graph) const
+{
+    if (startPoint != nullptr && endPoint != nullptr)
+    {
+        QSharedPointer<ConnectivityConnection> connection(
+            new ConnectivityConnection(connectionName, startPoint, endPoint));
+
+        graph->getConnections().append(connection);
+    }
 }

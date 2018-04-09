@@ -86,9 +86,9 @@ private:
      *      @param [in] topInterfaces           The top-level component interfaces available for connections.
      *      @param [in/out] graph               The graph to add elements into.
      */
-    void analyzeDesign(QSharedPointer<const Design> design, 
+    void analyzeDesign(QSharedPointer<const Design> design,
         QSharedPointer<const DesignConfiguration> designConfiguration,
-        QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces, 
+        QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces,
         QSharedPointer<ConnectivityGraph> graph) const;
    
     /*!
@@ -132,8 +132,8 @@ private:
      *
      *      @return Representation for the memory map.
      */
-    QSharedPointer<MemoryItem> createMemoryMapData(QSharedPointer<const MemoryMapBase> map, int addressableUnitBits, 
-        QSharedPointer<ConnectivityComponent> containingInstance) const;
+    QSharedPointer<MemoryItem> createMemoryMapData(QSharedPointer<const MemoryMapBase> map,
+        int addressableUnitBits, QSharedPointer<ConnectivityComponent> containingInstance) const;
 
     /*!
      *  Adds a all memory remap representations into a component instance representation.
@@ -193,20 +193,34 @@ private:
      *      @return The vertices created from the component bus interfaces.
      */
     QVector<QSharedPointer<ConnectivityInterface> > createInterfacesForInstance(
-        QSharedPointer<Component const> instancedComponent, 
-        QSharedPointer<ConnectivityComponent> instanceNode, 
+        QSharedPointer<Component const> instancedComponent, QSharedPointer<ConnectivityComponent> instanceNode,
         QSharedPointer<ConnectivityGraph> graph) const;
     
     /*!
      *  Creates an interface representation for a bus interface.
      *
-     *      @param [in] busInterface   The bus interface to transform into the graph.
-     *      @param [in] instanceNode   The instance containing the interface.
+     *      @param [in] busInterface    The bus interface to transform into the graph.
+     *      @param [in] instanceNode    The instance containing the interface.
+     *      @param [in/out] graph       The graph to add elements into.
      *
      *      @return The graph representation for the interface.
      */
     QSharedPointer<ConnectivityInterface> createInterfaceData(QSharedPointer<const BusInterface> busInterface,
-        QSharedPointer<ConnectivityComponent> instanceNode) const;
+        QSharedPointer<ConnectivityComponent> instanceNode, QSharedPointer<ConnectivityGraph> graph) const;
+
+    /*!
+     *  Creates an interfaces representation of a local memory map of an address space.
+     *
+     *      @param [in] addressSpace        The selected address space.
+     *      @param [in] interfacedMemory    Memory item created for the address space.
+     *      @param [in] instanceNode        Component instance containing the interface.
+     *      @param [in/out] graph           The graph containing the interface.
+     *
+     *      @return The graph representation for the local memory map.
+     */
+    QSharedPointer<ConnectivityInterface> createLocalInterfaceData(QSharedPointer<AddressSpace> addressSpace,
+        QSharedPointer<MemoryItem> interfacedMemory, QSharedPointer<ConnectivityComponent> instanceNode,
+        QSharedPointer<ConnectivityGraph> graph) const;
 
     /*!
      *  Creates graph elements for component instance internal connections and a possible sub design.
@@ -234,8 +248,8 @@ private:
      *      @param [in/out] graph               The graph to add elements into.
      */
     void createInternalSpaceMapConnection(QSharedPointer<const Component> instancedComponent,
-        QSharedPointer<ConnectivityComponent> instanceNode,
-        QString const& instanceName, QSharedPointer<AddressSpace> addressSpace,
+        QSharedPointer<ConnectivityComponent> instanceNode, QString const& instanceName,
+        QSharedPointer<AddressSpace> addressSpace,
         QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
         QSharedPointer<ConnectivityGraph> graph) const;
 
@@ -266,12 +280,11 @@ private:
      *
      *      @param [in] instancedComponent      The instanced component whose sub design to transform.
      *      @param [in] activeView              The active view of the component instance.
-     *      @param [in] instanceInterfaces      <The graph interfaces for the instances component.
-     *      @param [in] graph                   The graph to add elements into.
+     *      @param [in] instanceInterfaces      The graph interfaces for the instances component.
+     *      @param [in/out] graph               The graph to add elements into.
      */
     void createConnectionsForDesign(QSharedPointer<const Component> instancedComponent, QString const& activeView,
-        QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
-        QSharedPointer<ConnectivityGraph> graph) const;
+        QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces, QSharedPointer<ConnectivityGraph> graph) const;
 
     /*!
      *  Creates graph edges for the given design interconnection.
@@ -295,8 +308,7 @@ private:
      *
      *      @return The found interface vertex.
      */
-    QSharedPointer<ConnectivityInterface> getInterface(QString const& interfaceName,
-        QString const& instanceName,
+    QSharedPointer<ConnectivityInterface> getInterface(QString const& interfaceName, QString const& instanceName,
         QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces) const;
     
     /*!
@@ -329,8 +341,9 @@ private:
      *      @param [in/out] graph               The graph to add elements into.
      */
     void createInternalConnectionsForChannel(QSharedPointer<const Channel> channel, QString const& instanceName, 
-        QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces, 
+        QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces, 
         QSharedPointer<ConnectivityGraph> graph) const;
+
     /*!
      *  Creates the graph edges for the given bridged bus interface.
      *
@@ -341,7 +354,7 @@ private:
      */
     void createInternalConnectionsForBridge(QSharedPointer<const BusInterface> busInterface, 
         QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces, 
-        QSharedPointer<ConnectivityGraph> graph) const;    
+        QSharedPointer<ConnectivityGraph> graph) const;
 
     /*!
      *  Get the design configuration from the selected view.
@@ -377,6 +390,19 @@ private:
      */
     VLNV getHierarchicalDesignVLNV(QSharedPointer<const Component> component,
         QSharedPointer<const View> hierarchicalView) const;
+
+    /*!
+     *  Creates an interconnection representation between bus interfaces.
+     *
+     *      @param [in] connectionName  Name of the interconnection.
+     *      @param [in] startPoint      The starting interface of the connection.
+     *      @param [in] endPoint        The ending interface of the connection.
+     *      @param [in/out] graph       The graph to add elements into.
+     *
+     *      @return The graph representation for the interface.
+     */
+    void createConnectionData(QString const& connectionName, QSharedPointer<ConnectivityInterface> startPoint,
+        QSharedPointer<ConnectivityInterface> endPoint, QSharedPointer<ConnectivityGraph> graph) const;
 
     //-----------------------------------------------------------------------------
     // Data.

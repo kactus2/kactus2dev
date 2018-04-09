@@ -13,6 +13,7 @@
 #define MEMORYCONNETIONITEM_H
 
 class MainMemoryGraphicsItem;
+class ConnectivityInterface;
 
 #include <QGraphicsPathItem>
 #include <QGraphicsTextItem>
@@ -29,15 +30,17 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] startItem                   The start item of the connection (address space).
-     *      @param [in] firstStartValue             Start address in the start item.
-     *      @param [in] firstEndValue               End address in the start item.
-     *      @param [in] endItem                     The end item of the connection (memory map).
-     *      @param [in] containingScene             Graphics scene containing the memory connection item.
-     *      @param [in] yTransfer                   Y transfer of the memory connection.
-     *      @param [in] parent                      Parent item of the connection.
+     *      @param [in] connectionPath      Path of the memory connection.
+     *      @param [in] startItem           The start item of the connection (address space).
+     *      @param [in] firstStartValue     Start address in the start item.
+     *      @param [in] firstEndValue       End address in the start item.
+     *      @param [in] endItem             The end item of the connection (memory map).
+     *      @param [in] containingScene     Graphics scene containing the memory connection item.
+     *      @param [in] yTransfer           Y transfer of the memory connection.
+     *      @param [in] parent              Parent item of the connection.
      */
-    MemoryConnectionItem(MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
+    MemoryConnectionItem(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
+        MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
         MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer = 0,
         QGraphicsItem* parent = 0);
 
@@ -360,6 +363,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! Path of the memory connection.
+    QVector<QSharedPointer<ConnectivityInterface const> > connectionPath_;
 
     //! The label containing the first item start range.
     QGraphicsTextItem* firstItemStartLabel_;

@@ -47,9 +47,9 @@ public:
      *      @param [in] containingInstanceName  Name of the containing component instance.
      *      @param [in] memoryMapItem           The parent memory map item.
      */
-    AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, QVector<QString> identifierChain,
+    AddressBlockGraphicsItem(QSharedPointer<MemoryItem const> blockItem, QVector<QString> identifierChain,
         bool isEmptyBlock, bool filterRegisters, bool filterFields, qreal addressBlockWidth,
-        QSharedPointer<ConnectivityComponent> containingInstance, MemoryMapGraphicsItem* memoryMapItem);
+        QSharedPointer<ConnectivityComponent const> containingInstance, MemoryMapGraphicsItem* memoryMapItem);
 
 	/*!
      *  The destructor.
@@ -121,7 +121,7 @@ private:
      *
      *      @return The created register graphics item.
      */
-    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
+    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
         bool isEmpty);
 
     /*!

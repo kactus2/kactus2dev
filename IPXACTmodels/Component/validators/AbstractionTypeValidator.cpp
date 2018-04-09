@@ -106,15 +106,16 @@ bool AbstractionTypeValidator::hasValidViewReferences(QSharedPointer<Abstraction
         return false;
     }
 
+    if (abstraction && abstraction->getViewReferences()->size()== 1)
+    {
+        QString view = abstraction->getViewReferences()->first();
+        return view.isEmpty() || referencedViewIsValid(view, abstractionList);
+    }
     else
     {
         for (int i = 0; i < abstraction->getViewReferences()->size(); ++i)
         {
             QString view = abstraction->getViewReferences()->at(i);
-            if (view.isEmpty() == abstraction->getViewReferences()->size() == 1)
-            {
-                return true;
-            }
             if (referencedViewIsValid(view, abstractionList) == false)
             {
                 return false;

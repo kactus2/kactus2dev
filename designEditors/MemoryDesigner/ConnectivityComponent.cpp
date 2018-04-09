@@ -16,8 +16,12 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectivityComponent::ConnectivityComponent()
 //-----------------------------------------------------------------------------
-ConnectivityComponent::ConnectivityComponent(QString const& name): name_(name), vlnv_(), uuid_(), activeView_(), 
-    memories_()
+ConnectivityComponent::ConnectivityComponent(QString const& name):
+name_(name),
+vlnv_(),
+uuid_(),
+activeView_(),
+memories_()
 {
 
 }
@@ -28,6 +32,14 @@ ConnectivityComponent::ConnectivityComponent(QString const& name): name_(name), 
 ConnectivityComponent::~ConnectivityComponent()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityComponent::setName()
+//-----------------------------------------------------------------------------
+void ConnectivityComponent::setName(QString const& newName)
+{
+    name_ = newName;
 }
 
 //-----------------------------------------------------------------------------

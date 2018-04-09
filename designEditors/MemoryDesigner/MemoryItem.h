@@ -31,7 +31,9 @@ public:
 	 */
 	MemoryItem(QString const& name, QString const& type);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	~MemoryItem();
 
     /*!
@@ -172,7 +174,7 @@ public:
      *
      *      @return The sub-elements for the memory.
      */
-    QVector<QSharedPointer<MemoryItem> > getChildItems();
+    QVector<QSharedPointer<MemoryItem> > getChildItems() const;
 
 private:
 

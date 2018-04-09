@@ -10,6 +10,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../../designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
     ../../../designEditors/HWDesign/AdHocEnabled.h \
+    ../../../designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.h \
     ../../../designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
     ../../../designEditors/common/Association/Associable.h \
     ../../../designEditors/common/Association/Association.h \
@@ -22,17 +23,23 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
     ../../../common/graphicsItems/ConnectionUndoCommands.h \
+    ../../../designEditors/common/DefaultRouting.h \
     ../../../designEditors/common/DesignDiagramResolver.h \
     ../../MockObjects/DesignWidgetFactoryMock.h \
+    ../../../kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
+    ../../../common/graphicsItems/GraphicsColumnAddCommand.h \
     ../../../common/graphicsItems/GraphicsColumnUndoCommands.h \
     ../../../designEditors/HWDesign/HWAddCommands.h \
+    ../../../designEditors/HWDesign/undoCommands/HWColumnAddCommand.h \
     ../../../designEditors/HWDesign/HWDeleteCommands.h \
     ../../../designEditors/HWDesign/HWMoveCommands.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.h \
     ../../../common/widgets/assistedLineEdit/LineContentAssistWidget.h \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../../designEditors/common/NamelabelWidth.h \
     ../../../editors/ComponentEditor/common/NullParser.h \
     ../../../editors/ComponentEditor/common/ParameterizableTable.h \
@@ -51,6 +58,7 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/AdHocPortItem.h \
     ../../../common/widgets/assistedLineEdit/AssistedLineEdit.h \
     ../../../designEditors/HWDesign/BusInterfaceDialog.h \
+    ../../../designEditors/HWDesign/BusInterfaceEndPoint.h \
     ../../../designEditors/HWDesign/BusInterfaceItem.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
     ../../../designEditors/HWDesign/BusPortItem.h \
@@ -67,8 +75,11 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/graphicsItems/ConnectionEndpoint.h \
     ../../../designEditors/common/DesignDiagram.h \
     ../../../designEditors/common/DesignWidget.h \
+    ../../../common/views/EditableTreeView/EditableTreeSortFilter.h \
+    ../../../common/views/EditableTreeView/EditableTreeView.h \
     ../../../editors/ComponentEditor/common/ExpressionDelegate.h \
     ../../../editors/ComponentEditor/common/ExpressionEditor.h \
+    ../../../kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ../../../common/GenericEditProvider.h \
     ../../../common/graphicsItems/GraphicsColumn.h \
     ../../../common/graphicsItems/GraphicsColumnLayout.h \
@@ -104,7 +115,6 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h \
     ../../../designEditors/SystemDesign/SWComponentItem.h \
     ../../../designEditors/SystemDesign/SWConnectionEndpoint.h \
-    ../../../designEditors/SystemDesign/SWOffPageConnectorItem.h \
     ../../../designEditors/SystemDesign/SWPortItem.h \
     ../../../designEditors/HWDesign/SelectItemTypeDialog.h \
     ../../../designEditors/common/StickyNote/StickyNote.h \
@@ -112,6 +122,7 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/common/StickyNote/StickyNoteRemoveCommand.h \
     ../../../designEditors/SystemDesign/SystemComponentItem.h \
     ../../../common/widgets/tabDocument/TabDocument.h \
+    ../../../kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ../../../designEditors/common/ConfigurationEditor/activeviewmodel.h \
     ../../../kactusGenerators/DocumentGenerator/documentgenerator.h \
     ../../../common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
@@ -120,19 +131,7 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
     ../../../common/delegates/LineEditDelegate/lineeditdelegate.h \
     ../../../common/dialogs/newObjectDialog/newobjectdialog.h \
-    ../../../common/widgets/vlnvEditor/vlnveditor.h \
-    ../../../kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
-    ../../../designEditors/HWDesign/BusInterfaceEndPoint.h \
-    ../../../common/views/EditableTreeView/EditableTreeView.h \
-    ../../../designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.h \
-    ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ../../../kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
-    ../../../designEditors/common/DefaultRouting.h \
-    ../../../designEditors/HWDesign/undoCommands/HWColumnAddCommand.h \
-    ../../../common/views/EditableTreeView/EditableTreeSortFilter.h \
-    ../../../common/graphicsItems/GraphicsColumnAddCommand.h \
-    ../../../kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h
+    ../../../common/widgets/vlnvEditor/vlnveditor.h
 SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../../designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
     ../../../designEditors/HWDesign/AdHocConnectionItem.cpp \
@@ -140,6 +139,7 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ../../../designEditors/HWDesign/AdHocItem.cpp \
     ../../../designEditors/HWDesign/AdHocPortItem.cpp \
+    ../../../designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.cpp \
     ../../../designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \
     ../../../common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ../../../designEditors/common/Association/Associable.cpp \
@@ -148,6 +148,7 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/common/Association/AssociationChangeEndpointCommand.cpp \
     ../../../designEditors/common/Association/AssociationRemoveCommand.cpp \
     ../../../designEditors/HWDesign/BusInterfaceDialog.cpp \
+    ../../../designEditors/HWDesign/BusInterfaceEndPoint.cpp \
     ../../../designEditors/HWDesign/BusInterfaceItem.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.cpp \
     ../../../designEditors/HWDesign/BusPortItem.cpp \
@@ -168,22 +169,28 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
     ../../../common/graphicsItems/ConnectionEndpoint.cpp \
     ../../../common/graphicsItems/ConnectionUndoCommands.cpp \
+    ../../../designEditors/common/DefaultRouting.cpp \
     ../../../designEditors/common/DesignDiagram.cpp \
     ../../../designEditors/common/DesignDiagramResolver.cpp \
     ../../../designEditors/common/DesignWidget.cpp \
     ../../MockObjects/DesignWidgetFactoryMock.cpp \
+    ../../../common/views/EditableTreeView/EditableTreeSortFilter.cpp \
+    ../../../common/views/EditableTreeView/EditableTreeView.cpp \
     ../../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
+    ../../../kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ../../../common/GenericEditProvider.cpp \
     ../../../common/graphicsItems/GraphicsColumn.cpp \
+    ../../../common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ../../../common/graphicsItems/GraphicsColumnLayout.cpp \
     ../../../common/graphicsItems/GraphicsColumnUndoCommands.cpp \
     ../../../common/graphicsItems/GraphicsConnection.cpp \
     ../../../designEditors/HWDesign/HWAddCommands.cpp \
     ../../../designEditors/HWDesign/HWChangeCommands.cpp \
     ../../../designEditors/HWDesign/columnview/HWColumn.cpp \
+    ../../../designEditors/HWDesign/undoCommands/HWColumnAddCommand.cpp \
     ../../../designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp \
     ../../../designEditors/HWDesign/HWComponentItem.cpp \
     ../../../designEditors/HWDesign/HWConnection.cpp \
@@ -200,7 +207,9 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ../../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ../../../common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
+    ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../../designEditors/common/NamelabelWidth.cpp \
     ../../../editors/ComponentEditor/common/NullParser.cpp \
     ../../../designEditors/HWDesign/OffPageConnectorItem.cpp \
@@ -223,7 +232,6 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
     ../../../designEditors/SystemDesign/SWComponentItem.cpp \
     ../../../designEditors/SystemDesign/SWConnectionEndpoint.cpp \
-    ../../../designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
     ../../../designEditors/SystemDesign/SWPortItem.cpp \
     ../../../designEditors/HWDesign/SelectItemTypeDialog.cpp \
     ../../../designEditors/common/StickyNote/StickyNote.cpp \
@@ -237,6 +245,7 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/widgets/tabDocument/TabDocument.cpp \
     ../../../common/widgets/vlnvEditor/VLNVContentMatcher.cpp \
     ../../../common/widgets/vlnvEditor/VLNVDataTree.cpp \
+    ../../../kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
     ../../../designEditors/common/ConfigurationEditor/activeviewmodel.cpp \
     ../../../kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ../../../common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
@@ -246,15 +255,4 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/delegates/LineEditDelegate/lineeditdelegate.cpp \
     ../../../common/dialogs/newObjectDialog/newobjectdialog.cpp \
     ./tst_documentGenerator.cpp \
-    ../../../common/widgets/vlnvEditor/vlnveditor.cpp \
-    ../../../kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ../../../designEditors/HWDesign/BusInterfaceEndPoint.cpp \
-    ../../../common/views/EditableTreeView/EditableTreeView.cpp \
-    ../../../designEditors/HWDesign/undoCommands/AdHocTieOffConnectionDeleteCommand.cpp \
-    ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
-    ../../../kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
-    ../../../designEditors/common/DefaultRouting.cpp \
-    ../../../designEditors/HWDesign/undoCommands/HWColumnAddCommand.cpp \
-    ../../../common/views/EditableTreeView/EditableTreeSortFilter.cpp \
-    ../../../common/graphicsItems/GraphicsColumnAddCommand.cpp
+    ../../../common/widgets/vlnvEditor/vlnveditor.cpp

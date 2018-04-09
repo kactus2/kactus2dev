@@ -18,7 +18,10 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraph::ConnectivityGraph()
 //-----------------------------------------------------------------------------
-ConnectivityGraph::ConnectivityGraph(): vertices_(), edges_(), instances_()
+ConnectivityGraph::ConnectivityGraph():
+vertices_(),
+edges_(),
+instances_()
 {
 
 }
@@ -32,39 +35,9 @@ ConnectivityGraph::~ConnectivityGraph()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectivityGraph::addInterface()
-//-----------------------------------------------------------------------------
-void ConnectivityGraph::addInterface(QSharedPointer<ConnectivityInterface> vertex)
-{
-    vertices_.append(vertex);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConnectivityGraph::addConnection()
-//-----------------------------------------------------------------------------
-void ConnectivityGraph::addConnection(QString const& connectionName, 
-    QSharedPointer<ConnectivityInterface> startPoint, QSharedPointer<ConnectivityInterface> endPoint)
-{
-    if (!startPoint.isNull() && !endPoint.isNull())
-    {
-        QSharedPointer<ConnectivityConnection> connection(new ConnectivityConnection(connectionName, 
-            startPoint, endPoint));
-        edges_.append(connection);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConnectivityGraph::addInstance()
-//-----------------------------------------------------------------------------
-void ConnectivityGraph::addInstance(QSharedPointer<ConnectivityComponent> instanceModel)
-{
-    instances_.append(instanceModel);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ConnectivityGraph::getInterfaces()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<ConnectivityInterface> > ConnectivityGraph::getInterfaces() const
+QVector<QSharedPointer<ConnectivityInterface> >& ConnectivityGraph::getInterfaces() const
 {
     return vertices_;
 }
@@ -72,7 +45,7 @@ QVector<QSharedPointer<ConnectivityInterface> > ConnectivityGraph::getInterfaces
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraph::getInstances()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<ConnectivityComponent> > ConnectivityGraph::getInstances() const
+QVector<QSharedPointer<ConnectivityComponent> >& ConnectivityGraph::getInstances() const
 {
     return instances_;
 }
@@ -80,13 +53,14 @@ QVector<QSharedPointer<ConnectivityComponent> > ConnectivityGraph::getInstances(
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraph::getConnectionsFor()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<ConnectivityConnection> > ConnectivityGraph::getConnectionsFor(
-    QSharedPointer<ConnectivityInterface> startPoint) const
+QVector<QSharedPointer<ConnectivityConnection const> > ConnectivityGraph::getConnectionsFor(
+    QSharedPointer<ConnectivityInterface const> startPoint) const
 {
-    QVector<QSharedPointer<ConnectivityConnection> > connections;
+    QVector<QSharedPointer<ConnectivityConnection const> > connections;
 
-    foreach (QSharedPointer<ConnectivityConnection> edge, edges_)
+    for (int i = 0; i< edges_.size(); ++i)
     {
+        QSharedPointer<ConnectivityConnection const> edge = edges_.at(i);
         if (edge->getFirstInterface() == startPoint || edge->getSecondInterface() == startPoint)
         {
             connections.append(edge);
@@ -99,25 +73,26 @@ QVector<QSharedPointer<ConnectivityConnection> > ConnectivityGraph::getConnectio
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraph::getInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityInterface> ConnectivityGraph::getInterface(QString const& interfaceName,
-    QString const& instanceName) const
+QSharedPointer<ConnectivityInterface const> ConnectivityGraph::getInterface(QString const& interfaceName,
+    QString const& instanceName) 
 {
-    foreach (QSharedPointer<ConnectivityInterface> vertex, vertices_)
+    for (int i = 0; i < vertices_.size(); ++i)
     {
-        if (vertex->getName().compare(interfaceName) == 0 && 
+        QSharedPointer<ConnectivityInterface const> vertex = vertices_[i];
+        if (vertex->getName().compare(interfaceName) == 0 &&
             vertex->getInstance()->getName().compare(instanceName) == 0)            
         {
             return vertex;
         }
     }
 
-    return QSharedPointer<ConnectivityInterface>();
+    return QSharedPointer<ConnectivityInterface const>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraph::getConnections()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<ConnectivityConnection> > ConnectivityGraph::getConnections() const
+QVector<QSharedPointer<ConnectivityConnection> >& ConnectivityGraph::getConnections() const
 {
     return edges_;
 }

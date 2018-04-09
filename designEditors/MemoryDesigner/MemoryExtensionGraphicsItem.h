@@ -33,7 +33,7 @@ public:
      *      @param [in] parentItem          Parent item.
      */
     MemoryExtensionGraphicsItem(qreal positionX, qreal positionY, qreal extensionWidth, qreal extensionHeight,
-        QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parentItem);
+        QSharedPointer<ConnectivityComponent const> containingInstance, QGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.

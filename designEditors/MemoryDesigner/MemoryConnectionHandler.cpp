@@ -92,7 +92,7 @@ void MemoryConnectionHandler::createMemoryConnections(QSharedPointer<Connectivit
 {
     MasterSlavePathSearch pathSearcher;
 
-    QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterSlavePaths =
+    QVector<QVector<QSharedPointer<ConnectivityInterface const> > > masterSlavePaths =
         pathSearcher.findMasterSlavePaths(connectionGraph);
 
     qreal spaceYPlacement = MemoryDesignerConstants::SPACEITEMINTERVAL;
@@ -102,7 +102,7 @@ void MemoryConnectionHandler::createMemoryConnections(QSharedPointer<Connectivit
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems(
         new QVector<MainMemoryGraphicsItem*> ());
 
-    foreach (QVector<QSharedPointer<ConnectivityInterface> > singlePath, masterSlavePaths)
+    foreach (QVector<QSharedPointer<ConnectivityInterface const> > singlePath, masterSlavePaths)
     {
         if (!singlePath.isEmpty())
         {
@@ -130,13 +130,14 @@ void MemoryConnectionHandler::createMemoryConnections(QSharedPointer<Connectivit
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::createConnection()
 //-----------------------------------------------------------------------------
-void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<ConnectivityInterface> > connectionPath,
+void MemoryConnectionHandler::createConnection(
+    QVector<QSharedPointer<ConnectivityInterface const> > const& connectionPath,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
     qreal& spaceYPlacement, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
     MemoryColumn* spaceColumn)
 {
-    QSharedPointer<ConnectivityInterface> startInterface = getStartInterface(connectionPath);
-    QSharedPointer<ConnectivityInterface> endInterface = connectionPath.last();
+    QSharedPointer<ConnectivityInterface const> startInterface = getStartInterface(connectionPath);
+    QSharedPointer<ConnectivityInterface const> endInterface = connectionPath.last();
 
     MainMemoryGraphicsItem* connectionStartItem =
         getMainGraphicsItem(startInterface, MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
@@ -206,17 +207,17 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
             MemoryDesignerConstants::SPACEITEMINTERVAL);
     }
 
-    createMemoryConnectionItem(connectionStartItem, connectionEndItem, remappedAddress, remappedEndAddress,
-        memoryMapBaseAddress, pathVariables.hasRemapRange_, yTransfer, spaceYPlacement);
+    createMemoryConnectionItem(connectionPath, connectionStartItem, connectionEndItem, remappedAddress,
+        remappedEndAddress, memoryMapBaseAddress, pathVariables.hasRemapRange_, yTransfer, spaceYPlacement);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::getStartInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityInterface> MemoryConnectionHandler::getStartInterface(
-    QVector<QSharedPointer<ConnectivityInterface> > connectionPath)
+QSharedPointer<ConnectivityInterface const> MemoryConnectionHandler::getStartInterface(
+    QVector<QSharedPointer<ConnectivityInterface const> > connectionPath)
 {
-    foreach (QSharedPointer<ConnectivityInterface> pathInterface, connectionPath)
+    foreach (QSharedPointer<ConnectivityInterface const> pathInterface, connectionPath)
     {
         if (pathInterface->getMode().compare(QString("Master")) == 0, pathInterface->getConnectedMemory())
         {
@@ -231,12 +232,12 @@ QSharedPointer<ConnectivityInterface> MemoryConnectionHandler::getStartInterface
 // Function: MemoryConnectionHandler::getMainGraphicsItem()
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem* MemoryConnectionHandler::getMainGraphicsItem(
-    QSharedPointer<ConnectivityInterface> connectionInterface, QString columnType) const
+    QSharedPointer<ConnectivityInterface const> connectionInterface, QString columnType) const
 {
     MainMemoryGraphicsItem* graphicsItem = 0;
 
-    QSharedPointer<MemoryItem> memoryItem = connectionInterface->getConnectedMemory();
-    QSharedPointer<ConnectivityComponent> connectionInstance = connectionInterface->getInstance();
+    QSharedPointer<MemoryItem const> memoryItem = connectionInterface->getConnectedMemory();
+    QSharedPointer<ConnectivityComponent const> connectionInstance = connectionInterface->getInstance();
     if (memoryItem && connectionInstance)
     {
         QVector<MemoryColumn*> matchingColumns = columnHandler_->getSpecifiedColumns(columnType);
@@ -257,7 +258,8 @@ MainMemoryGraphicsItem* MemoryConnectionHandler::getMainGraphicsItem(
 // Function: MemoryConnectionHandler::getConnectionEndItem()
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem* MemoryConnectionHandler::getConnectionEndItem(
-    QSharedPointer<ConnectivityInterface> startInterface, QSharedPointer<ConnectivityInterface> endInterface) const
+    QSharedPointer<ConnectivityInterface const> startInterface,
+    QSharedPointer<ConnectivityInterface const> endInterface) const
 {
     MainMemoryGraphicsItem* connectionEndItem(0);
 
@@ -277,8 +279,8 @@ MainMemoryGraphicsItem* MemoryConnectionHandler::getConnectionEndItem(
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::getStartingBaseAddress()
 //-----------------------------------------------------------------------------
-quint64 MemoryConnectionHandler::getStartingBaseAddress(QSharedPointer<ConnectivityInterface> startInterface,
-    QSharedPointer<ConnectivityInterface> endInterface) const
+quint64 MemoryConnectionHandler::getStartingBaseAddress(QSharedPointer<ConnectivityInterface const> startInterface,
+    QSharedPointer<ConnectivityInterface const> endInterface) const
 {
     quint64 baseAddressNumber = 0;
     if (startInterface != endInterface)
@@ -298,10 +300,11 @@ quint64 MemoryConnectionHandler::getStartingBaseAddress(QSharedPointer<Connectiv
 //-----------------------------------------------------------------------------
 MemoryConnectionHandler::ConnectionPathVariables MemoryConnectionHandler::examineConnectionPath(
     quint64 baseAddressNumber, MainMemoryGraphicsItem* connectionStartItem,
-    MainMemoryGraphicsItem* connectionEndItem, QSharedPointer<ConnectivityInterface> startInterface,
-    QSharedPointer<ConnectivityInterface> endInterface,
-    QVector<QSharedPointer<ConnectivityInterface> > connectionPath, MemoryColumn* spaceColumn,
-    QSharedPointer<QVector<MainMemoryGraphicsItem* > > placedSpaceItems, qreal& spaceYPlacement)
+    MainMemoryGraphicsItem* connectionEndItem, QSharedPointer<ConnectivityInterface const> startInterface,
+    QSharedPointer<ConnectivityInterface const> endInterface,
+    QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
+    MemoryColumn* spaceColumn, QSharedPointer<QVector<MainMemoryGraphicsItem* > > placedSpaceItems,
+    qreal& spaceYPlacement)
 {
     MemoryConnectionHandler::ConnectionPathVariables pathVariables;
     pathVariables.hasRemapRange_ = false;
@@ -313,7 +316,7 @@ MemoryConnectionHandler::ConnectionPathVariables MemoryConnectionHandler::examin
     pathVariables.spaceChain_.append(connectionStartItem);
     pathVariables.spaceItemConnectedToMapItem_ = connectionStartItem;
 
-    foreach(QSharedPointer<ConnectivityInterface> pathInterface, connectionPath)
+    foreach(QSharedPointer<ConnectivityInterface const> pathInterface, connectionPath)
     {
         if (pathInterface != startInterface && pathInterface != endInterface)
         {
@@ -344,9 +347,9 @@ MemoryConnectionHandler::ConnectionPathVariables MemoryConnectionHandler::examin
                         }
                         else
                         {
-                            createSpaceConnection(pathVariables.spaceItemConnectedToMapItem_,
-                                pathVariables.spaceChainBaseAddress_, connectionMiddleItem, pathInterface,
-                                spaceColumn, placedSpaceItems, pathVariables.spaceChain_, spaceYPlacement);
+                            createSpaceConnection(connectionPath, pathVariables.spaceItemConnectedToMapItem_,
+                                pathVariables.spaceChainBaseAddress_, connectionMiddleItem, spaceColumn,
+                                placedSpaceItems, pathVariables.spaceChain_, spaceYPlacement);
 
                             pathVariables.spaceChain_.append(connectionMiddleItem);
                             pathVariables.spaceItemConnectedToMapItem_ = connectionMiddleItem;
@@ -446,13 +449,15 @@ void MemoryConnectionHandler::placeMemoryMapItem(quint64 connectionBaseAddress, 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::createMemoryConnectionItem()
 //-----------------------------------------------------------------------------
-void MemoryConnectionHandler::createMemoryConnectionItem(MainMemoryGraphicsItem* connectionStartItem,
-    MainMemoryGraphicsItem* connectionEndItem, quint64 remappedAddress, quint64 remappedEndAddress,
-    quint64 memoryMapBaseAddress, bool hasRemapRange, qreal yTransfer, qreal& spaceYPlacement)
+void MemoryConnectionHandler::createMemoryConnectionItem(
+    QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
+    MainMemoryGraphicsItem* connectionStartItem, MainMemoryGraphicsItem* connectionEndItem,
+    quint64 remappedAddress, quint64 remappedEndAddress, quint64 memoryMapBaseAddress, bool hasRemapRange,
+    qreal yTransfer, qreal& spaceYPlacement)
 {
     changeConnectionEndItemRanges(connectionEndItem, remappedAddress, memoryMapBaseAddress, hasRemapRange);
 
-    MemoryConnectionItem* newConnectionItem = new MemoryConnectionItem(connectionStartItem,
+    MemoryConnectionItem* newConnectionItem = new MemoryConnectionItem(connectionPath, connectionStartItem,
         remappedAddress, remappedEndAddress, connectionEndItem, connectionStartItem->scene(), yTransfer);
     connectionsToMemoryMaps_.append(newConnectionItem);
 
@@ -472,11 +477,11 @@ void MemoryConnectionHandler::createMemoryConnectionItem(MainMemoryGraphicsItem*
 // Function: MemoryConnectionHandler::getLocalMemoryMapItem()
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem* MemoryConnectionHandler::getLocalMemoryMapItem(
-    QSharedPointer<ConnectivityInterface> spaceInterface) const
+    QSharedPointer<ConnectivityInterface const> spaceInterface) const
 {
     MainMemoryGraphicsItem* localMapItem = 0;
 
-    QSharedPointer<MemoryItem> memoryItemForLocalMap = getMemoryItemForLocalMap(spaceInterface);
+    QSharedPointer<MemoryItem const> memoryItemForLocalMap = getMemoryItemForLocalMap(spaceInterface);
     if (memoryItemForLocalMap)
     {
         QVector<MemoryColumn*> matchingColumns =
@@ -497,14 +502,14 @@ MainMemoryGraphicsItem* MemoryConnectionHandler::getLocalMemoryMapItem(
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::getMemoryItemForLocalMap()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryItem> MemoryConnectionHandler::getMemoryItemForLocalMap(
-    QSharedPointer<ConnectivityInterface> spaceInterface) const
+QSharedPointer<MemoryItem const> MemoryConnectionHandler::getMemoryItemForLocalMap(
+    QSharedPointer<ConnectivityInterface const> spaceInterface) const
 {
-    QSharedPointer<MemoryItem> spaceMemoryItem = spaceInterface->getConnectedMemory();
-    QSharedPointer<ConnectivityComponent> connectionInstance = spaceInterface->getInstance();
+    QSharedPointer<MemoryItem const> spaceMemoryItem = spaceInterface->getConnectedMemory();
+    QSharedPointer<ConnectivityComponent const> connectionInstance = spaceInterface->getInstance();
     if (spaceMemoryItem && connectionInstance)
     {
-        foreach (QSharedPointer<MemoryItem> subSpaceItem, spaceMemoryItem->getChildItems())
+        foreach (QSharedPointer<MemoryItem const> subSpaceItem, spaceMemoryItem->getChildItems())
         {
             if (subSpaceItem->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
             {
@@ -519,9 +524,10 @@ QSharedPointer<MemoryItem> MemoryConnectionHandler::getMemoryItemForLocalMap(
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::createSpaceConnection()
 //-----------------------------------------------------------------------------
-void MemoryConnectionHandler::createSpaceConnection(MainMemoryGraphicsItem* connectionStartItem,
-    quint64 connectionBaseAddress, MainMemoryGraphicsItem* connectionMiddleItem,
-    QSharedPointer<ConnectivityInterface> newSpaceInterface, MemoryColumn* spaceColumn,
+void MemoryConnectionHandler::createSpaceConnection(
+    QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
+    MainMemoryGraphicsItem* connectionStartItem, quint64 connectionBaseAddress,
+    MainMemoryGraphicsItem* connectionMiddleItem, MemoryColumn* spaceColumn,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
     QVector<MainMemoryGraphicsItem*> spaceItemChain, qreal& spaceYPlacement)
 {
@@ -573,7 +579,7 @@ void MemoryConnectionHandler::createSpaceConnection(MainMemoryGraphicsItem* conn
 
         if (!placedSpaceItems->contains(connectionMiddleItem) || !placedSpaceItems->contains(connectionStartItem))
         {
-            new MemoryConnectionItem(connectionStartItem, middleItemRangeStart, middleItemRangeEnd,
+            new MemoryConnectionItem(connectionPath, connectionStartItem, middleItemRangeStart, middleItemRangeEnd,
                 connectionMiddleItem, spaceColumn->scene(), yTransfer);
         }
 

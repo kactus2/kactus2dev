@@ -32,8 +32,8 @@ namespace AddressSpaceItemConstants
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::AddressSpaceGraphicsItem()
 //-----------------------------------------------------------------------------
-AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
-    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem const> memoryItem,
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> containingInstance,
     bool filterSegments, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::ADDRESSSEGMENT_TYPE,
     filterSegments, identifierChain, parent),
@@ -99,7 +99,7 @@ void AddressSpaceGraphicsItem::setLabelPositions()
 // Function: AddressSpaceGraphicsItem::createNewSubItem()
 //-----------------------------------------------------------------------------
 MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createNewSubItem(
-    QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
+    QSharedPointer<MemoryItem const> subMemoryItem, bool isEmpty)
 {
     AddressSegmentGraphicsItem* segmentItem = new AddressSegmentGraphicsItem(
         subMemoryItem, isEmpty, getIdentifierChain(), getContainingInstance(), this);
@@ -119,7 +119,7 @@ MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(qu
     QString emptySegmentOffset = QString::number(beginAddress);
     QString emptySegmentRange = QString::number(rangeEnd - beginAddress + 1);
 
-    QSharedPointer<MemoryItem> emptySegment (new MemoryItem("Empty", MemoryDesignerConstants::ADDRESSSEGMENT_TYPE));
+    QSharedPointer<MemoryItem> emptySegment(new MemoryItem("Empty", MemoryDesignerConstants::ADDRESSSEGMENT_TYPE));
     emptySegment->setOffset(emptySegmentOffset);
     emptySegment->setRange(emptySegmentRange);
 

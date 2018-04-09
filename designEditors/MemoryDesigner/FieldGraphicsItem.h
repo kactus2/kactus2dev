@@ -51,9 +51,9 @@ public:
      *      @param [in] isOutsideRegister   Holds whether the field is out of bounds of the register or not.
      *      @param [in] parentItem          The parent graphics item.
      */
-    FieldGraphicsItem(QSharedPointer<MemoryItem> fieldItem, quint64 fieldOffset, quint64 fieldLastBit,
+    FieldGraphicsItem(QSharedPointer<MemoryItem const> fieldItem, quint64 fieldOffset, quint64 fieldLastBit,
         qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QVector<QString> identifierChain,
-        QFont labelFont, QSharedPointer<ConnectivityComponent> containingInstance, bool isOutsideRegister,
+        QFont labelFont, QSharedPointer<ConnectivityComponent const> containingInstance, bool isOutsideRegister,
         MemoryDesignerGraphicsItem* parentItem);
 
 	/*!

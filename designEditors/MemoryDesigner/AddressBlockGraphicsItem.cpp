@@ -25,9 +25,9 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphicsItem::AddressBlockGraphicsItem()
 //-----------------------------------------------------------------------------
-AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem,
+AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem const> blockItem,
     QVector<QString> identifierChain, bool isEmptyBlock, bool filterRegisters, bool filterFields,
-    qreal addressBlockWidth, QSharedPointer<ConnectivityComponent> containingInstance,
+    qreal addressBlockWidth, QSharedPointer<ConnectivityComponent const> containingInstance,
     MemoryMapGraphicsItem* memoryMapItem):
 MemoryDesignerChildGraphicsItem(blockItem, QStringLiteral("Address Block"), blockItem->getAddress().toULongLong(),
     blockItem->getRange().toULongLong(), addressBlockWidth, identifierChain, containingInstance, memoryMapItem),
@@ -87,7 +87,7 @@ void AddressBlockGraphicsItem::setLabelPositions()
 // Function: AddressBlockGraphicsItem::createNewSubItem()
 //-----------------------------------------------------------------------------
 MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
-    QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
+    QSharedPointer<MemoryItem const> subMemoryItem, bool isEmpty)
 {
     int registerWidth = getRegisterWidth();
 
