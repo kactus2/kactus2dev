@@ -33,7 +33,7 @@
 namespace
 {
     //!  Regular expression for VHDL entity.
-    const QRegularExpression ENTITY_EXP("ENTITY\\s+(\\w+)\\s+IS\\s+.*END\\s+(?:ENTITY\\s+)?(\\1)?\\s*[;]",
+    const QRegularExpression ENTITY_EXP("ENTITY\\s+(\\w+)\\s+IS\\s+.*END(?:\\s+ENTITY)?(?:\\s+\\1)?\\s*[;]",
         QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
 }
 
