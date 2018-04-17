@@ -96,6 +96,43 @@ private:
     bool canConnectInterfaces(QSharedPointer<ConnectivityInterface const> startVertex,
         QSharedPointer<ConnectivityInterface const> endVertex) const;
 
+    /*!
+     *  Remove paths that are contained within other paths.
+     */
+    void removeDuplicatePaths();
+
+    /*!
+     *  Check if the selected path should be kept in the master paths.
+     *
+     *      @param [in] currentPath     The selected path.
+     *      @param [in] currentIndex    Index of the current path.
+     *
+     *      @return True, if the path is a master path, otherwise false.
+     */
+    bool pathIsFullPath(QVector<QSharedPointer<ConnectivityInterface const> > const& currentPath,
+        int currentIndex);
+
+    /*!
+     *  Check if a path contains another path.
+     *
+     *      @param [in] pathOne     The first selected path.
+     *      @param [in] pathTwo     The second selected path.
+     *      @param [in] areaSize    Size of the smaller path.
+     *
+     *      @return True, if another of the selected paths contains the other, false otherwise.
+     */
+    bool pathContainsAnotherPath(QVector<QSharedPointer<ConnectivityInterface const> > const& pathOne,
+        QVector<QSharedPointer<ConnectivityInterface const> > const& pathTwo, int areaSize) const;
+
+    /*!
+     *  Check if the path ends in a memory map.
+     *
+     *      @param [in] path    The selected path.
+     *
+     *      @return True, if the selected path ends in a memory map, false otherwise.
+     */
+    bool pathEndsInMemoryMap(QVector<QSharedPointer<ConnectivityInterface const> > const& path) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

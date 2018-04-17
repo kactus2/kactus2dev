@@ -1173,6 +1173,7 @@ QSharedPointer<InterfaceGraphicsData> HWDesignDiagram::findOrCreateInterfaceExte
     }
 
     QSharedPointer<InterfaceGraphicsData> dataGroup (new InterfaceGraphicsData(busInterfaceName));
+    dataGroup->setDirection(QVector2D(1, 0));
     design->getVendorExtensions()->append(dataGroup);
 
     return dataGroup;

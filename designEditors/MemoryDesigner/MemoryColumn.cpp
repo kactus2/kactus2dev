@@ -170,7 +170,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, qreal& spaceY
     foreach (QGraphicsItem* graphicsItem, getGraphicsItemInOrder())
     {
         MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
-        if (memoryItem && memoryItem->isVisible())
+        if (memoryItem)
         {
             MainMemoryGraphicsItem* originalItem = memoryItem;
 
@@ -316,7 +316,7 @@ void MemoryColumn::moveUnconnectedMemoryItems(QSharedPointer<QVector<MainMemoryG
     foreach (QGraphicsItem* graphicsItem, getItems())
     {
         MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
-        if (memoryItem && memoryItem->isVisible() && !placedItems->contains(memoryItem))
+        if (memoryItem && memoryItem->getMemoryConnections().isEmpty())
         {
             setGraphicsItemPosition(memoryItem, currentPosition);
 

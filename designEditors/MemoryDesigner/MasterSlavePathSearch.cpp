@@ -14,6 +14,7 @@
 #include <designEditors/MemoryDesigner/ConnectivityConnection.h>
 #include <designEditors/MemoryDesigner/ConnectivityGraph.h>
 #include <designEditors/MemoryDesigner/ConnectivityInterface.h>
+#include <designEditors/MemoryDesigner/MemoryItem.h>
 
 //-----------------------------------------------------------------------------
 // Function: MasterSlavePathSearch::MasterSlavePathSearch()
@@ -45,6 +46,8 @@ QVector<QVector<QSharedPointer<ConnectivityInterface const> > > MasterSlavePathS
             QVector<QSharedPointer<ConnectivityInterface const> >(), graph);
     }
 
+    removeDuplicatePaths();
+
     for (int i = 0; i < graph->getConnections().size(); ++i)
     {
         ConnectivityConnection const* edge = graph->getConnections().at(i).data();
@@ -73,7 +76,7 @@ QVector<QSharedPointer<ConnectivityInterface const> > MasterSlavePathSearch::fin
     for (int i = 0; i < graphInterfaces.size(); ++i)
     {
         QSharedPointer<ConnectivityInterface const> vertex = graphInterfaces[i];
-        if (vertex->getMode().compare(QStringLiteral("master")) == 0 && !vertex->isHierarchical() &&
+        if (vertex->getMode().compare(QStringLiteral("master")) == 0 && vertex->getConnectedMemory() &&
             !vertex->isBridged())
         {
             masterInterfaces.append(vertex);
@@ -163,6 +166,8 @@ bool MasterSlavePathSearch::canConnectInterfaces(QSharedPointer<ConnectivityInte
     bool startIsSlave = startMode.compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0;
     bool startIsMirroredMaster = startMode.compare(QLatin1String("mirroredMaster"), Qt::CaseInsensitive) == 0;
     bool startIsMirroredSlave = startMode.compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0;
+    bool startIsHierarhcical = startVertex->isHierarchical();
+    bool startIsBridged = startVertex->isBridged();
 
     QString endMode = endVertex->getMode();
     QSharedPointer<ConnectivityComponent const> endInstance = endVertex->getInstance();
@@ -170,12 +175,112 @@ bool MasterSlavePathSearch::canConnectInterfaces(QSharedPointer<ConnectivityInte
     bool endIsSlave = endMode.compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0;
     bool endIsMirroredMaster = endMode.compare(QLatin1String("mirroredMaster"), Qt::CaseInsensitive) == 0;
     bool endIsMirroredSlave = endMode.compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0;
+    bool endIsBridged = endVertex->isBridged();
+    bool endIsHierarchical = endVertex->isHierarchical();
 
-    return (startVertex->getMode() == endVertex->getMode() &&
-        startVertex->isHierarchical() || endVertex->isHierarchical()) ||
-        (startIsMaster && (endIsSlave || endIsMirroredMaster)) ||
+    return (startVertex->getMode() == endVertex->getMode() && (startIsHierarhcical || endIsHierarchical)) ||
+        (startIsMaster && ((endIsSlave && startInstance != endInstance) || endIsMirroredMaster)) ||
         (startIsSlave && (endIsMirroredSlave ||
-            (endIsMaster && startVertex->isBridged() && endVertex->isBridged() && startInstance == endInstance))) ||
+            (endIsMaster && startIsBridged && endIsBridged && startInstance == endInstance))) ||
         (startIsMirroredMaster && endIsMirroredSlave && startInstance == endInstance) ||
         (startIsMirroredSlave && (endIsSlave || (endIsMirroredMaster && startInstance == endInstance)));
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::removeDuplicatePaths()
+//-----------------------------------------------------------------------------
+void MasterSlavePathSearch::removeDuplicatePaths()
+{
+    QVector<QVector<QSharedPointer<ConnectivityInterface const> > > highPaths;
+
+    for (int currentIndex = 0; currentIndex < masterPaths_.size(); ++currentIndex)
+    {
+        QVector<QSharedPointer<ConnectivityInterface const> > currentPath = masterPaths_.at(currentIndex);
+        if (currentPath.size() > 1 && pathEndsInMemoryMap(currentPath) &&
+            pathIsFullPath(currentPath, currentIndex))
+        {
+            highPaths.append(currentPath);
+        }
+    }
+
+    masterPaths_.clear();
+    masterPaths_ = highPaths;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::pathIsFullPath()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::pathIsFullPath(
+    QVector<QSharedPointer<ConnectivityInterface const> > const& currentPath, int currentIndex)
+{
+    for (int comparisonIndex = currentIndex + 1; comparisonIndex < masterPaths_.size(); ++comparisonIndex)
+    {
+        QVector<QSharedPointer<ConnectivityInterface const> > comparisonPath =
+            masterPaths_.at(comparisonIndex);
+
+        QList<QSharedPointer<ConnectivityInterface const> > currentList = currentPath.toList();
+        QList<QSharedPointer<ConnectivityInterface const> > comparisonList = comparisonPath.toList();
+
+        if (currentPath.last() == comparisonPath.last())
+        {
+            int pathLength = currentPath.size();
+            int comparisonPathLength = comparisonPath.size();
+
+            int examinationArea = pathLength;
+            if (comparisonPathLength < pathLength)
+            {
+                examinationArea = comparisonPathLength;
+            }
+
+            if (pathContainsAnotherPath(currentPath, comparisonPath, examinationArea))
+            {
+                if (examinationArea == comparisonPathLength)
+                {
+                    masterPaths_.remove(masterPaths_.indexOf(comparisonPath));
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::pathContainsAnotherPath()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::pathContainsAnotherPath(
+    QVector<QSharedPointer<ConnectivityInterface const> > const& pathOne,
+    QVector<QSharedPointer<ConnectivityInterface const> > const& pathTwo, int areaSize) const
+{
+    for (int areaIndex = 0; areaIndex < areaSize; areaIndex++)
+    {
+        int pathOneIndex = pathOne.size() - 1 - areaIndex;
+        int pathTwoIndex = pathTwo.size() - 1 - areaIndex;
+        if (pathOne.at(pathOneIndex) != pathTwo.at(pathTwoIndex))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::pathEndsInMemoryMap()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::pathEndsInMemoryMap(QVector<QSharedPointer<ConnectivityInterface const> > const& path)
+    const
+{
+    QSharedPointer<ConnectivityInterface const> lastInterface = path.last();
+    if (lastInterface && lastInterface->getConnectedMemory() &&
+        lastInterface->getConnectedMemory()->getType().compare("memoryMap") == 0)
+    {
+        return true;
+    }
+
+    return false;
 }
