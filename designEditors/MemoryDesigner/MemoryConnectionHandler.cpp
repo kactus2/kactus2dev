@@ -543,16 +543,16 @@ void MemoryConnectionHandler::createSpaceConnection(
         }
 
         bool recalculateYPosition = false;
-//         if (!placedSpaceItems->contains(connectionStartItem))
         if (!placedSpaceItems->contains(connectionMiddleItem))
         {
-            QList<QSharedPointer<ConnectivityInterface const> > pathInList = connectionPath.toList();
-
             quint64 middleItemY = connectionMiddleItem->pos().y();
 
             changeMasterAddressSpaceColumn(connectionStartItem, middleItemY, spaceColumn, spaceItemChain);
 
-            placedSpaceItems->append(connectionStartItem);
+            if (!placedSpaceItems->contains(connectionStartItem))
+            {
+                placedSpaceItems->append(connectionStartItem);
+            }
             recalculateYPosition = true;
         }
 
