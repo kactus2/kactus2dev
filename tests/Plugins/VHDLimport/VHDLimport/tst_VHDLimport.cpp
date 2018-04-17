@@ -47,6 +47,9 @@ private slots:
 
     void nothingParsedFromMalformedEntity_data();
 
+    void testEntityIsFound();
+    void testEntityIsFound_data();
+    
     void testPortIsHighlighted();
     void testPortIsHighlighted_data();
 
@@ -227,6 +230,47 @@ void tst_VHDLimport::nothingParsedFromMalformedEntity_data()
         "   clk: in std_logic\n"
         ");\n"
         "end secondEntity;\n";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testEntityIsFound()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testEntityIsFound()
+{
+    QFETCH(QString, fileContent);
+
+    runParser(fileContent);
+
+    QCOMPARE(importComponent_->getComponentInstantiations()->size(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testEntityIsFound_data()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testEntityIsFound_data()
+{
+    QTest::addColumn<QString>("fileContent");
+
+    QTest::newRow("empty entity") << "entity emtpyEntity is\n"
+        "end emtpyEntity;\n";
+
+    QTest::newRow("No name in end declaration") << "entity testEntity is\n"
+        "port (\n"
+        "   clk: in std_logic\n"
+        ");\n"
+        "end entity;\n";
+
+    QTest::newRow("No keyword entity in end declaration") << "entity testEntity is\n"
+        "port (\n"
+        "   clk: in std_logic\n"
+        ");\n"
+        "end testEntity;\n";
+
+    QTest::newRow("No name or keyword entity in end declaration") << "entity testEntity is\n"
+        "port (\n"
+        "   clk: in std_logic\n"
+        ");\n"
+        "end;\n";
 }
 
 //-----------------------------------------------------------------------------

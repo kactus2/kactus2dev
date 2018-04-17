@@ -48,6 +48,8 @@ private slots:
 
 private:
 
+    QDomDocument document_;
+
     QSharedPointer<VendorExtension> createTestVendorExtension();
 
 };
@@ -55,7 +57,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_CatalogWriter::tst_Catalog()
 //-----------------------------------------------------------------------------
-tst_CatalogWriter::tst_CatalogWriter()
+tst_CatalogWriter::tst_CatalogWriter(): document_()
 {
 }
 
@@ -202,7 +204,7 @@ void tst_CatalogWriter::testOtherCatalogsAreWritten()
                     "<ipxact:name>./complete.xml</ipxact:name>"
                     "<ipxact:description>Test file description</ipxact:description>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                        "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:ipxactFile>"
             "</ipxact:catalogs>"
@@ -262,7 +264,7 @@ void tst_CatalogWriter::testBusDefinitionsAreWritten()
                     "<ipxact:name>./complete.xml</ipxact:name>"
                     "<ipxact:description>Test file description</ipxact:description>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                        "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:ipxactFile>"
             "</ipxact:busDefinitions>"
@@ -322,7 +324,7 @@ void tst_CatalogWriter::testAbstractionDefinitionsAreWritten()
                     "<ipxact:name>./complete.xml</ipxact:name>"
                     "<ipxact:description>Test file description</ipxact:description>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                        "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:ipxactFile>"
             "</ipxact:abstractionDefinitions>"
@@ -382,7 +384,7 @@ void tst_CatalogWriter::testComponentsAreWritten()
                     "<ipxact:name>./top.xml</ipxact:name>"
                     "<ipxact:description>This is the top level component</ipxact:description>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                        "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:ipxactFile>"
             "</ipxact:components>"
@@ -442,7 +444,7 @@ void tst_CatalogWriter::testAbstractorsAreWritten()
                     "<ipxact:name>./complete.xml</ipxact:name>"
                     "<ipxact:description>Test file description</ipxact:description>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                        "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:ipxactFile>"
             "</ipxact:abstractors>"
@@ -502,7 +504,7 @@ void tst_CatalogWriter::testDesignsAreWritten()
                     "<ipxact:name>./complete.xml</ipxact:name>"
                     "<ipxact:description>Test file description</ipxact:description>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                        "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:ipxactFile>"
             "</ipxact:designs>"
@@ -562,7 +564,7 @@ void tst_CatalogWriter::testDesignConfigurationsAreWritten()
                     "<ipxact:name>./complete.xml</ipxact:name>"
                      "<ipxact:description>Test file description</ipxact:description>"
                      "<ipxact:vendorExtensions>"
-                            "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                            "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:ipxactFile>"
             "</ipxact:designConfigurations>"
@@ -622,7 +624,7 @@ void tst_CatalogWriter::testGeneratorChainsAreWritten()
                     "<ipxact:name>./complete.xml</ipxact:name>"
                     "<ipxact:description>Test file description</ipxact:description>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                        "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:ipxactFile>"
             "</ipxact:generatorChains>"
@@ -659,7 +661,7 @@ void tst_CatalogWriter::testVendorExtensions()
             "<ipxact:version>1.0</ipxact:version>"
             "<ipxact:vendorExtensions>"
                 "<kactus2:version>3.0.0</kactus2:version>"
-                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
             "</ipxact:vendorExtensions>"
         "</ipxact:catalog>\n"));
 }
@@ -801,11 +803,13 @@ void tst_CatalogWriter::testWriteAllElements()
 //-----------------------------------------------------------------------------
 QSharedPointer<VendorExtension> tst_CatalogWriter::createTestVendorExtension()
 {
-    QDomDocument document;
-    QDomElement extensionNode = document.createElement("testExtension");
-    extensionNode.setAttribute("vendorAttribute", "extension");
-    extensionNode.appendChild(document.createTextNode("testValue"));
+    QDomElement extensionNode = document_.createElement("test:testExtension");
+   
+    extensionNode.setAttribute("test:attribute", "extension");
 
+    QDomText valueNode = document_.createTextNode("testValue");
+    extensionNode.appendChild(valueNode);
+ 
     QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
     return testExtension;
 }
