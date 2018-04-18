@@ -41,7 +41,7 @@ public:
      */
     MemoryConnectionItem(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
         MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
-        MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer = 0,
+        MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, qreal yTransfer = 0,
         QGraphicsItem* parent = 0);
 
 	/*!
@@ -233,7 +233,8 @@ private:
      *      @param [in] lowStartPoint   The low start point of the connection.
      *      @param [in] lowEndPoint     The low end point of the connection.
      */
-    void avoidCollisionsOnPath(QPointF highStartPoint, QPointF highEndPoint, QPointF lowStartPoint, QPointF lowEndPoint);
+    void avoidCollisionsOnPath(QPointF const& highStartPoint, QPointF const& highEndPoint,
+        QPointF const& lowStartPoint, QPointF const& lowEndPoint);
 
     /*!
      *  Create a collision path according to the collision points.
@@ -279,8 +280,8 @@ private:
      *
      *      @return The created painter path.
      */
-    QPainterPath createConnectionPath(QPointF highStartPoint, QPointF highEndPoint, QPointF lowStartPoint,
-        QPointF lowEndPoint, const int LINEWIDTH);
+    QPainterPath createConnectionPath(QPointF const& highStartPoint, QPointF const& highEndPoint,
+        QPointF const& lowStartPoint, QPointF const& lowEndPoint, int const& LINEWIDTH);
 
     /*!
      *  Move the compressed connected item without moving connected memory connections.
@@ -392,7 +393,7 @@ private:
     quint64 connectionLastAddress_;
 
     //! Y transfer of the connection.
-    int yTransfer_;
+    qreal yTransfer_;
 
     //! Width of the memory connection item.
     qreal connectionWidth_;

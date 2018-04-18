@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------------
 MemoryConnectionItem::MemoryConnectionItem(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
     MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
-    MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer, QGraphicsItem* parent):
+    MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, qreal yTransfer, QGraphicsItem* parent):
 QGraphicsPathItem(parent),
 connectionPath_(connectionPath),
 firstItemStartLabel_(new QGraphicsTextItem(this)),
@@ -97,8 +97,8 @@ void MemoryConnectionItem::createPath()
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::createConnectionPath()
 //-----------------------------------------------------------------------------
-QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, QPointF highEndPoint,
-    QPointF lowStartPoint, QPointF lowEndPoint, const int LINEWIDTH)
+QPainterPath MemoryConnectionItem::createConnectionPath(QPointF const& highStartPoint, QPointF const& highEndPoint,
+    QPointF const& lowStartPoint, QPointF const& lowEndPoint, int const& LINEWIDTH)
 {
     QPainterPath path;
     path.moveTo(highStartPoint);
@@ -476,8 +476,8 @@ void MemoryConnectionItem::setCondensedHeight(qreal newHeight)
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::avoidCollisionsOnPath()
 //-----------------------------------------------------------------------------
-void MemoryConnectionItem::avoidCollisionsOnPath(QPointF highStartPoint, QPointF highEndPoint,
-    QPointF lowStartPoint, QPointF lowEndPoint)
+void MemoryConnectionItem::avoidCollisionsOnPath(QPointF const& highStartPoint, QPointF const& highEndPoint,
+    QPointF const& lowStartPoint, QPointF const& lowEndPoint)
 {
     QList<QGraphicsItem*> collisions = collidingItems(Qt::IntersectsItemBoundingRect);
     if (!collisions.isEmpty())
