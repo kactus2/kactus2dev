@@ -1,18 +1,20 @@
-
                                 README : Kactus2
            Copyright (c) 2012-2018 Tampere University of Technology
                             http://funbase.cs.tut.fi
 
 Summary
 ----------------------------------------------------
+![Kactus2 logo](common/graphics/appicon.png)
 
 Kactus2 is a toolset for designing embedded products, especially FPGA-based
 MP-SoCs. The aim is easier IP reusabilility and integration for both hardware and
 software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 
-Windows installer and tar-package for Linux are available at https://sourceforge.net/projects/kactus2/
+Windows installer and tar-package for Linux are available in 
+[SourceForge](https://sourceforge.net/projects/kactus2/)
 
-Guidelines for issue reporting and contributing are given in CONTRIBUTING.md. Other support is provided by email: kactus2@cs.tut.fi
+Guidelines for issue reporting and contributing are given in [CONTRIBUTING.md](CONTRIBUTING.md).
+Other support is provided by email: kactus2@cs.tut.fi
 
 What you can do with Kactus2
 ----------------------------------------------------
@@ -41,9 +43,9 @@ What you cannot do with Kactus2
 Examples and tutorials
 ----------------------------------------------------
 
-Example IPs are available in GitHub at https://github.com/kactus2/ipxactexamplelib
+Example IPs are available in GitHub [here](https://github.com/kactus2/ipxactexamplelib).
 
-Video tutorials are available in Youtube at https://www.youtube.com/user/Kactus2Tutorial
+Video tutorials are available in [Youtube](https://www.youtube.com/user/Kactus2Tutorial).
 
 Windows install
 ----------------------------------------------------
@@ -52,7 +54,6 @@ An installer (link above) will guide you through the installation on Windows pla
 
 If you want to build Kactus2 on Windows, see separate instructions in our project 
 management site: https://kactus2.cs.tut.fi
-
 
 Linux build and run
 ----------------------------------------------------
@@ -85,7 +86,7 @@ Example:
       
     QTBIN_PATH="~/Qt/5.7/gcc_64/bin/"
   
-  Please do note the slash at the end of the path. 
+Please do note the slash at the end of the path. 
 
 #### 2. Build the sources
 
@@ -104,7 +105,8 @@ Select installation for either all users (option a) or current user only (option
 a) Installation for all users (requires admin privileges).
 
 Open file .qmake.conf and check that paths are compatible with your Linux distribution.
-The defaults work with Ubuntu 64-bit, but for instance, CentOS 7 64-bit requires changing lib_path from /usr/lib to /usr/lib64.
+The defaults work with Ubuntu 64-bit, but for instance, CentOS 7 64-bit requires changing
+lib_path from /usr/lib to /usr/lib64.
     
 Now run following commands:
 ```
@@ -128,9 +130,10 @@ make
 make install
 ```
 
-Note: If you do ./configure with wrong Qt binaries, you will have to delete the generated makefiles before configuring again. The easiest way to do this, is to run command `make distclean`.
+Note: If you do ./configure with wrong Qt binaries, you will have to delete the generated 
+makefiles before configuring again. The easiest way to do this, is to run command `make distclean`.
 
-#### 3. Run Kactus2
+#### 3a. Run Kactus2 GUI
 
 There are three ways to run Kactus2 depending on your system and installation setup.
 
@@ -146,11 +149,30 @@ c) In some systems, a link to the executable is created if Kactus2 was installed
 
     Kactus2
 
+#### 3b. Run Kactus2 command-line (experimental)
+
+Some tasks may be run in the command-line without the GUI.
+Kactus2 supports the following command-line options:
+* `-h, --help`: Show the application usage help and exit.
+* `-v, --version`: Show the application version and exit.
+* `-r, --run <command>`: Run a generator plugin witht the given command. 
+Currently only Verilog generator supports this feature and can be invoked with command
+`generate_verilog`. Additional options are required as detailed below.
+
+For example, to generate Verilog, run:
+
+    Kactus2 -r generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
+    
+This will generate structural Verilog for the `-c` component `tut.fi:cpu.logic:alu:1.0` and 
+its sub-component hierarchy defined in `-w` view `structural_verilog` into `-o` directory `./rtl_out`.
+
+Please note that the command-line interface is an experimental feature and very likely 
+subject to changes in the near future. 
+
 Community Guidelines & Contributions
 ----------------------------------------------------
 
-See CONTRIBUTING.md for details.
-
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 Contributors
 ----------------------------------------------------
@@ -160,6 +182,8 @@ Mikko Teuho, Juho Järvinen, Esko Pekkarinen, Janne Virtanen
 
 Kactus2 is linked with Qt 5.2.0, copyright Digia Plc. (LGPL).
 
+Kactus2 uses [Icons8](https://icons8.com/) provided by Icons8 LLC
+
 Licencing
 ----------------------------------------------------
 
@@ -167,10 +191,3 @@ This software is licensed under the GPL2 General Public License.
 
 Kactus2 is also available for dual licensing. Please contact kactus2@cs.tut.fi
 to purchase a commercial license.
-
-
-Icons used in Kactus2
-----------------------------------------------------
-
-Icons8 by Icons8 LLC
-https://icons8.com/
