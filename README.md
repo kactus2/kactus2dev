@@ -7,7 +7,7 @@ Summary
 ![Kactus2 logo](common/graphics/appicon.png)
 
 Kactus2 is a toolset for designing embedded products, especially FPGA-based
-MP-SoCs. The aim is easier IP reusabilility and integration for both hardware and
+MP-SoCs. The aim is easier IP reusability and integration for both hardware and
 software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 
 Windows installer and tar-package for Linux are available in 
@@ -18,7 +18,6 @@ Other support is provided by email: kactus2@cs.tut.fi
 
 What you can do with Kactus2
 ----------------------------------------------------
-
 Package IPs for reuse and exchange
  * Import your existing IPs as IP-XACT components
  * Create new IP-XACT components and generate their HDL module headers
@@ -42,14 +41,12 @@ What you cannot do with Kactus2
  
 Examples and tutorials
 ----------------------------------------------------
-
 Example IPs are available in GitHub [here](https://github.com/kactus2/ipxactexamplelib).
 
 Video tutorials are available in [Youtube](https://www.youtube.com/user/Kactus2Tutorial).
 
 Windows install
 ----------------------------------------------------
-
 An installer (link above) will guide you through the installation on Windows platforms.
 
 If you want to build Kactus2 on Windows, see separate instructions in our project 
@@ -156,7 +153,7 @@ Kactus2 supports the following command-line options:
 * `-h, --help`: Show the application usage help and exit.
 * `-v, --version`: Show the application version and exit.
 * `-r, --run <command>`: Run a generator plugin witht the given command. 
-Currently only Verilog generator supports this feature and can be invoked with command
+Currently only Verilog generator supports this feature and can be executed with command
 `generate_verilog`. Additional options are required as detailed below.
 
 For example, to generate Verilog, run:
@@ -171,12 +168,10 @@ subject to changes in the near future.
 
 Community Guidelines & Contributions
 ----------------------------------------------------
-
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 Contributors
 ----------------------------------------------------
-
 Antti Kamppi, Joni-Matti Määttä, Lauri Matilainen, Timo D. Hämäläinen,
 Mikko Teuho, Juho Järvinen, Esko Pekkarinen, Janne Virtanen
 
@@ -186,7 +181,6 @@ Kactus2 uses [Icons8](https://icons8.com/) provided by Icons8 LLC
 
 Licencing
 ----------------------------------------------------
-
 This software is licensed under the GPL2 General Public License.
 
 Kactus2 is also available for dual licensing. Please contact kactus2@cs.tut.fi
