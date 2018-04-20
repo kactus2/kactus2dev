@@ -135,6 +135,11 @@ void HierarchyWidget::selectItems(VLNV const& vlnv)
         }
 	}
 
+    if (viewIndexes.isEmpty() == false)
+    {
+        view_.setCurrentIndex(viewIndexes.first());
+    }
+
 	view_.setSelectedIndexes(viewIndexes);
 }
 

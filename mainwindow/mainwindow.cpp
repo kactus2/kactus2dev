@@ -2652,9 +2652,6 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
     connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
         this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
 
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
-
     connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
         this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),

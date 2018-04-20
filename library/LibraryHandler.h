@@ -301,18 +301,6 @@ public slots:
     //!  Shows a report of all errors within the library items.
     void onGenerateIntegrityReport();
 
-    /*! Selects the given vlnv item in the library
-     *
-     *      @param [in] vlnv Specifies the item in the library to select
-     *
-    */
-    virtual void onSelectionChanged(VLNV const& vlnv);
-
-    /*! Clear the item selection
-     *
-    */
-    virtual void onClearSelection();
-
     /*! Open the specified component design
      *
      *      @param [in] vlnv         Identifies the component that's design is wanted

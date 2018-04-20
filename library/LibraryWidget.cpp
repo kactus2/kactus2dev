@@ -56,7 +56,7 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
     setupLayout();
-}
+} 
 
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::~LibraryWidget()
@@ -88,6 +88,15 @@ void LibraryWidget::setFilters(Utils::FilterOptions filters)
 Utils::FilterOptions LibraryWidget::getFilters() const
 {
     return dialer_->getFilters();
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryWidget::selectComponent()
+//-----------------------------------------------------------------------------
+void LibraryWidget::selectComponent(VLNV const& componentVLNV) const
+{
+    treeWidget_->selectItem(componentVLNV);
+    hierarchyWidget_->selectItems(componentVLNV);
 }
 
 //-----------------------------------------------------------------------------

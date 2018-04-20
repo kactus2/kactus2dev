@@ -335,7 +335,7 @@ void InterfaceEditor::setBusInterface()
     setNameAndDescription(&busNameEditor_, &busDescriptionEditor_);
 
     QString activeView = activeTopView_;
-    if (interface_->encompassingComp())
+    if (interface_->encompassingComp() && containingConfiguration_)
     {
         activeView = containingConfiguration_->getActiveView(interface_->encompassingComp()->name());
     }
