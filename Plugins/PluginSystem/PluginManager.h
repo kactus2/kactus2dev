@@ -76,7 +76,7 @@ private:
     //! The constructor. Private to enforce the use of getInstance() to get access.
     PluginManager();
     
-    static bool PluginManager::isUnique(IPlugin* plugin, QList<IPlugin*> const& plugins);
+    static bool isUnique(IPlugin* plugin, QList<IPlugin*> const& plugins);
 
     //-----------------------------------------------------------------------------
     // Data.
