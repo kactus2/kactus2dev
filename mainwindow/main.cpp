@@ -162,6 +162,6 @@ int main(int argc, char *argv[])
         }
 
         PluginUtilityAdapter utility(library.data(), mediator.data(), VersionHelper::createVersionString(), 0);
-        return CommandLineParser::process(&utility, application->arguments());
+        return CommandLineParser::process(application->arguments(), &utility);
     }   
 }

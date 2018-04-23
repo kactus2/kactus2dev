@@ -229,7 +229,16 @@ void VerilogGeneratorPlugin::process(QStringList const& arguments, IPluginUtilit
     }
 
     QScopedPointer<QCommandLineParser> parser(createCommandParser());
-    parser->process(arguments);
+    parser->parse(arguments);
+
+    if (parser->isSet(QStringLiteral("help")))
+    {
+        QString helpText = parser->helpText();
+        helpText.replace(0, helpText.indexOf(QLatin1Char('[')), 
+            QStringLiteral("Usage: Kactus2 generate_verilog "));
+        utility->printInfo(helpText);
+        return;
+    }
 
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
@@ -248,10 +257,6 @@ void VerilogGeneratorPlugin::process(QStringList const& arguments, IPluginUtilit
     utility->printInfo(tr("Running generation for %1 and view '%2'.").arg(componentVLNV.toString(), view));
 
     QString directory = parser->value("o");
-    if (directory.isEmpty())
-    {
-        directory = ".";
-    }
 
     QDir targetDirectory;
     if (!targetDirectory.mkpath(directory))
@@ -289,8 +294,8 @@ void VerilogGeneratorPlugin::process(QStringList const& arguments, IPluginUtilit
         utility->getKactusVersion(), getVersion());
 
     // Create model for the configuration widget.
-    QSharedPointer<GenerationControl> configuration(new GenerationControl
-        (utility->getLibraryInterface(), &factory, input, &settings_));
+    QSharedPointer<GenerationControl> configuration(new GenerationControl(utility->getLibraryInterface(),
+        &factory, input, &settings_));
 
     configuration->getOutputControl()->setOutputPath(directory);
     configuration->getViewSelection()->setSaveToFileset(false);
@@ -314,17 +319,16 @@ QCommandLineParser* VerilogGeneratorPlugin::createCommandParser()
     QCommandLineParser* parser = new QCommandLineParser();
     QCommandLineOption helpOption = parser->addHelpOption();
 
-    QCommandLineOption runOption(QStringList() << QStringLiteral("r") << QStringLiteral("run"),
-        QStringLiteral("The command to run."), QStringLiteral("generate_verilog"));
     QCommandLineOption targetComponent(QStringList() << QStringLiteral("c") << QStringLiteral("top-component"), 
         QStringLiteral("The top-component VLNV separated by semicolons (:)."), QStringLiteral("VLVN"));
+
     QCommandLineOption targetView(QStringList() << QStringLiteral("w") << QStringLiteral("target-view"), 
         QStringLiteral("The component view to use in generation."), QStringLiteral("view name"));
+
     QCommandLineOption outputDirectory(QStringList() << QStringLiteral("o") << QStringLiteral("output"), 
         QStringLiteral("The output directory for generation."), QStringLiteral("path"), 
         QStringLiteral("generated_verilog"));
 
-    parser->addOption(runOption);
     parser->addOption(targetComponent);
     parser->addOption(targetView);
     parser->addOption(outputDirectory);
