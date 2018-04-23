@@ -12,6 +12,7 @@
 #include <QtTest>
 
 #include <tests/MockObjects/LibraryMock.h>
+#include <tests/MockObjects/PluginMock.h>
 
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
@@ -34,11 +35,13 @@ private:
     LibraryMock library_;
     MessagePasser mediator_;
     PluginUtilityAdapter utility_;
+    PluginMock* testPlugin_;
     QStringList log_;
 
 private slots:
-    void init();
+    void initTestCase();
     void cleanup();
+    void cleanupTestCase();
 
     void testShowUsage();
     void testShowUsage_data();
@@ -46,12 +49,14 @@ private slots:
     void testShowVersion_data();
 
     void testRunPluginCommand();
+    void testPluginHelp();
 };
 
 tst_CommandLineParser::tst_CommandLineParser(): QObject(0),
     library_(this), 
     mediator_(),
     utility_(&library_, &mediator_, QStringLiteral("test.version"), 0),
+    testPlugin_(new PluginMock()),
     log_()
 {
     connect(&mediator_, SIGNAL(noticeMessage(QString const&)), this, SLOT(writeToLog(QString const&)));
@@ -66,11 +71,15 @@ void tst_CommandLineParser::writeToLog(QString const& msg)
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_CommandLineParser::init()
+// Function: tst_CommandLineParser::initTestCase()
 //-----------------------------------------------------------------------------
-void tst_CommandLineParser::init()
+void tst_CommandLineParser::initTestCase()
 {
-    
+    QSettings testSettings("tst_CommandLineParser.ini");
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+
+    PluginManager& plugins = PluginManager::getInstance();
+    plugins.addPlugin(testPlugin_);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,25 +91,43 @@ void tst_CommandLineParser::cleanup()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_CommandLineParser::cleanupTestCase()
+//-----------------------------------------------------------------------------
+void tst_CommandLineParser::cleanupTestCase()
+{
+    delete testPlugin_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_CommandLineParser::testShowUsage()
 //-----------------------------------------------------------------------------
 void tst_CommandLineParser::testShowUsage()
 {
     QFETCH(QString, input);
 
-    CommandLineParser::process(input.split(QLatin1Char(' ')), &utility_);
+    QStringList arguments = input.split(QLatin1Char(' '));
+    CommandLineParser::process(arguments, &utility_);
 
     QString expected( 
-        "Usage: " + QDir::toNativeSeparators(QCoreApplication::applicationFilePath()) + " [options]\n" 
+        "Usage: Kactus2 <command> [options]\n" 
         "Kactus2 is a design environment for IP-XACT based SoC design.\n"
         "Running Kactus2 without any options opens the graphical user interface.\n"
         "\n"
+        "Arguments:\n"
+        "  command         The command to run.\n"
+        "\n"
+        "The available commands are:\n"
+        "  mock\n"
+        "\n"
+        "The command may require additional options. See 'Kactus2 <command> -h'\n"
+        "for command-specific information.\n"
+        "\n"
         "Options:\n"
-        "  -r, --run <command>  Runs the given command.\n"
-        "  -?, -h, --help       Displays this help.\n"
-        "  -v, --version        Displays version information.\n"
+        "  -?, -h, --help  Displays this help.\n"
+        "  -v, --version   Displays version information.\n"
         );
 
+    QVERIFY(CommandLineParser::helpOrVersionOptionSet(arguments));
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), expected);
 }
@@ -124,8 +151,10 @@ void tst_CommandLineParser::testShowVersion()
 {
     QFETCH(QString, input);
 
-    CommandLineParser::process(input.split(QLatin1Char(' ')), &utility_);
+    QStringList arguments = input.split(QLatin1Char(' '));
+    CommandLineParser::process(arguments, &utility_);
 
+    QVERIFY(CommandLineParser::helpOrVersionOptionSet(arguments));
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), QStringLiteral("Kactus2 test.version"));
 }
@@ -146,13 +175,7 @@ void tst_CommandLineParser::testShowVersion_data()
 //-----------------------------------------------------------------------------
 void tst_CommandLineParser::testRunPluginCommand()
 {
-    QSettings testSettings("tst_CommandLineParser.ini");
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-
-    PluginManager& plugins = PluginManager::getInstance();
-    //plugins.setPluginPaths();
-    QString input("testApp command");
-
+    QString input("testApp mock");
     CommandLineParser::process(input.split(QLatin1Char(' ')), &utility_);
 
     QFile settingsFile("tst_CommandLineParser.ini");
@@ -162,6 +185,27 @@ void tst_CommandLineParser::testRunPluginCommand()
     }
 
     QVERIFY(settingsFile.exists() == false);
+    QCOMPARE(log_.count(), 1);
+    QCOMPARE(log_.first(), QStringLiteral("mock"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_CommandLineParser::testPluginHelp()
+//-----------------------------------------------------------------------------
+void tst_CommandLineParser::testPluginHelp()
+{
+    QString input("testApp mock -h");
+    CommandLineParser::process(input.split(QLatin1Char(' ')), &utility_);
+
+    QFile settingsFile("tst_CommandLineParser.ini");
+    if (settingsFile.exists())
+    {
+        settingsFile.remove();
+    }
+
+    QVERIFY(settingsFile.exists() == false);
+    QCOMPARE(log_.count(), 1);
+    QCOMPARE(log_.first(), QStringLiteral("mock -h"));
 }
 
 QTEST_MAIN(tst_CommandLineParser)

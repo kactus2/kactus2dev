@@ -25,10 +25,15 @@ class PluginManager
 {
 public:
 
-    /*!
-     *  Destructor.
-     */
+    //! The destructor.     
     ~PluginManager();
+
+    /*!
+     *  Adds the given plugin to the available plugins.
+     *
+     *      @param [in] plugin   The plugin to add
+     */
+    void addPlugin(IPlugin* plugin);
 
     /*!
      *  returns the list of active plugins.
@@ -55,7 +60,7 @@ public:
      *      @return All plugins found in the given directories.
      */
     static QList<IPlugin*> findPluginsInPaths(QStringList const& pluginPaths);
-
+   
     /*!
      *  Get the singleton instance of the PluginManager.
      *
@@ -70,6 +75,8 @@ private:
      
     //! The constructor. Private to enforce the use of getInstance() to get access.
     PluginManager();
+    
+    static bool PluginManager::isUnique(IPlugin* plugin, QList<IPlugin*> const& plugins);
 
     //-----------------------------------------------------------------------------
     // Data.

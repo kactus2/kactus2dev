@@ -40,6 +40,8 @@ namespace CommandLineParser
      *      @return 0 for a successful run, any other value for errors.
      */
     int process(QStringList const& arguments, IPluginUtility* utility);
+   
+    QString helpText();
 }
 
 #endif 

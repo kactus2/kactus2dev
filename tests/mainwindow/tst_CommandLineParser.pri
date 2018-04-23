@@ -7,10 +7,16 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h \
+HEADERS += ../../Plugins/PluginSystem/PluginManager.h \
     ../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../MockObjects/LibraryMock.h
-SOURCES += ./tst_CommandLineParser.cpp \
+    ../MockObjects/LibraryMock.h \
+    ../../mainwindow/CommandLineParser.h \
+    ../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h \
+    ../MockObjects/PluginMock.h
+SOURCES += ../../Plugins/PluginSystem/PluginManager.cpp \
+    ../../mainwindow/CommandLineParser.cpp \
     ../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.cpp \
+    ../MockObjects/LibraryMock.cpp \
     ../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
-    ../MockObjects/LibraryMock.cpp
+    ./tst_CommandLineParser.cpp \
+    ../MockObjects/PluginMock.cpp
