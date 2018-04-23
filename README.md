@@ -148,20 +148,20 @@ c) In some systems, a link to the executable is created if Kactus2 was installed
 
 #### 3b. Run Kactus2 command-line (experimental)
 
-Some tasks may be run in the command-line without the GUI.
-Kactus2 supports the following command-line options:
-* `-h, --help`: Show the application usage help and exit.
-* `-v, --version`: Show the application version and exit.
-* `-r, --run <command>`: Run a generator plugin witht the given command. 
-Currently only Verilog generator supports this feature and can be executed with command
-`generate_verilog`. Additional options are required as detailed below.
+Some tasks may be run in the command-line without the GUI. Currently only Verilog generator supports 
+this feature and can be executed with command `generate_verilog`. 
+Additional options are required as detailed below.
 
 For example, to generate Verilog, run:
 
-    Kactus2 -r generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
+    Kactus2 generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
     
 This will generate structural Verilog for the `-c` component `tut.fi:cpu.logic:alu:1.0` and 
 its sub-component hierarchy defined in `-w` view `structural_verilog` into `-o` directory `./rtl_out`.
+
+Kactus2 supports the following general command-line options:
+* `-h, --help`: Show the application usage help and exit.
+* `-v, --version`: Show the application version and exit.
 
 Please note that the command-line interface is an experimental feature and very likely 
 subject to changes in the near future. 
