@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += VLNVComparator/tst_VLNVComparator.pro \
 		ComponentComparator/tst_ComponentComparator.pro \
 		PortComparator/tst_PortComparator.pro \

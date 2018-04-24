@@ -11,6 +11,6 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += ComponentEditor/ComponentEditor.pro \
 	MemoryDesigner/MemoryDesigner.pro

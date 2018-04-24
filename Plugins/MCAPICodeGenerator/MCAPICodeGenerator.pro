@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = MCAPICodeGenerator
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
-CONFIG += plugin release
+CONFIG += c++11 plugin release
 DEFINES += MCAPICODEGENERATOR_LIB QT_DLL QT QT_WIDGETS_LIB QT_XML_LIB QT_
 INCLUDEPATH += ./../.. \
     ./GeneratedFiles \

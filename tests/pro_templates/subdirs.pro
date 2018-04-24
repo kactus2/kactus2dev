@@ -11,5 +11,5 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += <subdir/subproject.pro>

@@ -14,7 +14,7 @@ TEMPLATE = app
 TARGET = tst_ComponentComparator
 
 QT += core xml gui testlib
-CONFIG += testcase console
+CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels

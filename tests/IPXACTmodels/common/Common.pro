@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += Validators\tst_ParameterValidator2014.pro \
 		   tst_ParameterWriter.pro \
 		   tst_ParameterReader.pro \

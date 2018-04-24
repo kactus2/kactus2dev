@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += validators\tst_EnumeratedValueValidator.pro \
 		   validators\tst_FieldValidator.pro \
 		   validators\tst_RegisterValidator.pro \

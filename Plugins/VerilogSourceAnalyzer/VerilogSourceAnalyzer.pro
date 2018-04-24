@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = VerilogSourceAnalyzer
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets
-CONFIG += plugin release
+CONFIG += c++11 plugin release
 DEFINES += QT_DLL QT_WIDGETS_LIB VERILOGSOURCEANALYZER_LIB QT_XML_LIB
 INCLUDEPATH += ./GeneratedFiles \
     ./../.. \

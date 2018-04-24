@@ -14,7 +14,7 @@ TEMPLATE = app
 TARGET = tst_MemoryMapHeaderGenerator
 
 QT += core xml gui testlib widgets
-CONFIG += testcase console
+CONFIG += c++11 testcase console
 
 DEFINES += MEMORYMAPHEADERGENERATOR_LIB KACTUS2_EXPORTS
 

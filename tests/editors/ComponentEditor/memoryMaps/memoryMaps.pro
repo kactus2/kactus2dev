@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += memoryMapsVisualizer/MemoryMapGraphItem/tst_MemoryMapGraphItem.pro \
 		   memoryMapsVisualizer/AddressBlockGraphItem/tst_AddressBlockGraphItem.pro \
 		   memoryMapsVisualizer/RegisterGraphItem/tst_RegisterGraphItem.pro \

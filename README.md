@@ -136,15 +136,15 @@ There are three ways to run Kactus2 depending on your system and installation se
 
 a) An installation shared between users. Run:
   
-    /usr/bin/Kactus2
+    /usr/bin/kactus2
 
 b) A local installation from the installation directory. Run:
     
-    LD_LIBRARY_PATH=. ./Kactus2
+    LD_LIBRARY_PATH=. ./kactus2
 
 c) In some systems, a link to the executable is created if Kactus2 was installed for all users. Run:
 
-    Kactus2
+    kactus2
 
 #### 3b. Run Kactus2 command-line (experimental)
 
@@ -154,7 +154,7 @@ Additional options are required as detailed below.
 
 For example, to generate Verilog, run:
 
-    Kactus2 generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
+    kactus2 generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
     
 This will generate structural Verilog for the `-c` component `tut.fi:cpu.logic:alu:1.0` and 
 its sub-component hierarchy defined in `-w` view `structural_verilog` into `-o` directory `./rtl_out`.

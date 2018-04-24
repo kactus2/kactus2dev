@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += ./tst_CommandLineParser.pro \
 		   SaveHierarchy/tst_DocumentTreeBuilder.pro \
            SaveHierarchy/tst_HierarchicalSaveBuildStrategy.pro

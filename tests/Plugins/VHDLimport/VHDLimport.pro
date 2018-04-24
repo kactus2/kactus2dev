@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += VHDLPortParser/tst_VHDLPortParser.pro \
 		   VHDLGenericParser/tst_VHDLGenericParser.pro \
 		   VHDLimport/tst_VHDLimport.pro 

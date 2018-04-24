@@ -14,7 +14,7 @@ TEMPLATE = app
 TARGET = tst_VHDLimport
 
 QT += core xml gui widgets testlib
-CONFIG += testcase
+CONFIG += c++11 testcase
 
 DEFINES += VHDLIMPORT_LIB
 
