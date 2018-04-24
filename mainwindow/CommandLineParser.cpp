@@ -24,29 +24,60 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 
 //-----------------------------------------------------------------------------
+// Function: CommandLineParser::CommandLineParser()
+//-----------------------------------------------------------------------------
+CommandLineParser::CommandLineParser(): optionParser_(), preReadDone_(false)
+{
+    optionParser_.addHelpOption();
+    optionParser_.addVersionOption();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommandLineParser::~CommandLineParser()
+//-----------------------------------------------------------------------------
+CommandLineParser::~CommandLineParser()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommandLineParser::readArguments()
+//-----------------------------------------------------------------------------
+void CommandLineParser::readArguments(QStringList const& arguments)
+{
+    optionParser_.parse(arguments);
+    preReadDone_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommandLineParser::argumentsValid()
+//-----------------------------------------------------------------------------
+bool CommandLineParser::argumentsValid() const
+{
+    return optionParser_.errorText().isEmpty();
+}
+
+//-----------------------------------------------------------------------------
 // Function: CommandLineParser::helpOrVersionOptionSet()
 //-----------------------------------------------------------------------------
-bool CommandLineParser::helpOrVersionOptionSet(QStringList const& arguments)
+bool CommandLineParser::helpOrVersionOptionSet() const
 {
-    return arguments.contains("-h") || arguments.contains("--help") || arguments.contains("-?") ||
-        arguments.contains("-v") || arguments.contains("--version");
+    return optionParser_.isSet(QStringLiteral("help")) || optionParser_.isSet(QStringLiteral("version"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: CommandLineParser::process()
 //-----------------------------------------------------------------------------
 int CommandLineParser::process(QStringList const& arguments, IPluginUtility* utility)
-{  
-    QCommandLineParser optionParser;      
-
-    QCommandLineOption helpOption = optionParser.addHelpOption();
-    QCommandLineOption versionOption = optionParser.addVersionOption();
-
-    optionParser.parse(arguments);
-       
-    if (optionParser.positionalArguments().isEmpty() == false)
+{   
+    if (preReadDone_ == false)
     {
-        QString command = optionParser.positionalArguments().first();       
+        optionParser_.parse(arguments);
+    }
+
+    if (optionParser_.positionalArguments().isEmpty() == false)
+    {
+        QString command = optionParser_.positionalArguments().first();       
 
         PluginManager& pluginManager = PluginManager::getInstance();
         foreach (IPlugin* plugin, pluginManager.getAllPlugins())
@@ -63,19 +94,19 @@ int CommandLineParser::process(QStringList const& arguments, IPluginUtility* uti
         }
     }
      
-    if (optionParser.isSet(helpOption))
+    if (optionParser_.isSet(QStringLiteral("help")))
     {
         utility->printInfo(helpText());
         return 0;
     }
 
-    if (optionParser.isSet(versionOption))
+    if (optionParser_.isSet(QStringLiteral("version")))
     {
         utility->printInfo(QStringLiteral("Kactus2 ") + utility->getKactusVersion());
         return 0;
     }
 
-    optionParser.process(arguments);
+    optionParser_.process(arguments);
     return 0;
 }
 

@@ -71,7 +71,8 @@ private:
      *
      *      @param [in] outputPath   The path to the output file.
      */
-    void writeFile(QString const& outputPath, QVector<QVector<QSharedPointer<ConnectivityInterface> > >  masterRoutes);
+    void writeFile(QString const& outputPath,
+        QVector<QVector<QSharedPointer<const ConnectivityInterface> > >  masterRoutes);
 
     /*!
      *  Writes the given memory element into output.

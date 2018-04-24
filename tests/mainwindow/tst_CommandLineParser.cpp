@@ -106,7 +106,8 @@ void tst_CommandLineParser::testShowUsage()
     QFETCH(QString, input);
 
     QStringList arguments = input.split(QLatin1Char(' '));
-    CommandLineParser::process(arguments, &utility_);
+    CommandLineParser parser;
+    parser.process(arguments, &utility_);
 
     QString expected( 
         "Usage: Kactus2 <command> [options]\n" 
@@ -127,7 +128,8 @@ void tst_CommandLineParser::testShowUsage()
         "  -v, --version   Displays version information.\n"
         );
 
-    QVERIFY(CommandLineParser::helpOrVersionOptionSet(arguments));
+    QVERIFY(parser.argumentsValid());
+    QVERIFY(parser.helpOrVersionOptionSet());
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), expected);
 }
@@ -152,9 +154,11 @@ void tst_CommandLineParser::testShowVersion()
     QFETCH(QString, input);
 
     QStringList arguments = input.split(QLatin1Char(' '));
-    CommandLineParser::process(arguments, &utility_);
+    CommandLineParser parser;
+    parser.process(arguments, &utility_);
 
-    QVERIFY(CommandLineParser::helpOrVersionOptionSet(arguments));
+    QVERIFY(parser.argumentsValid());
+    QVERIFY(parser.helpOrVersionOptionSet());
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), QStringLiteral("Kactus2 test.version"));
 }
@@ -176,7 +180,9 @@ void tst_CommandLineParser::testShowVersion_data()
 void tst_CommandLineParser::testRunPluginCommand()
 {
     QString input("testApp mock");
-    CommandLineParser::process(input.split(QLatin1Char(' ')), &utility_);
+
+    CommandLineParser parser; 
+    parser.process(input.split(QLatin1Char(' ')), &utility_);
 
     QFile settingsFile("tst_CommandLineParser.ini");
     if (settingsFile.exists())
@@ -184,6 +190,7 @@ void tst_CommandLineParser::testRunPluginCommand()
         settingsFile.remove();
     }
 
+    QVERIFY(parser.argumentsValid());
     QVERIFY(settingsFile.exists() == false);
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), QStringLiteral("mock"));
@@ -195,7 +202,9 @@ void tst_CommandLineParser::testRunPluginCommand()
 void tst_CommandLineParser::testPluginHelp()
 {
     QString input("testApp mock -h");
-    CommandLineParser::process(input.split(QLatin1Char(' ')), &utility_);
+
+    CommandLineParser parser; 
+    parser.process(input.split(QLatin1Char(' ')), &utility_);
 
     QFile settingsFile("tst_CommandLineParser.ini");
     if (settingsFile.exists())
@@ -203,6 +212,7 @@ void tst_CommandLineParser::testPluginHelp()
         settingsFile.remove();
     }
 
+    QVERIFY(parser.argumentsValid());
     QVERIFY(settingsFile.exists() == false);
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), QStringLiteral("mock -h"));
