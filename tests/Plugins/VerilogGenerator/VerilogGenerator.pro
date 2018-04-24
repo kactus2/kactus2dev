@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS +=  VerilogWriterFactory/tst_VerilogWriterFactory.pro \
 		   VerilogHeaderWriter/tst_VerilogHeaderWriter.pro \
 		   InterfaceDirectionNameSorter/tst_InterfaceDirectionNameSorter.pro \

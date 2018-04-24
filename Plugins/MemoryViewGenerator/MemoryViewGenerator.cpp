@@ -64,7 +64,7 @@ void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QStri
 // Function: MemoryViewGenerator::writeFile()
 //-----------------------------------------------------------------------------
 void MemoryViewGenerator::writeFile(QString const& outputPath, 
-    QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterRoutes)
+    QVector<QVector<QSharedPointer<const ConnectivityInterface> > > masterRoutes)
 {
     QFile outputFile(outputPath); 
     if (!outputFile.open(QIODevice::WriteOnly))
@@ -76,10 +76,10 @@ void MemoryViewGenerator::writeFile(QString const& outputPath,
 
     outputStream << "Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);" << endl;
 
-    foreach (QVector<QSharedPointer<ConnectivityInterface> > path, masterRoutes)
+    foreach (QVector<QSharedPointer<const ConnectivityInterface> > path, masterRoutes)
     {        
         int addressOffset = path.first()->getBaseAddress().toInt();
-        foreach (QSharedPointer<ConnectivityInterface> inter, path)
+        foreach (QSharedPointer<const ConnectivityInterface> inter, path)
         {
             if (inter->getMode() == "mirroredSlave")
             {

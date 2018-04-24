@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = VHDLPackageImport
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
-CONFIG += release
+CONFIG += c++11 release
 DEFINES += QT_DLL QT_WIDGETS_LIB QT_XML_LIB VHDLPACKAGEIMPORT_LIB
 INCLUDEPATH += ./../.. \
     ./GeneratedFiles \

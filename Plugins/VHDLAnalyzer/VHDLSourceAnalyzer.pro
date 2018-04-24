@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = VHDLSourceAnalyzer
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui help
-CONFIG += plugin release
+CONFIG += c++11 plugin release
 DEFINES += VHDLSOURCEANALYZER_LIB QT_XML_LIB QT_XMLPATTERNS_LIB QT_DLL QT_HELP_LIB QT_WIDGETS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \

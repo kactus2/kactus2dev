@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += parameters/tst_ComponentParameterModel.pro \
 		common/tst_SystemVerilogExpressionParser.pro \
 		common/tst_IPXactSystemVerilogParser.pro \

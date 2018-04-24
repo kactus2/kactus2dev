@@ -27,6 +27,14 @@ PluginManager::~PluginManager()
 }
 
 //-----------------------------------------------------------------------------
+// Function: PluginManager::addPlugin()
+//-----------------------------------------------------------------------------
+void PluginManager::addPlugin(IPlugin* plugin)
+{
+    plugins_.append(plugin);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PluginManager::getPlugins()
 //-----------------------------------------------------------------------------
 QList<IPlugin*> PluginManager::getAllPlugins() const
@@ -64,7 +72,7 @@ void PluginManager::setPluginPaths(QStringList const& pluginPaths)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PluginManager::getPluginsInPaths()
+// Function: PluginManager::findPluginsInPaths()
 //-----------------------------------------------------------------------------
 QList<IPlugin*> PluginManager::findPluginsInPaths(QStringList const& pluginPaths)
 {
@@ -86,31 +94,16 @@ QList<IPlugin*> PluginManager::findPluginsInPaths(QStringList const& pluginPaths
             QPluginLoader loader(fileInfo.absoluteFilePath());
             IPlugin* plugin = qobject_cast<IPlugin*>(loader.instance());
 
-            if (plugin != 0)
+            if (plugin != 0 && isUnique(plugin, plugins))
             {
-                // Check for duplicate plugins.
-                bool uniquePlugin = true;
-                foreach(IPlugin* knownPlugin, plugins)
-                {
-                    if (QString::compare(knownPlugin->getName(), plugin->getName()) == 0 && 
-                        QString::compare(knownPlugin->getVersion(), plugin->getVersion()) == 0)
-                    {
-                        uniquePlugin = false;
-                        break;
-                    }
-                }
+                plugins.append(plugin);
 
-                if (uniquePlugin)
+                settings.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
+                if (plugin->getSettingsModel())
                 {
-                    plugins.append(plugin);
-
-                    settings.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
-                    if (plugin->getSettingsModel())
-                    {
-                        plugin->getSettingsModel()->loadSettings(settings);
-                    }
-                    settings.endGroup();
+                    plugin->getSettingsModel()->loadSettings(settings);
                 }
+                settings.endGroup();
             }
         }
     }
@@ -118,6 +111,23 @@ QList<IPlugin*> PluginManager::findPluginsInPaths(QStringList const& pluginPaths
     settings.endGroup();
 
     return plugins;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginManager::isUnique()
+//-----------------------------------------------------------------------------
+bool PluginManager::isUnique(IPlugin* plugin, QList<IPlugin*> const& plugins)
+{
+    foreach(IPlugin* knownPlugin, plugins)
+    {
+        if (QString::compare(knownPlugin->getName(), plugin->getName()) == 0 && 
+            QString::compare(knownPlugin->getVersion(), plugin->getVersion()) == 0)
+        {
+            return false;            
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

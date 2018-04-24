@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = PadsPartGenerator
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
-CONFIG += release
+CONFIG += c++11 release
 DEFINES += QT_DLL QT_WIDGETS_LIB QT_XML_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \

@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 
 SUBDIRS += documentGenerator/tst_documentGenerator.pro \
 		quartusGenerator/tst_QuartusGenerator.pro

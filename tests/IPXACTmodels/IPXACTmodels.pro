@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += common\Common.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionWriter.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionReader.pro \

@@ -14,7 +14,7 @@ TEMPLATE = app
 TARGET = tst_VerilogImporter
 
 QT += core xml gui widgets testlib
-CONFIG += testcase
+CONFIG += c++11 testcase
 
 DEFINES += VERILOGIMPORT_LIB
 

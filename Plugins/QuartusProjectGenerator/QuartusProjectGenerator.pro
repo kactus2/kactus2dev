@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = QuartusProjectGenerator
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui printsupport
-CONFIG += plugin release
+CONFIG += c++11 plugin release
 DEFINES += QUARTUSGENERATOR_LIB QT_DLL QT_HELP_LIB QT_WIDGETS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \

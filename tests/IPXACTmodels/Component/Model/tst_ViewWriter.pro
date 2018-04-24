@@ -14,7 +14,7 @@ TEMPLATE = app
 TARGET = tst_ViewWriter
 
 QT += core xml gui widgets testlib
-CONFIG += testcase console
+CONFIG += c++11 testcase console
 DEFINES += IPXACTMODELS_LIB
 
 win32:CONFIG(release, debug|release) {

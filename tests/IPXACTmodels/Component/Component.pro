@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += validators\tst_ChannelValidator.pro \
 		   validators\tst_CPUValidator.pro \
 		   validators\tst_FileValidator.pro \

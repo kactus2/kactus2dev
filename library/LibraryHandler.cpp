@@ -931,22 +931,6 @@ void LibraryHandler::onGenerateIntegrityReport()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryHandler::onSelectionChanged()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onSelectionChanged(VLNV const& /*vlnv*/)
-{
-    
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::onClearSelection()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onClearSelection()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryHandler::onOpenDesign()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenDesign(VLNV const& vlnv, QString const& viewName)

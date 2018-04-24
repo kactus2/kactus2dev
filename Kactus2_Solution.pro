@@ -8,7 +8,7 @@
 
 
 TEMPLATE = subdirs
-CONFIG += ordered
+CONFIG += c++11 ordered
 SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
     Kactus2.pro \
     Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro \

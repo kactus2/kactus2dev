@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = QuartusPinImportPlugin
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
-CONFIG += plugin release
+CONFIG += c++11 plugin release
 DEFINES += QT_DLL QUARTUSPINIMPORTPLUGIN_LIB QT_WIDGETS_LIB QT_XML_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \

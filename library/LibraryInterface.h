@@ -222,15 +222,6 @@ public slots:
     */
     virtual void onCheckLibraryIntegrity() = 0;
 
-    /*! Selects the given vlnv item in the library
-     *
-     *      @param [in] vlnv Specifies the item in the library to select
-    */
-    virtual void onSelectionChanged(VLNV const& vlnv) = 0;
-
-    //! Clear the item selection
-    virtual void onClearSelection() = 0;
-
     /*! Edit an item in the library
      *
      *      @param [in] vlnv Reference to the vlnv that identifies the object to edit.

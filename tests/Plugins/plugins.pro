@@ -11,14 +11,14 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 
 SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
 			MakefileGenerator/tst_MakefileGenerator.pro \
 			VHDLimport/VHDLimport.pro \
 			VerilogImport/VerilogImport.pro \
-		    VerilogIncludeImport/tst_VerilogIncludeImport.pro \
+		    	VerilogIncludeImport/tst_VerilogIncludeImport.pro \
 			VerilogSourceAnalyzer/tst_VerilogSourceAnalyzer.pro \
 			MemoryMapHeaderGenerator/tst_MemoryMapHeaderGenerator.pro \
-			HDLParser/tst_HDLParser.pro \
-			MemoryViewGenerator/tst_MemoryViewGenerator.pro
+			HDLParser/tst_HDLParser.pro 
+#			MemoryViewGenerator/tst_MemoryViewGenerator.pro

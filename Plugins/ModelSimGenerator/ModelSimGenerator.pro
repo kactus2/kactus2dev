@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = ModelSimGenerator
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
-CONFIG += plugin release
+CONFIG += c++11 plugin release
 DEFINES += QT_DLL QT_XML_LIB MODELSIMGENERATOR_LIB QT_WIDGETS_LIB
 INCLUDEPATH += ./../.. \
     ./GeneratedFiles \

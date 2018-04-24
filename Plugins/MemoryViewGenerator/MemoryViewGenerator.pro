@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = MemoryViewGenerator
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
-CONFIG += plugin release
+CONFIG += c++11 plugin release
 DEFINES += MEMORYVIEWGENERATOR_LIB QT_DLL QT_HELP_LIB QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \

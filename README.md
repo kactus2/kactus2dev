@@ -7,7 +7,7 @@ Summary
 ![Kactus2 logo](common/graphics/appicon.png)
 
 Kactus2 is a toolset for designing embedded products, especially FPGA-based
-MP-SoCs. The aim is easier IP reusabilility and integration for both hardware and
+MP-SoCs. The aim is easier IP reusability and integration for both hardware and
 software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 
 Windows installer and tar-package for Linux are available in 
@@ -18,7 +18,6 @@ Other support is provided by email: kactus2@cs.tut.fi
 
 What you can do with Kactus2
 ----------------------------------------------------
-
 Package IPs for reuse and exchange
  * Import your existing IPs as IP-XACT components
  * Create new IP-XACT components and generate their HDL module headers
@@ -42,14 +41,12 @@ What you cannot do with Kactus2
  
 Examples and tutorials
 ----------------------------------------------------
-
 Example IPs are available in GitHub [here](https://github.com/kactus2/ipxactexamplelib).
 
 Video tutorials are available in [Youtube](https://www.youtube.com/user/Kactus2Tutorial).
 
 Windows install
 ----------------------------------------------------
-
 An installer (link above) will guide you through the installation on Windows platforms.
 
 If you want to build Kactus2 on Windows, see separate instructions in our project 
@@ -139,44 +136,42 @@ There are three ways to run Kactus2 depending on your system and installation se
 
 a) An installation shared between users. Run:
   
-    /usr/bin/Kactus2
+    /usr/bin/kactus2
 
 b) A local installation from the installation directory. Run:
     
-    LD_LIBRARY_PATH=. ./Kactus2
+    LD_LIBRARY_PATH=. ./kactus2
 
 c) In some systems, a link to the executable is created if Kactus2 was installed for all users. Run:
 
-    Kactus2
+    kactus2
 
 #### 3b. Run Kactus2 command-line (experimental)
 
-Some tasks may be run in the command-line without the GUI.
-Kactus2 supports the following command-line options:
-* `-h, --help`: Show the application usage help and exit.
-* `-v, --version`: Show the application version and exit.
-* `-r, --run <command>`: Run a generator plugin witht the given command. 
-Currently only Verilog generator supports this feature and can be invoked with command
-`generate_verilog`. Additional options are required as detailed below.
+Some tasks may be run in the command-line without the GUI. Currently only Verilog generator supports 
+this feature and can be executed with command `generate_verilog`. 
+Additional options are required as detailed below.
 
 For example, to generate Verilog, run:
 
-    Kactus2 -r generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
+    kactus2 generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
     
 This will generate structural Verilog for the `-c` component `tut.fi:cpu.logic:alu:1.0` and 
 its sub-component hierarchy defined in `-w` view `structural_verilog` into `-o` directory `./rtl_out`.
+
+Kactus2 supports the following general command-line options:
+* `-h, --help`: Show the application usage help and exit.
+* `-v, --version`: Show the application version and exit.
 
 Please note that the command-line interface is an experimental feature and very likely 
 subject to changes in the near future. 
 
 Community Guidelines & Contributions
 ----------------------------------------------------
-
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 Contributors
 ----------------------------------------------------
-
 Antti Kamppi, Joni-Matti Määttä, Lauri Matilainen, Timo D. Hämäläinen,
 Mikko Teuho, Juho Järvinen, Esko Pekkarinen, Janne Virtanen
 
@@ -186,7 +181,6 @@ Kactus2 uses [Icons8](https://icons8.com/) provided by Icons8 LLC
 
 Licencing
 ----------------------------------------------------
-
 This software is licensed under the GPL2 General Public License.
 
 Kactus2 is also available for dual licensing. Please contact kactus2@cs.tut.fi

@@ -156,12 +156,17 @@ int main(int argc, char *argv[])
 
     else // Run console.
     {        
-        if (!CommandLineParser::helpOrVersionOptionSet(application->arguments()))
+        QStringList arguments = application->arguments();
+        CommandLineParser parser;
+
+        parser.readArguments(arguments);
+
+        if (!parser.helpOrVersionOptionSet() && parser.argumentsValid())
         {
             library->searchForIPXactFiles();
         }
 
         PluginUtilityAdapter utility(library.data(), mediator.data(), VersionHelper::createVersionString(), 0);
-        return CommandLineParser::process(&utility, application->arguments());
+        return parser.process(arguments, &utility);
     }   
 }

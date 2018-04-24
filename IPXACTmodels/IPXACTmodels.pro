@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = IPXACTmodels
 DESTDIR = ../executable
 QT += core xml gui
-CONFIG += release
+CONFIG += c++11 release
 DEFINES += QT_DLL QT_XML_LIB IPXACTMODELS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \

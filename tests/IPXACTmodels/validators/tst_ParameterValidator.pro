@@ -14,7 +14,7 @@ TEMPLATE = app
 TARGET = tst_ParameterValidator
 
 QT += core xml gui testlib
-CONFIG += testcase console
+CONFIG += c++11 testcase console
 
 DEFINES += IPXACTMODELS_LIB
 

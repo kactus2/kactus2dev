@@ -18,6 +18,8 @@
 
 #include <common/utils.h>
 
+#include <IPXACTmodels/common/VLNV.h>
+
 class LibraryHandler;
 
 class VLNVDialer;
@@ -61,6 +63,13 @@ public:
      *      @return     The current library filters.
     */
     Utils::FilterOptions getFilters() const;
+
+    /*!
+     *  Selects the given VLNV in all library views.
+     *
+     *      @param [in] componentVLNV   The VLVN to select.
+     */
+    void selectComponent(VLNV const& componentVLNV) const;
 
 private slots:
 

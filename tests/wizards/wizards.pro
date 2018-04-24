@@ -11,5 +11,5 @@
 
 TEMPLATE = subdirs
 
-CONFIG += testcase
+CONFIG += c++11 testcase
 SUBDIRS += common/common.pro

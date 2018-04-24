@@ -574,14 +574,12 @@ void DockWidgetHandler::selectComponent(QWidget* currentTabWidget, ComponentItem
         adHocVisibilityEditor_->clear();
     }
 
-    if (component->componentModel()->getVlnv().isValid())
+    VLNV componentVLNV = component->componentModel()->getVlnv();
+    libraryWidget_->selectComponent(componentVLNV);
+    
+    if (componentVLNV.isValid())
     {
-        libraryHandler_->onSelectionChanged(component->componentModel()->getVlnv());
-        previewBox_->setComponent(component->componentModel()->getVlnv());
-    }
-    else
-    {
-        libraryHandler_->onClearSelection();
+        previewBox_->setComponent(componentVLNV);
     }
 }
 
@@ -590,24 +588,9 @@ void DockWidgetHandler::selectComponent(QWidget* currentTabWidget, ComponentItem
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::selectConnectionInterface(QWidget* currentTabWidget, ConnectionEndpoint* interface)
 {
-    // if the port has an encompassing component then it is selected
-    ComponentItem* component = interface->encompassingComp();
-
-    if (component != 0 && component->componentModel()->getVlnv().isValid())
-    {
-        libraryHandler_->onSelectionChanged(component->componentModel()->getVlnv());
-        previewBox_->setComponent(component->componentModel()->getVlnv());
-    }
-    // if no component can be identified
-    else
-    {
-        libraryHandler_->onClearSelection();
-    }
-
     adHocVisibilityEditor_->clear();
     connectionEditor_->clear();
     instanceEditor_->clear();
-
 
     if (!interface->isAdHoc())
     {
