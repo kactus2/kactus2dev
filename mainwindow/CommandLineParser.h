@@ -10,8 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #ifndef COMMANDLINEPARSER
-#define  COMMANDLINEPARSER
+#define COMMANDLINEPARSER
 
+#include <QCommandLineParser>
 #include <QStringList>
 
 class LibraryInterface;
@@ -20,8 +21,31 @@ class IPluginUtility;
 //-----------------------------------------------------------------------------
 //! Utilities for parsing and executing command line arguments.
 //-----------------------------------------------------------------------------
-namespace CommandLineParser
+class CommandLineParser
 {
+public:
+
+    // The constructor.
+    CommandLineParser();
+
+    // The destructor.
+    ~CommandLineParser();
+
+    /*!
+     *  Reads the given arguments. 
+     *  The arguments can then be checked before processing with argumentsValid() and helpOrVersionOptionSet().
+     *
+     *      @param [in] arguments   The arguments to read.
+     */
+    void readArguments(QStringList const& arguments);
+
+    /*!
+     *  Check if the read arguments are valid.
+     *
+     *      @return True, if the read arguments are valid, otherwise false.
+     */
+    bool argumentsValid() const;
+
     /*!
      *  Checks if help or version option is set.
      *
@@ -29,7 +53,7 @@ namespace CommandLineParser
      *
      *      @return True, if help or verion option is set, otherwise false.
      */
-    bool helpOrVersionOptionSet(QStringList const& arguments);
+    bool helpOrVersionOptionSet() const;
 
     /*!
      *  Processes the given command line arguments and executes accordingly.
@@ -41,8 +65,20 @@ namespace CommandLineParser
      */
     int process(QStringList const& arguments, IPluginUtility* utility);
    
+private:
+
+    /*!
+     *  Get the usage help text.
+     *
+     *      @return The usage help text.
+     */
     QString helpText();
-}
+
+    // Parser for command-line options.
+    QCommandLineParser optionParser_;   
+
+    // Flag to indicate if arguments are read before process();
+    bool preReadDone_;
+};
 
 #endif 
-
