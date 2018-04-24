@@ -151,10 +151,29 @@ void MemoryConnectionHandler::createConnection(
 
     if (!placedSpaceItems->contains(connectionStartItem))
     {
-        spaceColumn->setGraphicsItemPosition(connectionStartItem, spaceYPlacement);
+        if (placedMapItems->contains(connectionEndItem))
+        {
+            quint64 endBase = connectionEndItem->getBaseAddress();
 
-        spaceYPlacement +=
-            connectionStartItem->getHeightWithSubItems() + MemoryDesignerConstants::SPACEITEMINTERVAL;
+            qreal endPosition =
+                connectionEndItem->scenePos().y() - endBase * MemoryDesignerConstants::RANGEINTERVAL;
+
+            spaceColumn->setGraphicsItemPosition(connectionStartItem, endPosition);
+
+            qreal newSpaceYPlacement = endPosition + connectionStartItem->getHeightWithSubItems() +
+                MemoryDesignerConstants::SPACEITEMINTERVAL;
+            if (newSpaceYPlacement > spaceYPlacement)
+            {
+                spaceYPlacement = newSpaceYPlacement;
+            }
+        }
+        else
+        {
+            spaceColumn->setGraphicsItemPosition(connectionStartItem, spaceYPlacement);
+
+            spaceYPlacement +=
+                connectionStartItem->getHeightWithSubItems() + MemoryDesignerConstants::SPACEITEMINTERVAL;
+        }
     }
 
     quint64 baseAddressNumber = getStartingBaseAddress(startInterface, endInterface);
@@ -201,7 +220,7 @@ void MemoryConnectionHandler::createConnection(
     else
     {
         placeSpaceItemToOtherColumn(
-            connectionStartItem, spaceColumn, connectionEndItem, remappedAddress);
+            connectionStartItem, pathVariables.spaceChain_, spaceColumn, connectionEndItem, remappedAddress);
 
         spaceYPlacement = spaceYPlacement - (connectionStartItem->getHeightWithSubItems() +
             MemoryDesignerConstants::SPACEITEMINTERVAL);
@@ -804,7 +823,8 @@ void MemoryConnectionHandler::repositionSpaceItemToMemoryMap(
 // Function: MemoryConnectionHandler::placeSpaceItemToOtherColumn()
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* spaceItem,
-    MemoryColumn* originalColumn, MainMemoryGraphicsItem* targetItem, quint64 connectionBaseAddress)
+    QVector<MainMemoryGraphicsItem*> spaceChain, MemoryColumn* originalColumn, MainMemoryGraphicsItem* targetItem,
+    quint64 connectionBaseAddress)
 {
     originalColumn->removeItem(spaceItem);
 
@@ -823,12 +843,20 @@ void MemoryConnectionHandler::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem
         newItemPosition = MemoryDesignerConstants::SPACEITEMINTERVAL;
     }
 
-    spaceItem->setY(newItemPosition);
-    spaceRectangle.setY(newItemPosition);
-    spaceRectangle.setHeight(spaceHeight);
+    if (newItemPosition > MemoryDesignerConstants::SPACEITEMINTERVAL)
+    {
+        spaceItem->moveItemAndConnectedItems(newItemPosition - MemoryDesignerConstants::SPACEITEMINTERVAL);
+    }
+
+    if (spaceChain.size() == 1)
+    {
+        spaceItem->setY(newItemPosition);
+        spaceRectangle.setY(newItemPosition);
+        spaceRectangle.setHeight(spaceHeight);
+    }
 
     QVector<MemoryColumn*> spaceColumns = columnHandler_->getAddressSpaceColumns();
-    for (int i = spaceColumns.size() - 1; i >= 0; i--)
+    for (int i = 0; i < spaceColumns.size(); i++)
     {
         MemoryColumn* currentColumn = spaceColumns.at(i);
         if (!currentColumn->itemOverlapsAnotherColumnItem(spaceItem, spaceRectangle, spaceLineWidth))
@@ -1095,7 +1123,7 @@ void MemoryConnectionHandler::changeSpaceItemColumn(MainMemoryGraphicsItem* spac
             currentColumn->name().contains(MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME, Qt::CaseInsensitive))
         {
             spaceRectangle.setX(currentColumnPosition);
-
+/*
             MainMemoryGraphicsItem* collidingItem =
                 getCollidingSpaceItem(spaceRectangle, spaceLineWidth, currentColumn);
             while (collidingItem)
@@ -1107,9 +1135,12 @@ void MemoryConnectionHandler::changeSpaceItemColumn(MainMemoryGraphicsItem* spac
 
                 collidingItem = getCollidingSpaceItem(spaceRectangle, spaceLineWidth, currentColumn);
             }
-
-            currentColumn->addItem(spaceItem);
-            return;
+*/
+            if (!currentColumn->itemOverlapsAnotherColumnItem(spaceItem, spaceRectangle, spaceLineWidth))
+            {
+                currentColumn->addItem(spaceItem);
+                return;
+            }
         }
 
         currentColumnPosition -= columnWidth;

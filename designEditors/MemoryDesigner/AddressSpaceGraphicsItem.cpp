@@ -579,9 +579,12 @@ bool AddressSpaceGraphicsItem::hasProblemConnection(
             comparisonIterator.next();
             MemoryConnectionItem* comparisonConnection = comparisonIterator.value();
 
+            qreal rectangleTopDifference =
+                abs(connectionItem->sceneBoundingRect().top() - comparisonConnection->sceneBoundingRect().top());
+
             if (connectionItem->getConnectionEndItem() == comparisonConnection->getConnectionEndItem() &&
                 connectionItem->getRangeStartValue() != comparisonConnection->getRangeStartValue() &&
-                connectionItem->sceneBoundingRect().top() == comparisonConnection->sceneBoundingRect().top())
+                rectangleTopDifference > -1 && rectangleTopDifference < 1)
             {
                 return true;
             }

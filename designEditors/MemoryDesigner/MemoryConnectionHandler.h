@@ -318,11 +318,13 @@ private:
      *  Place the address space item to another address space column.
      *
      *      @param [in] spaceItem               The selected address space item.
+     *      @param [in] spaceChain              Connected address space items.
      *      @param [in] originalColumn          The original column of the selected address space item.
      *      @param [in] targetItem              The other item of the memory connection.
      *      @param [in] connectionBaseAddress   Base address of the current memory connection item.
      */
-    void placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* spaceItem, MemoryColumn* originalColumn,
+    void placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* spaceItem,
+        QVector<MainMemoryGraphicsItem*> spaceChain, MemoryColumn* originalColumn,
         MainMemoryGraphicsItem* targetItem, quint64 connectionBaseAddress);
 
     /*!
