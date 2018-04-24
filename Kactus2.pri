@@ -213,6 +213,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./library/LibraryInterface.h \
     ./library/LibraryUtils.h \
     ./library/TableViewDialog.h \
+    ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryFilter.h \
     ./library/LibraryHandler.h \
     ./library/LibraryErrorModel.h \
@@ -931,6 +932,7 @@ SOURCES += ./VersionHelper.cpp \
     ./library/LibraryUtils.cpp \
     ./library/LibraryWidget.cpp \
     ./library/TableViewDialog.cpp \
+    ./library/LibraryItemSelectionFactory.cpp \
     ./library/VLNVDialer/dialerwidget.cpp \
     ./library/VLNVDialer/filterwidget.cpp \
     ./library/VLNVDialer/firmnessgroup.cpp \

@@ -22,6 +22,7 @@ HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../library/TableViewDialog.h \
+    ../../library/LibraryItemSelectionFactory.h \
     ../../common/widgets/vlnvEditor/VLNVContentMatcher.h \
     ../../common/widgets/vlnvEditor/VLNVDataTree.h \
     ../../common/widgets/assistedLineEdit/AssistedLineEdit.h \
@@ -67,6 +68,7 @@ SOURCES += ../../common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ../../editors/ComponentEditor/common/ParameterCache.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../library/TableViewDialog.cpp \
+    ../../library/LibraryItemSelectionFactory.cpp \
     ../../common/widgets/vlnvEditor/VLNVContentMatcher.cpp \
     ../../common/widgets/vlnvEditor/VLNVDataTree.cpp \
     ../../library/HierarchyView/hierarchyitem.cpp \
