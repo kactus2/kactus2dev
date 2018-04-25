@@ -307,30 +307,7 @@ bool GenerationControl::isUnder() const
 //-----------------------------------------------------------------------------
 // Function: GenerationControl::findPossibleViews()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleViews(
-    QSharedPointer<const Component> targetComponent) const
-{
-    // If the generation is targeted to a component, return the flat views of the component.
-    QSharedPointer<QList<QSharedPointer<View> > > views = QSharedPointer<QList<QSharedPointer<View> > >
-        (new QList<QSharedPointer<View> >);
-
-    // In practice, go through each view, and if it is not hierarchical, append to the list.
-    foreach (QSharedPointer<View> view, *targetComponent->getViews())
-    {
-        if (!view->isHierarchical())
-        {
-            views->append(view);
-        }
-    }
-
-    return views;
-}
-
-//-----------------------------------------------------------------------------
-// Function: GenerationControl::findPossibleViews()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleViews(
-    GenerationTuple input) const
+QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleViews(GenerationTuple input)
 {
     // Create a new list object.
     QSharedPointer<QList<QSharedPointer<View> > > views = QSharedPointer<QList<QSharedPointer<View> > >
@@ -377,6 +354,28 @@ QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleVie
     }
 
     // Finally, return the pickings.
+    return views;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenerationControl::findPossibleViews()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleViews(
+    QSharedPointer<const Component> targetComponent) const
+{
+    // If the generation is targeted to a component, return the flat views of the component.
+    QSharedPointer<QList<QSharedPointer<View> > > views = QSharedPointer<QList<QSharedPointer<View> > >
+        (new QList<QSharedPointer<View> >);
+
+    // In practice, go through each view, and if it is not hierarchical, append to the list.
+    foreach (QSharedPointer<View> view, *targetComponent->getViews())
+    {
+        if (!view->isHierarchical())
+        {
+            views->append(view);
+        }
+    }
+
     return views;
 }
 

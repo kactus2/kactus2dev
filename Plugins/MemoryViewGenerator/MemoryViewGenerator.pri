@@ -17,6 +17,7 @@ HEADERS += ../../designEditors/MemoryDesigner/ConnectivityComponent.h \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./MemoryViewGenerator.h \
@@ -24,7 +25,13 @@ HEADERS += ../../designEditors/MemoryDesigner/ConnectivityComponent.h \
     ../../designEditors/common/ComponentInstanceParameterFinder.h \
     ../../editors/ComponentEditor/common/ParameterCache.h \
     ./MemoryViewGeneratorPlugin.h \
-    ../../editors/ComponentEditor/common/ListParameterFinder.h
+    ../PluginSystem/GeneratorPlugin/GenerationControl.h \
+    ../PluginSystem/GeneratorPlugin/OutputControl.h \
+    ../PluginSystem/GeneratorPlugin/ViewSelection.h \
+    ../common/HDLParser/MetaComponent.h \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../common/HDLParser/MetaDesign.h \
+    ../common/HDLParser/MetaInstance.h
 SOURCES += ../../designEditors/common/ComponentInstanceParameterFinder.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
@@ -35,10 +42,17 @@ SOURCES += ../../designEditors/common/ComponentInstanceParameterFinder.cpp \
     ../../designEditors/MemoryDesigner/MemoryItem.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ParameterCache.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./MemoryViewGenerator.cpp \
     ./MemoryViewGeneratorPlugin.cpp \
-    ../../editors/ComponentEditor/common/ListParameterFinder.cpp
+    ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
+    ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
+    ../common/HDLParser/MetaComponent.cpp \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../common/HDLParser/MetaDesign.cpp \
+    ../common/HDLParser/MetaInstance.cpp
 RESOURCES += MemoryViewGenerator.qrc

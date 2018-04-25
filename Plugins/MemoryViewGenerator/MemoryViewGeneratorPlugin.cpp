@@ -11,7 +11,9 @@
 
 #include "MemoryViewGeneratorPlugin.h"
 
+#include <Plugins/common/HDLParser/HDLParserCommon.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 #include <library/LibraryInterface.h>
 
@@ -144,8 +146,20 @@ void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
     if (!targetFile.isEmpty())
     {
+        GenerationTuple controlTuple;
+        controlTuple.component = component;
+        controlTuple.design = design;
+        controlTuple.designConfiguration = designConfiguration;
+
+        QSharedPointer<QList<QSharedPointer<View> > > views = GenerationControl::findPossibleViews(controlTuple);
+        QString activeView;
+        if (!views->isEmpty())
+        {
+            activeView = views->first()->name();
+        }
+
         MemoryViewGenerator generator(utility->getLibraryInterface());
-        generator.generate(component, QString(), targetFile);
+        generator.generate(component, activeView, targetFile);
 
         saveToFileset(targetFile, component, utility);
 

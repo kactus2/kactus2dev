@@ -15,17 +15,24 @@ HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../designEditors/MemoryDesigner/ConnectivityInterface.h \
     ../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ../../../designEditors/MemoryDesigner/MemoryItem.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.h \
     ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../designEditors/common/ComponentInstanceParameterFinder.h \
     ../../MockObjects/LibraryMock.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
     ../../../editors/ComponentEditor/common/ParameterCache.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.h
+    ../../../Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.h \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.h \
+    ../../../Plugins/common/HDLParser/MetaComponent.h \
+    ../../../Plugins/common/HDLParser/MetaDesign.h \
+    ../../../Plugins/common/HDLParser/MetaInstance.h \
+    ../../../editors/ComponentEditor/common/ExpressionFormatter.h
 SOURCES += ../../../designEditors/common/ComponentInstanceParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
@@ -35,6 +42,7 @@ SOURCES += ../../../designEditors/common/ComponentInstanceParameterFinder.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityInterface.cpp \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../MockObjects/LibraryMock.cpp \
+    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ../../../designEditors/MemoryDesigner/MemoryItem.cpp \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.cpp \
@@ -44,4 +52,10 @@ SOURCES += ../../../designEditors/common/ComponentInstanceParameterFinder.cpp \
     ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./tst_MemoryViewGenerator.cpp \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp
+    ../../../Plugins/PluginSystem/GeneratorPlugin/GenerationControl.cpp \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.cpp \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.cpp \
+    ../../../Plugins/common/HDLParser/MetaComponent.cpp \
+    ../../../Plugins/common/HDLParser/MetaDesign.cpp \
+    ../../../Plugins/common/HDLParser/MetaInstance.cpp \
+    ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp

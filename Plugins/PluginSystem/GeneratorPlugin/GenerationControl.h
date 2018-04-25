@@ -91,25 +91,25 @@ public:
      */
     bool isUnder() const;
 
+    /*!
+     *  Finds the possible views for generation.
+     *
+     *      @param [in] input   The relevant IP-XACT documents.
+     *
+     *      @return List of possible view names for which to run the generation.
+     */
+    static QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(GenerationTuple input);
+
 protected:
 
     /*!
      *  Finds the possible views for generation.
      *
-     *      @param [in,out]	    targetComponent	The component for which the generator is run.
+     *      @param [in,out] targetComponent     The component for which the generator is run.
      *
      *      @return List of possible view names for which to run the generation.
      */
     QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<const Component> targetComponent) const;
-
-    /*!
-     *  Finds the possible views for generation.
-     *
-     *      @param [in] input			        The relevant IP-XACT documents.
-     *
-     *      @return List of possible view names for which to run the generation.
-     */
-    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(GenerationTuple input) const;
 
 private:
 

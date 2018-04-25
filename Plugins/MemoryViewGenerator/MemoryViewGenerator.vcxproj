@@ -126,11 +126,18 @@
     <ClCompile Include="..\..\designEditors\MemoryDesigner\MasterSlavePathSearch.cpp" />
     <ClCompile Include="..\..\designEditors\MemoryDesigner\MemoryItem.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ParameterCache.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\common\HDLParser\MetaComponent.cpp" />
+    <ClCompile Include="..\common\HDLParser\MetaDesign.cpp" />
+    <ClCompile Include="..\common\HDLParser\MetaInstance.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceParameterFinder.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -195,6 +202,7 @@
     <ClInclude Include="..\..\designEditors\MemoryDesigner\MasterSlavePathSearch.h" />
     <ClInclude Include="..\..\designEditors\MemoryDesigner\MemoryItem.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
     <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
@@ -218,6 +226,12 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="..\common\HDLParser\MetaComponent.h" />
+    <ClInclude Include="..\common\HDLParser\MetaDesign.h" />
+    <ClInclude Include="..\common\HDLParser\MetaInstance.h" />
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h" />
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h" />
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />
     <ClInclude Include="MemoryViewGenerator.h" />
     <CustomBuild Include="MemoryViewGeneratorPlugin.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
