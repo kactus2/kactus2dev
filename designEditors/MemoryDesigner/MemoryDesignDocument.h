@@ -229,6 +229,11 @@ public slots:
     //! Called when the vertical scrollbar is scrolled.
     void onVerticalScroll(int y);
 
+    /*!
+     *  Saves an image of the memory design.
+     */
+    virtual void print();
+
 signals:
 
     //! Signaled when the zoom level has changed.
