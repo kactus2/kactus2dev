@@ -143,13 +143,14 @@ bool SettingsUpdater::Details::isVersionOlderThan(QString const& version, QStrin
 //-----------------------------------------------------------------------------
 QFile* SettingsUpdater::Details::openConfigurationFile(MessageMediator* mediator)
 {        
-#ifdef Q_OS_WIN
-    QFile* configurationFile = new QFile(QCoreApplication::applicationDirPath() + 
-        QStringLiteral("/upgrade.cfg"));
-
-#else
     QFile* configurationFile = new QFile(QStringLiteral("./upgrade.cfg"));
 
+    if (!configurationFile->exists())
+    {
+        configurationFile->setFileName(QCoreApplication::applicationDirPath() + QStringLiteral("/upgrade.cfg"));
+    }
+    
+#ifdef Q_OS_LINUX
     if (!configurationFile->exists())
     {
         configurationFile->setFileName(QStringLiteral("/usr/share/kactus2/upgrade.cfg"));
