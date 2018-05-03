@@ -27,10 +27,8 @@ AssistedLineEdit::AssistedLineEdit(QWidget* parentWnd, QWidget* parent) :
 QLineEdit(parent),
 mainWnd_(parentWnd),
 matcher_(0),
-contentAssist_()
+contentAssist_(new LineContentAssistWidget(this, parentWnd))
 {
-    contentAssist_ = new LineContentAssistWidget(this, parentWnd);
-    
     // Install this as an event filter so that we can track events from the main window.
     if (mainWnd_ != 0)
     {
@@ -49,11 +47,6 @@ AssistedLineEdit::~AssistedLineEdit()
     {
         removeEventFilter(this);
         mainWnd_->removeEventFilter(this);
-    }
-
-    if (contentAssist_)
-    {
-        delete contentAssist_;
     }
 }
 
