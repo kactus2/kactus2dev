@@ -92,6 +92,7 @@ SettingsPage(settings),
 
     connect(colorBox_, SIGNAL(clicked()), this, SLOT(selectColor()));
 
+    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
     loadSettings();
 
     highlightTypeList_->setCurrentRow(0);
