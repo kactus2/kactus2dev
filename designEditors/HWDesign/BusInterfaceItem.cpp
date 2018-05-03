@@ -24,6 +24,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/GraphicsItemLabel.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -137,16 +138,17 @@ void BusInterfaceItem::setDirection(QVector2D const& dir)
 void BusInterfaceItem::setLabelPosition()
 {
     qreal nameWidth = getNameLabel()->boundingRect().width();
+    qreal nameHeight = getNameLabel()->boundingRect().height();
 
     // Check if the port is directed to the left.
     if (getDirection().x() < 0)
     {
-        getNameLabel()->setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
+        getNameLabel()->setPos(-nameHeight / 2 + 2, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
     }
     // Otherwise the port is directed to the right.
     else
     {
-        getNameLabel()->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
+        getNameLabel()->setPos(nameHeight / 2 - 2, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
     }
 }
 

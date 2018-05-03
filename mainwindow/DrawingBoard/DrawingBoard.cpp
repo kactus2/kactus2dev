@@ -151,6 +151,27 @@ void DrawingBoard::printCurrentDocument()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DrawingBoard::exportCurrentDocumentAsImage()
+//-----------------------------------------------------------------------------
+void DrawingBoard::exportCurrentDocumentAsImage()
+{
+    TabDocument* document = static_cast<TabDocument*>(currentWidget());
+    if (document)
+    {
+        bool exportSucceeds = document->exportImage();
+        QString documentTitle = document->getTitle();
+        if (exportSucceeds)
+        {
+            emit noticeMessage(QStringLiteral("Image export complete for ") + documentTitle);
+        }
+        else
+        {
+            emit errorMessage(QStringLiteral("Failed to export image of ") + documentTitle);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: DrawingBoard::refreshCurrentDocument()
 //-----------------------------------------------------------------------------
 void DrawingBoard::refreshCurrentDocument()

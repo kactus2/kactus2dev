@@ -19,6 +19,7 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/NamelabelWidth.h>
+#include <designEditors/common/GraphicsItemLabel.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
@@ -290,9 +291,6 @@ void AdHocPortItem::shortenNameLabel( qreal width )
 {
     QFont font = getNameLabel()->font();
 	QString nameLabelText = NamelabelWidth::setNameLabel(name(), font, width);
-
-    getNameLabel()->setHtml(
-        "<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + nameLabelText + "</div>");
 
 	setLabelPosition();
 }

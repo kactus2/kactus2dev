@@ -19,6 +19,7 @@
 #include <QPolygonF>
 
 class Port;
+class GraphicsItemLabel;
 
 //-----------------------------------------------------------------------------
 //! Parent graphics item for ad-hoc ports.
@@ -171,9 +172,9 @@ protected:
     /*!
      *  Get the tie off label of the item.
      *
-     *      @return The text item containing the current tie off.
+     *      @return The label item containing the current tie off.
      */
-    QGraphicsTextItem* getTieOffLabel();
+    GraphicsItemLabel* getTieOffLabel();
 
     /*!
      *  Set the position for the tie off label.
@@ -242,7 +243,7 @@ private:
     QSharedPointer<Port> port_;
 
     //! The tie off label.
-    QGraphicsTextItem* tieOffLabel_;
+    GraphicsItemLabel* tieOffLabel_;
 
     //! The path connecting the tie off label to this item.
     QGraphicsItem* tieOffPath_;

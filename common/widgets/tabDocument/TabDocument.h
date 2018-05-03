@@ -258,6 +258,11 @@ public slots:
     virtual void print();
 
     /*!
+     *  Exports a screenshot of the document as an image file.
+     */
+    virtual bool exportImage();
+
+    /*!
      *  Sets the document modified/unmodified.
      *
      *      @param [in] modified True if the document should be set modified; otherwise false.

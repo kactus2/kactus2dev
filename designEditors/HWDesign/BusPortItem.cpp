@@ -20,6 +20,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/NamelabelWidth.h>
+#include <designEditors/common/GraphicsItemLabel.h>
 
 #include <library/LibraryInterface.h>
 
@@ -191,8 +192,8 @@ qreal BusPortItem::getNameLength()
 void BusPortItem::shortenNameLabel(qreal width)
 {
     QString nameLabelText = NamelabelWidth::setNameLabel(name(), getNameLabel()->font(), width);
+    getNameLabel()->setText(nameLabelText);
 
-    getNameLabel()->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + nameLabelText + "</div>");
     setLabelPosition();
 }
 

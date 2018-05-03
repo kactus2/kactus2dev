@@ -88,6 +88,11 @@ public:
     virtual void print();
 
     /*!
+     *  Exports a screenshot of the document as an image file.
+     */
+    virtual bool exportImage();
+
+    /*!
      *  Sets the zoom level of the design.
      *
      *      @param [in] level The zoom level in percents.
