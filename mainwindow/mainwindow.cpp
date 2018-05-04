@@ -3894,7 +3894,7 @@ void MainWindow::setPluginVisibilities()
         }
     }
 
-    generationGroup_->setVisible(isGenerationGroupVisible);
+    generationGroup_->setVisible(isGenerationGroupVisible && doc);
 }
 
 //-----------------------------------------------------------------------------

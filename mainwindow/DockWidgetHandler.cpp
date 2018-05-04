@@ -168,6 +168,13 @@ void DockWidgetHandler::setupContextHelp()
     QSettings settings;
     QString helpPath = settings.value("Platform/HelpPath", "Help").toString();
 
+    QDir helpDirectory(helpPath);
+    if (helpDirectory.isRelative())
+    {
+        helpPath.prepend(QLatin1Char('/'));
+        helpPath.prepend(QCoreApplication::applicationDirPath());        
+    }  
+
     QHelpEngine* helpEngine = new QHelpEngine(helpPath + "/Kactus2Help.qhc", mainWindow_);
     helpEngine->setupData();
 

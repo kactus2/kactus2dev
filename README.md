@@ -87,8 +87,9 @@ Please do note the slash at the end of the path.
 
 #### 2. Build the sources
 
-Get the Kactus2 source files. We recommend using the release tar-package (link above).
-Extract the files and navigate to the Kactus2 root directory. 
+First, get the Kactus2 source files. We recommend using the release tar-package (link above)
+which has all Windows-specific files removed. Extract the files and navigate to the 
+Kactus2 root directory. 
 
 Example:
 ```
@@ -97,29 +98,36 @@ tar -xvf kactus2-3.4.0.tar.gz -C ~/kactus2
 cd ~/kactus2
 ```
 
-Select installation for either all users (option a) or current user only (option b) below:
+Select installation either for all users (option a) or customized target (option b) below:
 
-a) Installation for all users (requires admin privileges).
+a) Default installation for all users (requires admin privileges).
 
-Open file .qmake.conf and check that paths are compatible with your Linux distribution.
-The defaults work with Ubuntu 64-bit, but for instance, CentOS 7 64-bit requires changing
-lib_path from /usr/lib to /usr/lib64.
-    
+Open file .qmake.conf and check that the paths are compatible with your Linux distribution.
+The defaults should work with Ubuntu 64-bit, Debian and CentOS 7 64-bit, but on some systems
+you may have to change lib_path from /usr/lib to /usr/lib64.
+
 Now run following commands:
 ```
 ./configure
 make
-make install
+sudo make install
 ```
 
-b) A local installation for the current user.
+After the installation, skip to section 3. 
 
-  Open file .qmake.conf and set the installation directory in variable LOCAL_INSTALL_DIR.
+b) Customized installation target. This option can be used for a local installation for the 
+current user (e.g. in ~/kactus2) as well as shared installation in a specific directory 
+(e.g. /opt/edatools/kactus2).
+
+Open file .qmake.conf and set the installation directory in variable LOCAL_INSTALL_DIR.
   
 Example:
   
     LOCAL_INSTALL_DIR="~/kactus2"
-    
+  
+By default, the shared libraries are installed in the same directory, but can be configured
+by setting the lib_path on line 44.
+  
 Now run the following commands:
 ```
 ./configure
@@ -127,14 +135,23 @@ make
 make install
 ```
 
-Note: If you do ./configure with wrong Qt binaries, you will have to delete the generated 
+Run `sudo make install`, if the current user has no write permissions to the target directory 
+(e.g. /opt/edatools/kactus2).
+
+Finally, make sure the shared libraries can be found by the program loader. If the installation
+is shared between multiple users, consider listing the libraries in /etc/ld.so.conf. For example,
+create the file /etc/ld.so.conf.d/kactus2-3.4.0.conf and in it add a single line that contains the
+path to the installation directory (e.g. /opt/edatools/kactus2). Run `ldconfig` to update the paths
+in the loader.
+
+Please note, if you do ./configure with wrong Qt binaries, you will have to delete the generated 
 makefiles before configuring again. The easiest way to do this, is to run command `make distclean`.
 
 #### 3a. Run Kactus2 GUI
 
 There are three ways to run Kactus2 depending on your system and installation setup.
 
-a) An installation shared between users. Run:
+a) A default installation shared between users. Run:
   
     /usr/bin/kactus2
 
@@ -142,9 +159,16 @@ b) A local installation from the installation directory. Run:
     
     LD_LIBRARY_PATH=. ./kactus2
 
-c) In some systems, a link to the executable is created if Kactus2 was installed for all users. Run:
+If the library paths are set in /etc/ld.so.conf, the binary can be run directly.
+Example:
+
+	/opt/edatools/kactus2
+	
+c) In some systems, a link to the executable is created, if Kactus2 was installed for all users. Run:
 
     kactus2
+
+Please note a recent change to lower-case binary name i.e. kactus2, not Kactus2.
 
 #### 3b. Run Kactus2 command-line (experimental)
 
@@ -152,7 +176,7 @@ Some tasks may be run in the command-line without the GUI. Currently only Verilo
 this feature and can be executed with command `generate_verilog`. 
 Additional options are required as detailed below.
 
-For example, to generate Verilog, run:
+Example:
 
     kactus2 generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
     
@@ -165,6 +189,24 @@ Kactus2 supports the following general command-line options:
 
 Please note that the command-line interface is an experimental feature and very likely 
 subject to changes in the near future. 
+
+Settings and configurations
+----------------------------------------------------
+
+Kactus2 uses a settings file storing user-specific tool settings. The default location is
+~/.config/TUT/Kactus2.ini in Linux and C:\Users\<username>\AppData\Roaming\TUT\Kactus2.ini
+in Windows. The location can be checked on the general settings page in Kactus2.
+
+A system wide default settings file is located in /etc/xdg and C:\ProgramData, respectively.
+This will be used as a base for any new user-specific settings and a fallback mechanism, if
+the user's file is missing a requested value.
+
+Modifying the settings files manually is not recommended and should be done only by advanced 
+users. Most of the time all required changes can be applied in the Kactus2 GUI.
+
+In addtion, Kactus2 uses the file configure.cfg for updating the users' settings when
+new setting options are introduced in the tool. Please do not modify this file as it will
+break the compatibility with earlier versions.
 
 Community Guidelines & Contributions
 ----------------------------------------------------
@@ -181,7 +223,7 @@ Kactus2 uses [Icons8](https://icons8.com/) provided by Icons8 LLC
 
 Licencing
 ----------------------------------------------------
-This software is licensed under the GPL2 General Public License.
+This software is licenced under the GPL2 General Public License.
 
-Kactus2 is also available for dual licensing. Please contact kactus2@cs.tut.fi
-to purchase a commercial license.
+Kactus2 is also available for dual licencing. Please contact kactus2@cs.tut.fi
+to purchase a commercial licence.
