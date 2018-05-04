@@ -16,6 +16,7 @@
 #include <common/KactusColors.h>
 
 #include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/GraphicsItemLabel.h>
 #include <designEditors/HWDesign/OffPageConnectorItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
 
@@ -30,7 +31,7 @@ SWConnectionEndpoint::SWConnectionEndpoint(QSharedPointer<Component> component, 
     QGraphicsItem* parent, QVector2D const& dir):
 ConnectionEndpoint(parent),
 type_(ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED),
-nameLabel_(new QGraphicsTextItem(name, this)),
+nameLabel_(new GraphicsItemLabel(name, this)),
 offPageConnector_(),
 parentItem_(),
 containingComponent_(component)
@@ -73,7 +74,7 @@ QSharedPointer<Component> SWConnectionEndpoint::getOwnerComponent() const
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint::getNameLabel()
 //-----------------------------------------------------------------------------
-QGraphicsTextItem* SWConnectionEndpoint::getNameLabel() const
+GraphicsItemLabel* SWConnectionEndpoint::getNameLabel() const
 {
     return nameLabel_;
 }
@@ -203,12 +204,6 @@ void SWConnectionEndpoint::initialize()
     nameLabel_->setFont(font);
     nameLabel_->setFlag(ItemStacksBehindParent);
     nameLabel_->setRotation(-rotation());
-
-    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
-    shadow->setXOffset(0);
-    shadow->setYOffset(0);
-    shadow->setBlurRadius(5);
-    nameLabel_->setGraphicsEffect(shadow);
 
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);

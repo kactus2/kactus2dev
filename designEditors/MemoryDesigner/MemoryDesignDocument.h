@@ -230,9 +230,9 @@ public slots:
     void onVerticalScroll(int y);
 
     /*!
-     *  Saves an image of the memory design.
+     *  Exports a screenshot of the document as an image file.
      */
-    virtual void print();
+    virtual bool exportImage();
 
 signals:
 

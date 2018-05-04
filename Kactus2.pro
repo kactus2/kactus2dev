@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = kactus2
 DESTDIR = ./executable
-QT += core xml widgets gui printsupport help
+QT += core xml widgets gui printsupport help svg
 CONFIG += c++11 release
 DEFINES += _WINDOWS QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE  QT_HAVE_MMXEXT QT_HAVE_SSE2 KACTUS2_EXPORTS QT_HELP_LIB QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB
 INCLUDEPATH += . \

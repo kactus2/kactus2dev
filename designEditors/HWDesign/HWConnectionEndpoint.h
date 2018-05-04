@@ -29,6 +29,7 @@ class BusInterface;
 class VLNV;
 class OffPageConnectorItem;
 class HWComponentItem;
+class GraphicsItemLabel;
 
 //-----------------------------------------------------------------------------
 //! HWConnectionEndpoint interface.
@@ -120,7 +121,7 @@ protected:
      *
      *      @return The name label.
      */
-    QGraphicsTextItem* getNameLabel() const;
+    GraphicsItemLabel* getNameLabel() const;
 
     /*!
      *  Handles the mouse move events.
@@ -156,7 +157,7 @@ private:
     HWComponentItem* parentComponentItem_;
 
     //! The name label.
-    QGraphicsTextItem* nameLabel_;
+    GraphicsItemLabel* nameLabel_;
 
     //! The off page connector item.
     OffPageConnectorItem* offPageConnector_;

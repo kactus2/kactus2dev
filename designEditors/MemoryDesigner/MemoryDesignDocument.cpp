@@ -11,6 +11,8 @@
 
 #include "MemoryDesignDocument.h"
 
+#include <designEditors/common/ImageExporter.h>
+
 #include <designEditors/MemoryDesigner/MemoryDesignerDiagram.h>
 
 #include <library/LibraryInterface.h>
@@ -22,7 +24,6 @@
 #include <QScrollBar>
 #include <QVBoxLayout>
 #include <QApplication>
-#include <QFileDialog>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDocument::MemoryDesignDocument()
@@ -361,30 +362,10 @@ void MemoryDesignDocument::filterUnconnectedMemoryItems(bool filterUnconnected)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignDocument::print()
+// Function: MemoryDesignDocument::exportImage()
 //-----------------------------------------------------------------------------
-void MemoryDesignDocument::print()
+bool MemoryDesignDocument::exportImage()
 {
     QString libraryPath = libraryHandler_->getDirectoryPath(identifyingVLNV_);
-
-    QString printPath =
-        QFileDialog::getSaveFileName(this, tr("Save image to file"), libraryPath, tr("PNG files (*.png)"));
-
-    if (printPath.isEmpty())
-    {
-        return;
-    }
-
-    QRectF boundingRect = diagram_->itemsBoundingRect();
-    boundingRect.setHeight(boundingRect.height() + 2);
-    boundingRect.setWidth(boundingRect.width() + 2);
-
-    QPixmap memoryImage(boundingRect.size().toSize());
-    QPainter picPainter(&memoryImage);
-    picPainter.fillRect(memoryImage.rect(), QBrush(Qt::white));
-    diagram_->render(&picPainter, memoryImage.rect(), boundingRect.toRect());
-
-    QFile memoryImageFile(printPath);
-    memoryImageFile.open(QIODevice::WriteOnly);
-    memoryImage.save(&memoryImageFile, "PNG");
+    return ImageExporter::exportImage(libraryPath, identifyingVLNV_, diagram_, this);
 }

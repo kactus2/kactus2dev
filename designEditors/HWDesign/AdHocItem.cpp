@@ -15,12 +15,13 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/GraphicsItemLabel.h>
 
 #include <QPen>
 #include <QFont>
 #include <QGraphicsDropShadowEffect>
 
-const int TIEOFFITEM_DISTANCE = 15;
+const int TIEOFFITEM_DISTANCE = 20;
 
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::AdHocItem()
@@ -274,14 +275,10 @@ void AdHocItem::changeTieOffLabel(QString const& tieOffExpression, QString const
         tieOffText = tieOffValue.left(4) + "...";
     }
 
-    tieOffLabel_->setPlainText(tieOffText);
+    tieOffLabel_->setText(tieOffText);
     tieOffLabel_->setToolTip(tieOffExpression);
 
     setTieOffLabelPosition();
-
-    tieOffLabel_->setHtml(
-        "<div style=\"color:" + textColour + "; background-color:#eeeeee; border-style:solid; border-width: 1px\">"
-        + tieOffText + "</div>");
 }
 
 //-----------------------------------------------------------------------------
@@ -289,18 +286,11 @@ void AdHocItem::changeTieOffLabel(QString const& tieOffExpression, QString const
 //-----------------------------------------------------------------------------
 void AdHocItem::createTieOffLabel()
 {
-    tieOffLabel_ = new QGraphicsTextItem("", this);
+    tieOffLabel_ = new GraphicsItemLabel("", this);
 
     QFont font = tieOffLabel_->font();
     font.setPointSize(8);
     tieOffLabel_->setFont(font);
-
-    QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
-    shadow->setXOffset(0);
-    shadow->setYOffset(0);
-    shadow->setBlurRadius(5);
-    tieOffLabel_->setGraphicsEffect(shadow);
-
     tieOffLabel_->setRotation(-rotation());
 
     createTieOffPath();
@@ -362,7 +352,7 @@ void AdHocItem::removeTieOffItem()
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::getTieOffLabel()
 //-----------------------------------------------------------------------------
-QGraphicsTextItem* AdHocItem::getTieOffLabel()
+GraphicsItemLabel* AdHocItem::getTieOffLabel()
 {
     return tieOffLabel_;
 }

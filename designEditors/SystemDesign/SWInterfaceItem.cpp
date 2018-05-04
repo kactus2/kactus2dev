@@ -18,6 +18,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/GraphicsItemLabel.h>
 #include <designEditors/HWDesign/OffPageConnectorItem.h>
 #include <designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.h>
 
@@ -111,7 +112,7 @@ QString SWInterfaceItem::name() const
     }
     else
     {
-        return getNameLabel()->toPlainText();
+        return getNameLabel()->getText();
     }
 }
 
@@ -132,7 +133,7 @@ void SWInterfaceItem::setName(const QString& name)
     }
     else
     {
-        getNameLabel()->setPlainText(name);
+        getNameLabel()->setText(name);
     }
 
     graphicsData_->setName(name);
@@ -248,7 +249,7 @@ void SWInterfaceItem::updateInterface()
     setPolygon(shape);
 
     // Update the name label.
-    getNameLabel()->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
+    getNameLabel()->setText(name());
 
 	setLabelPosition();
 
@@ -679,7 +680,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
         if (type.getType() == VLNV::APIDEFINITION)
         {
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(getNameLabel()->toPlainText());
+            apiInterface_->setName(getNameLabel()->getText());
             apiInterface_->setApiType(type);
             getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
 
@@ -689,7 +690,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
         else if (type.getType() == VLNV::COMDEFINITION)
         {
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(getNameLabel()->toPlainText());
+            comInterface_->setName(getNameLabel()->getText());
             comInterface_->setComType(type);
             getOwnerComponent()->getVendorExtensions()->append(comInterface_);
 
@@ -834,16 +835,17 @@ void SWInterfaceItem::undefine()
 void SWInterfaceItem::setLabelPosition()
 {
     qreal nameWidth = getNameLabel()->boundingRect().width();
+    qreal nameHeight = getNameLabel()->boundingRect().height();
 
 	// Check if the port is directed to the left.
 	if (getDirection().x() < 0)
 	{
-        getNameLabel()->setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
+        getNameLabel()->setPos(-nameHeight / 2 + 2, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
 	}
 	// Otherwise the port is directed to the right.
 	else
 	{
-        getNameLabel()->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
+        getNameLabel()->setPos(nameHeight / 2 - 2, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
 	}
 }
 

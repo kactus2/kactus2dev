@@ -58,6 +58,11 @@ public slots:
     //! Prints the currently open document.
     void printCurrentDocument();
 
+    /*!
+     *  Exports the currently open document as a screenshot.
+     */
+    void exportCurrentDocumentAsImage();
+
     //! Refreshes the currently open document.
     void refreshCurrentDocument();
 

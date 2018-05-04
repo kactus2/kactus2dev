@@ -20,6 +20,7 @@
 class VLNV;
 class OffPageConnectorItem;
 class Component;
+class GraphicsItemLabel;
 
 //-----------------------------------------------------------------------------
 //! Common interface for SW connection endpoints.
@@ -121,7 +122,7 @@ protected:
      *
      *      @return The name label.
      */
-    QGraphicsTextItem* getNameLabel() const;
+    GraphicsItemLabel* getNameLabel() const;
 
     /*!
      *  Makes basic initializations common to all constructors.
@@ -141,7 +142,7 @@ private:
     ConnectionEndpoint::EndpointType type_;
 
     //! The name label.
-    QGraphicsTextItem* nameLabel_;
+    GraphicsItemLabel* nameLabel_;
 
     //! The off page connector item.
     OffPageConnectorItem* offPageConnector_;

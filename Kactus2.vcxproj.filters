@@ -4441,6 +4441,12 @@
     <ClCompile Include="common\ui\GraphicalMessageMediator.cpp">
       <Filter>Source Files\common\ui</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\ImageExporter.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\GraphicsItemLabel.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6742,6 +6748,12 @@
     </ClInclude>
     <ClInclude Include="common\ui\ConsoleMediator.h">
       <Filter>Header Files\common\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\ImageExporter.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\GraphicsItemLabel.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

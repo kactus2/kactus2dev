@@ -127,6 +127,7 @@ actSave_(0),
 actSaveAs_(0),
 actSaveHierarchy_(0),
 actPrint_(0),
+actImageExport_(0),
 editGroup_(0),
 actUndo_(0),
 actRedo_(0),
@@ -503,6 +504,10 @@ void MainWindow::setupActions()
     actPrint_->setEnabled(false);
     connect(actPrint_, SIGNAL(triggered()), designTabs_, SLOT(printCurrentDocument()));
 
+    actImageExport_ = new QAction(QIcon(":/icons/common/graphics/export.png"), tr("Export image"), this);
+    actImageExport_->setEnabled(false);
+    connect(actImageExport_, SIGNAL(triggered()), designTabs_, SLOT(exportCurrentDocumentAsImage()));
+
     actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), tr("Undo (Ctrl+Z)"), this);
     actUndo_->setShortcut(QKeySequence::Undo);
     connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
@@ -755,6 +760,7 @@ void MainWindow::setupMenus()
     fileGroup->addAction(actSaveAll_);
     fileGroup->addAction(actSaveHierarchy_);
     fileGroup->addAction(actPrint_);
+    fileGroup->addAction(actImageExport_);
 
     fileGroup->widgetForAction(actNew_)->installEventFilter(ribbon_);
     fileGroup->widgetForAction(actSave_)->installEventFilter(ribbon_);
@@ -762,6 +768,7 @@ void MainWindow::setupMenus()
     fileGroup->widgetForAction(actSaveHierarchy_)->installEventFilter(ribbon_);
     fileGroup->widgetForAction(actSaveAll_)->installEventFilter(ribbon_);
     fileGroup->widgetForAction(actPrint_)->installEventFilter(ribbon_);
+    fileGroup->widgetForAction(actImageExport_)->installEventFilter(ribbon_);
 
     // The "Library" group.
     RibbonGroup* libGroup = ribbon_->addGroup(tr("Library"));
@@ -1092,6 +1099,7 @@ void MainWindow::updateMenuStrip()
     actSaveAs_->setEnabled(doc != 0);
     actSaveHierarchy_->setEnabled(componentEditor || dynamic_cast<DesignWidget*>(doc));
     actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
+    actImageExport_->setEnabled(doc != 0 && doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT);
 
     generationGroup_->setEnabled(unlocked);
     generationGroup_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));

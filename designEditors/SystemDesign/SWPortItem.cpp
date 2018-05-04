@@ -21,6 +21,7 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/NamelabelWidth.h>
+#include <designEditors/common/GraphicsItemLabel.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
 
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
@@ -110,7 +111,7 @@ QString SWPortItem::name() const
     }
     else
     {
-        return getNameLabel()->toPlainText();
+        return getNameLabel()->getText();
     }
 }
 
@@ -131,7 +132,7 @@ void SWPortItem::setName(const QString& name)
     }
     else
     {
-        getNameLabel()->setPlainText(name);
+        getNameLabel()->setText(name);
     }
 
 	updateInterface();
@@ -261,7 +262,7 @@ void SWPortItem::updateInterface()
     setPolygon(shape);
 
     // Update the name label.
-    getNameLabel()->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
+    getNameLabel()->setText(name());
 
 	setLabelPosition();
 
@@ -288,7 +289,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
         if (other->getType() == ENDPOINT_TYPE_API)
         {
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(getNameLabel()->toPlainText());
+            apiInterface_->setName(getNameLabel()->getText());
             apiInterface_->setApiType(other->getApiInterface()->getApiType());
             
             if (other->isHierarchical())
@@ -312,7 +313,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
         else if (other->getType() == ENDPOINT_TYPE_COM)
         {
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(getNameLabel()->toPlainText());
+            comInterface_->setName(getNameLabel()->getText());
             comInterface_->setComType(other->getComInterface()->getComType());
             comInterface_->setTransferType(other->getComInterface()->getTransferType());
 
@@ -818,7 +819,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         if (type.getType() == VLNV::APIDEFINITION)
         {
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(getNameLabel()->toPlainText());
+            apiInterface_->setName(getNameLabel()->getText());
             apiInterface_->setApiType(type);
 
             getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
@@ -829,7 +830,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         else if (type.getType() == VLNV::COMDEFINITION)
         {
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(getNameLabel()->toPlainText());
+            comInterface_->setName(getNameLabel()->getText());
             comInterface_->setComType(type);
             getOwnerComponent()->getVendorExtensions()->append(comInterface_);
 
@@ -987,8 +988,7 @@ void SWPortItem::shortenNameLabel( qreal width )
 {
     QFont font = getNameLabel()->font();
 	QString nameLabelText = NamelabelWidth::setNameLabel( name(), font, width);
-    getNameLabel()->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + nameLabelText +
-        "</div>");
+    getNameLabel()->setText(nameLabelText);
 
 	setLabelPosition();
 }

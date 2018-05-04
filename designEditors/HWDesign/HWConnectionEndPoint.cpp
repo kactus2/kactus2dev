@@ -13,6 +13,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/GraphicsItemLabel.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/OffPageConnectorItem.h>
@@ -33,7 +34,7 @@ HWConnectionEndpoint::HWConnectionEndpoint(QSharedPointer<Component> containingC
 ConnectionEndpoint(parent),
 containingComponent_(containingComponent),
 parentComponentItem_(0),
-nameLabel_(new QGraphicsTextItem("", this)),
+nameLabel_(new GraphicsItemLabel("", this)),
 offPageConnector_()
 {
     setDirection(dir);
@@ -42,12 +43,6 @@ offPageConnector_()
     font.setPointSize(8);
     nameLabel_->setFont(font);
     nameLabel_->setFlag(ItemStacksBehindParent);
-
-    QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect;
-    shadow->setXOffset(0);
-    shadow->setYOffset(0);
-    shadow->setBlurRadius(5);
-    nameLabel_->setGraphicsEffect(shadow);
 
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -128,7 +123,7 @@ void HWConnectionEndpoint::updateInterface()
 
     updateEndPointGraphics();
 
-    nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
+    nameLabel_->setText(name());
 
     setLabelPosition();
 
@@ -146,7 +141,7 @@ qreal HWConnectionEndpoint::getNameLength()
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndPoint::getNameLabel()
 //-----------------------------------------------------------------------------
-QGraphicsTextItem* HWConnectionEndpoint::getNameLabel() const
+GraphicsItemLabel* HWConnectionEndpoint::getNameLabel() const
 {
     return nameLabel_;
 }

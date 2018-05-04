@@ -705,6 +705,9 @@ private:
     //! Action to print the current document.
     QAction* actPrint_;
 
+    //! Action to export an image of the current document.
+    QAction* actImageExport_;
+
     //! The Edit group.
     RibbonGroup* editGroup_;
 

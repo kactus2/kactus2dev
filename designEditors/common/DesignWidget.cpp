@@ -13,6 +13,7 @@
 
 #include <common/GenericEditProvider.h>
 
+#include <designEditors/common/ImageExporter.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/StickyNote/StickyNoteRemoveCommand.h>
@@ -422,6 +423,16 @@ void DesignWidget::print()
         // draw the picture on the printer
         painter.drawPixmap(printer.pageRect().topLeft(), scaledPixmap);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignWidget::exportImage()
+//-----------------------------------------------------------------------------
+bool DesignWidget::exportImage()
+{
+    VLNV designVLNV = getIdentifyingVLNV();
+    QString libraryPath = library_->getDirectoryPath(designVLNV);
+    return ImageExporter::exportImage(libraryPath, designVLNV, diagram_, this);
 }
 
 //-----------------------------------------------------------------------------
