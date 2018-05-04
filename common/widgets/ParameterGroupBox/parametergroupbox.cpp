@@ -26,7 +26,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
@@ -55,7 +55,7 @@ parameterFinder_(parameterFinder)
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    QSharedPointer<ParameterValidator2014> validator(new ParameterValidator2014(expressionParser, 
+    QSharedPointer<ParameterValidator> validator(new ParameterValidator(expressionParser, 
         choices));
 
     model_ = new ParametersModel(parameters, choices, validator, expressionParser, parameterFinder, 

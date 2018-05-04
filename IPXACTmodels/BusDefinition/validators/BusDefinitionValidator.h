@@ -20,7 +20,7 @@
 
 class BusDefinition;
 class ExpressionParser;
-class ParameterValidator2014;
+class ParameterValidator;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:BusDefinition.
@@ -66,7 +66,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The validator for parameters.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

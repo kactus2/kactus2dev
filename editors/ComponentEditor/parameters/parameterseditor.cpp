@@ -32,7 +32,7 @@
 // Function: ParametersEditor::ParametersEditor()
 //-----------------------------------------------------------------------------
 ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterValidator2014> validator,
+    QSharedPointer<ParameterValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,

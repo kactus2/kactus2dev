@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/ProtocolValidator.h>
 
 #include <QString>
@@ -164,7 +164,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! Validator for abstraction definition parameters.
-    ParameterValidator2014 parameterValidator_;
+    ParameterValidator parameterValidator_;
 
     //! Validator for protocols within transactional ports.
     ProtocolValidator protocolValidator_;

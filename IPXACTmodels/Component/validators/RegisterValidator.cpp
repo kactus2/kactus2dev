@@ -14,7 +14,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/validators/MemoryReserve.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
@@ -32,7 +32,7 @@
 // Function: RegisterValidator::RegisterValidator()
 //-----------------------------------------------------------------------------
 RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator2014> parameterValidator):
+    QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator> parameterValidator):
 expressionParser_(expressionParser),
 fieldValidator_(fieldValidator),
 parameterValidator_(parameterValidator)

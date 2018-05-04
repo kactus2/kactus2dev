@@ -14,7 +14,7 @@
 #include "ModuleParameterColumns.h"
 
 #include <IPXACTmodels/common/ModuleParameter.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <common/KactusColors.h>
 
@@ -30,7 +30,7 @@ ModuleParameterModel::ModuleParameterModel(QSharedPointer<QList<QSharedPointer<M
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
 AbstractParameterModel(choices, 
-    QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, choices)),
+    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, choices)),
     expressionParser, parameterFinder, expressionFormatter, parent),
     moduleParameters_(moduleParameters), 
     editingDisabled_(false)

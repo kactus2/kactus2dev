@@ -33,7 +33,7 @@
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
@@ -53,7 +53,7 @@ BusInterfaceValidator::BusInterfaceValidator(QSharedPointer<ExpressionParser> ex
     QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
     QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
     QSharedPointer<PortMapValidator> portMapValidator,
-    QSharedPointer<ParameterValidator2014> parameterValidator,
+    QSharedPointer<ParameterValidator> parameterValidator,
     LibraryInterface* libraryHandler):
 expressionParser_(expressionParser),
 availableChoices_(choices),

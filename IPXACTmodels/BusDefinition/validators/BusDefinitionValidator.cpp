@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/Choice.h>
 
@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 BusDefinitionValidator::BusDefinitionValidator(QSharedPointer<ExpressionParser> expressionParser):
 expressionParser_(expressionParser), 
-    parameterValidator_(new ParameterValidator2014(expressionParser, 
+    parameterValidator_(new ParameterValidator(expressionParser, 
     QSharedPointer<QList<QSharedPointer<Choice> > >()))
 {
 

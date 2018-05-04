@@ -26,7 +26,7 @@
 
 class Choice;
 class Component;
-class ParameterValidator2014;
+class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
@@ -47,7 +47,7 @@ public:
 	 *      @param [in] parent                  The parent object.
 	 */
 	AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-        QSharedPointer<ParameterValidator2014> validator,
+        QSharedPointer<ParameterValidator> validator,
 	    QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -376,7 +376,7 @@ private:
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 
     //! Validator for parameters.
-    QSharedPointer<ParameterValidator2014> validator_;
+    QSharedPointer<ParameterValidator> validator_;
 
     //! Formatter for parameter expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

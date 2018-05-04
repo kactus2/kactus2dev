@@ -37,7 +37,7 @@ arrayStartIndex_(arrayStartIndex)
     QSharedPointer<QList<QSharedPointer<Choice> > > choices(new QList<QSharedPointer<Choice> >());
     choices->append(selectedChoice);
 
-    validator_ = new ParameterValidator2014(expressionParser, choices);
+    validator_ = new ParameterValidator(expressionParser, choices);
 
     QString repeater = ",";
     QString newArray = repeater.repeated(sizeOfArray_ - 1);

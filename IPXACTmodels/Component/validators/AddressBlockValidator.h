@@ -22,7 +22,7 @@ class AddressBlock;
 class Register;
 
 class RegisterValidator;
-class ParameterValidator2014;
+class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:addressBlock.
 //-----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ public:
 	 */
     AddressBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<RegisterValidator> registerValidator,
-        QSharedPointer<ParameterValidator2014> parameterValidator);
+        QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
 	~AddressBlockValidator();
@@ -298,7 +298,7 @@ private:
     QSharedPointer<RegisterValidator> registerValidator_;
 
     //! The validator used for parameters.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // ADDRESSBLOCKVALIDATOR_H

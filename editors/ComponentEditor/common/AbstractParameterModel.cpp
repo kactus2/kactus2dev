@@ -16,7 +16,7 @@
 #include <IPXACTmodels/common/Enumeration.h>
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <common/KactusColors.h>
 
@@ -30,7 +30,7 @@
 // Function: AbstractParameterModel::AbstractParameterModel()
 //-----------------------------------------------------------------------------
 AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QSharedPointer<ParameterValidator2014> validator,
+    QSharedPointer<ParameterValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent): 
 ReferencingTableModel(parameterFinder, parent),

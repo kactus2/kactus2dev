@@ -19,7 +19,7 @@
 class Component;
 class Choice;
 class ExpressionParser;
-class ParameterValidator2014;
+class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! The parameters-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! Validator for parameters.
-    QSharedPointer<ParameterValidator2014> validator_;
+    QSharedPointer<ParameterValidator> validator_;
 
 };
 

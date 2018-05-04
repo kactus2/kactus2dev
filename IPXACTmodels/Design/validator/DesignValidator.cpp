@@ -22,7 +22,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
@@ -50,8 +50,8 @@ assertionValidator_()
     adHocConnectionValidator_ =
         QSharedPointer<AdHocConnectionValidator> (new AdHocConnectionValidator(parser, library));
 
-    parameterValidator_ = QSharedPointer<ParameterValidator2014>(
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    parameterValidator_ = QSharedPointer<ParameterValidator>(
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
 
     assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
 }

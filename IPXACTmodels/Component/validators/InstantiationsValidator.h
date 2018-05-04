@@ -29,7 +29,7 @@ class FileBuilder;
 class FileSet;
 class Parameter;
 class ModuleParameter;
-class ParameterValidator2014;
+class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Instantiations.
 //-----------------------------------------------------------------------------
@@ -47,7 +47,7 @@ public:
      */
     InstantiationsValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
-        QSharedPointer<ParameterValidator2014> parameterValidator, LibraryInterface* libraryHandler);
+        QSharedPointer<ParameterValidator> parameterValidator, LibraryInterface* libraryHandler);
 
 	//! The destructor.
 	virtual ~InstantiationsValidator();
@@ -235,7 +235,7 @@ private:
     QSharedPointer<QList<QSharedPointer<FileSet> > > availableFileSets_;
 
     //! The validator used for parameters.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 
     //! The used library interface.
     LibraryInterface* libraryHandler_;

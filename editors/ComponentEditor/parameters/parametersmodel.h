@@ -48,7 +48,7 @@ public:
 	*/
 	ParametersModel(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-        QSharedPointer<ParameterValidator2014> validator,
+        QSharedPointer<ParameterValidator> validator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,

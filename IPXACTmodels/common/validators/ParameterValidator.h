@@ -25,7 +25,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:parameter.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ParameterValidator2014 
+class IPXACTMODELS_EXPORT ParameterValidator 
 {
 public:
 
@@ -35,11 +35,11 @@ public:
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
      *      @param [in] availavleChocies    The currently available choices.
 	 */
-    ParameterValidator2014(QSharedPointer<ExpressionParser> expressionParser,
+    ParameterValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices);
 
 	//! The destructor.
-	virtual ~ParameterValidator2014();
+	virtual ~ParameterValidator();
     
     /*!
      *  Change the available choices.
@@ -326,8 +326,8 @@ protected:
 private:
 
 	// Disable copying.
-	ParameterValidator2014(ParameterValidator2014 const& rhs);
-	ParameterValidator2014& operator=(ParameterValidator2014 const& rhs);
+	ParameterValidator(ParameterValidator const& rhs);
+	ParameterValidator& operator=(ParameterValidator const& rhs);
 
     /*!
      *  Checks if the value of the given parameter is less than the specified minimum value.

@@ -195,7 +195,7 @@
     <ClCompile Include="common\TransactionalTypes.cpp" />
     <ClCompile Include="common\validators\AssertionValidator.cpp" />
     <ClCompile Include="common\validators\CellSpecificationValidator.cpp" />
-    <ClCompile Include="common\validators\ParameterValidator2014.cpp" />
+    <ClCompile Include="common\validators\ParameterValidator.cpp" />
     <ClCompile Include="common\validators\ProtocolValidator.cpp" />
     <ClCompile Include="common\validators\TimingConstraintValidator.cpp" />
     <ClCompile Include="common\validators\ValueFormatter.cpp" />
@@ -1085,7 +1085,7 @@
     <ClInclude Include="common\TransactionalTypes.h" />
     <ClInclude Include="common\validators\AssertionValidator.h" />
     <ClInclude Include="common\validators\CellSpecificationValidator.h" />
-    <ClInclude Include="common\validators\ParameterValidator2014.h" />
+    <ClInclude Include="common\validators\ParameterValidator.h" />
     <ClInclude Include="common\validators\ProtocolValidator.h" />
     <ClInclude Include="common\validators\TimingConstraintValidator.h" />
     <ClInclude Include="common\validators\ValueFormatter.h" />

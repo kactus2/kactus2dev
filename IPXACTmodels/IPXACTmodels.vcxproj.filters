@@ -821,9 +821,6 @@
     <ClCompile Include="kactusExtensions\ConnectionRoute.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="common\validators\ParameterValidator2014.cpp">
-      <Filter>Source Files\common\validators</Filter>
-    </ClCompile>
     <ClCompile Include="BusDefinition\validators\BusDefinitionValidator.cpp">
       <Filter>Source Files\BusDefinition\validators</Filter>
     </ClCompile>
@@ -1003,6 +1000,9 @@
     </ClCompile>
     <ClCompile Include="Component\validators\AbstractionTypeValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\ParameterValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1357,9 +1357,6 @@
     <ClInclude Include="common\VLNV.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="common\validators\ParameterValidator2014.h">
-      <Filter>Header Files\common\validators</Filter>
-    </ClInclude>
     <ClInclude Include="kactusExtensions\ConnectionRoute.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
@@ -1530,6 +1527,9 @@
     </ClInclude>
     <ClInclude Include="Component\validators\AbstractionTypeValidator.h">
       <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\ParameterValidator.h">
+      <Filter>Header Files\common\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

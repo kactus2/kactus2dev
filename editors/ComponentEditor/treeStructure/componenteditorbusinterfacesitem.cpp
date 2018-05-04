@@ -68,8 +68,8 @@ void ComponentEditorBusInterfacesItem::createBusInterfaceValidator()
     QSharedPointer<PortMapValidator> portMapValidator(
         new PortMapValidator(expressionParser_, component_->getPorts(), libHandler_));
 
-    QSharedPointer<ParameterValidator2014> parameterValidator(
-        new ParameterValidator2014(expressionParser_, component_->getChoices()));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(expressionParser_, component_->getChoices()));
 
     validator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(expressionParser_,
         component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
