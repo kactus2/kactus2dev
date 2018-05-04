@@ -28,7 +28,7 @@ const int TIEOFFITEM_DISTANCE = 20;
 //-----------------------------------------------------------------------------
 AdHocItem::AdHocItem(QSharedPointer<Port> port, QSharedPointer<Component> containingComponent,
     QGraphicsItem* parent, QVector2D const& dir):
-HWConnectionEndpoint(containingComponent, parent, dir),
+HWConnectionEndpoint(port->name(), containingComponent, parent, dir),
 port_(port),
 tieOffLabel_(0),
 tieOffPath_(0)

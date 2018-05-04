@@ -33,7 +33,7 @@
 //-----------------------------------------------------------------------------
 BusInterfaceEndPoint::BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
     QGraphicsItem *parent, QVector2D const& dir):
-HWConnectionEndpoint(component, parent, dir),
+HWConnectionEndpoint(busIf->name(), component, parent, dir),
 busInterface_(busIf),
 oldPos_()
 {

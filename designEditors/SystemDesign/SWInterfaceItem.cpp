@@ -55,7 +55,7 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(component, QString(""), parent, QVector2D(1.0f, 0.0f)),
+SWConnectionEndpoint(component, QString(apiIf->name()), parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 comInterface_(),
 apiInterface_(apiIf),
@@ -75,7 +75,7 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(component, QString(""), parent, QVector2D(1.0f, 0.0f)),
+SWConnectionEndpoint(component, QString(comIf->name()), parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 comInterface_(comIf),
 apiInterface_(),
@@ -249,7 +249,7 @@ void SWInterfaceItem::updateInterface()
     setPolygon(shape);
 
     // Update the name label.
-    getNameLabel()->setText(name());
+    getNameLabel()->updateLabelGeometry();
 
 	setLabelPosition();
 

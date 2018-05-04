@@ -56,7 +56,7 @@ stubLineDefaultPen_()
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QSharedPointer<Component> containingComponent,
     QGraphicsItem *parent):
-SWConnectionEndpoint(containingComponent, QString(""), parent),
+SWConnectionEndpoint(containingComponent, QString(apiIf->name()), parent),
 comInterface_(),
 apiInterface_(apiIf),
 oldPos_(),
@@ -75,7 +75,7 @@ stubLineDefaultPen_()
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QSharedPointer<Component> containingComponent,
     QGraphicsItem *parent):
-SWConnectionEndpoint(containingComponent, QString(""), parent),
+SWConnectionEndpoint(containingComponent, QString(comIf->name()), parent),
 comInterface_(comIf),
 apiInterface_(),
 oldPos_(),
@@ -262,7 +262,7 @@ void SWPortItem::updateInterface()
     setPolygon(shape);
 
     // Update the name label.
-    getNameLabel()->setText(name());
+    getNameLabel()->updateLabelGeometry();
 
 	setLabelPosition();
 

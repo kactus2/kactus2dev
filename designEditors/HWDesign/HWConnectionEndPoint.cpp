@@ -29,12 +29,12 @@
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndpont::HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint::HWConnectionEndpoint(QSharedPointer<Component> containingComponent, QGraphicsItem* parent,
-    QVector2D const& dir):
+HWConnectionEndpoint::HWConnectionEndpoint(QString const& name, QSharedPointer<Component> containingComponent,
+    QGraphicsItem* parent, QVector2D const& dir):
 ConnectionEndpoint(parent),
 containingComponent_(containingComponent),
 parentComponentItem_(0),
-nameLabel_(new GraphicsItemLabel("", this)),
+nameLabel_(new GraphicsItemLabel(name, this)),
 offPageConnector_()
 {
     setDirection(dir);
@@ -123,7 +123,7 @@ void HWConnectionEndpoint::updateInterface()
 
     updateEndPointGraphics();
 
-    nameLabel_->setText(name());
+    nameLabel_->updateLabelGeometry();
 
     setLabelPosition();
 
