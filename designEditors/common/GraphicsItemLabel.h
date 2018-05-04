@@ -49,6 +49,11 @@ public:
      */
     QString getText() const;
 
+    /*!
+     *  Update geometry.
+     */
+    void updateLabelGeometry();
+
 private:
 
 	//! No copying

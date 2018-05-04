@@ -16,8 +16,9 @@
 //-----------------------------------------------------------------------------
 GraphicsItemLabel::GraphicsItemLabel(QString const& text, QGraphicsItem* parent /* = 0 */):
 QGraphicsProxyWidget(parent),
-textLabel_(new QLabel(text))
+textLabel_(new QLabel(""))
 {
+    setText(text);
     setWidget(textLabel_);
     textLabel_->setStyleSheet("QLabel {border: 1px solid gray; padding: 0px 0px 1px 1px;}");
 }
@@ -41,7 +42,7 @@ void GraphicsItemLabel::setText(QString const& newText)
     qreal newWidth = fontMetric.width(newText);
     setMaximumWidth(newWidth + 10);
 
-    updateGeometry();
+    updateLabelGeometry();
 }
 
 //-----------------------------------------------------------------------------
@@ -50,4 +51,12 @@ void GraphicsItemLabel::setText(QString const& newText)
 QString GraphicsItemLabel::getText() const
 {
     return textLabel_->text();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsItemLabel::updateLabelGeometry()
+//-----------------------------------------------------------------------------
+void GraphicsItemLabel::updateLabelGeometry()
+{
+    updateGeometry();
 }

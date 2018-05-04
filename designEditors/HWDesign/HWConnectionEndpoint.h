@@ -42,12 +42,13 @@ public:
     /*!
      *  Constructor.
      *
+     *      @param [in] name                    Name of the end point.
      *      @param [in] containingComponent     Component containing the end point item.
      *      @param [in] parent                  The parent graphics item.
      *      @param [in] dir                     The initial direction for the endpoint.
      */
-    HWConnectionEndpoint(QSharedPointer<Component> containingComponent, QGraphicsItem* parent = 0,
-        QVector2D const& dir = QVector2D(0.0f, -1.0f));
+    HWConnectionEndpoint(QString const& name, QSharedPointer<Component> containingComponent,
+        QGraphicsItem* parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
     /*!
      *  Destructor.
