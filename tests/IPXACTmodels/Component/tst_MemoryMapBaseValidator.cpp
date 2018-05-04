@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
@@ -65,7 +65,7 @@ void tst_MemoryMapBaseValidator::testNameIsValid()
     QSharedPointer<MemoryMapBase> testMap (new MemoryMapBase(name));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
@@ -117,7 +117,7 @@ void tst_MemoryMapBaseValidator::testIsPresentIsValid()
     testMap->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
@@ -170,7 +170,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
     testMap->getMemoryBlocks()->append(testBlock);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
@@ -239,7 +239,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap()
     testMap->getMemoryBlocks()->append(blockTwo);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));

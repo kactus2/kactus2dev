@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
@@ -51,7 +51,7 @@ private:
 
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 //-----------------------------------------------------------------------------
@@ -63,8 +63,8 @@ tst_InstantiationsValidator::tst_InstantiationsValidator()
 
     expressionParser_ = QSharedPointer<ExpressionParser> (new SystemVerilogExpressionParser());
 
-    parameterValidator_ = QSharedPointer<ParameterValidator2014>
-        (new ParameterValidator2014(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    parameterValidator_ = QSharedPointer<ParameterValidator>
+        (new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
 }
 
 //-----------------------------------------------------------------------------

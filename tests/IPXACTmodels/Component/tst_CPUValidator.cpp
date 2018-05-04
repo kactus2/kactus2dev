@@ -14,7 +14,7 @@
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
 
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
@@ -53,7 +53,7 @@ tst_CPUValidator::tst_CPUValidator()
 void tst_CPUValidator::baseCase()
 {
 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > >()));
 
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > singleSpace(new QList<QSharedPointer<AddressSpace> >());
@@ -90,7 +90,7 @@ void tst_CPUValidator::baseCase()
 void tst_CPUValidator::testNameIsNotEmpty()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > >()));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
     CPUValidator validator(parameterValidator, parser, noSpaces);
@@ -112,7 +112,7 @@ void tst_CPUValidator::testNameIsNotEmpty()
 void tst_CPUValidator::noRef()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > >()));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
     CPUValidator validator(parameterValidator, parser, noSpaces);
@@ -134,7 +134,7 @@ void tst_CPUValidator::noRef()
 void tst_CPUValidator::testIllegalReference()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > >()));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
     CPUValidator validator(parameterValidator, parser, noSpaces);
@@ -159,7 +159,7 @@ void tst_CPUValidator::testIllegalReference()
 void tst_CPUValidator::failParameter()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > >()));
 
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > singleSpace(new QList<QSharedPointer<AddressSpace> >());
@@ -193,7 +193,7 @@ void tst_CPUValidator::failParameter()
 void tst_CPUValidator::failPresense()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > >()));
 
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > singleSpace(new QList<QSharedPointer<AddressSpace> >());
@@ -222,7 +222,7 @@ void tst_CPUValidator::failPresense()
 void tst_CPUValidator::failRefPresense()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > >()));
 
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > singleSpace(new QList<QSharedPointer<AddressSpace> >());

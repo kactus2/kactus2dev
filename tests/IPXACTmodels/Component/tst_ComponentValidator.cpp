@@ -31,7 +31,7 @@
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
 #include <IPXACTmodels/Component/validators/OtherClockDriverValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
 
 #include <IPXACTmodels/Component/Component.h>

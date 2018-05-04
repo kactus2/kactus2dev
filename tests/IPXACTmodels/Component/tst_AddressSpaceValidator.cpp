@@ -17,7 +17,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
@@ -93,8 +93,8 @@ void tst_AddressSpaceValidator::testHasValidName()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace(name));
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -148,8 +148,8 @@ void tst_AddressSpaceValidator::testHasValidIsPresent()
     testSpace->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -204,8 +204,8 @@ void tst_AddressSpaceValidator::testHasValidRange()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("testSpace", range, "0"));
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -263,8 +263,8 @@ void tst_AddressSpaceValidator::testHasValidWidth()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("testSpace", "10", width));
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -325,8 +325,8 @@ void tst_AddressSpaceValidator::testSegmentHasValidName()
     testSpace->getSegments()->append(testSegment);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -381,8 +381,8 @@ void tst_AddressSpaceValidator::testSegmentsHaveUniqueNames()
     testSpace->getSegments()->append(segmentTwo);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -425,8 +425,8 @@ void tst_AddressSpaceValidator::testSegmentHasValidIsPresent()
     testSpace->getSegments()->append(testSegment);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -489,8 +489,8 @@ void tst_AddressSpaceValidator::testSegmentHasValidAddressOffset()
     }
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -554,8 +554,8 @@ void tst_AddressSpaceValidator::testSegmentHasValidRange()
     }
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -616,8 +616,8 @@ void tst_AddressSpaceValidator::testSegmentIsContainedWithinAddressSpace()
     testSpace->getSegments()->append(testSegment);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -698,8 +698,8 @@ void tst_AddressSpaceValidator::testOverlappingSegments()
     testSpace->getSegments()->append(segmentTwo);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -777,8 +777,8 @@ void tst_AddressSpaceValidator::testHasValidAddressUnitBits()
     testSpace->setAddressUnitBits(addressUnitBits);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -834,8 +834,8 @@ void tst_AddressSpaceValidator::testHasValidLocalMemoryMap()
     testSpace->setLocalMemoryMap(testLocalMap);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
@@ -877,8 +877,8 @@ void tst_AddressSpaceValidator::testHasValidParameters()
     testSpace->getParameters()->append(testParameter);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));

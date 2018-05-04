@@ -21,7 +21,7 @@
 #include <IPXACTmodels/Component/Field.h>
 
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
@@ -67,7 +67,7 @@ private:
 
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 //-----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ private:
 tst_IndirectInterfaceValidator::tst_IndirectInterfaceValidator():
 containingComponent_ (new Component()),
     expressionParser_(new SystemVerilogExpressionParser()),
-    parameterValidator_(new ParameterValidator2014(expressionParser_, 
+    parameterValidator_(new ParameterValidator(expressionParser_, 
     QSharedPointer<QList<QSharedPointer<Choice> > >(0)))
 {    
     QSharedPointer<Field> accessField(new Field("access"));

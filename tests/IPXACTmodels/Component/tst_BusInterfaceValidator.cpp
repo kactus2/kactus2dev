@@ -2092,8 +2092,8 @@ QSharedPointer<BusInterfaceValidator> tst_BusInterfaceValidator::createBusInterf
     QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
     LibraryInterface* libraryHandler)
 {
-    QSharedPointer<ParameterValidator2014> parameterValidator(
-        new ParameterValidator2014(expressionParser, choices));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(expressionParser, choices));
 
     QSharedPointer<PortMapValidator> newPortMapValidator (new PortMapValidator(
         expressionParser, ports, libraryHandler));

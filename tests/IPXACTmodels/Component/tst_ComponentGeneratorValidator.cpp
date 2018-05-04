@@ -14,7 +14,7 @@
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 
 #include <IPXACTmodels/Component/validators/ComponentGeneratorValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <QtTest>
 
@@ -207,7 +207,7 @@ QSharedPointer<ComponentGeneratorValidator> tst_ComponentGeneratorValidator::cre
 {
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
 
-    QSharedPointer<ParameterValidator2014> parameterValidator(new ParameterValidator2014(parser,
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > ()));
 
     QSharedPointer<ComponentGeneratorValidator> generatorValidator (
