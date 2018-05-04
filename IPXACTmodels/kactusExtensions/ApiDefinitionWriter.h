@@ -17,7 +17,6 @@
 #include <IPXACTmodels/common/DocumentWriter.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
@@ -25,15 +24,12 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ApiDefinitionWriter : public DocumentWriter
 {
-    Q_OBJECT
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
      */
-    ApiDefinitionWriter(QObject* parent = 0);
+    ApiDefinitionWriter();
 
     /*!
      *  The destructor.

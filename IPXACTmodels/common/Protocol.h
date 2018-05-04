@@ -14,12 +14,14 @@
 
 #include "Extendable.h"
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <QString>
 
 //-----------------------------------------------------------------------------
 //! Implementation of ipxact:protocol.
 //-----------------------------------------------------------------------------
-class Protocol : public Extendable
+class IPXACTMODELS_EXPORT Protocol : public Extendable
 {
 public:
 

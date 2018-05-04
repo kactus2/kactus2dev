@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionWriter::ComDefinitionWriter()
 //-----------------------------------------------------------------------------
-ComDefinitionWriter::ComDefinitionWriter(QObject* parent): DocumentWriter(parent)
+ComDefinitionWriter::ComDefinitionWriter(): DocumentWriter()
 {
 
 }

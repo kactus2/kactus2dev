@@ -12,7 +12,6 @@
 #ifndef CATALOGWRITER_H
 #define CATALOGWRITER_H
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
@@ -31,11 +30,10 @@ class WirePort;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT CatalogWriter : public DocumentWriter
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	CatalogWriter(QObject* parent = 0);
+	CatalogWriter();
 
 	//! The destructor.
 	~CatalogWriter();

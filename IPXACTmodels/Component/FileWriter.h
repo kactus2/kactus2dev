@@ -26,16 +26,12 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT FileWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
      */
-    FileWriter(QObject* parent = 0);
+    FileWriter();
 
     /*!
      *  The destructor.

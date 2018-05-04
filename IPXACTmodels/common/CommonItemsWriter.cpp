@@ -23,8 +23,7 @@
 //-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::CommonItemsWriter()
 //-----------------------------------------------------------------------------
-CommonItemsWriter::CommonItemsWriter(QObject* parent /* = 0 */) :
-QObject(parent)
+CommonItemsWriter::CommonItemsWriter() : QObject()
 {
 
 }

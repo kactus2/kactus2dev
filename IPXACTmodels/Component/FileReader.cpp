@@ -16,8 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileReader::FileReader()
 //-----------------------------------------------------------------------------
-FileReader::FileReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+FileReader::FileReader() : CommonItemsReader()
 {
 
 }

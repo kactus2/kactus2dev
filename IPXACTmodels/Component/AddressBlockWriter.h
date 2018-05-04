@@ -26,16 +26,10 @@ class AddressBlock;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT AddressBlockWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
-     */
-    AddressBlockWriter(QObject* parent = 0);
+    //! The constructor.
+    AddressBlockWriter();
 
     /*!
      *  The destructor.

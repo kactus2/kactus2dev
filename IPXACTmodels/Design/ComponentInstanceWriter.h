@@ -17,7 +17,6 @@
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
@@ -25,16 +24,12 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ComponentInstanceWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Parent of this writer.
      */
-    ComponentInstanceWriter(QObject* parent = 0);
+    ComponentInstanceWriter();
 
     /*!
      *  The destructor.

@@ -19,8 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: InstantiationsReader::InstantiationsReader()
 //-----------------------------------------------------------------------------
-InstantiationsReader::InstantiationsReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+InstantiationsReader::InstantiationsReader() : CommonItemsReader()
 {
 
 }

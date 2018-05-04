@@ -19,29 +19,25 @@
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
 //-----------------------------------------------------------------------------
 //! Reader class for common IP-XACT elements: VLNV, parameters, assertions, vendor extensions and presence.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT CommonItemsReader : public QObject
+class IPXACTMODELS_EXPORT CommonItemsReader
 {
-    Q_OBJECT
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  The parent object.
      */
-    CommonItemsReader(QObject* parent = 0);
+    CommonItemsReader();
 
     /*!
      *  The destructor.
      */
-    ~CommonItemsReader();
+    virtual ~CommonItemsReader();
 
 protected:
 

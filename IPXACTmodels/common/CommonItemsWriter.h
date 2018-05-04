@@ -12,7 +12,6 @@
 #ifndef COMMONITEMSWRITER_H
 #define COMMONITEMSWRITER_H
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
@@ -28,18 +27,13 @@ class ConfigurableElementValue;
 //-----------------------------------------------------------------------------
 class CommonItemsWriter : public QObject
 {
-    Q_OBJECT
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent   The parent object.
-     */
-    CommonItemsWriter(QObject* parent = 0);
+    //! The constructor.
+    CommonItemsWriter();
 
 	//! The destructor.
-    ~CommonItemsWriter();
+    virtual ~CommonItemsWriter();
 
 protected:
 

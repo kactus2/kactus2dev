@@ -19,8 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceWriter::AddressSpaceWriter()
 //-----------------------------------------------------------------------------
-AddressSpaceWriter::AddressSpaceWriter(QObject* parent /* = 0 */) :
-CommonItemsWriter(parent)
+AddressSpaceWriter::AddressSpaceWriter() : CommonItemsWriter()
 {
 
 }

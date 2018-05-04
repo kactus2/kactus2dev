@@ -22,8 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapWriter::MemoryMapWriter()
 //-----------------------------------------------------------------------------
-MemoryMapWriter::MemoryMapWriter(QObject* parent /* = 0 */):
-MemoryMapBaseWriter(parent)
+MemoryMapWriter::MemoryMapWriter(): MemoryMapBaseWriter()
 {
 
 }

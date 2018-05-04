@@ -12,7 +12,6 @@
 #ifndef BUSDEFINITIONWRITER_H
 #define BUSDEFINITIONWRITER_H
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
@@ -29,11 +28,10 @@ class VLNV;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT BusDefinitionWriter : public DocumentWriter
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	BusDefinitionWriter(QObject* parent = 0);
+	BusDefinitionWriter();
 
 	//! The destructor.
 	~BusDefinitionWriter();

@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: DesignWriter::DesignWriter()
 //-----------------------------------------------------------------------------
-DesignWriter::DesignWriter(QObject* parent /* = 0 */) :
-DocumentWriter(parent)
+DesignWriter::DesignWriter() : DocumentWriter()
 {
 
 }

@@ -16,7 +16,6 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <QObject>
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
 
@@ -27,15 +26,12 @@ class FileBuilder;
 //-----------------------------------------------------------------------------
 class FileBuilderWriter : public CommonItemsWriter
 {
-    Q_OBJECT
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  The parent of this writer.
      */
-    FileBuilderWriter(QObject* parent = 0);
+    FileBuilderWriter();
 
     /*!
      *  The destructor.

@@ -25,15 +25,12 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ComDefinitionWriter : public DocumentWriter
 {
-    Q_OBJECT
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
      */
-    ComDefinitionWriter(QObject* parent = 0);
+    ComDefinitionWriter();
 
     /*!
      *  The destructor.

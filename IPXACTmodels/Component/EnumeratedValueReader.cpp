@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: EnumeratedValueReader::EnumeratedValueReader()
 //-----------------------------------------------------------------------------
-EnumeratedValueReader::EnumeratedValueReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+EnumeratedValueReader::EnumeratedValueReader() : CommonItemsReader()
 {
 
 }

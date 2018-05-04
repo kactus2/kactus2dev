@@ -18,8 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: CatalogReader::CatalogReader()
 //-----------------------------------------------------------------------------
-CatalogReader::CatalogReader(QObject *parent):
-DocumentReader(parent)
+CatalogReader::CatalogReader(): DocumentReader()
 {
 
 }

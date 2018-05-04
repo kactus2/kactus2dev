@@ -20,7 +20,6 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
@@ -28,16 +27,12 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT InstantiationsWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
      */
-    InstantiationsWriter(QObject* parent = 0);
+    InstantiationsWriter();
 
     /*!
      *  The destructor.

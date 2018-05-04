@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: CatalogWriter::CatalogWriter()
 //-----------------------------------------------------------------------------
-CatalogWriter::CatalogWriter(QObject *parent): DocumentWriter(parent)
+CatalogWriter::CatalogWriter(): DocumentWriter()
 {
 
 }

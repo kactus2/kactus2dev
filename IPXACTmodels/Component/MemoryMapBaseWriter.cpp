@@ -20,8 +20,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::MemoryMapBaseWriter()
 //-----------------------------------------------------------------------------
-MemoryMapBaseWriter::MemoryMapBaseWriter(QObject* parent /* = 0 */):
-CommonItemsWriter(parent)
+MemoryMapBaseWriter::MemoryMapBaseWriter(): CommonItemsWriter()
 {
 
 }

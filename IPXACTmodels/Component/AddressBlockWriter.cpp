@@ -18,8 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockWriter::AddressBlockWriter()
 //-----------------------------------------------------------------------------
-AddressBlockWriter::AddressBlockWriter(QObject* parent /* = 0 */):
-CommonItemsWriter(parent)
+AddressBlockWriter::AddressBlockWriter(): CommonItemsWriter()
 {
 
 }

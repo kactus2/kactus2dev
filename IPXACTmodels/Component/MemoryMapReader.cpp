@@ -22,8 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapReader::MemoryMapReader()
 //-----------------------------------------------------------------------------
-MemoryMapReader::MemoryMapReader(QObject* parent /* = 0 */):
-MemoryMapBaseReader(parent)
+MemoryMapReader::MemoryMapReader(): MemoryMapBaseReader()
 {
 
 }

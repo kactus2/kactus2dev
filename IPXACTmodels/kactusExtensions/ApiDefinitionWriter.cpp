@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionWriter::ApiDefinitionWriter()
 //-----------------------------------------------------------------------------
-ApiDefinitionWriter::ApiDefinitionWriter(QObject* parent): DocumentWriter(parent)
+ApiDefinitionWriter::ApiDefinitionWriter(): DocumentWriter()
 {
 
 }

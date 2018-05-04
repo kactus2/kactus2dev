@@ -20,8 +20,7 @@
 //-----------------------------------------------------------------------------
 // Function: FieldReader::FieldReader()
 //-----------------------------------------------------------------------------
-FieldReader::FieldReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+FieldReader::FieldReader() : CommonItemsReader()
 {
 
 }

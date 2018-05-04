@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorReader::ComponentGeneratorReader()
 //-----------------------------------------------------------------------------
-ComponentGeneratorReader::ComponentGeneratorReader(QObject* parent) :
-CommonItemsReader(parent)
+ComponentGeneratorReader::ComponentGeneratorReader() : CommonItemsReader()
 {
 
 }

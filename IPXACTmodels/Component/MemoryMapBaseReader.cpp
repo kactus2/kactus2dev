@@ -21,8 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseReader::MemoryMapBaseReader()
 //-----------------------------------------------------------------------------
-MemoryMapBaseReader::MemoryMapBaseReader(QObject* parent /* = 0 */):
-CommonItemsReader(parent)
+MemoryMapBaseReader::MemoryMapBaseReader(): CommonItemsReader()
 {
 
 }

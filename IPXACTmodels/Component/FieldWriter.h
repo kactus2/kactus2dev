@@ -16,7 +16,6 @@
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
 class Field;
@@ -27,16 +26,12 @@ class WriteValueConstraint;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT FieldWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
      */
-    FieldWriter(QObject* parent = 0);
+    FieldWriter();
 
     /*!
      *  The destructor.

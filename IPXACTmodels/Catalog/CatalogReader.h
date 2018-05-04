@@ -12,7 +12,6 @@
 #ifndef CATALOGREADER_H
 #define CATALOGREADER_H
 
-#include <QObject>
 #include <QDomNode>
 #include <QSharedPointer>
 
@@ -27,11 +26,10 @@ class IpxactFile;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT CatalogReader : public DocumentReader
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	CatalogReader(QObject* parent = 0);
+	CatalogReader();
 
 	//! The destructor.
 	virtual ~CatalogReader();

@@ -14,8 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceWriter::ComponentInstanceWriter()
 //-----------------------------------------------------------------------------
-ComponentInstanceWriter::ComponentInstanceWriter(QObject* parent) :
-CommonItemsWriter(parent)
+ComponentInstanceWriter::ComponentInstanceWriter() : CommonItemsWriter()
 {
 
 }

@@ -40,8 +40,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentReader::ComponentReader()
 //-----------------------------------------------------------------------------
-ComponentReader::ComponentReader(QObject* parent /* = 0 */):
-DocumentReader(parent)
+ComponentReader::ComponentReader(): DocumentReader()
 {
 
 }

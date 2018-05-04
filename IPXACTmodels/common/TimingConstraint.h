@@ -14,10 +14,12 @@
 
 #include <QString>
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:timingConstraint.
 //-----------------------------------------------------------------------------
-class TimingConstraint 
+class IPXACTMODELS_EXPORT TimingConstraint 
 {
 public:
 

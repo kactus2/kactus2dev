@@ -12,7 +12,6 @@
 #ifndef ABSTRACTIONDEFINITIONWRITER_H
 #define ABSTRACTIONDEFINITIONWRITER_H
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
@@ -31,11 +30,10 @@ class WirePort;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT AbstractionDefinitionWriter : public DocumentWriter
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	AbstractionDefinitionWriter(QObject* parent = 0);
+	AbstractionDefinitionWriter();
 
 	//! The destructor.
 	~AbstractionDefinitionWriter();

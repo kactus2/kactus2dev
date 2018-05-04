@@ -27,8 +27,7 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWriter::BusInterfaceWriter()
 //-----------------------------------------------------------------------------
-BusInterfaceWriter::BusInterfaceWriter(QObject* parent) :
-CommonItemsWriter(parent)
+BusInterfaceWriter::BusInterfaceWriter() : CommonItemsWriter()
 {
 
 }

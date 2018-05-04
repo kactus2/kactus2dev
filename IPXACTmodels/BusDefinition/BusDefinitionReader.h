@@ -12,7 +12,6 @@
 #ifndef BUSDEFINITIONREADER_H
 #define BUSDEFINITIONREADER_H
 
-#include <QObject>
 #include <QDomNode>
 #include <QSharedPointer>
 
@@ -26,11 +25,10 @@ class BusDefinition;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT BusDefinitionReader : public DocumentReader
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	BusDefinitionReader(QObject* parent = 0);
+	BusDefinitionReader();
 
 	//! The destructor.
 	~BusDefinitionReader();

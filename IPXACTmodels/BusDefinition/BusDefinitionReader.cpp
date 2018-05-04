@@ -19,8 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::BusDefinitionReader()
 //-----------------------------------------------------------------------------
-BusDefinitionReader::BusDefinitionReader(QObject *parent):
-DocumentReader(parent)
+BusDefinitionReader::BusDefinitionReader(): DocumentReader()
 {
 
 }

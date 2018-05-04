@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: CPUReader::CPUReader()
 //-----------------------------------------------------------------------------
-CPUReader::CPUReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+CPUReader::CPUReader() : CommonItemsReader()
 {
 
 }

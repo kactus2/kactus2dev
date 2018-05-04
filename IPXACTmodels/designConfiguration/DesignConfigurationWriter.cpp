@@ -25,8 +25,7 @@
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::DesignConfigurationWriter()
 //-----------------------------------------------------------------------------
-DesignConfigurationWriter::DesignConfigurationWriter(QObject* parent):
-DocumentWriter(parent)
+DesignConfigurationWriter::DesignConfigurationWriter(): DocumentWriter()
 {
 
 }

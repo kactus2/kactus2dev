@@ -24,8 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: DesignReader::DesignReader()
 //-----------------------------------------------------------------------------
-DesignReader::DesignReader(QObject* parent):
-DocumentReader(parent)
+DesignReader::DesignReader(): DocumentReader()
 {
 
 }

@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorWriter::ComponentGeneratorWriter()
 //-----------------------------------------------------------------------------
-ComponentGeneratorWriter::ComponentGeneratorWriter(QObject* parent) :
-CommonItemsWriter(parent)
+ComponentGeneratorWriter::ComponentGeneratorWriter() : CommonItemsWriter()
 {
 
 }

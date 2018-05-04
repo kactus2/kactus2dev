@@ -19,8 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileWriter::FileWriter()
 //-----------------------------------------------------------------------------
-FileWriter::FileWriter(QObject* parent /* = 0 */) :
-CommonItemsWriter(parent)
+FileWriter::FileWriter() : CommonItemsWriter()
 {
 
 }

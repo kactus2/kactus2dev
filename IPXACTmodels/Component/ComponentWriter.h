@@ -16,7 +16,6 @@
 #include <IPXACTmodels/common/DocumentWriter.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
 class Component;
@@ -26,16 +25,12 @@ class Component;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ComponentWriter : public DocumentWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
      */
-    ComponentWriter(QObject* parent = 0);
+    ComponentWriter();
 
     /*!
      *  The destructor.

@@ -20,7 +20,6 @@
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -28,21 +27,18 @@
 //! Base class for XML readers.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT DocumentReader : public CommonItemsReader
-{
-    Q_OBJECT
+{    
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  The parent object.
      */
-    DocumentReader(QObject* parent = 0);
+    DocumentReader();
 
     /*!
      *  The destructor.
      */
-    ~DocumentReader();
+    virtual ~DocumentReader();
 
 protected:
 
