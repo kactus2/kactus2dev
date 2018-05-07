@@ -9,13 +9,13 @@
 // Unit test for class MasterSlavePathSearch.
 //-----------------------------------------------------------------------------
 
-#include <designEditors/MemoryDesigner/MasterSlavePathSearch.h>
-#include <designEditors/MemoryDesigner/ConnectivityGraph.h>
+#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
+#include <editors/MemoryDesigner/ConnectivityGraph.h>
 
-#include <designEditors/MemoryDesigner/ConnectivityComponent.h>
-#include <designEditors/MemoryDesigner/ConnectivityInterface.h>
-#include <designEditors/MemoryDesigner/ConnectivityConnection.h>
-#include <designEditors/MemoryDesigner/MemoryItem.h>
+#include <editors/MemoryDesigner/ConnectivityComponent.h>
+#include <editors/MemoryDesigner/ConnectivityInterface.h>
+#include <editors/MemoryDesigner/ConnectivityConnection.h>
+#include <editors/MemoryDesigner/MemoryItem.h>
 
 #include <QtTest>
 

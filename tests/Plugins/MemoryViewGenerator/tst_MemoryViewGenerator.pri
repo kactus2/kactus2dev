@@ -7,55 +7,55 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
-    ../../../designEditors/MemoryDesigner/ConnectivityComponent.h \
-    ../../../designEditors/MemoryDesigner/ConnectivityConnection.h \
-    ../../../designEditors/MemoryDesigner/ConnectivityGraph.h \
-    ../../../designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
-    ../../../designEditors/MemoryDesigner/ConnectivityInterface.h \
+HEADERS += ../../../editors/common/ComponentInstanceParameterFinder.h \
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../editors/MemoryDesigner/ConnectivityComponent.h \
+    ../../../editors/MemoryDesigner/ConnectivityConnection.h \
+    ../../../editors/MemoryDesigner/ConnectivityGraph.h \
+    ../../../editors/MemoryDesigner/ConnectivityGraphFactory.h \
+    ../../../editors/MemoryDesigner/ConnectivityInterface.h \
+    ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../editors/ComponentEditor/common/ListParameterFinder.h \
-    ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.h \
-    ../../../designEditors/MemoryDesigner/MemoryItem.h \
+    ../../../editors/MemoryDesigner/MasterSlavePathSearch.h \
+    ../../../editors/MemoryDesigner/MemoryItem.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.h \
-    ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../designEditors/common/ComponentInstanceParameterFinder.h \
-    ../../MockObjects/LibraryMock.h \
-    ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
-    ../../../editors/ComponentEditor/common/ParameterCache.h \
-    ../../../Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h \
-    ../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.h \
-    ../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.h \
     ../../../Plugins/common/HDLParser/MetaComponent.h \
     ../../../Plugins/common/HDLParser/MetaDesign.h \
     ../../../Plugins/common/HDLParser/MetaInstance.h \
-    ../../../editors/ComponentEditor/common/ExpressionFormatter.h
-SOURCES += ../../../designEditors/common/ComponentInstanceParameterFinder.cpp \
+    ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.h \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.h \
+    ../../MockObjects/LibraryMock.h \
+    ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
+    ../../../editors/ComponentEditor/common/ParameterCache.h
+SOURCES += ../../../editors/common/ComponentInstanceParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
-    ../../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
-    ../../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
-    ../../../designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
-    ../../../designEditors/MemoryDesigner/ConnectivityInterface.cpp \
+    ../../../editors/MemoryDesigner/ConnectivityComponent.cpp \
+    ../../../editors/MemoryDesigner/ConnectivityConnection.cpp \
+    ../../../editors/MemoryDesigner/ConnectivityGraph.cpp \
+    ../../../editors/MemoryDesigner/ConnectivityGraphFactory.cpp \
+    ../../../editors/MemoryDesigner/ConnectivityInterface.cpp \
+    ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/GenerationControl.cpp \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
-    ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
-    ../../../designEditors/MemoryDesigner/MemoryItem.cpp \
+    ../../../editors/MemoryDesigner/MasterSlavePathSearch.cpp \
+    ../../../editors/MemoryDesigner/MemoryItem.cpp \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.cpp \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.cpp \
-    ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
-    ../../../editors/ComponentEditor/common/ParameterCache.cpp \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./tst_MemoryViewGenerator.cpp \
-    ../../../Plugins/PluginSystem/GeneratorPlugin/GenerationControl.cpp \
-    ../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.cpp \
-    ../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../../../Plugins/common/HDLParser/MetaComponent.cpp \
     ../../../Plugins/common/HDLParser/MetaDesign.cpp \
     ../../../Plugins/common/HDLParser/MetaInstance.cpp \
-    ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp
+    ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.cpp \
+    ../../../editors/ComponentEditor/common/ParameterCache.cpp \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.cpp \
+    ./tst_MemoryViewGenerator.cpp
