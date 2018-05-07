@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: PortWriter::PortWriter()
 //-----------------------------------------------------------------------------
-PortWriter::PortWriter(QObject* parent) : CommonItemsWriter(parent)
+PortWriter::PortWriter() : CommonItemsWriter()
 {
 
 }

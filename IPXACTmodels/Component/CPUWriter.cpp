@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: CPUWriter::CPUWriter()
 //-----------------------------------------------------------------------------
-CPUWriter::CPUWriter(QObject* parent) :
-CommonItemsWriter(parent)
+CPUWriter::CPUWriter() : CommonItemsWriter()
 {
     
 }

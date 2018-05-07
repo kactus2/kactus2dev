@@ -22,7 +22,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
@@ -33,7 +33,7 @@
 // Function: IndirectInterfaceValidator::IndirectInterfaceValidator()
 //-----------------------------------------------------------------------------
 IndirectInterfaceValidator::IndirectInterfaceValidator(QSharedPointer<Component> component,
-    QSharedPointer<ExpressionParser> parser, QSharedPointer<ParameterValidator2014> parameterValidator): 
+    QSharedPointer<ExpressionParser> parser, QSharedPointer<ParameterValidator> parameterValidator): 
 component_(component), expressionParser_(parser),
     parameterValidator_(parameterValidator)
 {

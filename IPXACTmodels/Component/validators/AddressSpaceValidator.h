@@ -23,7 +23,7 @@ class Segment;
 class MemoryReserve;
 
 class MemoryMapBaseValidator;
-class ParameterValidator2014;
+class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:addressSpace.
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public:
 	 */
     AddressSpaceValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
-        QSharedPointer<ParameterValidator2014> parameterValidator);
+        QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
 	virtual ~AddressSpaceValidator();
@@ -258,7 +258,7 @@ private:
     QSharedPointer<MemoryMapBaseValidator> localMemoryMapValidator_;
 
     //! The validator used for parameters.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // ADDRESSSPACEVALIDATOR_H

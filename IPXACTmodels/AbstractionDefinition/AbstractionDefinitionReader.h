@@ -17,7 +17,6 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QDomNode>
-#include <QObject>
 #include <QSharedPointer>
 
 class AbstractionDefinition;
@@ -29,14 +28,13 @@ class WireAbstraction;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT AbstractionDefinitionReader : public DocumentReader
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	AbstractionDefinitionReader(QObject* parent = 0);
+	AbstractionDefinitionReader();
 
 	//! The destructor.
-	~AbstractionDefinitionReader();
+	virtual ~AbstractionDefinitionReader();
     
     /*!
      *  Creates an abstraction definition from XML description.

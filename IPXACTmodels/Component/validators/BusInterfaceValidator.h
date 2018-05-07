@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/SlaveInterface.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -73,7 +73,7 @@ public:
         QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
         QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
         QSharedPointer<PortMapValidator> portMapValidator,
-        QSharedPointer<ParameterValidator2014> parameterValidator,
+        QSharedPointer<ParameterValidator> parameterValidator,
         LibraryInterface* libraryHandler);
 
 	//! The destructor.
@@ -506,7 +506,7 @@ private:
     LibraryInterface* libraryHandler_;
 
     //! Validator for parameters.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 
     //! Validator for abstraction types.
     QSharedPointer<AbstractionTypeValidator> abstractionValidator_;

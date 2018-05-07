@@ -20,7 +20,7 @@
 class ExpressionParser;
 class ComponentGenerator;
 
-class ParameterValidator2014;
+class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for the base ipxact:componentGenerator.
 //-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public:
      *      @param [in] parameterValidator  Validator used for parameters.
      */
     ComponentGeneratorValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterValidator2014> parameterValidator);
+        QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
 	~ComponentGeneratorValidator();
@@ -130,7 +130,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The used parameter validator.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // COMPONENTGENERATORVALIDATOR_H

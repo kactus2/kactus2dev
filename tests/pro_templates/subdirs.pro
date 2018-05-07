@@ -1,9 +1,9 @@
 #-----------------------------------------------------------------------------
 # File: subdirs.pro
 #-----------------------------------------------------------------------------
-# Project: Kactus 2
+# Project: Kactus2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 24.7.2014
 #
 # Description:
 # Qt project file template for running unit tests in subdirectories.
@@ -11,5 +11,5 @@
 
 TEMPLATE = subdirs
 
-CONFIG += c++11 testcase
+CONFIG += testcase
 SUBDIRS += <subdir/subproject.pro>

@@ -22,7 +22,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapsitem::ComponentEditorMemMapsItem()
@@ -185,8 +185,8 @@ void ComponentEditorMemMapsItem::addressUnitBitsChangedOnMemoryMap(int memoryMap
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapsItem::createMemoryMapValidator()
 {
-    QSharedPointer<ParameterValidator2014> parameterValidator (
-        new ParameterValidator2014(expressionParser_, component_->getChoices()));
+    QSharedPointer<ParameterValidator> parameterValidator (
+        new ParameterValidator(expressionParser_, component_->getChoices()));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(expressionParser_));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(expressionParser_, enumValidator, parameterValidator));

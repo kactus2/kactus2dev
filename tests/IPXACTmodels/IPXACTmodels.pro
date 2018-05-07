@@ -11,27 +11,11 @@
 
 TEMPLATE = subdirs
 
-CONFIG += c++11 testcase
-SUBDIRS += common\Common.pro \
-		   AbstractionDefinition\tst_AbstractionDefinitionWriter.pro \
-		   AbstractionDefinition\tst_AbstractionDefinitionReader.pro \
-		   AbstractionDefinition\validators\tst_AbstractionDefinitionValidator.pro \
-		   BusDefinition\tst_BusDefinitionWriter.pro \
-		   BusDefinition\tst_BusDefinitionReader.pro \
-		   BusDefinition\validators\tst_BusDefinitionValidator.pro \
-		   Catalog\tst_CatalogWriter.pro\
-		   Catalog\tst_CatalogReader.pro\
-		   Catalog\validators\tst_CatalogValidator.pro\
-		   DesignConfiguration\tst_DesignConfigurationWriter.pro \
-		   DesignConfiguration\tst_DesignConfigurationReader.pro \
-		   DesignConfiguration\validators\tst_DesignConfigurationValidator.pro \
-		   Design\tst_DesignWriter.pro \
-		   Design\tst_DesignReader.pro \
-		   Design\validators\tst_DesignValidator.pro \
+CONFIG += testcase
+SUBDIRS += AbstractionDefinition\AbstractionDefinition.pro \
+		   BusDefinition\BusDefinition.pro \
+		   Catalog\Catalog.pro\
+		   DesignConfiguration\DesignConfiguration.pro \
+		   Design\Design.pro \
 		   Component\Component.pro \
-		   kactusExtensions\tst_ComDefinitionWriter.pro \
-		   kactusExtensions\tst_ComDefinitionReader.pro \
-		   kactusExtensions\tst_ComDefinitionValidator.pro \
-		   kactusExtensions\tst_ApiDefinitionWriter.pro \
-		   kactusExtensions\tst_ApiDefinitionReader.pro \
-		   kactusExtensions\tst_ApiDefinitionValidator.pro \
+		   kactusExtensions\KactusExtensions.pro 

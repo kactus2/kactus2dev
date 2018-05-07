@@ -18,8 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::DocumentWriter()
 //-----------------------------------------------------------------------------
-DocumentWriter::DocumentWriter(QObject *parent):
-CommonItemsWriter(parent)
+DocumentWriter::DocumentWriter() : CommonItemsWriter()
 {
 
 }

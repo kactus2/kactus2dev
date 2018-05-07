@@ -12,12 +12,11 @@
 #ifndef APIDEFINITIONREADER_H
 #define APIDEFINITIONREADER_H
 
-#include <QObject>
-#include <QDomNode>
-#include <QSharedPointer>
-
 #include <IPXACTmodels/common/DocumentReader.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
+
+#include <QDomNode>
+#include <QSharedPointer>
 
 class ApiDefinition;
 
@@ -26,11 +25,10 @@ class ApiDefinition;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ApiDefinitionReader : public DocumentReader
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	ApiDefinitionReader(QObject* parent = 0);
+	ApiDefinitionReader();
 
 	//! The destructor.
 	~ApiDefinitionReader();

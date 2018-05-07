@@ -27,7 +27,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
@@ -92,8 +92,8 @@ QSharedPointer<BusInterfaceValidator> BusInterfaceWizard::createBusInterfaceVali
 {
     QSharedPointer<PortMapValidator> portMapValidator(new PortMapValidator(parser, component->getPorts(), handler));
 
-    QSharedPointer<ParameterValidator2014> parameterValidator(
-        new ParameterValidator2014(parser, component->getChoices()));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(parser, component->getChoices()));
 
     QSharedPointer<BusInterfaceValidator> validator = QSharedPointer<BusInterfaceValidator>(
         new BusInterfaceValidator(parser, component->getChoices(), component->getViews(), component->getPorts(),

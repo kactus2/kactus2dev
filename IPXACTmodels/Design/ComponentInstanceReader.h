@@ -15,7 +15,6 @@
 #include <IPXACTmodels/common/DocumentReader.h>
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
-#include <QObject>
 #include <QDomNode>
 
 class ComponentInstance;
@@ -24,16 +23,10 @@ class ComponentInstance;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ComponentInstanceReader : public CommonItemsReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The parent object.
-     */
-    ComponentInstanceReader(QObject* parent = 0);
+    //! The constructor.
+    ComponentInstanceReader();
 
     /*!
 	 *  The destructor.

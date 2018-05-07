@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/Choice.h>
 
@@ -239,7 +239,7 @@ private:
     QSharedPointer<Choice> selectedChoice_;
 
     //! The validator for the array values.
-    ParameterValidator2014* validator_;
+    ParameterValidator* validator_;
 
     //! The parameter type.
     QString parameterType_;

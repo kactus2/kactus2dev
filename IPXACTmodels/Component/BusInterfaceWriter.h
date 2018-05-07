@@ -17,7 +17,6 @@
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -26,16 +25,12 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT BusInterfaceWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  The owner of this Writer.
      */
-    BusInterfaceWriter(QObject* parent = 0);
+    BusInterfaceWriter();
 
     /*!
      *  The destructor.

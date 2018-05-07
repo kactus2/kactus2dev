@@ -90,7 +90,7 @@ HEADERS += ./XmlUtils.h \
     ./common/ProtocolWriter.h \
     ./common/validators/AssertionValidator.h \
     ./common/validators/CellSpecificationValidator.h \
-    ./common/validators/ParameterValidator2014.h \
+    ./common/validators/ParameterValidator.h \
     ./common/validators/ProtocolValidator.h \
     ./common/validators/TimingConstraintValidator.h \
     ./common/validators/ValueFormatter.h \
@@ -337,7 +337,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/VLNV.cpp \
     ./common/validators/AssertionValidator.cpp \
     ./common/validators/CellSpecificationValidator.cpp \
-    ./common/validators/ParameterValidator2014.cpp \
+    ./common/validators/ParameterValidator.cpp \
     ./common/validators/ProtocolValidator.cpp \
     ./common/validators/TimingConstraintValidator.cpp \
     ./common/validators/ValueFormatter.cpp \

@@ -29,7 +29,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
 
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
@@ -79,7 +79,7 @@ otherClockDriverValidator_(),
 parameterValidator_(),
 assertionValidator_()
 {
-    parameterValidator_ = QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(parser,
+    parameterValidator_ = QSharedPointer<ParameterValidator>(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > ()));
 
     QSharedPointer<PortMapValidator> portMapvalidator(

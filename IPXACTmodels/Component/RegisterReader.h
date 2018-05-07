@@ -16,7 +16,6 @@
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -31,16 +30,10 @@ class RegisterFile;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT RegisterReader : public CommonItemsReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    RegisterReader(QObject* parent = 0);
+    //! The constructor.
+    RegisterReader();
 
     /*!
      *  The destructor.

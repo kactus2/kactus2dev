@@ -20,7 +20,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: InstantiationsItem::InstantiationsItem()
@@ -32,7 +32,7 @@ InstantiationsItem::InstantiationsItem(ComponentEditorTreeModel* model, LibraryI
 ComponentEditorItem(model, libHandler, component, parent),
 expressionParser_(expressionParser),
 validator_(new InstantiationsValidator(expressionParser, component->getFileSets(),
-    QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, component->getChoices())),
+    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())),
     libHandler)),
 componentInstantiationsItem_(new ComponentInstantiationsItem(model, libHandler, component, validator_,
     referenceCounter, parameterFinder, expressionFormatter, expressionParser, this)),

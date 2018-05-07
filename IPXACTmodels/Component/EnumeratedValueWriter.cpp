@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: EnumeratedValueWriter::EnumeratedValueWriter()
 //-----------------------------------------------------------------------------
-EnumeratedValueWriter::EnumeratedValueWriter(QObject* parent) :
-CommonItemsWriter(parent)
+EnumeratedValueWriter::EnumeratedValueWriter() : CommonItemsWriter()
 {
 
 }

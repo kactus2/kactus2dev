@@ -16,7 +16,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorIndirectInterfacesitem::ComponentEditorIndirectInterfacesItem()
@@ -31,7 +31,7 @@ ComponentEditorIndirectInterfacesItem::ComponentEditorIndirectInterfacesItem(Com
 ComponentEditorItem(model, libHandler, component, parent),
 indirectInterfaces_(component->getIndirectInterfaces()),
 validator_(new IndirectInterfaceValidator(component, expressionParser, 
-    QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, component->getChoices())))),
+    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())))),
 parentWnd_(parentWnd),
 expressionParser_(expressionParser)
 {

@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::BusDefinitionWriter()
 //-----------------------------------------------------------------------------
-BusDefinitionWriter::BusDefinitionWriter(QObject *parent): DocumentWriter(parent)
+BusDefinitionWriter::BusDefinitionWriter(): DocumentWriter()
 {
 
 }

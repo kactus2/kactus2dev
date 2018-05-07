@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <QRegularExpression>
 
@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 FieldValidator::FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator,
-    QSharedPointer<ParameterValidator2014> parameterValidator):
+    QSharedPointer<ParameterValidator> parameterValidator):
 expressionParser_(expressionParser),
 enumeratedValueValidator_(enumeratedValueValidator),
 parameterValidator_(parameterValidator)

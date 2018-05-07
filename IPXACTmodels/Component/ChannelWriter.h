@@ -15,7 +15,6 @@
 #include "Channel.h"
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 
@@ -24,16 +23,12 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ChannelWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  The owner of this writer.
      */
-    ChannelWriter(QObject* parent = 0);
+    ChannelWriter();
 
     /*!
      *  The destructor.

@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionReader::AbstractionDefinitionReader()
 //-----------------------------------------------------------------------------
-AbstractionDefinitionReader::AbstractionDefinitionReader(QObject* parent) : DocumentReader(parent)
+AbstractionDefinitionReader::AbstractionDefinitionReader() : DocumentReader()
 {
 
 }

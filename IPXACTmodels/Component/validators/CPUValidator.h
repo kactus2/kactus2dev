@@ -22,7 +22,7 @@
 class AddressSpace;
 class Cpu;
 class ExpressionParser;
-class ParameterValidator2014;
+class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:CPU.
 //-----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ public:
      *      @param [in] expressionParser    Parser for expressions in cpu.
      *      @param [in] addressSpaces       The available address spaces that may be referenced.
 	 */
-    CPUValidator(QSharedPointer<ParameterValidator2014> parameterValidator,
+    CPUValidator(QSharedPointer<ParameterValidator> parameterValidator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces);
 
@@ -103,7 +103,7 @@ private:
     bool isValidAddressSpaceReference(QString const& reference) const;
 
     //! Validator for cpu parameters.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 
     //! Parser for expressions in cpu.
     QSharedPointer<ExpressionParser> expressionParser_;

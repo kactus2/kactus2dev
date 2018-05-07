@@ -18,8 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileSetReader::FileSetReader()
 //-----------------------------------------------------------------------------
-FileSetReader::FileSetReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+FileSetReader::FileSetReader() : CommonItemsReader()
 {
 
 }

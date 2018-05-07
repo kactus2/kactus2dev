@@ -17,7 +17,6 @@
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
 #include <QDomNode>
-#include <QObject>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
@@ -25,16 +24,10 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ChannelReader : public CommonItemsReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    ChannelReader(QObject* parent = 0);
+    //! The constructor.
+    ChannelReader();
 
     /*!
      *  The destructor.

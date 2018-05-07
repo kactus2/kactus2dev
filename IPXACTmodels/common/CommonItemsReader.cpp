@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: CommonItemsReader::CommonItemsReader()
 //-----------------------------------------------------------------------------
-CommonItemsReader::CommonItemsReader(QObject* parent /* = 0 */) :
-QObject(parent)
+CommonItemsReader::CommonItemsReader()
 {
 
 }

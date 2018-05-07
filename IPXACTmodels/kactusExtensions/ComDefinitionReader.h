@@ -9,15 +9,14 @@
 // XML reader class for Kactus2 Com definition.
 //-----------------------------------------------------------------------------
 
-#ifndef ComDEFINITIONREADER_H
-#define ComDEFINITIONREADER_H
-
-#include <QObject>
-#include <QDomNode>
-#include <QSharedPointer>
+#ifndef COMDEFINITIONREADER_H
+#define COMDEFINITIONREADER_H
 
 #include <IPXACTmodels/common/DocumentReader.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
+
+#include <QDomNode>
+#include <QSharedPointer>
 
 class ComDefinition;
 
@@ -26,11 +25,10 @@ class ComDefinition;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT ComDefinitionReader : public DocumentReader
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	ComDefinitionReader(QObject* parent = 0);
+	ComDefinitionReader();
 
 	//! The destructor.
 	~ComDefinitionReader();
@@ -65,4 +63,4 @@ private:
 	ComDefinitionReader& operator=(ComDefinitionReader const& rhs);
 };
 
-#endif // ComDEFINITIONREADER_H
+#endif // COMDEFINITIONREADER_H

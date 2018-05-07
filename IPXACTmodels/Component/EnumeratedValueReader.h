@@ -16,7 +16,6 @@
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -27,16 +26,10 @@ class EnumeratedValue;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT EnumeratedValueReader : public CommonItemsReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    EnumeratedValueReader(QObject* parent = 0);
+    //! The constructor.
+    EnumeratedValueReader();
 
     /*!
      *  The destructor.

@@ -33,8 +33,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentWriter::ComponentWriter()
 //-----------------------------------------------------------------------------
-ComponentWriter::ComponentWriter(QObject* parent /* = 0 */) :
-DocumentWriter(parent)
+ComponentWriter::ComponentWriter() : DocumentWriter()
 {
 
 }

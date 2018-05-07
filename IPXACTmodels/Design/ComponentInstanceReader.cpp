@@ -16,8 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::ComponentInstanceReader()
 //-----------------------------------------------------------------------------
-ComponentInstanceReader::ComponentInstanceReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+ComponentInstanceReader::ComponentInstanceReader() : CommonItemsReader()
 {
 
 }

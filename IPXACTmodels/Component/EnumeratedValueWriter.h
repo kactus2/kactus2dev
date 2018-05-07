@@ -16,7 +16,6 @@
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
 class EnumeratedValue;
@@ -26,16 +25,12 @@ class EnumeratedValue;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT EnumeratedValueWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
      */
-    EnumeratedValueWriter(QObject* parent = 0);
+    EnumeratedValueWriter();
 
     /*!
      *  The destructor.

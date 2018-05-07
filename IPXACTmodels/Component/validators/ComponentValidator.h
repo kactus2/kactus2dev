@@ -34,7 +34,7 @@ class ChoiceValidator;
 class FileSetValidator;
 class CPUValidator;
 class OtherClockDriverValidator;
-class ParameterValidator2014;
+class ParameterValidator;
 class AssertionValidator;
 
 class ExpressionParser;
@@ -496,7 +496,7 @@ private:
     QSharedPointer<OtherClockDriverValidator> otherClockDriverValidator_;
 
     //! The used parameter validator.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 
     //! The used assertion validator.
     QSharedPointer<AssertionValidator> assertionValidator_;

@@ -18,7 +18,7 @@
 
 #include <editors/common/ComponentInstanceEditor/EditorConfigurableElement.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <QAbstractItemModel>
 #include <QList>
@@ -396,7 +396,7 @@ private:
     QSharedPointer<ExpressionParser> defaultValueParser_;
 
     //! Validator for parameters.
-    QSharedPointer<ParameterValidator2014> validator_;
+    QSharedPointer<ParameterValidator> validator_;
 
     //! Configurable element values contained within the containing item.
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElementValues_;

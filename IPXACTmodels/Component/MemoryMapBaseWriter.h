@@ -16,10 +16,8 @@
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
-//class AddressBlock;
 class MemoryMapBase;
 class MemoryMapBaseBase;
 
@@ -28,16 +26,12 @@ class MemoryMapBaseBase;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT MemoryMapBaseWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
      */
-    MemoryMapBaseWriter(QObject* parent = 0);
+    MemoryMapBaseWriter();
 
     /*!
      *  The destructor.

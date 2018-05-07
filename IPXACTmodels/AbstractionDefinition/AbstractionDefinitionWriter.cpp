@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionWriter::AbstractionDefinitionWriter()
 //-----------------------------------------------------------------------------
-AbstractionDefinitionWriter::AbstractionDefinitionWriter(QObject *parent): DocumentWriter(parent)
+AbstractionDefinitionWriter::AbstractionDefinitionWriter(): DocumentWriter()
 {
 
 }

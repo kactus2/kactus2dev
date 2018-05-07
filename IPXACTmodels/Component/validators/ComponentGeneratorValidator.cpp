@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <QRegularExpression>
 
@@ -23,7 +23,7 @@
 // Function: ComponentGeneratorValidator::ComponentGeneratorValidator()
 //-----------------------------------------------------------------------------
 ComponentGeneratorValidator::ComponentGeneratorValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterValidator2014> parameterValidator):
+    QSharedPointer<ParameterValidator> parameterValidator):
 expressionParser_(expressionParser),
 parameterValidator_(parameterValidator)
 {

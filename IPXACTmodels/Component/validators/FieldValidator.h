@@ -20,7 +20,7 @@
 class ExpressionParser;
 class Field;
 
-class ParameterValidator2014;
+class ParameterValidator;
 class EnumeratedValueValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Field.
@@ -38,7 +38,7 @@ public:
      */
     FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator,
-        QSharedPointer<ParameterValidator2014> parameterValidator);
+        QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
 	~FieldValidator();
@@ -291,7 +291,7 @@ private:
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator_;
 
     //! The used parameter validator.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // FIELDVALIDATOR_H

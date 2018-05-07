@@ -23,7 +23,7 @@ class Component;
 class Field;
 class IndirectInterface;
 class ExpressionParser;
-class ParameterValidator2014;
+class ParameterValidator;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:indirectInterface.
@@ -42,7 +42,7 @@ public:
      */
     IndirectInterfaceValidator(QSharedPointer<Component> component,
         QSharedPointer<ExpressionParser> parser,
-        QSharedPointer<ParameterValidator2014> parameterValidator);
+        QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
 	virtual ~IndirectInterfaceValidator();
@@ -285,7 +285,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! Validator for parameters within the indirect interfaces.
-    QSharedPointer<ParameterValidator2014> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // INDIRECTINTERFACEVALIDATOR_H

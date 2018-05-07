@@ -18,8 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: InstantiationsWriter::InstantiationsWriter()
 //-----------------------------------------------------------------------------
-InstantiationsWriter::InstantiationsWriter(QObject* parent /* = 0 */) :
-CommonItemsWriter(parent)
+InstantiationsWriter::InstantiationsWriter() : CommonItemsWriter()
 {
 
 }

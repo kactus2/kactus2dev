@@ -13,18 +13,20 @@ TEMPLATE = app
 
 TARGET = tst_ChannelReader
 
-QT += core xml gui widgets testlib
+QT += core xml gui testlib
 CONFIG += c++11 testcase console
-DEFINES += IPXACTMODELS_LIB
 
 win32:CONFIG(release, debug|release) {
     DESTDIR = ./release
+	LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
 }
 else:win32:CONFIG(debug, debug|release) {
     DESTDIR = ./debug
+	LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
 }
 else:unix {
     DESTDIR = ./release
+	LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
 }
 
 INCLUDEPATH += $$DESTDIR

@@ -20,7 +20,7 @@
 #include <editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsEditor.h>
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 

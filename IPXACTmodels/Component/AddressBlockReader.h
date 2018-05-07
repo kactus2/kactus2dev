@@ -16,7 +16,6 @@
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -27,16 +26,10 @@ class AddressBlock;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT AddressBlockReader : public CommonItemsReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    AddressBlockReader(QObject* parent = 0);
+    //! The constructor.
+    AddressBlockReader();
 
     /*!
      *  The destructor.

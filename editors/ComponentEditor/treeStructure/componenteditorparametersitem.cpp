@@ -15,7 +15,7 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -29,7 +29,7 @@ ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTree
     ComponentEditorItem* parent):
 ParameterizableItem(model, libHandler, component, parent),
 expressionParser_(expressionParser),
-validator_(new ParameterValidator2014(expressionParser, component->getChoices()))
+validator_(new ParameterValidator(expressionParser, component->getChoices()))
 {
     setReferenceCounter(refCounter);
     setParameterFinder(parameterFinder);

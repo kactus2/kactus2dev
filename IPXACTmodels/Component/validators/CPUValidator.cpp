@@ -11,7 +11,7 @@
 
 #include "CPUValidator.h"
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Cpu.h>
@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: CPUValidator::CPUValidator()
 //-----------------------------------------------------------------------------
-CPUValidator::CPUValidator(QSharedPointer<ParameterValidator2014> parameterValidator,
+CPUValidator::CPUValidator(QSharedPointer<ParameterValidator> parameterValidator,
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces):
 parameterValidator_(parameterValidator),

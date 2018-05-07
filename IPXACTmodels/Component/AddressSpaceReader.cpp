@@ -18,8 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceReader::AddressSpaceReader()
 //-----------------------------------------------------------------------------
-AddressSpaceReader::AddressSpaceReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+AddressSpaceReader::AddressSpaceReader() : CommonItemsReader()
 {
 
 }

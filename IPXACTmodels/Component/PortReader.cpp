@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: PortReader::PortReader()
 //-----------------------------------------------------------------------------
-PortReader::PortReader(QObject* parent /* = 0 */):
-CommonItemsReader(parent)
+PortReader::PortReader(): CommonItemsReader()
 {
 
 }

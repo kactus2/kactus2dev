@@ -14,27 +14,21 @@
 
 #include "BusInterface.h"
 
-#include <QObject>
+#include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/Component/PortMap.h>
+
 #include <QSharedPointer>
 #include <QDomNode>
 
-#include <IPXACTmodels/common/CommonItemsReader.h>
-#include <IPXACTmodels/Component/PortMap.h>
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT BusinterfaceReader : public CommonItemsReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    BusinterfaceReader(QObject* parent = 0);
+    //! The constructor.
+    BusinterfaceReader();
 
     /*!
      *  The destructor.

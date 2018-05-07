@@ -46,8 +46,8 @@ referableParameters_(new QList<QSharedPointer<Parameter> > ())
     setExpressionParser(configurableElementExpressionParser);
 
     QSharedPointer<QList<QSharedPointer<Choice> > > noChoices(new QList<QSharedPointer<Choice> >());
-    validator_ = QSharedPointer<ParameterValidator2014>(
-        new ParameterValidator2014(configurableElementExpressionParser, noChoices));
+    validator_ = QSharedPointer<ParameterValidator>(
+        new ParameterValidator(configurableElementExpressionParser, noChoices));
 }
 
 //-----------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <QRegularExpression>
@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 AddressSpaceValidator::AddressSpaceValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
-    QSharedPointer<ParameterValidator2014> parameterValidator):
+    QSharedPointer<ParameterValidator> parameterValidator):
 expressionParser_(expressionParser),
 localMemoryMapValidator_(memoryMapBaseValidator),
 parameterValidator_(parameterValidator)

@@ -16,7 +16,6 @@
 
 #include <IPXACTmodels/common/DocumentReader.h>
 
-#include <QObject>
 #include <QDomNode>
 #include <QDomNodeList>
 
@@ -25,16 +24,10 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT DesignConfigurationReader : public DocumentReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor].
-     *
-     *      @param [in] parent  The parent object.
-     */
-    DesignConfigurationReader(QObject* parent = 0);
+    //! The constructor.
+    DesignConfigurationReader();
 
     /*!
 	 *  The destructor.

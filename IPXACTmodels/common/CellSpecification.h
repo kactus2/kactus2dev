@@ -12,12 +12,14 @@
 #ifndef CELLSPECIFICATION_H
 #define CELLSPECIFICATION_H
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <QString>
 
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:cellSpecification.
 //-----------------------------------------------------------------------------
-class CellSpecification
+class IPXACTMODELS_EXPORT CellSpecification
 {
 public:
 

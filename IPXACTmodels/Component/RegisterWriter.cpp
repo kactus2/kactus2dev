@@ -21,8 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterWriter::RegisterWriter()
 //-----------------------------------------------------------------------------
-RegisterWriter::RegisterWriter(QObject* parent /* = 0 */) :
-CommonItemsWriter(parent)
+RegisterWriter::RegisterWriter() : CommonItemsWriter()
 {
 
 }

@@ -18,7 +18,6 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
@@ -26,8 +25,6 @@
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT PortWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
@@ -35,7 +32,7 @@ public:
      *
      *      @param [in] parent  Owner of this writer.
      */
-    PortWriter(QObject* parent = 0);
+    PortWriter();
 
     /*!
      *  The destructor.

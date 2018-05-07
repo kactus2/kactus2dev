@@ -18,10 +18,8 @@
 #include "MemoryMapBaseWriter.h"
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
-//class AddressBlock;
 class MemoryMap;
 class MemoryMapBase;
 
@@ -30,16 +28,12 @@ class MemoryMapBase;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT MemoryMapWriter : public MemoryMapBaseWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
      */
-    MemoryMapWriter(QObject* parent = 0);
+    MemoryMapWriter();
 
     /*!
      *  The destructor.

@@ -14,26 +14,20 @@
 
 #include "Cpu.h"
 
-#include <QObject>
+#include <IPXACTmodels/common/CommonItemsReader.h>
+
 #include <QSharedPointer>
 #include <QDomNode>
-#include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT CPU element.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT CPUReader : public CommonItemsReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    CPUReader(QObject* parent = 0);
+    //! The constructor.
+    CPUReader();
 
     /*!
      *  The destructor.

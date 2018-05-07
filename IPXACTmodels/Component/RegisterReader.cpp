@@ -22,8 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterReader::RegisterReader()
 //-----------------------------------------------------------------------------
-RegisterReader::RegisterReader(QObject* parent /* = 0 */) :
-CommonItemsReader(parent)
+RegisterReader::RegisterReader() : CommonItemsReader()
 {
 
 }

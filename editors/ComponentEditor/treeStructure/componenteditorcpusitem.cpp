@@ -17,7 +17,7 @@
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorCpusItem::ComponentEditorCpusItem()
@@ -30,7 +30,7 @@ ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model
 ComponentEditorItem(model, libHandler, component, parent),
     cpus_(component->getCpus()),
     validator_(new CPUValidator(
-        QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, component->getChoices())),
+        QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())),
         expressionParser, component->getAddressSpaces()))
 {
 

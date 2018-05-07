@@ -28,8 +28,7 @@
 //-----------------------------------------------------------------------------
 // Function: businterfaceReader::businterfaceReader()
 //-----------------------------------------------------------------------------
-BusinterfaceReader::BusinterfaceReader(QObject* parent) :
-CommonItemsReader(parent)
+BusinterfaceReader::BusinterfaceReader() : CommonItemsReader()
 {
 
 }

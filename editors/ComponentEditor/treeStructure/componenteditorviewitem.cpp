@@ -21,7 +21,7 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorViewItem::ComponentEditorViewItem()

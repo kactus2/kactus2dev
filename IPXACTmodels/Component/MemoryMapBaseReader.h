@@ -16,7 +16,6 @@
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -28,16 +27,10 @@ class MemoryRemap;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT MemoryMapBaseReader : public CommonItemsReader
 {
-    Q_OBJECT
-
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    MemoryMapBaseReader(QObject* parent = 0);
+    //! The constructor.
+    MemoryMapBaseReader();
 
     /*!
      *  The destructor.

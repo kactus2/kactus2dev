@@ -14,7 +14,6 @@
 
 #include "CommonItemsWriter.h"
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
@@ -25,18 +24,13 @@ class Document;
 //-----------------------------------------------------------------------------
 class DocumentWriter : public CommonItemsWriter
 {
-    Q_OBJECT
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent   The parent object.
-     */
-    DocumentWriter(QObject* parent = 0);
+    //! The constructor.
+    DocumentWriter();
 
 	//! The destructor.
-	~DocumentWriter();
+	virtual ~DocumentWriter();
 
 protected:
 

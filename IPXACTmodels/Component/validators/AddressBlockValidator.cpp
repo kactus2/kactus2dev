@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/validators/MemoryReserve.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------------
 AddressBlockValidator::AddressBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<RegisterValidator> registerValidator,
-    QSharedPointer<ParameterValidator2014> parameterValidator):
+    QSharedPointer<ParameterValidator> parameterValidator):
 expressionParser_(expressionParser),
 registerValidator_(registerValidator),
 parameterValidator_(parameterValidator)

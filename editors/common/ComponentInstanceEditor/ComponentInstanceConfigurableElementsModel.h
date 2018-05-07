@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 

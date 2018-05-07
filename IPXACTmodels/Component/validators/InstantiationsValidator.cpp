@@ -22,7 +22,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/common/Enumeration.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------------
 InstantiationsValidator::InstantiationsValidator(QSharedPointer<ExpressionParser> expressionParser,
                                                  QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
-                                                 QSharedPointer<ParameterValidator2014> parameterValidator,
+                                                 QSharedPointer<ParameterValidator> parameterValidator,
                                                  LibraryInterface* libraryHandler):
 expressionParser_(expressionParser),
 availableFileSets_(fileSets),

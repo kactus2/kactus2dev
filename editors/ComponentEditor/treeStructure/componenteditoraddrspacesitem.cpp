@@ -24,7 +24,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem()
@@ -131,7 +131,7 @@ void ComponentEditorAddrSpacesItem::createChild( int index )
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
 {
-    QSharedPointer<ParameterValidator2014> parameterValidator (new ParameterValidator2014(expressionParser_,
+    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(expressionParser_,
         component_->getChoices()));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(expressionParser_));
     QSharedPointer<FieldValidator> fieldValidator (

@@ -16,7 +16,6 @@
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 
 #include <QXmlStreamWriter>
-#include <QObject>
 #include <QSharedPointer>
 
 class Register;
@@ -30,16 +29,12 @@ class AlternateRegister;
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT RegisterWriter : public CommonItemsWriter
 {
-    Q_OBJECT
-
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
      */
-    RegisterWriter(QObject* parent = 0);
+    RegisterWriter();
 
     /*!
      *  The destructor.

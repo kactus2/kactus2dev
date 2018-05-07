@@ -18,8 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionReader::ApiDefinitionReader()
 //-----------------------------------------------------------------------------
-ApiDefinitionReader::ApiDefinitionReader(QObject *parent):
-DocumentReader(parent)
+ApiDefinitionReader::ApiDefinitionReader(): DocumentReader()
 {
 
 }

@@ -19,8 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: FieldWriter::FieldWriter()
 //-----------------------------------------------------------------------------
-FieldWriter::FieldWriter(QObject* parent /* = 0 */) :
-CommonItemsWriter(parent)
+FieldWriter::FieldWriter() : CommonItemsWriter()
 {
 
 }
