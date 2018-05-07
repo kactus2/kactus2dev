@@ -14,7 +14,7 @@
 
 #include "IHGraphicsLayout.h"
 
-#include <designEditors/common/DiagramUtil.h>
+#include <editors/common/DiagramUtil.h>
 
 //-----------------------------------------------------------------------------
 //! Horizontal stacked layout.

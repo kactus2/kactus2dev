@@ -18,9 +18,9 @@
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
-#include <designEditors/common/DesignWidgetFactory.h>
-#include <designEditors/common/DesignWidget.h>
-#include <designEditors/common/DesignDiagram.h>
+#include <editors/common/DesignWidgetFactory.h>
+#include <editors/common/DesignWidget.h>
+#include <editors/common/DesignDiagram.h>
 
 #include <library/LibraryInterface.h>
 

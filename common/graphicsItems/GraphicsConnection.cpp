@@ -17,10 +17,10 @@
 #include <common/GenericEditProvider.h>
 #include <common/KactusColors.h>
 
-#include <designEditors/HWDesign/OffPageConnectorItem.h>
-#include <designEditors/common/DesignDiagram.h>
-#include <designEditors/common/DiagramUtil.h>
-#include <designEditors/common/DefaultRouting.h>
+#include <editors/HWDesign/OffPageConnectorItem.h>
+#include <editors/common/DesignDiagram.h>
+#include <editors/common/DiagramUtil.h>
+#include <editors/common/DefaultRouting.h>
 
 #include <QPen>
 #include <QStyleOptionGraphicsItem>

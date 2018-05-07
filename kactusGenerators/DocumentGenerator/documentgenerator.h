@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatterFactory.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <designEditors/common/DesignWidgetFactory.h>
+#include <editors/common/DesignWidgetFactory.h>
 
 #include <library/LibraryInterface.h>
 

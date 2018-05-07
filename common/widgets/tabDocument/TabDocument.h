@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <designEditors/common/DrawMode.h>
+#include <editors/common/DrawMode.h>
 #include <common/IEditProvider.h>
 
 #include <QWidget>

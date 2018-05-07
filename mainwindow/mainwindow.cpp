@@ -43,12 +43,12 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnConstants.h>
 
-#include <designEditors/common/DesignWidgetFactoryImplementation.h>
-#include <designEditors/HWDesign/HWDesignWidget.h>
-#include <designEditors/HWDesign/HWDesignDiagram.h>
-#include <designEditors/SystemDesign/SystemDesignWidget.h>
-#include <designEditors/SystemDesign/SystemDesignDiagram.h>
-#include <designEditors/MemoryDesigner/MemoryDesignDocument.h>
+#include <editors/common/DesignWidgetFactoryImplementation.h>
+#include <editors/HWDesign/HWDesignWidget.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/SystemDesign/SystemDesignWidget.h>
+#include <editors/SystemDesign/SystemDesignDiagram.h>
+#include <editors/MemoryDesigner/MemoryDesignDocument.h>
 
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <editors/BusDefinitionEditor/BusDefinitionEditor.h>

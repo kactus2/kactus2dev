@@ -11,7 +11,7 @@
 
 #include "ConfigurableElementFinder.h"
 
-#include <designEditors/common/ComponentInstanceEditor/EditorConfigurableElement.h>
+#include <editors/common/ComponentInstanceEditor/EditorConfigurableElement.h>
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementFinder::ConfigurableElementFinder()

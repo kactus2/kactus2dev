@@ -11,8 +11,8 @@
 
 #include "InstantiationConfigurableElementEditor.h"
 
-#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
-#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h>
+#include <editors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
+#include <editors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h>
 
 #include <QVBoxLayout>
 

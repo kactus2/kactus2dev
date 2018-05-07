@@ -32,7 +32,7 @@ HEADERS += ../common/SourceHighlightStyle.h \
     ../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../editors/ComponentEditor/common/ParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../designEditors/common/TopComponentParameterFinder.h \
+    ../../editors/common/TopComponentParameterFinder.h \
     ./TextBodyWriter/TextBodyWriter.h \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
     ../PluginSystem/GeneratorPlugin/IWriterFactory.h \
@@ -72,7 +72,7 @@ SOURCES += ../common/LanguageHighlighter.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../designEditors/common/TopComponentParameterFinder.cpp \
+    ../../editors/common/TopComponentParameterFinder.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
     ./VerilogWriterFactory/VerilogDocument.cpp \

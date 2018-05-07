@@ -12,7 +12,7 @@
 #ifndef IGRAPHICSITEMSTACK_H
 #define IGRAPHICSITEMSTACK_H
 
-#include <designEditors/common/ColumnTypes.h>
+#include <editors/common/ColumnTypes.h>
 
 #include <QPointF>
 #include <QGraphicsItem>

@@ -30,19 +30,19 @@
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
 
-#include <designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h>
-#include <designEditors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h>
-#include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
-#include <designEditors/common/ConfigurationEditor/configurationeditor.h>
-#include <designEditors/common/InterfaceEditor/interfaceeditor.h>
-#include <designEditors/common/ConnectionEditor/connectioneditor.h>
-#include <designEditors/HWDesign/AdHocItem.h>
-#include <designEditors/HWDesign/HWDesignWidget.h>
-#include <designEditors/HWDesign/HWDesignDiagram.h>
-#include <designEditors/HWDesign/AdhocEditor/AdhocEditor.h>
-#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
-#include <designEditors/SystemDesign/SystemDesignWidget.h>
-#include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
+#include <editors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h>
+#include <editors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h>
+#include <editors/common/ComponentInstanceEditor/componentinstanceeditor.h>
+#include <editors/common/ConfigurationEditor/configurationeditor.h>
+#include <editors/common/InterfaceEditor/interfaceeditor.h>
+#include <editors/common/ConnectionEditor/connectioneditor.h>
+#include <editors/HWDesign/AdHocItem.h>
+#include <editors/HWDesign/HWDesignWidget.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/HWDesign/AdhocEditor/AdhocEditor.h>
+#include <editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
+#include <editors/SystemDesign/SystemDesignWidget.h>
+#include <editors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 
 #include <QString>
 #include <QHelpEngine>

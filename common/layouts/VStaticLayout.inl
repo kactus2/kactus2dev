@@ -9,7 +9,7 @@
 // Vertical static layout.
 //-----------------------------------------------------------------------------
 
-#include <designEditors/common/DiagramUtil.h>
+#include <editors/common/DiagramUtil.h>
 
 //-----------------------------------------------------------------------------
 // Function: VStaticLayout<T>::VStaticLayout()
