@@ -37,7 +37,7 @@ DEPENDPATH += ../../../
 
 OBJECTS_DIR += $$DESTDIR
 
-MOC_DIR += ./generatedFileSets
-UI_DIR += ./generatedFileSets
-RCC_DIR += ./generatedFileSets
+MOC_DIR += ./generatedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
 include(tst_FileSetValidator.pri)

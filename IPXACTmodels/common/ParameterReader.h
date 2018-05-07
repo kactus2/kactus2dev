@@ -15,12 +15,14 @@
 #include <QObject>
 #include <QDomNode>
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 class Parameter;
 
 //-----------------------------------------------------------------------------
 //! XML reader class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class ParameterReader : public QObject
+class IPXACTMODELS_EXPORT ParameterReader : public QObject
 {
     Q_OBJECT
 

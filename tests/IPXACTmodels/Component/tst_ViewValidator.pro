@@ -37,7 +37,7 @@ DEPENDPATH += ../../../
 
 OBJECTS_DIR += $$DESTDIR
 
-MOC_DIR += ./generatedViews
-UI_DIR += ./generatedViews
-RCC_DIR += ./generatedViews
+MOC_DIR += ./generatedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
 include(tst_ViewValidator.pri)

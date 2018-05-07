@@ -16,12 +16,15 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 class Parameter;
 class VendorExtension;
+
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class ParameterWriter : public QObject
+class IPXACTMODELS_EXPORT ParameterWriter : public QObject
 {
     Q_OBJECT
 public:

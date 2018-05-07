@@ -356,6 +356,7 @@ void ParameterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<P
     findErrorsInMaximumValue(errors, parameter, context);
     findErrorsInChoice(errors, parameter, context);
     findErrorsInResolve(errors, parameter, context);
+    findErrorsInValueId(errors, parameter, context);
     findErrorsInVector(errors, parameter, context);
 }
 
@@ -517,6 +518,19 @@ void ParameterValidator::findErrorsInResolve(QVector<QString>& errors, QSharedPo
     { 
         errors.append(QObject::tr("Invalid resolve %1 specified for %2 %3 within %4").arg(
             parameter->getValueResolve(), parameter->elementName(), parameter->name(), context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator::findErrorsInValueId()
+//-----------------------------------------------------------------------------
+void ParameterValidator::findErrorsInValueId(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
+    QString const& context) const
+{
+    if (!hasValidValueId(parameter))
+    {
+        errors.append(QObject::tr("No identifier specified for %1 %2 with resolve %3 within %4").arg(
+            parameter->elementName(), parameter->name(), parameter->getValueResolve(), context));
     }
 }
 

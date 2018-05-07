@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += c++11 testcase
+CONFIG += testcase
 
 SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 		editors/editors.pro \

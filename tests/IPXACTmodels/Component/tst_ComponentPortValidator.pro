@@ -37,7 +37,7 @@ DEPENDPATH += ../../../
 
 OBJECTS_DIR += $$DESTDIR
 
-MOC_DIR += ./generatedComponentPorts
-UI_DIR += ./generatedComponentPorts
-RCC_DIR += ./generatedComponentPorts
+MOC_DIR += ./generatedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
 include(tst_ComponentPortValidator.pri)

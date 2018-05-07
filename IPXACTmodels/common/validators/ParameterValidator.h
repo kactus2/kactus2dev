@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
-// File: ParameterValidator2014.h
+// File: ParameterValidator.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 10.12.2014
 //
@@ -292,6 +292,16 @@ protected:
      */
     void findErrorsInResolve(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context)
         const;
+      
+    /*!
+     *  Finds the errors in value identifier.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     */
+    void findErrorsInValueId(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
+        QString const& context) const;
 
     /*!
      *  Finds possible errors in a parameter value type.

@@ -4,5 +4,5 @@
 
 HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h 
 SOURCES += ./tst_RemapStateValidator.cpp \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp 
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp 
 	

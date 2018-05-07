@@ -30,14 +30,14 @@ else:unix {
 }
 
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../../../
+INCLUDEPATH += ../../../
 
 DEPENDPATH += .
-DEPENDPATH += ../../../../../
+DEPENDPATH += ../../../
 
 OBJECTS_DIR += $$DESTDIR
 
-MOC_DIR += ./generatedInstantiationss
-UI_DIR += ./generatedInstantiationss
-RCC_DIR += ./generatedInstantiationss
+MOC_DIR += ./generatedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
 include(tst_InstantiationsValidator.pri)

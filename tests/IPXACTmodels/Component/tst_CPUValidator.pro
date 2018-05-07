@@ -30,10 +30,10 @@ else:unix {
 }
 
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../../
+INCLUDEPATH += ../../../
 
 DEPENDPATH += .
-DEPENDPATH += ../../../../
+DEPENDPATH += ../../../
 
 OBJECTS_DIR += $$DESTDIR
 
