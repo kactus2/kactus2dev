@@ -9,7 +9,7 @@
 // Kactus2 plugin for VHDL file generation.
 //-----------------------------------------------------------------------------
 
-#include "VHDLGenerator.h"
+#include "VHDLGeneratorPlugin.h"
 
 #include "vhdlgenerator2.h"
 #include "VHDLGeneratorDialog.h"

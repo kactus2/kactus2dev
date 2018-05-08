@@ -32,7 +32,8 @@ HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./VHDLGeneratorDialog.h \
     ./vhdlgenerator2.h \
     ./vhdlcomponentinstance.h \
-    ./VHDLGenerator.h
+    ../common/HDLParser/HDLCommandLineParser.h \
+    ./VHDLGeneratorPlugin.h
 SOURCES += ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
@@ -46,7 +47,7 @@ SOURCES += ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ./vhdlcomponentinstance.cpp \
     ./vhdlconnectionendpoint.cpp \
     ./vhdlgeneral.cpp \
-    ./VHDLGenerator.cpp \
+    ./VHDLGeneratorPlugin.cpp \
     ./vhdlgenerator2.cpp \
     ./VHDLGeneratorDialog.cpp \
     ./vhdlgeneric.cpp \
@@ -55,5 +56,6 @@ SOURCES += ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ./vhdlportmap.cpp \
     ./vhdlportsorter.cpp \
     ./vhdlsignal.cpp \
-    ./VhdlTypedObject.cpp
+    ./VhdlTypedObject.cpp \
+    ../common/HDLParser/HDLCommandLineParser.cpp
 RESOURCES += VHDLGenerator.qrc
