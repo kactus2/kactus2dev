@@ -124,11 +124,10 @@ void tst_CommandLineParser::testShowUsage()
         "for command-specific information.\n"
         "\n"
         "Options:\n"
-        "  -?, -h, --help  Displays this help.\n"
+        "  -h, --help  Displays this help.\n"
         "  -v, --version   Displays version information.\n"
         );
 
-    QVERIFY(parser.argumentsValid());
     QVERIFY(parser.helpOrVersionOptionSet());
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), expected);
@@ -143,7 +142,6 @@ void tst_CommandLineParser::testShowUsage_data()
 
     QTest::newRow("-h option") << "tst_CommandLineParser -h";
     QTest::newRow("--help option") << "tst_CommandLineParser --help";
-    QTest::newRow("-? option (Windows style)") << "tst_CommandLineParser -?";
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +155,6 @@ void tst_CommandLineParser::testShowVersion()
     CommandLineParser parser;
     parser.process(arguments, &utility_);
 
-    QVERIFY(parser.argumentsValid());
     QVERIFY(parser.helpOrVersionOptionSet());
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), QStringLiteral("Kactus2 test.version"));
@@ -190,7 +187,6 @@ void tst_CommandLineParser::testRunPluginCommand()
         settingsFile.remove();
     }
 
-    QVERIFY(parser.argumentsValid());
     QVERIFY(settingsFile.exists() == false);
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), QStringLiteral("mock"));
@@ -212,7 +208,6 @@ void tst_CommandLineParser::testPluginHelp()
         settingsFile.remove();
     }
 
-    QVERIFY(parser.argumentsValid());
     QVERIFY(settingsFile.exists() == false);
     QCOMPARE(log_.count(), 1);
     QCOMPARE(log_.first(), QStringLiteral("mock -h"));

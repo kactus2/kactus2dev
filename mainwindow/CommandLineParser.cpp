@@ -126,13 +126,13 @@ QString CommandLineParser::helpText()
         }
     }
 
-    text.append(     
+    text.append(
         "\n"
         "The command may require additional options. See 'Kactus2 <command> -h'\n"
         "for command-specific information.\n"
         "\n"
         "Options:\n"
-        "  -?, -h, --help  Displays this help.\n"
+        "  -h, --help  Displays this help.\n"
         "  -v, --version   Displays version information.\n");
 
     return text;
