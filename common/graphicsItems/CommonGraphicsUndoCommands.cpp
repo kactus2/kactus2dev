@@ -15,10 +15,10 @@
 
 #include <common/graphicsItems/GraphicsColumnConstants.h>
 
-#include <designEditors/common/DesignDiagram.h>
-#include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/SystemDesign/HWMappingItem.h>
-#include <designEditors/SystemDesign/SWComponentItem.h>
+#include <editors/common/DesignDiagram.h>
+#include <editors/HWDesign/HWComponentItem.h>
+#include <editors/SystemDesign/HWMappingItem.h>
+#include <editors/SystemDesign/SWComponentItem.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 

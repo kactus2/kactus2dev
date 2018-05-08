@@ -129,7 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\designEditors\common\TopComponentParameterFinder.cpp" />
+    <ClCompile Include="..\..\editors\common\TopComponentParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
@@ -236,7 +236,7 @@
     <ClCompile Include="VerilogWriterFactory\VerilogWriterFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\designEditors\common\TopComponentParameterFinder.h" />
+    <ClInclude Include="..\..\editors\common\TopComponentParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />

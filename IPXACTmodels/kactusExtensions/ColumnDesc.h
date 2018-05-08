@@ -15,7 +15,7 @@
 #include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <designEditors/common/ColumnTypes.h>
+#include <editors/common/ColumnTypes.h>
 
 #include <QString>
 #include <QDomNode>

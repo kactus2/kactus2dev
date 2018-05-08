@@ -12,8 +12,8 @@
 #ifndef INSTANTIATIONCONFIGURABLEELEMENTEDITOR_H
 #define INSTANTIATIONCONFIGURABLEELEMENTEDITOR_H
 
-#include <designEditors/common/ComponentInstanceEditor/configurableelementeditor.h>
-#include <designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.h>
+#include <editors/common/ComponentInstanceEditor/configurableelementeditor.h>
+#include <editors/common/ComponentInstanceEditor/ConfigurableElementsModel.h>
 
 #include <QAbstractItemModel>
 #include <QGroupBox>

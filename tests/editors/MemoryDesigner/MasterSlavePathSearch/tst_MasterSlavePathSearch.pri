@@ -7,16 +7,16 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../designEditors/MemoryDesigner/MasterSlavePathSearch.h \
-    ../../../../designEditors/MemoryDesigner/ConnectivityConnection.h \
-    ../../../../designEditors/MemoryDesigner/ConnectivityGraph.h \
-    ../../../../designEditors/MemoryDesigner/ConnectivityComponent.h \
-    ../../../../designEditors/MemoryDesigner/ConnectivityInterface.h \
-    ../../../../designEditors/MemoryDesigner/MemoryItem.h
-SOURCES += ./tst_MasterSlavePathSearch.cpp \
-    ../../../../designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
-    ../../../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
-    ../../../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
-    ../../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
-    ../../../../designEditors/MemoryDesigner/ConnectivityInterface.cpp \
-    ../../../../designEditors/MemoryDesigner/MemoryItem.cpp
+HEADERS += ../../../../editors/MemoryDesigner/ConnectivityComponent.h \
+    ../../../../editors/MemoryDesigner/ConnectivityConnection.h \
+    ../../../../editors/MemoryDesigner/ConnectivityGraph.h \
+    ../../../../editors/MemoryDesigner/ConnectivityInterface.h \
+    ../../../../editors/MemoryDesigner/MasterSlavePathSearch.h \
+    ../../../../editors/MemoryDesigner/MemoryItem.h
+SOURCES += ../../../../editors/MemoryDesigner/ConnectivityComponent.cpp \
+    ../../../../editors/MemoryDesigner/ConnectivityConnection.cpp \
+    ../../../../editors/MemoryDesigner/ConnectivityGraph.cpp \
+    ../../../../editors/MemoryDesigner/ConnectivityInterface.cpp \
+    ../../../../editors/MemoryDesigner/MasterSlavePathSearch.cpp \
+    ../../../../editors/MemoryDesigner/MemoryItem.cpp \
+    ./tst_MasterSlavePathSearch.cpp

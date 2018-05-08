@@ -22,9 +22,9 @@
 
 #include <common/graphicsItems/GraphicsColumnConstants.h>
 
-#include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/DiagramUtil.h>
-#include <designEditors/common/DesignDiagram.h>
+#include <editors/common/diagramgrid.h>
+#include <editors/common/DiagramUtil.h>
+#include <editors/common/DesignDiagram.h>
 
 #include <QPen>
 #include <QFont>

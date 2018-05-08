@@ -14,7 +14,7 @@
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
-#include <designEditors/common/DesignDiagram.h>
+#include <editors/common/DesignDiagram.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

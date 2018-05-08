@@ -18,7 +18,7 @@
 
 #include "memoryviewgenerator_global.h"
 
-#include <designEditors/MemoryDesigner/ConnectivityGraphFactory.h>
+#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 

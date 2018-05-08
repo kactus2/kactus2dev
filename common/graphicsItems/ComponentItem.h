@@ -12,8 +12,8 @@
 #ifndef COMPONENTITEM_H
 #define COMPONENTITEM_H
 
-#include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/Association/Associable.h>
+#include <editors/common/diagramgrid.h>
+#include <editors/common/Association/Associable.h>
 
 #include <QGraphicsRectItem>
 #include <QSharedPointer>

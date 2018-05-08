@@ -79,27 +79,6 @@
     <ClCompile Include="GeneratedFiles\qrc_MemoryViewGenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\designEditors\MemoryDesigner\MemoryItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\designEditors\MemoryDesigner\MasterSlavePathSearch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityGraphFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\ParameterCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -115,17 +94,8 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ParameterCache.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\designEditors\common\ComponentInstanceParameterFinder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceParameterFinder.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ComponentInstanceParameterFinder.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
       <Filter>Source Files</Filter>
@@ -151,6 +121,36 @@
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editors\common\ComponentInstanceParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryViewGenerator.h">
@@ -163,27 +163,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\designEditors\MemoryDesigner\MemoryItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityGraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityConnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\designEditors\MemoryDesigner\MasterSlavePathSearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityGraphFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
@@ -219,6 +198,27 @@
     <ClInclude Include="..\common\HDLParser\MetaInstance.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MemoryViewGeneratorPlugin.h">
@@ -230,7 +230,7 @@
     <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\designEditors\common\ComponentInstanceParameterFinder.h">
+    <CustomBuild Include="..\..\editors\common\ComponentInstanceParameterFinder.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

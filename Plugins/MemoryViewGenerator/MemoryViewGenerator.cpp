@@ -15,12 +15,12 @@
 
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
-#include <designEditors/MemoryDesigner/ConnectivityConnection.h>
-#include <designEditors/MemoryDesigner/ConnectivityGraph.h>
-#include <designEditors/MemoryDesigner/ConnectivityGraphFactory.h>
-#include <designEditors/MemoryDesigner/ConnectivityInterface.h>
-#include <designEditors/MemoryDesigner/MasterSlavePathSearch.h>
-#include <designEditors/MemoryDesigner/MemoryItem.h>
+#include <editors/MemoryDesigner/ConnectivityConnection.h>
+#include <editors/MemoryDesigner/ConnectivityGraph.h>
+#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
+#include <editors/MemoryDesigner/ConnectivityInterface.h>
+#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
+#include <editors/MemoryDesigner/MemoryItem.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>

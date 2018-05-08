@@ -101,12 +101,6 @@
     <Filter Include="Header Files\editors\ComponentEditor\common">
       <UniqueIdentifier>{4ecb9ded-e8e7-4d23-b0ea-cd658ee15fbe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\DesignEditor">
-      <UniqueIdentifier>{756646b9-d92e-42e8-b485-c714186e668f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\DesignEditor">
-      <UniqueIdentifier>{2ece6617-9617-4da5-bbef-c3a1fed77fdf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\TextBodyWrite">
       <UniqueIdentifier>{087779c9-1f4e-4c00-89b6-05295736929e}</UniqueIdentifier>
     </Filter>
@@ -148,6 +142,12 @@
     </Filter>
     <Filter Include="Source Files\Parsing">
       <UniqueIdentifier>{265b861a-684d-4adf-be14-c53097eb9d3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\common">
+      <UniqueIdentifier>{8cc2ee0f-0c89-4884-820e-d55e75404d3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common">
+      <UniqueIdentifier>{28c052a9-942b-40c9-b59c-75c4c47e84b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -195,9 +195,6 @@
     </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\designEditors\common\TopComponentParameterFinder.cpp">
-      <Filter>Source Files\editors\DesignEditor</Filter>
     </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
       <Filter>Source Files\common</Filter>
@@ -310,6 +307,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_LanguageHighlighter.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editors\common\TopComponentParameterFinder.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
     <ClCompile Include="..\common\HDLParser\HDLCommandLineParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -356,9 +356,6 @@
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\designEditors\common\TopComponentParameterFinder.h">
-      <Filter>Header Files\editors\DesignEditor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
       <Filter>Header Files\common</Filter>
@@ -422,6 +419,9 @@
     </ClInclude>
     <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
       <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\common\TopComponentParameterFinder.h">
+      <Filter>Header Files\editors\common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\HDLParser\HDLCommandLineParser.h">
       <Filter>Header Files</Filter>

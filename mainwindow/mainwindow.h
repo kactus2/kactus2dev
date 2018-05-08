@@ -14,7 +14,7 @@
 
 #include <Plugins/PluginSystem/PluginManager.h>
 
-#include <designEditors/common/DrawMode.h>
+#include <editors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>

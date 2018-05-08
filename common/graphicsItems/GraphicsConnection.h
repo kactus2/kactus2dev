@@ -12,7 +12,7 @@
 #ifndef GRAPHICSCONNECTION_H
 #define GRAPHICSCONNECTION_H
 
-#include <designEditors/common/Association/Associable.h>
+#include <editors/common/Association/Associable.h>
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
