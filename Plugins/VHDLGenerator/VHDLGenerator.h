@@ -14,10 +14,18 @@
 
 #include "VHDLGenerator_global.h"
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/CommandLineSupport.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 
-class VHDLGENERATOR_EXPORT VHDLGeneratorPlugin : public QObject, public IGeneratorPlugin
+#include <QCommandLineParser>
+
+class ViewSelection;
+//-----------------------------------------------------------------------------
+//! Kactus2 plugin for VHDL file generation.
+//-----------------------------------------------------------------------------
+class VHDLGENERATOR_EXPORT VHDLGeneratorPlugin : public QObject, public IGeneratorPlugin, public CommandLineSupport
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.VHDLGenerator" FILE "VHDLGenerator.json")
@@ -108,19 +116,56 @@ public:
 
      //! Returns the external program requirements of the plugin.
      virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
+     
+    /*!
+     *  Gets the command required to run the plugin.
+     *
+     *      @return The command to run the plugin.
+     */
+     virtual QString getCommand() const;
+
+    /*!
+     *  Executes the plugin with the given arguments.
+     *
+     *      @param [in] arguments   The arguments for the execution.
+     *      @param [in] utility     Utilities for enabling plugin execution.
+     */
+     virtual void process(QStringList const& arguments, IPluginUtility* utility);
 
 private slots:
     
+    //! Called when a user notification should be shown.
     void noticeMessage(QString const& message);
 
+    //! Called when an error should be shown.
     void errorMessage(QString const& message);
-
    
 private:
     //! The plugin utility provided by call runGenerator.
     IPluginUtility* utility_;
 
-     QString findEntityName(QSharedPointer<Component> component, QString const& viewName) const;
+    //! Settings for the generation.
+    GenerationSettings generationSettings_;
+
+    /*!
+     *  Finds the name of the component entity.
+     *
+     *      @param [in] component   The component to search.
+     *      @param [in] viewName    The selected view to search.
+     *
+     *      @return The name of the VHDL entity for the component.
+     */
+    QString findEntityName(QSharedPointer<Component> component, QString const& viewName) const;
+
+    /*!
+     *  Runs the VHDL generation for the given component.
+     *
+     *      @param [in] component       The component to generate VHDL from.
+     *      @param [in] filePath        The file path to save the VHDL file.
+     *      @param [in] viewSettings    The view settings for the generation.
+     */
+    void generate(QSharedPointer<Component> component, QString const& filePath,
+        QSharedPointer<ViewSelection> viewSettings);
 };
 
 #endif // VHDLGENERATORPLUGIN_H

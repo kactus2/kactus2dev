@@ -50,14 +50,6 @@ void CommandLineParser::readArguments(QStringList const& arguments)
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommandLineParser::argumentsValid()
-//-----------------------------------------------------------------------------
-bool CommandLineParser::argumentsValid() const
-{
-    return optionParser_.errorText().isEmpty();
-}
-
-//-----------------------------------------------------------------------------
 // Function: CommandLineParser::helpOrVersionOptionSet()
 //-----------------------------------------------------------------------------
 bool CommandLineParser::helpOrVersionOptionSet() const

@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/ViewSelection.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
+#include <Plugins/common/HDLParser/HDLCommandLineParser.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------------
 // Function: VHDLGeneratorPlugin::VHDLGeneratorPlugin()
 //-----------------------------------------------------------------------------
-VHDLGeneratorPlugin::VHDLGeneratorPlugin() : QObject(0)
+VHDLGeneratorPlugin::VHDLGeneratorPlugin() : QObject(0), utility_(0), generationSettings_()
 {
 
 }
@@ -58,7 +58,7 @@ QString VHDLGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VHDLGeneratorPlugin::getVersion() const
 {
-    return "1.0";
+    return "1.2";
 }
 
 //-----------------------------------------------------------------------------
@@ -121,8 +121,8 @@ QIcon VHDLGeneratorPlugin::getIcon() const
 // Function: VHDLGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
 bool VHDLGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
-    QSharedPointer<Design const> design,
-    QSharedPointer<DesignConfiguration const> designConfiguration) const
+    QSharedPointer<Design const> /*design*/,
+    QSharedPointer<DesignConfiguration const> /*designConfiguration*/) const
 {
     return component && component->getImplementation() == KactusAttribute::HW;
 }
@@ -132,60 +132,29 @@ bool VHDLGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> 
 //-----------------------------------------------------------------------------
 void VHDLGeneratorPlugin::runGenerator(IPluginUtility* utility, 
     QSharedPointer<Component> component,
-    QSharedPointer<Design> design,
-    QSharedPointer<DesignConfiguration> designConfiguration)
+    QSharedPointer<Design> /*design*/,
+    QSharedPointer<DesignConfiguration> /*designConfiguration*/)
 {
     utility_ = utility;
 
-    QSharedPointer<ViewSelection> viewSettings(new ViewSelection(QStringLiteral("vhdl"), true,
-        QString(), new GenerationSettings(), component->getViews(), component->getComponentInstantiations(), component->getFileSets()));
-
     QFileInfo targetInfo(utility_->getLibraryInterface()->getPath(component->getVlnv()));
 
-    QString fileName = targetInfo.absolutePath()+ "/" + findEntityName(component, viewSettings->getViewName()) +".vhd";
+    const bool saveToFileset = true;
+    QSharedPointer<ViewSelection> viewSettings(new ViewSelection(QStringLiteral("vhdl"), saveToFileset,
+        QString(), &generationSettings_, component->getViews(), component->getComponentInstantiations(),
+        component->getFileSets()));
 
+    QString suggestedPath = targetInfo.absolutePath();
+    suggestedPath.append(QLatin1Char('/'));
+    suggestedPath.append(findEntityName(component, viewSettings->getViewName()));
+    suggestedPath.append(QStringLiteral(".vhd"));
 
-    VHDLGeneratorDialog dialog(viewSettings, fileName, utility->getParentWidget());
+    VHDLGeneratorDialog dialog(viewSettings, suggestedPath, utility->getParentWidget());
 
-    // if user clicks cancel then nothing is created
-    if (dialog.exec() != QDialog::Accepted)
+    if (dialog.exec() == QDialog::Accepted)
     {
-        return;
+        generate(component, dialog.getOutputPath(), viewSettings);
     }
-
-
-    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(component));
-    QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(finder));
-
-    VhdlGenerator2 vhdlGen(expressionParser, utility_->getLibraryInterface(), this);
-
-    connect(&vhdlGen, SIGNAL(errorMessage(const QString&)),
-        this, SLOT(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(&vhdlGen, SIGNAL(noticeMessage(const QString&)),
-        this, SLOT(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-    // if errors are detected during parsing
-    if (!vhdlGen.parse(component, viewSettings->getViewName()))
-    {
-        return;
-    }
-
-    QString path = dialog.getOutputPath();
-
-    // generate the vhdl code
-    vhdlGen.generate(path);
-
-    // check if the file already exists in the metadata
-    QString basePath = utility_->getLibraryInterface()->getPath(component->getVlnv());
-    QString relativePath = General::getRelativePath(basePath, path);
-    if (viewSettings->getSaveToFileset())
-    {
-        vhdlGen.addRTLView(viewSettings->getFileSetName(), path);
-        utility_->getLibraryInterface()->writeModelToFile(component);
-    }
-
-    // Inform when done.
-    utility->printInfo( "VHDL generation complete." );
 }
 
 //-----------------------------------------------------------------------------
@@ -194,6 +163,66 @@ void VHDLGeneratorPlugin::runGenerator(IPluginUtility* utility,
 QList<IPlugin::ExternalProgramRequirement> VHDLGeneratorPlugin::getProgramRequirements()
 {
     return QList<IPlugin::ExternalProgramRequirement>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGeneratorPlugin::getCommand()
+//-----------------------------------------------------------------------------
+QString VHDLGeneratorPlugin::getCommand() const
+{
+    return QStringLiteral("generate_vhdl");
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGeneratorPlugin::process()
+//-----------------------------------------------------------------------------
+void VHDLGeneratorPlugin::process(QStringList const& arguments, IPluginUtility* utility)
+{
+    HDLCommandLineParser parser(getCommand());
+    HDLCommandLineParser::ParseResults parseResult = parser.parseArguments(arguments);
+
+    if (parseResult.cancelRun)
+    {
+        utility->printInfo(parseResult.message);
+        return;
+    }
+
+    utility_ = utility;
+
+    utility_->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+
+    // Must have a component under any condition.
+    QSharedPointer<Component> component =
+        utility_->getLibraryInterface()->getModel(parseResult.vlnv).dynamicCast<Component>();
+    if (!component)
+    {
+        utility_->printError(tr("Invalid component given as a parameter."));
+        return;
+    }
+
+    utility_->printInfo(tr("Running generation for %1 and view '%2'.").arg(parseResult.vlnv.toString(), 
+        parseResult.viewName));
+
+    QDir targetDirectory;
+    if (!targetDirectory.mkpath(parseResult.path))
+    {
+        utility_->printError(tr("Could not create target directory: %1").arg(parseResult.path));
+        return;
+    }
+
+    utility_->printInfo(tr("Target directory: %1").arg(parseResult.path));
+
+    const bool saveToFileset = false;
+    QSharedPointer<ViewSelection> viewSettings(new ViewSelection(QStringLiteral("vhdl"), saveToFileset,
+        QString(), &generationSettings_, component->getViews(), component->getComponentInstantiations(), 
+        component->getFileSets()));
+
+    QString filePath = parseResult.path;
+    filePath.append(QLatin1Char('/'));
+    filePath.append(findEntityName(component, parseResult.viewName));
+    filePath.append(QStringLiteral(".vhd"));
+
+    generate(component, filePath, viewSettings);
 }
 
 //-----------------------------------------------------------------------------
@@ -219,21 +248,59 @@ QString VHDLGeneratorPlugin::findEntityName(QSharedPointer<Component> component,
 {
     foreach (QSharedPointer<View> componentView, *component->getViews())
     {
-        if (componentView->name() == viewName)
+        if (componentView->name().compare(viewName) == 0)
         {
             QString componentInstantiation = componentView->getComponentInstantiationRef();
 
-            foreach (QSharedPointer<ComponentInstantiation> instantiation, 
-                *component->getComponentInstantiations())
+            for (QList<QSharedPointer<ComponentInstantiation> >::const_iterator iter = 
+                component->getComponentInstantiations()->cbegin();
+                iter != component->getComponentInstantiations()->cend(); ++iter)
             {
-                if (instantiation->name() == componentInstantiation)
+                if ((*iter)->name().compare(componentInstantiation) == 0)
                 {
-                    return instantiation->getModuleName();
+                    return (*iter)->getModuleName();
                 }
             }
-
         }
     }
 
     return component->getVlnv().getName();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGeneratorPlugin::generate()
+//-----------------------------------------------------------------------------
+void VHDLGeneratorPlugin::generate(QSharedPointer<Component> component, QString const& filePath, 
+    QSharedPointer<ViewSelection> viewSettings)
+{
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(component));
+    QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(finder));
+
+    VhdlGenerator2 generator(expressionParser, utility_->getLibraryInterface(), this);
+
+    connect(&generator, SIGNAL(errorMessage(const QString&)),
+        this, SLOT(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(&generator, SIGNAL(noticeMessage(const QString&)),
+        this, SLOT(noticeMessage(const QString&)), Qt::UniqueConnection);
+
+    // if errors are detected during parsing
+    if (!generator.parse(component, viewSettings->getViewName()))
+    {
+        return;
+    }
+
+    // Generate the VHDL code.
+    generator.generate(filePath);
+
+    if (viewSettings->getSaveToFileset())
+    {
+        QString basePath = utility_->getLibraryInterface()->getPath(component->getVlnv());
+        QString relativePath = General::getRelativePath(basePath, filePath);
+
+        generator.addRTLView(viewSettings->getFileSetName(), filePath);
+        utility_->getLibraryInterface()->writeModelToFile(component);
+    }
+
+    // Inform when done.
+    utility_->printInfo( "VHDL generation complete." );
 }

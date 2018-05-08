@@ -133,6 +133,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ViewSelectionWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\HDLParser\HDLCommandLineParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VHDLGenerator_global.h">
@@ -196,6 +199,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\HDLCommandLineParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 
         parser.readArguments(arguments);
 
-        if (!parser.helpOrVersionOptionSet() && parser.argumentsValid())
+        if (!parser.helpOrVersionOptionSet())
         {
             library->searchForIPXactFiles();
         }
