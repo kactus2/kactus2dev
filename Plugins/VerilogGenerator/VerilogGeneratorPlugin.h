@@ -18,9 +18,6 @@
 #include <Plugins/PluginSystem/CommandLineSupport.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
-#include <QCommandLineOption>
-#include <QCommandLineParser>
-
 //-----------------------------------------------------------------------------
 //! Plugin for structural Verilog generation.
 //-----------------------------------------------------------------------------
@@ -119,13 +116,21 @@ public:
         QSharedPointer<Component> component,
         QSharedPointer<Design> design,
         QSharedPointer<DesignConfiguration> designConfiguration);
+     
+    /*!
+     *  Gets the command required to run the plugin.
+     *
+     *      @return The command to run the plugin.
+     */
+     virtual QString getCommand() const;
 
-    virtual QString getCommand() const;
-    
-    virtual void process(QStringList const& arguments, IPluginUtility* utility);
-    
-    QCommandLineParser* createCommandParser();
-
+    /*!
+     *  Executes the plugin with the given arguments.
+     *
+     *      @param [in] arguments   The arguments for the execution.
+     *      @param [in] utility     Utilities for enabling plugin execution.
+     */
+     virtual void process(QStringList const& arguments, IPluginUtility* utility);
    
 private:
 	// Disable copying.

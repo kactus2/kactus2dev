@@ -310,6 +310,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_LanguageHighlighter.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\HDLParser\HDLCommandLineParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Writer.h">
@@ -419,6 +422,9 @@
     </ClInclude>
     <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
       <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\HDLCommandLineParser.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
