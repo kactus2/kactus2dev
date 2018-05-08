@@ -67,6 +67,11 @@ The following packages are required (on Ubuntu):
   * qt5-default
   * qttools5-private-dev
   * qttools5-dev-tools
+  * libqt5svg5-dev
+
+Example:
+```
+sudo apt-get install qt5-default qttools5-private-dev qttools5-dev-tools libqt5svg5-dev
 
 Example:
 ```
@@ -172,9 +177,9 @@ Please note a recent change to lower-case binary name i.e. kactus2, not Kactus2.
 
 #### 3b. Run Kactus2 command-line (experimental)
 
-Some tasks may be run in the command-line without the GUI. Currently only Verilog generator supports 
-this feature and can be executed with command `generate_verilog`. 
-Additional options are required as detailed below.
+Some tasks may be run in the command-line without the GUI. Currently only Verilog and VHDL 
+generators supports this feature and can be executed with command `generate_verilog` and
+`generate_vhdl`. Additional options are required as detailed below.
 
 Example:
 
