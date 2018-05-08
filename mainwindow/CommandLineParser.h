@@ -40,13 +40,6 @@ public:
     void readArguments(QStringList const& arguments);
 
     /*!
-     *  Check if the read arguments are valid.
-     *
-     *      @return True, if the read arguments are valid, otherwise false.
-     */
-    bool argumentsValid() const;
-
-    /*!
      *  Checks if help or version option is set.
      *
      *      @param [in] arguments   The list of command line arguments to check.
