@@ -1,7 +1,7 @@
 #-----------------------------------------------------------------------------
 # File: VerilogGenerator.pro
 #-----------------------------------------------------------------------------
-# Project: Kactus 2
+# Project: Kactus2
 # Author: Esko Pekkarinen
 # Date: 28.07.2014
 #
@@ -11,9 +11,9 @@
 
 TEMPLATE = subdirs
 
-CONFIG += c++11 testcase
-SUBDIRS +=  VerilogWriterFactory/tst_VerilogWriterFactory.pro \
-		   VerilogHeaderWriter/tst_VerilogHeaderWriter.pro \
-		   InterfaceDirectionNameSorter/tst_InterfaceDirectionNameSorter.pro \
-		   CommentWriter/tst_CommentWriter.pro \
-           ImplementationSelection/tst_ImplementationSelection.pro
+CONFIG += testcase
+SUBDIRS += tst_VerilogWriterFactory.pro \
+		   tst_VerilogHeaderWriter.pro \
+		   tst_InterfaceDirectionNameSorter.pro \
+		   tst_CommentWriter.pro \
+           tst_ImplementationSelection.pro

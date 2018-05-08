@@ -6,6 +6,7 @@ TEMPLATE = subdirs
 
 CONFIG += c++11 testcase
 
-SUBDIRS += VerilogImporter/tst_VerilogImporter.pro \
-           VerilogPortParser/tst_VerilogPortParser.pro \
-		   VerilogParameterParser/tst_VerilogParameterParser.pro
+SUBDIRS += tst_HDLParser.pro \
+           tst_VerilogPortParser.pro \
+		   tst_VerilogParameterParser.pro\
+		   tst_VerilogImporter.pro 

@@ -1,42 +1,45 @@
 #-----------------------------------------------------------------------------
-# File: tst_VHDLGenericParser.pro
+# File: tst_VerilogImporter.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 22.09.2014
+# Date: 23.09.2014
 #
 # Description:
-# Qt project file template for running unit tests for VHDLGenericParser.
+# Qt project file template for running unit tests for VerilogImporter.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_VHDLGenericParser
+TARGET = tst_VerilogImporter
 
-QT += core xml gui testlib widgets
-CONFIG += c++11 testcase console
+QT += core xml gui widgets testlib
+CONFIG += c++11 testcase
+
+DEFINES += VERILOGIMPORT_LIB
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodelsd
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../../
+INCLUDEPATH += ../../../
 
 DEPENDPATH += .
-DEPENDPATH += ../../../../
+DEPENDPATH += ../../../
 
+OBJECTS_DIR += $$DESTDIR
 
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_VHDLGenericParser.pri)
+include(tst_VerilogImporter.pri)

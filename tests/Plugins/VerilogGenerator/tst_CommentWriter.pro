@@ -1,17 +1,17 @@
 #-----------------------------------------------------------------------------
-# File: tst_InterfaceDirectionNameSorter.pro
+# File: tst_CommentWriter.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 05.08.2014
+# Date: 08.08.2014
 #
 # Description:
-# Qt project file for running unit tests for class InterfaceDirectionNameSorter.
+# Qt project file template for running unit tests for class CommentWriter.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_InterfaceDirectionNameSorter
+TARGET = tst_CommentWriter
 
 QT += core xml gui testlib
 CONFIG += c++11 testcase console
@@ -19,22 +19,22 @@ CONFIG += c++11 testcase console
 DEFINES += VERILOGGENERATORPLUGIN_LIB
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodelsd
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 
-INCLUDEPATH += $$PWD/../../../..
+INCLUDEPATH += $$PWD/../../../
 INCLUDEPATH += $$DESTDIR
 
-DEPENDPATH += $$PWD/../../../..
+DEPENDPATH += $$PWD/../../../
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
@@ -42,4 +42,4 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_InterfaceDirectionNameSorter.pri)
+include(tst_CommentWriter.pri)

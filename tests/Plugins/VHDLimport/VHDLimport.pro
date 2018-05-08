@@ -1,7 +1,7 @@
 #-----------------------------------------------------------------------------
 # File: VHDLimport.pro
 #-----------------------------------------------------------------------------
-# Project: Kactus 2
+# Project: Kactus2
 # Author: Esko Pekkarinen
 # Date: 19.09.2014
 #
@@ -11,7 +11,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += c++11 testcase
-SUBDIRS += VHDLPortParser/tst_VHDLPortParser.pro \
-		   VHDLGenericParser/tst_VHDLGenericParser.pro \
-		   VHDLimport/tst_VHDLimport.pro 
+CONFIG += testcase
+SUBDIRS += tst_VHDLPortParser.pro \
+		   tst_VHDLGenericParser.pro \
+		   tst_VHDLimport.pro 
