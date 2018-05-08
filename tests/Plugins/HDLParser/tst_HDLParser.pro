@@ -13,10 +13,8 @@ TEMPLATE = app
 
 TARGET = tst_HDLParser
 
-QT += core xml gui testlib
+QT += core xml testlib
 CONFIG += c++11 testcase console
-
-DEFINES += VERILOGGENERATORPLUGIN_LIB
 
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels

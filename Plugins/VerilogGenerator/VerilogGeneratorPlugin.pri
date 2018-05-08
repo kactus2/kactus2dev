@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../common/SourceHighlightStyle.h \
+HEADERS += ../common/HDLParser/HDLCommandLineParser.h \
+    ../common/SourceHighlightStyle.h \
     ./VerilogSourceHighlight.h \
     ../VerilogImport/VerilogSyntax.h \
     ../common/LanguageHighlighter.h \
@@ -51,7 +52,8 @@ HEADERS += ../common/SourceHighlightStyle.h \
     ../common/HDLParser/MetaComponent.h \
     ../common/HDLParser/MetaDesign.h \
     ../common/HDLParser/MetaInstance.h
-SOURCES += ../common/LanguageHighlighter.cpp \
+SOURCES += ../common/HDLParser/HDLCommandLineParser.cpp \
+    ../common/LanguageHighlighter.cpp \
     ../common/SourceHighlightStyle.cpp \
     ../VerilogImport/VerilogSyntax.cpp \
     ./VerilogGeneratorPlugin.cpp \

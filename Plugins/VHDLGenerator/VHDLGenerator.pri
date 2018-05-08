@@ -16,6 +16,7 @@ HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../common/HDLParser/HDLCommandLineParser.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
     ./vhdlcomponentdeclaration.h \
     ./vhdlconnectionendpoint.h \
@@ -30,10 +31,9 @@ HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./VHDLGenerator_global.h \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
     ./VHDLGeneratorDialog.h \
+    ./VHDLGeneratorPlugin.h \
     ./vhdlgenerator2.h \
-    ./vhdlcomponentinstance.h \
-    ../common/HDLParser/HDLCommandLineParser.h \
-    ./VHDLGeneratorPlugin.h
+    ./vhdlcomponentinstance.h
 SOURCES += ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
@@ -41,21 +41,21 @@ SOURCES += ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../common/HDLParser/HDLCommandLineParser.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ./vhdlcomponentdeclaration.cpp \
     ./vhdlcomponentinstance.cpp \
     ./vhdlconnectionendpoint.cpp \
     ./vhdlgeneral.cpp \
-    ./VHDLGeneratorPlugin.cpp \
     ./vhdlgenerator2.cpp \
     ./VHDLGeneratorDialog.cpp \
+    ./VHDLGeneratorPlugin.cpp \
     ./vhdlgeneric.cpp \
     ./vhdlobject.cpp \
     ./vhdlport.cpp \
     ./vhdlportmap.cpp \
     ./vhdlportsorter.cpp \
     ./vhdlsignal.cpp \
-    ./VhdlTypedObject.cpp \
-    ../common/HDLParser/HDLCommandLineParser.cpp
+    ./VhdlTypedObject.cpp
 RESOURCES += VHDLGenerator.qrc

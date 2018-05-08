@@ -7,52 +7,52 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../designEditors/MemoryDesigner/ConnectivityComponent.h \
-    ../../designEditors/MemoryDesigner/ConnectivityConnection.h \
-    ../../designEditors/MemoryDesigner/ConnectivityGraph.h \
-    ../../designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
-    ../../designEditors/MemoryDesigner/ConnectivityInterface.h \
-    ../../designEditors/MemoryDesigner/MasterSlavePathSearch.h \
-    ../../designEditors/MemoryDesigner/MemoryItem.h \
-    ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../editors/MemoryDesigner/ConnectivityComponent.h \
+    ../../editors/MemoryDesigner/ConnectivityConnection.h \
+    ../../editors/MemoryDesigner/ConnectivityGraph.h \
+    ../../editors/MemoryDesigner/ConnectivityGraphFactory.h \
+    ../../editors/MemoryDesigner/ConnectivityInterface.h \
+    ../../editors/MemoryDesigner/MasterSlavePathSearch.h \
+    ../../editors/MemoryDesigner/MemoryItem.h \
     ./MemoryViewGenerator.h \
     ./memoryviewgenerator_global.h \
-    ../../designEditors/common/ComponentInstanceParameterFinder.h \
+    ../../editors/common/ComponentInstanceParameterFinder.h \
     ../../editors/ComponentEditor/common/ParameterCache.h \
     ./MemoryViewGeneratorPlugin.h \
     ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
     ../common/HDLParser/MetaComponent.h \
-    ../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../common/HDLParser/MetaDesign.h \
-    ../common/HDLParser/MetaInstance.h
-SOURCES += ../../designEditors/common/ComponentInstanceParameterFinder.cpp \
-    ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
-    ../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
-    ../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
-    ../../designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
-    ../../designEditors/MemoryDesigner/ConnectivityInterface.cpp \
-    ../../designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
-    ../../designEditors/MemoryDesigner/MemoryItem.cpp \
+    ../common/HDLParser/MetaInstance.h \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.h
+SOURCES += ../../editors/common/ComponentInstanceParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ParameterCache.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../editors/MemoryDesigner/ConnectivityComponent.cpp \
+    ../../editors/MemoryDesigner/ConnectivityConnection.cpp \
+    ../../editors/MemoryDesigner/ConnectivityGraph.cpp \
+    ../../editors/MemoryDesigner/ConnectivityGraphFactory.cpp \
+    ../../editors/MemoryDesigner/ConnectivityInterface.cpp \
+    ../../editors/MemoryDesigner/MasterSlavePathSearch.cpp \
+    ../../editors/MemoryDesigner/MemoryItem.cpp \
     ./MemoryViewGenerator.cpp \
     ./MemoryViewGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
     ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../common/HDLParser/MetaComponent.cpp \
-    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../common/HDLParser/MetaDesign.cpp \
-    ../common/HDLParser/MetaInstance.cpp
+    ../common/HDLParser/MetaInstance.cpp \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp
 RESOURCES += MemoryViewGenerator.qrc
