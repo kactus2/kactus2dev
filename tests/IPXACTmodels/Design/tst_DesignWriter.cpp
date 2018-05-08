@@ -15,7 +15,7 @@
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
-#include <designEditors/common/ColumnTypes.h>
+#include <editors/common/ColumnTypes.h>
 
 #include <QtTest>
 #include <QSharedPointer>

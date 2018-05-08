@@ -12,8 +12,8 @@
 #ifndef DESIGNWIDGETFACTORYMOCK_H
 #define DESIGNWIDGETFACTORYMOCK_H
 
-#include <designEditors/common/DesignWidgetFactory.h>
-#include <designEditors/common/DesignWidget.h>
+#include <editors/common/DesignWidgetFactory.h>
+#include <editors/common/DesignWidget.h>
 
 #include <library/LibraryInterface.h>
 
