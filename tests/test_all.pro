@@ -17,5 +17,5 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 		editors/editors.pro \
 		wizards/wizards.pro \
 		Plugins/plugins.pro \
-        kactusGenerators/kactusGenerators.pro \
+        core/Core.pro \
 		mainwindow/mainwindow.pro

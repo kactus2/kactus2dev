@@ -13,30 +13,26 @@ TEMPLATE = app
 
 TARGET = tst_documentGenerator
 
-QT += core xml gui widgets testlib printsupport
+QT += core xml gui widgets testlib printsupport svg
 CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-	LIBS += -L$$PWD/../../../executable/ -lKactus2
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
-	LIBS += -L$$PWD/../../../executable/ -lKactus2_d
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-	LIBS += -L$$PWD/../../../executable/ -lKactus2
     DESTDIR = ./release
 }
 
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../
+INCLUDEPATH += ../../
 
 DEPENDPATH += .
-DEPENDPATH += ../../../
+DEPENDPATH += ../../
 
 OBJECTS_DIR += $$DESTDIR
 

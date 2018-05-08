@@ -3,41 +3,41 @@
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.7.2014
+# Date: 20.05.2015
 #
 # Description:
-# Qt project file template for running unit tests for a single module.
+# Qt project file template for running unit tests for HierarchicalSaveBuildStrategy.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_DocumentTreeBuilder
+TARGET = tst_HierarchicalSaveBuildStrategy
 
-QT += core xml gui testlib
+QT += core xml gui testlib widgets
 CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../
+INCLUDEPATH += ../../
 
 DEPENDPATH += .
-DEPENDPATH += ../../../
+DEPENDPATH += ../../
 
 OBJECTS_DIR += $$DESTDIR
 
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_DocumentTreeBuilder.pri)
+include(tst_HierarchicalSaveBuildStrategy.pri)
