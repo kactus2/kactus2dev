@@ -803,113 +803,113 @@
     <Filter Include="Source Files\common\ui">
       <UniqueIdentifier>{06c71fd6-81fc-4a20-bbbf-6ae3a08cfa38}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\common%255cassociation">
-      <UniqueIdentifier>{0cf5e150-efc2-452e-a0c7-adb01b48b1f7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\editors\common">
       <UniqueIdentifier>{1d73b226-7359-405a-b86f-6e207dfba415}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\common\componentinstanceeditor">
-      <UniqueIdentifier>{3f9a4b65-132b-4530-afa4-986219c4a712}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\common\configurationeditor">
-      <UniqueIdentifier>{2dc276ac-367c-431d-92f8-b88190726818}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\common\connectioneditor">
-      <UniqueIdentifier>{81c5a5b7-334a-4e6c-b083-9ffdd264f194}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\common\designparameterreferencetree">
-      <UniqueIdentifier>{38c5f4f3-fedf-4cea-b968-32eaea847e99}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\common\interfaceeditor">
-      <UniqueIdentifier>{ca518071-cb34-4ef1-bea9-4e53c8cdbb47}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\common\stickynote">
-      <UniqueIdentifier>{c6b6557d-000a-4c10-8dd6-09d7dd3b4645}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\hwdesign">
-      <UniqueIdentifier>{0c7dffdc-2062-4560-8709-d0d093ac7c1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\hwdesign\adhoceditor">
-      <UniqueIdentifier>{4d4e6c3c-1f87-43df-b058-2eef2e1f8998}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\hwdesign\adhocvisibilityeditor">
-      <UniqueIdentifier>{5ea5a8a0-b00a-407f-a595-725d40c0176a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\hwdesign\columnview">
-      <UniqueIdentifier>{af62a80d-ef25-4e59-be26-578debf59af6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\hwdesign\undocommands">
-      <UniqueIdentifier>{b445be90-d358-4e8f-8386-e4bcbad56c57}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\hwdesign\views">
-      <UniqueIdentifier>{5a2d5566-85aa-4691-b84d-04b2657b950e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\memorydesigner">
-      <UniqueIdentifier>{5bc93d72-cec2-4629-b2fb-ac66cf79cfdd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\systemdesign">
-      <UniqueIdentifier>{8413defc-1a98-4dbf-b358-cfd3718e250e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\systemdesign\systemdetailseditor">
-      <UniqueIdentifier>{227d8f43-cd18-461c-afcf-05a9fc4dae29}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\systemdesign\undocommands">
-      <UniqueIdentifier>{87135939-f2a4-40bd-ab3e-9e28211d32d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\common%255cassociation">
-      <UniqueIdentifier>{f114b1d9-c65e-4bdf-bb32-85e5662601cc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\editors\common">
       <UniqueIdentifier>{8cde759f-9554-40f4-a2e8-5677a93a06a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\common\componentinstanceeditor">
+    <Filter Include="Header Files\editors\common\Association">
+      <UniqueIdentifier>{3ab50375-cf15-48ef-ba99-2c58276e2aa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\common\Association">
+      <UniqueIdentifier>{dbe5e1d1-034e-482b-a60b-347f33f10b4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\ComponentInstanceEditor">
       <UniqueIdentifier>{c5149e3d-d2d3-4f70-be34-151d24326d5f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\common\configurationeditor">
+    <Filter Include="Source Files\editors\common\ComponentInstanceEditor">
+      <UniqueIdentifier>{3f9a4b65-132b-4530-afa4-986219c4a712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\ConfigurationEditor">
       <UniqueIdentifier>{6fcddc32-1665-45b6-bf22-0d483e98283f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\common\connectioneditor">
+    <Filter Include="Source Files\editors\common\ConfigurationEditor">
+      <UniqueIdentifier>{2dc276ac-367c-431d-92f8-b88190726818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\ConnectionEditor">
       <UniqueIdentifier>{013b9dc1-1772-4667-8187-59beaba2a089}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\common\designparameterreferencetree">
+    <Filter Include="Source Files\editors\common\ConnectionEditor">
+      <UniqueIdentifier>{81c5a5b7-334a-4e6c-b083-9ffdd264f194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\DesignParameterReferenceTree">
       <UniqueIdentifier>{e0a7e3c8-c8db-40f5-b44c-fe96577a8962}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\common\interfaceeditor">
+    <Filter Include="Source Files\editors\common\DesignParameterReferenceTree">
+      <UniqueIdentifier>{38c5f4f3-fedf-4cea-b968-32eaea847e99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\InterfaceEditor">
       <UniqueIdentifier>{24d43316-7ba4-4376-b703-b518c9a71891}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\common\stickynote">
+    <Filter Include="Header Files\editors\common\StickyNote">
       <UniqueIdentifier>{60a1878c-c463-4f8a-85fc-364e6d5d7cb9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\hwdesign">
+    <Filter Include="Source Files\editors\common\InterfaceEditor">
+      <UniqueIdentifier>{ca518071-cb34-4ef1-bea9-4e53c8cdbb47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\common\StickyNote">
+      <UniqueIdentifier>{c6b6557d-000a-4c10-8dd6-09d7dd3b4645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\HWDesign">
       <UniqueIdentifier>{7dde318d-74f5-47ee-bbc5-8863ccfeafad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\hwdesign\adhoceditor">
-      <UniqueIdentifier>{d3111f77-c57b-4353-97b6-69e1f6b4bc59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\hwdesign\adhocvisibilityeditor">
-      <UniqueIdentifier>{eac2124c-75a0-4ed3-937e-54089e51023a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\hwdesign\columnview">
+    <Filter Include="Header Files\editors\HWDesign\columnview">
       <UniqueIdentifier>{fbc7bdf7-d3b5-4030-b470-178ac88791da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\hwdesign\undocommands">
-      <UniqueIdentifier>{b8d889f3-d9d0-4a66-b871-e72c08000c41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\hwdesign\views">
+    <Filter Include="Header Files\editors\HWDesign\views">
       <UniqueIdentifier>{cc9095e4-21a6-4581-ac27-c5ea327a9e5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\memorydesigner">
+    <Filter Include="Source Files\editors\HWDesign">
+      <UniqueIdentifier>{0c7dffdc-2062-4560-8709-d0d093ac7c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\HWDesign\columnview">
+      <UniqueIdentifier>{af62a80d-ef25-4e59-be26-578debf59af6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\HWDesign\views">
+      <UniqueIdentifier>{5a2d5566-85aa-4691-b84d-04b2657b950e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\HWDesign\AdhocEditor">
+      <UniqueIdentifier>{4d4e6c3c-1f87-43df-b058-2eef2e1f8998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\HWDesign\AdhocEditor">
+      <UniqueIdentifier>{d3111f77-c57b-4353-97b6-69e1f6b4bc59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\HWDesign\AdHocVisibilityEditor">
+      <UniqueIdentifier>{eac2124c-75a0-4ed3-937e-54089e51023a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\HWDesign\AdHocVisibilityEditor">
+      <UniqueIdentifier>{5ea5a8a0-b00a-407f-a595-725d40c0176a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\HWDesign\undoCommands">
+      <UniqueIdentifier>{b8d889f3-d9d0-4a66-b871-e72c08000c41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\HWDesign\undoCommands">
+      <UniqueIdentifier>{b445be90-d358-4e8f-8386-e4bcbad56c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\MemoryDesigner">
       <UniqueIdentifier>{31349e16-c160-4684-863a-0fcb240bc3ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\systemdesign">
+    <Filter Include="Source Files\editors\MemoryDesigner">
+      <UniqueIdentifier>{5bc93d72-cec2-4629-b2fb-ac66cf79cfdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\SystemDesign">
+      <UniqueIdentifier>{8413defc-1a98-4dbf-b358-cfd3718e250e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\SystemDesign\SystemDetailsEditor">
+      <UniqueIdentifier>{227d8f43-cd18-461c-afcf-05a9fc4dae29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\SystemDesign">
       <UniqueIdentifier>{fab5d17e-f1c8-42b6-bc26-9d3d506362ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\systemdesign\systemdetailseditor">
+    <Filter Include="Header Files\editors\SystemDesign\SystemDetailsEditor">
       <UniqueIdentifier>{6428d254-44aa-4356-9d03-89ae280fe432}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\systemdesign\undocommands">
+    <Filter Include="Header Files\editors\SystemDesign\UndoCommands">
       <UniqueIdentifier>{1bc0b24c-5201-4d55-963c-40dab4d36092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\SystemDesign\UndoCommands">
+      <UniqueIdentifier>{87135939-f2a4-40bd-ab3e-9e28211d32d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3712,494 +3712,434 @@
     <ClCompile Include="common\ui\GraphicalMessageMediator.cpp">
       <Filter>Source Files\common\ui</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\association\associable.cpp">
-      <Filter>Source Files\editors\common%255cassociation</Filter>
+    <ClCompile Include="editors\common\Association\Associable.cpp">
+      <Filter>Source Files\editors\common\Association</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\association\association.cpp">
-      <Filter>Source Files\editors\common%255cassociation</Filter>
+    <ClCompile Include="editors\common\Association\Association.cpp">
+      <Filter>Source Files\editors\common\Association</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\association\associationaddcommand.cpp">
-      <Filter>Source Files\editors\common%255cassociation</Filter>
+    <ClCompile Include="editors\common\Association\AssociationAddCommand.cpp">
+      <Filter>Source Files\editors\common\Association</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\association\associationchangeendpointcommand.cpp">
-      <Filter>Source Files\editors\common%255cassociation</Filter>
+    <ClCompile Include="editors\common\Association\AssociationChangeEndpointCommand.cpp">
+      <Filter>Source Files\editors\common\Association</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\association\associationremovecommand.cpp">
-      <Filter>Source Files\editors\common%255cassociation</Filter>
+    <ClCompile Include="editors\common\Association\AssociationRemoveCommand.cpp">
+      <Filter>Source Files\editors\common\Association</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\componentdesigndiagram.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\componentinstanceconfigurableelementseditor.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\componentinstanceconfigurableelementsfilter.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\componentinstanceconfigurableelementsmodel.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\componentinstanceeditor.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\configurableelementdelegate.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\configurableelementeditor.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\configurableelementsfilter.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\configurableelementsmodel.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\configurableelementsview.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\editorconfigurableelement.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\missingconfigurableelementsfilter.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceeditor\parameterconfigurableelementsfilter.cpp">
-      <Filter>Source Files\editors\common\componentinstanceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\componentinstanceparameterfinder.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\configurationeditor\activeviewdelegate.cpp">
-      <Filter>Source Files\editors\common\configurationeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\configurationeditor\activevieweditor.cpp">
-      <Filter>Source Files\editors\common\configurationeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\configurationeditor\activeviewmodel.cpp">
-      <Filter>Source Files\editors\common\configurationeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\configurationeditor\configurationeditor.cpp">
-      <Filter>Source Files\editors\common\configurationeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\connectioneditor\adhocboundsmodel.cpp">
-      <Filter>Source Files\editors\common\connectioneditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\connectioneditor\connectioneditor.cpp">
-      <Filter>Source Files\editors\common\connectioneditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\defaultrouting.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\designcompletionmodel.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\designdiagram.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\designdiagramresolver.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\designparameterreferencetree\designparameterreferencecounter.cpp">
-      <Filter>Source Files\editors\common\designparameterreferencetree</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\designparameterreferencetree\designparameterreferencetree.cpp">
-      <Filter>Source Files\editors\common\designparameterreferencetree</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\designwidget.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\designwidgetfactoryimplementation.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\graphicsitemlabel.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\imageexporter.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\interfaceeditor\interfaceeditor.cpp">
-      <Filter>Source Files\editors\common\interfaceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\interfaceeditor\interfaceportmapdelegate.cpp">
-      <Filter>Source Files\editors\common\interfaceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\interfaceeditor\interfaceportmapmodel.cpp">
-      <Filter>Source Files\editors\common\interfaceeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\namelabelwidth.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\stickynote\colorfilltextitem.cpp">
-      <Filter>Source Files\editors\common\stickynote</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\stickynote\stickynote.cpp">
-      <Filter>Source Files\editors\common\stickynote</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\stickynote\stickynoteaddcommand.cpp">
-      <Filter>Source Files\editors\common\stickynote</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\stickynote\stickynoteeditcommand.cpp">
-      <Filter>Source Files\editors\common\stickynote</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\stickynote\stickynotemovecommand.cpp">
-      <Filter>Source Files\editors\common\stickynote</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\stickynote\stickynoteremovecommand.cpp">
-      <Filter>Source Files\editors\common\stickynote</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\topcomponentparameterfinder.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocconnectionitem.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhoceditor\adhoceditor.cpp">
-      <Filter>Source Files\editors\hwdesign\adhoceditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocenabled.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocinterfaceitem.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocitem.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocportitem.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilitydelegate.cpp">
-      <Filter>Source Files\editors\hwdesign\adhocvisibilityeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilityeditor.cpp">
-      <Filter>Source Files\editors\hwdesign\adhocvisibilityeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilitymodel.cpp">
-      <Filter>Source Files\editors\hwdesign\adhocvisibilityeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilitypolicy.cpp">
-      <Filter>Source Files\editors\hwdesign\adhocvisibilityeditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\businterfacedialog.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\businterfaceendpoint.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\businterfaceitem.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\busportitem.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\columnview\columneditdialog.cpp">
-      <Filter>Source Files\editors\hwdesign\columnview</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\columnview\hwcolumn.cpp">
-      <Filter>Source Files\editors\hwdesign\columnview</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwaddcommands.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwchangecommands.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwcomponentitem.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwconnection.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwconnectionendpoint.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwdeletecommands.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwdesigndiagram.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwdesignwidget.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\hwmovecommands.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\offpageconnectoritem.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\portmapdialog.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\selectitemtypedialog.cpp">
-      <Filter>Source Files\editors\hwdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\adhocboundschangecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\adhocconnectionaddcommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\adhocconnectiondeletecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\adhoctiedvaluecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\adhoctieoffboundschangecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\adhoctieoffchangecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\adhoctieoffconnectiondeletecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\adhocvisibilitychangecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\columndeletecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\componentdeletecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\componentinstancepastecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\componentitemmovecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\configurableelementchangecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\configurableelementremovecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\connectiondeletecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\hwcolumnaddcommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\hwcomponentaddcommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\interfacedeletecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\portdeletecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\portpastecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\replacecomponentcommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\undocommands\topadhocvisibilitychangecommand.cpp">
-      <Filter>Source Files\editors\hwdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\hwdesign\views\celledittableview.cpp">
-      <Filter>Source Files\editors\hwdesign\views</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\addressblockgraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\addresssegmentgraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\addressspacegraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\connectivitycomponent.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\connectivityconnection.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\connectivitygraph.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\connectivitygraphfactory.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\connectivityinterface.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\fieldgraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\fieldoverlapitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\mainmemorygraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\masterslavepathsearch.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorycollisionitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorycolumn.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorycolumnhandler.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memoryconnectionhandler.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memoryconnectionitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorydesignconstructor.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorydesigndocument.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorydesignerchildgraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorydesignerconstants.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorydesignerdiagram.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorydesignergraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memoryextensiongraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorygraphicsitemhandler.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memoryitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\memorymapgraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\registergraphicsitem.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\memorydesigner\submemorylayout.cpp">
-      <Filter>Source Files\editors\memorydesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\apigraphicsconnection.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\comgraphicsconnection.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\hwmappingitem.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\swcomponentitem.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\swconnectionendpoint.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\swinterfaceitem.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\swportitem.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\systemcolumn.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\systemcomponentitem.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\systemdesigndiagram.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\systemdesignwidget.cpp">
-      <Filter>Source Files\editors\systemdesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\systemdetailseditor\exportswdialog.cpp">
-      <Filter>Source Files\editors\systemdesign\systemdetailseditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\systemdetailseditor\switchhwdialog.cpp">
-      <Filter>Source Files\editors\systemdesign\systemdetailseditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\systemdetailseditor\systemdetailseditor.cpp">
-      <Filter>Source Files\editors\systemdesign\systemdetailseditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\apiconnectionaddcommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\apiconnectiondeletecommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\apiconnectionexchangecommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\comconnectionaddcommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\comconnectiondeletecommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\comconnectionexchangecommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\replacesystemcomponentcommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\swinterfaceaddcommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\swinterfacedeletecommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\swinterfacemovecommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\swportdeletecommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\systemaddcommands.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\systemchangecommands.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\systemcomponentaddcommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\systemcomponentdeletecommand.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\systemdeletecommands.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\systemdesign\undocommands\systemmovecommands.cpp">
-      <Filter>Source Files\editors\systemdesign\undocommands</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentdesigndiagram.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceConfigurableElementsEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_systemdesigndiagram.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceConfigurableElementsFilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_designdiagram.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceConfigurableElementsModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentinstanceconfigurableelementseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsFilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentinstanceconfigurableelementsfilter.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentinstanceconfigurableelementsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsView.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MissingConfigurableElementsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterConfigurableElementsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsEditor.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsFilter.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsModel.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\ConfigurableElementsFilter.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\ConfigurableElementsModel.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\ConfigurableElementsView.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\EditorConfigurableElement.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\MissingConfigurableElementsFilter.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\ParameterConfigurableElementsFilter.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ConnectionEditor\AdHocBoundsModel.cpp">
+      <Filter>Source Files\editors\common\ConnectionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignParameterReferenceCounter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignParameterReferenceTree.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\DesignParameterReferenceTree\DesignParameterReferenceCounter.cpp">
+      <Filter>Source Files\editors\common\DesignParameterReferenceTree</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\DesignParameterReferenceTree\DesignParameterReferenceTree.cpp">
+      <Filter>Source Files\editors\common\DesignParameterReferenceTree</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\InterfaceEditor\InterfacePortMapDelegate.cpp">
+      <Filter>Source Files\editors\common\InterfaceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\InterfaceEditor\InterfacePortMapModel.cpp">
+      <Filter>Source Files\editors\common\InterfaceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InterfacePortMapDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InterfacePortMapModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ColorFillTextItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_StickyNote.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_StickyNoteAddCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_StickyNoteRemoveCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\StickyNote\StickyNoteRemoveCommand.cpp">
+      <Filter>Source Files\editors\common\StickyNote</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\StickyNote\ColorFillTextItem.cpp">
+      <Filter>Source Files\editors\common\StickyNote</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\StickyNote\StickyNote.cpp">
+      <Filter>Source Files\editors\common\StickyNote</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\StickyNote\StickyNoteAddCommand.cpp">
+      <Filter>Source Files\editors\common\StickyNote</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\StickyNote\StickyNoteEditCommand.cpp">
+      <Filter>Source Files\editors\common\StickyNote</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\StickyNote\StickyNoteMoveCommand.cpp">
+      <Filter>Source Files\editors\common\StickyNote</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\TopComponentParameterFinder.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentDesignDiagram.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceParameterFinder.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\DefaultRouting.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\DesignCompletionModel.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\DesignDiagram.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\DesignDiagramResolver.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\DesignWidget.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\DesignWidgetFactoryImplementation.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\GraphicsItemLabel.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ImageExporter.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\NamelabelWidth.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentDesignDiagram.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignCompletionModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignDiagram.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocEditor.cpp">
+      <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdhocEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocVisibilityDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocVisibilityEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.cpp">
+      <Filter>Source Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.cpp">
+      <Filter>Source Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.cpp">
+      <Filter>Source Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.cpp">
+      <Filter>Source Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\columnview\ColumnEditDialog.cpp">
+      <Filter>Source Files\editors\HWDesign\columnview</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\columnview\HWColumn.cpp">
+      <Filter>Source Files\editors\HWDesign\columnview</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ColumnEditDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWColumn.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ReplaceComponentCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsChangeCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocTieOffChangeCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentDeleteCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementChangeCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementRemoveCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWComponentAddCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InterfaceDeleteCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\HWColumnAddCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\HWComponentAddCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\InterfaceDeleteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\PhysicalPortDeleteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\PortDeleteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\PortPasteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\AdHocBoundsChangeCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\AdHocConnectionAddCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\AdHocTiedValueCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\AdHocTieOffChangeCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\AdHocTieOffConnectionDeleteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\AdHocVisibilityChangeCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\ColumnDeleteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\ComponentDeleteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\ComponentInstancePasteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\ComponentItemMoveCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\ConfigurableElementChangeCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\ConfigurableElementRemoveCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\undoCommands\ConnectionDeleteCommand.cpp">
+      <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\views\CellEditTableView.cpp">
+      <Filter>Source Files\editors\HWDesign\views</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CellEditTableView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SelectItemTypeDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocConnectionItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocInterfaceItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocPortItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceEndPoint.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusPortItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWChangeCommands.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWComponentItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWConnection.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWConnectionEndpoint.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWDesignDiagram.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWDesignWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_OffPageConnectorItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HWDesignDiagram.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HWDesignWidget.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HWMoveCommands.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\OffPageConnectorItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\PortmapDialog.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\SelectItemTypeDialog.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocConnectionItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocEnabled.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocInterfaceItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdHocPortItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\BusInterfaceDialog.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\BusInterfaceEndPoint.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\BusInterfaceItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\BusPortItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HWAddCommands.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HWChangeCommands.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HWComponentItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HWConnection.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HWConnectionEndPoint.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\configurableelementeditor.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\componentinstanceeditor.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\configurableelementdelegate.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_componentinstanceeditor.cpp">
       <Filter>Generated Files</Filter>
@@ -4210,22 +4150,7 @@
     <ClCompile Include="GeneratedFiles\moc_configurableelementeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurableelementsfilter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurableelementsmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurableelementsview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_missingconfigurableelementsfilter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_parameterconfigurableelementsfilter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentinstanceparameterfinder.cpp">
+    <ClCompile Include="GeneratedFiles\moc_configurationeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_activeviewdelegate.cpp">
@@ -4237,199 +4162,274 @@
     <ClCompile Include="GeneratedFiles\moc_activeviewmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurationeditor.cpp">
-      <Filter>Generated Files</Filter>
+    <ClCompile Include="editors\common\ConfigurationEditor\configurationeditor.cpp">
+      <Filter>Source Files\editors\common\ConfigurationEditor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhocboundsmodel.cpp">
-      <Filter>Generated Files</Filter>
+    <ClCompile Include="editors\common\ConfigurationEditor\activeviewdelegate.cpp">
+      <Filter>Source Files\editors\common\ConfigurationEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ConfigurationEditor\activevieweditor.cpp">
+      <Filter>Source Files\editors\common\ConfigurationEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ConfigurationEditor\activeviewmodel.cpp">
+      <Filter>Source Files\editors\common\ConfigurationEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ConnectionEditor\connectioneditor.cpp">
+      <Filter>Source Files\editors\common\ConnectionEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_connectioneditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_designcompletionmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_designparameterreferencetree.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_designwidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_designparameterreferencecounter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_interfaceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_interfaceportmapdelegate.cpp">
+    <ClCompile Include="editors\common\InterfaceEditor\interfaceeditor.cpp">
+      <Filter>Source Files\editors\common\InterfaceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryColumn.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_interfaceportmapmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignConstructor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_colorfilltextitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignDocument.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_stickynote.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_stickynoteaddcommand.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerGraphicsItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_stickynoteremovecommand.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryGraphicsItemHandler.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhocconnectionitem.cpp">
+    <ClCompile Include="editors\MemoryDesigner\MemoryGraphicsItemHandler.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryMapGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\RegisterGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\SubMemoryLayout.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\AddressBlockGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\ConnectivityComponent.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\ConnectivityConnection.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\ConnectivityGraph.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\ConnectivityGraphFactory.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\ConnectivityInterface.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\FieldGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\FieldOverlapItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MainMemoryGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MasterSlavePathSearch.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryCollisionItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryColumn.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryColumnHandler.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryConnectionHandler.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryConnectionItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryDesignConstructor.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryDesignDocument.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryDesignerChildGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryDesignerConstants.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryDesignerDiagram.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryDesignerGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryExtensionGraphicsItem.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SystemDetailsEditor\SystemDetailsEditor.cpp">
+      <Filter>Source Files\editors\SystemDesign\SystemDetailsEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SystemDetailsEditor\ExportSWDialog.cpp">
+      <Filter>Source Files\editors\SystemDesign\SystemDetailsEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SystemDetailsEditor\SwitchHWDialog.cpp">
+      <Filter>Source Files\editors\SystemDesign\SystemDetailsEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemDetailsEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhoceditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ExportSWDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhocinterfaceitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SwitchHWDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhocitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ReplaceSystemComponentCommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhocportitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemComponentAddCommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhocvisibilitydelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemComponentDeleteCommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhocvisibilityeditor.cpp">
+    <ClCompile Include="editors\SystemDesign\UndoCommands\ComConnectionAddCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\ComConnectionDeleteCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\ComConnectionExchangeCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\ReplaceSystemComponentCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SWInterfaceAddCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SWInterfaceDeleteCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SWInterfaceMoveCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SWPortDeleteCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SystemAddCommands.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SystemChangeCommands.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SystemComponentAddCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SystemComponentDeleteCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SystemDeleteCommands.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\SystemMoveCommands.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\ApiConnectionAddCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\ApiConnectionDeleteCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\UndoCommands\ApiConnectionExchangeCommand.cpp">
+      <Filter>Source Files\editors\SystemDesign\UndoCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SystemDesignWidget.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\ApiGraphicsConnection.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\ComGraphicsConnection.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\HWMappingItem.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SWComponentItem.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SWConnectionEndpoint.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SWInterfaceItem.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SWPortItem.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SystemColumn.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SystemComponentItem.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\SystemDesign\SystemDesignDiagram.cpp">
+      <Filter>Source Files\editors\SystemDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemDesignWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_businterfaceendpoint.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ApiGraphicsConnection.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_businterfacedialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComGraphicsConnection.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_businterfaceitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWComponentItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWConnectionEndpoint.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_columneditdialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWInterfaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hwcolumn.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hwchangecommands.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemColumn.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hwcomponentitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemComponentItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hwconnection.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hwconnectionendpoint.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hwdesigndiagram.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hwdesignwidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_offpageconnectoritem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_selectitemtypedialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhocboundschangecommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentdeletecommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_adhoctieoffchangecommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurableelementchangecommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurableelementremovecommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hwcomponentaddcommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_interfacedeletecommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_replacecomponentcommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_celledittableview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_memorydesignergraphicsitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_memorycolumn.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_memorydesignconstructor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_memorydesigndocument.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_memorydesignerdiagram.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_apigraphicsconnection.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_comgraphicsconnection.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_systemcomponentitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_memorygraphicsitemhandler.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swcomponentitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swconnectionendpoint.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swinterfaceitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swportitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_systemcolumn.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_systemdesignwidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_exportswdialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_switchhwdialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_systemdetailseditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_replacesystemcomponentcommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_systemcomponentaddcommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_systemcomponentdeletecommand.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemDesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5805,257 +5805,257 @@
     <CustomBuild Include="Plugins\PluginSystem\IPluginUtility.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\componentdesigndiagram.h">
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsEditor.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsFilter.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsModel.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\ConfigurableElementsFilter.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\ConfigurableElementsModel.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\ConfigurableElementsView.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\MissingConfigurableElementsFilter.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\ParameterConfigurableElementsFilter.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ConnectionEditor\AdHocBoundsModel.h">
+      <Filter>Header Files\editors\common\ConnectionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\DesignParameterReferenceTree\DesignParameterReferenceCounter.h">
+      <Filter>Header Files\editors\common\DesignParameterReferenceTree</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\DesignParameterReferenceTree\DesignParameterReferenceTree.h">
+      <Filter>Header Files\editors\common\DesignParameterReferenceTree</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\InterfaceEditor\InterfacePortMapDelegate.h">
+      <Filter>Header Files\editors\common\InterfaceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\InterfaceEditor\InterfacePortMapModel.h">
+      <Filter>Header Files\editors\common\InterfaceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\StickyNote\ColorFillTextItem.h">
+      <Filter>Header Files\editors\common\StickyNote</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\StickyNote\StickyNote.h">
+      <Filter>Header Files\editors\common\StickyNote</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\StickyNote\StickyNoteAddCommand.h">
+      <Filter>Header Files\editors\common\StickyNote</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\StickyNote\StickyNoteRemoveCommand.h">
+      <Filter>Header Files\editors\common\StickyNote</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentDesignDiagram.h">
       <Filter>Header Files\editors\common</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\componentinstanceconfigurableelementseditor.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\componentinstanceconfigurableelementsfilter.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\componentinstanceconfigurableelementsmodel.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\componentinstanceeditor.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\configurableelementdelegate.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\configurableelementeditor.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\configurableelementsfilter.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\configurableelementsmodel.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\configurableelementsview.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\missingconfigurableelementsfilter.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceeditor\parameterconfigurableelementsfilter.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\componentinstanceparameterfinder.h">
+    <CustomBuild Include="editors\common\ComponentInstanceParameterFinder.h">
       <Filter>Header Files\editors\common</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\configurationeditor\activeviewdelegate.h">
-      <Filter>Header Files\editors\common\configurationeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\configurationeditor\activevieweditor.h">
-      <Filter>Header Files\editors\common\configurationeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\configurationeditor\activeviewmodel.h">
-      <Filter>Header Files\editors\common\configurationeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\configurationeditor\configurationeditor.h">
-      <Filter>Header Files\editors\common\configurationeditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\connectioneditor\adhocboundsmodel.h">
-      <Filter>Header Files\editors\common\connectioneditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\connectioneditor\connectioneditor.h">
-      <Filter>Header Files\editors\common\connectioneditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\designcompletionmodel.h">
+    <CustomBuild Include="editors\common\DesignCompletionModel.h">
       <Filter>Header Files\editors\common</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\designdiagram.h">
+    <CustomBuild Include="editors\common\DesignDiagram.h">
       <Filter>Header Files\editors\common</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\designparameterreferencetree\designparameterreferencecounter.h">
-      <Filter>Header Files\editors\common\designparameterreferencetree</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\designparameterreferencetree\designparameterreferencetree.h">
-      <Filter>Header Files\editors\common\designparameterreferencetree</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\designwidget.h">
+    <CustomBuild Include="editors\common\DesignWidget.h">
       <Filter>Header Files\editors\common</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\interfaceeditor\interfaceeditor.h">
-      <Filter>Header Files\editors\common\interfaceeditor</Filter>
+    <CustomBuild Include="editors\HWDesign\AdhocEditor\AdhocEditor.h">
+      <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\interfaceeditor\interfaceportmapdelegate.h">
-      <Filter>Header Files\editors\common\interfaceeditor</Filter>
+    <CustomBuild Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.h">
+      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\interfaceeditor\interfaceportmapmodel.h">
-      <Filter>Header Files\editors\common\interfaceeditor</Filter>
+    <CustomBuild Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.h">
+      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\stickynote\colorfilltextitem.h">
-      <Filter>Header Files\editors\common\stickynote</Filter>
+    <CustomBuild Include="editors\HWDesign\columnview\ColumnEditDialog.h">
+      <Filter>Header Files\editors\HWDesign\columnview</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\stickynote\stickynote.h">
-      <Filter>Header Files\editors\common\stickynote</Filter>
+    <CustomBuild Include="editors\HWDesign\columnview\HWColumn.h">
+      <Filter>Header Files\editors\HWDesign\columnview</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\stickynote\stickynoteaddcommand.h">
-      <Filter>Header Files\editors\common\stickynote</Filter>
+    <CustomBuild Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\stickynote\stickynoteremovecommand.h">
-      <Filter>Header Files\editors\common\stickynote</Filter>
+    <CustomBuild Include="editors\HWDesign\undoCommands\AdHocBoundsChangeCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\adhocconnectionitem.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\undoCommands\AdHocTieOffChangeCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\adhoceditor\adhoceditor.h">
-      <Filter>Header Files\editors\hwdesign\adhoceditor</Filter>
+    <CustomBuild Include="editors\HWDesign\undoCommands\ComponentDeleteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\adhocinterfaceitem.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\undoCommands\ConfigurableElementChangeCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\adhocitem.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\undoCommands\ConfigurableElementRemoveCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\adhocportitem.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\undoCommands\HWComponentAddCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilitydelegate.h">
-      <Filter>Header Files\editors\hwdesign\adhocvisibilityeditor</Filter>
+    <CustomBuild Include="editors\HWDesign\undoCommands\InterfaceDeleteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilityeditor.h">
-      <Filter>Header Files\editors\hwdesign\adhocvisibilityeditor</Filter>
+    <CustomBuild Include="editors\HWDesign\views\CellEditTableView.h">
+      <Filter>Header Files\editors\HWDesign\views</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilitymodel.h">
-      <Filter>Header Files\editors\hwdesign\adhocvisibilityeditor</Filter>
+    <CustomBuild Include="editors\HWDesign\SelectItemTypeDialog.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\businterfacedialog.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\AdHocConnectionItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\businterfaceendpoint.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\AdHocInterfaceItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\businterfaceitem.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\AdHocItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\busportitem.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\AdHocPortItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\columnview\columneditdialog.h">
-      <Filter>Header Files\editors\hwdesign\columnview</Filter>
+    <CustomBuild Include="editors\HWDesign\BusInterfaceDialog.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\columnview\hwcolumn.h">
-      <Filter>Header Files\editors\hwdesign\columnview</Filter>
+    <CustomBuild Include="editors\HWDesign\BusInterfaceEndPoint.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\hwchangecommands.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\BusInterfaceItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\hwcomponentitem.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\BusPortItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\hwconnection.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\HWChangeCommands.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\hwconnectionendpoint.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\HWComponentItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\hwdesigndiagram.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\HWConnection.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\hwdesignwidget.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\HWConnectionEndpoint.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\offpageconnectoritem.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\HWDesignDiagram.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\selectitemtypedialog.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <CustomBuild Include="editors\HWDesign\HWDesignWidget.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\undocommands\adhocboundschangecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <CustomBuild Include="editors\HWDesign\OffPageConnectorItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\undocommands\adhoctieoffchangecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\componentinstanceeditor.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\undocommands\componentdeletecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\configurableelementdelegate.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\undocommands\configurableelementchangecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <CustomBuild Include="editors\common\ComponentInstanceEditor\configurableelementeditor.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\undocommands\configurableelementremovecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <CustomBuild Include="editors\common\ConfigurationEditor\configurationeditor.h">
+      <Filter>Header Files\editors\common\ConfigurationEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\undocommands\hwcomponentaddcommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <CustomBuild Include="editors\common\ConfigurationEditor\activeviewdelegate.h">
+      <Filter>Header Files\editors\common\ConfigurationEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\undocommands\interfacedeletecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <CustomBuild Include="editors\common\ConfigurationEditor\activevieweditor.h">
+      <Filter>Header Files\editors\common\ConfigurationEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\undocommands\replacecomponentcommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <CustomBuild Include="editors\common\ConfigurationEditor\activeviewmodel.h">
+      <Filter>Header Files\editors\common\ConfigurationEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\hwdesign\views\celledittableview.h">
-      <Filter>Header Files\editors\hwdesign\views</Filter>
+    <CustomBuild Include="editors\common\ConnectionEditor\connectioneditor.h">
+      <Filter>Header Files\editors\common\ConnectionEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\memorydesigner\memorycolumn.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <CustomBuild Include="editors\common\InterfaceEditor\interfaceeditor.h">
+      <Filter>Header Files\editors\common\InterfaceEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\memorydesigner\memorydesignconstructor.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <CustomBuild Include="editors\MemoryDesigner\MemoryColumn.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\memorydesigner\memorydesigndocument.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <CustomBuild Include="editors\MemoryDesigner\MemoryDesignConstructor.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\memorydesigner\memorydesignerdiagram.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <CustomBuild Include="editors\MemoryDesigner\MemoryDesignDocument.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\memorydesigner\memorydesignergraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <CustomBuild Include="editors\MemoryDesigner\MemoryDesignerDiagram.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\memorydesigner\memorygraphicsitemhandler.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <CustomBuild Include="editors\MemoryDesigner\MemoryDesignerGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\apigraphicsconnection.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\MemoryDesigner\MemoryGraphicsItemHandler.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\comgraphicsconnection.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\SystemDetailsEditor\SystemDetailsEditor.h">
+      <Filter>Header Files\editors\SystemDesign\SystemDetailsEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\swcomponentitem.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\SystemDetailsEditor\ExportSWDialog.h">
+      <Filter>Header Files\editors\SystemDesign\SystemDetailsEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\swconnectionendpoint.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\SystemDetailsEditor\SwitchHWDialog.h">
+      <Filter>Header Files\editors\SystemDesign\SystemDetailsEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\swinterfaceitem.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\UndoCommands\ReplaceSystemComponentCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\swportitem.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\UndoCommands\SystemComponentAddCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\systemcolumn.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\UndoCommands\SystemComponentDeleteCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\systemcomponentitem.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\SystemDesignWidget.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\systemdesigndiagram.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\ApiGraphicsConnection.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\systemdesignwidget.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <CustomBuild Include="editors\SystemDesign\ComGraphicsConnection.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\systemdetailseditor\exportswdialog.h">
-      <Filter>Header Files\editors\systemdesign\systemdetailseditor</Filter>
+    <CustomBuild Include="editors\SystemDesign\SWComponentItem.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\systemdetailseditor\switchhwdialog.h">
-      <Filter>Header Files\editors\systemdesign\systemdetailseditor</Filter>
+    <CustomBuild Include="editors\SystemDesign\SWConnectionEndpoint.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\systemdetailseditor\systemdetailseditor.h">
-      <Filter>Header Files\editors\systemdesign\systemdetailseditor</Filter>
+    <CustomBuild Include="editors\SystemDesign\SWInterfaceItem.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\undocommands\replacesystemcomponentcommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <CustomBuild Include="editors\SystemDesign\SWPortItem.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\undocommands\systemcomponentaddcommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <CustomBuild Include="editors\SystemDesign\SystemColumn.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\systemdesign\undocommands\systemcomponentdeletecommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <CustomBuild Include="editors\SystemDesign\SystemComponentItem.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\SystemDesign\SystemDesignDiagram.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\HWDesign\undoCommands\PhysicalPortDeleteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6497,248 +6497,254 @@
     <ClInclude Include="common\ui\ConsoleMediator.h">
       <Filter>Header Files\common\ui</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\association\associable.h">
-      <Filter>Header Files\editors\common%255cassociation</Filter>
+    <ClInclude Include="editors\common\Association\Associable.h">
+      <Filter>Header Files\editors\common\Association</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\association\association.h">
-      <Filter>Header Files\editors\common%255cassociation</Filter>
+    <ClInclude Include="editors\common\Association\Association.h">
+      <Filter>Header Files\editors\common\Association</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\association\associationaddcommand.h">
-      <Filter>Header Files\editors\common%255cassociation</Filter>
+    <ClInclude Include="editors\common\Association\AssociationAddCommand.h">
+      <Filter>Header Files\editors\common\Association</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\association\associationchangeendpointcommand.h">
-      <Filter>Header Files\editors\common%255cassociation</Filter>
+    <ClInclude Include="editors\common\Association\AssociationChangeEndpointCommand.h">
+      <Filter>Header Files\editors\common\Association</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\association\associationremovecommand.h">
-      <Filter>Header Files\editors\common%255cassociation</Filter>
+    <ClInclude Include="editors\common\Association\AssociationRemoveCommand.h">
+      <Filter>Header Files\editors\common\Association</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\columntypes.h">
+    <ClInclude Include="editors\common\ComponentInstanceEditor\ConfigurableElementsColumns.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentInstanceEditor\EditorConfigurableElement.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ConnectionEditor\AdHocBoundColumns.h">
+      <Filter>Header Files\editors\common\ConnectionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\InterfaceEditor\InterfacePortMapColumns.h">
+      <Filter>Header Files\editors\common\InterfaceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\StickyNote\StickyNoteEditCommand.h">
+      <Filter>Header Files\editors\common\StickyNote</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\StickyNote\StickyNoteMoveCommand.h">
+      <Filter>Header Files\editors\common\StickyNote</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ColumnTypes.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\componentinstanceeditor\configurableelementscolumns.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\common\componentinstanceeditor\editorconfigurableelement.h">
-      <Filter>Header Files\editors\common\componentinstanceeditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\common\defaultrouting.h">
+    <ClInclude Include="editors\common\DefaultRouting.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\designdiagramresolver.h">
+    <ClInclude Include="editors\common\DesignDiagramResolver.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\designwidgetfactory.h">
+    <ClInclude Include="editors\common\DesignWidgetFactory.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\designwidgetfactoryimplementation.h">
+    <ClInclude Include="editors\common\DesignWidgetFactoryImplementation.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\common\diagramgrid.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\diagramutil.h">
+    <ClInclude Include="editors\common\DiagramUtil.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\drawmode.h">
+    <ClInclude Include="editors\common\DrawMode.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\graphicsitemlabel.h">
+    <ClInclude Include="editors\common\GraphicsItemLabel.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\imageexporter.h">
+    <ClInclude Include="editors\common\ImageExporter.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\namelabelwidth.h">
+    <ClInclude Include="editors\common\NamelabelWidth.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\common\stickynote\stickynoteeditcommand.h">
-      <Filter>Header Files\editors\common\stickynote</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\common\stickynote\stickynotemovecommand.h">
-      <Filter>Header Files\editors\common\stickynote</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\common\topcomponentparameterfinder.h">
+    <ClInclude Include="editors\common\TopComponentParameterFinder.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\adhocenabled.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.h">
+      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilitycolumns.h">
-      <Filter>Header Files\editors\hwdesign\adhocvisibilityeditor</Filter>
+    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.h">
+      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\adhocvisibilityeditor\adhocvisibilitypolicy.h">
-      <Filter>Header Files\editors\hwdesign\adhocvisibilityeditor</Filter>
+    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityColumns.h">
+      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\hwaddcommands.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\PortDeleteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\hwdeletecommands.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\PortPasteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\hwmovecommands.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\interfacegraphics.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\AdHocConnectionAddCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\portmapdialog.h">
-      <Filter>Header Files\editors\hwdesign</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\AdHocConnectionDeleteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\adhocconnectionaddcommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\AdHocTiedValueCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\adhocconnectiondeletecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\AdHocTieOffBoundsChangeCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\adhoctiedvaluecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\AdHocTieOffConnectionDeleteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\adhoctieoffboundschangecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\AdHocVisibilityChangeCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\adhoctieoffconnectiondeletecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\ColumnDeleteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\adhocvisibilitychangecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\ComponentInstancePasteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\columndeletecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\ComponentItemMoveCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\componentinstancepastecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\ConnectionDeleteCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\componentitemmovecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\undoCommands\HWColumnAddCommand.h">
+      <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\connectiondeletecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\AdHocEnabled.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\hwcolumnaddcommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\HWAddCommands.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\portdeletecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\HWMoveCommands.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\portpastecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\InterfaceGraphics.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </ClInclude>
-    <ClInclude Include="editors\hwdesign\undocommands\topadhocvisibilitychangecommand.h">
-      <Filter>Header Files\editors\hwdesign\undocommands</Filter>
+    <ClInclude Include="editors\HWDesign\PortmapDialog.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\addressblockgraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\SubMemoryLayout.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\addresssegmentgraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\AddressBlockGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\addressspacegraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\connectivitycomponent.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\connectivityconnection.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\ConnectivityComponent.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\connectivitygraph.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\ConnectivityConnection.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\connectivitygraphfactory.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\ConnectivityGraph.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\connectivityinterface.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\ConnectivityGraphFactory.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\fieldgraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\ConnectivityInterface.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\fieldoverlapitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\FieldGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\mainmemorygraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\FieldOverlapItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\masterslavepathsearch.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MainMemoryGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memorycollisionitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MasterSlavePathSearch.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memorycolumnhandler.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryCollisionItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memoryconnectionhandler.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryColumnHandler.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memoryconnectionitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryConnectionHandler.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memorydesignerchildgraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryConnectionItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memorydesignerconstants.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryDesignerChildGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memoryextensiongraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryDesignerConstants.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memoryitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryExtensionGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\memorymapgraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\registergraphicsitem.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\MemoryMapGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\memorydesigner\submemorylayout.h">
-      <Filter>Header Files\editors\memorydesigner</Filter>
+    <ClInclude Include="editors\MemoryDesigner\RegisterGraphicsItem.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\hwmappingitem.h">
-      <Filter>Header Files\editors\systemdesign</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\ApiConnectionAddCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\apiconnectionaddcommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\ApiConnectionDeleteCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\apiconnectiondeletecommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\ApiConnectionExchangeCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\apiconnectionexchangecommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\ComConnectionAddCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\comconnectionaddcommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\ComConnectionDeleteCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\comconnectiondeletecommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\ComConnectionExchangeCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\comconnectionexchangecommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\SWInterfaceAddCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\swinterfaceaddcommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\SWInterfaceDeleteCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\swinterfacedeletecommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\SWInterfaceMoveCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\swinterfacemovecommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\SWPortDeleteCommand.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\swportdeletecommand.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\SystemAddCommands.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\systemaddcommands.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\SystemChangeCommands.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\systemchangecommands.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\SystemDeleteCommands.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\systemdeletecommands.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\UndoCommands\SystemMoveCommands.h">
+      <Filter>Header Files\editors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="editors\systemdesign\undocommands\systemmovecommands.h">
-      <Filter>Header Files\editors\systemdesign\undocommands</Filter>
+    <ClInclude Include="editors\SystemDesign\HWMappingItem.h">
+      <Filter>Header Files\editors\SystemDesign</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

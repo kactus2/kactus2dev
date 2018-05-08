@@ -24,6 +24,7 @@ class Port;
 //-----------------------------------------------------------------------------
 class DeletePhysicalPortCommand : public QUndoCommand
 {
+
 public:
     /*!
      *  Constructor.

@@ -11,18 +11,17 @@
 
 #include "PhysicalPortDeleteCommand.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
 // Function: DeletePhysicalPortCommand::DeletePhysicalPortCommand()
 //-----------------------------------------------------------------------------
 DeletePhysicalPortCommand::DeletePhysicalPortCommand(QSharedPointer<Component> component,
-    QSharedPointer<Port> port,
-    QUndoCommand* parent):
+    QSharedPointer<Port> port, QUndoCommand* parent):
 QUndoCommand(parent),
-    component_(component),
-    port_(port)                                                           
+component_(component),
+port_(port)                                                           
 {
 
 }
@@ -40,7 +39,7 @@ DeletePhysicalPortCommand::~DeletePhysicalPortCommand()
 void DeletePhysicalPortCommand::undo()
 {
     Q_ASSERT(component_ != 0 && !port_.isNull());
-    component_->addPort(port_);
+    component_->getPorts()->append(port_);
 
     QUndoCommand::undo();
 }
@@ -53,5 +52,5 @@ void DeletePhysicalPortCommand::redo()
     QUndoCommand::redo();
 
     Q_ASSERT(component_ != 0 && !port_.isNull());
-    component_->removePort(port_->name());
+    component_->getPorts()->removeAll(port_);
 }
