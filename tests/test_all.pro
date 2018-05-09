@@ -16,6 +16,5 @@ CONFIG += testcase
 SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 		editors/editors.pro \
 		wizards/wizards.pro \
-		Plugins/plugins.pro \
-        core/Core.pro \
-		mainwindow/mainwindow.pro
+		Plugins/Plugins.pro \
+        Core/Core.pro 
