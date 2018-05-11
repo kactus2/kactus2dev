@@ -18,8 +18,6 @@
 
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
-#include <common/utils.h>
-
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
@@ -201,7 +199,7 @@ void GlobalMemoryMapHeaderWriter::parseMasterInterface(qint64 offset, QSharedPoi
 
     QString masterBaseAddress = component->getBusInterface(interface->getBusReference())->getMaster()->getBaseAddress();
 
-    offset += Utils::str2Int(parsedValueFor(masterBaseAddress, finder));
+    offset += parsedValueFor(masterBaseAddress, finder).toInt();
 
     QList<QSharedPointer<ActiveInterface> > connected = getConnectedInterfaces(interface);
     foreach (QSharedPointer<ActiveInterface> targetInterface, connected)

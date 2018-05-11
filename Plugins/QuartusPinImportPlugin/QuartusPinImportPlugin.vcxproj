@@ -54,6 +54,11 @@
   <ItemGroup>
     <None Include="quartuspinimportplugin.json" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\IPXACTmodels\IPXACTmodels.vcxproj">
+      <Project>{5c0ca59d-cfce-49c6-b62a-9e3065ca34dd}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C0DBF909-F12F-473F-8AC3-2248ABA68B92}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
