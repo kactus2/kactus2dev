@@ -4,7 +4,7 @@
 
 TEMPLATE = subdirs
 
-CONFIG += c++11 testcase
+CONFIG += testcase
 
 SUBDIRS += tst_HDLParser.pro \
            tst_VerilogPortParser.pro \

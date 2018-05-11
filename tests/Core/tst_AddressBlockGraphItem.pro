@@ -1,40 +1,47 @@
 #-----------------------------------------------------------------------------
-# File: tst_SystemVerilogExpressionParser.pro
+# File: tst_AddressBlockGraphItem.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 25.11.2014
+# Date: 20.03.2015
 #
 # Description:
-# Qt project file template for running unit tests for SystemVerilogExpressionParser.
+# Qt project file template for running unit tests for AddressBlockGraphItem.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_SystemVerilogExpressionParser
+TARGET = tst_AddressBlockGraphItem
 
-QT += core xml gui testlib
+DEFINES+=KACTUS2_EXPORTS
+
+QT += core xml gui testlib widgets
 CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
     DESTDIR = ./release
-	}
+}
 
+INCLUDEPATH += $$PWD/../../
+INCLUDEPATH += $$PWD/../../executable
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../../
 
+DEPENDPATH += $$PWD/../../
+DEPENDPATH += $$PWD/../../executable
 DEPENDPATH += .
-DEPENDPATH += ../../../../
 
 OBJECTS_DIR += $$DESTDIR
 
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_SystemVerilogExpressionParser.pri)
+include(tst_AddressBlockGraphItem.pri)

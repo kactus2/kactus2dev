@@ -20,7 +20,7 @@ HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../common/graphicsItems/ConnectionUndoCommands.h \
     ../../editors/common/DefaultRouting.h \
     ../../editors/common/DesignDiagramResolver.h \
-    ../../MockObjects/DesignWidgetFactoryMock.h \
+    ../MockObjects/DesignWidgetFactoryMock.h \
     ../../kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
@@ -86,11 +86,11 @@ HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../editors/HWDesign/HWConnection.h \
     ../../editors/HWDesign/HWConnectionEndpoint.h \
     ../../editors/HWDesign/HWDesignDiagram.h \
-    ../../MockObjects/HWDesignWidgetMock.h \
+    ../MockObjects/HWDesignWidgetMock.h \
     ../../common/IEditProvider.h \
     ../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
     ../../library/LibraryItem.h \
-    ../../MockObjects/LibraryMock.h \
+    ../MockObjects/LibraryMock.h \
     ../../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ../../editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
@@ -169,7 +169,7 @@ SOURCES += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../editors/common/DesignDiagram.cpp \
     ../../editors/common/DesignDiagramResolver.cpp \
     ../../editors/common/DesignWidget.cpp \
-    ../../MockObjects/DesignWidgetFactoryMock.cpp \
+    ../MockObjects/DesignWidgetFactoryMock.cpp \
     ../../common/views/EditableTreeView/EditableTreeSortFilter.cpp \
     ../../common/views/EditableTreeView/EditableTreeView.cpp \
     ../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
@@ -193,13 +193,13 @@ SOURCES += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../editors/HWDesign/HWConnectionEndPoint.cpp \
     ../../editors/common/GraphicsItemLabel.cpp \
     ../../editors/HWDesign/HWDesignDiagram.cpp \
-    ../../MockObjects/HWDesignWidgetMock.cpp \
+    ../MockObjects/HWDesignWidgetMock.cpp \
     ../../editors/HWDesign/HWMoveCommands.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.cpp \
     ../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
     ../../library/LibraryItem.cpp \
-    ../../MockObjects/LibraryMock.cpp \
+    ../MockObjects/LibraryMock.cpp \
     ../../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ../../common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
