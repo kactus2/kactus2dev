@@ -18,4 +18,4 @@ SUBDIRS += AbstractionDefinition\AbstractionDefinition.pro \
 		   DesignConfiguration\DesignConfiguration.pro \
 		   Design\Design.pro \
 		   Component\Component.pro \
-		   kactusExtensions\KactusExtensions.pro 
+		   KactusExtensions\KactusExtensions.pro 
