@@ -21,7 +21,7 @@
 #include <wizards/common/ViewComparator/ViewComparator.h>
 #include <wizards/common/IPXactDiff.h>
 
-#include <tests/wizards/common/ComparatorTest.h>
+#include "ComparatorTest.h"
 
 
 class tst_ViewComparator : public QObject, public ComparatorTest

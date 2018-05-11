@@ -20,7 +20,7 @@
 #include <wizards/common/ComponentComparator/ComponentComparator.h>
 #include <wizards/common/IPXactDiff.h>
 
-#include <tests/wizards/common/ComparatorTest.h>
+#include "ComparatorTest.h"
 
 class tst_ComponentComparator : public QObject, public ComparatorTest
 {

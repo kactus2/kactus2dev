@@ -13,8 +13,7 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 
-SUBDIRS += IPXACTmodels/IPXACTmodels.pro \		
-		wizards/wizards.pro \
+SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 		Core/Core.pro \
 		Plugins/Plugins.pro
         

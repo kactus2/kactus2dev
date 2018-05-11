@@ -20,6 +20,10 @@ SUBDIRS += tst_CommandLineParser.pro \
 		   tst_ValueFormatter.pro \
 		   tst_ComponentParameterModel.pro \
 		   tst_ParameterReferenceTree.pro \
+		   tst_VLNVComparator.pro \
+		   tst_ViewComparator.pro \
+		   tst_PortComparator.pro \
+		   tst_ComponentComparator.pro \
 		   tst_FieldGraphItem.pro \
 		   tst_RegisterGraphItem.pro \
 		   tst_AddressBlockGraphItem.pro \

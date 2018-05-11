@@ -6,7 +6,7 @@ HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../Plugins/importPlugins/common/ImportColors.h \
+    ../../../Plugins/PluginSystem/ImportPlugin/ImportColors.h \
     ../../../editors/ComponentEditor/common/NullParser.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../Plugins/VerilogImport/VerilogParameterParser.h \

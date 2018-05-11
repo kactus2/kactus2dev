@@ -16,7 +16,7 @@
 #include <wizards/common/VLNVComparator/VLNVComparator.h>
 #include <wizards/common/IPXactDiff.h>
 
-#include <tests/wizards/common/ComparatorTest.h>
+#include "ComparatorTest.h"
 
 class tst_VLNVComparator : public QObject, public ComparatorTest
 {

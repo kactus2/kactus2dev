@@ -6,8 +6,7 @@ HEADERS += ../../../Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
     ../../../Plugins/PluginSystem/ImportPlugin/Highlighter.h \
     ../../../Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ../../../Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
-    ../../../Plugins/common/NameGenerationPolicy.h \
-    ../../../Plugins/PluginSystem/ImportPlugin/PortSource.h \
+    ../../../common/NameGenerationPolicy.h \
     ../../../Plugins/VHDLimport/VHDLSyntax.h \
     ../../../Plugins/VHDLimport/vhdlimport_global.h \
     ../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \

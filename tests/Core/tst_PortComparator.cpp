@@ -18,7 +18,7 @@
 #include <wizards/common/PortComparator/PortComparator.h>
 #include <wizards/common/IPXactDiff.h>
 
-#include <tests/wizards/common/ComparatorTest.h>
+#include "ComparatorTest.h"
 
 Q_DECLARE_METATYPE(DirectionTypes::Direction)
 
