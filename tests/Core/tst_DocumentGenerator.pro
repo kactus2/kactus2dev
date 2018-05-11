@@ -11,7 +11,7 @@
 
 TEMPLATE = app
 
-TARGET = tst_documentGenerator
+TARGET = tst_DocumentGenerator
 
 QT += core xml gui widgets testlib printsupport svg
 CONFIG += c++11 testcase console
@@ -25,6 +25,7 @@ else:win32:CONFIG(debug, debug|release) {
     DESTDIR = ./debug
 }
 else:unix {
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 
@@ -40,4 +41,4 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_documentGenerator.pri)
+include(tst_DocumentGenerator.pri)

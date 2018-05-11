@@ -26,11 +26,12 @@ HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
     ../../common/graphicsItems/GraphicsColumnAddCommand.h \
     ../../common/graphicsItems/GraphicsColumnUndoCommands.h \
+    ../../editors/common/GraphicsItemLabel.h \
     ../../editors/HWDesign/HWAddCommands.h \
     ../../editors/HWDesign/undoCommands/HWColumnAddCommand.h \
-    ../../editors/common/GraphicsItemLabel.h \
     ../../editors/HWDesign/HWMoveCommands.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../editors/common/ImageExporter.h \
     ../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.h \
     ../../common/widgets/assistedLineEdit/LineContentAssistWidget.h \
     ../../editors/ComponentEditor/common/ListParameterFinder.h \
@@ -127,7 +128,7 @@ HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../common/delegates/LineEditDelegate/lineeditdelegate.h \
     ../../common/dialogs/newObjectDialog/newobjectdialog.h \
     ../../common/widgets/vlnvEditor/vlnveditor.h \
-    ../../editors/common/ImageExporter.h
+    ../../editors/SystemDesign/HWMappingItem.h
 SOURCES += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../editors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
     ../../editors/HWDesign/AdHocConnectionItem.cpp \
@@ -183,6 +184,7 @@ SOURCES += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../common/graphicsItems/GraphicsColumnLayout.cpp \
     ../../common/graphicsItems/GraphicsColumnUndoCommands.cpp \
     ../../common/graphicsItems/GraphicsConnection.cpp \
+    ../../editors/common/GraphicsItemLabel.cpp \
     ../../editors/HWDesign/HWAddCommands.cpp \
     ../../editors/HWDesign/HWChangeCommands.cpp \
     ../../editors/HWDesign/columnview/HWColumn.cpp \
@@ -191,11 +193,11 @@ SOURCES += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../editors/HWDesign/HWComponentItem.cpp \
     ../../editors/HWDesign/HWConnection.cpp \
     ../../editors/HWDesign/HWConnectionEndPoint.cpp \
-    ../../editors/common/GraphicsItemLabel.cpp \
     ../../editors/HWDesign/HWDesignDiagram.cpp \
     ../MockObjects/HWDesignWidgetMock.cpp \
     ../../editors/HWDesign/HWMoveCommands.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../editors/common/ImageExporter.cpp \
     ../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.cpp \
     ../../common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
     ../../library/LibraryItem.cpp \
@@ -252,4 +254,4 @@ SOURCES += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../common/dialogs/newObjectDialog/newobjectdialog.cpp \
     ./tst_documentGenerator.cpp \
     ../../common/widgets/vlnvEditor/vlnveditor.cpp \
-    ../../editors/common/ImageExporter.cpp
+    ../../editors/SystemDesign/HWMappingItem.cpp

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: tst_documentGenerator.cpp
+// File: tst_DocumentGenerator.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -41,12 +41,12 @@
 
 #include <QWidget>
 
-class tst_documentGenerator : public QObject
+class tst_DocumentGenerator : public QObject
 {
     Q_OBJECT
 
 public:
-    tst_documentGenerator();
+    tst_DocumentGenerator();
 
 private slots:
     
@@ -191,9 +191,9 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::tst_documentGenerator()
+// Function: tst_DocumentGenerator::tst_DocumentGenerator()
 //-----------------------------------------------------------------------------
-tst_documentGenerator::tst_documentGenerator() :
+tst_DocumentGenerator::tst_DocumentGenerator() :
 topComponent_(), topComponentVlnv_(), output_(), generationTime_(), library_(this), designWidgetFactory_(&library_),
     expressionFormatterFactory_(), targetPath_("./generatorOutput.html"), generatorParentWidget_(new QWidget)
 {
@@ -201,25 +201,25 @@ topComponent_(), topComponentVlnv_(), output_(), generationTime_(), library_(thi
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::initTestCase()
+// Function: tst_DocumentGenerator::initTestCase()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::initTestCase()
+void tst_DocumentGenerator::initTestCase()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::cleanupTestCase()
+// Function: tst_DocumentGenerator::cleanupTestCase()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::cleanupTestCase()
+void tst_DocumentGenerator::cleanupTestCase()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::init()
+// Function: tst_DocumentGenerator::init()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::init()
+void tst_DocumentGenerator::init()
 {
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
     topComponentVlnv_ = vlnv;
@@ -231,9 +231,9 @@ void tst_documentGenerator::init()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::cleanup()
+// Function: tst_DocumentGenerator::cleanup()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::cleanup()
+void tst_DocumentGenerator::cleanup()
 {
     topComponent_.clear();
     output_.clear();
@@ -242,9 +242,9 @@ void tst_documentGenerator::cleanup()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::()
+// Function: tst_DocumentGenerator::()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testInvalidVlnvInConstructor()
+void tst_DocumentGenerator::testInvalidVlnvInConstructor()
 {
     VLNV invalidVlnv(VLNV::COMPONENT, "invalid", "library", "component", "0");
 
@@ -269,9 +269,9 @@ void tst_documentGenerator::testInvalidVlnvInConstructor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testFileHeaderIsPrinted()
+// Function: tst_DocumentGenerator::testFileHeaderIsPrinted()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testFileHeaderIsWritten()
+void tst_DocumentGenerator::testFileHeaderIsWritten()
 {
     QCoreApplication::setOrganizationName("TUT");
     QCoreApplication::setApplicationName("TestRunner");
@@ -336,9 +336,9 @@ void tst_documentGenerator::testFileHeaderIsWritten()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
+// Function: tst_DocumentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
+void tst_DocumentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 {
     QList <QSharedPointer<Parameter> > componentParameters;
     QSharedPointer<Parameter> parameter = createTestParameter("parameter", "1", "", "P-ID", "", "");
@@ -443,9 +443,9 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
+// Function: tst_DocumentGenerator::testParametersWrittenWithOnlyTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
+void tst_DocumentGenerator::testParametersWrittenWithOnlyTopComponent()
 {
     QSharedPointer <Parameter> parameter = createTestParameter("parameter", "10", "Description", "ID_parameter",
         "1", "0");
@@ -552,9 +552,9 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testMemoryMapsWrittenWithTopComponent()
+// Function: tst_DocumentGenerator::testMemoryMapsWrittenWithTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testMemoryMapsWrittenWithTopComponent()
+void tst_DocumentGenerator::testMemoryMapsWrittenWithTopComponent()
 {
     QList <QSharedPointer <AddressBlock> > addressBlocks;
 
@@ -621,9 +621,9 @@ void tst_documentGenerator::testMemoryMapsWrittenWithTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
+// Function: tst_DocumentGenerator::testAddressBlocksWrittenWithTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
+void tst_DocumentGenerator::testAddressBlocksWrittenWithTopComponent()
 {
     QList <QSharedPointer <Register> > registers;
     QSharedPointer <Register> testRegister = createTestRegister("register", "4", "2", "2", "");
@@ -709,9 +709,9 @@ void tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testExpressionsInAddressBlocks()
+// Function: tst_DocumentGenerator::testExpressionsInAddressBlocks()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testExpressionsInAddressBlocks()
+void tst_DocumentGenerator::testExpressionsInAddressBlocks()
 {
     QSharedPointer <Parameter> targetParameter = createTestParameter("target", "4", "", "ID_TARGET", "", "");
 
@@ -797,9 +797,9 @@ void tst_documentGenerator::testExpressionsInAddressBlocks()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testRegistersWrittenWithTopComponent()
+// Function: tst_DocumentGenerator::testRegistersWrittenWithTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testRegistersWrittenWithTopComponent()
+void tst_DocumentGenerator::testRegistersWrittenWithTopComponent()
 {
     QList <QSharedPointer <Register> > registers;
     QSharedPointer <Register> testRegister = createTestRegister("register", "4", "2", "2", "exampleDescription");
@@ -877,9 +877,9 @@ void tst_documentGenerator::testRegistersWrittenWithTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testFieldsWrittenWithTopComponent()
+// Function: tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testFieldsWrittenWithTopComponent()
+void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
 {
     QSharedPointer<Field> testField = createTestField("testField", "Example Field", "2", "8");
     testField->setResetValue("testReset");
@@ -962,9 +962,9 @@ void tst_documentGenerator::testFieldsWrittenWithTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
+// Function: tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
+void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 {
     QSharedPointer<Field> testField = createTestField("testField", "", "2", "8");
     testField->setResetValue("8'h3");
@@ -1114,9 +1114,9 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
+// Function: tst_DocumentGenerator::testPortsWrittenWithOnlyTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
+void tst_DocumentGenerator::testPortsWrittenWithOnlyTopComponent()
 {
     QList <QSharedPointer <Parameter> > componentParameters;
     QSharedPointer <Parameter> parameter = createTestParameter("parameter", "10", "Description", "ID_parameter",
@@ -1208,9 +1208,9 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testBusInterfacesWrittenWithoutPorts()
+// Function: tst_DocumentGenerator::testBusInterfacesWrittenWithoutPorts()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testBusInterfacesWrittenWithoutPorts()
+void tst_DocumentGenerator::testBusInterfacesWrittenWithoutPorts()
 {
     QSharedPointer <BusInterface> busInterface (new BusInterface);
     busInterface->setName("interface");
@@ -1275,9 +1275,9 @@ void tst_documentGenerator::testBusInterfacesWrittenWithoutPorts()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testFileSetsWrittenForTopComponent()
+// Function: tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testFileSetsWrittenForTopComponent()
+void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
 {
     DocumentGenerator* generator = createTestGenerator();
 
@@ -1346,9 +1346,9 @@ void tst_documentGenerator::testFileSetsWrittenForTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testViewsWrittenForTopComponent()
+// Function: tst_DocumentGenerator::testViewsWrittenForTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testViewsWrittenForTopComponent()
+void tst_DocumentGenerator::testViewsWrittenForTopComponent()
 {
     QSharedPointer<View> flatView(new View());
 
@@ -1411,9 +1411,9 @@ void tst_documentGenerator::testViewsWrittenForTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testHierarchicalDesignIsWritten()
+// Function: tst_DocumentGenerator::testHierarchicalDesignIsWritten()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testDesignIsWritten()
+void tst_DocumentGenerator::testDesignIsWritten()
 {
     VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
     QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVlnv));
@@ -1517,9 +1517,9 @@ void tst_documentGenerator::testDesignIsWritten()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::testEndOfDocumentWrittenForTopComponent()
+// Function: tst_DocumentGenerator::testEndOfDocumentWrittenForTopComponent()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::testEndOfDocumentWrittenForTopComponent()
+void tst_DocumentGenerator::testEndOfDocumentWrittenForTopComponent()
 {
     DocumentGenerator* generator = createTestGenerator();
 
@@ -1570,9 +1570,9 @@ void tst_documentGenerator::testEndOfDocumentWrittenForTopComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createTestGenerator()
+// Function: tst_DocumentGenerator::createTestGenerator()
 //-----------------------------------------------------------------------------
-DocumentGenerator* tst_documentGenerator::createTestGenerator()
+DocumentGenerator* tst_DocumentGenerator::createTestGenerator()
 {
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml", topComponent_);
     library_.addComponent(topComponent_);
@@ -1584,9 +1584,9 @@ DocumentGenerator* tst_documentGenerator::createTestGenerator()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createViewGenerator()
+// Function: tst_DocumentGenerator::createViewGenerator()
 //-----------------------------------------------------------------------------
-ViewDocumentGenerator* tst_documentGenerator::createViewGenerator()
+ViewDocumentGenerator* tst_DocumentGenerator::createViewGenerator()
 {
     ViewDocumentGenerator* generator(new ViewDocumentGenerator(&library_, &expressionFormatterFactory_, 
         &designWidgetFactory_));
@@ -1595,9 +1595,9 @@ ViewDocumentGenerator* tst_documentGenerator::createViewGenerator()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::readOutputFile()
+// Function: tst_DocumentGenerator::readOutputFile()
 //-----------------------------------------------------------------------------
-void tst_documentGenerator::readOutputFile()
+void tst_DocumentGenerator::readOutputFile()
 {
     QFile outputFile(targetPath_);
 
@@ -1608,9 +1608,9 @@ void tst_documentGenerator::readOutputFile()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createTestParameter()
+// Function: tst_DocumentGenerator::createTestParameter()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> tst_documentGenerator::createTestParameter(QString const& name, QString const& value,
+QSharedPointer<Parameter> tst_DocumentGenerator::createTestParameter(QString const& name, QString const& value,
     QString const& description, QString const& uuID, QString const& arrayLeft, QString const& arrayRight)
 {
     QSharedPointer<Parameter> parameter (new Parameter);
@@ -1625,9 +1625,9 @@ QSharedPointer<Parameter> tst_documentGenerator::createTestParameter(QString con
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createTestPort()
+// Function: tst_DocumentGenerator::createTestPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<Port> tst_documentGenerator::createTestPort(QString const& name, QString const& leftBound,
+QSharedPointer<Port> tst_DocumentGenerator::createTestPort(QString const& name, QString const& leftBound,
     QString const& rightBound, QString const& defaultValue, QString const& arrayLeft, QString const& arrayRight)
 {
     QSharedPointer<Port> newPort (new Port);
@@ -1643,9 +1643,9 @@ QSharedPointer<Port> tst_documentGenerator::createTestPort(QString const& name, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createConfigurableElementvalues()
+// Function: tst_DocumentGenerator::createConfigurableElementvalues()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<ConfigurableElementValue> > tst_documentGenerator::createConfigurableElementvalues(QSharedPointer <Component> component)
+QList<QSharedPointer<ConfigurableElementValue> > tst_DocumentGenerator::createConfigurableElementvalues(QSharedPointer <Component> component)
 {    
     ExpressionFormatter* refExpressionFormatter = expressionFormatterFactory_.makeExpressionFormatter(component);
 
@@ -1664,9 +1664,9 @@ QList<QSharedPointer<ConfigurableElementValue> > tst_documentGenerator::createCo
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createTestField()
+// Function: tst_DocumentGenerator::createTestField()
 //-----------------------------------------------------------------------------
-QSharedPointer <Field> tst_documentGenerator::createTestField(QString const& name, QString const& description,
+QSharedPointer <Field> tst_DocumentGenerator::createTestField(QString const& name, QString const& description,
     QString const& offset, QString const& width)
 {
     QSharedPointer <Field> testField (new Field);
@@ -1681,9 +1681,9 @@ QSharedPointer <Field> tst_documentGenerator::createTestField(QString const& nam
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createTestRegister()
+// Function: tst_DocumentGenerator::createTestRegister()
 //-----------------------------------------------------------------------------
-QSharedPointer <Register> tst_documentGenerator::createTestRegister(QString const& name, QString const& offset,
+QSharedPointer <Register> tst_DocumentGenerator::createTestRegister(QString const& name, QString const& offset,
     QString const& dimension, QString const& size, QString const& description)
 {
     QSharedPointer<Register> testRegister (new Register);
@@ -1701,9 +1701,9 @@ QSharedPointer <Register> tst_documentGenerator::createTestRegister(QString cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createTestAddressBlock()
+// Function: tst_DocumentGenerator::createTestAddressBlock()
 //-----------------------------------------------------------------------------
-QSharedPointer <AddressBlock> tst_documentGenerator::createTestAddressBlock(QString const& name,
+QSharedPointer <AddressBlock> tst_DocumentGenerator::createTestAddressBlock(QString const& name,
     QString const& description, QString const& baseAddress, QString const& range, QString const& width,
     QList<QSharedPointer<Register> > registers)
 {
@@ -1726,9 +1726,9 @@ QSharedPointer <AddressBlock> tst_documentGenerator::createTestAddressBlock(QStr
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createTestMemoryMap()
+// Function: tst_DocumentGenerator::createTestMemoryMap()
 //-----------------------------------------------------------------------------
-QSharedPointer <MemoryMap> tst_documentGenerator::createTestMemoryMap(QString const& name,
+QSharedPointer <MemoryMap> tst_DocumentGenerator::createTestMemoryMap(QString const& name,
     QString const& descprition, int addressUnitbits, QList<QSharedPointer<AddressBlock> > addressBlocks)
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap);
@@ -1745,49 +1745,49 @@ QSharedPointer <MemoryMap> tst_documentGenerator::createTestMemoryMap(QString co
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::getSpaceString()
+// Function: tst_DocumentGenerator::getSpaceString()
 //-----------------------------------------------------------------------------
-QString tst_documentGenerator::getSpaceString()
+QString tst_DocumentGenerator::getSpaceString()
 {
     return QString("&nbsp;");
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::getIndentString()
+// Function: tst_DocumentGenerator::getIndentString()
 //-----------------------------------------------------------------------------
-QString tst_documentGenerator::getIndentString()
+QString tst_DocumentGenerator::getIndentString()
 {
     return QString("&nbsp;&nbsp;&nbsp;");
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::getTableString()
+// Function: tst_DocumentGenerator::getTableString()
 //-----------------------------------------------------------------------------
-QString tst_documentGenerator::getTableString()
+QString tst_DocumentGenerator::getTableString()
 {
     return QString("<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\" title=\"");
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::getEncodingString()
+// Function: tst_DocumentGenerator::getEncodingString()
 //-----------------------------------------------------------------------------
-QString tst_documentGenerator::getEncodingString()
+QString tst_DocumentGenerator::getEncodingString()
 {
     return QString("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::getDoctypeString()
+// Function: tst_DocumentGenerator::getDoctypeString()
 //-----------------------------------------------------------------------------
-QString tst_documentGenerator::getDoctypeString()
+QString tst_DocumentGenerator::getDoctypeString()
 {
     return QString("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">");
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::getValidW3CStrictString()
+// Function: tst_DocumentGenerator::getValidW3CStrictString()
 //-----------------------------------------------------------------------------
-QString tst_documentGenerator::getValidW3CStrictString()
+QString tst_DocumentGenerator::getValidW3CStrictString()
 {
     return QString("\t\t<p>\n"
         "\t\t\t<a href=\"https://validator.w3.org/#validate_by_upload\">\n"
@@ -1798,6 +1798,6 @@ QString tst_documentGenerator::getValidW3CStrictString()
         "\t\t</p>\n");
 }
 
-QTEST_MAIN(tst_documentGenerator)
+QTEST_MAIN(tst_DocumentGenerator)
 
-#include "tst_documentGenerator.moc"
+#include "tst_DocumentGenerator.moc"
