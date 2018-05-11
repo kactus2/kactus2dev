@@ -72,10 +72,6 @@ The following packages are required (on Ubuntu):
 Example:
 ```
 sudo apt-get install qt5-default qttools5-private-dev qttools5-dev-tools libqt5svg5-dev
-
-Example:
-```
-sudo apt-get install qt5-default qttools5-private-dev qttools5-dev-tools
 ```
 
 b) Manually download and install from https://www.qt.io/download/
