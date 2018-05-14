@@ -13,7 +13,7 @@ TEMPLATE = app
 
 TARGET = tst_QuartusGenerator
 
-QT += core xml gui widgets testlib printsupport
+QT += core xml gui testlib printsupport
 CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {
