@@ -260,7 +260,7 @@ bool PortsDelegate::editorEvent(QEvent *event, QAbstractItemModel* model,
 //-----------------------------------------------------------------------------
 void PortsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
-    QStyleOptionViewItemV4 viewItemOption(option);
+	QStyleOptionViewItem viewItemOption(option);
 
     if (index.column() == PortColumns::ADHOC_VISIBILITY)
     {

@@ -4434,9 +4434,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Kactus2.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
       <Filter>Source Files\common\layouts</Filter>
     </CustomBuild>

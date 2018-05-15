@@ -144,7 +144,7 @@ advanced_(false)
 //-----------------------------------------------------------------------------
 // Function: Utils::getCurrentUser()
 //-----------------------------------------------------------------------------
-KACTUS2_API QString Utils::getCurrentUser()
+QString Utils::getCurrentUser()
 {
 #ifdef Q_OS_WIN
 #pragma warning (disable: 4996)
