@@ -28,6 +28,7 @@ PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, BusPortItem* 
 QUndoCommand(parent),
 component_(destComponent),
 port_(port),
+del_(false),
 diagram_(diagram)
 {
    

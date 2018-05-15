@@ -2138,7 +2138,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         QString endComponentReference = "";
         QString endApiReference = dependency->getEndInterface()->getBusReference();
 
-        SystemComponentItem* comp2;
+        SystemComponentItem* comp2 = nullptr;
 
         QSharedPointer<ActiveInterface> activeEndInterface =
             dependency->getEndInterface().dynamicCast<ActiveInterface>();

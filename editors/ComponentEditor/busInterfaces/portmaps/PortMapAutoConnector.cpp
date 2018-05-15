@@ -38,6 +38,7 @@ abstraction_(),
 absDef_(),
 parser_(parser),
 libraryHandler_(libraryHandler),
+interfaceMode_(General::INTERFACE_MODE_COUNT),
 physicalPrefix_()
 {
 

@@ -70,7 +70,7 @@ public:
     *
     *      @return Description.
     */
-    virtual bool contains(const VLNV& vlnv);
+    virtual bool contains(const VLNV& vlnv) const;
 
     /*!
     *  Method description.

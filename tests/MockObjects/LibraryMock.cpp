@@ -68,7 +68,7 @@ QSharedPointer<Document const> LibraryMock::getModelReadOnly(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::contains()
 //-----------------------------------------------------------------------------
-bool LibraryMock::contains(const VLNV& vlnv)
+bool LibraryMock::contains(const VLNV& vlnv) const
 {
     return components_.contains(vlnv);
 }

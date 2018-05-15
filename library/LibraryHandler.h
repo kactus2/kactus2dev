@@ -59,7 +59,7 @@ public:
      *      @param [in] dialer  The dialer that provides search options.
      *      @param [in] parent  The parent widget of this instance.
      */
-    LibraryHandler(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent = 0);
+    LibraryHandler(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent = nullptr);
 
     //! No copying
     LibraryHandler(const LibraryHandler &other) = delete;
@@ -515,7 +515,8 @@ private:
         bool isValid;                       //<! Flag for well-formed content.
 
         //! Constructor.
-        DocumentInfo(QString const& filePath = QString(), QSharedPointer<Document> doc = nullptr,
+        DocumentInfo(QString const& filePath = QString(), 
+            QSharedPointer<Document> doc = QSharedPointer<Document>(),
             bool valid = false): document(doc), path(filePath), isValid(valid) {}
     };
 

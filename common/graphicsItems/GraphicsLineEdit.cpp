@@ -64,7 +64,6 @@ bool GraphicsLineEdit::sceneEvent(QEvent* event)
             {
                 cancelEdit();
                 return true;
-                break;
             }
 
         case Qt::Key_Tab:
@@ -72,7 +71,6 @@ bool GraphicsLineEdit::sceneEvent(QEvent* event)
             {
                 clearFocus();
                 return true;
-                break;
             }
         }
     }

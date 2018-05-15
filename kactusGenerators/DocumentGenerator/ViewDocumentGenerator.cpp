@@ -503,18 +503,18 @@ void ViewDocumentGenerator::writeReferencedDesignInstantiation(QString const& in
 
     writeDescription(stream, instantiationTabs, instantiation->description());
 
-    QSharedPointer<ListParameterFinder> designFinder(new ListParameterFinder());
-    QSharedPointer<MultipleParameterFinder> instantiationParameterFinder(new MultipleParameterFinder());
-    instantiationParameterFinder->addFinder(componentFinder_);
-    instantiationParameterFinder->addFinder(designFinder);
-
-    ExpressionFormatter* instantiationFormatter(new ExpressionFormatter(instantiationParameterFinder));
-
     QSharedPointer<ConfigurableVLNVReference> designVLNV = instantiation->getDesignReference();
     writeDocumentReference(stream, QString("Design"), instantiationTabs, designVLNV);
 
     if (designVLNV)
     {
+        QSharedPointer<ListParameterFinder> designFinder(new ListParameterFinder());
+        QSharedPointer<MultipleParameterFinder> instantiationParameterFinder(new MultipleParameterFinder());
+        instantiationParameterFinder->addFinder(componentFinder_);
+        instantiationParameterFinder->addFinder(designFinder);
+
+        ExpressionFormatter* instantiationFormatter(new ExpressionFormatter(instantiationParameterFinder));
+
         QSharedPointer<Document> designDocument =
             getLibraryHandler()->getModel(*instantiation->getDesignReference().data());
         if (designDocument)

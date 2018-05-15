@@ -177,7 +177,7 @@ private:
      *
      *      @return True, if the children overlap, otherwise false.
      */
-    bool childrenOverlap(MemoryVisualizationItem* previous, MemoryVisualizationItem* current);
+    bool childrenOverlap(MemoryVisualizationItem* current, MemoryVisualizationItem* previous);
         
     /*!
      *  Creates a new child for representing a free memory slot.
