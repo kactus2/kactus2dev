@@ -333,12 +333,16 @@ QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& boun
         leftBound = VerilogSyntax::CAPTURING_RANGE.match(bounds).captured(1);
         rightBound = VerilogSyntax::CAPTURING_RANGE.match(bounds).captured(2);
 
-        if (!parser_->isValidExpression(leftBound))
+        bool leftValid = false;
+        parser_->parseExpression(leftBound, &leftValid);
+        if (leftValid == false)
         {
             leftBound = replaceNameReferencesWithIds(leftBound, targetComponent, targetComponentInstantiation);
         }
 
-        if (!parser_->isValidExpression(rightBound))
+        bool rightValid = false;
+        parser_->parseExpression(rightBound, &rightValid);
+        if (rightValid == false)
         {
             rightBound = replaceNameReferencesWithIds(rightBound, targetComponent, targetComponentInstantiation);
         }

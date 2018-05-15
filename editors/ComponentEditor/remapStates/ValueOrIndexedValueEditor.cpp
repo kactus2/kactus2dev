@@ -228,20 +228,7 @@ void ValueOrIndexedValueEditor::setValueToSingleEditor(QString const& value)
 //-----------------------------------------------------------------------------
 QString ValueOrIndexedValueEditor::formattedValueFor(QString const& expression) const
 {
-    if (expressionParser_->isPlainValue(expression))
-    {
-        return expression;
-    }
-    else if (expressionParser_->isValidExpression(expression))
-    {
-        ValueFormatter formatter;
-        return formatter.format(expressionParser_->parseExpression(expression),
-            expressionParser_->baseForExpression(expression));
-    }
-    else
-    {
-        return "n/a";
-    }
+    return ExpressionFormatter::format(expression, expressionParser_);
 }
 
 //-----------------------------------------------------------------------------

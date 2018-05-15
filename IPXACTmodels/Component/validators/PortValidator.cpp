@@ -126,10 +126,11 @@ bool PortValidator::arrayValueIsValid(QString const& arrayValue) const
 {
     if (!arrayValue.isEmpty())
     {
-        bool valueIsOk = expressionParser_->isValidExpression(arrayValue);
+        bool valueIsOk = false;
+        int valueInt = expressionParser_->parseExpression(arrayValue, &valueIsOk).toInt();
+         
         if (valueIsOk)
         {
-            int valueInt = expressionParser_->parseExpression(arrayValue).toInt();
             return valueInt >= 0;
         }
     }
@@ -206,12 +207,11 @@ bool PortValidator::portBoundIsValid(QString const& portBound) const
 {
     if (!portBound.isEmpty())
     {
-        if (expressionParser_->isValidExpression(portBound))
-        {
-            bool canConvertToInt = true;
-            int valueInt = expressionParser_->parseExpression(portBound).toInt(&canConvertToInt);
-            return canConvertToInt && valueInt >= 0;
-        }
+        bool isValidBound = false;
+        bool canConvertToInt = false;
+        int valueInt = expressionParser_->parseExpression(portBound, &isValidBound).toInt(&canConvertToInt);
+        
+        return isValidBound && canConvertToInt && valueInt >= 0;
     }
 
     return false;
@@ -238,19 +238,25 @@ bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
         }
 
         // If defined, bus width must be a valid expression.
-        if (!trans->getBusWidth().isEmpty() && !expressionParser_->isValidExpression(trans->getBusWidth()))
+        bool isValidBusWidth = false;
+        expressionParser_->parseExpression(trans->getBusWidth(), &isValidBusWidth);
+        if (isValidBusWidth == false)
         {
             return false;
         }
 
         // If defined, max connections width must be a valid expression.
-        if (!trans->getMaxConnections().isEmpty() && !expressionParser_->isValidExpression(trans->getMaxConnections()))
+        bool isValidMaxConnections = false;
+        expressionParser_->parseExpression(trans->getMaxConnections(), &isValidMaxConnections);
+        if (isValidMaxConnections == false)
         {
             return false;
         }
 
         // If defined, min connections width must be a valid expression.
-        if (!trans->getMinConnections().isEmpty() && !expressionParser_->isValidExpression(trans->getMinConnections()))
+        bool isValidMinConnections = false;
+        expressionParser_->parseExpression(trans->getMinConnections(), &isValidMinConnections);
+        if (isValidMinConnections == false)
         {
             return false;
         }
@@ -403,21 +409,27 @@ void PortValidator::findErrorsInTransactional(QVector<QString> &errors, QSharedP
         }
 
         // If defined, bus width must be a valid expression.
-        if ( !trans->getBusWidth().isEmpty() && !expressionParser_->isValidExpression( trans->getBusWidth() ) )
+        bool isValidBusWidth = false;
+        expressionParser_->parseExpression(trans->getBusWidth(), &isValidBusWidth);
+        if (isValidBusWidth == false)
         {
             errors.append(QObject::tr("The transactional bus width is invalid: %1 in port %2")
                 .arg(trans->getBusWidth()).arg(port->name()));
         }
 
         // If defined, max connections width must be a valid expression.
-        if ( !trans->getMaxConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMaxConnections() ) )
+        bool isValidMaxConnections = false;
+        expressionParser_->parseExpression(trans->getMaxConnections(), &isValidMaxConnections);
+        if (isValidMaxConnections == false)
         {
             errors.append(QObject::tr("The transactional max connections is invalid: %1 in port %2")
                 .arg(trans->getMaxConnections()).arg(port->name()));
         }
 
         // If defined, min connections width must be a valid expression.
-        if ( !trans->getMinConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMinConnections() ) )
+        bool isValidMinConnections = false;
+        expressionParser_->parseExpression(trans->getMaxConnections(), &isValidMinConnections);
+        if (isValidMinConnections == false)
         {
             errors.append(QObject::tr("The transactional min connections is invalid: %1 in port %2")
                 .arg(trans->getMinConnections()).arg(port->name()));

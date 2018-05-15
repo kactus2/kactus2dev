@@ -30,25 +30,9 @@ NullParser::~NullParser()
 //-----------------------------------------------------------------------------
 // Function: NullParser::parseExpression()
 //-----------------------------------------------------------------------------
-QString NullParser::parseExpression(QString const& expression) const
+QString NullParser::parseExpression(QString const& expression, bool* /*isValidExpression*/) const
 {
     return expression;
-}
-
-//-----------------------------------------------------------------------------
-// Function: NullParser::isValidExpression()
-//-----------------------------------------------------------------------------
-bool NullParser::isValidExpression(QString const& /*expression*/) const
-{
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: NullParser::isArrayExpression()
-//-----------------------------------------------------------------------------
-bool NullParser::isArrayExpression(QString const& /*expression*/) const
-{
-    return false;
 }
 
 //-----------------------------------------------------------------------------

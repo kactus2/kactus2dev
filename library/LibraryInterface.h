@@ -53,7 +53,7 @@ public:
      *
      *      @return True if the vlnv was found, otherwise false.
     */
-    virtual bool contains(VLNV const& vlnv) = 0;
+    virtual bool contains(VLNV const& vlnv) const = 0;
 
     /*! Gets all the VLNVs currently in the library.
      *
@@ -126,13 +126,6 @@ public:
     *      @param [out] list    The files are appended to the list if they are not already on the list.
     */
     virtual void getDependencyFiles(VLNV const& vlnv, QStringList& list) = 0;
-
-    /*! Get list of the files that are needed by the given document either directly or indirectly.
-      *
-      *      @param [in] vlnv   The VLNV identifying the document.
-      *      @param [out] list   The files are appended to the list if they are not already on the list.
-     */
-     virtual void getHierarchicalDependencyFiles(VLNV const& vlnv, QStringList& list) = 0;
 
     /*! 
     *      Returns const-pointer to the library tree's root item

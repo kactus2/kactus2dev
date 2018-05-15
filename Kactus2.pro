@@ -29,3 +29,7 @@ win32:RC_FILE = Kactus2.rc
 unix:QMAKE_POST_LINK = ln -f -s kactus2 executable/libKactus2.so; ./createhelp
 target.path = $$bin_path
 INSTALLS += target
+
+HEADERS +=
+
+SOURCES +=

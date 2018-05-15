@@ -16,6 +16,7 @@
 
 #include <QSharedPointer>
 #include <QString>
+#include <QStringList>
 
 class ParameterFinder;
 
@@ -31,42 +32,37 @@ public:
      *
      *      @param [in] finder   The finder for parameters available in the SystemVerilog expressions.
      */
-    IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder);
+    explicit IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder);
     
     //! The destructor.
     virtual ~IPXactSystemVerilogParser();
     
     /*!
-     *  Parses an expression to decimal number.
-     *
-     *      @param [in] expression   The expression to parse.
-     *
-     *      @return The decimal value of the constant.
-     */
-    virtual QString parseExpression(QString const& expression) const;
-
-    /*!
-     *  Checks if the given expression is not valid for parsing.
+     *  Checks if the given expression is a symbol e.g. reference.
      *
      *      @param [in] expression   The expression to check.
      *
-     *      @return True, if the expression is not in valid format, otherwise false.
+     *      @return True, if the expression is a symbol, otherwise false.
      */
-    virtual bool isValidExpression(QString const& expression) const;
+    virtual bool isSymbol(QString const& expression) const override final;
 
     /*!
-     *  Finds the common base in the expression.
+     *  Finds the value for given symbol.
      *
-     *      @param [in] expression   The expression to search in.
+     *      @param [in] symbol  The symbol whose value to find.
      *
-     *      @return The common base for the expression.
+     *      @return The found symbol value.
      */
-    virtual int baseForExpression(QString const& expression) const;
+    virtual QString findSymbolValue(QString const& symbol) const override final;
 
-protected:
-
-   //virtual qreal parseConstantToDecimal(QString const& constantNumber) const;
-
+    /*!
+     *  Finds the base in the symbol.
+     *
+     *      @param [in] symbol   The symbol whose base to find.
+     *
+     *      @return The base for the symbol.
+     */
+    virtual int getBaseForSymbol(QString const& symbol) const override final;
 
 private:
 
@@ -74,35 +70,15 @@ private:
     IPXactSystemVerilogParser(IPXactSystemVerilogParser const& rhs);
     IPXactSystemVerilogParser& operator=(IPXactSystemVerilogParser const& rhs);
 
-    /*!
-     *  Evaluates the values of referenced parameters in the given expression recursively.
-     *
-     *      @param [in] expression              The expression to evaluate.
-     *      @param [in] recursionStep           The current depth in recursion.
-     *
-     *      @return The expression where the references have been replaced with the evaluated values.
-     */
-    QString parseReferencesIn(QString const& expression, unsigned int recursionStep = 0) const;
-
-    /*!
-     *  Recursively replaces all references with their values without evaluating the expressions.
-     *
-     *      @param [in] expression      The expression to replace references in.
-     *      @param [in] recursionStep   The current depth in recursion.
-     *
-     *      @return The expression where the references have been replaced with their values.
-     */
-    QString replaceReferencesWithValues(QString const& expression, unsigned int recursionStep = 0) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! Maximum number of steps in evaluating a value for a parameter.
-    static const int MAX_EVALUATION_STEPS = 25;
     
     //! The finder for parameters available in the SystemVerilog expressions.
     QSharedPointer<ParameterFinder> finder_;
+
+    //! Stack for tracking already evaluated symbols to check for loops in references.
+    mutable QStringList symbolStack_;
 };
 
 #endif // IPXACTSYSTEMVERILOGPARSER_H

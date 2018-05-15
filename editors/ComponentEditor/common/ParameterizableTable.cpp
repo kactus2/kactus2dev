@@ -11,10 +11,10 @@
 
 #include "ParameterizableTable.h"
 
-#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <QFont>
@@ -60,41 +60,7 @@ void ParameterizableTable::setExpressionParser(QSharedPointer <ExpressionParser>
 //-----------------------------------------------------------------------------
 QString ParameterizableTable::formattedValueFor(QString const& expression) const
 {
-    if (expressionParser_->isValidExpression(expression))
-    {
-        ValueFormatter formatter;
-        return formatter.format(expressionParser_->parseExpression(expression),
-            expressionParser_->baseForExpression(expression));
-    }
-    else if (expressionParser_->isPlainValue(expression))
-    {
-        return expression;
-    }
-    else if (expression.contains('{') && expression.contains('}'))
-    {
-        QStringList arrayValues = expression.split(',');
-        arrayValues.first().remove('{');
-        arrayValues.last().remove('}');
-
-        ValueFormatter formatter;
-
-        QStringList newValues;
-
-        foreach (QString value, arrayValues)
-        {
-            newValues.append(formatter.format(expressionParser_->parseExpression(value),
-                expressionParser_->baseForExpression(value)));
-        }
-        newValues.first().prepend('{');
-        newValues.last().append('}');
-
-        QString newExpression = newValues.join(',');
-        return newExpression;
-    }
-    else
-    {
-        return "n/a";
-    }
+    return ExpressionFormatter::format(expression, expressionParser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -136,14 +102,15 @@ QVariant ParameterizableTable::blackForValidOrRedForInvalidIndex(QModelIndex con
 //-----------------------------------------------------------------------------
 bool ParameterizableTable::isValuePlainOrExpression(QString const& value) const
 {
-    if (expressionParser_->isPlainValue(value) || expressionParser_->isValidExpression(value))
+    return true;
+/*    if (expressionParser_->isPlainValue(value) || expressionParser_->isValidExpression(value))
     {
         return true;
     }
     else
     {
         return false;
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------

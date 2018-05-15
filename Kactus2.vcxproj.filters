@@ -3364,9 +3364,6 @@
     <ClCompile Include="editors\ComponentEditor\fileSet\groupmanagerdelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet</Filter>
     </ClCompile>
-    <ClCompile Include="library\LibraryData.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="library\LibraryErrorModel.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
@@ -3416,9 +3413,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_LibraryTreeView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LibraryData.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_LibraryErrorModel.cpp">
@@ -4430,6 +4424,15 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemDesignDiagram.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryItemSelectionFactory.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryLoader.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LibraryLoader.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5661,9 +5664,6 @@
     <CustomBuild Include="library\LibraryTreeView.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
-    <CustomBuild Include="library\LibraryData.h">
-      <Filter>Header Files\library</Filter>
-    </CustomBuild>
     <CustomBuild Include="library\LibraryErrorModel.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
@@ -6053,6 +6053,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\HWDesign\undoCommands\PhysicalPortDeleteCommand.h">
       <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryLoader.h">
+      <Filter>Header Files\library</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6742,6 +6745,9 @@
     </ClInclude>
     <ClInclude Include="editors\SystemDesign\HWMappingItem.h">
       <Filter>Header Files\editors\SystemDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="library\LibraryItemSelectionFactory.h">
+      <Filter>Header Files\library</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -173,15 +173,15 @@ bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<PortMap::LogicalP
     if (logicalPort->range_ &&
         (!logicalPort->range_->getLeft().isEmpty() || !logicalPort->range_->getRight().isEmpty()))
     {
+        bool leftValid = false;
         bool leftOk = true;
-        quint64 rangeLeft =
-            expressionParser_->parseExpression(logicalPort->range_->getLeft()).toULongLong(&leftOk);
+        expressionParser_->parseExpression(logicalPort->range_->getLeft(), &leftValid).toULongLong(&leftOk);
 
+        bool rightValid = false;
         bool rightOk = true;
-        quint64 rangeRight =
-            expressionParser_->parseExpression(logicalPort->range_->getRight()).toULongLong(&rightOk);
+        expressionParser_->parseExpression(logicalPort->range_->getRight(), &rightValid).toULongLong(&rightOk);
 
-        return leftOk && rightOk ;
+        return leftValid && leftOk && rightValid && rightOk;
     }
 
     return true;
@@ -259,15 +259,17 @@ bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PortMap::Ph
     if (physicalPort->partSelect_ && (!physicalPort->partSelect_->getLeftRange().isEmpty() ||
         !physicalPort->partSelect_->getRightRange().isEmpty()))
     {
+        bool leftValid = false;
         bool rangeLeftOk = true;
-        quint64 rangeLeft = expressionParser_->parseExpression(
-            physicalPort->partSelect_->getLeftRange()).toULongLong(&rangeLeftOk);
+        expressionParser_->parseExpression(
+            physicalPort->partSelect_->getLeftRange(), &leftValid).toULongLong(&rangeLeftOk);
 
+        bool rightValid = false;
         bool rangeRightOk = true;
-        quint64 rangeRight = expressionParser_->parseExpression(
-            physicalPort->partSelect_->getRightRange()).toULongLong(&rangeRightOk);
+        expressionParser_->parseExpression(
+            physicalPort->partSelect_->getRightRange(), &rightValid).toULongLong(&rangeRightOk);
 
-        return rangeLeftOk && rangeRightOk ;
+        return leftValid && rangeLeftOk && rightValid && rangeRightOk ;
     }
 
     return true;

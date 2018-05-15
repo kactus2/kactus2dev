@@ -43,26 +43,28 @@ BusDefinitionValidator::~BusDefinitionValidator()
 //-----------------------------------------------------------------------------
 bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDefinition) const
 {
-	if (!busDefinition->getVlnv().isValid())
+    if (busDefinition->getVlnv().isValid() == false)
 	{
 		return false;
 	}
-
-	if (!busDefinition->getMaxMasters().isEmpty() &&
-        !expressionParser_->isValidExpression(busDefinition->getMaxMasters()))
+    
+    bool validMasters = false;
+    expressionParser_->parseExpression(busDefinition->getMaxMasters(), &validMasters);
+    if (validMasters == false)
 	{
 		return false;
 	}
-
-	if (!busDefinition->getMaxSlaves().isEmpty() &&
-        !expressionParser_->isValidExpression(busDefinition->getMaxSlaves()))
+    
+    bool validSlaves = false;
+    expressionParser_->parseExpression(busDefinition->getMaxSlaves(), &validSlaves);
+    if (validSlaves == false)
 	{
 		return false;
 	}
 
  	foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
 	{
-		if (!parameterValidator_->validate(currentParameter))
+        if (parameterValidator_->validate(currentParameter) == false)
 		{
 			return false;
 		}
@@ -83,15 +85,17 @@ void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
         context = QObject::tr("bus definition %1").arg(busDefinition->getVlnv().toString());
     }
 
-	if (!busDefinition->getMaxMasters().isEmpty() && 
-        !expressionParser_->isValidExpression(busDefinition->getMaxMasters()))
+    bool mastersValid = false;
+    expressionParser_->parseExpression(busDefinition->getMaxMasters(), &mastersValid);
+	if (mastersValid == false)
 	{
 		errors.append(QObject::tr("MaxMasters '%1' is not a valid expression within %2.").arg(
             busDefinition->getMaxMasters(), context));
 	}
-
-	if (!busDefinition->getMaxSlaves().isEmpty() &&
-		!expressionParser_->isValidExpression(busDefinition->getMaxSlaves()))
+    
+    bool slavesValid = false;
+	expressionParser_->parseExpression(busDefinition->getMaxSlaves(), &slavesValid);
+    if (slavesValid == false)
 	{
 		errors.append(QObject::tr("MaxSlaves '%1' is not a valid expression within %2.").arg(
             busDefinition->getMaxSlaves(), context));

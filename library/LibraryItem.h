@@ -12,13 +12,11 @@
 #ifndef LIBRARYITEM_H
 #define LIBRARYITEM_H
 
-#include "LibraryData.h"
-
 #include <QVector>
 #include <QString>
 #include <QObject>
 
-class VLNV;
+#include <IPXACTmodels/common/VLNV.h>
 
 //-----------------------------------------------------------------------------
 //! LibraryItem class is used to create the hierarchical structure of IP library.

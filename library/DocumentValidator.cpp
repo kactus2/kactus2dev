@@ -158,7 +158,8 @@ void DocumentValidator::findErrorsInBusDefinition(QSharedPointer<BusDefinition> 
 //-----------------------------------------------------------------------------
 // Function: DocumentValidator::findErrorsInAbstractionDefinition()
 //-----------------------------------------------------------------------------
-void DocumentValidator::findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction, QVector<QString>& errorList)
+void DocumentValidator::findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction,
+    QVector<QString>& errorList)
 {
     AbstractionDefinitionValidator validator(library_, 
         QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));

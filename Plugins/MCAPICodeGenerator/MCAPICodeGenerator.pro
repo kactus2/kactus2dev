@@ -6,6 +6,7 @@ TEMPLATE = lib
 TARGET = MCAPICodeGenerator
 
 QT += core xml widgets gui
+DEFINES += MCAPICODEGENERATOR_LIB
 CONFIG += c++11 plugin release
 
 DEFINES += MCAPICODEGENERATOR_LIB
@@ -16,7 +17,7 @@ INCLUDEPATH += ./../.. \
     $(QTDIR)/../qttools/include 
 
 LIBS += -L"./../../executable" \
-    -lIPXACTmodels
+    -lIPXACTmodels -lKactus2
 
 DESTDIR = ../../executable/Plugins
 

@@ -467,8 +467,7 @@ bool BusInterfaceValidator::mirroredSlaveRemapAddressIsValid(
     if (!remapAddress->remapAddress_.isEmpty())
     {
         bool changeOk = true;
-        quint64 addressInt =
-            expressionParser_->parseExpression(remapAddress->remapAddress_).toULongLong(&changeOk);
+        expressionParser_->parseExpression(remapAddress->remapAddress_).toULongLong(&changeOk);
 
         return changeOk;
     }

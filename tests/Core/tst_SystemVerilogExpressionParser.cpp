@@ -20,6 +20,8 @@ class tst_SystemVerilogExpressionParser : public QObject
 public:
     tst_SystemVerilogExpressionParser();
 
+    void testInputs();
+
 private slots:
 
     void testParseConstant();
@@ -53,9 +55,17 @@ private slots:
     void testIsPlainValue();
     void testIsPlainValue_data();
 
+    void testStringValues();
+    void testStringValues_data();
+
     void testParseComparison();
     void testParseComparison_data();
 
+    void testParseMathFunctions();
+    void testParseMathFunctions_data();
+
+    void testParserPerformance();
+    void testParserPerformance_data();
 };
 
 //-----------------------------------------------------------------------------
@@ -67,15 +77,32 @@ tst_SystemVerilogExpressionParser::tst_SystemVerilogExpressionParser()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testInputs()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testInputs()
+{
+    QFETCH(QString, expression);
+    QFETCH(QString, expectedResult);
+    QFETCH(bool, expectedValid);
+
+    SystemVerilogExpressionParser parser;
+
+    bool isValid = false;
+    QString parserResult = parser.parseExpression(expression, &isValid);
+
+    QCOMPARE(isValid, expectedValid);
+    if (expectedValid)
+    {
+        QCOMPARE(parserResult, expectedResult);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_SystemVerilogExpressionParser::testParseConstant()
 //-----------------------------------------------------------------------------
 void tst_SystemVerilogExpressionParser::testParseConstant()
 {
-    QFETCH(QString, constant);
-    QFETCH(QString, expectedValue);
-
-    SystemVerilogExpressionParser parser;
-    QCOMPARE(parser.parseExpression(constant), expectedValue);
+    testInputs();
 }
 
 //-----------------------------------------------------------------------------
@@ -83,129 +110,124 @@ void tst_SystemVerilogExpressionParser::testParseConstant()
 //-----------------------------------------------------------------------------
 void tst_SystemVerilogExpressionParser::testParseConstant_data()
 {
-    QTest::addColumn<QString>("constant");
-    QTest::addColumn<QString>("expectedValue");
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<QString>("expectedResult");
+    QTest::addColumn<bool>("expectedValid");
 
-    QTest::newRow("Empty value evaluates to unknown") << "" << "x";
+    QTest::newRow("Empty value evaluates to empty") << "" << "" << true;
 
 	//! Booleans
-	QTest::newRow("Boolean true should evaluate to 1") << "true" << "1";
-	QTest::newRow("Boolean false should evaluate to 0") << "false" << "0";
-	QTest::newRow("Array of {true,false} should evaluate to an array of {1,0}") << "{true,false}" << "{1,0}";
-	QTest::newRow("Boolean True should evaluate to 1") << "True" << "1";
-	QTest::newRow("Boolean False should evaluate to 0") << "False" << "0";
-	QTest::newRow("Boolean True should evaluate to 1") << "TRUe" << "1";
-	QTest::newRow("Boolean False should evaluate to 0") << "fALSe" << "0";
+    QTest::newRow("Boolean true should evaluate to 1") << "true" << "1" << true;
+    QTest::newRow("Boolean false should evaluate to 0") << "false" << "0" << true;
+    QTest::newRow("Array of {true,false} should evaluate to an array of {1,0}") << "{true,false}" << "{1,0}" << true;
+    QTest::newRow("Boolean True should evaluate to 1") << "True" << "1" << true;
+    QTest::newRow("Boolean False should evaluate to 0") << "False" << "0" << true;
+    QTest::newRow("Boolean True should evaluate to 1") << "TRUe" << "1" << true;
+    QTest::newRow("Boolean False should evaluate to 0") << "fALSe" << "0" << true;
 
     //! Array.
-    QTest::newRow("Array of {1,1} should evaluate to an array of {1,1}") << "{1,1}" << "{1,1}";
-    QTest::newRow("Array with one value is a valid array") << "{2}" << "{2}";
-    QTest::newRow("Inadequate array of {1,1,-} should evaluate to unknown") << "{1,1,-}" << "x";
-    QTest::newRow("Inadequate array of {1,} should evaluate to unknown") << "{1,}" << "x";
-    QTest::newRow("Inadequate array of ,1} should evaluate to unknown") << ",1}" << "x";
-    QTest::newRow("Hexadecimal values in array are evaluated as decimal values") << "{'h10,'h14}" << "{16,20}";
-    QTest::newRow("Array '{1,1} should evaluate to an array of {1,1}") << "'{1,1}" << "{1,1}";
-    //QTest::newRow("Array consisting of multiple types of data is unknown") << "{1.1,1,\"helloWorld\"}" << "x";
-    //QTest::newRow("Array inside an array is ok") << "{1,{1,1}}" << "{1,{1,1}}";
+    QTest::newRow("Array of {1,1} should evaluate to an array of {1,1}") << "{1,1}" << "{1,1}" << true;
+    QTest::newRow("Array with one value is a valid array") << "{2}" << "{2}" << true;
+    QTest::newRow("Inadequate array of {1,1,-} should evaluate to unknown") << "{1,1,-}" << "x" << false;
+    QTest::newRow("Inadequate array of {1,} should evaluate to unknown") << "{1,}" << "x" << false;
+    QTest::newRow("Inadequate array of ,1} should evaluate to unknown") << ",1}" << "x" << false;
+    QTest::newRow("Hexadecimal values in array are evaluated as decimal values") << "{'h10,'h14}" << "{16,20}" << false;
+    QTest::newRow("Array {1,1} should evaluate to an array of {1,1}") << "{1,1}" << "{1,1}" << true;
+    QTest::newRow("Array consisting of multiple types of data is unknown") << "{1.1,1,\"helloWorld\"}" << "x"  << false;
+    QTest::newRow("Array inside an array is ok") << "{1,{1,1}}" << "{1,{1,1}}"  << true;
+    QTest::newRow("Array inside an array as first is ok") << "{{1,1},1}" << "{{1,1},1}"  << true;
 
     //! Decimal numbers.
-    QTest::newRow("Decimal number 0 should evaluate to 0") << "0" << "0";
-    QTest::newRow("Decimal number 1 should evaluate to 1") << "1" << "1";
-    QTest::newRow("Decimal number 7 should evaluate to 7") << "7" << "7";
-    QTest::newRow("Decimal number '4 should evaluate to 4") << "4" << "4";
+    QTest::newRow("Decimal number 0 should evaluate to 0") << "0" << "0" << true;
+    QTest::newRow("Decimal number 1 should evaluate to 1") << "1" << "1" << true;
+    QTest::newRow("Decimal number 7 should evaluate to 7") << "7" << "7" << true;
+    QTest::newRow("Decimal number '4 should evaluate to 4") << "4" << "4" << true;
 
-    QTest::newRow("Positive decimal number") << "+1" << "1";
-    QTest::newRow("Negative decimal number") << "-1" << "-1";
+    QTest::newRow("Positive decimal number") << "+1" << "1" << true;
+    QTest::newRow("Negative decimal number") << "-1" << "-1" << true;
 
-    QTest::newRow("Decimal number 'd2 should evaluate to 2") << "'d2" << "2";
-    QTest::newRow("Decimal number 'D8 should evaluate to 8") << "'D8" << "8";
+    QTest::newRow("Decimal number 'd2 should evaluate to 2") << "'d2" << "2" << true;
+    QTest::newRow("Decimal number 'D8 should evaluate to 8") << "'D8" << "8" << true;
 
-    QTest::newRow("Decimal number 'sd2 should evaluate to 2") << "'sd2" << "2";
-    QTest::newRow("Decimal number 'sD2 should evaluate to 2") << "'sD2" << "2";
+    QTest::newRow("Decimal number 'sd2 should evaluate to 2") << "'sd2" << "2" << true;
+    QTest::newRow("Decimal number 'sD2 should evaluate to 2") << "'sD2" << "2" << true;
 
-    QTest::newRow("Decimal number 'Sd3 should evaluate to 3") << "'Sd3" << "3";
-    QTest::newRow("Decimal number 'SD3 should evaluate to 3") << "'SD3" << "3";
+    QTest::newRow("Decimal number 'Sd3 should evaluate to 3") << "'Sd3" << "3" << true;
+    QTest::newRow("Decimal number 'SD3 should evaluate to 3") << "'SD3" << "3" << true;
     
-    QTest::newRow("Decimal number 1'd3 with size should evaluate to 3") << "1'd3" << "3";
+    QTest::newRow("Decimal number 1'd3 with size should evaluate to 3") << "1'd3" << "3" << true;
 
-    QTest::newRow("Decimal number '2 should evaluate to 2") << "'2" << "2";
+    QTest::newRow("Decimal number '2 should evaluate to 2") << "'2" << "2" << true;
 
-    QTest::newRow("Decimal number with underscore should evaluate without underscore") << "10_000" << "10000";
+    QTest::newRow("Decimal number with underscore should evaluate without underscore") << "10_000" << "10000" << true;
     QTest::newRow("Decimal number with multiple underscores should evaluate without underscores") 
-        << "1_000_000" << "1000000";
-    QTest::newRow("Decimal number with base and underscores should evaluate") << "'sd10_000" << "10000";
-    QTest::newRow("Decimal number 1000005 evaluates to 1000005") << "1000005" << "1000005";
+        << "1_000_000" << "1000000" << true;
+    QTest::newRow("Decimal number with base and underscores should evaluate") << "'sd10_000" << "10000" << true;
+    QTest::newRow("Decimal number 1000005 evaluates to 1000005") << "1000005" << "1000005" << true;
 
     //! Fixed-point numbers.
-    QTest::newRow("Fixed-point number 0.0 should evaluate to 0.0") << "0.0" << "0.0";
-    QTest::newRow("Fixed-point number 0.5 should evaluate to 0.5") << "0.5" << "0.5";
-    QTest::newRow("Fixed-point number 0.25 should evaluate to 0.25") << "0.25" << "0.25";
-    QTest::newRow("Fixed-point number 1.0 should evaluate to 1.0") << "1.0" << "1.0";
-    QTest::newRow("Negative fixed-point number") << "-1.0" << "-1.0";
+    QTest::newRow("Fixed-point number 0.0 should evaluate to 0.0") << "0.0" << "0.0" << true;
+    QTest::newRow("Fixed-point number 0.5 should evaluate to 0.5") << "0.5" << "0.5" << true;
+    QTest::newRow("Fixed-point number 0.25 should evaluate to 0.25") << "0.25" << "0.25" << true;
+    QTest::newRow("Fixed-point number 1.0 should evaluate to 1.0") << "1.0" << "1.0" << true;
+    QTest::newRow("Negative fixed-point number") << "-1.0" << "-1.0" << true;
 
     //! Hexadecimal numbers.
-    QTest::newRow("Hexadecimal number without base should evaluate to unknown") << "ff" << "x";
-    QTest::newRow("Hexadecimal number 'h1 should evaluate to 1") << "'h1" << "1";
-    QTest::newRow("Hexadecimal number 'hA should evaluate to 10") << "'hA" << "10";
-    QTest::newRow("Hexadecimal number 'Hf should evaluate to 15") << "'Hf" << "15";
+    QTest::newRow("Hexadecimal number without base should evaluate to unknown") << "ff" << "x" << false;
+    QTest::newRow("Hexadecimal number 'h1 should evaluate to 1") << "'h1" << "1" << true;
+    QTest::newRow("Hexadecimal number 'hA should evaluate to 10") << "'hA" << "10" << true;
+    QTest::newRow("Hexadecimal number 'Hf should evaluate to 15") << "'Hf" << "15" << true;
 
-    QTest::newRow("Hexadecimal number 'shf should evaluate to 15") << "'shf" << "15";
-    QTest::newRow("Hexadecimal number 'sH2 should evaluate to 2") << "'sH2" << "2";
+    QTest::newRow("Hexadecimal number 'shf should evaluate to 15") << "'shf" << "15" << true;
+    QTest::newRow("Hexadecimal number 'sH2 should evaluate to 2") << "'sH2" << "2" << true;
     
-    QTest::newRow("Hexadecimal number 'Shb should evaluate to 11") << "'Shb" << "11";
-    QTest::newRow("Hexadecimal number 'SH5 should evaluate to 5") << "'SH5" << "5";
+    QTest::newRow("Hexadecimal number 'Shb should evaluate to 11") << "'Shb" << "11" << true;
+    QTest::newRow("Hexadecimal number 'SH5 should evaluate to 5") << "'SH5" << "5" << true;
 
-    QTest::newRow("Hexadecimal number 8'h02 with size should evaluate to 2") << "8'd02" << "2";
-    QTest::newRow("Hexadecimal number 32'h00000001 with size should evaluate to 1") << "32'h00000001" << "1";
+    QTest::newRow("Hexadecimal number 8'h02 with size should evaluate to 2") << "8'd02" << "2" << true;
+    QTest::newRow("Hexadecimal number 32'h00000001 with size should evaluate to 1") << "32'h00000001" << "1" << true;
 
     QTest::newRow("Hexadecimal number with underscore should evaluate to decimal without underscore") 
-        << "'h1_F" << "31";
+        << "'h1_F" << "31" << true;
     QTest::newRow("Hexadecimal number with multiple underscores should evaluate to decimal without underscores") 
-        << "'h0_F_F" << "255";
+        << "'h0_F_F" << "255" << true;
 
     //! Binary numbers.
-    QTest::newRow("Binary number 'b1 should evaluate to 1") << "'b1" << "1";
-    QTest::newRow("Binary number 'b10 should evaluate to 2") << "'b10" << "2";
-    QTest::newRow("Binary number 'b111 should evaluate to 7") << "'b111" << "7";
+    QTest::newRow("Binary number 'b1 should evaluate to 1") << "'b1" << "1" << true;
+    QTest::newRow("Binary number 'b10 should evaluate to 2") << "'b10" << "2" << true;
+    QTest::newRow("Binary number 'b111 should evaluate to 7") << "'b111" << "7" << true;
 
-    QTest::newRow("Binary number 'sb11 should evaluate to 3") << "'sb11" << "3";
-    QTest::newRow("Binary number 'sB10 should evaluate to 2") << "'sB10" << "2";
+    QTest::newRow("Binary number 'sb11 should evaluate to 3") << "'sb11" << "3" << true;
+    QTest::newRow("Binary number 'sB10 should evaluate to 2") << "'sB10" << "2" << true;
 
-    QTest::newRow("Binary number 'Sb110 should evaluate to 6") << "'Sb110" << "6";
-    QTest::newRow("Binary number 'SB100 should evaluate to 4") << "'sB100" << "4";
+    QTest::newRow("Binary number 'Sb110 should evaluate to 6") << "'Sb110" << "6" << true;
+    QTest::newRow("Binary number 'SB100 should evaluate to 4") << "'sB100" << "4" << true;
 
-    QTest::newRow("Binary number 4'b0111 with size should evaluate to 7") << "4'b0111" << "7";
+    QTest::newRow("Binary number 4'b0111 with size should evaluate to 7") << "4'b0111" << "7" << true;
 
     QTest::newRow("Binary number with underscore should evaluate to decimal without underscore") 
-        << "'b1_1" << "3";
+        << "'b1_1" << "3" << true;
     QTest::newRow("Binary number with multiple underscores should evaluate to decimal without underscores") 
-        << "'b1_1_1_1" << "15";
+        << "'b1_1_1_1" << "15" << true;
 
     //! Octal numbers.
-    QTest::newRow("Octal number 'o1 should evaluate to 1") << "'o1" << "1";
-    QTest::newRow("Octal number 'o7 should evaluate to 7") << "'o7" << "7";
-    QTest::newRow("Octal number 'o10 should evaluate to 8") << "'o10" << "8";
-    QTest::newRow("Octal number 'O12 should evaluate to 10") << "'O12" << "10";
+    QTest::newRow("Octal number 'o1 should evaluate to 1") << "'o1" << "1" << true;
+    QTest::newRow("Octal number 'o7 should evaluate to 7") << "'o7" << "7" << true;
+    QTest::newRow("Octal number 'o10 should evaluate to 8") << "'o10" << "8" << true;
+    QTest::newRow("Octal number 'O12 should evaluate to 10") << "'O12" << "10" << true;
 
-    QTest::newRow("Octal number 'so4 should evaluate to 4") << "'so4" << "4";
-    QTest::newRow("Octal number 'sO17 should evaluate to 15") << "'sO17" << "15";
+    QTest::newRow("Octal number 'so4 should evaluate to 4") << "'so4" << "4" << true;
+    QTest::newRow("Octal number 'sO17 should evaluate to 15") << "'sO17" << "15" << true;
 
-    QTest::newRow("Octal number 'So20 should evaluate to 16") << "'So20" << "16";
-    QTest::newRow("Octal number 'SO2 should evaluate to 2") << "'SO2" << "2";
+    QTest::newRow("Octal number 'So20 should evaluate to 16") << "'So20" << "16" << true;
+    QTest::newRow("Octal number 'SO2 should evaluate to 2") << "'SO2" << "2" << true;
 
-    QTest::newRow("Octal number 3'o011 with size should evaluate to 9") << "3'o011" << "9";
+    QTest::newRow("Octal number 3'o011 with size should evaluate to 9") << "3'o011" << "9" << true;
 
     QTest::newRow("Octal number with underscore should evaluate to decimal without underscore") 
-        << "'o1_0" << "8";
+        << "'o1_0" << "8" << true;
     QTest::newRow("Octal number with multiple underscores should evaluate to decimal without underscores") 
-        << "'o1_0_0" << "64";
-
-    QTest::newRow("Empty string literal") << "\"\"" << "\"\"";
-    QTest::newRow("Non-empty string literal") << "\"text\"" << "\"text\"";
-    QTest::newRow("Non-empty string literal with whitespace") << "\" text \"" << "\" text \"";
-    QTest::newRow("Whitespace before and after string is ignored") << "  \"text\" " << "\"text\"";
-
-    QTest::newRow("String missing a double quote is unknown") << "\"text" << "x";
+        << "'o1_0_0" << "64" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -254,11 +276,11 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::newRow("Sum of large decimal values 1000003+1000003") << "1000003+1000003" << "2000006";
 
     //! Fixed-point numbers.
-    QTest::newRow("One plus one equals exactly two") << "1.0+1.0" << "2";
-    QTest::newRow("One plus decimal two equals three") << "1.0+2" << "3";
-    QTest::newRow("Decimal one plus real two equals three") << "1+2.0" << "3";
+    QTest::newRow("One plus one equals exactly two") << "1.0+1.0" << "2.0";
+    QTest::newRow("One plus decimal two equals three") << "1.0+2" << "3.0";
+    QTest::newRow("Decimal one plus real two equals three") << "1+2.0" << "3.0";
     QTest::newRow("Half plus one quarter equals 0.75") << "0.5 + 0.25" << "0.75";
-    QTest::newRow("Four quarters equals 1") << "0.25 + 0.25 + 0.25 + 0.25" << "1";
+    QTest::newRow("Four quarters equals 1") << "0.25 + 0.25 + 0.25 + 0.25" << "1.00";
     QTest::newRow("Real sum 1000004.012 + 1.84444444") << "1000004.012 + 1.84444444" << "1000005.85644444";
 
     //! Hexadecimal numbers.
@@ -386,9 +408,9 @@ void tst_SystemVerilogExpressionParser::testParseMultiply_data()
     QTest::newRow("Positive constant times negative constant gives negative value") << "2*-2" << "-4";
 
     //! Fixed-point numbers.
-    QTest::newRow("Two times one half equals one") << "2*0.5" << "1";
-    QTest::newRow("Multiple fraction digits") << "0.250*0.25" << "0.0625";
-    QTest::newRow("Zero times anything is zero") << "0.0*42" << "0";
+    QTest::newRow("Two times one half equals one") << "2*0.5" << "1.0";
+    QTest::newRow("Multiple fraction digits") << "0.250*0.25" << "0.062";
+    QTest::newRow("Zero times anything is zero") << "0.0*42" << "0.0";
     QTest::newRow("Large real multiplication 10000.1 * 20002") << "10000.1 * 20002" << "200022000.2";
 
     //! Hexadecimal numbers.
@@ -541,8 +563,8 @@ void tst_SystemVerilogExpressionParser::testParsePower_data()
     //! Fixed-point numbers.
     QTest::newRow("Real gives real reciprocal") << "2.0 ** -1" << "0.5";
     QTest::newRow("2.5 to the power of two") << "2.50 ** 2" << "6.25";
-    QTest::newRow("Large real in power 10000.1 ** 2") << "10000.1 ** 2" << "100002000.01";
-    QTest::newRow("Large real in larger power 10000.1**3") << "10000.1**3" << "1000030000300.001";
+    QTest::newRow("Large real in power 10000.1 ** 2") << "10000.1 ** 2" << "100002000.0";
+    QTest::newRow("Large real in larger power 10000.1**3") << "10000.1**3" << "1000030000300.0";
 }
 
 //-----------------------------------------------------------------------------
@@ -584,8 +606,9 @@ void tst_SystemVerilogExpressionParser::testClog2Function_data()
     QTest::newRow("Simple expression as argument") << "$clog2(2 + 2)" << "2";
     QTest::newRow("Expression as argument") << "$clog2(2**12)" << "12";
 
+    QTest::newRow("Nested clog2s") << "$clog2($clog2(256))" << "3";
     //! Arrays.
-    //QTest::newRow("$clog(3) inside an array equals 2") << "{$clog2(3),1,1,1}" << "{2,1,1,1}";
+    QTest::newRow("$clog(3) inside an array equals 2") << "{$clog2(3),1,1,1}" << "{2,1,1,1}";
 }
 
 //-----------------------------------------------------------------------------
@@ -652,7 +675,7 @@ void tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("expectedResult");
 
-    QTest::newRow("Empty parenthesis") << "()" << "x" ;
+    QTest::newRow("Empty parenthesis") << "()" << "" ;
     QTest::newRow("Single constant in parenthesis") << "(1)" << "1" ;
     QTest::newRow("Single operation in parenthesis") << "(1+1)" << "2" ;
     QTest::newRow("Single operation and whitespace in parenthesis") << " ( 1 + 1 ) " << "2" ;
@@ -749,13 +772,40 @@ void tst_SystemVerilogExpressionParser::testIsPlainValue_data()
     QTest::newRow("Power is not plain") << "2**8" << false;
     QTest::newRow("clog2 function is not plain") << "$clog2(8)" << false;
 
-    QTest::newRow("Constant in parentheses is plain") << "(8)" << true;
-    QTest::newRow("Constant in parentheses with spaces is plain") << " ( 8 ) " << true;
     QTest::newRow("Addition in parentheses is not plain") << "(8 + 2)" << false;
 
     QTest::newRow("Large negative number is plain") << "-99999" << true;
     QTest::newRow("Even larger negative number is plain") << "-99999999999999" << true;
     QTest::newRow("Even larger negative number is plain") << "-999999999999999999" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testStringValues()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testStringValues()
+{
+    testInputs();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testStringValues_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testStringValues_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<QString>("expectedResult");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("Empty string literal") << "\"\"" << "\"\"" << true;
+    QTest::newRow("Non-empty string value is parsed as is.") << "\"A string.\"" << "\"A string.\"" << true;
+    QTest::newRow("Non-empty string literal with whitespace") << "\" text \"" << "\" text \"" << true;;
+
+    QTest::newRow("String missing a double quote is unknown") << "\"text" << "x" << false;
+
+    QTest::newRow("String comparison for equal strings") << "\"string1\"==\"string1\"" << "1" << true;
+    QTest::newRow("String comparison for not equal strings") << "\"string1\"==\"string2\"" << "0" << true;
+    QTest::newRow("String not equal comparison for equal strings") << "\"string1\"!=\"string1\"" << "0" << true;
+    QTest::newRow("String not equal comparison for not equal strings") << "\"string1\"!=\"string2\"" << "1" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -794,8 +844,9 @@ void tst_SystemVerilogExpressionParser::testParseComparison_data()
     QTest::newRow("Expression: 14*2 is lesser than 2-3*2+8 returns 0") << "10 < 2" << 0;
     QTest::newRow("Expression: 2-3*2+8 is lesser than 14*2 returns 1") << "2 < 10" << 1;
 
-    QTest::newRow("Single value: 10 is equal to 10 returns 1") << "10==10" << 1;
+    QTest::newRow("Single value: 10 is equal to 10 returns 1") << "21==21" << 1;
     QTest::newRow("Single value: 10 is equal to 2 returns 0") << "10==2" << 0;
+    QTest::newRow("Single value: 10 is equal to 2 returns 0") << "1==(8==8)" << 1;
 
     QTest::newRow("Expression: 14-2*2 is equal to 2*5 returns 1") << "14-2*2 == 2*5" << 1;
     QTest::newRow("Expression: 14-2*2+1 is equal to 2*5 returns 0") << "14-2*2+1 == 2*5" << 0;
@@ -821,6 +872,72 @@ void tst_SystemVerilogExpressionParser::testParseComparison_data()
 
     QTest::newRow("Expression: 2+1-2 is not equal to 10/2 returns 1") << "2+1-2!=10/2" << 1;
     QTest::newRow("Expression: 2*3-1 is not equal to 10/2 returns 0") << "2*3-1!=10/2" << 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParseMathFunctions()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParseMathFunctions()
+{
+    testInputs();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParseMathFunctions_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParseMathFunctions_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<QString>("expectedResult");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("System function $clog2(), ceil of log2") << "$clog2(17)" << "5" << true;
+
+    QTest::newRow("Simple power function") << "$pow(2, 3)" << "8" << true;
+
+    QTest::newRow("Square root of 0 is 0") << "$sqrt(0)" << "0" << true;
+    QTest::newRow("Square root of 4 equals 2") << "$sqrt(4)" << "2" << true;
+    QTest::newRow("Square root of negative value is invalid") << "$sqrt(-2)" << "x" << false;
+
+    QTest::newRow("Exp() of 0 is 1") << "$exp(0)" << "1" << true;
+    QTest::newRow("Exp() of 1") << "$exp(1)" << QString::number(qExp(1)) << true;
+    QTest::newRow("Exp() of -2") << "$exp(-2)" << QString::number(qExp(-2)) << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParserPerformance()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParserPerformance()
+{
+    QFETCH(QString, expression);
+    QFETCH(int, expectedResult);
+
+    SystemVerilogExpressionParser parser;
+
+    QString parserResult;
+
+    QBENCHMARK
+    {
+        parserResult = parser.parseExpression(expression);
+    }
+
+    QCOMPARE(parserResult.toInt(), expectedResult);
+    
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParserPerformance_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParserPerformance_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<int>("expectedResult");
+
+    QTest::newRow("Basic operations") << "12*12 + 8/2 -8" << 140;
+    QTest::newRow("clog2 operations") << "$clog2(256) - $clog2(8)" << 5;
+    QTest::newRow("Nested clog2 operations") << "$clog2($clog2(256))" << 3;
+    QTest::newRow("Sum of multiple values of different bases") << "'hA + 'b1010 + 'o12 + 10" << 40;
+
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)

@@ -42,20 +42,14 @@
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
 
 #include <QObject>
+#include <QDomElement>
 #include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
 // Function: DocumentFileAccess::DocumentFileAccess()
 //-----------------------------------------------------------------------------
-DocumentFileAccess::DocumentFileAccess()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentFileAccess::~DocumentFileAccess()
-//-----------------------------------------------------------------------------
-DocumentFileAccess::~DocumentFileAccess()
+DocumentFileAccess::DocumentFileAccess(MessageMediator* messageChannel) :
+    messageChannel_(messageChannel)
 {
 
 }
@@ -76,53 +70,53 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     }
     file.close();
 
-    VLNV toCreate = getDocumentVLNV(path);
+    VLNV::IPXactType toCreate = getDocumentVLNV(doc);
 
     // Create correct type of object.
-    if (toCreate.getType() == VLNV::ABSTRACTIONDEFINITION)
+    if (toCreate == VLNV::ABSTRACTIONDEFINITION)
     {
         AbstractionDefinitionReader reader;
         return reader.createAbstractionDefinitionFrom(doc);
     }
-    else if (toCreate.getType() == VLNV::BUSDEFINITION)
+    else if (toCreate == VLNV::BUSDEFINITION)
     {
         BusDefinitionReader reader;
         return reader.createBusDefinitionFrom(doc);
     }
-    else if (toCreate.getType() == VLNV::CATALOG)
+    else if (toCreate == VLNV::CATALOG)
     {
         CatalogReader reader;
         return reader.createCatalogFrom(doc);
     }
-    else if (toCreate.getType() == VLNV::COMPONENT)
+    else if (toCreate == VLNV::COMPONENT)
     {
         ComponentReader reader;
         return reader.createComponentFrom(doc);
     }
-    else if (toCreate.getType() == VLNV::DESIGN)
+    else if (toCreate == VLNV::DESIGN)
     {
         DesignReader reader;
         return reader.createDesignFrom(doc);
     }
-    else if (toCreate.getType() == VLNV::DESIGNCONFIGURATION)
+    else if (toCreate == VLNV::DESIGNCONFIGURATION)
     {
         DesignConfigurationReader reader;
         return reader.createDesignConfigurationFrom(doc);
     }
 
-    else if (toCreate.getType() == VLNV::APIDEFINITION)
+    else if (toCreate == VLNV::APIDEFINITION)
     {
         ApiDefinitionReader reader;
         return reader.createApiDefinitionFrom(doc);
     }
-    else if (toCreate.getType() == VLNV::COMDEFINITION)
+    else if (toCreate == VLNV::COMDEFINITION)
     {
         ComDefinitionReader reader;
         return reader.createComDefinitionFrom(doc);
     }
     else
     {
-        //emit noticeMessage(tr("Document was not supported type"));
+        messageChannel_->showMessage(QObject::tr("Document was not supported type"));
         return QSharedPointer<Document>();
     }
 }
@@ -135,7 +129,7 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
     QFile targetFile(path);
     if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
     {
-        //emit errorMessage(QObject::tr("Could not open file %1 for writing.").arg(path));
+        messageChannel_->showError(QObject::tr("Could not open file %1 for writing.").arg(path));
         return false;
     }
 
@@ -199,7 +193,7 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
     }
     else
     {
-        Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");
+        Q_ASSERT_X(false, "DocumentFileAccess::writeDocument().", "Trying to write unknown document type to file.");
         targetFile.close();
         return false;
     }
@@ -211,46 +205,7 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
 //-----------------------------------------------------------------------------
 // Function: DocumentFileAccess::getDocumentVLNV()
 //-----------------------------------------------------------------------------
-VLNV DocumentFileAccess::getDocumentVLNV(QString const& path)
+VLNV::IPXactType DocumentFileAccess::getDocumentVLNV(QDomDocument const& doc)
 {
-    QFile documentFile(path);
-    if (!documentFile.open(QFile::ReadOnly))
-    {
-        //emit errorMessage(tr("File %1 could not be read.").arg(path));        
-        return VLNV();
-    }
-
-    QXmlStreamReader documentReader(&documentFile);
-    documentReader.readNextStartElement();
-
-    QString type = documentReader.qualifiedName().toString();
-    if (type.startsWith(QLatin1String("spirit:")))
-    {
-        //emit noticeMessage(tr("File %1 contains an IP-XACT description not compatible with the 1685-2014 "
-        //    "standard and could not be read.").arg(QFileInfo(documentFile).absoluteFilePath()));
-        documentFile.close();
-        return VLNV();
-    }
-
-    // Find the first element of the VLVN.
-    while(documentReader.readNextStartElement() && 
-        documentReader.qualifiedName().compare(QLatin1String("ipxact:vendor")) != 0)
-    {
-        // Empty loop on purpose.
-    }
-
-    QString vendor = documentReader.readElementText();
-
-    documentReader.readNextStartElement();
-    QString library = documentReader.readElementText();
-
-    documentReader.readNextStartElement();
-    QString name = documentReader.readElementText();
-
-    documentReader.readNextStartElement();
-    QString version = documentReader.readElementText();
-
-    documentFile.close();
-
-    return VLNV(type, vendor, library, name, version);
+    return VLNV::string2Type(doc.documentElement().nodeName());
 }

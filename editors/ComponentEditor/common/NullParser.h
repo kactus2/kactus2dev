@@ -34,25 +34,7 @@ public:
      *
      *      @return The decimal value of the constant.
      */
-    virtual QString parseExpression(QString const& expression) const;
-
-    /*!
-     *  Checks if the given expression is valid for parsing.
-     *
-     *      @param [in] expression   The expression to check.
-     *
-     *      @return True, if the expression is in valid format, otherwise false.
-     */
-    virtual bool isValidExpression(QString const& expression) const;
-        
-    /*!
-     *  Check if the given expression is an array.
-     *
-     *      @param [in] expression   The expression to check.
-     *
-     *      @return True, if the expression is an array, otherwise false.
-     */
-    virtual bool isArrayExpression(QString const& expression) const;
+    virtual QString parseExpression(QString const& expression, bool* isValidExpression) const;
 
     /*!
      *  Checks if the given expression is a plain value and does not need evaluation.

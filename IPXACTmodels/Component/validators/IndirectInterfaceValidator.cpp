@@ -129,7 +129,7 @@ bool IndirectInterfaceValidator::hasValidMemoryMapReference(QSharedPointer<Indir
 //-----------------------------------------------------------------------------
 bool IndirectInterfaceValidator::hasValidTransparentBridges(QSharedPointer<IndirectInterface> indirectInterface) const
 {
-    unsigned int foundInterfaces = 0;
+    int foundInterfaces = 0;
     foreach (QSharedPointer<TransparentBridge> bridge, *indirectInterface->getTransparentBridges())
     {
         foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
@@ -156,7 +156,9 @@ bool IndirectInterfaceValidator::hasValidBitsInLau(QSharedPointer<IndirectInterf
         return true;
     }
 
-    if (!expressionParser_->isValidExpression(indirectInterface->getBitsInLau()))
+    bool isValidBits = false;
+    expressionParser_->parseExpression(indirectInterface->getBitsInLau(), &isValidBits);
+    if (isValidBits == false)
     {
         return false;
     }

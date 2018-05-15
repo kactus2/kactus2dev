@@ -54,11 +54,15 @@ bool ChannelValidator::validate(QSharedPointer<Channel> channel) const
 	{
 		return false;
 	}
-	else if (!channel->getIsPresent().isEmpty() && !expressionParser_->isValidExpression(channel->getIsPresent()))
+	
+    bool isValidPresence = false;
+    expressionParser_->parseExpression(channel->getIsPresent(), &isValidPresence);
+    if (isValidPresence == false)
 	{
 		return false;
 	}
-	else if (!hasValidBusInterfaceReferences(channel))
+	
+    if (!hasValidBusInterfaceReferences(channel))
 	{
 		return false;
 	}
@@ -99,7 +103,9 @@ void ChannelValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cha
             .arg(channel->name()).arg(context));
 	}
 
-	if (!channel->getIsPresent().isEmpty() && !expressionParser_->isValidExpression(channel->getIsPresent()))
+    bool isValidPresence = false;
+    expressionParser_->parseExpression(channel->getIsPresent(), &isValidPresence);
+	if (isValidPresence == false)
 	{
         errors.append(QObject::tr("Is present expression '%1' in channel %2 is invalid.").arg(
             channel->getIsPresent(), channel->name()));

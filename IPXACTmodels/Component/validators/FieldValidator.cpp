@@ -181,10 +181,11 @@ bool FieldValidator::hasValidReserved(QSharedPointer<Field> field) const
 {
     if (!field->getReserved().isEmpty())
     {
+        bool isValidReserved = false;
         QString solvedValue = expressionParser_->parseExpression(field->getReserved());
         int intValue = solvedValue.toInt();
 
-        if (!expressionParser_->isValidExpression(field->getReserved()) || intValue < 0 || intValue > 1)
+	    if (isValidReserved == false || intValue < 0 || intValue > 1)
         {
             return false;
         }

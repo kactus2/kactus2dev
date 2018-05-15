@@ -18,8 +18,8 @@
 ObjectSelectionListItem::ObjectSelectionListItem(QIcon itemIcon, QString const& itemPath, bool isLocked,
     VLNV vlnv):
 QListWidgetItem(itemIcon, itemPath),
-itemPath_(itemPath),
 itemVlnv_(vlnv),
+itemPath_(itemPath),
 type_(VLNVOJBECT),
 locked_(isLocked)
 {

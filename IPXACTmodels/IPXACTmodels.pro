@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = IPXACTmodels
+TARGET = IPXACTmodelsd
 DESTDIR = ../executable
 QT += core xml gui
 CONFIG += c++11 release

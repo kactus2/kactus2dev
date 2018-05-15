@@ -16,6 +16,8 @@
 
 #include <QSharedPointer>
 
+class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! Expression formatter.
 //-----------------------------------------------------------------------------
@@ -44,6 +46,8 @@ public:
      *      @return Formatted expression.
      */
     QString formatReferringExpression(QString const& expression) const;
+
+    static QString format(QString const& expression, QSharedPointer<ExpressionParser> parser);
 
 private:
 

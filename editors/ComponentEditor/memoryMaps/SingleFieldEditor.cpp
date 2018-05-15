@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h>
 #include <editors/ComponentEditor/memoryMaps/fieldeditor.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -34,7 +35,6 @@
 
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
-#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <QComboBox>
 #include <QFormLayout>
@@ -222,20 +222,7 @@ void SingleFieldEditor::changeExpressionEditorSignalBlockStatus(bool blockStatus
 //-----------------------------------------------------------------------------
 QString SingleFieldEditor::formattedValueFor(QString const& expression) const
 {
-    if (expressionParser_->isValidExpression(expression))
-    {
-        ValueFormatter formatter;
-        return formatter.format(expressionParser_->parseExpression(expression),
-            expressionParser_->baseForExpression(expression));
-    }
-    else if (expressionParser_->isPlainValue(expression))
-    {
-        return expression;
-    }
-    else
-    {
-        return "n/a";
-    }
+    return ExpressionFormatter::format(expression, expressionParser_);
 }
 
 //-----------------------------------------------------------------------------

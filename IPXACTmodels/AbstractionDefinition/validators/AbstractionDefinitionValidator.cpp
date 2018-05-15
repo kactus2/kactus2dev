@@ -186,7 +186,9 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 	}
 
 	// Presence must be valid expression if defined.
-	if (!port->isPresent().isEmpty() && !expressionParser_->isValidExpression(port->isPresent()))
+    bool isValidPresence = false;
+    expressionParser_->parseExpression(port->isPresent(), &isValidPresence);
+	if (isValidPresence == false)
 	{
 		return false;
 	}
@@ -203,7 +205,9 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 	if (wire)
 	{
 		// Default value must be valid expression if defined.
-		if (!wire->getDefaultValue().isEmpty() && !expressionParser_->isValidExpression(wire->getDefaultValue()))
+        bool isValidDefaultValue = false;
+        expressionParser_->parseExpression(wire->getDefaultValue(), &isValidDefaultValue);
+		if (isValidDefaultValue == false)
 		{
 			return false;
 		}
@@ -275,7 +279,9 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
 	}
 
 	// Presence must be valid expression if defined.
-	if (!port->isPresent().isEmpty() && !expressionParser_->isValidExpression(port->isPresent()))
+    bool isValidPresence = false;
+    expressionParser_->parseExpression(port->isPresent(), &isValidPresence);	
+	if (isValidPresence == false)
 	{
 		errors.append(QObject::tr("The presence '%1' of port %2 is invalid.")
 			.arg(port->isPresent(), port->getLogicalName()));
@@ -301,7 +307,9 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
 	if (wire)
 	{
 		// Default value must be valid expression if defined.
-		if (!wire->getDefaultValue().isEmpty() && !expressionParser_->isValidExpression(wire->getDefaultValue()))
+        bool isValidDefaultValue = false;
+        expressionParser_->parseExpression(wire->getDefaultValue(), &isValidDefaultValue);
+		if (isValidDefaultValue == false)
 		{
 			errors.append(QObject::tr("Default value '%1' for port %2 is invalid.").arg(wire->getDefaultValue(),
                 port->getLogicalName()));
@@ -371,7 +379,9 @@ bool AbstractionDefinitionValidator::isValidTransactionalPort(QSharedPointer<Tra
 	}
 
 	// Bus width must be valid expression if defined.
-	if (!transPort->getBusWidth().isEmpty() && !expressionParser_->isValidExpression(transPort->getBusWidth()))
+    bool isValidBusWidth = false;
+    expressionParser_->parseExpression(transPort->getBusWidth(), &isValidBusWidth);		
+	if (isValidBusWidth == false)
 	{
 		return false;
 	}
@@ -409,7 +419,9 @@ void AbstractionDefinitionValidator::findErrorsInTransactionalPort(QVector<QStri
 	}
 
 	// Bus width must be valid expression if defined.
-	if (!transPort->getBusWidth().isEmpty() && !expressionParser_->isValidExpression(transPort->getBusWidth()))
+    bool isValidBusWidth = false;
+    expressionParser_->parseExpression(transPort->getBusWidth(), &isValidBusWidth);
+	if (isValidBusWidth == false)
 	{
 		errors.append(QObject::tr("The transactional port bus width '%1' is invalid in %2.").arg(
             transPort->getBusWidth(), context));
@@ -430,7 +442,9 @@ bool AbstractionDefinitionValidator::isValidWirePort(QSharedPointer<WirePort> wi
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
 	// Width must be valid expression if defined.
-	if (!wirePort->getWidth().isEmpty() && !expressionParser_->isValidExpression(wirePort->getWidth()))
+    bool isValidWidth = false;
+    expressionParser_->parseExpression(wirePort->getWidth(), &isValidWidth);
+	if (isValidWidth == false)
 	{
 		return false;
 	}
@@ -453,7 +467,9 @@ void AbstractionDefinitionValidator::findErrorsInWirePort(QVector<QString>& erro
 {
 
 	// Width must be valid expression if defined.
-	if (!wirePort->getWidth().isEmpty() && !expressionParser_->isValidExpression(wirePort->getWidth()))
+    bool isValidWidth = false;
+    expressionParser_->parseExpression(wirePort->getWidth(), &isValidWidth);
+	if (isValidWidth == false)
 	{
 		errors.append(QObject::tr("Wire port width '%1' is invalid in %2.").arg(wirePort->getWidth(), context));
 	}

@@ -78,15 +78,12 @@ bool ViewValidator::hasValidIsPresent(QSharedPointer<View> view) const
 {
     if (!view->getIsPresent().isEmpty())
     {
-        QString solvedValue = expressionParser_->parseExpression(view->getIsPresent());
+        bool isPresentOk = false;
+        QString solvedValue = expressionParser_->parseExpression(view->getIsPresent(), &isPresentOk);
 
-        bool isPresentOk = expressionParser_->isValidExpression(solvedValue);
         int intValue = solvedValue.toInt();
 
-        if (!isPresentOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
+        return isPresentOk && (intValue == 0 || intValue == 1);
     }
 
     return true;

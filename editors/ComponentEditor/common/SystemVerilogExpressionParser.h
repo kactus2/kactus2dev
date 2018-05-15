@@ -15,6 +15,7 @@
 #include "ExpressionParser.h"
 
 #include <QString>
+#include <QMap>
 
 //-----------------------------------------------------------------------------
 //! Parser for SystemVerilog expressions.
@@ -27,25 +28,17 @@ public:
 	SystemVerilogExpressionParser();
 
 	//! The destructor.
-	virtual ~SystemVerilogExpressionParser();
+    virtual ~SystemVerilogExpressionParser() = default;
 
     /*!
      *  Parses an expression to decimal number.
      *
-     *      @param [in] expression   The expression to parse.
+     *      @param [in]  expression         The expression to parse.
+     *      @param [out] validExpression    Set to true, if the parsing was successful, otherwise false.
      *
-     *      @return The decimal value of the constant.
+     *      @return The decimal value of the evaluated expression.
      */
-    virtual QString parseExpression(QString const& expression) const;
-
-    /*!
-     *  Checks if the given expression is valid for parsing.
-     *
-     *      @param [in] expression   The expression to check.
-     *
-     *      @return True, if the expression is in valid format, otherwise false.
-     */
-    virtual bool isValidExpression(QString const& expression) const;
+    virtual QString parseExpression(QString const& expression, bool* validExpression = nullptr) const;
 
     /*!
      *  Check if the given expression is an array.
@@ -77,28 +70,66 @@ public:
 protected:
      
     /*!
-     *  Parses a constant number to a real number.
+     *  Parses a token to a decimal number or string.
      *
-     *      @param [in] constantNumber   The constant to parse.
+     *      @param [in] token   The constant to parse.
      *
-     *      @return The real value of the constant.
+     *      @return The decimal value of the constant or the given string.
      */
-    virtual qreal parseConstantToDecimal(QString const& constantNumber) const;
+    QString parseConstant(QString const& token) const;
 
-        /*!
-     *  Splits the given expression to string list with terms and operations as separate items.
+    /*!
+     *  Checks if the given expression is a symbol e.g. reference.
      *
-     *      @param [in] expression   The expression to split.
+     *      @param [in] expression   The expression to check.
      *
-     *      @return The separated list.
+     *      @return True, if the expression is a symbol, otherwise false.
      */
-    QStringList toStringList(QString const& expression) const;
+    virtual bool isSymbol(QString const& expression) const;
+
+    /*!
+     *  Finds the value for given symbol.
+     *
+     *      @param [in] symbol  The symbol whose value to find.
+     *
+     *      @return The found symbol value.
+     */
+    virtual QString findSymbolValue(QString const& symbol) const;
+
+    /*!
+     *  Finds the base in the symbol.
+     *
+     *      @param [in] symbol   The symbol whose base to find.
+     *
+     *      @return The base for the symbol.
+     */
+    virtual int getBaseForSymbol(QString const& symbol) const;
 
 private:
 
 	// Disable copying.
 	SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs);
 	SystemVerilogExpressionParser& operator=(SystemVerilogExpressionParser const& rhs);
+
+    /*!
+     *  Converts the given expression to Reverse Polish Notation (RPN) format.
+     *  RPN is used to ensure the operations are calculated in the correct precedence order.
+     *
+     *      @param [in] expression   The expression to convert.
+     *
+     *      @return The conversion result.
+     */
+    QStringList convertToRPN(QString const& expression) const;
+
+    /*!
+     *  Solves the given RPN expression.
+     *
+     *      @param [in]     rpn                The expression to solve.
+     *      @param [out]    validExpression    Set to true, if the parsing was successful, otherwise false.
+     *
+     *      @return The solved result.
+     */
+    QString solveRPN(QStringList const& rpn, bool* validExpression) const;
 
     /*!
      *  Checks if the given expression is a string.
@@ -119,41 +150,44 @@ private:
     bool isLiteral(QString const& expression) const;
 
     /*!
-     *  Check if the selected expression is a comparison.
+     *  Checks if the given token is a unary operator.
      *
-     *      @param [in] expression  The selected expression.
+     *      @param [in] expression   The token to check.
      *
-     *      @return True, if the selected expression is a comparison, otherwise false.
+     *      @return True, if the token is a unary operator, otherwise false.
      */
-    bool isComparison(QString const& expression) const;
+    bool isUnaryOperator(QString const& token) const;
 
     /*!
-     *  Parse the selected comparison.
+     *  Checks if the given token is a binary operator.
      *
-     *      @param [in] expression  The selected comparison.
+     *      @param [in] expression   The token to check.
      *
-     *      @return 1 for a comparison with a value of true, 0 for false.
+     *      @return True, if the token is a binary operator, otherwise false.
      */
-    QString parseComparison(QString const& expression) const;
-
-    QString parseArray(QString const& expression) const;
+    bool isBinaryOperator(QString const& token) const;
 
     /*!
-     *  Splits the given operand to string list with terms and parentheses as separate items.
+     *  Solves a binary operation.
      *
-     *      @param [in] operand   The operand to split.
+     *      @param [in] operation   The operation to solve.
+     *      @param [in] leftTerm    The first term of the operation.
+     *      @param [in] rightTerm   The second term of the operation.
      *
-     *      @return The separated list.
+     *      @return The result of the operation.
      */
-    QStringList parseLiteralAndParentheses(QString const& operand) const;
+    QString solveBinary(QString const& operation, QString const& leftTerm, QString const& rightTerm) const;
 
     /*!
-     *  Solves function calls to math functions in a given equation.
+     *  Solves a binary operation.
      *
-     *      @param [in/out] equation   The equation to solve.
+     *      @param [in] operation    The operation to solve.
+     *      @param [in] term         The term for the operation.
+     *
+     *      @return The result of the operation.
      */
-    void solveMathFuctions(QStringList& equation) const;
-    
+    QString solveUnary(QString const& operation, QString const& term) const;
+
     /*!
      *  Solves the SystemVerilog $clog2 function.
      *
@@ -164,64 +198,14 @@ private:
     QString solveClog2(QString const& value) const;
 
     /*!
-     *  Solves expressions in parentheses in a given equation.
+     *  Solves the SystemVerilog $sqrt function.
      *
-     *      @param [in/out] equation   The equation to solve.
+     *      @param [in] value   The value for which the function is called.
+     *
+     *      @return The solved value.
      */
-    void solveExpressionsInParentheses(QStringList& equation) const;
+    QString solveSqrt(QString const& value) const;
 
-    /*!
-     *  Finds the matching end parenthesis in the given equation for the opening parenthesis in given position.
-     *
-     *      @param [in] equation            The equation to search for ending parenthesis.
-     *      @param [in] parenthesesStart    The position of the opening parenthesis.
-     *
-     *      @return The position of the ending parenthesis.
-     */
-    int findMatchingEndParenthesis(QStringList const& equation, int parenthesesStart) const;
-
-    int findMatchingEndParenthesis(QString const& equation, int parenthesesStart) const;
-
-    /*!
-     *  Solves power operations in a given equation.
-     *
-     *      @param [in/out] equation   The equation to solve.
-     */  
-    void solvePower(QStringList& equation) const;
-
-    /*!
-     *  Solves multiply and division operations in a given equation.
-     *
-     *      @param [in/out] equation   The equation to solve.
-     */
-    void solveMultiplyAndDivide(QStringList& equation) const;
-
-    /*!
-    *  Solves addition and subtraction operations in given equation.
-    *
-    *      @param [in/out] equation   The equation to solve.
-    */
-    void solveAdditionAndSubtraction(QStringList& equation) const;
-
-    /*!
-    *  Solves binary operations in given equation.
-    *
-    *      @param [in/out]  equation         The equation to solve.
-    *      @param [in]      binaryOperator   An expression for finding the operator to solve.
-    */
-    void solveBinaryOperationsFromLeftToRight(QStringList& equation, QRegularExpression const& binaryOperator) const;
-
-    /*!
-    *  Solves a binary operation.
-    *
-    *      @param [in] firstTerm   The first term of the operation.
-    *      @param [in] operation   The operation to solve.
-    *      @param [in] secondTerm  The second term of the operation.
-    *
-    *      @return The result of the operation.
-    */
-    QString solve(QString const& firstTerm, QString const& operation, QString const& secondTerm) const;
-       
     /*!
      *  Get the precision used from the terms.
      *
@@ -230,7 +214,7 @@ private:
      *
      *      @return The precision of the decimal used in the terms of the operation.
      */
-    int getDecimalPrecision(QString const& firstTerm, QString const& secondTerm) const;
+    int getDecimalPrecision(QString const& term) const;
 
     /*!
      *  Get the base for a given number.
@@ -241,14 +225,12 @@ private:
      */
     int getBaseForNumber(QString const& constantNumber) const;
 
-    /*!
-     *  Converts the base format to the base number e.g. h to 16.
-     *
-     *      @param [in] baseFormat   The format to convert.
-     *
-     *      @return The base number for the format.
-     */
-    int baseForFormat(QString const& baseFormat) const;
+    // Operator precedence mapping. The operator is the key and the precedence is the value.
+    // A greater value implies greater precedence.
+    static QMap<QString, int> operator_precedence;
+
+    // Base format mapping for SystemVerilog numeric formats.
+    static QMap<QString, int> base_formats;
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

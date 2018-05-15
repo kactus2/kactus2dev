@@ -265,15 +265,13 @@ void AdHocEditor::setTiedValueEditorToolTip(QString const& tiedValue)
 //-----------------------------------------------------------------------------
 QString AdHocEditor::formattedValueFor(QString const& expression) const
 {
-    if (expression.isEmpty() || expressionParser_->isPlainValue(expression))
-    {
-        return expression;
-    }
-    else if (expressionParser_->isValidExpression(expression))
+    bool isValidExpression = false;
+    QString value = expressionParser_->parseExpression(expression, &isValidExpression);
+ 
+    if (isValidExpression)
     {
         ValueFormatter formatter;
-        return formatter.format(
-            expressionParser_->parseExpression(expression), expressionParser_->baseForExpression(expression));
+        return formatter.format(value, expressionParser_->baseForExpression(expression));
     }
     else
     {
