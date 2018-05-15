@@ -590,7 +590,7 @@ void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionVie
         painter->fillRect(option.rect, KactusColors::STRONG_FIELD);
     }
 
-    QStyleOptionViewItemV4 overrideOptions(option);
+	QStyleOptionViewItem overrideOptions(option);
     overrideOptions.decorationPosition = QStyleOptionViewItem::Right;
 
     ChoiceCreatorDelegate::paint(painter, overrideOptions, index);

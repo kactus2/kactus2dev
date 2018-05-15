@@ -11,8 +11,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <common/Global.h>
-
 #include <QRegularExpression>
 #include <QObject>
 
@@ -144,7 +142,7 @@ namespace Utils
      *
      * \return The result of the conversion.
     */
-    KACTUS2_API quint64 str2Uint(const QString& str);
+    quint64 str2Uint(const QString& str);
 
     /*! Convert a string to int format.
      * 
@@ -159,7 +157,7 @@ namespace Utils
      *
      * \return The result of the conversion.
     */
-    KACTUS2_API qint64 str2Int(const QString& str);
+    qint64 str2Int(const QString& str);
 
     //! Regular expression to validate URLs.
     const QRegularExpression URL_VALIDITY_REG_EXP = QRegularExpression(
@@ -169,7 +167,7 @@ namespace Utils
     /*!
      *  Retrieves and returns the name of the current user.
      */
-    KACTUS2_API QString getCurrentUser();
+    QString getCurrentUser();
 }
 
 #endif // UTILS_H

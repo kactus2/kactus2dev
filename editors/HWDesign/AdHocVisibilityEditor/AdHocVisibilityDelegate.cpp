@@ -88,7 +88,7 @@ void AdHocVisibilityDelegate::setModelData(QWidget* editor, QAbstractItemModel* 
 void AdHocVisibilityDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-    QStyleOptionViewItemV4 viewItemOption(option);
+	QStyleOptionViewItem viewItemOption(option);
 
     if (index.column() == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY)
     {

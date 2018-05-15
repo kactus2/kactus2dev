@@ -136,6 +136,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VHDLGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VHDLGenerator_global.h">
@@ -202,6 +205,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\HDLParser\HDLCommandLineParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

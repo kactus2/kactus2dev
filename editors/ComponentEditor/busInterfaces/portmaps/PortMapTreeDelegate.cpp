@@ -225,7 +225,7 @@ void PortMapTreeDelegate::setModelData(QWidget* editor, QAbstractItemModel* mode
 void PortMapTreeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index)
     const
 {
-    QStyleOptionViewItemV4 viewItemOption(option);
+	QStyleOptionViewItem viewItemOption(option);
 
     if (index.parent().isValid() && index.column() == PortMapsColumns::INVERT)
     {

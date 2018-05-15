@@ -40,7 +40,7 @@ LibrarySettingsDelegate::~LibrarySettingsDelegate()
 void LibrarySettingsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-	QStyleOptionViewItemV4 viewItemOption(option);
+	QStyleOptionViewItem viewItemOption(option);
 
     if (index.column() == LibrarySettingsColumns::DEFAULT ||index.column() == LibrarySettingsColumns::ACTIVE)
 	{
