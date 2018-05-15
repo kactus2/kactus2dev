@@ -17,8 +17,8 @@ SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
 			MakefileGenerator/tst_MakefileGenerator.pro \
 			VHDLimport/VHDLimport.pro \
 			VerilogImport/VerilogImport.pro \
-		    	VerilogIncludeImport/tst_VerilogIncludeImport.pro \
+		    VerilogIncludeImport/tst_VerilogIncludeImport.pro \
 			VerilogSourceAnalyzer/tst_VerilogSourceAnalyzer.pro \
 			MemoryMapHeaderGenerator/tst_MemoryMapHeaderGenerator.pro \
 			MemoryViewGenerator/tst_MemoryViewGenerator.pro \
-			QuartusProjectGenerator/tst_QuartusGenerator.pro
+			QuartusProjectGenerator/tst_QuartusProjectGenerator.pro

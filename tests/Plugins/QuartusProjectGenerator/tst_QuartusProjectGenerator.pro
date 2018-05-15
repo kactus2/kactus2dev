@@ -11,7 +11,7 @@
 
 TEMPLATE = app
 
-TARGET = tst_QuartusGenerator
+TARGET = tst_QuartusProjectGenerator
 
 QT += core xml gui testlib printsupport
 CONFIG += c++11 testcase console
@@ -40,4 +40,4 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_QuartusGenerator.pri)
+include(tst_QuartusProjectGenerator.pri)

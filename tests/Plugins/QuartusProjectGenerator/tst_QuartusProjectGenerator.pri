@@ -6,4 +6,4 @@ HEADERS += ../../MockObjects/LibraryMock.h \
     ../../../Plugins/QuartusProjectGenerator/QuartusGenerator.h
 SOURCES += ../../MockObjects/LibraryMock.cpp \
     ../../../Plugins/QuartusProjectGenerator/QuartusGenerator.cpp \
-    ./tst_QuartusGenerator.cpp
+    ./tst_QuartusProjectGenerator.cpp

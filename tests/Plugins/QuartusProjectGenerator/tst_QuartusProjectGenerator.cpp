@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: tst_QuartusGenerator.cpp
+// File: tst_QuartusProjectGenerator.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -28,12 +28,12 @@
 #include <QtTest>
 #include <QDateTime>
 
-class tst_QuartusGenerator : public QObject, public IPluginUtility
+class tst_QuartusProjectGenerator : public QObject, public IPluginUtility
 {
     Q_OBJECT
 
 public:
-    tst_QuartusGenerator();
+    tst_QuartusProjectGenerator();
 
     virtual void printError(QString const& message);
 
@@ -108,9 +108,9 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::tst_QuartusGenerator()
+// Function: tst_QuartusProjectGenerator::tst_QuartusProjectGenerator()
 //-----------------------------------------------------------------------------
-tst_QuartusGenerator::tst_QuartusGenerator():
+tst_QuartusProjectGenerator::tst_QuartusProjectGenerator():
     topComponent_(), generatorParentWidget_(new QWidget), library_(this), quartusGenerator_(), targetPath_("./"),
     targetEntity_("generatorOutput"), output_(), generatorInformation_("test generator")
 {
@@ -118,65 +118,65 @@ tst_QuartusGenerator::tst_QuartusGenerator():
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::printError()
+// Function: tst_QuartusProjectGenerator::printError()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::printError(QString const& message)
+void tst_QuartusProjectGenerator::printError(QString const& message)
 {
         // TODO.
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::printInfo()
+// Function: tst_QuartusProjectGenerator::printInfo()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::printInfo(QString const& message)
+void tst_QuartusProjectGenerator::printInfo(QString const& message)
 {
     // TODO.
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::getLibraryInterface()
+// Function: tst_QuartusProjectGenerator::getLibraryInterface()
 //-----------------------------------------------------------------------------
-LibraryInterface* tst_QuartusGenerator::getLibraryInterface()
+LibraryInterface* tst_QuartusProjectGenerator::getLibraryInterface()
 {
     return &library_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::getParentWidget()
+// Function: tst_QuartusProjectGenerator::getParentWidget()
 //-----------------------------------------------------------------------------
-QWidget* tst_QuartusGenerator::getParentWidget()
+QWidget* tst_QuartusProjectGenerator::getParentWidget()
 {
     return generatorParentWidget_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::getKactusVersion()
+// Function: tst_QuartusProjectGenerator::getKactusVersion()
 //-----------------------------------------------------------------------------
-QString tst_QuartusGenerator::getKactusVersion() const
+QString tst_QuartusProjectGenerator::getKactusVersion() const
 {
     return QString();
 }
 
     //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::initTestCase()
+// Function: tst_QuartusProjectGenerator::initTestCase()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::initTestCase()
+void tst_QuartusProjectGenerator::initTestCase()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::cleanupTestCase()
+// Function: tst_QuartusProjectGenerator::cleanupTestCase()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::cleanupTestCase()
+void tst_QuartusProjectGenerator::cleanupTestCase()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::init()
+// Function: tst_QuartusProjectGenerator::init()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::init()
+void tst_QuartusProjectGenerator::init()
 {
     library_.clear();
 
@@ -196,9 +196,9 @@ void tst_QuartusGenerator::init()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::cleanup()
+// Function: tst_QuartusProjectGenerator::cleanup()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::cleanup()
+void tst_QuartusProjectGenerator::cleanup()
 {
     topComponent_.clear();
     output_.clear();
@@ -211,9 +211,9 @@ void tst_QuartusGenerator::cleanup()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::testGeneratorWithoutFilesets()
+// Function: tst_QuartusProjectGenerator::testGeneratorWithoutFilesets()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::testGeneratorWithoutFilesets()
+void tst_QuartusProjectGenerator::testGeneratorWithoutFilesets()
 {
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
@@ -237,9 +237,9 @@ void tst_QuartusGenerator::testGeneratorWithoutFilesets()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::testGeneratorWithDesignContainingTopComponentVerilogFile()
+// Function: tst_QuartusProjectGenerator::testGeneratorWithDesignContainingTopComponentVerilogFile()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::testGeneratorWithDesignContainingTopComponentVerilogFile()
+void tst_QuartusProjectGenerator::testGeneratorWithDesignContainingTopComponentVerilogFile()
 {
     QSharedPointer<Design> quartusDesign = createTestDesign("quartusDesign", QList<QSharedPointer<Component> > ());
 
@@ -292,9 +292,9 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingTopComponentVerilogF
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
+// Function: tst_QuartusProjectGenerator::testGeneratorWithDesignContainingInstances()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
+void tst_QuartusProjectGenerator::testGeneratorWithDesignContainingInstances()
 {
     QSharedPointer<Component> componentOne = createTestComponent("componentOne");
     QSharedPointer<QFile> componentOneVhdlFile = createEmptyFile("componentOneVHDL.vhdl");
@@ -413,9 +413,9 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::testGeneratorWithConfiguredViews()
+// Function: tst_QuartusProjectGenerator::testGeneratorWithConfiguredViews()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
+void tst_QuartusProjectGenerator::testGeneratorWithConfiguredViews()
 {
     QSharedPointer<Component> componentOne = createTestComponent("componentOne");
     QSharedPointer<QFile> componentOneVhdlFile = createEmptyFile("componentOneVHDL.vhdl");
@@ -520,9 +520,9 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
+// Function: tst_QuartusProjectGenerator::testGeneratorInInstancesWithoutActiveViews()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
+void tst_QuartusProjectGenerator::testGeneratorInInstancesWithoutActiveViews()
 {
     QSharedPointer<Component> componentOne = createTestComponent("componentOne");
     QSharedPointer<QFile> componentOneVhdlFile = createEmptyFile("componentOneVHDL.vhdl");
@@ -633,9 +633,9 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::readOutputFile()
+// Function: tst_QuartusProjectGenerator::readOutputFile()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::readOutputFile(QString const& fileType)
+void tst_QuartusProjectGenerator::readOutputFile(QString const& fileType)
 {
     output_.clear();
 
@@ -648,9 +648,9 @@ void tst_QuartusGenerator::readOutputFile(QString const& fileType)
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::compareOutputToExpected()
+// Function: tst_QuartusProjectGenerator::compareOutputToExpected()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::compareOutputToExpected(QString const& fileType, QString const& expectedOutput)
+void tst_QuartusProjectGenerator::compareOutputToExpected(QString const& fileType, QString const& expectedOutput)
 {
     readOutputFile(fileType);
 
@@ -684,9 +684,9 @@ void tst_QuartusGenerator::compareOutputToExpected(QString const& fileType, QStr
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::getQuartusHeader()
+// Function: tst_QuartusProjectGenerator::getQuartusHeader()
 //-----------------------------------------------------------------------------
-QString tst_QuartusGenerator::getQuartusHeader(QString const& currentTime)
+QString tst_QuartusProjectGenerator::getQuartusHeader(QString const& currentTime)
 {
     QString header(
         "# ----------------------------------------------------------- #\n"
@@ -702,9 +702,9 @@ QString tst_QuartusGenerator::getQuartusHeader(QString const& currentTime)
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::createTestComponent()
+// Function: tst_QuartusProjectGenerator::createTestComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> tst_QuartusGenerator::createTestComponent(QString const& componentName)
+QSharedPointer<Component> tst_QuartusProjectGenerator::createTestComponent(QString const& componentName)
 {
     VLNV newVlnv(VLNV::COMPONENT, "TUT", "TestLibrary", componentName, "1.0");
     QSharedPointer<Component> newComponent = QSharedPointer<Component>(new Component(newVlnv));
@@ -716,9 +716,9 @@ QSharedPointer<Component> tst_QuartusGenerator::createTestComponent(QString cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::createTestDesign()
+// Function: tst_QuartusProjectGenerator::createTestDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> tst_QuartusGenerator::createTestDesign(QString const& designName,
+QSharedPointer<Design> tst_QuartusProjectGenerator::createTestDesign(QString const& designName,
     QList<QSharedPointer<Component> > containedComponents)
 {
     VLNV designVLNV(VLNV::DESIGN, "TUT", "TestLibrary", designName, "1.0");
@@ -749,9 +749,9 @@ QSharedPointer<Design> tst_QuartusGenerator::createTestDesign(QString const& des
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::createTestDesignConfiguration()
+// Function: tst_QuartusProjectGenerator::createTestDesignConfiguration()
 //-----------------------------------------------------------------------------
-QSharedPointer<DesignConfiguration> tst_QuartusGenerator::createTestDesignConfiguration(QString const& name,
+QSharedPointer<DesignConfiguration> tst_QuartusProjectGenerator::createTestDesignConfiguration(QString const& name,
     QSharedPointer<Design> referencedDesign)
 {
     VLNV designConfigurationVLNV(VLNV::DESIGNCONFIGURATION, "TUT", "TestLibrary", name, "1.0");
@@ -780,9 +780,9 @@ QSharedPointer<DesignConfiguration> tst_QuartusGenerator::createTestDesignConfig
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::createTestFileset()
+// Function: tst_QuartusProjectGenerator::createTestFileset()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileSet> tst_QuartusGenerator::createTestFileset(QString const& filesetName, QStringList filesToAdd)
+QSharedPointer<FileSet> tst_QuartusProjectGenerator::createTestFileset(QString const& filesetName, QStringList filesToAdd)
 {
     QSharedPointer<FileSet> newFileSet (new FileSet(filesetName));
 
@@ -797,9 +797,9 @@ QSharedPointer<FileSet> tst_QuartusGenerator::createTestFileset(QString const& f
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::createEmptyFile()
+// Function: tst_QuartusProjectGenerator::createEmptyFile()
 //-----------------------------------------------------------------------------
-QSharedPointer<QFile> tst_QuartusGenerator::createEmptyFile(QString const& fileName)
+QSharedPointer<QFile> tst_QuartusProjectGenerator::createEmptyFile(QString const& fileName)
 {
     QSharedPointer<QFile> newFile(new QFile(fileName));
     newFile->open(QFile::WriteOnly);
@@ -809,9 +809,9 @@ QSharedPointer<QFile> tst_QuartusGenerator::createEmptyFile(QString const& fileN
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::setViewOverridesForDesignConfiguration()
+// Function: tst_QuartusProjectGenerator::setViewOverridesForDesignConfiguration()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::setViewOverridesForDesignConfiguration( QSharedPointer<DesignConfiguration> testDesignConfiguration,
+void tst_QuartusProjectGenerator::setViewOverridesForDesignConfiguration( QSharedPointer<DesignConfiguration> testDesignConfiguration,
 	QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances)
 {
     QMap<QString, QString> viewOverrides;
@@ -831,9 +831,9 @@ void tst_QuartusGenerator::setViewOverridesForDesignConfiguration( QSharedPointe
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::setFileTypesForFileSet()
+// Function: tst_QuartusProjectGenerator::setFileTypesForFileSet()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::setFileTypesForFileSet(QSharedPointer<FileSet> selectedFileset, QSharedPointer<QStringList> fileTypes)
+void tst_QuartusProjectGenerator::setFileTypesForFileSet(QSharedPointer<FileSet> selectedFileset, QSharedPointer<QStringList> fileTypes)
 {
     foreach (QSharedPointer<File> currentFile, *selectedFileset->getFiles())
     {
@@ -842,24 +842,24 @@ void tst_QuartusGenerator::setFileTypesForFileSet(QSharedPointer<FileSet> select
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::projectFile()
+// Function: tst_QuartusProjectGenerator::projectFile()
 //-----------------------------------------------------------------------------
-QString tst_QuartusGenerator::projectFile() const
+QString tst_QuartusProjectGenerator::projectFile() const
 {
     static const QString PROJECTFILE(".qpf");
     return PROJECTFILE;
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_QuartusGenerator::settingsFile()
+// Function: tst_QuartusProjectGenerator::settingsFile()
 //-----------------------------------------------------------------------------
-QString tst_QuartusGenerator::settingsFile() const
+QString tst_QuartusProjectGenerator::settingsFile() const
 {
     static const QString SETTINGSFILE(".qsf");
     return SETTINGSFILE;
 }
 
-//QTEST_APPLESS_MAIN(tst_QuartusGenerator)
-QTEST_MAIN(tst_QuartusGenerator)
+//QTEST_APPLESS_MAIN(tst_QuartusProjectGenerator)
+QTEST_MAIN(tst_QuartusProjectGenerator)
 
-#include "tst_QuartusGenerator.moc"
+#include "tst_QuartusProjectGenerator.moc"
