@@ -16,7 +16,7 @@ TARGET = tst_MemoryMapHeaderGenerator
 QT += core xml gui testlib widgets
 CONFIG += c++11 testcase console
 
-DEFINES += MEMORYMAPHEADERGENERATOR_LIB KACTUS2_EXPORTS
+DEFINES += MEMORYMAPHEADERGENERATOR_LIB
 
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
