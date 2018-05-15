@@ -15,7 +15,7 @@ TARGET = tst_VerilogSourceAnalyzer
 
 DEFINES += VERILOGSOURCEANALYZER_LIB
 
-QT += core xml gui testlib
+QT += core xml gui testlib widgets
 CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {
