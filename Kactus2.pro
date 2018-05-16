@@ -4,10 +4,12 @@
 
 TEMPLATE = app
 TARGET = kactus2
-DESTDIR = ./executable
+
 QT += core xml widgets gui printsupport help svg
 CONFIG += c++11 release
-DEFINES += _WINDOWS QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE  QT_HAVE_MMXEXT QT_HAVE_SSE2 KACTUS2_EXPORTS QT_HELP_LIB QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB
+
+DEFINES += _WINDOWS QT_DLL QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2 KACTUS2_EXPORTS
+
 INCLUDEPATH += . \
     ./GeneratedFiles \
     $(QTDIR)/../qttools/include \
@@ -16,6 +18,9 @@ INCLUDEPATH += . \
     $(QTDIR)/../qtxmlpatterns/include
 LIBS += -L./executable \
     -lIPXACTmodels
+
+DESTDIR = ./executable
+
 DEPENDPATH += .
 linux-g++*:QMAKE_CXXFLAGS += -fPIE
 linux-g++*:LIBS += -pie -rdynamic
@@ -25,11 +30,9 @@ OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(Kactus2.pri)
+
 win32:RC_FILE = Kactus2.rc
 unix:QMAKE_POST_LINK = ln -f -s kactus2 executable/libKactus2.so; ./createhelp
 target.path = $$bin_path
 INSTALLS += target
 
-HEADERS +=
-
-SOURCES +=

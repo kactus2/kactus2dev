@@ -32,7 +32,7 @@ class IPXACTMODELS_EXPORT Cpu : public NameGroup, public Extendable
 public:
 
     //! Cpu address space reference.
-    struct AddressSpaceRef
+    struct IPXACTMODELS_EXPORT AddressSpaceRef
     {
         //! The address space reference.
         QString addressSpaceRef_;
@@ -45,7 +45,7 @@ public:
          *
          *      @param [in] addressSpaceReference   The address space reference.
          */
-        IPXACTMODELS_EXPORT AddressSpaceRef(QString const& addressSpaceReference = QString());
+        AddressSpaceRef(QString const& addressSpaceReference = QString());
 
         /*!
          *  Get the address space reference.

@@ -68,7 +68,7 @@ void tst_CPUValidator::baseCase()
 	QSharedPointer<Parameter> parameter (new Parameter());
 	parameter->setName("param");
 	parameter->setType("bit");
-	parameter->setValue("{3'b101,3'b111}");
+	parameter->setValue("3'b111");
 	parameter->setValueId("parameterid");
 
 	cpu->getParameters()->append(parameter);

@@ -113,6 +113,11 @@ bool ParameterValidator::hasValidValueForType(QString const& value, QString cons
         return true;
     }
 
+    if (value.contains(QLatin1Char('{')))
+    {
+        return isArrayValidForType(value, type);
+    }
+
     bool isValidValue = false;
     QString solvedValue = expressionParser_->parseExpression(value, &isValidValue);
 

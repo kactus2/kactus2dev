@@ -34,6 +34,9 @@ private slots:
     void testIdIsSpecifiedForResolveUserAndGenerated();
     void testIdIsSpecifiedForResolveUserAndGenerated_data();
 
+    void testValue();
+    void testValue_data();
+
     void testChoiceReference();
     void testChoiceReference_data();
 
@@ -157,6 +160,35 @@ void tst_ParameterValidator::testIdIsSpecifiedForResolveUserAndGenerated_data()
 
     QTest::newRow("No id for resolve dependent is valid") << "" << "dependent" << true;
     QTest::newRow("Id for resolve dependent is valid") << "1" << "dependent" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testValue()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testValue()
+{
+    QFETCH(QString, value);
+    QFETCH(bool, expectedValid);
+
+    QSharedPointer<Parameter> parameter = createParameterWithName();
+    parameter->setValue(value);
+    parameter->setType("bit");
+
+    QScopedPointer<ParameterValidator> validator(createValidator());
+    QVERIFY(validator->hasValidValue(parameter) == expectedValid);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testValue_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testValue_data()
+{
+    QTest::addColumn<QString>("value");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("Empty value is invalid") << "" << false;
+    QTest::newRow("Integer is valid") << "1" << true;
+    QTest::newRow("Array is valid") << "{1,1}" << true;
 }
 
 //-----------------------------------------------------------------------------

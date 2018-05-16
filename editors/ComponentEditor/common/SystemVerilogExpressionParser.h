@@ -38,7 +38,7 @@ public:
      *
      *      @return The decimal value of the evaluated expression.
      */
-    virtual QString parseExpression(QString const& expression, bool* validExpression = nullptr) const;
+    virtual QString parseExpression(QString const& expression, bool* validExpression = nullptr) const override;
 
     /*!
      *  Check if the given expression is an array.
@@ -56,7 +56,7 @@ public:
      *
      *      @return True, if the expression is a plain value, otherwise false.
      */
-    virtual bool isPlainValue(QString const& expression) const;
+    virtual bool isPlainValue(QString const& expression) const override;
 
     /*!
      *  Finds the common base in the expression.
@@ -65,7 +65,7 @@ public:
      *
      *      @return The common base for the expression.
      */
-    virtual int baseForExpression(QString const& expression) const;
+    virtual int baseForExpression(QString const& expression) const override;
 
 protected:
      
@@ -227,10 +227,10 @@ private:
 
     // Operator precedence mapping. The operator is the key and the precedence is the value.
     // A greater value implies greater precedence.
-    static QMap<QString, int> operator_precedence;
+    static const QMap<QString, int> operator_precedence;
 
     // Base format mapping for SystemVerilog numeric formats.
-    static QMap<QString, int> base_formats;
+    static const  QMap<QString, int> base_formats;
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

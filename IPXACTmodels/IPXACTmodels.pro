@@ -3,20 +3,25 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = IPXACTmodelsd
-DESTDIR = ../executable
+TARGET = IPXACTmodels
+
 QT += core xml gui
 CONFIG += c++11 release
-DEFINES += QT_DLL QT_XML_LIB IPXACTMODELS_LIB
+
+DEFINES += IPXACTMODELS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
     ./GeneratedFiles/Release \
     ..
+
+DESTDIR = ../executable
+
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release
 OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
+
 include(IPXACTmodels.pri)
 
 target.path = $$lib_path

@@ -70,7 +70,7 @@ bool ChoiceValidator::hasValidEnumerations(QSharedPointer<Choice> choice) const
         {
             bool isValidValue = false;
             expressionParser_->parseExpression(enumeration->getValue(), &isValidValue);
-            if (isValidValue == false)
+            if (enumeration->getValue().isEmpty() || isValidValue == false)
             {
                 return false;
             }
@@ -121,7 +121,7 @@ void ChoiceValidator::findErrorsInEnumerations(QVector<QString>& errors, QShared
             bool isValidValue = false;
             expressionParser_->parseExpression(enumeration->getValue(), &isValidValue);
             
-            if (isValidValue == false)
+            if (enumeration->getValue().isEmpty() || isValidValue == false)
             {
                 errors.append(QObject::tr("Invalid value '%1' set for enumeration in choice '%2' within %3").arg(
                     enumeration->getValue(), choice->name(), context));

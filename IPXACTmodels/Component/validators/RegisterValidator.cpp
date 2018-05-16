@@ -112,12 +112,13 @@ bool RegisterValidator::hasValidDimension(QSharedPointer<Register> selectedRegis
 {
     if (!selectedRegister->getDimension().isEmpty())
     {
-        QString solvedValue = expressionParser_->parseExpression(selectedRegister->getDimension());
+        bool dimensionValid = false;
+        QString solvedValue = expressionParser_->parseExpression(selectedRegister->getDimension(), &dimensionValid);
 
         bool toIntOk = true;
         solvedValue.toULongLong(&toIntOk);
 
-        return toIntOk;
+        return dimensionValid && toIntOk;
     }
 
     return true;

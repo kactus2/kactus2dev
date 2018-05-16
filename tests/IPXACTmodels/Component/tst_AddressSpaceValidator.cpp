@@ -638,12 +638,17 @@ void tst_AddressSpaceValidator::testSegmentIsContainedWithinAddressSpace()
         QString expectedError = QObject::tr("Segment %1 is not contained within address space %2")
             .arg(testSegment->name()).arg(testSpace->name());
 
-        if (!parser->isValidExpression(segmentOffset))
+        bool offsetValid = false;
+        bool rangeValid = false;
+        parser->parseExpression(segmentOffset, &offsetValid);
+        parser->parseExpression(segmentRange, &rangeValid);
+
+        if (offsetValid == false)
         {
             expectedError = QObject::tr("Invalid address offset set for segment %1 within address space %2").
                 arg(testSegment->name()).arg(testSpace->name());
         }
-        else if (!parser->isValidExpression(segmentRange))
+        else if (rangeValid == false)
         {
             expectedError = QObject::tr("Invalid range set for segment %1 within address space %2").
                 arg(testSegment->name()).arg(testSpace->name());

@@ -44,7 +44,7 @@ namespace
     const QRegularExpression ANY_OPERATOR(BINARY_OPERATOR.pattern() + "|" + UNARY_OPERATOR.pattern());
 }
 
-QMap<QString, int> SystemVerilogExpressionParser::operator_precedence =
+const QMap<QString, int> SystemVerilogExpressionParser::operator_precedence =
 {
     {"<", 1},
     {">", 1},
@@ -64,7 +64,7 @@ QMap<QString, int> SystemVerilogExpressionParser::operator_precedence =
     {"}", 6}
 };
 
-QMap<QString, int> SystemVerilogExpressionParser::base_formats =
+const QMap<QString, int> SystemVerilogExpressionParser::base_formats =
 {
     {"", 10},
     {"d", 10},
@@ -219,7 +219,6 @@ QStringList SystemVerilogExpressionParser::convertToRPN(QString const& expressio
 //-----------------------------------------------------------------------------
 QString SystemVerilogExpressionParser::solveRPN(QStringList const& rpn, bool* validExpression) const
 {
-    //qDebug() << rpn;
     QStringList resultStack;
     bool isWellFormed = true;
 
