@@ -159,7 +159,7 @@ void FileBuildersDelegate::commitAndCloseEditor()
 void FileBuildersDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index )
     const
 {
-	QStyleOptionViewItemV4 viewItemOption(option);
+	QStyleOptionViewItem viewItemOption(option);
 	QStyledItemDelegate::paint(painter, viewItemOption, index);
 }
 

@@ -11,8 +11,8 @@
 
 #include "HWDesignWidgetMock.h"
 
-#include <designEditors/HWDesign/HWDesignDiagram.h>
-#include <designEditors/common/StickyNote/StickyNote.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/common/StickyNote/StickyNote.h>
 
 #include <common/GenericEditProvider.h>
 

@@ -86,6 +86,8 @@ private:
     QSharedPointer<AddressSpace> getCPUAddressSpace(QSharedPointer<Component> containingComponent,
         QString const& spaceReference) const;
 
+	void writePaths(QVector<QVector<QSharedPointer<const ConnectivityInterface> > > masterPaths);
+
     /*!
      *  Write the selected interface path.
      *

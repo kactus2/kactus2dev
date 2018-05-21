@@ -4,24 +4,28 @@
 
 TEMPLATE = lib
 TARGET = PadsPartGenerator
-DESTDIR = ../../executable/Plugins
+
 QT += core xml widgets gui
 CONFIG += c++11 release
 DEFINES += QT_DLL QT_WIDGETS_LIB QT_XML_LIB
-INCLUDEPATH += ./GeneratedFiles \
+
+INCLUDEPATH += ./generatedFiles \
     . \
-    ./GeneratedFiles/Release \
+    ./generatedFiles/Release \
     $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
     $(QTDIR)/../qtxmlpatterns/include \
     ./../..
+
 LIBS += -L"./../../executable" \
-    -lKactus2 \
     -lIPXACTmodels
+
+DESTDIR = ../../executable/Plugins
+
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
+MOC_DIR += ./generatedFiles/release
 OBJECTS_DIR += release
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
 include(PadsPartGenerator.pri)
 
 target.path = $$plugin_path

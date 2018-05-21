@@ -69,6 +69,7 @@ void LinuxDeviceTreeGenerator::writeFile(QString const& outputPath, QSharedPoint
 
     QTextStream outputStream(&outputFile);
 
+/*
     outputStream << "/dts-v1/;" << endl << endl << "/ {" << endl;
 
     foreach (QVector<QSharedPointer<const ConnectivityInterface> > path, masterRoutes)
@@ -79,6 +80,9 @@ void LinuxDeviceTreeGenerator::writeFile(QString const& outputPath, QSharedPoint
     writeCPUs(topComponent, outputStream);
 
     outputStream << "};" << endl;
+*/
+
+	writePaths(masterRoutes);
 
     outputFile.close();
 }
@@ -140,4 +144,21 @@ void LinuxDeviceTreeGenerator::writePath(QVector<QSharedPointer<const Connectivi
 
 
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeGenerator::writePaths()
+//-----------------------------------------------------------------------------
+void LinuxDeviceTreeGenerator::writePaths(QVector<QVector<QSharedPointer<const ConnectivityInterface> > > masterPaths)
+{
+/*
+	for (QVector<QSharedPointer<const ConnectivityInterface> > singlePath : paths)
+	{
+	}
+*/
+
+	foreach (auto path, masterPaths)
+	{
+
+	}
 }

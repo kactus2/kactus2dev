@@ -18,6 +18,7 @@
 #include <library/LibraryInterface.h>
 
 #include <Plugins/common/LanguageHighlighter.h>
+#include <Plugins/common/HDLParser/HDLCommandLineParser.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
@@ -25,8 +26,6 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <QCommandLineOption>
-#include <QCommandLineParser>
 #include <QDir>
 
 //----------------------------------------------------------------------------
@@ -59,7 +58,7 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    return "2.1";
+    return "2.2";
 }
 
 //-----------------------------------------------------------------------------
@@ -160,7 +159,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
     // Must have a component under any condition.
-    if (!component)
+    if (component.isNull())
     {
         utility->printError(tr("Null component given as a parameter."));
         return;
@@ -181,14 +180,14 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     QSharedPointer<GenerationControl> configuration(new GenerationControl
         (utility->getLibraryInterface(), &factory, input, &settings_));
 
-    // Create the dialog and execute: The user will ultimately accept the configuration.
-    HDLGenerationDialog dialog(configuration, "Verilog", utility->getParentWidget());
+    // Create the dialog and execute: The user will accept/decline the configuration.
+    HDLGenerationDialog dialog(configuration, QStringLiteral("Verilog"), utility->getParentWidget());
     
-    LanguageHighlighter* highlighter = new LanguageHighlighter(0);
+    LanguageHighlighter highlighter(0);
     VerilogSourceHighlight style;
-    style.apply(highlighter);
+    style.apply(&highlighter);
 
-    dialog.setPreviewHighlighter(highlighter);
+    dialog.setPreviewHighlighter(&highlighter);
 
     connect(&messages, SIGNAL(errorMessage(const QString&)),
         &dialog, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
@@ -197,17 +196,14 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
     dialog.onViewChanged();
 
-    if (dialog.exec() != QDialog::Accepted)
+    if (dialog.exec() == QDialog::Accepted)
     {
-        utility->printInfo(tr("Generation aborted."));
-        delete highlighter;
-        
-        return;
+        utility->printInfo(tr("Generation complete."));
     }
-
-    // Finally, save the changes.
-    utility->printInfo(tr("Generation complete."));
-    delete highlighter;
+    else
+    {
+        utility->printInfo(tr("Generation aborted."));    
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -223,58 +219,46 @@ QString VerilogGeneratorPlugin::getCommand() const
 //-----------------------------------------------------------------------------
 void VerilogGeneratorPlugin::process(QStringList const& arguments, IPluginUtility* utility)
 {
-    if (arguments.count() < 2)
-    {
-        return;
-    }
+    HDLCommandLineParser parser(getCommand());
+    HDLCommandLineParser::ParseResults parseResult = parser.parseArguments(arguments);
 
-    QScopedPointer<QCommandLineParser> parser(createCommandParser());
-    parser->parse(arguments);
-
-    if (parser->isSet(QStringLiteral("help")))
+    if (parseResult.cancelRun)
     {
-        QString helpText = parser->helpText();
-        helpText.replace(0, helpText.indexOf(QLatin1Char('[')), 
-            QStringLiteral("Usage: Kactus2 generate_verilog "));
-        utility->printInfo(helpText);
+        utility->printInfo(parseResult.message);
         return;
     }
 
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
-    VLNV componentVLNV = VLNV(VLNV::COMPONENT, parser->value("c"));
     QSharedPointer<Component> component = 
-        utility->getLibraryInterface()->getModel(componentVLNV).dynamicCast<Component>();
-
-    // Must have a component under any condition.
+        utility->getLibraryInterface()->getModel(parseResult.vlnv).dynamicCast<Component>();
     if (!component)
     {
         utility->printError(tr("Invalid component given as a parameter."));
         return;
     }
 
-    QString view = parser->value("w");
-    utility->printInfo(tr("Running generation for %1 and view '%2'.").arg(componentVLNV.toString(), view));
-
-    QString directory = parser->value("o");
+    utility->printInfo(tr("Running generation for %1 and view '%2'.").arg(parseResult.vlnv.toString(), 
+        parseResult.viewName));
 
     QDir targetDirectory;
-    if (!targetDirectory.mkpath(directory))
+    if (!targetDirectory.mkpath(parseResult.path))
     {
-        utility->printError(tr("Could not create target directory: %1").arg(directory));
+        utility->printError(tr("Could not create target directory: %1").arg(parseResult.path));
         return;
     }
 
-    utility->printInfo(tr("Target directory: %1").arg(directory));
+    utility->printInfo(tr("Target directory: %1").arg(parseResult.path));
 
-    settings_.lastViewName_ = view;    
+    settings_.lastViewName_ = parseResult.viewName;    
 
-    VLNV configurationVLNV = component->getHierRef(view);
+    VLNV configurationVLNV = component->getHierRef(parseResult.viewName);
     VLNV designVLNV;
 
     if (configurationVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        designVLNV = utility->getLibraryInterface()->getModelReadOnly(configurationVLNV).dynamicCast<const DesignConfiguration>()->getDesignRef();
+        designVLNV = utility->getLibraryInterface()->getModelReadOnly(
+            configurationVLNV).dynamicCast<const DesignConfiguration>()->getDesignRef();
     }
     else if (configurationVLNV.getType() == VLNV::DESIGN)
     {
@@ -287,51 +271,25 @@ void VerilogGeneratorPlugin::process(QStringList const& arguments, IPluginUtilit
     GenerationTuple input;
     input.component = component;
     input.design = utility->getLibraryInterface()->getModel(designVLNV).dynamicCast<Design>();
-    input.designConfiguration = utility->getLibraryInterface()->getModel(configurationVLNV).dynamicCast<DesignConfiguration>();
+    input.designConfiguration = utility->getLibraryInterface()->getModel(
+        configurationVLNV).dynamicCast<DesignConfiguration>();
     input.messages = &messages;
 
     VerilogWriterFactory factory(utility->getLibraryInterface(), &messages, &settings_,
         utility->getKactusVersion(), getVersion());
 
-    // Create model for the configuration widget.
-    QSharedPointer<GenerationControl> configuration(new GenerationControl(utility->getLibraryInterface(),
-        &factory, input, &settings_));
+    // Use configuration to drive the generation.
+    GenerationControl configuration(utility->getLibraryInterface(), &factory, input, &settings_);
+    configuration.getOutputControl()->setOutputPath(parseResult.path);
+    configuration.getViewSelection()->setSaveToFileset(false);
 
-    configuration->getOutputControl()->setOutputPath(directory);
-    configuration->getViewSelection()->setSaveToFileset(false);
-    
-    configuration->parseDocuments();
-    if (!configuration->writeDocuments())
+    configuration.parseDocuments();
+    if (configuration.writeDocuments())
     {
-        utility->printInfo(tr("Generation aborted."));
-        return;
+        utility->printInfo(tr("Generation complete."));
     }
-
-    // Finally, save the changes.
-    utility->printInfo(tr("Generation complete."));
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGeneratorPlugin::createCommandParser()
-//-----------------------------------------------------------------------------
-QCommandLineParser* VerilogGeneratorPlugin::createCommandParser()
-{
-    QCommandLineParser* parser = new QCommandLineParser();
-    QCommandLineOption helpOption = parser->addHelpOption();
-
-    QCommandLineOption targetComponent(QStringList() << QStringLiteral("c") << QStringLiteral("top-component"), 
-        QStringLiteral("The top-component VLNV separated by semicolons (:)."), QStringLiteral("VLVN"));
-
-    QCommandLineOption targetView(QStringList() << QStringLiteral("w") << QStringLiteral("target-view"), 
-        QStringLiteral("The component view to use in generation."), QStringLiteral("view name"));
-
-    QCommandLineOption outputDirectory(QStringList() << QStringLiteral("o") << QStringLiteral("output"), 
-        QStringLiteral("The output directory for generation."), QStringLiteral("path"), 
-        QStringLiteral("generated_verilog"));
-
-    parser->addOption(targetComponent);
-    parser->addOption(targetView);
-    parser->addOption(outputDirectory);
-
-    return parser;
+    else
+    {
+        utility->printInfo(tr("Generation failed."));
+    }
 }

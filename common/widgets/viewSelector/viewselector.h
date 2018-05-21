@@ -9,7 +9,6 @@
 #define VIEWSELECTOR_H
 
 #include <IPXACTmodels/Component/Component.h>
-#include <common/Global.h>
 
 #include <QComboBox>
 #include <QSharedPointer>
@@ -17,7 +16,7 @@
 /*! \brief This combo box can be used to select a view within a component.
  *
  */
-class KACTUS2_API ViewSelector : public QComboBox {
+class ViewSelector : public QComboBox {
 	Q_OBJECT
 
 public:

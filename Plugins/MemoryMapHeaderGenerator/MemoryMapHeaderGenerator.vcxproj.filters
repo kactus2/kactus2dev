@@ -130,6 +130,15 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\widgets\viewSelector\viewselector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_viewselector.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_viewselector.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memorymapheadergenerator_global.h">
@@ -190,6 +199,9 @@
     </CustomBuild>
     <CustomBuild Include="fileSaveDialog\filesavedialogview.h">
       <Filter>Header Files\fileSaveDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\common\widgets\viewSelector\viewselector.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

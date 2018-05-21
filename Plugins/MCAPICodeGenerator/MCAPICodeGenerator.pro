@@ -4,21 +4,28 @@
 
 TEMPLATE = lib
 TARGET = MCAPICodeGenerator
-DESTDIR = ../../executable/Plugins
+
 QT += core xml widgets gui
 CONFIG += c++11 plugin release
-DEFINES += MCAPICODEGENERATOR_LIB QT_DLL QT QT_WIDGETS_LIB QT_XML_LIB QT_
+
+DEFINES += MCAPICODEGENERATOR_LIB
+
 INCLUDEPATH += ./../.. \
-    ./GeneratedFiles \
+    ./generatedFiles \
     . \
     $(QTDIR)/../qttools/include 
+
 LIBS += -L"./../../executable" \
     -lIPXACTmodels
+
+DESTDIR = ../../executable/Plugins
+
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
+MOC_DIR += ./generatedFiles/release
 OBJECTS_DIR += release
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
+
 include(MCAPICodeGenerator.pri)
 
 target.path = $$plugin_path

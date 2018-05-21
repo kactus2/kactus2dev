@@ -38,7 +38,6 @@
 #include <QStringList>
 #include <QFile>
 #include <QPointF>
-#include <QVector2D>
 
 class ConnectionRoute;
 class InterfaceGraphicsData;

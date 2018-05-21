@@ -4,21 +4,27 @@
 
 TEMPLATE = lib
 TARGET = MakefileGenerator
-DESTDIR = ../../executable/Plugins
+
 QT += core xml widgets gui
+
 CONFIG += c++11 plugin release
-DEFINES += QT_DLL QT_XML_LIB MAKEFILEGENERATOR_LIB QT_WIDGETS_LIB
+DEFINES += MAKEFILEGENERATOR_LIB
+
 INCLUDEPATH += ./../.. \
-    ./GeneratedFiles \
+    ./generatedFiles \
     . \
     $(QTDIR)/../qttools/include 
+
 LIBS += -L"./../../executable" \
     -lIPXACTmodels
+	
+DESTDIR = ../../executable/Plugins
+
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
+MOC_DIR += ./generatedFiles/release
 OBJECTS_DIR += release
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
 include(MakefileGenerator.pri)
 
 target.path = $$plugin_path

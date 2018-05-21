@@ -12,8 +12,6 @@
 #ifndef MESSAGECONSOLE_H
 #define MESSAGECONSOLE_H
 
-#include <common/Global.h>
-
 #include <QPlainTextEdit>
 #include <QAction>
 #include <QContextMenuEvent>

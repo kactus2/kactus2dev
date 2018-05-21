@@ -4,11 +4,12 @@
 
 TEMPLATE = lib
 TARGET = QuartusPinImportPlugin
-DESTDIR = ../../executable/Plugins
+
 QT += core xml widgets gui
 CONFIG += c++11 plugin release
-DEFINES += QT_DLL QUARTUSPINIMPORTPLUGIN_LIB QT_WIDGETS_LIB QT_XML_LIB
-INCLUDEPATH += ./GeneratedFiles \
+DEFINES += QUARTUSPINIMPORTPLUGIN_LIB
+
+INCLUDEPATH += ./generatedFiles \
     . \
     $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
     $(QTDIR)/../qtxmlpatterns/include \
@@ -16,11 +17,15 @@ INCLUDEPATH += ./GeneratedFiles \
     ./../..
 LIBS += -L"./../../executable" \
     -lIPXACTmodels
+
+DESTDIR = ../../executable/Plugins
+
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
+MOC_DIR += ./generatedFiles/release
 OBJECTS_DIR += release
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
+
 include(QuartusPinImportPlugin.pri)
 
 target.path = $$plugin_path

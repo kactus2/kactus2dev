@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
-#include <designEditors/common/ColumnTypes.h>
+#include <editors/common/ColumnTypes.h>
 
 #include <QtTest>
 #include <QDomNode>

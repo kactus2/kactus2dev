@@ -4,23 +4,30 @@
 
 TEMPLATE = lib
 TARGET = MemoryViewGenerator
-DESTDIR = ../../executable/Plugins
+
 QT += core xml widgets gui
 CONFIG += c++11 plugin release
-DEFINES += MEMORYVIEWGENERATOR_LIB QT_DLL QT_HELP_LIB QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
-INCLUDEPATH += ./GeneratedFiles \
+
+DEFINES += MEMORYVIEWGENERATOR_LIB
+
+INCLUDEPATH += ./generatedFiles \
     . \
     ./../.. \
     $(QTDIR)/../qttools/include \
-    ./GeneratedFiles/Release
+    ./generatedFiles/Release
 LIBS += -L"./../../executable" \
     -lIPXACTmodels
+
 DEPENDPATH += . \
     ./../../.. \
-MOC_DIR += ./GeneratedFiles/release
+
+DESTDIR = ../../executable/Plugins
+
+MOC_DIR += ./generatedFiles/release
 OBJECTS_DIR += release
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
+
 include(MemoryViewGenerator.pri)
 
 target.path = $$plugin_path

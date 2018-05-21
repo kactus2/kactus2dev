@@ -33,6 +33,9 @@ public:
     tst_MakefileGenerator();
 
 private slots:
+
+    void cleanupTestCase();
+
     void baseCase();
 
 	// Overrides.
@@ -122,9 +125,18 @@ private:
     PluginUtilityAdapter utilityMock_;    
 };
 
-tst_MakefileGenerator::tst_MakefileGenerator(): library_( this ), messageChannel_(), 
+tst_MakefileGenerator::tst_MakefileGenerator(): library_( this ), outputDir_("testOutput"), messageChannel_(), 
     utilityMock_(&library_, &messageChannel_, QString(), 0)
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MakefileGenerator::cleanupTestCase()
+//-----------------------------------------------------------------------------
+void tst_MakefileGenerator::cleanupTestCase()
+{
+   QDir outputDirectory(outputDir_);
+   outputDirectory.removeRecursively();
 }
 
 // A rather basic and secure case testing that all the needed lines come for one file.
@@ -744,7 +756,7 @@ void tst_MakefileGenerator::multipleComponents()
     QString hardInstaName = "firmware";
     createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftInsta,"crapware_0");
+    QSharedPointer<Component> asw = createSW("testware", hwInstanceName, design, "default", desgconf, asoftInsta,"testware_0");
     QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftInsta,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftInsta);
@@ -775,7 +787,7 @@ void tst_MakefileGenerator::multipleComponents()
 	QSharedPointer<MakeFileData> data1 = datas->first();
 	QCOMPARE( data1->swObjects.size(), 2 );
 	QCOMPARE( data1->componentInstantiationFlags.contains("-amw"), true );
-	QCOMPARE( data1->name, QString("crapware_0") );
+	QCOMPARE( data1->name, QString("testware_0") );
 
 	QCOMPARE( data1->swObjects.at(0)->compiler, QString("hopo" ) );
 	QCOMPARE( data1->swObjects.at(0)->fileName, QString("array.c") );
@@ -812,7 +824,7 @@ void tst_MakefileGenerator::multipleHardWare()
     createHW("Lenit_0", design, "firmware", desgconf, ahardInsta, "Lenit");
     createHW("MAR_0", design, "firmware", desgconf, bhardInsta, "MAR");
 
-    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", desgconf, asoftInsta,"crapware_0");
+    QSharedPointer<Component> asw = createSW("testware", "Lenit_0", design, "default", desgconf, asoftInsta,"testware_0");
     QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", desgconf, bsoftInsta,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftInsta);
@@ -845,7 +857,7 @@ void tst_MakefileGenerator::multipleHardWare()
 	QCOMPARE( datas->size(), 2 );
 	QSharedPointer<MakeFileData> data1 = datas->first();
 	QCOMPARE( data1->swObjects.size(), 2 );
-	QCOMPARE( data1->name, QString("crapware_0") );
+	QCOMPARE( data1->name, QString("testware_0") );
 	QCOMPARE( data1->hardPart->buildCmd->getCommand(), QString("hopo") );
 	QCOMPARE( data1->hardPart->buildCmd->getFlags(), QString("-ahw") );
 
@@ -887,7 +899,7 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     QSharedPointer<Component> hw = createHW("Lenit_0", design, "firmware", desgconf, ahardInsta, "Lenit");
     createHW("MAR_0", design, "firmware", desgconf, bhardInsta, "MAR");
 
-    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", desgconf, asoftInsta,"crapware_0");
+    QSharedPointer<Component> asw = createSW("testware", "Lenit_0", design, "default", desgconf, asoftInsta,"testware_0");
     QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", desgconf, bsoftInsta,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftInsta);
@@ -926,7 +938,7 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
 	QCOMPARE( datas->size(), 2 );
 	QSharedPointer<MakeFileData> data1 = datas->first();
 	QCOMPARE( data1->swObjects.size(), 3 );
-	QCOMPARE( data1->name, QString("crapware_0") );
+	QCOMPARE( data1->name, QString("testware_0") );
 
 	QCOMPARE( data1->swObjects.at(0)->fileName, QString("array.c") );
 	QCOMPARE( data1->swObjects.at(1)->fileName, QString("support.c") );
@@ -968,7 +980,7 @@ void tst_MakefileGenerator::multipleInstances()
 	QSharedPointer<QList<QSharedPointer<ComponentInstance> > > ComponentInstances = design->getComponentInstances();
 	ComponentInstances->append(softInstance);
 	design->setComponentInstances(ComponentInstances);
-	library_.writeModelToFile("polku/stackware",sw);
+	library_.writeModelToFile("testOutput/stackware",sw);
 
 	QSharedPointer<FileSet> fileSet = addFileSet(sw, "FileSet", softInsta);
 
@@ -1020,7 +1032,7 @@ void tst_MakefileGenerator::noHardWare()
 	makeParser.parse( topComponent );
 
     MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
-	generator.generate(outputDir_,outputDir_,"tsydemi");
+	generator.generate(outputDir_, outputDir_, "tsydemi");
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 0 );
 }
@@ -1125,13 +1137,13 @@ void tst_MakefileGenerator::apiUsage()
     QString hardInstaName = "firmware";
     createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftInsta,"crapware_0");
+	QSharedPointer<Component> asw = createSW("testware", hwInstanceName, design, "default", desgconf, asoftInsta,"testware_0");
 	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
 	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftInsta,"stackware_0");
 	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
-	addAPIConnection(design,"crapware_0","apina","stackware_0","banaani");
+	addAPIConnection(design,"testware_0","apina","stackware_0","banaani");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftInsta);
 	QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftInsta);
@@ -1180,7 +1192,7 @@ void tst_MakefileGenerator::threeLevelStack()
     QString hardInstaName = "firmware";
     createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftInsta,"crapware_0");
+	QSharedPointer<Component> asw = createSW("testware", hwInstanceName, design, "default", desgconf, asoftInsta,"testware_0");
 	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
 	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftInsta,"stackware_0");
@@ -1191,7 +1203,7 @@ void tst_MakefileGenerator::threeLevelStack()
 	addAPI(bsw, "stackDriver", DEPENDENCY_REQUESTER);
 	addAPI(gsw, "driverStack", DEPENDENCY_PROVIDER);
 
-	addAPIConnection(design, "crapware_0","apina","stackware_0","banaani");
+	addAPIConnection(design, "testware_0","apina","stackware_0","banaani");
 	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftInsta);
@@ -1306,7 +1318,7 @@ void tst_MakefileGenerator::circularapiUsage()
     QString hardInstaName = "firmware";
     createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftInsta,"crapware_0");
+    QSharedPointer<Component> asw = createSW("testware", hwInstanceName, design, "default", desgconf, asoftInsta,"testware_0");
 	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
 	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftInsta,"stackware_0");
@@ -1326,7 +1338,7 @@ void tst_MakefileGenerator::circularapiUsage()
 	QSharedPointer<ApiInterface> upBottom = QSharedPointer<ApiInterface>(new ApiInterface );
 	addAPI(bsw, "upBottom", DEPENDENCY_PROVIDER);;
 
-	addAPIConnection(design, "crapware_0","apina","stackware_0","banaani");
+	addAPIConnection(design, "testware_0","apina","stackware_0","banaani");
 	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
 	addAPIConnection(design, "stackware_0","upBottom","driver_0","bottomUp");
 
@@ -1383,7 +1395,7 @@ void tst_MakefileGenerator::sameFileSeparateExe()
 	QString hardInstaName = "firmware";
 	createHW(hwInstanceName, design, hardInstaName, desgconf, hardInsta);
 
-	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftInsta,"crapware_0");
+	QSharedPointer<Component> asw = createSW("testware", hwInstanceName, design, "default", desgconf, asoftInsta,"testware_0");
 	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftInsta,"stackware_0");
 
 	QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftInsta);
@@ -1690,7 +1702,7 @@ void tst_MakefileGenerator::multiFileGeneration()
 	makeData2->hardPart = QSharedPointer<StackPart>(new StackPart);
 	makeData2->hardPart->buildCmd = QSharedPointer<FileBuilder>(new FileBuilder());
 	makeData2->hardPart->buildCmd->setCommand("j33");
-	makeData2->name = "crapware_0";
+	makeData2->name = "testware_0";
 	makeData2->hardPart->buildCmd->setFlags("-yks");
 	makeData2->componentInstantiationFlags.append("-kaks");
 	makeData2->makeName = makeData2->name + ".mak";
@@ -1711,11 +1723,11 @@ void tst_MakefileGenerator::multiFileGeneration()
 	verifyOutputContains("software_0", "gcc " + DEFAULT_OBJECT_FLAGS +
 		" $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 
-	verifyOutputContains("crapware_0", "_OBJ= support.c.o");
-	verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -yks -kaks");
-	verifyOutputContains("crapware_0", "ENAME= crapware_0");
-	verifyOutputContains("crapware_0", "EBUILDER= j33");
-	verifyOutputContains("crapware_0", "super-asm " + DEFAULT_OBJECT_FLAGS +
+	verifyOutputContains("testware_0", "_OBJ= support.c.o");
+	verifyOutputContains("testware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -yks -kaks");
+	verifyOutputContains("testware_0", "ENAME= testware_0");
+	verifyOutputContains("testware_0", "EBUILDER= j33");
+	verifyOutputContains("testware_0", "super-asm " + DEFAULT_OBJECT_FLAGS +
 		" $(ODIR)/support.c.o /support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -a -b");
 }
 
@@ -1811,7 +1823,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Des
     topComponent->setImplementation(KactusAttribute::SYSTEM);
     
     library_.addComponent(topComponent);
-    library_.writeModelToFile("polku/master-plan",topComponent);
+    library_.writeModelToFile(outputDir_ + "/master-plan",topComponent);
 
     outputDir_ = QFileInfo(library_.getPath(topVLNV)).absolutePath();
 
@@ -1853,7 +1865,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QStrin
     ComponentInstances->append(softInstance);
     design->setComponentInstances(ComponentInstances);
     library_.addComponent(swComponent);
-    library_.writeModelToFile("polku/" + swName, swComponent);
+    library_.writeModelToFile("testOutput/" + swName, swComponent);
 
     softInsta = QSharedPointer<ComponentInstantiation>(new ComponentInstantiation);
     softInsta->setName(softInstaName);
@@ -1884,7 +1896,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createHW(QString const& hwInsta
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances = design->getComponentInstances();
     instances->append(hwInstance);
     library_.addComponent(hwComponent);
-    library_.writeModelToFile("polku/" + hwName, hwComponent);
+    library_.writeModelToFile("testOutput/" + hwName, hwComponent);
 
     hardInsta = QSharedPointer<ComponentInstantiation>(new ComponentInstantiation);
     hardInsta->setName(hardInstaName);

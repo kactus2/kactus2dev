@@ -14,8 +14,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <designEditors/HWDesign/HWDesignDiagram.h>
-#include <designEditors/common/DesignWidget.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/common/DesignWidget.h>
 
 #include <QString>
 #include <QKeyEvent>

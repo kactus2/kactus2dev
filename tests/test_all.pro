@@ -14,8 +14,6 @@ TEMPLATE = subdirs
 CONFIG += testcase
 
 SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
-		editors/editors.pro \
-		wizards/wizards.pro \
-		Plugins/plugins.pro \
-        kactusGenerators/kactusGenerators.pro \
-		mainwindow/mainwindow.pro
+		Core/Core.pro \
+		Plugins/Plugins.pro
+        

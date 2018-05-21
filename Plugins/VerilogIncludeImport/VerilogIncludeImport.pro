@@ -4,21 +4,28 @@
 
 TEMPLATE = lib
 TARGET = VerilogIncludeImport
-DESTDIR = ../../executable/Plugins
+
 QT += core xml widgets gui
 CONFIG += c++11 release
-DEFINES += QT_DLL QT_WIDGETS_LIB VERILOGINCLUDEIMPORT_LIB QT_XML_LIB
+
+
+DEFINES += VERILOGINCLUDEIMPORT_LIB
 INCLUDEPATH += ./../.. \
-    ./GeneratedFiles \
+    ./generatedFiles \
     . \
-    ./GeneratedFiles/Debug
+    ./generatedFiles/Release
+
 LIBS += -L"./../../executable" \
     -lIPXACTmodels
+
+DESTDIR = ../../executable/Plugins
+
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/debug
+MOC_DIR += ./generatedFiles/debug
 OBJECTS_DIR += debug
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
+
 include(VerilogIncludeImport.pri)
 
 target.path = $$plugin_path

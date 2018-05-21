@@ -4,22 +4,24 @@
 
 TEMPLATE = lib
 TARGET = CppSourceAnalyzer
-DESTDIR = ../../executable/Plugins
+
 QT += core xml widgets gui
+
 CONFIG += c++11 plugin release
-DEFINES += CPPSOURCEANALYZER_LIB QT_XML_LIB QT_XMLPATTERNS_LIB QT_DLL QT_HELP_LIB QT_WIDGETS_LIB
-INCLUDEPATH += ./GeneratedFiles \
+DEFINES += CPPSOURCEANALYZER_LIB
+
+INCLUDEPATH += ./generatedFiles \
     . \
-    ./../.. \
-    $(QTDIR)/../qttools/include \
-    $(QTDIR)/../qttools/include/QtHelp
-LIBS += -L"./../../executable" \
-    -lKactus2
+    ./../.. 
+
+DESTDIR = ../../executable/Plugins
+
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
+MOC_DIR += ./generatedFiles/release
 OBJECTS_DIR += release
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
+
 include(CppSourceAnalyzer.pri)
 
 target.path = $$plugin_path

@@ -8,7 +8,8 @@
 #ifndef ALTERABSPGENERATORDIALOG_H
 #define ALTERABSPGENERATORDIALOG_H
 
-#include <commandLineGeneratorDialog/commandlinegeneratordialog.h>
+#include "commandlinegeneratordialog.h"
+
 #include <common/widgets/viewSelector/viewselector.h>
 
 #include <IPXACTmodels/Component/Component.h>

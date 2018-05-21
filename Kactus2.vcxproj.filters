@@ -4432,9 +4432,9 @@
     <ClCompile Include="GeneratedFiles\moc_SystemDesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Kactus2.rc" />
+    <ClCompile Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6745,6 +6745,9 @@
     </ClInclude>
     <ClInclude Include="editors\SystemDesign\HWMappingItem.h">
       <Filter>Header Files\editors\SystemDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

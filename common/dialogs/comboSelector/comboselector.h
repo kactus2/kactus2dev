@@ -8,8 +8,6 @@
 #ifndef COMBOSELECTOR_H
 #define COMBOSELECTOR_H
 
-#include <common/Global.h>
-
 #include <QInputDialog>
 #include <QString>
 
@@ -20,7 +18,7 @@ class Component;
  * This dialog displays a list of options that user can choose from in a 
  * combo box. User can also define an own option and select it.
  */
-class KACTUS2_API ComboSelector : public QInputDialog {
+class ComboSelector : public QInputDialog {
 	Q_OBJECT
 
 public:

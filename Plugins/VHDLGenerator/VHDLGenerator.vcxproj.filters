@@ -31,15 +31,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="VHDLGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VHDLGenerator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VHDLGenerator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_VHDLGenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -133,6 +124,21 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ViewSelectionWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\HDLParser\HDLCommandLineParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VHDLGeneratorPlugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_VHDLGeneratorPlugin.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_VHDLGeneratorPlugin.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VHDLGenerator_global.h">
@@ -198,11 +204,14 @@
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\HDLParser\HDLCommandLineParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="VHDLGenerator.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="VHDLGenerator.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
@@ -216,6 +225,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="VHDLGeneratorPlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
