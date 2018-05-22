@@ -112,7 +112,7 @@ void NameGroupEditor::refresh()
 void NameGroupEditor::setupLayout()
 {
     // set the maximum height and width for this widget
-    setMaximumHeight(NameGroupEditor::MAX_EDITOR_HEIGHT);
+    //setMaximumHeight(NameGroupEditor::MAX_EDITOR_HEIGHT);
 
     // the layout manager for this widget
     QGridLayout* layout = new QGridLayout(this);
@@ -138,6 +138,7 @@ void NameGroupEditor::setupLayout()
 
     descriptionEdit_.setToolTip(tr("Set the description for the element"));
     layout->addWidget(&descriptionEdit_, 2, 1, 1, 1);
+    layout->setRowStretch(2,1);
 
     connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
         this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);

@@ -592,13 +592,15 @@ void SingleFieldEditor::setupLayout()
     fieldConstraintLayout->addRow(tr("Write constraint minimum, f(x):"), writeConstraintMinLimit_);
     fieldConstraintLayout->addRow(tr("Write constraint maximum, f(x):"), writeConstraintMaxLimit_);
 
-    QVBoxLayout* topLeftOfPageLayout = new QVBoxLayout();
-    topLeftOfPageLayout->addWidget(&nameEditor_, 0,Qt::AlignTop);
-    topLeftOfPageLayout->addWidget(fieldDefinitionGroup);
+
+    QVBoxLayout* topRightOfPageLayout = new QVBoxLayout();
+    topRightOfPageLayout->addWidget(fieldConstraintGroup, 0 ,Qt::AlignTop);
+    topRightOfPageLayout->addWidget(fieldDefinitionGroup);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addLayout(topLeftOfPageLayout, 0);
-    topOfPageLayout->addWidget(fieldConstraintGroup, 0);
+    topOfPageLayout->addWidget(&nameEditor_, 0);
+    topOfPageLayout->addLayout(topRightOfPageLayout, 0);
+
 
     QWidget* topOfPageWidget = new QWidget();
     topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
