@@ -13,15 +13,19 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
-#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
-#include <IPXACTmodels/Design/Design.h>
-
-#include <IPXACTmodels/Component/Cpu.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/Cpu.h>
+
+#include <IPXACTmodels/Design/Design.h>
 
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>
 
@@ -43,6 +47,10 @@ private slots:
 
     void testWriteSimpleConnection();
     
+    void testWriteMultipleCPUs();
+
+    void testAddressChange();
+
 private:
 
     QString runGenerator(QString const& activeView);
@@ -53,11 +61,20 @@ private:
     QSharedPointer<Cpu> createCPU(QString const& cpuName, QString const& spaceReference,
         QSharedPointer<Component> containingComponent) const;
 
+    QSharedPointer<BusInterface> createMasterBusInterface(QString const& busName,
+        QSharedPointer<AddressSpace> referencedSpace, QSharedPointer<Component> containingComponent) const;
+
+    QSharedPointer<BusInterface> createSlaveBusInterface(QString const& busName,
+        QSharedPointer<MemoryMap> referencedMap, QSharedPointer<Component> containingComponent) const;
+
     QSharedPointer<BusInterface> createBusInterface(QString const& busName, General::InterfaceMode mode,
         QSharedPointer<Component> containingComponent) const;
 
     QSharedPointer<MemoryMap> createMemoryMap(QString const& mapName,
         QSharedPointer<Component> containingComponent) const;
+
+    void createBlockForMap(QString const& blockName, QString const& blockBaseAddress, QString const& blockWidth,
+        QString const& blockRange, QSharedPointer<MemoryMap> targetMap);
 
     QSharedPointer<ComponentInstance> createComponentInstance(VLNV const& vlnv, QString const& name,
         QString const& id, QSharedPointer<Design> design) const;
@@ -137,16 +154,16 @@ void tst_LinuxDeviceTreeGenerator::testWriteSimpleCPU()
     topComponent_->getViews()->append(testView);
 
     QString output = runGenerator(testView->name());
-    QString expectedOutPut = "/dts-v1/;\n\n"
+    QString expectedOutPut = "/dts-v0/;\n\n"
         "/ {\n"
             "\tcpus {\n"
-                "\t\taddress-cells = <1>;\n"
-                "\t\tsize-cells = <1>;\n"
+                "\t\t#address-cells = <1>;\n"
+                "\t\t#size-cells = <1>;\n\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
                 "\t\t};\n"
             "\t};\n"
-        "};\n";
+        "};\n\n";
 
     QCOMPARE(output, expectedOutPut);
 }
@@ -163,16 +180,16 @@ void tst_LinuxDeviceTreeGenerator::testWriteSimpleConnection()
         createAddressSpace(QStringLiteral("testSpace"), "16", "16", cpuComponent);
     QSharedPointer<Cpu> testCPU = createCPU("testCPU", testSpace->name(), cpuComponent);
 
-    QSharedPointer<BusInterface> cpuBus = createBusInterface("topBus", General::MASTER, cpuComponent);
+    QSharedPointer<BusInterface> cpuBus = createMasterBusInterface("topBus", testSpace, cpuComponent);
 
     VLNV mapVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "MapComponent", "1.0");
     QSharedPointer<Component> mapComponent (new Component(mapVlnv));
 
-    QSharedPointer<MemoryMap> testMap = createMemoryMap("testMap", mapComponent);
-    QSharedPointer<BusInterface> mapBus = createBusInterface("mapBus", General::SLAVE, mapComponent);
+    library_->addComponent(cpuComponent);
+    library_->addComponent(mapComponent);
 
-    mapComponent->getMemoryMaps()->append(testMap);
-    mapComponent->getBusInterfaces()->append(mapBus);
+    QSharedPointer<MemoryMap> testMap = createMemoryMap("testMap", mapComponent);
+    QSharedPointer<BusInterface> mapBus = createSlaveBusInterface("mapBus", testMap, mapComponent);
 
     QSharedPointer<ComponentInstance> cpuInstance =
         createComponentInstance(cpuVLNV, "cpuInstance", "cpuID", design_);
@@ -191,17 +208,187 @@ void tst_LinuxDeviceTreeGenerator::testWriteSimpleConnection()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut = "/dts-v1/;\n\n"
+    QString expectedOutPut =
+        "/dts-v0/;\n\n"
         "/ {\n"
             "\tcpus {\n"
-                "\t\taddress-cells = <1>;\n"
-                "\t\tsize-cells = <1>;\n"
+                "\t\t#address-cells = <1>;\n"
+                "\t\t#size-cells = <1>;\n\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
                 "\t\t};\n"
-            "\t};\n"
+            "\t};\n\n"
+            "\ttestMap@0 {\n"
+            "\t\treg = <0x0 0x0>;\n"
+            "\t};\n\n"
+        "};\n\n";
 
-        "};\n";
+    QCOMPARE(output, expectedOutPut);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::testWriteMultipleCPUs()
+//-----------------------------------------------------------------------------
+void tst_LinuxDeviceTreeGenerator::testWriteMultipleCPUs()
+{
+    //! 1st CPU
+    VLNV cpuVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "testCPU", "1.0");
+    QSharedPointer<Component> cpuComponent(new Component(cpuVLNV));
+
+    QSharedPointer<AddressSpace> testSpace =
+        createAddressSpace(QStringLiteral("testSpace"), "16", "16", cpuComponent);
+    QSharedPointer<Cpu> testCPU = createCPU("testCPU", testSpace->name(), cpuComponent);
+    QSharedPointer<BusInterface> cpuBus = createMasterBusInterface("CPUBus", testSpace, cpuComponent);
+
+    //! 2nd CPU
+    VLNV cpuVLNV2(VLNV::COMPONENT, "Test", "TestLibrary", "testCPU2", "1.0");
+    QSharedPointer<Component> secondCpuComponent(new Component(cpuVLNV2));
+
+    QSharedPointer<AddressSpace> secondCPUSpace =
+        createAddressSpace(QStringLiteral("secondCPUSpace"), "16", "16", secondCpuComponent);
+    QSharedPointer<Cpu> secondTestCPU = createCPU("secondTestCPU", secondCPUSpace->name(), secondCpuComponent);
+    QSharedPointer<BusInterface> secondCpuBus =
+        createMasterBusInterface("secondCPUBus", secondCPUSpace, secondCpuComponent);
+
+    //! 1st Map
+    VLNV mapVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "MapComponent", "1.0");
+    QSharedPointer<Component> mapComponent(new Component(mapVlnv));
+
+    QSharedPointer<MemoryMap> testMap = createMemoryMap("testMap", mapComponent);
+    QSharedPointer<BusInterface> mapBus = createSlaveBusInterface("mapBus", testMap, mapComponent);
+
+    //! 2nd Map
+    VLNV secondMapVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "SecondMapComponent", "1.0");
+    QSharedPointer<Component> secondMapComponent(new Component(secondMapVlnv));
+
+    QSharedPointer<MemoryMap> secondTestMap = createMemoryMap("secondTestMap", secondMapComponent);
+    QSharedPointer<BusInterface> secondMapBus =
+        createSlaveBusInterface("secondMapBus", secondTestMap, secondMapComponent);
+
+    library_->addComponent(cpuComponent);
+    library_->addComponent(secondCpuComponent);
+    library_->addComponent(mapComponent);
+    library_->addComponent(secondMapComponent);
+
+    QSharedPointer<ComponentInstance> cpuInstance =
+        createComponentInstance(cpuVLNV, "cpuInstance", "cpuID", design_);
+    QSharedPointer<ComponentInstance> mapInstance =
+        createComponentInstance(mapVlnv, "mapInstance", "mapID", design_);
+    QSharedPointer<ComponentInstance> secondCpuInstance =
+        createComponentInstance(cpuVLNV2, "secondCpuInstance", "secondCpuID", design_);
+    QSharedPointer<ComponentInstance> secondMapInstance =
+        createComponentInstance(secondMapVlnv, "secondMapInstance", "secondMapID", design_);
+
+    QSharedPointer<ActiveInterface> cpuInterface(
+        new ActiveInterface(cpuInstance->getInstanceName(), cpuBus->name()));
+    QSharedPointer<ActiveInterface> mapInterface(
+        new ActiveInterface(mapInstance->getInstanceName(), mapBus->name()));
+    QSharedPointer<ActiveInterface> secondCpuInterface(
+        new ActiveInterface(secondCpuInstance->getInstanceName(), secondCpuBus->name()));
+    QSharedPointer<ActiveInterface> secondMapInterface(
+        new ActiveInterface(secondMapInstance->getInstanceName(), secondMapBus->name()));
+
+    QSharedPointer<Interconnection> testConnection(new Interconnection());
+    testConnection->setStartInterface(cpuInterface);
+    testConnection->getActiveInterfaces()->append(mapInterface);
+
+    QSharedPointer<Interconnection> secondTestConnection(new Interconnection());
+    secondTestConnection->setStartInterface(secondCpuInterface);
+    secondTestConnection->getActiveInterfaces()->append(secondMapInterface);
+
+    design_->getInterconnections()->append(testConnection);
+    design_->getInterconnections()->append(secondTestConnection);
+
+    QString output = runGenerator(hierarchicalView_->name());
+
+    QString expectedOutPut =
+        "/dts-v0/;\n\n"
+        "/ {\n"
+            "\tcpus {\n"
+                "\t\t#address-cells = <1>;\n"
+                "\t\t#size-cells = <1>;\n\n"
+                "\t\tcpu@0 {\n"
+                    "\t\t\treg = <0>;\n"
+                "\t\t};\n"
+            "\t};\n\n"
+            "\ttestMap@0 {\n"
+                "\t\treg = <0x0 0x0>;\n"
+            "\t};\n\n"
+        "};\n\n"
+        "/dts-v1/;\n\n"
+        "/ {\n"
+            "\tcpus {\n"
+                "\t\t#address-cells = <1>;\n"
+                "\t\t#size-cells = <1>;\n\n"
+                "\t\tcpu@0 {\n"
+                    "\t\t\treg = <0>;\n"
+                "\t\t};\n"
+            "\t};\n\n"
+            "\tsecondTestMap@0 {\n"
+                "\t\treg = <0x0 0x0>;\n"
+            "\t};\n\n"
+        "};\n\n";
+
+    QCOMPARE(output, expectedOutPut);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::testAddressChange()
+//-----------------------------------------------------------------------------
+void tst_LinuxDeviceTreeGenerator::testAddressChange()
+{
+    VLNV cpuVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "testCPU", "1.0");
+    QSharedPointer<Component> cpuComponent(new Component(cpuVLNV));
+
+    QSharedPointer<AddressSpace> testSpace =
+        createAddressSpace(QStringLiteral("testSpace"), "16", "16", cpuComponent);
+    QSharedPointer<Cpu> testCPU = createCPU("testCPU", testSpace->name(), cpuComponent);
+
+    QSharedPointer<BusInterface> cpuBus = createMasterBusInterface("topBus", testSpace, cpuComponent);
+    cpuBus->getMaster()->setBaseAddress(QString("10"));
+
+    VLNV mapVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "MapComponent", "1.0");
+    QSharedPointer<Component> mapComponent(new Component(mapVlnv));
+
+    library_->addComponent(cpuComponent);
+    library_->addComponent(mapComponent);
+
+    QSharedPointer<MemoryMap> testMap = createMemoryMap("testMap", mapComponent);
+    createBlockForMap(QString("testBlock"), QString("0"), QString("8"), QString("16"), testMap);
+
+    QSharedPointer<BusInterface> mapBus = createSlaveBusInterface("mapBus", testMap, mapComponent);
+
+    QSharedPointer<ComponentInstance> cpuInstance =
+        createComponentInstance(cpuVLNV, "cpuInstance", "cpuID", design_);
+    QSharedPointer<ComponentInstance> mapInstance =
+        createComponentInstance(mapVlnv, "mapInstance", "mapID", design_);
+
+    QSharedPointer<ActiveInterface> cpuInterface(
+        new ActiveInterface(cpuInstance->getInstanceName(), cpuBus->name()));
+    QSharedPointer<ActiveInterface> mapInterface(
+        new ActiveInterface(mapInstance->getInstanceName(), mapBus->name()));
+
+    QSharedPointer<Interconnection> testConnection(new Interconnection());
+    testConnection->setStartInterface(cpuInterface);
+    testConnection->getActiveInterfaces()->append(mapInterface);
+    design_->getInterconnections()->append(testConnection);
+
+    QString output = runGenerator(hierarchicalView_->name());
+
+    QString expectedOutPut =
+        "/dts-v0/;\n\n"
+        "/ {\n"
+            "\tcpus {\n"
+                "\t\t#address-cells = <1>;\n"
+                "\t\t#size-cells = <1>;\n\n"
+                "\t\tcpu@0 {\n"
+                    "\t\t\treg = <0>;\n"
+                "\t\t};\n"
+            "\t};\n\n"
+                "\ttestMap@a {\n"
+                "\t\treg = <0xa 0x19>;\n"
+            "\t};\n\n"
+        "};\n\n";
 
     QCOMPARE(output, expectedOutPut);
 }
@@ -254,6 +441,42 @@ QSharedPointer<Cpu> tst_LinuxDeviceTreeGenerator::createCPU(QString const& cpuNa
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::createMasterBusInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<BusInterface> tst_LinuxDeviceTreeGenerator::createMasterBusInterface(QString const& busName,
+    QSharedPointer<AddressSpace> referencedSpace, QSharedPointer<Component> containingComponent) const
+{
+    QSharedPointer<BusInterface> newMasterBus = createBusInterface(busName, General::MASTER, containingComponent);
+
+    if (referencedSpace)
+    {
+        QSharedPointer<MasterInterface> newMasterInterface(new MasterInterface());
+        newMasterInterface->setAddressSpaceRef(referencedSpace->name());
+        newMasterBus->setMaster(newMasterInterface);
+    }
+
+    return newMasterBus;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::createSlaveBusInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<BusInterface> tst_LinuxDeviceTreeGenerator::createSlaveBusInterface(QString const& busName,
+    QSharedPointer<MemoryMap> referencedMap, QSharedPointer<Component> containingComponent) const
+{
+    QSharedPointer<BusInterface> newSlaveBus = createBusInterface(busName, General::SLAVE, containingComponent);
+    
+    if (referencedMap)
+    {
+        QSharedPointer<SlaveInterface> newSlaveInterface(new SlaveInterface());
+        newSlaveInterface->setMemoryMapRef(referencedMap->name());
+        newSlaveBus->setSlave(newSlaveInterface);
+    }
+
+    return newSlaveBus;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_LinuxDeviceTreeGenerator::createBusInterface()
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterface> tst_LinuxDeviceTreeGenerator::createBusInterface(QString const& busName,
@@ -279,6 +502,20 @@ QSharedPointer<MemoryMap> tst_LinuxDeviceTreeGenerator::createMemoryMap(QString 
     containingComponent->getMemoryMaps()->append(newMap);
 
     return newMap;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::createBlockForMap()
+//-----------------------------------------------------------------------------
+void tst_LinuxDeviceTreeGenerator::createBlockForMap(QString const& blockName, QString const& blockBaseAddress,
+    QString const& blockWidth, QString const& blockRange, QSharedPointer<MemoryMap> targetMap)
+{
+    QSharedPointer<AddressBlock> newBlock(new AddressBlock(blockName));
+    newBlock->setBaseAddress(blockBaseAddress);
+    newBlock->setWidth(blockWidth);
+    newBlock->setRange(blockRange);
+
+    targetMap->getMemoryBlocks()->append(newBlock);
 }
 
 //-----------------------------------------------------------------------------
