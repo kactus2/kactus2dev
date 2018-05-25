@@ -1381,9 +1381,11 @@ bool LibraryHandler::validateDocument(QSharedPointer<Document> document, QString
 //-----------------------------------------------------------------------------
 QVector<QString> LibraryHandler::findErrorsInDocument(QSharedPointer<Document> document, QString const& path)
 {
-    Q_ASSERT(document);
-
     QVector<QString> errorList;
+    if (document.isNull())
+    {
+        return errorList;
+    }
 
     if (QFileInfo(path).exists() == false)
     {
