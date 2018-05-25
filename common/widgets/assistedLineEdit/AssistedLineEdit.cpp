@@ -14,7 +14,6 @@
 #include <cassert>
 #include <algorithm>
 #include <QFont>
-#include <QRegExp>
 #include <QApplication>
 #include <QTextBlock>
 

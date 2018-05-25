@@ -11,7 +11,6 @@
 #include "utils.h"
 
 #include <qmath.h>
-#include <QRegExp>
 
 quint64 Utils::str2Uint( const QString& str )
 {

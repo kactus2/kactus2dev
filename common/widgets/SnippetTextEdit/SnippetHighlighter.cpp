@@ -11,6 +11,8 @@
 
 #include "SnippetHighlighter.h"
 
+#include <QRegularExpression>
+
 //-----------------------------------------------------------------------------
 // Function: SnippedHighlighter::SnippedHighlighter()
 //-----------------------------------------------------------------------------
@@ -51,14 +53,18 @@ void SnippetHighlighter::highlightBlock(QString const& text)
 {
     foreach (QString const& word, magicWords_)
     {
-        QRegExp expression(QString("\\$") + word + QString("(_\\d+)?\\$"));
-        int index = expression.indexIn(text);
+        QRegularExpression expression(QString("\\$") + word + QString("(_\\d+)?\\$"));
+        
+        QRegularExpressionMatch match = expression.match(text);
+        int index = match.capturedStart();
 
         while (index >= 0)
         {
-            int length = expression.matchedLength();
+            int length = match.capturedLength();
             setFormat(index, length, Qt::blue);
-            index = expression.indexIn(text, index + length);
+
+            match = expression.match(text, index + length);
+            index = match.capturedStart();
         }
     }
 }

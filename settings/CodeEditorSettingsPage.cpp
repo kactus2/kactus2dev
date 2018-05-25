@@ -23,8 +23,8 @@
 #include <QGroupBox>
 #include <QCoreApplication>
 #include <QMessageBox>
-#include <QRegExp>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QGridLayout>
 #include <QColorDialog>
 #include <QMetaType>
@@ -224,7 +224,7 @@ void CodeEditorSettingsPage::setupLayout()
     QLabel* indentWidthLabel = new QLabel(tr("Indent width:"), indentGroup);
     indentWidthEdit_ = new QLineEdit(indentGroup);
     indentWidthEdit_->setFixedWidth(40);
-    indentWidthEdit_->setValidator(new QRegExpValidator(QRegExp("^\\d+$"), this));
+    indentWidthEdit_->setValidator(new QRegularExpressionValidator(QRegularExpression("^\\d+$"), this));
 
     QHBoxLayout* widthLayout = new QHBoxLayout();
     widthLayout->addWidget(indentWidthLabel);

@@ -15,7 +15,6 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
-#include <QRegExpValidator>
 #include <QUuid>
 
 //-----------------------------------------------------------------------------
@@ -641,29 +640,6 @@ QString const ComponentInstance::getMapping() const
     }
 
     return QString();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstance::parsePropertyValues()
-//-----------------------------------------------------------------------------
-void ComponentInstance::parsePropertyValues(QDomNode& node)
-{
-    QMap<QString, QString> newPropertyValues;
-
-    for (int i = 0; i < node.childNodes().count(); ++i)
-    {
-        QDomNode propNode = node.childNodes().at(i);
-
-        if (propNode.nodeName() == QLatin1String("kactus2:propertyValue"))
-        {
-            QString name = propNode.attributes().namedItem(QStringLiteral("kactus2:name")).nodeValue();
-            QString value = propNode.attributes().namedItem(QStringLiteral("kactus2:value")).nodeValue();
-
-            newPropertyValues.insert(name, value);
-        }
-    }
-
-    setPropertyValues(newPropertyValues);
 }
 
 //-----------------------------------------------------------------------------

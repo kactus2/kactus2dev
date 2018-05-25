@@ -17,8 +17,6 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QValidator>
-#include <QRegExpValidator>
-#include <QRegExp>
 
 //-----------------------------------------------------------------------------
 // Function: namegroupbox::NameGroupBox()

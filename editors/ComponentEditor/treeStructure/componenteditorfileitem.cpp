@@ -282,21 +282,23 @@ QString ComponentEditorFileItem::executablePath() const
 // Function: ComponentEditorFileItem::resolveEnvironmentVariables()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFileItem::resolveEnvironmentVariables(QString const& text) const
-{
-    QRegExp environmental("(\\$\\(?\\w+\\)?)");
+{    
+    QSettings settings; 
     QString parsed = text;
-    QSettings settings;
 
-    parsed.indexOf(environmental);
+    QRegularExpression environmental("(\\$\\(?\\w+\\)?)");
+    QRegularExpressionMatchIterator iter = environmental.globalMatch(text);
    
-    int variableCount = environmental.captureCount();
-    for (int i = 1; i <= variableCount; i++)            //!< i = 0 contains the whole text, skip it.
+    while (iter.hasNext())
     {
-        QString variable = environmental.cap(i);
+        QRegularExpressionMatch match = iter.next();
+
+        const QString variable = match.captured();
+
         QString variableName = variable;
         variableName.remove("$");
         
-        // Remove enclosing parathesis.
+        // Remove enclosing parenthesis.
         if (variableName.startsWith("("))
         {
             variableName = variableName.mid(1);

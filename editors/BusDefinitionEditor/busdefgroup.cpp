@@ -17,8 +17,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
-#include <QRegExpValidator>
-#include <QRegExp>
+#include <QRegularExpressionValidator>
+#include <QRegularExpression>
 #include <QSizePolicy>
 #include <QLabel>
 
@@ -44,8 +44,8 @@ extendDisplay_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this,
 
     extendDisplay_->setToolTip(QStringLiteral("Extended bus definition is not currently supported in Kactus2"));
 
-    QRegExp numberExpression(QString("[0-9]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
-    QRegExpValidator* numberValidator = new QRegExpValidator(numberExpression, this);
+    QRegularExpression numberExpression(QString("[0-9]*"));
+    QRegularExpressionValidator* numberValidator = new QRegularExpressionValidator(numberExpression, this);
     maxMastersEditor_.setValidator(numberValidator);
     maxSlavesEditor_.setValidator(numberValidator);
 

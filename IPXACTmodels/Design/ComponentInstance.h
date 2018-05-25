@@ -317,10 +317,6 @@ public:
 
 private:
     
-    /*!
-     *  Parses the property values from the given XML node.
-     */
-    void parsePropertyValues(QDomNode& node);
 
     /*!
      *  Update a positions map extension (Kactus2 extension).
