@@ -99,6 +99,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VHDLGenerator", "Plugins\VH
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IPXACTmodels", "IPXACTmodels\IPXACTmodels.vcxproj", "{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinuxDeviceTreeGenerator", "Plugins\LinuxDeviceTree\LinuxDeviceTreeGenerator.vcxproj", "{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -451,6 +453,18 @@ Global
 		{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD}.Template|x64.ActiveCfg = Release|x64
 		{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD}.Template|x64.Build.0 = Release|x64
 		{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD}.Template|x64.Deploy.0 = Release|x64
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Debug|Win32.Build.0 = Debug|Win32
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Debug|x64.ActiveCfg = Debug|x64
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Debug|x64.Build.0 = Debug|x64
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Release|Win32.ActiveCfg = Release|Win32
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Release|Win32.Build.0 = Release|Win32
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Release|x64.ActiveCfg = Release|x64
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Release|x64.Build.0 = Release|x64
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Template|Win32.ActiveCfg = Release|Win32
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Template|Win32.Build.0 = Release|Win32
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Template|x64.ActiveCfg = Release|x64
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}.Template|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -474,12 +488,13 @@ Global
 		{8FC8D073-3D03-4DE6-8605-D906431FF5E8} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{733888AA-F653-4A92-817D-25EE4AB2BE54} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD} = {9AC1D5FF-D209-4186-8C80-027639ACC2A3}
+		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.10.1
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_UpdateAssemblyVersion = True
-		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
 		SolutionGuid = {7616A0E1-C309-4245-8839-FDBE7354DBC5}
+		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
+		Qt5Version = 5.10.1
 	EndGlobalSection
 EndGlobal

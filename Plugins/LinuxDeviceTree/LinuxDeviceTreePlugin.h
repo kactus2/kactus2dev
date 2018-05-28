@@ -17,6 +17,9 @@
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/IPlugin.h>
+
+class FileSet;
 
 #include <QObject>
 
@@ -129,6 +132,31 @@ public slots:
     void onErrorReport(const QString& report);
 
 private:
+
+    /*!
+     *	Save the created device tree file to the selected file set.
+     *
+     *		@param [in]	component       Component containing the selected file set.
+     *		@param [in]	fileSetName     Name of the selected file set.
+     *		@param [in]	filePath        Path of the created device tree file.
+     */
+    void saveFileToFileSet(QSharedPointer<Component> component, QString const& fileSetName,
+        QString const& filePath);
+
+    /*!
+     *	Get the selected file set.
+     *
+     *		@param [in]	component       Component containing the selected file set.
+     *		@param [in]	fileSetName     Name of the selected file set.
+     *
+     *		@return	The selected file set.
+     */
+    QSharedPointer<FileSet> getFileSet(QSharedPointer<Component> component, QString const& fileSetName);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The plugin utility provided by call runGenerator.
     IPluginUtility* utility_;
 };

@@ -34,6 +34,72 @@
     <ClCompile Include="LinuxDeviceTreeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ParameterCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterCache.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\common\ComponentInstanceParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_LinuxDeviceTree.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LinuxDeviceTreeDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreeDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinuxDeviceTreeGenerator_global.h">
@@ -42,10 +108,72 @@
     <ClInclude Include="LinuxDeviceTreeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="LinuxDeviceTreePlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\editors\common\ComponentInstanceParameterFinder.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LinuxDeviceTree.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LinuxDeviceTreeDialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="LinuxDeviceTreeGenerator.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

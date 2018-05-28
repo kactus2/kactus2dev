@@ -8,4 +8,12 @@
     <QTDIR>C:\Users\teuhom\Local\Data\Qt\5.2.0\msvc2010</QTDIR>
     <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b"$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QTDIR>C:\Qt\Qt5.10.1\5.10.1\msvc2017_64</QTDIR>
+    <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QTDIR>C:\Qt\Qt5.10.1\5.10.1\msvc2017_64</QTDIR>
+    <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
+  </PropertyGroup>
 </Project>

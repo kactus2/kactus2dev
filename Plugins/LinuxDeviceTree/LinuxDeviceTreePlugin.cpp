@@ -12,6 +12,16 @@
 
 #include "LinuxDeviceTreePlugin.h"
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Design/Design.h>
+
+#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/LinuxDeviceTree/LinuxDeviceTreeDialog.h>
+#include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>
+
+#include <library/LibraryInterface.h>
+
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -119,43 +129,44 @@ bool LinuxDeviceTreePlugin::checkGeneratorSupport(QSharedPointer<Component const
 void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
     QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration)
 {
-    // This time, a design is required
-/*
-    if (!design)
-    {
-        utility->printError( "Sample generator got a null design." );
-    }
-*/
-
-    // This is needed as a member variable to be used more conveniently.
     utility_ = utility;
+    utility->printInfo("Running Linux Device Tree Generator " + getVersion());
 
-/*
-    // Parse the matching file sets.
-    SampleParser sparser;
-    sparser.parse(utility->getLibraryInterface(), design);
+    QFileInfo targetInfo(utility_->getLibraryInterface()->getPath(component->getVlnv()));
 
-    // Print info about results.
-    utility->printInfo(QObject::tr("Found %1 matching file sets.").arg(sparser.getParsedData()->count()));
+    QString suggestedPath = targetInfo.absolutePath();
+    suggestedPath.append(QLatin1Char('/'));
+    suggestedPath.append(component->getVlnv().getName());
+    suggestedPath.append(QStringLiteral(".dts"));
 
-    // Initialize writer, provide the parsed data, catch its error signals.
-    SampleWriter swriter(sparser.getParsedData());
-    connect(&swriter, SIGNAL(reportError(const QString&)), 
-        this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
+    LinuxDeviceTreeDialog dialog(suggestedPath, component, design->getVlnv(), utility_->getParentWidget());
 
-    // Get the path to the top component: The new file will be in the same path.
-    QString componentXmlPath = utility->getLibraryInterface()->getPath(component->getVlnv());
-    QFileInfo pathInfo(componentXmlPath);
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        QString path = dialog.getOutputPath();
+        QString activeView = dialog.getSelectedView();
 
-    // Generate.
-    swriter.write(component, pathInfo.absolutePath());
+        LinuxDeviceTreeGenerator generator(utility_->getLibraryInterface());
+        generator.generate(component, activeView, path);
 
-    // Inform when done.
-    utility->printInfo( "Sample generation complete." );
+        utility_->printInfo("Generation successful.");
 
-    // Top component may have been affected by changes -> save.
-    utility->getLibraryInterface()->writeModelToFile(component);
-*/
+        if (dialog.saveFileToFileSet())
+        {
+            QString relativePath = General::getRelativePath(targetInfo.absoluteFilePath(), suggestedPath);
+            QString targetFileSet = dialog.getTargetFileSet();
+
+            saveFileToFileSet(component, targetFileSet, relativePath);
+
+            utility->getLibraryInterface()->writeModelToFile(component);
+            utility->printInfo("File " + relativePath + " stored in fileset " + targetFileSet +
+                " within component " + component->getVlnv().toString() + ".");
+        }
+    }
+    else
+    {
+        utility->printInfo("Generation aborted.");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -172,4 +183,40 @@ QList<IPlugin::ExternalProgramRequirement> LinuxDeviceTreePlugin::getProgramRequ
 void LinuxDeviceTreePlugin::onErrorReport(const QString& report)
 {
     utility_->printError(report);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::saveFileToFileSet()
+//-----------------------------------------------------------------------------
+void LinuxDeviceTreePlugin::saveFileToFileSet(QSharedPointer<Component> component, QString const& fileSetName,
+    QString const& filePath)
+{
+    QSharedPointer<FileSet> targetFileSet = getFileSet(component, fileSetName);
+    if (targetFileSet)
+    {
+        QSettings settings;
+
+        QSharedPointer<File> deviceTreeFile = targetFileSet->addFile(filePath, settings);
+        deviceTreeFile->addFileType(QString("linuxDeviceTree"));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::getFileSet()
+//-----------------------------------------------------------------------------
+QSharedPointer<FileSet> LinuxDeviceTreePlugin::getFileSet(QSharedPointer<Component> component,
+    QString const& fileSetName)
+{
+    foreach(QSharedPointer<FileSet> fileSet, *component->getFileSets())
+    {
+        if (fileSet->name().compare(fileSetName) == 0)
+        {
+            return fileSet;
+        }
+    }
+
+    QSharedPointer<FileSet> newFileSet(new FileSet(fileSetName, QStringLiteral("generatedFiles")));
+    component->getFileSets()->append(newFileSet);
+
+    return newFileSet;
 }
