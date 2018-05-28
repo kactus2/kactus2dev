@@ -41,7 +41,7 @@ public:
         QString const& description, QString const& kactusVersion, QString const& generatorVersion);
 
 	//! The destructor.
-	~VerilogHeaderWriter();
+	~VerilogHeaderWriter() = default;
 
     /*!
      *  Writes a header to the given output.

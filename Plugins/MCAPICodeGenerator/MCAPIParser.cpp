@@ -271,7 +271,7 @@ QList<QPair<QSharedPointer<ComInterface>, PortReference> > MCAPIParser::findConn
     foreach ( QSharedPointer<ComInterconnection> connection, design->getComConnections() )
     {
         // See which end on the connection is NOT ours.
-        /*if ( ourInstance->getInstanceName() == connection->getStartInterface()->getComponentReference())
+        if ( ourInstance->getInstanceName() == connection->getStartInterface()->getComponentReference())
         {
             QSharedPointer<ComInterface> ourInterface = component->getComInterface(connection->getStartInterface()->getBusReference());
 
@@ -286,10 +286,10 @@ QList<QPair<QSharedPointer<ComInterface>, PortReference> > MCAPIParser::findConn
             }
         }
 
-        if (ourInstance->getInstanceName() == connection->getEndInterface()->getComponentReference())
+        else
         {
             QSharedPointer<ComInterface> ourInterface = component->
-                getComInterface( connection->getEndInterface()->getBusReference());
+                getComInterface(connection->getEndInterface()->getBusReference());
 
             // If our interface was not found we should not generate remote endpoint identifier for it.
             if (!ourInterface.isNull())
@@ -300,7 +300,7 @@ QList<QPair<QSharedPointer<ComInterface>, PortReference> > MCAPIParser::findConn
                     PortReference(targetInterface->getBusReference(), targetInterface->getComponentReference()));
                 connectedInterfaces.append(pair);
             }
-        }*/
+        }
     }
 
     return connectedInterfaces;

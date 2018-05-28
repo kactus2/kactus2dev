@@ -178,10 +178,10 @@ void MakefileGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
 	// Generate files from parsed data.
     MakefileGenerator generator(makeParser, utility, stackParser.getGeneralFileSet());
-    generator.mainMakeName_ = *stackParser.masterName_;
+
 	// Also the directory of the top component is needed for the generated files.
 	QString topDir = QFileInfo(library->getPath(component->getVlnv())).absolutePath(); 
-    int exe_count = generator.generate(configuration->getFileOuput()->getOutputPath(), topDir, sysViewName);
+    int exe_count = generator.generate(configuration->getFileOuput()->getOutputPath(), topDir);
 
 	// Did we actually generate anything?
 	if (exe_count > 0)

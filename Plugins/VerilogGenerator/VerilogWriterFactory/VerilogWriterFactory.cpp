@@ -34,17 +34,11 @@ VerilogWriterFactory::VerilogWriterFactory(LibraryInterface* library,
     library_(library),
     messages_(messages),
     settings_(settings),
-    kactusVersion_(kactusVersion),
     generatorVersion_(generatorVersion),
+    kactusVersion_(kactusVersion),
     sorter_(new InterfaceDirectionNameSorter())
 {
-}
 
-//-----------------------------------------------------------------------------
-// Function: VerilogWriterFactory::~VerilogWriterFactory()
-//-----------------------------------------------------------------------------
-VerilogWriterFactory::~VerilogWriterFactory()
-{
 }
 
 //-----------------------------------------------------------------------------

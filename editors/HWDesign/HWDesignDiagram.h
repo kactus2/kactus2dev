@@ -745,12 +745,11 @@ private:
      *
      *      @param [in] adHocConnection     The ad-hoc connection containing the ports.
      *      @param [in] secondaryPort       The connected internal/hierarchical port.
-     *      @param [in] primaryPort         The connected hierarchical port or component instance port.
      *      @param [in] primaryPortItem     The port item for the primary port.
      */
     void createConnectionForAdHocPorts(QSharedPointer<AdHocConnection> adHocConnection,
         QSharedPointer<PortReference> secondaryPort, 
-        QSharedPointer<PortReference> primaryPort, ConnectionEndpoint* primaryPortItem);
+        ConnectionEndpoint* primaryPortItem);
     /*!
      *  Copies component instances in a format which can be saved to clipboard.
      *

@@ -58,13 +58,6 @@ GenerationControl::GenerationControl(LibraryInterface* library,
 }
 
 //-----------------------------------------------------------------------------
-// Function: GenerationControl::~GenerationControl()
-//-----------------------------------------------------------------------------
-GenerationControl::~GenerationControl()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: GenerationControl::writeDocuments()
 //-----------------------------------------------------------------------------
 bool GenerationControl::writeDocuments()
@@ -343,7 +336,7 @@ QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleVie
         }
 
         // If it does, the instantiation must exist and VLNVs must match.
-        if (input.designConfiguration && !disg ||
+        if ((input.designConfiguration && !disg) ||
             *disg->getDesignConfigurationReference() != input.designConfiguration->getVlnv())
         {
             continue;

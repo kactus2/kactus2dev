@@ -52,7 +52,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~ComponentInstance();
+    virtual ~ComponentInstance() = default;
 
     /*!
      *  Sets the name of the instance.

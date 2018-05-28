@@ -44,66 +44,66 @@ public:
 	VerilogImporter();
 
 	//! The destructor.
-	~VerilogImporter();
+	virtual ~VerilogImporter() = default;
     
     /*!
      *  Returns the name of the plugin.
      */
-    virtual QString getName() const;
+    virtual QString getName() const override final;
 
     /*!
      *  Returns the version of the plugin.
      */
-    virtual QString getVersion() const;
+    virtual QString getVersion() const override final;
     
     /*!
      *  Returns the description of the plugin.
      */
-    virtual QString getDescription() const;
+    virtual QString getDescription() const override final;
   
     /*!
      *  Returns the vendor of the plugin.
      */
-    virtual QString getVendor() const;
+    virtual QString getVendor() const override final;
     
     /*!
      *  Returns the licence of the plugin.
      */
-    virtual QString getLicence() const;
+    virtual QString getLicence() const override final;
     
     /*!
      *  Returns the licence holder of the plugin.
      */
-    virtual QString getLicenceHolder() const;
+    virtual QString getLicenceHolder() const override final;
     
     /*!
      *  Returns the settings widget.
      */
-    virtual QWidget* getSettingsWidget();
+    virtual QWidget* getSettingsWidget() override final;
 
     /*!
      *  This is used to access the settings modified by function getSettingsWidget().
      */
-    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
+    virtual PluginSettingsModel* getSettingsModel() override final {return nullptr;}
 
     /*! 
      *   Returns the external program requirements of the plugin.
      */
-    virtual QList<ExternalProgramRequirement> getProgramRequirements();
+    virtual QList<ExternalProgramRequirement> getProgramRequirements() override final;
     
     /*!
      *  Returns the supported import file types.
      *
      *      @return The file types the import parser supports.
      */
-    virtual QStringList getSupportedFileTypes() const;
+    virtual QStringList getSupportedFileTypes() const override final;
     
     /*!
      *  Gets any compatibility warnings for the plugin.
      *
      *      @return The warning text.
      */
-    virtual QString getCompatibilityWarnings() const;
+    virtual QString getCompatibilityWarnings() const override final;
 
     /*!
      *   Parses a verilog input, sets up an rtl view and creates model parameters and ports.
@@ -111,21 +111,21 @@ public:
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to apply all imported changes to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
+    virtual void import(QString const& input, QSharedPointer<Component> targetComponent) override final;
 
     /*!
      *  Sets the given visualizer to be used by the import.
      *
      *      @param [in] visualizer   The visualizer to use.          
      */
-    virtual void setHighlighter(Highlighter* highlighter);
+    virtual void setHighlighter(Highlighter* highlighter) override final;
 
     /*!
      *  Sets the parser to use for expressions.
      *
      *      @param [in] parser   The parser to use.
      */
-    virtual void setExpressionParser(QSharedPointer<ExpressionParser> parser);
+    virtual void setExpressionParser(QSharedPointer<ExpressionParser> parser) override final;
 
 private:
 
@@ -153,9 +153,11 @@ private:
     /*!
      *  Parses the model name from the input and sets it in the rtl view.
      *
-     *      @param [in] input   The input text to parse the model name from.
+     *      @param [in] input                               The input text to parse the model name from.
+     *      @param [in/out] targetComponentInstantiation    The component instance to set the name in.
      */
-    void importModelName(QString const& input, QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
+    void importModelName(QString const& input, 
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
    
     /*!
      *  Finds a flat (rtl) view from the target component or creates one, if none are found.

@@ -34,7 +34,7 @@ DesignConfigurationInstantiationsItem::DesignConfigurationInstantiationsItem(Com
     QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, 
     QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, 
+    QSharedPointer<ExpressionParser> /*expressionParser*/, 
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 validator_(validator)

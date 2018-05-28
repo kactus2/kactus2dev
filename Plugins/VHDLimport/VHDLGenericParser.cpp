@@ -45,14 +45,6 @@ VHDLGenericParser::VHDLGenericParser(QObject* parent): QObject(parent), highligh
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLGenericParser::VHDLGenericParser()
-//-----------------------------------------------------------------------------
-VHDLGenericParser::~VHDLGenericParser()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: VHDLGenericParser::import()
 //-----------------------------------------------------------------------------
 void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> targetComponent,
@@ -153,7 +145,6 @@ QStringList VHDLGenericParser::genericDeclarationsIn(QString const& sectionWitho
 // Function: VHDLGenericParser::createModelParameterFromDeclaration()
 //-----------------------------------------------------------------------------
 void VHDLGenericParser::createModelParameterFromDeclaration(QString const& declaration, 
-    QSharedPointer<Component> targetComponent, 
     QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     QRegularExpressionMatch matchedDeclaration = GENERIC_EXP.match(declaration);

@@ -15,7 +15,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
-//#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <QAbstractTableModel>
 
 class ExpressionParser;
@@ -34,10 +34,14 @@ public:
 	 */
 	ParameterizableTable(QSharedPointer<ParameterFinder> parameterFinder);
 
+    //! Disable copying and assignment.
+    ParameterizableTable(const ParameterizableTable& other) = delete;
+    ParameterizableTable& operator=(const ParameterizableTable& other) = delete;
+
     /*!
      *  The destructor.
      */
-    virtual ~ParameterizableTable();
+    virtual ~ParameterizableTable() = default;
 
     /*!
      *  Sets the expression parser.
@@ -108,13 +112,13 @@ protected:
     QVariant blackForValidOrRedForInvalidIndex(QModelIndex const& index) const;
 
     /*!
-     *  Checks if the value is a plain value or an expression value.
+     *  Checks if the value is a valid expression.
      *
      *      @param [in] value   The value.
      *
-     *      @return     True if value is a plain value or an expression. False if it is neither.
+     *      @return     True, if value is a valid expression, otherwise false.
      */
-    bool isValuePlainOrExpression(QString const& value) const;
+    bool isValidExpression(QString const& value) const;
 
     /*!
      *  Parse expression to decimal number.
@@ -134,10 +138,6 @@ protected:
     QSharedPointer<ParameterFinder> getParameterFinder() const;
 
 private:
-
-    //! Disable copying and assignment.
-    ParameterizableTable(const ParameterizableTable& other);
-    ParameterizableTable& operator=(const ParameterizableTable& other);
 
     //! Expression parser for configurable elements.
     QSharedPointer<ExpressionParser> expressionParser_;

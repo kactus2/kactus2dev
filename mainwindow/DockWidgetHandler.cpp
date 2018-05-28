@@ -736,8 +736,7 @@ void DockWidgetHandler::documentChanged(TabDocument* doc)
         QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
         if (topComponent)
         {
-            instanceEditor_->setContext(topComponent, designwidget->getDiagram()->getDesignConfiguration(),
-                designwidget->getDiagram()->getEditProvider());
+            instanceEditor_->setContext(topComponent, designwidget->getDiagram()->getEditProvider());
             instanceEditor_->setTopComponentActiveView(
                 topComponent->getModel()->findView(designwidget->getOpenViewName()));
             instanceEditor_->setProtection(designwidget->isProtected());
@@ -1032,8 +1031,7 @@ void DockWidgetHandler::refreshDesignDocument(QWidget* currentTabWidget)
         QSharedPointer<Document> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
         QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
 
-        instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getDesignConfiguration(),
-            designWidget->getDiagram()->getEditProvider());
+        instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getEditProvider());
 
         QSharedPointer<Design> design = designWidget->getDiagram()->getDesign();
         designParametersEditor_->setNewParameters(design->getParameters());

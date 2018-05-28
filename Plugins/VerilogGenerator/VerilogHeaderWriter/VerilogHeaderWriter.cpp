@@ -14,20 +14,16 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 //-----------------------------------------------------------------------------
-// Function: VerilogHeaderWriter::()
+// Function: VerilogHeaderWriter::VerilogHeaderWriter()
 //-----------------------------------------------------------------------------
 VerilogHeaderWriter::VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath, QString const& author,
     QString const& description, QString const& kactusVersion, QString const& generatorVersion) : 
-    vlnv_(vlnv), xmlPath_(xmlPath), author_(author), description_(description),
-     kactusVersion_(kactusVersion), generatorVersion_(generatorVersion)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogHeaderWriter::()
-//-----------------------------------------------------------------------------
-VerilogHeaderWriter::~VerilogHeaderWriter()
+    vlnv_(vlnv), 
+    xmlPath_(xmlPath),
+    author_(author),
+    description_(description),
+    generatorVersion_(generatorVersion),
+    kactusVersion_(kactusVersion)
 {
 
 }

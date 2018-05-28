@@ -87,13 +87,6 @@ PadsPartGenerator::PadsPartGenerator()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PadsPartGenerator::~PadsPartGenerator()
-//-----------------------------------------------------------------------------
-PadsPartGenerator::~PadsPartGenerator()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::getName()
 //-----------------------------------------------------------------------------
 QString PadsPartGenerator::getName() const
@@ -165,7 +158,8 @@ bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<Component const> co
     QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
     // Pads part generation can only be run on component editor.
-    if (designConfiguration || design) {
+    if (designConfiguration || design)
+    {
         return false;
     }
 
@@ -184,8 +178,8 @@ bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<Component const> co
 //-----------------------------------------------------------------------------
 void PadsPartGenerator::runGenerator(IPluginUtility* utility, 
     QSharedPointer<Component> component,
-    QSharedPointer<Design> design,
-    QSharedPointer<DesignConfiguration> designConfiguration)
+    QSharedPointer<Design> /*design*/,
+    QSharedPointer<DesignConfiguration> /*designConfiguration*/)
 {
     QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(component));
     QSharedPointer<ExpressionParser> parser(new IPXactSystemVerilogParser(finder));

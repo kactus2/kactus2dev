@@ -47,17 +47,21 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		LibraryInterface* libHandler,
         QWidget* parent);
+    
+    // Disable copying.
+    DesignConfigurationInstantiationEditor(DesignConfigurationInstantiationEditor const& rhs) = delete;
+    DesignConfigurationInstantiationEditor& operator=(DesignConfigurationInstantiationEditor const& rhs) = delete;
 
     //! Destructor.
-    virtual ~DesignConfigurationInstantiationEditor();
+    virtual ~DesignConfigurationInstantiationEditor() = default;
 
 	//! Reload the information from the model to the editor.
-	virtual void refresh();
+	virtual void refresh() override;
 
 protected:
 
 	//! Handler for widget's show event.
-	virtual void showEvent(QShowEvent* event);
+	virtual void showEvent(QShowEvent* event) override;
 
 private slots:
 
@@ -65,9 +69,6 @@ private slots:
 	void onHierRefChange();
 
 private:
-    // Disable copying.
-    DesignConfigurationInstantiationEditor(DesignConfigurationInstantiationEditor const& rhs);
-    DesignConfigurationInstantiationEditor& operator=(DesignConfigurationInstantiationEditor const& rhs);
 
     //! Setup the layout.
     void setupLayout();

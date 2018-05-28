@@ -34,8 +34,10 @@ MetaComponent::MetaComponent(MessageMediator* messages,
     moduleParameters_(new QList<QSharedPointer<Parameter> >()),
     metaParameters_(new QMap<QString,QSharedPointer<Parameter> >()),
     ports_(new QMap<QString,QSharedPointer<MetaPort> >()),
-    remapStates_(new QList<QSharedPointer<FormattedRemapState> >()),
-    fileSets_(new QList<QSharedPointer<FileSet> >())
+    fileSets_(new QList<QSharedPointer<FileSet> >()),
+    moduleName_(),
+    activeInstantiation_(),
+    remapStates_(new QList<QSharedPointer<FormattedRemapState> >())
 {
     // Try to find a component instantiation for the view.
     if (activeView_)
@@ -59,13 +61,6 @@ MetaComponent::MetaComponent(MessageMediator* messages,
 
     // Must cull the parameters before can use them!
     cullParameters();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaComponent::~MetaComponent
-//-----------------------------------------------------------------------------
-MetaComponent::~MetaComponent()
-{
 }
 
 //-----------------------------------------------------------------------------

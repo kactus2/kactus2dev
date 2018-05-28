@@ -28,7 +28,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~ParameterFinder() {};
+    virtual ~ParameterFinder() = default;
 
     /*!
      *  Get the parameter corresponding the id.

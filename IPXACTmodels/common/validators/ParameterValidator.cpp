@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ParameterValidator2014.cpp
+// File: ParameterValidator.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -36,15 +36,7 @@ expressionParser_(expressionParser),
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::~SystemVerilogValidator()
-//-----------------------------------------------------------------------------
-ParameterValidator::~ParameterValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::componentChange()
+// Function: ParameterValidator::componentChange()
 //-----------------------------------------------------------------------------
 void ParameterValidator::componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices)
 {
@@ -52,7 +44,7 @@ void ParameterValidator::componentChange(QSharedPointer<QList<QSharedPointer<Cho
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::validate()
+// Function: ParameterValidator::validate()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::validate(QSharedPointer<const Parameter> parameter) const
 {
@@ -67,7 +59,7 @@ bool ParameterValidator::validate(QSharedPointer<const Parameter> parameter) con
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidName()
+// Function: ParameterValidator::hasValidName()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidName(QSharedPointer<const Parameter> parameter) const
 {
@@ -75,7 +67,7 @@ bool ParameterValidator::hasValidName(QSharedPointer<const Parameter> parameter)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidValue()
+// Function: ParameterValidator::hasValidValue()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidValue(QSharedPointer<const Parameter> parameter) const
 {
@@ -94,7 +86,7 @@ bool ParameterValidator::hasValidValue(QSharedPointer<const Parameter> parameter
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidType()
+// Function: ParameterValidator::hasValidType()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidType(QSharedPointer<const Parameter> parameter) const
 {
@@ -176,7 +168,7 @@ bool ParameterValidator::hasValidValueForType(QString const& value, QString cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::isArrayValidForType()
+// Function: ParameterValidator::isArrayValidForType()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::isArrayValidForType(QString const& arrayExpression, QString const& type) const
 {
@@ -199,7 +191,7 @@ bool ParameterValidator::isArrayValidForType(QString const& arrayExpression, QSt
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidVector()
+// Function: ParameterValidator::hasValidVector()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidVector(QSharedPointer<const Parameter> parameter) const
 {
@@ -213,7 +205,7 @@ bool ParameterValidator::hasValidVector(QSharedPointer<const Parameter> paramete
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidValueForFormat()
+// Function: ParameterValidator::hasValidValueForType()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidValueForType(QSharedPointer<const Parameter> parameter) const
 {
@@ -221,7 +213,7 @@ bool ParameterValidator::hasValidValueForType(QSharedPointer<const Parameter> pa
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidMinimumValue()
+// Function: ParameterValidator::hasValidMinimumValue()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidMinimumValue(QSharedPointer<const Parameter> parameter) const
 {
@@ -236,7 +228,7 @@ bool ParameterValidator::hasValidMinimumValue(QSharedPointer<const Parameter> pa
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidMaximumValue()
+// Function: ParameterValidator::hasValidMaximumValue()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidMaximumValue(QSharedPointer<const Parameter> parameter) const
 {
@@ -251,7 +243,7 @@ bool ParameterValidator::hasValidMaximumValue(QSharedPointer<const Parameter> pa
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidChoice()
+// Function: ParameterValidator::hasValidChoice()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidChoice(QSharedPointer<const Parameter> parameter) const
 {
@@ -259,7 +251,7 @@ bool ParameterValidator::hasValidChoice(QSharedPointer<const Parameter> paramete
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidValueForChoice()
+// Function: ParameterValidator::hasValidValueForChoice()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidValueForChoice(QSharedPointer<const Parameter> parameter) const
 {
@@ -292,7 +284,7 @@ bool ParameterValidator::hasValidValueForChoice(QSharedPointer<const Parameter> 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidResolve()
+// Function: ParameterValidator::hasValidResolve()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidResolve(QSharedPointer<const Parameter> parameter) const
 {
@@ -303,7 +295,7 @@ bool ParameterValidator::hasValidResolve(QSharedPointer<const Parameter> paramet
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidValueId()
+// Function: ParameterValidator::hasValidValueId()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidValueId(QSharedPointer<const Parameter> parameter) const
 {
@@ -318,7 +310,7 @@ bool ParameterValidator::hasValidValueId(QSharedPointer<const Parameter> paramet
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::valueIsLessThanMinimum()
+// Function: ParameterValidator::valueIsLessThanMinimum()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::valueIsLessThanMinimum(QSharedPointer<const Parameter> parameter) const
 {
@@ -329,7 +321,7 @@ bool ParameterValidator::valueIsLessThanMinimum(QSharedPointer<const Parameter> 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::valueIsGreaterThanMaximum()
+// Function: ParameterValidator::valueIsGreaterThanMaximum()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::valueIsGreaterThanMaximum(QSharedPointer<const Parameter> parameter) const
 {
@@ -340,7 +332,7 @@ bool ParameterValidator::valueIsGreaterThanMaximum(QSharedPointer<const Paramete
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsIn()
+// Function: ParameterValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
@@ -357,7 +349,7 @@ void ParameterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<P
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::shouldCompareValueAndBoundary()
+// Function: ParameterValidator::shouldCompareValueAndBoundary()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::shouldCompareValueAndBoundary(QString const& boundaryValue, QString const& type) const
 {
@@ -372,7 +364,7 @@ bool ParameterValidator::shouldCompareValueAndBoundary(QString const& boundaryVa
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::valueOf()
+// Function: ParameterValidator::valueOf()
 //-----------------------------------------------------------------------------
 qreal ParameterValidator::valueOf(QString const& value, QString const& type) const
 {
@@ -387,7 +379,7 @@ qreal ParameterValidator::valueOf(QString const& value, QString const& type) con
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsInName()
+// Function: ParameterValidator::findErrorsInName()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInName(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
@@ -400,7 +392,7 @@ void ParameterValidator::findErrorsInName(QVector<QString>& errors, QSharedPoint
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsInType()
+// Function: ParameterValidator::findErrorsInType()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInType(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
@@ -413,7 +405,7 @@ void ParameterValidator::findErrorsInType(QVector<QString>& errors, QSharedPoint
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsInValue()
+// Function: ParameterValidator::findErrorsInValue()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInValue(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
@@ -456,14 +448,14 @@ void ParameterValidator::findErrorsInValue(QVector<QString>& errors, QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsInMinimumValue()
+// Function: ParameterValidator::findErrorsInMinimumValue()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInMinimumValue(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
     if (shouldCompareValueAndBoundary(parameter->getValueAttribute(QStringLiteral("ipxact:minimum")),
         parameter->getType())
-        && !hasValidValueForFormat(parameter->getValueAttribute(QStringLiteral("ipxact:minimum"))))
+        && !hasValidValueForType(parameter->getValueAttribute(QStringLiteral("ipxact:minimum")), parameter->getType()))
     {
         errors.append(QObject::tr("Minimum value %1 is not valid for format %2 in %3 %4 within %5").arg(
             parameter->getValueAttribute(QStringLiteral("ipxact:minimum")), 
@@ -473,14 +465,14 @@ void ParameterValidator::findErrorsInMinimumValue(QVector<QString>& errors, QSha
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsInMaximumValue()
+// Function: ParameterValidator::findErrorsInMaximumValue()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInMaximumValue(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
     if (shouldCompareValueAndBoundary(parameter->getValueAttribute(QStringLiteral("ipxact:maximum")),
         parameter->getType())
-        && !hasValidValueForFormat(parameter->getValueAttribute(QStringLiteral("ipxact:maximum"))))
+        && !hasValidValueForType(parameter->getValueAttribute(QStringLiteral("ipxact:maximum")), parameter->getType()))
     {
         errors.append(QObject::tr("Maximum value %1 is not valid for format %2 in %3 %4 within %5").arg(
             parameter->getValueAttribute(QStringLiteral("ipxact:maximum")),
@@ -490,15 +482,7 @@ void ParameterValidator::findErrorsInMaximumValue(QVector<QString>& errors, QSha
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator::isValidValueForFormat()
-//-----------------------------------------------------------------------------
-bool ParameterValidator::hasValidValueForFormat(QString const& value) const
-{
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsInChoice()
+// Function: ParameterValidator::findErrorsInChoice()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInChoice(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
@@ -511,7 +495,7 @@ void ParameterValidator::findErrorsInChoice(QVector<QString>& errors, QSharedPoi
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsInResolve()
+// Function: ParameterValidator::findErrorsInResolve()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInResolve(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
@@ -537,7 +521,7 @@ void ParameterValidator::findErrorsInValueId(QVector<QString>& errors, QSharedPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::findErrorsInVector()
+// Function: ParameterValidator::findErrorsInVector()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInVector(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
@@ -550,7 +534,7 @@ void ParameterValidator::findErrorsInVector(QVector<QString>& errors, QSharedPoi
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::valueIsLessThanMinimum()
+// Function: ParameterValidator::valueIsLessThanMinimum()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::valueIsLessThanMinimum(QSharedPointer<const Parameter> parameter,
     QString const& solvedValue, QString const& type) const
@@ -575,7 +559,7 @@ bool ParameterValidator::valueIsLessThanMinimum(QSharedPointer<const Parameter> 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::valueIsGreaterThanMaximum()
+// Function: ParameterValidator::valueIsGreaterThanMaximum()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::valueIsGreaterThanMaximum(QSharedPointer<const Parameter> parameter,
     QString const& solvedValue, QString const& type) const
@@ -601,7 +585,7 @@ bool ParameterValidator::valueIsGreaterThanMaximum(QSharedPointer<const Paramete
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::splitArrayToList()
+// Function: ParameterValidator::splitArrayToList()
 //-----------------------------------------------------------------------------
 QStringList ParameterValidator::splitArrayToList(QString const& arrayValue) const
 {
@@ -615,7 +599,7 @@ QStringList ParameterValidator::splitArrayToList(QString const& arrayValue) cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::arrayValuesAreSameSize()
+// Function: ParameterValidator::arrayValuesAreSameSize()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::arrayValuesAreSameSize(QStringList const& bitArray, QString const& type) const
 {
@@ -641,7 +625,7 @@ bool ParameterValidator::arrayValuesAreSameSize(QStringList const& bitArray, QSt
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidArrayValues()
+// Function: ParameterValidator::hasValidArrayValues()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::validateArrayValues(QString const& arrayLeft, QString const& arrayRight) const
 {

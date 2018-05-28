@@ -238,10 +238,11 @@ bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<MasterInterfa
             if (master->getAddressSpaceRef() == space->name())
             {
                 bool changeOk = true;
+                bool expressionValid = false;
                 quint64 baseAddress =
-                    expressionParser_->parseExpression(master->getBaseAddress()).toULongLong(&changeOk);
+                    expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toULongLong(&changeOk);
 
-                return (master->getBaseAddress().isEmpty() || (changeOk && baseAddress >= 0)) &&
+                return (master->getBaseAddress().isEmpty() || (changeOk && expressionValid)) &&
                     hasValidIsPresent(master->getIsPresent()) &&
                     interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent());
             }

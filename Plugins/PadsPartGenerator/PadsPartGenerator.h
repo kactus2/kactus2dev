@@ -47,50 +47,56 @@ public:
 	 */
 	PadsPartGenerator();
 
+    // Disable copying.
+    PadsPartGenerator(PadsPartGenerator const& rhs) = delete;
+
+    // Disable assignment.
+    PadsPartGenerator& operator=(PadsPartGenerator& rhs) = delete;
+
 	/*!
 	 *  The destructor.
 	*/
-	~PadsPartGenerator();
+	virtual ~PadsPartGenerator() = default;
 
     //! Returns the name of the plugin.
-    virtual QString getName() const;
+    virtual QString getName() const override final;
 
 	//! Returns the version of the plugin.
-    virtual QString getVersion() const;
+    virtual QString getVersion() const override final;
 
 	//! Returns the description of the plugin.
-    virtual QString getDescription() const;
+    virtual QString getDescription() const override final;
 
     /*!
      *  Returns the vendor of the plugin.
      */
-    virtual QString getVendor() const;
+    virtual QString getVendor() const override final;
 
     /*!
      *  Returns the licence of the plugin.
      */
-    virtual QString getLicence() const;
+    virtual QString getLicence() const override final;
 
     /*!
      *  Returns the holder of the licence of the plugin.
      */
-    virtual QString getLicenceHolder() const;
+    virtual QString getLicenceHolder() const override final;
 
 	//! Returns the icon for the generator.
     /*!
      *  Returns the settings widget.
      */
-    virtual QWidget* getSettingsWidget();
+    virtual QWidget* getSettingsWidget() override final;
 
     /*!
      *  This is used to access the settings modified by function getSettingsWidget().
      */
-    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
+    virtual PluginSettingsModel* getSettingsModel() override final {return nullptr;}
 
     /*!
      *  Returns the icon for the generator.
      */
-    virtual QIcon getIcon() const;
+    virtual QIcon getIcon() const override final;
 
     /*!
     *  Checks whether the generator may run for the given component or design. 
@@ -104,7 +110,7 @@ public:
     */
     virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
         QSharedPointer<Design const> design,
-        QSharedPointer<DesignConfiguration const> designConfiguration) const;
+        QSharedPointer<DesignConfiguration const> designConfiguration) const override final;
 
     /*!
      *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
@@ -119,18 +125,13 @@ public:
     virtual void runGenerator(IPluginUtility* utility, 
         QSharedPointer<Component> component,
         QSharedPointer<Design> design,
-        QSharedPointer<DesignConfiguration> designConfiguration);
+        QSharedPointer<DesignConfiguration> designConfiguration) override final;
 
 	 //! Returns the external program requirements of the plugin.
-	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
+	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements() override final;
 
 private:
-	// Disable copying.
-	PadsPartGenerator(PadsPartGenerator const& rhs);
 
-	// Disable assignment.
-	PadsPartGenerator& operator=(PadsPartGenerator& rhs);
-   
     /*!
      *  Writes the PADS part file.
      *

@@ -357,12 +357,12 @@ bool SegmentsModel::validateIndex(QModelIndex const& index) const
     else if (index.column() == SegmentColumns::OFFSET)
     {
         QString offset = segments_->at(index.row())->getAddressOffset();
-        return isValuePlainOrExpression(offset);
+        return isValidExpression(offset);
     }
     else if (index.column() ==  SegmentColumns::RANGE)
     {
         QString range = segments_->at(index.row())->getRange();
-        return isValuePlainOrExpression(range);
+        return isValidExpression(range);
     }
     else if (index.column() ==  SegmentColumns::IS_PRESENT)
     {

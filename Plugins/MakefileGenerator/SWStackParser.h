@@ -30,6 +30,8 @@
 
 #include "MakeCommon.h"
 
+using namespace MakeCommon;
+
 class SWStackParser
 {
 public:
@@ -38,23 +40,20 @@ public:
         QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf);
 
     //! The destructor.
-    ~SWStackParser();
+    ~SWStackParser() = default;
 
     // Returns reference to all parsed MakeFileData.
     QSharedPointer<QList<QSharedPointer<MakeFileData> > > getParsedData();
 
     // Return the general file set.
-    const QSharedPointer<FileSet>& getGeneralFileSet();
+    QSharedPointer<FileSet> getGeneralFileSet();
 
     /*!
      *  Parses all software components from the design for the data needed in makefiles.
      *
 	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
      */
-    void parse(QString sysViewName);
-
-    //! The name of the would-be master makefile.
-    QString* masterName_;
+    void parse(QString const& sysViewName);
 
 private:
 
@@ -91,15 +90,19 @@ private:
 
 	 //! The library containing all components in the design.
      LibraryInterface* library_;
+
      //! The top component of the design_.
      QSharedPointer<Component> topComponent_;
+
      //! The design to parse.
      QSharedPointer<Design> design_;
+
      //! The design configuration to parse.
      QSharedPointer<DesignConfiguration> designConf_;
 
      //! Collection of data sets, one for each makefile.
 	 QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData_;
+
      //! The fileSet for the main makefile and the launcher.
      QSharedPointer<FileSet> generalFileSet_;
 };

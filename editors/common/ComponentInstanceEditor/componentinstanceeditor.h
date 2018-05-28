@@ -68,11 +68,9 @@ public:
      *  Sets the top component for the instances.
      *
      *      @param [in] topComponent            The top component.
-     *      @param [in] designConfiguration     The design configuration currently in use.
      *      @param [in] editProvider            The generic edit provider.
      */
-    void setContext(QSharedPointer<Component> topComponent,
-        QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<IEditProvider> editProvider);
+    void setContext(QSharedPointer<Component> topComponent, QSharedPointer<IEditProvider> editProvider);
 
     /*!
      *  Sets the protection state for the instance editor.

@@ -20,14 +20,14 @@
 
 #include "SWStackParser.h"
 
-class MakeDocument : public GenerationOutput
+struct MakeDocument : public GenerationOutput
 {
     /*!
      *  Writes the content. 
      *
      *      @param [in] outputDirectory         The possible output directory.
      */
-	void write(QString const& outputDirectory){}
+	virtual void write(QString const& /*outputDirectory*/) override final {}
     
     /*!
      *  Finds position for body text highlight in document, if any exists.
@@ -35,7 +35,7 @@ class MakeDocument : public GenerationOutput
 	 *      @param [out] begin                  The position where the highlight begins, if successful.
      *      @param [out] end                    The position where the highlight ends, if successful.
      */
-    void getBodyHighlight(int& begin, int& end) const{}
+    virtual void getBodyHighlight(int& /*begin*/, int& /*end*/) const override final {}
 };
 
 //-----------------------------------------------------------------------------
@@ -50,8 +50,12 @@ public:
 	//! The constructor.
     MakeConfiguration(SWStackParser* parser);
 
+    // Disable copying.
+    MakeConfiguration(MakeConfiguration const& rhs) = delete;
+    MakeConfiguration& operator=(MakeConfiguration const& rhs) = delete;
+
 	//! The destructor.
-    ~MakeConfiguration();
+    virtual ~MakeConfiguration() = default;
     
     /*!
      *  Checks if the generation configuration is valid.
@@ -73,10 +77,6 @@ signals:
 	void outputFilesChanged(QStringList) const;
 
 private:
-
-	// Disable copying.
-	MakeConfiguration(MakeConfiguration const& rhs);
-	MakeConfiguration& operator=(MakeConfiguration const& rhs);
 
     //! The file output configuration.
     QSharedPointer<OutputControl> outputControl_;

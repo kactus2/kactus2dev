@@ -47,7 +47,7 @@
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <IPXACTmodels/validators/namevalidator.h>
+#include <IPXACTmodels/common/validators/namevalidator.h>
 
 #include <QFormLayout>
 #include <QVBoxLayout>

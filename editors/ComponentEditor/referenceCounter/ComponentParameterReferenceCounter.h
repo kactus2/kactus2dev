@@ -61,7 +61,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~ComponentParameterReferenceCounter();
+    virtual ~ComponentParameterReferenceCounter() = default;
 
     /*!
      *  Set a new component.
@@ -358,12 +358,10 @@ public:
      *  Count the references made to the selected parameter in the selected design instantiations.
      *
      *      @param [in] parameterID     ID of the selected parameter.
-     *      @param [in] instantiations  The selected design instantiations.
      *
      *      @return The amount of references made to the selected parameter in the selected design instantiations.
      */
-    int countReferencesInDesignInstantiations(QString const& parameterID,
-        QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > instantiations) const;
+    int countReferencesInDesignInstantiations(QString const& parameterID) const;
 
     /*!
      *  Count the references made to the selected parameter in the selected design instantiation.

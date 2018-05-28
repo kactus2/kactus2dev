@@ -44,14 +44,6 @@ component_(component)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceCounter::~ComponentParameterReferenceCounter()
-//-----------------------------------------------------------------------------
-ComponentParameterReferenceCounter::~ComponentParameterReferenceCounter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceCounter::setComponent()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceCounter::setComponent(QSharedPointer<Component> newComponent)
@@ -438,7 +430,7 @@ int ComponentParameterReferenceCounter::countReferencesInInstantiations(QString 
         countReferencesInComponentInstantiations(parameterID, component_->getComponentInstantiations());
     referenceCounter += countReferencesInDesignConfigurationInstantiations(
         parameterID, component_->getDesignConfigurationInstantiations());
-    referenceCounter += countReferencesInDesignInstantiations(parameterID, component_->getDesignInstantiations());
+    referenceCounter += countReferencesInDesignInstantiations(parameterID);
 
     return referenceCounter;
 }
@@ -532,8 +524,7 @@ int ComponentParameterReferenceCounter::countReferencesInSingleDesignConfigurati
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceCounter::countReferencesInDesignInstantiations()
 //-----------------------------------------------------------------------------
-int ComponentParameterReferenceCounter::countReferencesInDesignInstantiations(QString const& parameterID,
-    QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > instantiations) const
+int ComponentParameterReferenceCounter::countReferencesInDesignInstantiations(QString const& parameterID) const
 {
     int referenceCounter = 0;
 

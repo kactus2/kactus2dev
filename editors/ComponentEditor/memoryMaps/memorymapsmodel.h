@@ -54,11 +54,17 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<MemoryMapValidator> memoryMapValidator, QObject *parent);
-	
+
+    //! No copying
+    MemoryMapsModel(const MemoryMapsModel& other) = delete;
+
+    //! No assignment
+    MemoryMapsModel& operator=(const MemoryMapsModel& other) = delete;
+
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~MemoryMapsModel();
+	virtual ~MemoryMapsModel() = default;
 
     /*!
 	 *  Get the number of rows an item contains.
@@ -252,12 +258,6 @@ protected:
     virtual bool validateIndex(QModelIndex const& index) const;
 
 private:
-	
-    //! No copying
-    MemoryMapsModel(const MemoryMapsModel& other);
-
-    //! No assignment
-    MemoryMapsModel& operator=(const MemoryMapsModel& other);
     
     /*!
      *  Gets the value for the given index.
@@ -395,9 +395,6 @@ private:
 
 	//! The component that contains the memory maps to edit.
 	QSharedPointer<Component> component_;
-
-    //! The parameter finder.
-    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: MCAPIHeaderGenerator.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 13.10.2014
 //
@@ -27,17 +27,21 @@ public:
      *      @param [in] utility   The same IPluginUtility, which is fed to the plugin class as parameter.
      */
      MCAPIHeaderGenerator( MCAPIParser& parser, IPluginUtility* utility );
-    ~MCAPIHeaderGenerator();
+    
+     //! Disable copying.
+     MCAPIHeaderGenerator(MCAPIHeaderGenerator const& other) = delete;
+     MCAPIHeaderGenerator& operator=(MCAPIHeaderGenerator const& other) = delete;
+
+     virtual ~MCAPIHeaderGenerator() = default;
 
     /*!
      *  Generates source files associated with the top level component of the design.
      *
-     *      @param [in] design   The design subject to generation.
      *      @param [in] topComponent   The top level component associated with the design.
      *      @param [in] desgConf   The design configuration associated with the design.
      *      @param [in] topDir   The location of the top level component in the file system.
      */
-     void generateTopLevel(QSharedPointer<Design> design, QSharedPointer<Component> topComponent,
+     void generateTopLevel(QSharedPointer<Component> topComponent,
         QSharedPointer<DesignConfiguration const> desgConf, QString topDir);
 
 private:
@@ -131,8 +135,10 @@ private:
 
     //! Endpoints parsed from component
     QList<MCAPIParser::EndPointData> componentEndpoints_;
+
     //! Nodes parsed from design.
     QList<MCAPIParser::NodeData> designNodes_;
+
     //! The plugin utility.
     IPluginUtility* utility_;
 };

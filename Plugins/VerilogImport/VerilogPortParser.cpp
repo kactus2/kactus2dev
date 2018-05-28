@@ -69,14 +69,6 @@ VerilogPortParser::VerilogPortParser(): highlighter_(0), parser_(new NullParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogPortParser::~VerilogPortParser()
-//-----------------------------------------------------------------------------
-VerilogPortParser::~VerilogPortParser()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: VerilogPortParser::runParser()
 //-----------------------------------------------------------------------------
 void VerilogPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
@@ -337,14 +329,14 @@ QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& boun
         parser_->parseExpression(leftBound, &leftValid);
         if (leftValid == false)
         {
-            leftBound = replaceNameReferencesWithIds(leftBound, targetComponent, targetComponentInstantiation);
+            leftBound = replaceNameReferencesWithIds(leftBound, targetComponent);
         }
 
         bool rightValid = false;
         parser_->parseExpression(rightBound, &rightValid);
         if (rightValid == false)
         {
-            rightBound = replaceNameReferencesWithIds(rightBound, targetComponent, targetComponentInstantiation);
+            rightBound = replaceNameReferencesWithIds(rightBound, targetComponent);
         }
     }
 
@@ -366,8 +358,7 @@ QPair<QString, QString> VerilogPortParser::parseVectorBounds(QString const& port
 // Function: VerilogPortParser::replaceNameReferencesWithIds()
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::replaceNameReferencesWithIds(QString const& expression, 
-    QSharedPointer<Component> targetComponent, 
-    QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+    QSharedPointer<Component> targetComponent) const
 {
     QString result = expression;
 
@@ -406,4 +397,3 @@ QString VerilogPortParser::parseDescription(QString const& portDeclaration) cons
     QRegularExpression commentExp(VerilogSyntax::COMMENT);
     return commentExp.match(portDeclaration).captured(1).trimmed();
 }
-

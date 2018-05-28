@@ -28,14 +28,6 @@ VerilogImporter::VerilogImporter(): QObject(0), portParser_(), parameterParser_(
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogImporter::~VerilogImporter()
-//-----------------------------------------------------------------------------
-VerilogImporter::~VerilogImporter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: VerilogImporter::getName()
 //-----------------------------------------------------------------------------
 QString VerilogImporter::getName() const
@@ -129,7 +121,7 @@ void VerilogImporter::import(QString const& input, QSharedPointer<Component> tar
 
 		QSharedPointer<ComponentInstantiation> targetComponentInstantiation;
 		setLanguageAndEnvironmentalIdentifiers(targetComponent, targetComponentInstantiation);
-		importModelName(input, targetComponent, targetComponentInstantiation);
+		importModelName(input, targetComponentInstantiation);
 
         parameterParser_.import(input, targetComponent, targetComponentInstantiation);
 
@@ -191,7 +183,7 @@ void VerilogImporter::highlightModule(QString const& input)
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::importModelName()
 //-----------------------------------------------------------------------------
-void VerilogImporter::importModelName(QString const& input, QSharedPointer<Component> targetComponent,
+void VerilogImporter::importModelName(QString const& input,
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
 	// Find the beginning of the module.

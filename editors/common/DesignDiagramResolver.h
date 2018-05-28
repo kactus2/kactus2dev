@@ -39,10 +39,12 @@ public:
      */
     DesignDiagramResolver(QSharedPointer<ListParameterFinder> designParameterFinder);
 
-	/*
-     *  The destructor.
-     */
-    ~DesignDiagramResolver();
+    // Disable copying.
+    DesignDiagramResolver(DesignDiagramResolver const& rhs) = delete;
+    DesignDiagramResolver& operator=(DesignDiagramResolver const& rhs) = delete;
+
+	//! The destructor.
+    ~DesignDiagramResolver() = default;
 
     void setContext(QSharedPointer<Component const> component);
 
@@ -58,9 +60,6 @@ public:
 
 private:
 
-    // Disable copying.
-    DesignDiagramResolver(DesignDiagramResolver const& rhs);
-    DesignDiagramResolver& operator=(DesignDiagramResolver const& rhs);
 
     /*!
      *  Get the parsed value from a tie off value.
@@ -78,11 +77,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The used design and component instance parameter finder.
-    QSharedPointer<MultipleParameterFinder> designAndInstanceParameterFinder_;
-
     //! The used design parameter finder.
     QSharedPointer<ListParameterFinder> designParameterFinder_;
+
+    //! The used design and component instance parameter finder.
+    QSharedPointer<MultipleParameterFinder> designAndInstanceParameterFinder_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

@@ -24,16 +24,8 @@ QUndoCommand(parent),
 parentName_(parentName),
 itemRow_(itemRow),
 configurableElements_(configurableElements),
-removedElement_(getRemovedConfigurableElement(elementID)),
-rowInConfigurableElements_(0)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementRemoveCommand::~ConfigurableElementRemoveCommand()
-//-----------------------------------------------------------------------------
-ConfigurableElementRemoveCommand::~ConfigurableElementRemoveCommand()
+rowInConfigurableElements_(0),
+removedElement_(getRemovedConfigurableElement(elementID))
 {
 
 }

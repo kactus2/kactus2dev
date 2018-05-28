@@ -27,12 +27,17 @@ public:
      *      @param [in] utility         The provided plugin utility.
      *      @param [in] generalFileSet  The file set, where design configuration specific things belong to.
      */
-    MakefileGenerator( MakefileParser& parser, IPluginUtility* utility, QSharedPointer<FileSet> generalFileSet );
+    MakefileGenerator( MakefileParser& parser, IPluginUtility* utility, 
+        QSharedPointer<FileSet> generalFileSet );
     
+    //! Disable copying.
+    MakefileGenerator(MakefileGenerator const& other) = delete;
+    MakefileGenerator& operator=(MakefileGenerator const& other) = delete;
+
     /*!
      *  The destructor.
      */
-    ~MakefileGenerator();
+    ~MakefileGenerator() = default;
 
     /*!
      *  Generates all makefiles based on the parsed data.
@@ -43,9 +48,8 @@ public:
 	 *
 	 *      @return How many executables got a makefile.
 	 */
-	int generate(QString targetPath, QString topPath, QString sysViewName);
+	int generate(QString const& targetPath, QString const& topPath);
 
-    QString mainMakeName_;
 
 private:
 
@@ -58,8 +62,8 @@ private:
      *      @param [in] makeData    The make data associated with the makefile as whole.
      *      @param [in/out] makeNames   The directory of the created makefile must be added here.
      */
-    void generateInstanceMakefile(QString targetPath, QString componentPath,
-		QSharedPointer<MakeFileData> makeData, QStringList &makeNames);
+    void generateInstanceMakefile(QString const& targetPath, QString const& componentPath,
+		QSharedPointer<MakeFileData> makeData, QStringList& makeNames);
 
     /*!
      *  Creates a makefile calling all the other makefiles associated with the design.
@@ -69,7 +73,7 @@ private:
      *      @param [in] componentPath   The path of the component which will be associated with the created make file.
      *      @param [in] makeNames   The names of all created make files so far.
      */
-    void generateMainMakefile(QString targetePath, QString componentPath, QStringList& makeNames) const;
+    void generateMainMakefile(QString const& targetPath, QString const& componentPath, QStringList& makeNames) const;
 
     /*!
      *  Writes data used in building the executable to the stream.
@@ -111,12 +115,21 @@ private:
      void writeMakeObjects(QTextStream& outStream,
 		 QList<QSharedPointer<MakeObjectData> >& objects, QString instancePath) const;
 
+     //-----------------------------------------------------------------------------
+     // Data.
+     //-----------------------------------------------------------------------------
+
       //! Collection of data sets, one for each makefile.
       QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData_;
-      //! The fileSet for the main makefile and the launcher.
-      QSharedPointer<FileSet> generalFileSet_;
+
       //! The utility used to print message and etc.
       IPluginUtility* utility_;
+
+      //! The fileSet for the main makefile and the launcher.
+      QSharedPointer<FileSet> generalFileSet_;
+
+      QString mainMakeName_;
+
 };
 
 #endif // MAKEFILEGENERATOR_H

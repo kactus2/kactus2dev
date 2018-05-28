@@ -287,7 +287,7 @@ namespace General
         *      @param [in] portName The name of the port.
         *
         */
-        IPXACTMODELS_EXPORT PortBounds(const QString& portName);
+        IPXACTMODELS_EXPORT explicit PortBounds(const QString& portName);
 
         /*! The constructor
         *

@@ -47,10 +47,14 @@ public:
         QSharedPointer<ConnectivityComponent const> containingInstance, bool filterSegments,
         QGraphicsItem* parent = 0);
 
+    // Disable copying.
+    AddressSpaceGraphicsItem(AddressSpaceGraphicsItem const& rhs) = delete;
+    AddressSpaceGraphicsItem& operator=(AddressSpaceGraphicsItem const& rhs) = delete;
+
 	/*!
      *  The destructor.
      */
-    virtual ~AddressSpaceGraphicsItem();
+    virtual ~AddressSpaceGraphicsItem() = default;
 
     /*!
      *  Get the type of the address space graphics item.
@@ -64,7 +68,7 @@ public:
      *      @param [in] condenseMemoryItems     Flag for condensing memory items.
      */
     virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections,
-        bool condenseMemoryItems);
+        bool condenseMemoryItems) override;
 
     /*!
      *  Get all the address space graphics items connected to the origin item.
@@ -72,14 +76,11 @@ public:
     QVector<MainMemoryGraphicsItem*> getAllConnectedSpaceItems() const;
 
 private:
-    // Disable copying.
-    AddressSpaceGraphicsItem(AddressSpaceGraphicsItem const& rhs);
-    AddressSpaceGraphicsItem& operator=(AddressSpaceGraphicsItem const& rhs);
 
     /*!
      *  Set the positions of the labels.
      */
-    virtual void setLabelPositions();
+    virtual void setLabelPositions() override;
 
     /*!
      *  Create a new address segment graphics item.
@@ -90,7 +91,7 @@ private:
      *      @return The created address segment graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
-        bool isEmpty);
+        bool isEmpty) override;
 
     /*!
      *  Create an empty address segment graphics item.
@@ -100,7 +101,7 @@ private:
      *
      *      @return The created address segment graphics item.
      */
-    virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
+    virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd) override;
 
     /*!
      *  Get the compressed height of an address space graphics item.

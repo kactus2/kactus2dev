@@ -29,19 +29,19 @@ public:
      *
      *      @param [in] parent   Parent of the validator.
      */
-    NMTokenValidator(QObject* parent);
+    explicit NMTokenValidator(QObject* parent);
+
+    //! No copying
+    NMTokenValidator(const NMTokenValidator& other) = delete;
+    
+    //! No assignment
+    NMTokenValidator& operator=(const NMTokenValidator& other) = delete;
 
     /*!
      *  Destructor of the validator.
      */
-    virtual ~NMTokenValidator();
+    virtual ~NMTokenValidator() = default;
 
-private:
-	
-	//! No copying
-    NMTokenValidator(const NMTokenValidator& other);
-	//! No assignment
-    NMTokenValidator& operator=(const NMTokenValidator& other);
 };
 
 #endif // NMTOKENVALIDATOR_H

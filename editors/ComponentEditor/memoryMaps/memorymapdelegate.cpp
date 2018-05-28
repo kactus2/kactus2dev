@@ -17,7 +17,7 @@
 #include <common/widgets/usageComboBox/usagecombobox.h>
 #include <common/widgets/accessComboBox/accesscombobox.h>
 
-#include <IPXACTmodels/validators/namevalidator.h>
+#include <IPXACTmodels/common/validators/namevalidator.h>
 
 #include <QLineEdit>
 

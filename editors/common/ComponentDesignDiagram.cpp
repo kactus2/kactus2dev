@@ -37,22 +37,22 @@
 // Function: ComponentDesignDiagram::ComponentDesignDiagram()
 //-----------------------------------------------------------------------------
 ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, 
-    DesignWidget* parent)
-    : DesignDiagram(lh, editProvider, parent),
-      tempConnection_(0),
-      connectionStartPoint_(0), 
-      tempPotentialEndingEndPoints_(),
-      connectionEndPoint_(0),
-      sourceComp_(0),
-      previouslySelectedItems_(),
-      selectAllAction_(tr("Select All"), this),
-      copyAction_(tr("Copy"), this),
-      pasteAction_(tr("Paste"), this),
-      deleteAction_(tr("Delete"), this),
-      addAction_(tr("Add to Library"), this),
-      openComponentAction_(tr("Open Component"), this),
-      openDesignMenu_(tr("Open Design")),
-      clickedPosition_()
+    DesignWidget* parent):
+    DesignDiagram(lh, editProvider, parent),
+    tempConnection_(0),
+    connectionStartPoint_(0),
+    tempPotentialEndingEndPoints_(),
+    connectionEndPoint_(0),
+    sourceComp_(0),
+    previouslySelectedItems_(),
+    selectAllAction_(tr("Select All"), this),
+    copyAction_(tr("Copy"), this),
+    pasteAction_(tr("Paste"), this),
+    addAction_(tr("Add to Library"), this),
+    openComponentAction_(tr("Open Component"), this),
+    deleteAction_(tr("Delete"), this),
+    openDesignMenu_(tr("Open Design")),
+    clickedPosition_()
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(editProvider.data(), SIGNAL(modified()), this, SIGNAL(contentChanged()));

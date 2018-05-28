@@ -75,14 +75,6 @@ identifierChain_(identifierChain)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::~MemoryDesignerGraphicsItem()
-//-----------------------------------------------------------------------------
-MemoryDesignerGraphicsItem::~MemoryDesignerGraphicsItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::hideMemoryRangeLabels()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::hideMemoryRangeLabels()

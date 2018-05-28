@@ -43,8 +43,12 @@ public:
         //QSharedPointer<IndirectInterfaceValidator> validator,
         QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 	
+    //! No copying
+    IndirectInterfacesModel(const IndirectInterfacesModel& other) = delete;
+    IndirectInterfacesModel& operator=(const IndirectInterfacesModel& other) = delete;
+
 	//! The destructor
-	virtual ~IndirectInterfacesModel();
+	virtual ~IndirectInterfacesModel() = default;
 
 	/*! Get the number of rows an item contains.
 	 *
@@ -106,14 +110,14 @@ public slots:
 	 *      @param [in] index The index identifying the position for new item.
 	 *
 	*/
-	virtual void onAddItem(QModelIndex const& index);
+	void onAddItem(QModelIndex const& index);
 
 	/*! Remove the item in the given index.
 	 *
 	 *      @param [in] index The index identifying the item to remove.
 	 *
 	*/
-	virtual void onRemoveItem(QModelIndex const& index);
+	void onRemoveItem(QModelIndex const& index);
 
 signals:
 
@@ -150,10 +154,6 @@ signals:
 
 private:
 
-	//! No copying
-	IndirectInterfacesModel(const IndirectInterfacesModel& other);
-	IndirectInterfacesModel& operator=(const IndirectInterfacesModel& other);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -161,11 +161,11 @@ private:
 	//! The component being edited.
 	QSharedPointer<Component> component_;
 
+    //! The indirect interfaces being edited.
+    QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces_;
+
     //! The parameter finder.
     QSharedPointer<ParameterFinder> parameterFinder_;
-
-	//! The indirect interfaces being edited.
-	QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces_;
 
     // QSharedPointer<IndirectInterfaceValidator> validator_;
 

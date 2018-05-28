@@ -41,10 +41,14 @@ public:
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElements,
         QUndoCommand* parent = 0);
 
+    //! No copying. No assignment.
+    ConfigurableElementRemoveCommand(const ConfigurableElementRemoveCommand& other) = delete;
+    ConfigurableElementRemoveCommand& operator=(const ConfigurableElementRemoveCommand& other) = delete;
+
 	/*!
      *  The destructor.
      */
-    virtual ~ConfigurableElementRemoveCommand();
+    virtual ~ConfigurableElementRemoveCommand() = default;
 
 	/*!
      *  Undoes the command.
@@ -93,10 +97,6 @@ signals:
     void decreaseReferencesInOldValue(QString const& oldValue);
 
 private:
-
-    //! No copying. No assignment.
-    ConfigurableElementRemoveCommand(const ConfigurableElementRemoveCommand& other);
-    ConfigurableElementRemoveCommand& operator=(const ConfigurableElementRemoveCommand& other);
 
     /*!
      *  Locate the configurable element value with the referenced parameter ID.

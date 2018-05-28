@@ -271,8 +271,7 @@ void ComponentParameterReferenceTree::createReferencesForInstantiations()
     {
         createReferencesForDesignConfigurationInstantiations(topInstantiationsItem);
     }
-    if (referenceCounter_->countReferencesInDesignInstantiations(
-        targetID, component_->getDesignInstantiations()) > 0)
+    if (referenceCounter_->countReferencesInDesignInstantiations(targetID) > 0)
     {
         createReferencesForDesignInstantiations(topInstantiationsItem);
     }

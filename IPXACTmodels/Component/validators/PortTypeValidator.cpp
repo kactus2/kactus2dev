@@ -50,7 +50,7 @@ bool PortTypeValidator::validate(QSharedPointer<WireTypeDef> typeDefinition,
 //-----------------------------------------------------------------------------
 // Function: PortTypeValidator::hasValidtype()
 //-----------------------------------------------------------------------------
-bool PortTypeValidator::hasValidtype(QSharedPointer<WireTypeDef> typeDefinition) const
+bool PortTypeValidator::hasValidtype(QSharedPointer<WireTypeDef> /*typeDefinition*/) const
 {
     return true;
 }

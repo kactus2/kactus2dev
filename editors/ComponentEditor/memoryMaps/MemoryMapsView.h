@@ -30,10 +30,14 @@ public:
 	 */
 	MemoryMapsView(QWidget* parent);
 
+    //! No copying. No assignment.
+    MemoryMapsView(const MemoryMapsView& other) = delete;
+    MemoryMapsView& operator=(const MemoryMapsView& other) = delete;
+
     /*!
      *  The destructor.
      */
-    virtual ~MemoryMapsView();
+    virtual ~MemoryMapsView() = default;
 
     /*!
 	 *  Enable/disable the import/export csv-file functionality.
@@ -45,7 +49,7 @@ public:
 public slots:
 
 	/*!
-	 *  Create a casv-file of the editor contents.
+	 *  Create a csv-file of the editor contents.
 	 *
 	 *      @param [in] filePath    Contains an absolute file path to the file to create.
 	 */
@@ -120,10 +124,6 @@ private slots:
     void onPasteRowsAction();
 
 private:
-
-	//! No copying. No assignment.
-    MemoryMapsView(const MemoryMapsView& other);
-    MemoryMapsView& operator=(const MemoryMapsView& other);
 
 	/*!
 	 *  Set up the actions for the context menu.

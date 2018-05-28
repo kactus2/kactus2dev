@@ -196,14 +196,12 @@ void MemoryCollisionItem::setLabels()
 //-----------------------------------------------------------------------------
 void MemoryCollisionItem::reDrawCollision()
 {
-    QRectF collisionRectangle = sceneBoundingRect();
-
     setRectangle();
 
     int childItemCount = childItems().size();
     for (int childItemIndex = 0; childItemIndex < childItemCount; ++childItemIndex)
     {
-        QGraphicsItem* childItem = childItems().at(0);
+        QGraphicsItem* childItem = childItems().takeFirst();
         delete childItem;
     }
 

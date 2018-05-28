@@ -38,8 +38,12 @@ public:
         MessageMediator* messages, GenerationSettings* settings,
         QString const& kactusVersion, QString const& generatorVersion);
 
+    // Disable copying.
+    ModelSimWriterFactory(ModelSimWriterFactory const& rhs) = delete;
+    ModelSimWriterFactory& operator=(ModelSimWriterFactory const& rhs) = delete;
+
     //! The destructor.
-    ~ModelSimWriterFactory();
+    virtual ~ModelSimWriterFactory() = default;
 
     /*!
      *  Creates writers for the given formatted HDL component.
@@ -77,10 +81,6 @@ public:
     virtual QString getGroupIdentifier() const;
 
 private:
-
-    // Disable copying.
-    ModelSimWriterFactory(ModelSimWriterFactory const& rhs);
-    ModelSimWriterFactory& operator=(ModelSimWriterFactory const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -26,16 +26,12 @@
 //-----------------------------------------------------------------------------
 SWStackParser::SWStackParser(LibraryInterface* library, QSharedPointer<Component> topComponent,
     QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) :
-    library_(library), topComponent_(topComponent), design_(design), designConf_(designConf),
-        parsedData_( QSharedPointer<QList<QSharedPointer<MakeFileData> > >
-        ( new QList<QSharedPointer<MakeFileData> > ) ), masterName_(NULL)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWStackParser::~MakefileParser()
-//-----------------------------------------------------------------------------
-SWStackParser::~SWStackParser()
+    library_(library),
+    topComponent_(topComponent),
+    design_(design),
+    designConf_(designConf),
+    parsedData_(QSharedPointer<QList<QSharedPointer<MakeFileData> > >(new QList<QSharedPointer<MakeFileData> >)),
+    generalFileSet_()
 {
 }
 
@@ -50,7 +46,7 @@ QSharedPointer<QList<QSharedPointer<MakeFileData> > > SWStackParser::getParsedDa
 //-----------------------------------------------------------------------------
 // Function: SWStackParser::getGeneralFileSet()
 //-----------------------------------------------------------------------------
-const QSharedPointer<FileSet>& SWStackParser::getGeneralFileSet()
+QSharedPointer<FileSet> SWStackParser::getGeneralFileSet()
 {
     return generalFileSet_;
 }
@@ -58,7 +54,7 @@ const QSharedPointer<FileSet>& SWStackParser::getGeneralFileSet()
 //-----------------------------------------------------------------------------
 // Function: SWStackParser::parse()
 //-----------------------------------------------------------------------------
-void SWStackParser::parse(QString sysViewName)
+void SWStackParser::parse(QString const& sysViewName)
 {
     // Fabricate name for the fileSet of design configuration specific files.
     QString generalFileSetName = NameGenerationPolicy::systemViewFilesetName(sysViewName);
@@ -188,8 +184,6 @@ void SWStackParser::parse(QString sysViewName)
 		// Finally, append to the list of parsed stuff.
 		parsedData_->append(makeData);
 	}
-
-    masterName_ = new QString(MAKEFILE_MASTER_NAME);
 }
 
 //-----------------------------------------------------------------------------
@@ -232,7 +226,8 @@ bool SWStackParser::isTopOfStack(QSharedPointer<ComponentInstance> softInstance,
 // Function: SWStackParser::parseStackObjects()
 //-----------------------------------------------------------------------------
 void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
-    QSharedPointer<ComponentInstance> softInstance, QSharedPointer<MakeFileData> makeData, QString& systemViewName)
+    QSharedPointer<ComponentInstance> softInstance, QSharedPointer<MakeCommon::MakeFileData> makeData, 
+    QString& systemViewName)
 {
     // Skip if already parsed
     if (makeData->parsedInstances.contains( softInstance ))

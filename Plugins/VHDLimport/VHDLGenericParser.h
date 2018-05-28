@@ -31,10 +31,10 @@ class VHDLGenericParser : public QObject, public HighlightSource
 public:
 
 	//! The constructor.
-	VHDLGenericParser(QObject* parent = 0);
+	explicit VHDLGenericParser(QObject* parent = 0);
 
 	//! The destructor.
-	virtual ~VHDLGenericParser();
+	virtual ~VHDLGenericParser() = default;
 
     /*!
      *  Runs the generic parser for the given input and adds the module parameters to the given component.
@@ -43,7 +43,7 @@ public:
      *      @param [in/out] targetComponent             The component to add the parameters to.
      *      @param [in] targetComponentInstantiation    The component instantiation to add the module parameters to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent,
+    void import(QString const& input, QSharedPointer<Component> targetComponent,
 		QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
     /*!
@@ -51,7 +51,7 @@ public:
      *
      *      @param [in] highlighter   The highlighter to use.          
      */
-    virtual void setHighlighter(Highlighter* highlighter);
+    virtual void setHighlighter(Highlighter* highlighter) override final;
 
 private:
 
@@ -101,11 +101,9 @@ private:
      *  An equivalent parameter will be added to the component.
      *
      *      @param [in] declaration                         The declaration from which to create a model parameter.
-     *      @param [in/out] targetComponent                 The component to which add the parameter.
      *      @param [in/out] targetComponentInstantiation    The component instantiation to which add the module parameter.
      */
     void createModelParameterFromDeclaration(QString const& declaration, 
-        QSharedPointer<Component> targetComponent, 
         QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
 
     /*!

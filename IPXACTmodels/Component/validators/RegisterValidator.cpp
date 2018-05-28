@@ -129,11 +129,14 @@ bool RegisterValidator::hasValidDimension(QSharedPointer<Register> selectedRegis
 //-----------------------------------------------------------------------------
 bool RegisterValidator::hasValidAddressOffset(QSharedPointer<Register> selectedRegister) const
 {
-    QString solvedValue = expressionParser_->parseExpression(selectedRegister->getAddressOffset());
-    bool changeOk = true;
+    bool changeOk = true; 
+    bool expressionValid = false;
+
+    QString solvedValue =
+        expressionParser_->parseExpression(selectedRegister->getAddressOffset(), &expressionValid);
     quint64 offsetInt = solvedValue.toULongLong(&changeOk);
 
-    return changeOk && offsetInt >= 0;
+    return changeOk && expressionValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -141,11 +144,13 @@ bool RegisterValidator::hasValidAddressOffset(QSharedPointer<Register> selectedR
 //-----------------------------------------------------------------------------
 bool RegisterValidator::hasValidSize(QSharedPointer<Register> selectedRegister) const
 {
-    QString solvedValue = expressionParser_->parseExpression(selectedRegister->getSize());
     bool changeOk = true;
+    bool expressionValid = false;
+ 
+    QString solvedValue = expressionParser_->parseExpression(selectedRegister->getSize(), &expressionValid);
     quint64 sizeInt = solvedValue.toULongLong(&changeOk);
 
-    return changeOk && sizeInt > 0;
+    return changeOk && expressionValid;
 }
 
 //-----------------------------------------------------------------------------

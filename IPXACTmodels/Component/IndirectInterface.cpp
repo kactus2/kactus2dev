@@ -55,14 +55,6 @@ NameGroup(other),
 }
 
 //-----------------------------------------------------------------------------
-// Function: IndirectInterface::~IndirectInterface()
-//-----------------------------------------------------------------------------
-IndirectInterface::~IndirectInterface()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: IndirectInterface::getAttributes()
 //-----------------------------------------------------------------------------
 QMap<QString, QString> IndirectInterface::getAttributes() const

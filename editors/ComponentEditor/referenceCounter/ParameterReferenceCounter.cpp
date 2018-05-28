@@ -24,17 +24,9 @@ parameterFinder_(parameterFinder)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReferenceCounter::~ParameterReferenceCounter()
-//-----------------------------------------------------------------------------
-ParameterReferenceCounter::~ParameterReferenceCounter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterReferenceCounter::increaseReferenceCount()
 //-----------------------------------------------------------------------------
-void ParameterReferenceCounter::increaseReferenceCount(QString id)
+void ParameterReferenceCounter::increaseReferenceCount(QString const& id)
 {
     QSharedPointer<Parameter> targetParameter = parameterFinder_->getParameterWithID(id);
 
@@ -47,7 +39,7 @@ void ParameterReferenceCounter::increaseReferenceCount(QString id)
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceCounter::decreaseReferenceCount()
 //-----------------------------------------------------------------------------
-void ParameterReferenceCounter::decreaseReferenceCount(QString id)
+void ParameterReferenceCounter::decreaseReferenceCount(QString const& id)
 {
     QSharedPointer<Parameter> targetParameter = parameterFinder_->getParameterWithID(id);
 
@@ -55,14 +47,6 @@ void ParameterReferenceCounter::decreaseReferenceCount(QString id)
     {
         targetParameter->decreaseUsageCount();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterReferenceCounter::recalculateReferencesToParameters()
-//-----------------------------------------------------------------------------
-void ParameterReferenceCounter::recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameterList)
-{
-
 }
 
 //-----------------------------------------------------------------------------

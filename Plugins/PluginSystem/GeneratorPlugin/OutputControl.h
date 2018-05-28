@@ -27,6 +27,10 @@ struct GenerationOutput
     //! The content of the output, ie. what will be written to the file.
     QString fileContent_;
     
+    GenerationOutput() = default;
+
+    virtual ~GenerationOutput() = default;
+
     /*!
      *  Writes the content.
      */

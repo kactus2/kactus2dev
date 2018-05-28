@@ -238,7 +238,7 @@ QSharedPointer<ConnectivityInterface const> MemoryConnectionHandler::getStartInt
 {
     foreach (QSharedPointer<ConnectivityInterface const> pathInterface, connectionPath)
     {
-        if (pathInterface->getMode().compare(QString("Master")) == 0, pathInterface->getConnectedMemory())
+        if (pathInterface->getMode().compare(QString("Master")) == 0 && pathInterface->getConnectedMemory())
         {
             return pathInterface;
         }

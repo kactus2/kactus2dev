@@ -24,21 +24,16 @@
 //-----------------------------------------------------------------------------
 MakefileGenerator::MakefileGenerator(MakefileParser& parser, IPluginUtility* utility,
 	QSharedPointer<FileSet> generalFileSet) :
-	parsedData_(parser.getParsedData()), utility_(utility), generalFileSet_(generalFileSet)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakefileGenerator::~MakefileGenerator()
-//-----------------------------------------------------------------------------
-MakefileGenerator::~MakefileGenerator()
+	parsedData_(parser.getParsedData()),
+    utility_(utility),
+    generalFileSet_(generalFileSet)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generate()
 //-----------------------------------------------------------------------------
-int MakefileGenerator::generate(QString targetPath, QString topPath, QString sysViewName)
+int MakefileGenerator::generate(QString const& targetPath, QString const& topPath)
 {
     // Names of the created directories to be referenced by the master makefile.
     QStringList makeNames;
@@ -61,8 +56,8 @@ int MakefileGenerator::generate(QString targetPath, QString topPath, QString sys
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generateInstanceMakefile()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generateInstanceMakefile(QString targetPath, QString componentPath,
-    QSharedPointer<MakeFileData> makeData, QStringList &makeNames)
+void MakefileGenerator::generateInstanceMakefile(QString const& targetPath, QString const& componentPath,
+    QSharedPointer<MakeFileData> makeData, QStringList& makeNames)
 {
 	// Nothing to make -> no action.
 	if (makeData->swObjects.count() < 1)
@@ -170,9 +165,10 @@ void MakefileGenerator::generateInstanceMakefile(QString targetPath, QString com
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generateMainMakefile()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generateMainMakefile(QString targetPath, QString componentPath, QStringList& makeNames) const
+void MakefileGenerator::generateMainMakefile(QString const& targetPath, QString const& componentPath, 
+    QStringList& makeNames) const
 {
-    QString pathString = targetPath + "/" + mainMakeName_;
+    QString pathString = targetPath + "/" + MakeCommon::MAKEFILE_MASTER_NAME;
     // Create the master makefile.
     QFile makeFile(pathString);
 

@@ -66,14 +66,6 @@ Extendable(other),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstance::~ComponentInstance()
-//-----------------------------------------------------------------------------
-ComponentInstance::~ComponentInstance()
-{
-    componentRef_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstance::setInstanceName()
 //-----------------------------------------------------------------------------
 void ComponentInstance::setInstanceName(QString const& name)

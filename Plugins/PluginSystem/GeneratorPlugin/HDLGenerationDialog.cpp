@@ -125,7 +125,7 @@ void HDLGenerationDialog::setPreviewHighlighter(QSyntaxHighlighter* highlighter)
 //-----------------------------------------------------------------------------
 void HDLGenerationDialog::accept()
 {
-    if (fileOutput_->pathEditor_->hasFocus())
+    if (fileOutput_->canAccept() == false)
     {
         return;
     }

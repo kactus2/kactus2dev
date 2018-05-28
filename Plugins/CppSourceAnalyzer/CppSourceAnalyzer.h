@@ -17,6 +17,9 @@
 #include <QFile>
 #include <QString>
 
+//-----------------------------------------------------------------------------
+// C/C++ source analyzer plugin.
+//-----------------------------------------------------------------------------
 class CppSourceAnalyzer : public QObject, public ISourceAnalyzerPlugin
 {
     Q_OBJECT
@@ -26,53 +29,61 @@ class CppSourceAnalyzer : public QObject, public ISourceAnalyzerPlugin
     Q_INTERFACES(ISourceAnalyzerPlugin)
 
 public:
+
+    //! The constructor.
     CppSourceAnalyzer();
-    ~CppSourceAnalyzer();
+
+    // Disable copying.
+    CppSourceAnalyzer(CppSourceAnalyzer const& rhs) = delete;
+    CppSourceAnalyzer& operator=(CppSourceAnalyzer const& rhs) = delete;
+
+    //! The destructor.
+    virtual ~CppSourceAnalyzer() = default;
 
     /*!
      *  Returns the name of the plugin.
      */
-    virtual QString getName() const;
+    virtual QString getName() const override final;
 
     /*!
      *  Returns the version of the plugin.
      */
-    virtual QString getVersion() const;
+    virtual QString getVersion() const override final;
 
     /*!
      *  Returns the description of the plugin.
      */
-    virtual QString getDescription() const;
+    virtual QString getDescription() const override final;
 
     /*!
      *  Returns the vendor of the plugin.
      */
-    virtual QString getVendor() const;
+    virtual QString getVendor() const override final;
 
     /*!
      *  Returns the licence of the plugin.
      */
-    virtual QString getLicence() const;
+    virtual QString getLicence() const override final;
 
     /*!
      *  Returns the holder of the licence of the plugin.
      */
-    virtual QString getLicenceHolder() const;
+    virtual QString getLicenceHolder() const override final;
 
     /*!
      *  Returns the settings widget.
      */
-    virtual QWidget* getSettingsWidget();
+    virtual QWidget* getSettingsWidget() override final;
 
     /*!
      *  This is used to access the settings modified by function getSettingsWidget().
      */
-    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
+    virtual PluginSettingsModel* getSettingsModel() override final  {return nullptr;}
 
     /*!
      *  Returns the list of file types this plugin can run analysis for.
      */
-    virtual QStringList getSupportedFileTypes() const;
+    virtual QStringList getSupportedFileTypes() const override final;
 
     /*!
      *  Calculates a language-dependent hash for the given file.
@@ -83,7 +94,7 @@ public:
      *
      *      @remarks Comments and whitespace are ignored and do not affect the hash value.
      */
-    virtual QString calculateHash(QString const& filename);
+    virtual QString calculateHash(QString const& filename) override final;
 
     /*!
      *  Begins the analysis for the given component.
@@ -93,7 +104,7 @@ public:
      *
      *      @remarks Any preparations needed for the file dependency analysis should be made here.
      */
-    virtual void beginAnalysis(Component const* component, QString const& componentPath);
+    virtual void beginAnalysis(Component const* component, QString const& componentPath) override final;
 
     /*!
      *  Ends the analysis for the given component.
@@ -103,7 +114,7 @@ public:
      *
      *      @remarks Any cleanups needed should be made here.
      */
-    virtual void endAnalysis(Component const* component, QString const& componentPath);
+    virtual void endAnalysis(Component const* component, QString const& componentPath) override final;
 
     /*!
      *  Retrieves all file dependencies the given file has.
@@ -115,15 +126,12 @@ public:
      */
     virtual QList<FileDependencyDesc> getFileDependencies(Component const* component,
                                      QString const& componentPath,
-                                     QString const& filename);
+                                     QString const& filename) override final;
 
-	 //! \brief Returns the external program requirements of the plugin.
-	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
+	 //! Returns the external program requirements of the plugin.
+	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements() override final;
 
 private:
-    // Disable copying.
-    CppSourceAnalyzer(CppSourceAnalyzer const& rhs);
-    CppSourceAnalyzer& operator=(CppSourceAnalyzer const& rhs);
 
     /*!
      *
@@ -143,7 +151,7 @@ private:
      *
      *      @return The meaningful source data of the file, with comments removed.
      */
-    QString removeComments(QString& source);
+    QString removeComments(QString const& source);
     
     //-----------------------------------------------------------------------------
     // Data.

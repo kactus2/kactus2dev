@@ -43,16 +43,16 @@ DesignConfigurationInstantiationEditor::DesignConfigurationInstantiationEditor(Q
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     LibraryInterface* libHandler, QWidget* parent):
 ParameterItemEditor(component, libHandler, parent), 
-instantiation_(instantiation),
-nameGroupEditor_(new NameGroupEditor(instantiation, this,
+    instantiation_(instantiation),
+    nameGroupEditor_(new NameGroupEditor(instantiation, this,
     tr("Design configuration instance name and description"))),
-parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
-designConfigurationEditor_(0),
-elementEditor_(0),
-designConfigurationParameterFinder_(new ListParameterFinder())
+    designConfigurationEditor_(0),
+    parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
+    elementEditor_(0),
+    designConfigurationParameterFinder_(new ListParameterFinder())
 {
     // find the main window for VLNV editor.
-    QWidget* parentW = NULL;
+    QWidget* parentW = nullptr;
     foreach (QWidget* widget, QApplication::topLevelWidgets())
     {
         MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
@@ -94,13 +94,6 @@ designConfigurationParameterFinder_(new ListParameterFinder())
     refresh();
 
     setupLayout();
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationInstantiationEditor::~DesignConfigurationInstantiationEditor()
-//-----------------------------------------------------------------------------
-DesignConfigurationInstantiationEditor::~DesignConfigurationInstantiationEditor()
-{
 }
 
 //-----------------------------------------------------------------------------
