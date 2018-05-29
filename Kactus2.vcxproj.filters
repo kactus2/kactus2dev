@@ -4426,6 +4426,9 @@
     <ClCompile Include="GeneratedFiles\moc_SystemDesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
+      <Filter>Source Files\editors\MemoryDesigner</Filter>
+    </ClCompile>
     <ClCompile Include="library\LibraryItemSelectionFactory.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
@@ -6745,6 +6748,9 @@
     </ClInclude>
     <ClInclude Include="editors\SystemDesign\HWMappingItem.h">
       <Filter>Header Files\editors\SystemDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
+      <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
     <ClInclude Include="library\LibraryItemSelectionFactory.h">
       <Filter>Header Files\library</Filter>

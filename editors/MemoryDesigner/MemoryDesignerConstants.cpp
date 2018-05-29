@@ -11,6 +11,10 @@
 
 #include "MemoryDesignerConstants.h"
 
+#include <editors/MemoryDesigner/ConnectivityInterface.h>
+#include <editors/MemoryDesigner/ConnectivityComponent.h>
+#include <editors/MemoryDesigner/MemoryItem.h>
+
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerConstants::itemOverlapsAnotherItem()
 //-----------------------------------------------------------------------------
@@ -138,4 +142,43 @@ qreal MemoryDesignerConstants::getRequiredAreaForUsedArea(qreal usedArea)
     qreal requiredArea = getAreaSizeForRange(addressRange);
 
     return requiredArea;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerConstants::getMapItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> MemoryDesignerConstants::getMapItem(
+    QSharedPointer<ConnectivityInterface const> startInterface,
+    QSharedPointer<ConnectivityInterface const> endInterface)
+{
+    if (startInterface == endInterface)
+    {
+        return getMemoryItemForLocalMap(startInterface);
+    }
+    else
+    {
+        return endInterface->getConnectedMemory();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerConstants::getMemoryItemForLocalMap()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> MemoryDesignerConstants::getMemoryItemForLocalMap(
+    QSharedPointer<ConnectivityInterface const> spaceInterface)
+{
+    QSharedPointer<MemoryItem const> spaceMemoryItem = spaceInterface->getConnectedMemory();
+    QSharedPointer<ConnectivityComponent const> connectionInstance = spaceInterface->getInstance();
+    if (spaceMemoryItem && connectionInstance)
+    {
+        foreach(QSharedPointer<MemoryItem> subSpaceItem, spaceMemoryItem->getChildItems())
+        {
+            if (subSpaceItem->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
+            {
+                return subSpaceItem;
+            }
+        }
+    }
+
+    return QSharedPointer<MemoryItem>();
 }

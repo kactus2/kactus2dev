@@ -755,7 +755,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./library/LibraryLoader.h \
-    ./library/LibraryItemSelectionFactory.h
+    ./library/LibraryItemSelectionFactory.h \
+    ./editors/MemoryDesigner/MemoryConnectionAddressCalculator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1414,6 +1415,8 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
     ./library/LibraryItemSelectionFactory.cpp \
-    ./library/LibraryLoader.cpp
+    ./library/LibraryLoader.cpp \
+    ./editors/MemoryDesigner/MemoryConnectionAddressCalculator.cpp
 RESOURCES += kactus.qrc

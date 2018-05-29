@@ -139,6 +139,15 @@
     <ClCompile Include="..\..\common\utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\LinuxDeviceTree\LinuxDeviceTreeDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_LinuxDeviceTreeDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_LinuxDeviceTreeDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VHDLGenerator_global.h">
@@ -228,6 +237,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="VHDLGeneratorPlugin.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\LinuxDeviceTree\LinuxDeviceTreeDialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
