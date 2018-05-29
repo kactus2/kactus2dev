@@ -62,6 +62,14 @@ private:
     LinuxDeviceTreeGenerator(LinuxDeviceTreeGenerator const& rhs);
     LinuxDeviceTreeGenerator& operator=(LinuxDeviceTreeGenerator const& rhs);
 
+    //! Container for a component and its CPUs connected to an interface.
+    struct ComponentCPUContainer
+    {
+        QVector<QSharedPointer<Cpu> > interfacedCPUs_;
+
+        QSharedPointer<Component const> containingComponent_;
+    };
+
     /*!
      *  Write the device tree file.
      *
@@ -89,31 +97,30 @@ private:
      *
      *      @param [in] outputStream    The stream to write into.
      *      @param [in] path            The selected interface path.
-     *      @param [in] interfacedCPUs  List of CPUs connected to starting point of the selected path.
+     *      @param [in] cpuContainer    Container for component and its CPUs connected to the starting interface.
      *		@param [in]	pathNumber      The current running number for CPU listings.
      */
     void writePath(QTextStream& outputStream, QVector<QSharedPointer<const ConnectivityInterface> > path,
-        QVector<QSharedPointer<Cpu> >& interfacedCPUs, int pathNumber);
+        ComponentCPUContainer cpuContainer, int pathNumber);
 
     /*!
      *	Get all the CPUs connected to the selected interface.
      *
      *		@param [in]	startInterface  The selected interface.
      *
-     *		@return A list of the CPUs connected to the selected interface.
+     *		@return Container for component and its CPUs connected to the selected interface.
      */
-    QVector<QSharedPointer<Cpu > > getCPUsForInterface(QSharedPointer<const ConnectivityInterface> startInterface)
-        const;
+    ComponentCPUContainer getCPUsForInterface(QSharedPointer<const ConnectivityInterface> startInterface) const;
 
     /*!
-     *	Get all the CPUs connected to the selected interface from the selected componetn.
+     *	Get all the CPUs connected to the selected interface from the selected component.
      *
      *		@param [in]	connectionInterface     The selected interface.
      *		@param [in]	containingComponent     The component containing the CPUs.
      *
-     *		@return	List of all the CPUs within the selected component connected to the selected interface.
+     *		@return	Container for component and its CPUs connected to the selected interface.
      */
-    QVector<QSharedPointer<Cpu> > getComponentCPUsForInterface(
+    ComponentCPUContainer getComponentCPUsForInterface(
         QSharedPointer<const ConnectivityInterface> connectionInterface,
         QSharedPointer<Component const> containingComponent) const;
 
@@ -144,9 +151,11 @@ private:
      *  Write a single CPU.
      *
      *		@param [in]	outputStream    The stream to write into.
+     *      @param [in] CPUName         Name of the selected CPU.
+     *      @param [in] componentVLNV   VLNV of the component containing the selected CPU.
      *		@param [in]	cpuNumber       Number of the CPU.
      */
-    void writeCPU(QTextStream& outputStream, int cpuNumber);
+    void writeCPU(QTextStream& outputStream, QString const& CPUName, VLNV const& componentVLNV, int cpuNumber);
 
     /*!
      *	Write the items connected to the selected starting interface.
@@ -180,7 +189,7 @@ private:
      *		@param [in]	activeView      Currently active view of the top component.
      */
     void writeUnconnectedCPUs(QTextStream& outputStream, int& pathNumber,
-        QVector<QSharedPointer<Cpu> >& connectedCPUs, QSharedPointer<Component> topComponent,
+        QVector<QSharedPointer<Cpu> >& connectedCPUs, QSharedPointer<Component const> topComponent,
         QString const& activeView);
 
     /*!
@@ -192,7 +201,7 @@ private:
      *		@param [in]	connectedCPUs   List of the connected CPUs.
      */
     void writeUnconnectedCPUsOfComponent(QTextStream& outputStream, int& pathNumber,
-        QSharedPointer<Component> component, QVector<QSharedPointer<Cpu> >& connectedCPUs);
+        QSharedPointer<Component const> component, QVector<QSharedPointer<Cpu> >& connectedCPUs);
 
     /*!
      *	Get the active view matching the selected view name.
@@ -202,7 +211,8 @@ private:
      *
      *      @return The currently active view.
      */
-    QSharedPointer<View> getView(QSharedPointer<Component> containingComponent, QString const& viewName) const;
+    QSharedPointer<View> getView(QSharedPointer<Component const> containingComponent, QString const& viewName)
+        const;
 
     /*!
      *	Get the design configuration referenced by the selected view.
@@ -212,8 +222,8 @@ private:
      *
      *      @return Design configuration referenced by the selected view.
      */
-    QSharedPointer<const DesignConfiguration> getDesignConfiguration(QSharedPointer<Component> containingComponent,
-        QSharedPointer<View> referencingView) const;
+    QSharedPointer<const DesignConfiguration> getDesignConfiguration(
+        QSharedPointer<Component const> containingComponent, QSharedPointer<View> referencingView) const;
 
     /*!
      *	Get the design referenced by the selected view.
@@ -224,7 +234,7 @@ private:
      *
      *		@return	Design referenced by the selected view.
      */
-    QSharedPointer<const Design> getHierarchicalDesign(QSharedPointer<Component> containingComponent,
+    QSharedPointer<const Design> getHierarchicalDesign(QSharedPointer<Component const> containingComponent,
         QSharedPointer<View> referencingView, QSharedPointer<const DesignConfiguration> designConfiguration) const;
 
     /*!
@@ -235,7 +245,7 @@ private:
      *
      *		@return	VLNV of the hierarchical design referenced by the selected view.
      */
-    VLNV getHierarchicalDesignVLNV(QSharedPointer<Component> containingComponent,
+    VLNV getHierarchicalDesignVLNV(QSharedPointer<Component const> containingComponent,
         QSharedPointer<View> referencingView) const;
 
     /*!

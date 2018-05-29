@@ -23,6 +23,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TransparentBridge.h>
 #include <IPXACTmodels/Component/Cpu.h>
 
 #include <IPXACTmodels/Design/Design.h>
@@ -50,6 +51,8 @@ private slots:
     void testWriteMultipleCPUs();
 
     void testAddressChange();
+
+    void testCPUInMiddleOfPath();
 
 private:
 
@@ -79,8 +82,8 @@ private:
     QSharedPointer<ComponentInstance> createComponentInstance(VLNV const& vlnv, QString const& name,
         QString const& id, QSharedPointer<Design> design) const;
 
-    void createInterconnection(QString const& instance1, QString const& interface1, QString const& instance2,
-        QString const& interface2, QSharedPointer<Design> design) const;
+    void createInterconnection(QSharedPointer<ActiveInterface> startInterface,
+        QSharedPointer<ActiveInterface> endInterface, QSharedPointer<Design> design);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -159,6 +162,7 @@ void tst_LinuxDeviceTreeGenerator::testWriteSimpleCPU()
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
                 "\t\t#size-cells = <1>;\n\n"
+                "\t\t// 'testCPU' in component Test:TestLibrary:TopComponent:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
                 "\t\t};\n"
@@ -201,10 +205,7 @@ void tst_LinuxDeviceTreeGenerator::testWriteSimpleConnection()
     QSharedPointer<ActiveInterface> mapInterface(
         new ActiveInterface(mapInstance->getInstanceName(), mapBus->name()));
 
-    QSharedPointer<Interconnection> testConnection(new Interconnection());
-    testConnection->setStartInterface(cpuInterface);
-    testConnection->getActiveInterfaces()->append(mapInterface);
-    design_->getInterconnections()->append(testConnection);
+    createInterconnection(cpuInterface, mapInterface, design_);
 
     QString output = runGenerator(hierarchicalView_->name());
 
@@ -214,6 +215,7 @@ void tst_LinuxDeviceTreeGenerator::testWriteSimpleConnection()
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
                 "\t\t#size-cells = <1>;\n\n"
+                "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
                 "\t\t};\n"
@@ -288,16 +290,8 @@ void tst_LinuxDeviceTreeGenerator::testWriteMultipleCPUs()
     QSharedPointer<ActiveInterface> secondMapInterface(
         new ActiveInterface(secondMapInstance->getInstanceName(), secondMapBus->name()));
 
-    QSharedPointer<Interconnection> testConnection(new Interconnection());
-    testConnection->setStartInterface(cpuInterface);
-    testConnection->getActiveInterfaces()->append(mapInterface);
-
-    QSharedPointer<Interconnection> secondTestConnection(new Interconnection());
-    secondTestConnection->setStartInterface(secondCpuInterface);
-    secondTestConnection->getActiveInterfaces()->append(secondMapInterface);
-
-    design_->getInterconnections()->append(testConnection);
-    design_->getInterconnections()->append(secondTestConnection);
+    createInterconnection(cpuInterface, mapInterface, design_);
+    createInterconnection(secondCpuInterface, secondMapInterface, design_);
 
     QString output = runGenerator(hierarchicalView_->name());
 
@@ -307,6 +301,7 @@ void tst_LinuxDeviceTreeGenerator::testWriteMultipleCPUs()
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
                 "\t\t#size-cells = <1>;\n\n"
+                "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
                 "\t\t};\n"
@@ -320,6 +315,7 @@ void tst_LinuxDeviceTreeGenerator::testWriteMultipleCPUs()
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
                 "\t\t#size-cells = <1>;\n\n"
+                "\t\t// 'secondTestCPU' in component Test:TestLibrary:testCPU2:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
                 "\t\t};\n"
@@ -368,10 +364,7 @@ void tst_LinuxDeviceTreeGenerator::testAddressChange()
     QSharedPointer<ActiveInterface> mapInterface(
         new ActiveInterface(mapInstance->getInstanceName(), mapBus->name()));
 
-    QSharedPointer<Interconnection> testConnection(new Interconnection());
-    testConnection->setStartInterface(cpuInterface);
-    testConnection->getActiveInterfaces()->append(mapInterface);
-    design_->getInterconnections()->append(testConnection);
+    createInterconnection(cpuInterface, mapInterface, design_);
 
     QString output = runGenerator(hierarchicalView_->name());
 
@@ -381,12 +374,89 @@ void tst_LinuxDeviceTreeGenerator::testAddressChange()
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
                 "\t\t#size-cells = <1>;\n\n"
+                "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
                 "\t\t};\n"
             "\t};\n\n"
                 "\ttestMap@a {\n"
                 "\t\treg = <0xa 0x19>;\n"
+            "\t};\n\n"
+        "};\n\n";
+
+    QCOMPARE(output, expectedOutPut);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::testCPUInMiddleOfPath()
+//-----------------------------------------------------------------------------
+void tst_LinuxDeviceTreeGenerator::testCPUInMiddleOfPath()
+{
+    //! First component: space, no CPU.
+    VLNV startVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "testStart", "1.0");
+    QSharedPointer<Component> startComponent(new Component(startVLNV));
+    QSharedPointer<AddressSpace> startSpace =
+        createAddressSpace(QStringLiteral("startSpace"), "8", "8", startComponent);
+    QSharedPointer<BusInterface> startBus = createMasterBusInterface("startBus", startSpace, startComponent);
+
+    //! Second component: bridged slave-master, space, CPU.
+    VLNV cpuVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "testCPU", "1.0");
+    QSharedPointer<Component> cpuComponent(new Component(cpuVLNV));
+    QSharedPointer<AddressSpace> testSpace =
+        createAddressSpace(QStringLiteral("testSpace"), "16", "16", cpuComponent);
+    QSharedPointer<Cpu> testCPU = createCPU("testCPU", testSpace->name(), cpuComponent);
+    QSharedPointer<BusInterface> bridgedCpuBus = createMasterBusInterface("topBus", testSpace, cpuComponent);
+    QSharedPointer<BusInterface> bridgedSlaveBus =
+        createSlaveBusInterface("bridgeSlave", QSharedPointer<MemoryMap>(), cpuComponent);
+    QSharedPointer<TransparentBridge> slaveCPUBridge(new TransparentBridge(bridgedCpuBus->name()));
+    bridgedSlaveBus->getSlave()->getBridges()->append(slaveCPUBridge);
+
+    //! Third component: slave map.
+    VLNV mapVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "MapComponent", "1.0");
+    QSharedPointer<Component> mapComponent(new Component(mapVlnv));
+    QSharedPointer<MemoryMap> testMap = createMemoryMap("testMap", mapComponent);
+    createBlockForMap(QString("testBlock"), QString("0"), QString("16"), QString("32"), testMap);
+    QSharedPointer<BusInterface> mapBus = createSlaveBusInterface("mapBus", testMap, mapComponent);
+
+    library_->addComponent(startComponent);
+    library_->addComponent(cpuComponent);
+    library_->addComponent(mapComponent);
+
+    QSharedPointer<ComponentInstance> startInstance =
+        createComponentInstance(startVLNV, "startInstance", "startID", design_);
+    QSharedPointer<ComponentInstance> cpuInstance =
+        createComponentInstance(cpuVLNV, "cpuInstance", "cpuID", design_);
+    QSharedPointer<ComponentInstance> mapInstance =
+        createComponentInstance(mapVlnv, "mapInstance", "mapID", design_);
+
+
+    QSharedPointer<ActiveInterface> startInterface(
+        new ActiveInterface(startInstance->getInstanceName(), startBus->name()));
+    QSharedPointer<ActiveInterface> bridgeSlaveInterface(
+        new ActiveInterface(cpuInstance->getInstanceName(), bridgedSlaveBus->name()));
+    QSharedPointer<ActiveInterface> cpuInterface(
+        new ActiveInterface(cpuInstance->getInstanceName(), bridgedCpuBus->name()));
+    QSharedPointer<ActiveInterface> mapInterface(
+        new ActiveInterface(mapInstance->getInstanceName(), mapBus->name()));
+
+    createInterconnection(startInterface, bridgeSlaveInterface, design_);
+    createInterconnection(cpuInterface, mapInterface, design_);
+
+    QString output = runGenerator(hierarchicalView_->name());
+
+    QString expectedOutPut =
+        "/dts-v0/;\n\n"
+        "/ {\n"
+            "\tcpus {\n"
+                "\t\t#address-cells = <1>;\n"
+                "\t\t#size-cells = <1>;\n\n"
+                "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
+                "\t\tcpu@0 {\n"
+                    "\t\t\treg = <0>;\n"
+                "\t\t};\n"
+            "\t};\n\n"
+            "\ttestMap@0 {\n"
+                "\t\treg = <0x0 0x1f>;\n"
             "\t};\n\n"
         "};\n\n";
 
@@ -465,13 +535,15 @@ QSharedPointer<BusInterface> tst_LinuxDeviceTreeGenerator::createSlaveBusInterfa
     QSharedPointer<MemoryMap> referencedMap, QSharedPointer<Component> containingComponent) const
 {
     QSharedPointer<BusInterface> newSlaveBus = createBusInterface(busName, General::SLAVE, containingComponent);
-    
+
+    QSharedPointer<SlaveInterface> newSlaveInterface(new SlaveInterface());
+
     if (referencedMap)
     {
-        QSharedPointer<SlaveInterface> newSlaveInterface(new SlaveInterface());
         newSlaveInterface->setMemoryMapRef(referencedMap->name());
-        newSlaveBus->setSlave(newSlaveInterface);
     }
+
+    newSlaveBus->setSlave(newSlaveInterface);
 
     return newSlaveBus;
 }
@@ -532,6 +604,20 @@ QSharedPointer<ComponentInstance> tst_LinuxDeviceTreeGenerator::createComponentI
     design->getComponentInstances()->append(newInstance);
 
     return newInstance;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::createInterconnection()
+//-----------------------------------------------------------------------------
+void tst_LinuxDeviceTreeGenerator::createInterconnection(QSharedPointer<ActiveInterface> startInterface,
+    QSharedPointer<ActiveInterface> endInterface, QSharedPointer<Design> design)
+{
+    QSharedPointer<Interconnection> newConnection(new Interconnection());
+    
+    newConnection->setStartInterface(startInterface);
+    newConnection->getActiveInterfaces()->append(endInterface);
+    
+    design->getInterconnections()->append(newConnection);
 }
 
 QTEST_APPLESS_MAIN(tst_LinuxDeviceTreeGenerator)
