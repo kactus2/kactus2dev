@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/Design.h>
 
 #include <QFileDialog>
 #include <QPushButton>
@@ -26,7 +27,7 @@
 // Function: LinuxDeviceTreeDialog::LinuxDeviceTreeDialog()
 //-----------------------------------------------------------------------------
 LinuxDeviceTreeDialog::LinuxDeviceTreeDialog(QString const& defaultPath, QSharedPointer<Component> component,
-    VLNV const& designVLNV, QWidget* parent):
+    QSharedPointer<Design> design, QWidget* parent):
 QDialog(parent),
 viewSelector_(new QComboBox(this)),
 fileSetGroup_(new QGroupBox(tr("Add file to fileset"))),
@@ -42,7 +43,7 @@ fileEditor_(new QLineEdit(this))
     fileSetGroup_->setChecked(true);
     fileSetSelector_->setEditable(true);
 
-    setupViewSelector(component, designVLNV);
+    setupViewSelector(component, design);
     setupFileSetSelector(component->getFileSets());
 
     setupLayout();
@@ -118,7 +119,7 @@ void LinuxDeviceTreeDialog::onBrowse()
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeDialog::setupViewSelector()
 //-----------------------------------------------------------------------------
-void LinuxDeviceTreeDialog::setupViewSelector(QSharedPointer<Component> component, VLNV const& designVLNV)
+void LinuxDeviceTreeDialog::setupViewSelector(QSharedPointer<Component> component, QSharedPointer<Design> design)
 {
     int currentViewIndex = 0;
     bool currentViewFound = false;
@@ -127,15 +128,20 @@ void LinuxDeviceTreeDialog::setupViewSelector(QSharedPointer<Component> componen
         QSharedPointer<View> view = component->getViews()->at(i);
         viewSelector_->addItem(view->name());
 
-        QString instantiationReference = view->getDesignInstantiationRef();
-        if (!currentViewFound && !instantiationReference.isEmpty())
+        if (design)
         {
-            foreach(QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
+            QString instantiationReference = view->getDesignInstantiationRef();
+            if (!currentViewFound && !instantiationReference.isEmpty())
             {
-                if (instantiation->name() == instantiationReference)
+                foreach(QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
                 {
-                    currentViewIndex = i;
-                    currentViewFound = true;
+                    VLNV instantiationVLNVReference(*instantiation->getDesignReference());
+                    if (instantiationVLNVReference.isValid() && instantiation->name() == instantiationReference &&
+                        instantiationVLNVReference == design->getVlnv())
+                    {
+                        currentViewIndex = i;
+                        currentViewFound = true;
+                    }
                 }
             }
         }

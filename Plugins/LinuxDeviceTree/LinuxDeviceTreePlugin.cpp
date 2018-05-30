@@ -16,7 +16,9 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Design/Design.h>
 
+#include <Plugins/common/HDLParser/HDLCommandLineParser.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
+
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeDialog.h>
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>
 
@@ -25,6 +27,7 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QDir>
 
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreePlugin::LinuxDeviceTreePlugin()
@@ -120,7 +123,7 @@ QIcon LinuxDeviceTreePlugin::getIcon() const
 bool LinuxDeviceTreePlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
     QSharedPointer<Design const> design, QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-    return (design != 0 && designConfiguration != 0);
+    return component != 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -139,17 +142,11 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     suggestedPath.append(component->getVlnv().getName());
     suggestedPath.append(QStringLiteral(".dts"));
 
-    LinuxDeviceTreeDialog dialog(suggestedPath, component, design->getVlnv(), utility_->getParentWidget());
+    LinuxDeviceTreeDialog dialog(suggestedPath, component, design, utility_->getParentWidget());
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        QString path = dialog.getOutputPath();
-        QString activeView = dialog.getSelectedView();
-
-        LinuxDeviceTreeGenerator generator(utility_->getLibraryInterface());
-        generator.generate(component, activeView, path);
-
-        utility_->printInfo("Generation successful.");
+        generateDeviceTree(component, dialog.getSelectedView(), dialog.getOutputPath());
 
         if (dialog.saveFileToFileSet())
         {
@@ -167,6 +164,18 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     {
         utility->printInfo("Generation aborted.");
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::generateDeviceTree()
+//-----------------------------------------------------------------------------
+void LinuxDeviceTreePlugin::generateDeviceTree(QSharedPointer<Component> component, QString const& activeView,
+    QString const& filePath)
+{
+    LinuxDeviceTreeGenerator generator(utility_->getLibraryInterface());
+    generator.generate(component, activeView, filePath);
+
+    utility_->printInfo("Generation successful.");
 }
 
 //-----------------------------------------------------------------------------
@@ -219,4 +228,52 @@ QSharedPointer<FileSet> LinuxDeviceTreePlugin::getFileSet(QSharedPointer<Compone
     component->getFileSets()->append(newFileSet);
 
     return newFileSet;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::getCommand()
+//-----------------------------------------------------------------------------
+QString LinuxDeviceTreePlugin::getCommand() const
+{
+    return QStringLiteral("generate_linuxDeviceTree");
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::process()
+//-----------------------------------------------------------------------------
+void LinuxDeviceTreePlugin::process(QStringList const& arguments, IPluginUtility* utility)
+{
+    HDLCommandLineParser commandLineParser(getCommand());
+    HDLCommandLineParser::ParseResults parseResults = commandLineParser.parseArguments(arguments);
+
+    if (parseResults.cancelRun)
+    {
+        utility->printInfo(parseResults.message);
+        return;
+    }
+
+    utility_ = utility;
+    utility_->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+
+    QSharedPointer<Component> component =
+        utility_->getLibraryInterface()->getModel(parseResults.vlnv).dynamicCast<Component>();
+    if (!component)
+    {
+        utility_->printError(tr("Invalid component given as a parameter."));
+        return;
+    }
+
+    utility_->printInfo(tr("Running generation for %1 and view '%2'.").arg(parseResults.vlnv.toString(),
+        parseResults.viewName));
+
+    QDir targetDirectory;
+    if (!targetDirectory.mkpath(parseResults.path))
+    {
+        utility_->printError(tr("Could not create target directory: %1").arg(parseResults.path));
+        return;
+    }
+
+    utility_->printInfo(tr("Target directory: %1").arg(parseResults.path));
+
+    generateDeviceTree(component, parseResults.viewName, parseResults.path);
 }

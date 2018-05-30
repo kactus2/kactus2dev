@@ -16,6 +16,7 @@ class FileSet;
 class View;
 class VLNV;
 class Component;
+class Design;
 
 #include <QDialog>
 #include <QComboBox>
@@ -37,11 +38,11 @@ public:
      *
      *		@param [in]	defaultPath     The default path for the Linux Device Tree file.
      *		@param [in]	component       The top component of the selected design.
-     *		@param [in]	designVLNV      VLNV of the selected design.
+     *		@param [in]	design          The selected design.
      *		@param [in]	parent          Parent item for the dialog.
      */
-    LinuxDeviceTreeDialog(QString const& defaultPath, QSharedPointer<Component> component, VLNV const& designVLNV,
-        QWidget* parent);
+    LinuxDeviceTreeDialog(QString const& defaultPath, QSharedPointer<Component> component,
+        QSharedPointer<Design> design, QWidget* parent);
 
 	/*!
      *  The destructor.
@@ -97,13 +98,12 @@ private:
     LinuxDeviceTreeDialog& operator=(LinuxDeviceTreeDialog const& rhs);
 
     /*!
-     *	Setup the view selector for the selected component. Set the current view according to the VLNV of the
-     *  desired design.
+     *	Setup the view selector for the selected component. Set the current view according to the selected design.
      *
      *		@param [in]	component   The selected component.
-     *		@param [in]	designVLNV  VLNV of the selected design.
+     *		@param [in]	design      The selected design.
      */
-    void setupViewSelector(QSharedPointer<Component> component, VLNV const& designVLNV);
+    void setupViewSelector(QSharedPointer<Component> component, QSharedPointer<Design> design);
 
     /*!
      *	Setup the file set selector for the selected component.

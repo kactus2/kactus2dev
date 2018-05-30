@@ -18,6 +18,7 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/IPlugin.h>
+#include <Plugins/PluginSystem/CommandLineSupport.h>
 
 class FileSet;
 
@@ -26,7 +27,8 @@ class FileSet;
 //-----------------------------------------------------------------------------
 //! Generator plugin for Linux Device Tree.
 //-----------------------------------------------------------------------------
-class LINUXDEVICETREEGENERATOR_EXPORT LinuxDeviceTreePlugin : public QObject, public IGeneratorPlugin
+class LINUXDEVICETREEGENERATOR_EXPORT LinuxDeviceTreePlugin : public QObject, public IGeneratorPlugin,
+    public CommandLineSupport
 {
     Q_OBJECT
         Q_PLUGIN_METADATA(IID "kactus2.plugins.LinuxDeviceTreePlugin" FILE "LinuxDeviceTreePlugin.json")
@@ -122,6 +124,21 @@ public:
       */
      virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
+     /*!
+      * Gets the command required to run the plugin.
+      *
+      *      @return The command to run the plugin.
+      */
+     virtual QString getCommand() const;
+
+     /*!
+      *  Executes the plugin with the given arguments.
+      *
+      *      @param [in] arguments   The arguments for the execution.
+      *      @param [in] utility     Utilities for enabling plugin execution.
+      */
+     virtual void process(QStringList const& arguments, IPluginUtility* utility);
+
 public slots:
 
     /*!
@@ -152,6 +169,16 @@ private:
      *		@return	The selected file set.
      */
     QSharedPointer<FileSet> getFileSet(QSharedPointer<Component> component, QString const& fileSetName);
+
+    /*!
+     *  Generate the device tree.
+     *
+     *      @param [in] component   The selected top component.
+     *      @param [in] activeView  View of the selected top component.
+     *      @param [in] filePath    Path for the device tree file.
+     */
+    void generateDeviceTree(QSharedPointer<Component> component, QString const& activeView,
+        QString const& filePath);
 
     //-----------------------------------------------------------------------------
     // Data.

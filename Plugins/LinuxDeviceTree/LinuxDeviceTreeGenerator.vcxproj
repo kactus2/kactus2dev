@@ -145,6 +145,7 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp" />
+    <ClCompile Include="..\common\HDLParser\HDLCommandLineParser.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="GeneratedFiles\moc_ComponentInstanceParameterFinder.cpp" />
     <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreeDialog.cpp" />
@@ -233,6 +234,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DMEMORYVIEWGENERATOR_LIB -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DQT_XML_LIB -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(Configuration)\." "-I$(QTDIR)\include\qtmain" "-I." "-I.\..\.." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtXml"</Command>
     </CustomBuild>
+    <ClInclude Include="..\common\HDLParser\HDLCommandLineParser.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />
     <ClInclude Include="LinuxDeviceTreeGenerator.h" />
     <ClInclude Include="LinuxDeviceTreeGenerator_global.h" />
