@@ -1415,7 +1415,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
     ./library/LibraryItemSelectionFactory.cpp \
     ./library/LibraryLoader.cpp \
     ./editors/MemoryDesigner/MemoryConnectionAddressCalculator.cpp

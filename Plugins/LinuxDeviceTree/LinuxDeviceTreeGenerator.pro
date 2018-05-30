@@ -5,7 +5,7 @@
 TEMPLATE = lib
 TARGET = LinuxDeviceTreeGenerator
 DESTDIR = ../../executable/Plugins
-QT += core widgets gui
+QT += core widgets gui xml
 CONFIG += c++11 plugin release
 DEFINES += QT_DLL LINUXDEVICETREEGENERATOR_LIB
 

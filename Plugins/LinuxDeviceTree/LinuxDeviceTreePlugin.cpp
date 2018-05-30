@@ -121,7 +121,7 @@ QIcon LinuxDeviceTreePlugin::getIcon() const
 // Function: LinuxDeviceTreePlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
 bool LinuxDeviceTreePlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
-    QSharedPointer<Design const> design, QSharedPointer<DesignConfiguration const> designConfiguration) const
+    QSharedPointer<Design const> /*design*/, QSharedPointer<DesignConfiguration const> /*designConfiguration*/) const
 {
     return component != 0;
 }
@@ -130,17 +130,14 @@ bool LinuxDeviceTreePlugin::checkGeneratorSupport(QSharedPointer<Component const
 // Function: LinuxDeviceTreePlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
-    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration)
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> /*designConfiguration*/)
 {
     utility_ = utility;
     utility->printInfo("Running Linux Device Tree Generator " + getVersion());
 
     QFileInfo targetInfo(utility_->getLibraryInterface()->getPath(component->getVlnv()));
 
-    QString suggestedPath = targetInfo.absolutePath();
-    suggestedPath.append(QLatin1Char('/'));
-    suggestedPath.append(component->getVlnv().getName());
-    suggestedPath.append(QStringLiteral(".dts"));
+    QString suggestedPath = createFileNamePath(targetInfo.absolutePath(), component->getVlnv().getName());
 
     LinuxDeviceTreeDialog dialog(suggestedPath, component, design, utility_->getParentWidget());
 
@@ -164,6 +161,23 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     {
         utility->printInfo("Generation aborted.");
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::createFileNamePath()
+//-----------------------------------------------------------------------------
+QString LinuxDeviceTreePlugin::createFileNamePath(QString const& suggestedPath, QString const& componentName) const
+{
+    QString fileNamePath = suggestedPath;
+    if (fileNamePath.right(1) != '/')
+    {
+        fileNamePath.append(QLatin1Char('/'));
+    }
+
+    fileNamePath.append(componentName);
+    fileNamePath.append(QStringLiteral(".dts"));
+
+    return fileNamePath;
 }
 
 //-----------------------------------------------------------------------------
@@ -275,5 +289,6 @@ void LinuxDeviceTreePlugin::process(QStringList const& arguments, IPluginUtility
 
     utility_->printInfo(tr("Target directory: %1").arg(parseResults.path));
 
-    generateDeviceTree(component, parseResults.viewName, parseResults.path);
+    QString generatorPath = createFileNamePath(parseResults.path, component->getVlnv().getName());
+    generateDeviceTree(component, parseResults.viewName, generatorPath);
 }

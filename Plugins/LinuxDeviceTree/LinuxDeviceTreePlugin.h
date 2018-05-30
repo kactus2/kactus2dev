@@ -47,7 +47,7 @@ public:
      *  The destructor.
      */
     ~LinuxDeviceTreePlugin();
-    
+
     /*!
      *  Returns the name of the plugin.
      */
@@ -92,9 +92,9 @@ public:
      *  Returns the icon for the generator.
      */
     virtual QIcon getIcon() const;
-    
+
     /*!
-     *  Checks whether the generator may run for the given component or design. 
+     *  Checks whether the generator may run for the given component or design.
      *
      *      @param [in] component	        The component for which to check support. If design is not null, component
 	 *                                      will refer to design or designConfiguration.
@@ -105,7 +105,7 @@ public:
      */
     virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
         QSharedPointer<Design const> design, QSharedPointer<DesignConfiguration const> designConfiguration) const;
-     
+
     /*!
      *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
 	 *  also access to the parent window widget, so that it can show dialogs for the user to aid the generation.
@@ -169,6 +169,14 @@ private:
      *		@return	The selected file set.
      */
     QSharedPointer<FileSet> getFileSet(QSharedPointer<Component> component, QString const& fileSetName);
+
+    /*!
+     *  Create a path containing the default file name.
+     *
+     *      @param [in] suggestedPath   The suggested path for the device tree file.
+     *      @param [in] componentName   Name of the component.
+     */
+    QString createFileNamePath(QString const& suggestedPath, QString const& componentName) const;
 
     /*!
      *  Generate the device tree.
