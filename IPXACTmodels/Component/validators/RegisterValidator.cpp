@@ -150,7 +150,7 @@ bool RegisterValidator::hasValidSize(QSharedPointer<Register> selectedRegister) 
     QString solvedValue = expressionParser_->parseExpression(selectedRegister->getSize(), &expressionValid);
     quint64 sizeInt = solvedValue.toULongLong(&changeOk);
 
-    return changeOk && expressionValid;
+    return changeOk && expressionValid && sizeInt != 0;
 }
 
 //-----------------------------------------------------------------------------

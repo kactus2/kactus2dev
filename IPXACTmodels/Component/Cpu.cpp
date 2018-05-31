@@ -7,9 +7,6 @@
 #include "Cpu.h"
 
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/ParameterWriter.h>
-
-#include <IPXACTmodels/common/ParameterReader.h>
 
 #include <QString>
 #include <QList>

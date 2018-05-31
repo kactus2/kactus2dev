@@ -39,27 +39,27 @@ FileValidator::~FileValidator()
 //-----------------------------------------------------------------------------
 // Function: FileValidator::validate()
 //-----------------------------------------------------------------------------
-bool FileValidator::validate(QSharedPointer<File> File) const
+bool FileValidator::validate(QSharedPointer<File> file) const
 {
 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
-	if ( !hasValidName( File->name() ) )
+	if ( !hasValidName(file->name() ) )
 	{
 		return false;
 	}
 	
-	if ( !File->getIsPresent().isEmpty() &&
-		!parser->isValidExpression( File->getIsPresent() ) )
+	if ( !file->getIsPresent().isEmpty() &&
+		!parser->isValidExpression(file->getIsPresent() ) )
 	{
 		return false;
 	}
 	
-	if ( File->getFileTypes()->count() > 0 )
+	if (file->getFileTypes()->count() > 0 )
 	{
 		return false;
 	}
 
-	foreach ( QSharedPointer<NameValuePair> currentPair, File->getDefines() )
+	foreach ( QSharedPointer<NameValuePair> currentPair, file->getDefines() )
 	{
 		if ( !hasValidName( currentPair->name() ) )
 		{
@@ -73,27 +73,27 @@ bool FileValidator::validate(QSharedPointer<File> File) const
 //-----------------------------------------------------------------------------
 // Function: FileValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
-void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> File,
+void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> file,
     QString const&) const
 {
 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
-	if ( !hasValidName( File->name() ) )
+	if ( !hasValidName(file->name() ) )
 	{
-		errors.append(QObject::tr("The name is invalid or in-existing: %1").arg(File->name()));
+		errors.append(QObject::tr("The name is invalid or in-existing: %1").arg(file->name()));
 	}
 
-	if ( !File->getIsPresent().isEmpty() && !parser->isValidExpression( File->getIsPresent() ) )
+	if ( !File->getIsPresent().isEmpty() && !parser->isValidExpression(file->getIsPresent() ) )
 	{
-		errors.append(QObject::tr("The presence is invalid: %1").arg(File->getIsPresent()));
+		errors.append(QObject::tr("The presence is invalid: %1").arg(file->getIsPresent()));
 	}
 	
-	if ( File->getInterfaces().count() < 2 )
+	if (file->getInterfaces().count() < 2 )
 	{
 		errors.append(QObject::tr("Must have at least two bus interface references."));
 	}
 
-	foreach ( QString currentRef, File->getInterfaces() )
+	foreach ( QString currentRef, file->getInterfaces() )
 	{
 		if ( !hasValidName( currentRef ) )
 		{

@@ -113,7 +113,7 @@ bool AddressSpaceValidator::hasValidRange(QSharedPointer<AddressSpace> addressSp
         quint64 range =
             expressionParser_->parseExpression(addressSpace->getRange(), &expressionValid).toULongLong(&rangeOk);
 
-        return rangeOk && expressionValid;
+        return rangeOk && expressionValid && range != 0;
     }
 
     return false;

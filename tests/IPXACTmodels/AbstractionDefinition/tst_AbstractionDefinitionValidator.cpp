@@ -17,13 +17,14 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
+#include <IPXACTmodels/common/TimingConstraint.h>
+#include <IPXACTmodels/common/CellSpecification.h>
+
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <QtTest>
-#include "IPXACTmodels/common/TimingConstraint.h"
-#include "IPXACTmodels/common/CellSpecification.h"
 
 class tst_AbstractionDefinitionValidator : public QObject
 {

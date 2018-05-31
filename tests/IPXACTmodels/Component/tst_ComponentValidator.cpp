@@ -34,8 +34,13 @@
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
 
-#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/common/ClockUnit.h>
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/Assertion.h>
+
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
@@ -50,14 +55,9 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
-#include <IPXACTmodels/common/ClockUnit.h>
-#include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/Assertion.h>
-
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
