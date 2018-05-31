@@ -169,7 +169,7 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 QString LinuxDeviceTreePlugin::createFileNamePath(QString const& suggestedPath, QString const& componentName) const
 {
     QString fileNamePath = suggestedPath;
-    if (fileNamePath.right(1) != '/')
+    if (fileNamePath.endsWith(QLatin1Char('/')) == false)
     {
         fileNamePath.append(QLatin1Char('/'));
     }

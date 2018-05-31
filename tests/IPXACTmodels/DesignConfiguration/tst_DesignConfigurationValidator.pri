@@ -97,11 +97,14 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/VendorExtension.h \
     ../../../IPXACTmodels/Component/View.h \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
+    ../../../IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.h \
     ../../../IPXACTmodels/Component/Wire.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../MockObjects/LibraryMock.h \
-    ../../../IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.h
+    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h \
+    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
+    ../../../IPXACTmodels/kactusExtensions/FileDependency.h
 SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/Design/ActiveInterface.cpp \
@@ -197,8 +200,11 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/Component/View.cpp \
     ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
+    ../../../IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.cpp \
     ../../../IPXACTmodels/Component/Wire.cpp \
     ../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ../../../IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./tst_DesignConfigurationValidator.cpp
+    ./tst_DesignConfigurationValidator.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
+    ../../../IPXACTmodels/kactusExtensions/FileDependency.cpp

@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
+    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
     ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/Design/AdHocConnection.h \
     ../../../IPXACTmodels/Component/AddressSpace.h \
@@ -26,6 +27,7 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
     ../../../IPXACTmodels/Component/Cpu.h \
     ../../../IPXACTmodels/Design/Design.h \
+    ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
     ../../../IPXACTmodels/Component/DesignInstantiation.h \
     ../../../IPXACTmodels/common/DirectionTypes.h \
@@ -40,8 +42,11 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/Design/HierInterface.h \
     ../../../IPXACTmodels/Component/IndirectInterface.h \
+    ../../../IPXACTmodels/Component/validators/InstantiationsValidator.h \
     ../../../IPXACTmodels/Design/Interconnection.h \
+    ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
     ../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h \
+    ../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
@@ -57,10 +62,12 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/ModuleParameter.h \
     ../../../IPXACTmodels/Design/MonitorInterconnection.h \
     ../../../IPXACTmodels/Design/MonitorInterface.h \
+    ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.h \
     ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/common/NameValuePair.h \
     ../../../IPXACTmodels/Component/OtherClockDriver.h \
     ../../../IPXACTmodels/common/Parameter.h \
+    ../../../IPXACTmodels/common/validators/ParameterValidator.h \
     ../../../IPXACTmodels/common/PartSelect.h \
     ../../../IPXACTmodels/Component/Port.h \
     ../../../IPXACTmodels/Component/PortMap.h \
@@ -80,20 +87,18 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/common/VendorExtension.h \
     ../../../IPXACTmodels/Component/View.h \
+    ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
     ../../../IPXACTmodels/Component/Wire.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../MockObjects/LibraryMock.h \
-    ../../../IPXACTmodels/Component/validators/InstantiationsValidator.h \
-    ../../../IPXACTmodels/common/validators/ParameterValidator.h \
-    ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
-    ../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
-    ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.h \
-    ../../../IPXACTmodels/designConfiguration/ViewConfiguration.h \
-    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.h \
-    ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h
-SOURCES += ../../../IPXACTmodels/Component/validators/InstantiationsValidator.cpp \
-    ../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
+    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h \
+    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h \
+    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
+    ../../../IPXACTmodels/kactusExtensions/FileDependency.h
+SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -117,6 +122,7 @@ SOURCES += ../../../IPXACTmodels/Component/validators/InstantiationsValidator.cp
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../IPXACTmodels/Component/Cpu.cpp \
     ../../../IPXACTmodels/Design/Design.cpp \
+    ../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
     ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
     ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
     ../../../IPXACTmodels/common/DirectionTypes.cpp \
@@ -131,13 +137,17 @@ SOURCES += ../../../IPXACTmodels/Component/validators/InstantiationsValidator.cp
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/Design/HierInterface.cpp \
     ../../../IPXACTmodels/Component/IndirectInterface.cpp \
+    ../../../IPXACTmodels/Component/validators/InstantiationsValidator.cpp \
     ../../../IPXACTmodels/Design/Interconnection.cpp \
+    ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
     ../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp \
+    ../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
+    ../../MockObjects/LibraryMock.cpp \
     ../../../IPXACTmodels/Component/MasterInterface.cpp \
     ../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
     ../../../IPXACTmodels/Component/MemoryMap.cpp \
@@ -148,10 +158,12 @@ SOURCES += ../../../IPXACTmodels/Component/validators/InstantiationsValidator.cp
     ../../../IPXACTmodels/common/ModuleParameter.cpp \
     ../../../IPXACTmodels/Design/MonitorInterconnection.cpp \
     ../../../IPXACTmodels/Design/MonitorInterface.cpp \
+    ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
     ../../../IPXACTmodels/common/NameValuePair.cpp \
     ../../../IPXACTmodels/Component/OtherClockDriver.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../IPXACTmodels/common/validators/ParameterValidator.cpp \
     ../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../IPXACTmodels/Component/Port.cpp \
     ../../../IPXACTmodels/Component/PortMap.cpp \
@@ -162,7 +174,7 @@ SOURCES += ../../../IPXACTmodels/Component/validators/InstantiationsValidator.cp
     ../../../IPXACTmodels/Component/RemapState.cpp \
     ../../../IPXACTmodels/Component/Segment.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \
-    ../../MockObjects/LibraryMock.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
     ../../../IPXACTmodels/Component/Transactional.cpp \
     ../../../IPXACTmodels/common/TransactionalTypes.cpp \
@@ -171,15 +183,13 @@ SOURCES += ../../../IPXACTmodels/Component/validators/InstantiationsValidator.cp
     ../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/Component/View.cpp \
+    ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
     ../../../IPXACTmodels/Component/Wire.cpp \
     ../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_InstantiationsValidator.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../IPXACTmodels/common/validators/ParameterValidator.cpp \
-    ../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
-    ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
-    ../../../IPXACTmodels/designConfiguration/ViewConfiguration.cpp \
-    ../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
-    ../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
-    ../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp
+    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
+    ../../../IPXACTmodels/kactusExtensions/FileDependency.cpp

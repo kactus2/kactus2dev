@@ -13,8 +13,7 @@ TEMPLATE = app
 
 TARGET = tst_FieldValidator
 
-QT += core xml testlib
-QT -= gui
+QT += core gui xml testlib
 
 CONFIG += c++11 testcase console
 DEFINES += IPXACTMODELS_LIB
