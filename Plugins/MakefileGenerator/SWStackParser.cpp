@@ -227,7 +227,7 @@ bool SWStackParser::isTopOfStack(QSharedPointer<ComponentInstance> softInstance,
 //-----------------------------------------------------------------------------
 void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
     QSharedPointer<ComponentInstance> softInstance, QSharedPointer<MakeCommon::MakeFileData> makeData, 
-    QString& systemViewName)
+    QString const& systemViewName)
 {
     // Skip if already parsed
     if (makeData->parsedInstances.contains( softInstance ))

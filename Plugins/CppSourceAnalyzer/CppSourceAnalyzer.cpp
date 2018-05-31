@@ -24,13 +24,6 @@ CppSourceAnalyzer::CppSourceAnalyzer(): fileTypes_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: CppSourceAnalyzer::~CppSourceAnalyzer()
-//-----------------------------------------------------------------------------
-CppSourceAnalyzer::~CppSourceAnalyzer()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getName()
 //----------------------------------------------------------------------------
 QString CppSourceAnalyzer::getName() const

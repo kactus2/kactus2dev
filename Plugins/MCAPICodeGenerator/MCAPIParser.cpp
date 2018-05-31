@@ -268,7 +268,7 @@ QList<QPair<QSharedPointer<ComInterface>, PortReference> > MCAPIParser::findConn
     QList<QPair<QSharedPointer<ComInterface>, PortReference> > connectedInterfaces;
 
     // Go through the list of connections in the design to retrieve remote endpoint identifiers.
-    foreach ( QSharedPointer<ComInterconnection> connection, design->getComConnections() )
+    /*foreach ( QSharedPointer<ComInterconnection> connection, design->getComConnections() )
     {
         // See which end on the connection is NOT ours.
         if ( ourInstance->getInstanceName() == connection->getStartInterface()->getComponentReference())
@@ -301,7 +301,7 @@ QList<QPair<QSharedPointer<ComInterface>, PortReference> > MCAPIParser::findConn
                 connectedInterfaces.append(pair);
             }
         }
-    }
+    }*/
 
     return connectedInterfaces;
 }

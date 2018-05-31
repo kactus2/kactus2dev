@@ -57,7 +57,7 @@ void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> t
 
     foreach(QString const& declaration, findGenericDeclarations(input))
     {
-        createModelParameterFromDeclaration(declaration, targetComponent, targetComponentInstantiation);
+        createModelParameterFromDeclaration(declaration, targetComponentInstantiation);
         if (highlighter_)
         {
             highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);

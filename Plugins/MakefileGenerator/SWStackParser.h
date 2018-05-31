@@ -76,7 +76,7 @@ private:
 	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
      */
      void parseStackObjects(QSharedPointer<Component> softComponent, QSharedPointer<ComponentInstance> softInstance,
-         QSharedPointer<MakeFileData> makeData, QString& systemViewName);
+         QSharedPointer<MakeFileData> makeData, QString const& systemViewName);
 
     /*!
      *  Tries to find a software instance by name and the component associated with it.

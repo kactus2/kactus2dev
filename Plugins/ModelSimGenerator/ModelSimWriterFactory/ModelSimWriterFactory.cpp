@@ -58,6 +58,9 @@ QList<QSharedPointer<GenerationOutput> > ModelSimWriterFactory::prepareDesign(QL
         components.append(mDesign->getInstances()->values());
     }
 
+    QSharedPointer<ModelSimWriter> writer(new ModelSimWriter);
+
+    document->writer_ = writer;
     document->fileName_ = designs.first()->getTopInstance()->getModuleName() + ".do";
     document->vlnv_ = designs.first()->getTopInstance()->getComponent()->getVlnv().toString();
 

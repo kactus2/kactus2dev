@@ -157,7 +157,7 @@ void MCAPICodeGeneratorPlugin::runGenerator(IPluginUtility* utility,
         MCAPIHeaderGenerator generator( parser, utility );
         VLNV topVLNV = component->getVlnv();
         QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(topVLNV)).absolutePath();
-        generator.generateTopLevel(design, component, designConfiguration, topDir);
+        generator.generateTopLevel(component, designConfiguration, topDir);
         utility->getLibraryInterface()->writeModelToFile(design);
     }
 
