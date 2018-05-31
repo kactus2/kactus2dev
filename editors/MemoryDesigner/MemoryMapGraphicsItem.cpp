@@ -20,6 +20,7 @@
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <editors/MemoryDesigner/MemoryConnectionItem.h>
 #include <editors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
+#include <editors/MemoryDesigner/MemoryConnectionAddressCalculator.h>
 
 #include <QBrush>
 #include <QFont>
@@ -45,7 +46,9 @@ filterFields_(filterFields),
 subItemWidth_(0),
 filteredBlocks_()
 {
-    QPair<quint64, quint64> memoryRanges = getMemoryRanges(memoryItem);
+    QPair<quint64, quint64> memoryRanges =
+        MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(memoryItem);
+
     quint64 baseAddress = memoryRanges.first;
     quint64 lastAddress = memoryRanges.second;
 
@@ -125,50 +128,6 @@ void MemoryMapGraphicsItem::setupSubItems(qreal blockXPosition, QSharedPointer<M
     }
 
     SubMemoryLayout::setupSubItems(blockXPosition, subItemType, usedMemoryItem);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::getMemoryRanges()
-//-----------------------------------------------------------------------------
-QPair<quint64, quint64> MemoryMapGraphicsItem::getMemoryRanges(QSharedPointer<MemoryItem const> memoryItem) const
-{
-    quint64 baseAddress = 0;
-    quint64 lastAddress = 0;
-    if (memoryItem->getChildItems().size() > 0)
-    {
-        bool firstBlock = true;
-
-        foreach (QSharedPointer<MemoryItem const> blockItem, memoryItem->getChildItems())
-        {
-            if (blockItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
-            {
-                quint64 blockBaseAddress = blockItem->getAddress().toULongLong();
-                quint64 blockRange = blockItem->getRange().toULongLong();
-                quint64 blockEndPoint = blockBaseAddress + blockRange - 1;
-
-                if (firstBlock)
-                {
-                    baseAddress = blockBaseAddress;
-                    firstBlock = false;
-                }
-                else
-                {
-                    if (blockBaseAddress < baseAddress)
-                    {
-                        baseAddress = blockBaseAddress;
-                    }
-                }
-
-                if (blockEndPoint > lastAddress)
-                {
-                    lastAddress = blockEndPoint;
-                }
-            }
-        }
-    }
-
-    QPair<quint64, quint64> memoryRanges(baseAddress, lastAddress);
-    return memoryRanges;
 }
 
 //-----------------------------------------------------------------------------

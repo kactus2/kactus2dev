@@ -92,15 +92,6 @@ private:
     MemoryMapGraphicsItem& operator=(MemoryMapGraphicsItem const& rhs);
 
     /*!
-     *  Get the ranges of the selected memory map.
-     *
-     *      @param [in] memoryItem  Memory item containing the selected memory map.
-     *
-     *      @return The memory range. First is base address, second is last address.
-     */
-    QPair<quint64, quint64> getMemoryRanges(QSharedPointer<MemoryItem const> memoryItem) const;
-
-    /*!
      *  Set the label positions.
      */
     virtual void setLabelPositions();
@@ -122,7 +113,7 @@ private:
      *      @param [in] registerBaseAddress     Base address of the selected register.
      *      @param [in] registerLastAddress     Last address of the selected register.
      *
-     *      @return The name of the address block contianing the selected register.
+     *      @return The name of the address block containing the selected register.
      */
     QString getContainingAddressBlockName(quint64 registerBaseAddress, quint64 registerLastAddress) const;
 

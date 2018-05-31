@@ -65,7 +65,10 @@ private slots:
     void testMacroInParameterValue();
 
     void testSemicolonInComments(); //<! Issue #203.
-    
+    void testAfterAssignComments();
+    void testAfterAssignCommentsSemicolon();
+    void testMultiLineComments();
+
     void testParameterNotFoundInFileIsRemoved();
     void testExistingModelParameterIdDoesNotChange();
     void testExistingParameterIsUpdated();
@@ -837,6 +840,94 @@ void tst_VerilogImporter::testSemicolonInComments()
 
     QCOMPARE(importComponentInstantiation->getModuleParameters()->count(), 2);
     QCOMPARE(importComponent_->getPorts()->count(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testAfterInputCommentsSemicolon()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testAfterAssignComments()
+{
+    runParser(
+        "module test(input x1,\n"
+        "            input x2,\n"
+        "            input x3,\n"
+        "            output y1,\n"
+        "            output y2,\n"
+        "            output y3\n"
+        "            );\n"
+        "   assign      y1 = x1;\n"
+        "   assign      y2 = x2;    // output z\n"
+        "   assign      y3 = x3;\n"
+        "endmodule // test");
+
+    QSharedPointer<ComponentInstantiation> importComponentInstantiation =
+        importComponent_->getModel()->getComponentInstantiations()->first();
+
+    QCOMPARE(importComponent_->getPorts()->count(), 6);
+    QCOMPARE(importComponent_->getPorts()->at(0)->name(), QString("x1"));
+    QCOMPARE(importComponent_->getPorts()->at(1)->name(), QString("x2"));
+    QCOMPARE(importComponent_->getPorts()->at(2)->name(), QString("x3"));
+    QCOMPARE(importComponent_->getPorts()->at(3)->name(), QString("y1"));
+    QCOMPARE(importComponent_->getPorts()->at(4)->name(), QString("y2"));
+    QCOMPARE(importComponent_->getPorts()->at(5)->name(), QString("y3"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testAfterAssignCommentsSemicolon()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testAfterAssignCommentsSemicolon()
+{
+    runParser(
+        "module test(input x1,\n"
+        "            input x2,\n"
+        "            input x3,   // output xz;\n"
+        "            output y1,\n"
+        "            output y2,\n"
+        "            output y3\n"
+        "            );\n"
+        "   assign      y1 = x1;\n"
+        "   assign      y2 = x2;    // output z;\n"
+        "   assign      y3 = x3;\n"
+        "endmodule // test");
+
+    QSharedPointer<ComponentInstantiation> secondImportComponentInstantiation =
+        importComponent_->getModel()->getComponentInstantiations()->first();
+
+    QCOMPARE(importComponent_->getPorts()->count(), 6);
+    QCOMPARE(importComponent_->getPorts()->at(0)->name(), QString("x1"));
+    QCOMPARE(importComponent_->getPorts()->at(1)->name(), QString("x2"));
+    QCOMPARE(importComponent_->getPorts()->at(2)->name(), QString("x3"));
+    QCOMPARE(importComponent_->getPorts()->at(3)->name(), QString("y1"));
+    QCOMPARE(importComponent_->getPorts()->at(4)->name(), QString("y2"));
+    QCOMPARE(importComponent_->getPorts()->at(5)->name(), QString("y3"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testMultiLineComments()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testMultiLineComments()
+{
+    runParser(
+        "module test(input x1,\n"
+        "            input x2,\n"
+        "            input x3,   // output xz;\n"
+        "/*            output y1,\n"
+        "            output y2,*/\n"
+        "            output y3\n"
+        "            );\n"
+        "/*   assign      y1 = x1;\n"
+        "   assign      y2 = x2;    // output z;*/\n"
+        "   assign      y3 = x3;\n"
+        "endmodule // test");
+
+    QSharedPointer<ComponentInstantiation> secondImportComponentInstantiation =
+        importComponent_->getModel()->getComponentInstantiations()->first();
+
+    QCOMPARE(importComponent_->getPorts()->count(), 4);
+    QCOMPARE(importComponent_->getPorts()->at(0)->name(), QString("x1"));
+    QCOMPARE(importComponent_->getPorts()->at(1)->name(), QString("x2"));
+    QCOMPARE(importComponent_->getPorts()->at(2)->name(), QString("x3"));
+    QCOMPARE(importComponent_->getPorts()->at(3)->name(), QString("y3"));
 }
 
 //-----------------------------------------------------------------------------

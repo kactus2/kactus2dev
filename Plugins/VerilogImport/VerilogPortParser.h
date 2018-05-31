@@ -42,8 +42,6 @@ public:
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to add all the imported ports to.
      */
-    void import(QString const& input, QSharedPointer<Component> targetComponent, 
-        QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
     /*!
      *  Sets the given highlighter to be used by the port parser.
@@ -126,8 +124,8 @@ private:
      *
      *      @return The input without ignored lines.
      */
-    QString removeIgnoredLines(QString portSection) const ;
-    
+    QString removeIgnoredLines(QString const& portSection) const ;
+
     /*!
      *  Finds all port declarations from a ports section without comment lines.
      *

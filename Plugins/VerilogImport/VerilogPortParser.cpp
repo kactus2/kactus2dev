@@ -143,7 +143,10 @@ QString VerilogPortParser::findPortsSection(QString const& input) const
 //-----------------------------------------------------------------------------
 bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
 {
-    bool hasPortsAfterModuleDeclaration = (input.indexOf(PORT_1995, findStartOfPortList(input)) != -1);
+    QString commentsRemoved = input;
+    commentsRemoved.remove(QRegularExpression(VerilogSyntax::COMMENT));
+
+    bool hasPortsAfterModuleDeclaration = (commentsRemoved.indexOf(PORT_1995, findStartOfPortList(commentsRemoved)) != -1);
     return hasPortsAfterModuleDeclaration;
 }
 
@@ -197,11 +200,12 @@ QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) con
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::removeIgnoredLines()
 //-----------------------------------------------------------------------------
-QString VerilogPortParser::removeIgnoredLines(QString portSection) const
-{    
+QString VerilogPortParser::removeIgnoredLines(QString const& portSection) const
+{
+    QString portSectionWithoutComments = portSection;
     QRegularExpression multilineComment(VerilogSyntax::MULTILINE_COMMENT);
-  
-    return  portSection.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment);
+
+    return  portSectionWithoutComments.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment);
 }
 
 //-----------------------------------------------------------------------------

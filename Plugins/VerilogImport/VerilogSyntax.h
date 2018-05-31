@@ -44,7 +44,7 @@ namespace VerilogSyntax
     const QString NAMES("[a-zA-Z0-9_$]+(?:\\s*[,]\\s*[a-zA-Z0-9_$]+)*");
 
     //! Pattern for one-line comments.
-    const QString COMMENT("//[ \\t]*([^\\r\\n]*)(?=\\r?\\n|$)");
+    const QString COMMENT("[/]{2}[ \\t]*([^\\r\\n]*)(?=\\r?\\n|$)");
 
     //! Single-line comments.
     const QRegularExpression COMMENTLINE("(^|\\r?\\n)[ \\t]*" + COMMENT);

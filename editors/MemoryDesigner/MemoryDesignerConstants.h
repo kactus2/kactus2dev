@@ -18,6 +18,10 @@
 
 #include <QString>
 #include <QRectF>
+#include <QSharedPointer>
+
+class ConnectivityInterface;
+class MemoryItem;
 
 // Common declarations for memory designer.
 namespace MemoryDesignerConstants
@@ -110,6 +114,26 @@ namespace MemoryDesignerConstants
      *      @return The required area size for the selected area.
      */
     qreal getRequiredAreaForUsedArea(qreal usedArea);
+
+    /*!
+     *  Get the memory map item node of the connection.
+     *
+     *      @param [in] startInterface  Interface node containing the first interface of the connection path.
+     *      @param [in] endInterface    Interface node containing the last interface of the connection path.
+     *
+     *      @return The memory map item node of the connection.
+     */
+    QSharedPointer<MemoryItem> getMapItem(QSharedPointer<ConnectivityInterface const> startInterface,
+        QSharedPointer<ConnectivityInterface const> endInterface);
+
+    /*!
+     *	Get the memory item node of a local memory map connection.
+     *
+     *		@param [in]	spaceInterface  Interface containing both the address space and memory map.
+     *
+     *		@return	The local memory map item node.
+     */
+    QSharedPointer<MemoryItem> getMemoryItemForLocalMap(QSharedPointer<ConnectivityInterface const> spaceInterface);
 }
 
 #endif // MEMORYDESIGNERCONSTANTS_H

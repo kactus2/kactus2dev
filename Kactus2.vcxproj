@@ -832,6 +832,7 @@ CreateHelp
     <ClCompile Include="editors\MemoryDesigner\MemoryCollisionItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\MemoryColumn.cpp" />
     <ClCompile Include="editors\MemoryDesigner\MemoryColumnHandler.cpp" />
+    <ClCompile Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp" />
     <ClCompile Include="editors\MemoryDesigner\MemoryConnectionHandler.cpp" />
     <ClCompile Include="editors\MemoryDesigner\MemoryConnectionItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\MemoryDesignConstructor.cpp" />
@@ -7663,6 +7664,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
     <ClInclude Include="editors\MemoryDesigner\MemoryColumnHandler.h" />
+    <ClInclude Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.h" />
     <ClInclude Include="editors\MemoryDesigner\MemoryConnectionHandler.h" />
     <ClInclude Include="editors\MemoryDesigner\MemoryConnectionItem.h" />
     <CustomBuild Include="editors\MemoryDesigner\MemoryDesignConstructor.h">

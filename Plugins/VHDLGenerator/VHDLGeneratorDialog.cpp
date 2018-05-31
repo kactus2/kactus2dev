@@ -95,7 +95,7 @@ void VHDLGeneratorDialog::setupLayout()
     fileLayout->addWidget(browseButton);
     
     QGroupBox* settingsGroup = new QGroupBox(tr("Settings"), this);
-    QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);  
+    QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);
 
     settingsLayout->addWidget(viewSelector_);
     settingsLayout->addLayout(fileLayout);
