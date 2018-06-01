@@ -21,5 +21,5 @@ SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
 			VerilogSourceAnalyzer/tst_VerilogSourceAnalyzer.pro \
 			MemoryMapHeaderGenerator/tst_MemoryMapHeaderGenerator.pro \
 			MemoryViewGenerator/tst_MemoryViewGenerator.pro \
-			QuartusProjectGenerator/tst_QuartusGenerator.pro \
+			QuartusProjectGenerator/tst_QuartusProjectGenerator.pro \
 			LinuxDeviceTreeGenerator/tst_LinuxDeviceTreeGenerator.pro

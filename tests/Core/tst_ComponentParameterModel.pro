@@ -13,8 +13,7 @@ TEMPLATE = app
 
 TARGET = tst_ComponentParameterModel
 
-QT += core xml testlib
-QT -= gui widgets
+QT += core gui xml testlib
 
 CONFIG += c++11 testcase console
 DEFINES += IPXACTMODELS_LIB

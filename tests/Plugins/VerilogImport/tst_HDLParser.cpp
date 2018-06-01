@@ -330,11 +330,11 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("module"));
     QCOMPARE(mInstance->getParameters()->value(0)->getValue(), QString("10"));
     QCOMPARE(mInstance->getParameters()->value(1)->name(), QString("freq"));
-    QCOMPARE(mInstance->getParameters()->value(1)->getValue(), QString("31.4"));
+    QCOMPARE(mInstance->getParameters()->value(1)->getValue(), QString("31.40"));
 
     QCOMPARE(mInstance->getPorts()->size(), 1);
     QCOMPARE(mInstance->getPorts()->value("clk")->port_->getDirection(), DirectionTypes::IN);
-    QCOMPARE(mInstance->getPorts()->value("clk")->vectorBounds_.first, QString("62.8"));
+    QCOMPARE(mInstance->getPorts()->value("clk")->vectorBounds_.first, QString("62.80"));
     QCOMPARE(mInstance->getPorts()->value("clk")->vectorBounds_.second, QString("7"));
 }
 
