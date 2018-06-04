@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busportsview.cpp
+// File: AbstractionPortsView.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,41 +9,46 @@
 // The view that displays the contents of the BusPortsModel.
 //-----------------------------------------------------------------------------
 
-#include "busportsview.h"
+#include "AbstractionPortsView.h"
 
 #include <QMenu>
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsView::BusPortsView()
+// Function: AbstractionPortsView::AbstractionPortsView()
 //-----------------------------------------------------------------------------
-BusPortsView::BusPortsView(QWidget *parent):
+AbstractionPortsView::AbstractionPortsView(QWidget *parent):
 EditableTableView(parent),
-addOptionsAction_(tr("Add signal options"), this)
+addMasterAction_(tr("Add master signal"), this),
+addSlaveAction_(tr("Add slave signal"), this),
+addSystemAction_(tr("Add system signal"), this),
+addAllSystemsAction_(tr("Add all unconnected system signals"), this)
 {
-
-    connect(&addOptionsAction_, SIGNAL(triggered()), this, SIGNAL(addSignalOptions()), Qt::UniqueConnection);
+    connect(&addMasterAction_, SIGNAL(triggered()), this, SIGNAL(addMaster()), Qt::UniqueConnection);
+    connect(&addSlaveAction_, SIGNAL(triggered()), this, SIGNAL(addSlave()), Qt::UniqueConnection);
+    connect(&addSystemAction_, SIGNAL(triggered()), this, SIGNAL(addSystem()), Qt::UniqueConnection);
+    connect(&addAllSystemsAction_, SIGNAL(triggered()), this, SIGNAL(addAllSystems()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsView::~BusPortsView()
+// Function: AbstractionPortsView::~AbstractionPortsView()
 //-----------------------------------------------------------------------------
-BusPortsView::~BusPortsView()
+AbstractionPortsView::~AbstractionPortsView()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsView::selected()
+// Function: AbstractionPortsView::selected()
 //-----------------------------------------------------------------------------
-QModelIndexList BusPortsView::selected() const
+QModelIndexList AbstractionPortsView::selected() const
 {
     return selectedIndexes();
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsView::contextMenuEvent()
+// Function: AbstractionPortsView::contextMenuEvent()
 //-----------------------------------------------------------------------------
-void BusPortsView::contextMenuEvent(QContextMenuEvent* event)
+void AbstractionPortsView::contextMenuEvent(QContextMenuEvent* event)
 {
     pressedPoint_ = event->pos();
 
@@ -52,7 +57,10 @@ void BusPortsView::contextMenuEvent(QContextMenuEvent* event)
     QMenu menu(this);
     if (index.isValid())
     {
-        menu.addAction(&addOptionsAction_);
+        menu.addAction(&addMasterAction_);
+        menu.addAction(&addSlaveAction_);
+        menu.addAction(&addSystemAction_);
+        menu.addAction(&addAllSystemsAction_);
         menu.addSeparator();
     }
     menu.addAction(&addAction_);

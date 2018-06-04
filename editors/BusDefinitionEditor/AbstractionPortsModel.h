@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busportsmodel.h
+// File: AbstractionPortsModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,8 +9,8 @@
 // Data model for the wires within abstraction definition.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSPORTSMODEL_H
-#define BUSPORTSMODEL_H
+#ifndef ABSTRACTIONPORTSMODEL_H
+#define ABSTRACTIONPORTSMODEL_H
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -31,7 +31,7 @@ class BusDefinition;
 //-----------------------------------------------------------------------------
 //! Data model for the wires within abstraction definition.
 //-----------------------------------------------------------------------------
-class BusPortsModel : public QAbstractTableModel
+class AbstractionPortsModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -42,12 +42,12 @@ public:
 	 *
 	 *      @param [in] parent   Pointer to the owner of this model.
 	 */
-	BusPortsModel(QObject *parent);
+	AbstractionPortsModel(QObject *parent);
 	
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~BusPortsModel();
+    virtual ~AbstractionPortsModel() = default;
 
 	/*!
 	 *  Get the number of rows an item contains.
@@ -134,12 +134,33 @@ public slots:
 	 */
 	void addSignal();
 
-	/*!
-	 *  Adds all signal modes for selected ports.
-	 *
-	 *      @param [in] indexes     The indexes of the selected ports.
-	 */
-	void addSignalOptions(const QModelIndexList& indexes);
+    /*!
+     *  Adds the master mode for the selected ports.
+     *
+     *      @param [in] indexes     Indexes of the selected ports.
+     */
+    void addMaster(QModelIndexList const& indexes);
+
+    /*!
+     *  Adds the slave mode for the selected ports.
+     *
+     *      @param [in] indexes     Indexes of the selected ports.
+     */
+    void addSlave(QModelIndexList const& indexes);
+
+    /*!
+     *  Adds a system mode for the selected ports.
+     *
+     *      @param [in] indexes     Indexes of the selected ports.
+     */
+    void addSystem(QModelIndexList const& indexes);
+
+    /*!
+     *  Adds all the unconnected system groups for the selected ports.
+     *
+     *      @param [in] indexes     Indexes of the selected ports.
+     */
+    void addAllSystems(QModelIndexList const& indexes);
 
     /*!
      *  Remove the item with the given index.
@@ -187,8 +208,8 @@ signals:
 
 private:
 	//! No copying. No assignment.
-	BusPortsModel(const BusPortsModel& other);
-	BusPortsModel& operator=(const BusPortsModel& other);
+	AbstractionPortsModel(const AbstractionPortsModel& other);
+	AbstractionPortsModel& operator=(const AbstractionPortsModel& other);
     
 	/*!
 	 *  Save the port from table to a port abstraction.
@@ -232,11 +253,7 @@ private:
      *      @param [in] changedIndexes  List of all the changed model indexes.
      */
     void sendDataChangeForAllChangedItems(QModelIndexList changedIndexes);
-    
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-    
+
     //! SignalRow represents a single row in the table by grouping the Port, Wire and WirePort elements.
 	struct SignalRow
     {
@@ -283,6 +300,77 @@ private:
 		bool operator<(SignalRow const& other) const;
 	};
 
+    /*!
+     *  Create new master or slave signals for the selected ports.
+     *
+     *      @param [in] newSignalMode   The new interface mode.
+     *      @param [in] selection       Indexes of the selected ports.
+     */
+    void createNewSignal(General::InterfaceMode newSignalMode, QModelIndexList const& selection);
+
+    /*!
+     *  Get a list of ports contained within the selected indexes.
+     *
+     *      @param [in] selection   Indexes of the selected ports.
+     *
+     *      @return List of ports contained within the selected indexes.
+     */
+    QVector<AbstractionPortsModel::SignalRow> getIndexedPorts(QModelIndexList const& selection);
+
+    /*!
+     *  Check if selected signaled port has already been selected.
+     *
+     *      @param [in] portSignal      Signal of the selected port.
+     *      @param [in] selectedPorts   List of the ports that have already been selected.
+     *
+     *      @return True, if the signaled port has been selected, false otherwise.
+     */
+    bool portHasBeenSelected(AbstractionPortsModel::SignalRow const& portSignal,
+        QVector<AbstractionPortsModel::SignalRow> const& selectedPorts) const;
+
+    /*!
+     *  Check if the selected port already contains the selected signal.
+     *
+     *      @param [in] mode        The selected signal.
+     *      @param [in] portName    Name of the selected port.
+     *
+     *      @return True, if the selected port already contains the selected signal, false otherwise.
+     */
+    bool modeExistsForPort(General::InterfaceMode const& mode, QString const& portName) const;
+
+    /*!
+     *  Get the mirrored direction for the selected signal.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] opposingMode    The opposite interface mode of the selected signal.
+     *
+     *      @return The mirrored direction for the selected signal.
+     */
+    DirectionTypes::Direction getMirroredDirectionForSignal(QString const& portName,
+        General::InterfaceMode const& opposingMode) const;
+
+    /*!
+     *  Get the missing system groups for the selected port.
+     *
+     *      @param [in] signal  Signal of the selected port.
+     *
+     *      @return The system groups that have not been connected to the system signals of the selected port.
+     */
+    QStringList getMissingSystemGroupsForSignal(AbstractionPortsModel::SignalRow const& signal) const;
+
+    /*!
+     *  Check if the selected port contains other signals.
+     *
+     *      @param [in] portSignal  Signal of the selected port.
+     *
+     *      @return True, if the selected port contains other signals, false otherwise.
+     */
+    bool portHasOtherSignals(AbstractionPortsModel::SignalRow const& portSignal) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! The abstraction definition being edited.
 	QSharedPointer<AbstractionDefinition> absDef_;
 
@@ -293,4 +381,4 @@ private:
 	QList<SignalRow> table_;
 };
 
-#endif // BUSPORTSMODEL_H
+#endif // ABSTRACTIONPORTSMODEL_H

@@ -12,9 +12,9 @@
 #ifndef ABSDEFGROUP_H
 #define ABSDEFGROUP_H
 
-#include "busportsview.h"
-#include "busportsmodel.h"
-#include "busportsdelegate.h"
+#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+#include <editors/BusDefinitionEditor/AbstractionPortsDelegate.h>
+#include <editors/BusDefinitionEditor/AbstractionPortsView.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
@@ -23,6 +23,7 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 #include <QPlainTextEdit>
+#include <QModelIndexList>
 
 class BusDefinition;
 class VLNVDisplayer;
@@ -106,10 +107,25 @@ signals:
 
 private slots:
 
-	/*!
-     *  Handler for add new signal options button clicks.
+    /*!
+     *  Handles the adding of new master signals.
      */
-	void onAddSignalOptions();
+    void onAddMaster();
+
+    /*!
+     *  Handles the adding of new slave signals.
+     */
+    void onAddSlave();
+
+    /*!
+     *  Handles the adding of new system signals.
+     */
+    void onAddSystem();
+
+    /*!
+     *  Handles the adding of missing system group signals.
+     */
+    void onAddAllSystems();
 
 	/*!
      *  Handler for changing the description of the abstraction definition.
@@ -126,21 +142,28 @@ private:
      */
 	void setupLayout();
     
+    /*!
+     *  Get a list of the selected indexes.
+     *
+     *      @return List of the selected indexes.
+     */
+    QModelIndexList getSelectedIndexes();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
 	//! The table view to display the logical signals
-	BusPortsView portView_;
+    AbstractionPortsView portView_;
 
     //! Proxy model for sorting abstract ports.
     AbstractionDefinitionPortsSortFilter* portProxy_;
 
 	//! The model that contains the logical signals of Abstraction Definition.
-	BusPortsModel portModel_;
+    AbstractionPortsModel portModel_;
 
     //! The item delegate for portView_.
-    BusPortsDelegate portDelegate_;
+    AbstractionPortsDelegate portDelegate_;
 
     //! Displays the VLNV of the abstraction definition.
     VLNVDisplayer* vlnvDisplay_;

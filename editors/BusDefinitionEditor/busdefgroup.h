@@ -43,17 +43,17 @@ public:
 	 */
 	BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent);
 
+    /*!
+     *  The destructor.
+     */
+    virtual ~BusDefGroup() = default;
+
 	/*!
      *  Set the bus definition that is being edited.
 	 *
 	 *      @param [in] busDef The bus definition
 	 */
 	void setBusDef(QSharedPointer<BusDefinition> busDef);
-	
-	/*!
-     *  The destructor.
-     */
-	virtual ~BusDefGroup();
 
 signals:
 

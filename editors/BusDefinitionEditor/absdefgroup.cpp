@@ -53,8 +53,11 @@ abstraction_()
 
     portView_.sortByColumn(0, Qt::AscendingOrder);
 
-	connect(&portView_, SIGNAL(addSignalOptions()), this, SLOT(onAddSignalOptions()), Qt::UniqueConnection);
-	
+    connect(&portView_, SIGNAL(addMaster()), this, SLOT(onAddMaster()), Qt::UniqueConnection);
+    connect(&portView_, SIGNAL(addSlave()), this, SLOT(onAddSlave()), Qt::UniqueConnection);
+    connect(&portView_, SIGNAL(addSystem()), this, SLOT(onAddSystem()), Qt::UniqueConnection);
+    connect(&portView_, SIGNAL(addAllSystems()), this, SLOT(onAddAllSystems()), Qt::UniqueConnection);
+
 	connect(&portModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&portModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -87,17 +90,53 @@ AbsDefGroup::~AbsDefGroup()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbsDefGroup::onAddSignalOptions()
+// Function: absdefgroup::onAddMaster()
 //-----------------------------------------------------------------------------
-void AbsDefGroup::onAddSignalOptions()
+void AbsDefGroup::onAddMaster()
+{
+    QModelIndexList selection = getSelectedIndexes();
+    portModel_.addMaster(selection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::onAddSlave()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::onAddSlave()
+{
+    QModelIndexList selection = getSelectedIndexes();
+    portModel_.addSlave(selection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::onAddSystem()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::onAddSystem()
+{
+    QModelIndexList selection = getSelectedIndexes();
+    portModel_.addSystem(selection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::onAddAllSystems()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::onAddAllSystems()
+{
+    QModelIndexList selection = getSelectedIndexes();
+    portModel_.addAllSystems(selection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::getSelectedIndexes()
+//-----------------------------------------------------------------------------
+QModelIndexList AbsDefGroup::getSelectedIndexes()
 {
     QModelIndexList selection;
-    foreach (QModelIndex index, portView_.selected())
+    foreach(QModelIndex index, portView_.selected())
     {
         selection.append(portProxy_->mapToSource(index));
     }
 
-	portModel_.addSignalOptions(selection);
+    return selection;
 }
 
 //-----------------------------------------------------------------------------

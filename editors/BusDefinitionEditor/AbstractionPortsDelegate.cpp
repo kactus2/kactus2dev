@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busportsdelegate.cpp
+// File: AbstractionPortsDelegate.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // The delegate that provides editors for logical port properties in Abstraction Definition.
 //-----------------------------------------------------------------------------
 
-#include "busportsdelegate.h"
+#include "AbstractionPortsDelegate.h"
 #include "LogicalPortColumns.h"
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
@@ -23,9 +23,9 @@
 #include <QDebug>
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsDelegate::BusPortsDelegate()
+// Function: AbstractionPortsDelegate::AbstractionPortsDelegate()
 //-----------------------------------------------------------------------------
-BusPortsDelegate::BusPortsDelegate(QObject *parent):
+AbstractionPortsDelegate::AbstractionPortsDelegate(QObject *parent):
 QStyledItemDelegate(parent),
 busDefinition_(0)
 {
@@ -33,17 +33,9 @@ busDefinition_(0)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsDelegate::~BusPortsDelegate()
+// Function: AbstractionPortsDelegate::createEditor()
 //-----------------------------------------------------------------------------
-BusPortsDelegate::~BusPortsDelegate()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusPortsDelegate::createEditor()
-//-----------------------------------------------------------------------------
-QWidget* BusPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
+QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     const QModelIndex& index ) const
 {
     if (index.column() == LogicalPortColumns::QUALIFIER)
@@ -66,13 +58,6 @@ QWidget* BusPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem co
     else if (index.column() == LogicalPortColumns::WIDTH)
     {
         QLineEdit* line = new QLineEdit(parent);
-
-        // the validator for editor input
-        QIntValidator* validator = new QIntValidator(line);
-        validator->setRange(0, 99999);
-
-        line->setValidator(validator);
-
         connect(line, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return line;
     }
@@ -155,9 +140,9 @@ QWidget* BusPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem co
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsDelegate::setEditorData()
+// Function: AbstractionPortsDelegate::setEditorData()
 //-----------------------------------------------------------------------------
-void BusPortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) const
+void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) const
 {
     if (index.column() == LogicalPortColumns::NAME)
     {
@@ -204,9 +189,10 @@ void BusPortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index )
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsDelegate::setModelData()
+// Function: AbstractionPortsDelegate::setModelData()
 //-----------------------------------------------------------------------------
-void BusPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index)
+    const
 {
     if (index.column() == LogicalPortColumns::NAME ||
         index.column() == LogicalPortColumns::WIDTH ||
@@ -239,9 +225,9 @@ void BusPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsDelegate::commitAndCloseEditor()
+// Function: AbstractionPortsDelegate::commitAndCloseEditor()
 //-----------------------------------------------------------------------------
-void BusPortsDelegate::commitAndCloseEditor()
+void AbstractionPortsDelegate::commitAndCloseEditor()
 {
 	QWidget* editor = qobject_cast<QWidget*>(sender());
 
@@ -253,9 +239,9 @@ void BusPortsDelegate::commitAndCloseEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsDelegate::setBusDef()
+// Function: AbstractionPortsDelegate::setBusDef()
 //-----------------------------------------------------------------------------
-void BusPortsDelegate::setBusDef(QSharedPointer<BusDefinition> busDefinition)
+void AbstractionPortsDelegate::setBusDef(QSharedPointer<BusDefinition> busDefinition)
 {
     busDefinition_ = busDefinition;
 }
