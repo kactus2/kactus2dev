@@ -16,8 +16,8 @@
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty():
-name_(),
+ComProperty::ComProperty() :
+    name_(),
     required_(true),
     type_(QStringLiteral("string")),
     defaultValue_(),
@@ -29,8 +29,8 @@ name_(),
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty(ComProperty const& rhs):
-name_(rhs.name_),
+ComProperty::ComProperty(ComProperty const& rhs) :
+    name_(rhs.name_),
     required_(rhs.required_),
     type_(rhs.type_),
     defaultValue_(rhs.defaultValue_),
@@ -42,8 +42,8 @@ name_(rhs.name_),
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty(QDomNode const& node):
-name_(),
+ComProperty::ComProperty(QDomNode const& node) :
+    name_(),
     required_(true),
     type_(QStringLiteral("string")),
     defaultValue_(),
@@ -54,14 +54,6 @@ name_(),
     type_ = node.attributes().namedItem(QStringLiteral("propertyType")).nodeValue();
     defaultValue_ = node.attributes().namedItem(QStringLiteral("defaultValue")).nodeValue();
     desc_ = node.attributes().namedItem(QStringLiteral("description")).nodeValue();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComProperty::~ComProperty()
-//-----------------------------------------------------------------------------
-ComProperty::~ComProperty()
-{
-
 }
 
 //-----------------------------------------------------------------------------

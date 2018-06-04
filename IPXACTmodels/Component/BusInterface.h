@@ -80,13 +80,19 @@ public:
 	//! Copy constructor.
 	BusInterface(const BusInterface &other);
 
+    //! Move constructor.
+    BusInterface(BusInterface&& other) = default;
+
 	//! Assignment operator.
 	BusInterface &operator=(const BusInterface &other);
+
+    //! Move assignment operator.
+    BusInterface &operator=(BusInterface&& other) = default;
 
 	/*!
      *  The destructor.
 	 */
-	~BusInterface();
+	virtual ~BusInterface() = default;
 
     /*!
      *  Gets the presence.

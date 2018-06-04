@@ -57,14 +57,6 @@ NameGroup(other),
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortAbstraction::~PortAbstraction()
-//-----------------------------------------------------------------------------
-PortAbstraction::~PortAbstraction() 
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortAbstraction::operator=()
 //-----------------------------------------------------------------------------
 PortAbstraction& PortAbstraction::operator=(PortAbstraction const& other)

@@ -36,8 +36,12 @@ public:
      */
     WireAbstractionReader(QObject* parent = 0);
 
+    // Disable copying.
+    WireAbstractionReader(WireAbstractionReader const& rhs) = delete;
+    WireAbstractionReader& operator=(WireAbstractionReader const& rhs) = delete;
+
     //! The destructor.
-    ~WireAbstractionReader();
+    virtual ~WireAbstractionReader() = default;
         
     /*!
      *  Creates a wire for abstraction definition from XML description.
@@ -49,9 +53,6 @@ public:
     QSharedPointer<WireAbstraction> createWireAbstractionFrom(QDomNode const& wireNode) const;
 
 private:	
-    // Disable copying.
-    WireAbstractionReader(WireAbstractionReader const& rhs);
-    WireAbstractionReader& operator=(WireAbstractionReader const& rhs);
                                
     /*!
      *  Reads the qualifier from XML to a wire.

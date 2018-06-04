@@ -42,19 +42,33 @@ public:
      *
      *      @param [in] other   The memory remap being copied.
      */
-    MemoryRemap(const MemoryRemap& other);
+    MemoryRemap(const MemoryRemap& other) = default;
 
     /*!
-     *  Assignment operator.
-     *
-     *      @param [in] other   The memory remap being assigned.
-     */
+    *  Move constructor.
+    *
+    *      @param [in] other   The memory remap being moved.
+    */
+    MemoryRemap(MemoryRemap&& other) = default;
+
+    /*!
+    *  Assignment operator.
+    *
+    *      @param [in] other   The memory remap being assigned.
+    */
     MemoryRemap& operator=(const MemoryRemap& other);
+
+    /*!
+     *  Move assignment operator.
+     *
+     *      @param [in] other   The memory remap being move assigned.
+     */
+    MemoryRemap& operator=(MemoryRemap&& other) = default;
 
     /*!
      *  The destructor.
      */
-    ~MemoryRemap();
+    virtual ~MemoryRemap() = default;
 
     /*!
      *  Get the element name of the memory remap.

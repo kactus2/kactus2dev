@@ -40,15 +40,25 @@ public:
 	 */
 	Transactional(const Transactional &other);
 
+    /*!
+    *  Move constructor.
+    */
+    Transactional(Transactional&& other) = default;
+
+    /*!
+    *  Assignment operator.
+    */
+    Transactional &operator=(const Transactional &other);
+
 	/*!
-	 *  Assignment operator.
+	 *  Move assignment operator.
 	 */
-	Transactional &operator=(const Transactional &other);
+	Transactional& operator=(Transactional&& other) = default;
 
 	/*!
      *  The destructor.
 	 */
-	~Transactional();
+	~Transactional() = default;
 
 	/*!
 	 *  Get the all logical initiatives allowed settings.

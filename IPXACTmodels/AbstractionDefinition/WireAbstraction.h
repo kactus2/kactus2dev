@@ -34,12 +34,18 @@ public:
 
 	//! Copy constructor.
 	WireAbstraction(const WireAbstraction& other);
+    
+    //! Move constructor.
+    WireAbstraction(WireAbstraction&& other) = default;
 
-	//! Assignment operator.
-	WireAbstraction& operator=(const WireAbstraction& other);
+    //! Assignment operator.
+    WireAbstraction& operator=(const WireAbstraction& other);
+
+	//! Move assignment operator.
+	WireAbstraction& operator=(WireAbstraction&& other) = default;
 
 	//! The destructor.
-	~WireAbstraction();
+	~WireAbstraction() = default;
 
     /*! Sets the default value for this wire.
 	 *

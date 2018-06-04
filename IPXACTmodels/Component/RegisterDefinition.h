@@ -43,11 +43,17 @@ public:
 	//! Copy constructor.
 	RegisterDefinition(const RegisterDefinition& other);
 
-	//! Assignment operator.
-	RegisterDefinition& operator=(const RegisterDefinition& other);
+    //! Move constructor.
+    RegisterDefinition(RegisterDefinition&& other) = default;
+
+    //! Assignment operator.
+    RegisterDefinition& operator=(const RegisterDefinition& other);
+
+	//! Move assignment operator.
+	RegisterDefinition& operator=(RegisterDefinition&& other) = default;
 
 	//! The destructor.
-	virtual ~RegisterDefinition();
+    virtual ~RegisterDefinition() = default;
 
     /*!
      *  Get the volatile value.

@@ -41,26 +41,31 @@ public:
     ApiDefinition(ApiDefinition const& rhs);
 
     /*!
+    *  Move constructor.
+    */
+    ApiDefinition(ApiDefinition&& rhs) = default;
+
+    /*!
      *  Destructor.
      */
-    virtual ~ApiDefinition();
+    virtual ~ApiDefinition() = default;
 
     /*!
      *  Makes a copy of the document.
      *
      *      @return The created copy of the API definition.
      */
-    virtual QSharedPointer<Document> clone()  const;
+    virtual QSharedPointer<Document> clone()  const override final;
 
     /*!
      *  Returns the dependent files (none).
      */
-    virtual QStringList getDependentFiles() const;
+    virtual QStringList getDependentFiles() const override final;
 
     /*!
      *  Returns the dependent VLNVs (none).
      */
-    virtual QList<VLNV> getDependentVLNVs() const;
+    virtual QList<VLNV> getDependentVLNVs() const override final;
 
     /*!
      *  Sets the API programming language.

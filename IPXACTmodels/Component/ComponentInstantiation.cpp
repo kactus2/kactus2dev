@@ -92,17 +92,6 @@ ComponentInstantiation& ComponentInstantiation::operator=(const ComponentInstant
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstantiation::~ComponentInstantiation()
-//-----------------------------------------------------------------------------
-ComponentInstantiation::~ComponentInstantiation()
-{
-    moduleParameters_.clear();
-    defaultFileBuilders_.clear();
-    fileSetReferences_.clear();
-    parameters_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstantiation::isVirtual()
 //-----------------------------------------------------------------------------
 bool ComponentInstantiation::isVirtual() const

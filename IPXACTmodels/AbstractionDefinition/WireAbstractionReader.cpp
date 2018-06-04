@@ -27,14 +27,6 @@ WireAbstractionReader::WireAbstractionReader(QObject* parent) : QObject(parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: WireAbstractionReader::~WireAbstractionReader()
-//-----------------------------------------------------------------------------
-WireAbstractionReader::~WireAbstractionReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::createWireAbstractionFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<WireAbstraction> WireAbstractionReader::createWireAbstractionFrom(QDomNode const& wireNode) const

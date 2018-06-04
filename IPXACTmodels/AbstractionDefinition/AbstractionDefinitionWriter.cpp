@@ -26,14 +26,6 @@ AbstractionDefinitionWriter::AbstractionDefinitionWriter(): DocumentWriter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::~AbstractionDefinitionWriter()
-//-----------------------------------------------------------------------------
-AbstractionDefinitionWriter::~AbstractionDefinitionWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionWriter::writeAbstractionDefinition()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionWriter::writeAbstractionDefinition(QXmlStreamWriter& writer, 

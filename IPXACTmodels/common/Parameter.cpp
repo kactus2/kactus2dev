@@ -33,30 +33,6 @@ Parameter::Parameter(): NameGroup(),
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::Parameter()
-//-----------------------------------------------------------------------------
-Parameter::Parameter( const Parameter &other ): NameGroup(other),
-    Extendable(),
-    value_(other.value_),
-    attributes_(other.attributes_),
-    valueAttributes_(other.valueAttributes_), 
-    bitWidthVector_(other.bitWidthVector_), 
-    vectors_(other.vectors_), 
-    arrays_(other.arrays_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::~Parameter()
-//-----------------------------------------------------------------------------
-Parameter::~Parameter()
-{
-    attributes_.clear();
-    valueAttributes_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: Parameter::operator=()
 //-----------------------------------------------------------------------------
 Parameter & Parameter::operator=(Parameter const& other) 

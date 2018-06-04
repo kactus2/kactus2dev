@@ -62,99 +62,12 @@ RegisterFile& RegisterFile::operator=(const RegisterFile& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterFile::~RegisterFile()
-//-----------------------------------------------------------------------------
-RegisterFile::~RegisterFile()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterFile::clone()
 //-----------------------------------------------------------------------------
 QSharedPointer<RegisterBase> RegisterFile::clone()
 {
     return QSharedPointer<RegisterBase>(new RegisterFile(*this));
 }
-
-/*
-bool RegisterFile::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QStringList& errorList,
-						   const QString& parentIdentifier ) const {
-	bool valid = true;
-	const QString thisIdentifier(QObject::tr("register file %1").arg(name()));
-
-	if (name().isEmpty()) {
-		errorList.append(QObject::tr("No name specified for register file"
-			" within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (addressOffset_.isEmpty()) {
-		errorList.append(QObject::tr("No address offset set for %1 within %2").arg(
-			thisIdentifier).arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (range_ == 0) {
-		errorList.append(QObject::tr("No range set for %1 within %2").arg(
-			thisIdentifier).arg(parentIdentifier));
-		valid = false;
-	}
-
-	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
-		if (!regModel->isValid(componentChoices, errorList, thisIdentifier)) {
-			valid = false;
-		}
-	}
-
-//     ParameterValidator validator;
-//     foreach (QSharedPointer<Parameter> param, parameters_)
-//     {
-//         errorList.append(validator.findErrorsIn(param.data(), parentIdentifier, componentChoices));
-//         if (!validator.validate(param.data(), componentChoices)) 
-//         {
-//             valid = false;
-//         }
-// 	}
-
-	return valid;
-}*/
-/*
-bool RegisterFile::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
-{
-	if (name().isEmpty())
-    {
-		return false;
-	}
-
-	if (addressOffset_.isEmpty())
-    {
-		return false;
-	}
-
-	if (range_ == 0)
-    {
-		return false;
-	}
-
-	foreach (QSharedPointer<RegisterModel> regModel, registerData_)
-    {
-		if (!regModel->isValid(componentChoices)) {
-			return false;
-		}
-	}
-
-//     ParameterValidator validator;
-//     foreach (QSharedPointer<Parameter> param, parameters_)
-//     {
-//         if (!validator.validate(param.data(), componentChoices)) 
-//         {
-//             return false;
-//         }
-//     }
-	return true;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFile::()

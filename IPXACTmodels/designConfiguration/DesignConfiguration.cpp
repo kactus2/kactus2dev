@@ -142,16 +142,6 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignConfiguration::~DesignConfiguration()
-//-----------------------------------------------------------------------------
-DesignConfiguration::~DesignConfiguration()
-{
-    generatorChainConfigurations_.clear();
-    interconnectionConfigurations_.clear();
-    viewConfigurations_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignConfiguration::clone()
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> DesignConfiguration::clone() const

@@ -42,7 +42,10 @@ public:
     /*!
      *  The destructor.
      */
-    ~AbstractorInstance();
+    ~AbstractorInstance() = default;
+
+    //! Disable copy.
+    AbstractorInstance& operator=(AbstractorInstance const& other) = delete;
 
     /*!
      *  Get the VLNV reference to the abstractor.

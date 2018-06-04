@@ -12,17 +12,19 @@
 
 #include "ComInterface.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
 ComInterface::ComInterface() :
-NameGroup(),
-comType_(),
-transferType_(),
-dir_(DirectionTypes::INOUT),
-propertyValues_(),
-comImplementation_(),
-defaultPos_()
+    NameGroup(),
+    comType_(),
+    transferType_(),
+    dir_(DirectionTypes::INOUT),
+    propertyValues_(),
+    comImplementation_(),
+    defaultPos_()
 {
 
 }
@@ -31,13 +33,13 @@ defaultPos_()
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
 ComInterface::ComInterface(ComInterface const& rhs) :
-NameGroup(rhs),
-comType_(rhs.comType_),
-transferType_(rhs.transferType_),
-dir_(rhs.dir_),
-propertyValues_(rhs.propertyValues_),
-comImplementation_(rhs.comImplementation_),
-defaultPos_(rhs.defaultPos_)
+    NameGroup(rhs),
+    comType_(rhs.comType_),
+    transferType_(rhs.transferType_),
+    dir_(rhs.dir_),
+    propertyValues_(rhs.propertyValues_),
+    comImplementation_(rhs.comImplementation_),
+    defaultPos_(rhs.defaultPos_)
 {
 
 }
@@ -46,13 +48,13 @@ defaultPos_(rhs.defaultPos_)
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
 ComInterface::ComInterface(QDomNode& node) :
-NameGroup(),
-comType_(),
-transferType_(),
-dir_(DirectionTypes::INOUT),
-propertyValues_(),
-comImplementation_(),
-defaultPos_()
+    NameGroup(),
+    comType_(),
+    transferType_(),
+    dir_(DirectionTypes::INOUT),
+    propertyValues_(),
+    comImplementation_(),
+    defaultPos_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -77,7 +79,7 @@ defaultPos_()
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:comType"))
         {
-            comType_ = VLNV::createVLNV(childNode, VLNV::COMDEFINITION);
+            comType_ = CommonItemsReader::createVLNVFrom(childNode, VLNV::COMDEFINITION);
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:transferType"))
         {
@@ -93,7 +95,7 @@ defaultPos_()
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:comImplementationRef"))
         {
-            comImplementation_ = VLNV::createVLNV(childNode, VLNV::COMPONENT);
+            comImplementation_ = CommonItemsReader::parseVLNVAttributes(childNode, VLNV::COMPONENT);
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:position"))
         {
@@ -101,14 +103,6 @@ defaultPos_()
             defaultPos_.setY(childNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt());
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComInterface::~ComInterface()
-//-----------------------------------------------------------------------------
-ComInterface::~ComInterface()
-{
-
 }
 
 //-----------------------------------------------------------------------------

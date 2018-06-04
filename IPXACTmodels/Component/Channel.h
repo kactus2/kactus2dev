@@ -31,13 +31,19 @@ public:
 	Channel();
 
 	//! Copy constructor
-	Channel(const Channel& other);
+	Channel(const Channel& other) = default;
+
+    //! Move constructor
+    Channel(Channel&& other) = default;
 
 	//! Assignment operator
 	Channel& operator=(const Channel& other);
 
+    //! Assignment operator
+    Channel& operator=(Channel&& other) = default;
+
 	//! The destructor
-	~Channel();
+	virtual ~Channel() = default;
 
     /*!
      *  Gets the presence.

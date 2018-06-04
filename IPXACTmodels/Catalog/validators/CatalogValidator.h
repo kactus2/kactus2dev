@@ -36,7 +36,11 @@ public:
     CatalogValidator();
 
 	//! The destructor.
-	virtual ~CatalogValidator();
+	~CatalogValidator() = default;
+
+    // Disable copying.
+    CatalogValidator(CatalogValidator const& rhs) = delete;
+    CatalogValidator& operator=(CatalogValidator const& rhs) = delete;
 
     /*!
      *  Validates the given Catalog.
@@ -56,10 +60,6 @@ public:
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Catalog> catalog) const;
 
 private:
-
-    // Disable copying.
-    CatalogValidator(CatalogValidator const& rhs);
-    CatalogValidator& operator=(CatalogValidator const& rhs);
 
     /*!
      *  Validates the given set of ipxactFiles.

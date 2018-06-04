@@ -33,8 +33,14 @@ public:
     //! The copy constructor.
     TransparentBridge(TransparentBridge const& other);
 
+    //! The move constructor.
+    TransparentBridge(TransparentBridge&& other) = default;
+
 	//! The destructor.
-	virtual ~TransparentBridge();
+	~TransparentBridge() = default;
+
+    // Disable assignment.
+    TransparentBridge& operator=(TransparentBridge const& rhs) = delete;
 
     /*!
      *  Set the master interface reference.
@@ -65,10 +71,7 @@ public:
     QString getIsPresent() const;
   
 private:
-
-	// Disable assignment.
-	TransparentBridge& operator=(TransparentBridge const& rhs);
-   
+  
     //! Reference to a master interface.
     QString masterRef_;
 

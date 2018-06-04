@@ -58,14 +58,6 @@ Register& Register::operator=(const Register& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Register::~Register()
-//-----------------------------------------------------------------------------
-Register::~Register()
-{
-    alternateRegisters_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: Register::clone()
 //-----------------------------------------------------------------------------
 QSharedPointer<RegisterBase> Register::clone()

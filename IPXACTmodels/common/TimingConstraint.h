@@ -45,8 +45,17 @@ public:
     //! Copy constructor.
     TimingConstraint(TimingConstraint const& other);
 
+    //! Move constructor.
+    TimingConstraint(TimingConstraint&& other) = default;
+
 	//! The destructor.
-	~TimingConstraint();
+	~TimingConstraint() = default;
+
+    // Disable assignment.
+    TimingConstraint& operator=(TimingConstraint const& rhs) = delete;
+
+    // Move assignment.
+    TimingConstraint& operator=(TimingConstraint&& rhs) = default;
 
     /*!
      *  Sets the constraint value.
@@ -105,9 +114,6 @@ public:
     QString getClockName() const;
 
 private:
-
-	// Disable copying.
-	TimingConstraint& operator=(TimingConstraint const& rhs);
 
     //! The constraint value in percentage.
     double value_;

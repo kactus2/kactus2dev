@@ -45,17 +45,31 @@ public:
 	 */
 	MemoryMap(const MemoryMap& other);
 
+    /*!
+    *  Move constructor.
+    *
+    *      @param [in] other   The memory map to be moved.
+    */
+    MemoryMap(MemoryMap&& other) = default;
+
+    /*!
+    *  Assignment operator.
+    *
+    *      @param [in] other   The memory map being assigned.
+    */
+    MemoryMap& operator=(const MemoryMap& other);
+
 	/*!
-	 *  Assignment operator.
+	 *  Move assignment operator.
 	 *
-	 *      @param [in] other   The memory map being assigned.
+	 *      @param [in] other   The memory map being moved.
 	 */
-	MemoryMap& operator=(const MemoryMap& other);
+	MemoryMap& operator=(MemoryMap&& other) = default;
 
 	/*!
 	 *  The destructor.
 	 */
-	~MemoryMap();
+	virtual ~MemoryMap() = default;
 
     /*!
      *  Get a pointer to the list containing the memory remaps of this memory map.

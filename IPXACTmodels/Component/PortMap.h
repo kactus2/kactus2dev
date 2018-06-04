@@ -60,8 +60,11 @@ public:
 	//! The copy constructor
 	PortMap(PortMap const& other);
 
+    //! The move constructor
+    PortMap(PortMap&& other) = default;
+
     //! The destructor.
-    ~PortMap();
+    ~PortMap() = default;
 
 	/*! The assignment operator
 	 *
@@ -70,7 +73,15 @@ public:
 	 *      @return Reference to this PortMap.
 	*/
 	PortMap& operator=(PortMap const& other);
-    
+
+    /*! The move assignment operator
+    *
+    *      @param [in] other   The PortMap to move assign.
+    *
+    *      @return Reference to this PortMap.
+    */
+    PortMap& operator=(PortMap&& other) = default;
+
     /*!
      *  Get the invert value.
      *

@@ -27,14 +27,6 @@ portMaps_(new QList<QSharedPointer<PortMap> >())
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionType::~AbstractionType()
-//-----------------------------------------------------------------------------
-AbstractionType::~AbstractionType()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionType::AbstractionType()
 //-----------------------------------------------------------------------------
 AbstractionType::AbstractionType(AbstractionType const& other):

@@ -14,13 +14,13 @@
 //-----------------------------------------------------------------------------
 // Function: ColumnDesc::ColumnDesc()
 //-----------------------------------------------------------------------------
-ColumnDesc::ColumnDesc()
-    : name_(),
-      contentType_(ColumnTypes::IO),
-      allowedItems_(ColumnTypes::NONE),
-      width_(119),
-      minWidth_(119),
-      xPosition_(0)
+ColumnDesc::ColumnDesc():
+    name_(),
+    contentType_(ColumnTypes::IO),
+    allowedItems_(ColumnTypes::NONE),
+    width_(119),
+    minWidth_(119),
+    xPosition_(0)
 {
 }
 
@@ -28,13 +28,13 @@ ColumnDesc::ColumnDesc()
 // Function: ColumnDesc()
 //-----------------------------------------------------------------------------
 ColumnDesc::ColumnDesc(QString const& name, ColumnTypes::ColumnContentType contentType,
-                       unsigned int allowedItems, unsigned int minWidth)
-    : name_(name),
-      contentType_(contentType),
-      allowedItems_(allowedItems),
-      width_(minWidth),
-      minWidth_(minWidth),
-      xPosition_(0)
+                       unsigned int allowedItems, unsigned int minWidth):
+    name_(name),
+    contentType_(contentType),
+    allowedItems_(allowedItems),
+    width_(minWidth),
+    minWidth_(minWidth),
+    xPosition_(0)
 {
 }
 
@@ -66,37 +66,6 @@ void ColumnDesc::write(QXmlStreamWriter& writer) const
     writer.writeAttribute(QStringLiteral("minWidth"), QString::number(minWidth_));
     writer.writeAttribute(QStringLiteral("width"), QString::number(width_));
     writer.writeAttribute(QStringLiteral("x"), QString::number(xPosition_));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ColumnDesc::ColumnDesc()
-//-----------------------------------------------------------------------------
-ColumnDesc::ColumnDesc(const ColumnDesc& other)
-    : name_(other.name_),
-      contentType_(other.contentType_),
-      allowedItems_(other.allowedItems_),
-      width_(other.width_),
-      minWidth_(other.minWidth_),
-      xPosition_(other.xPosition_)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ColumnDesc::ColumnDesc()
-//-----------------------------------------------------------------------------
-ColumnDesc& ColumnDesc::operator=(const ColumnDesc& other)
-{
-    if (this != &other)
-    {
-        name_ = other.name_;
-        contentType_ = other.contentType_;
-        allowedItems_ = other.allowedItems_;
-        width_ = other.width_;
-        minWidth_ = other.minWidth_;
-        xPosition_ = other.xPosition_;
-    }
-
-    return *this;
 }
 
 //-----------------------------------------------------------------------------

@@ -86,11 +86,17 @@ public:
 	//! Copy constructor.
 	Cpu(const Cpu &other);
 
-	//! Assignment operator.
-	Cpu &operator=(const Cpu &other);
+    //! Move constructor.
+    Cpu(Cpu&& other) = default;
+
+    //! Assignment operator.
+    Cpu &operator=(const Cpu &other);
+
+	//! Move assignment operator.
+	Cpu &operator=(Cpu&& other) = default;
 
 	//! The destructor.
-	~Cpu();
+	virtual ~Cpu() = default;
 
     /*!
      *  Gets the presence.

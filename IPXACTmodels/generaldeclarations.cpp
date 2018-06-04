@@ -9,107 +9,107 @@
 #include "XmlUtils.h"
 
 #include <QString>
-#include <QDomNamedNodeMap>
 #include <QSharedPointer>
-#include <QObject>
-#include <QMap>
-#include <QTextStream>
 #include <QFileInfo>
 #include <QDir>
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
 #include <qmath.h>
 
-
+ //-----------------------------------------------------------------------------
+ // Function: General::PortAlignment::PortBounds()
+ //-----------------------------------------------------------------------------
 General::PortBounds::PortBounds():
 portName_(),
 left_(0),
-right_(0) {
+right_(0)
+{
 }
 
+//-----------------------------------------------------------------------------
+// Function: General::PortAlignment::PortBounds()
+//-----------------------------------------------------------------------------
 General::PortBounds::PortBounds( const QString& portName ):
 portName_(portName),
 left_(0),
-right_(0) {
+right_(0)
+{
 }
 
+//-----------------------------------------------------------------------------
+// Function: General::PortAlignment::PortBounds()
+//-----------------------------------------------------------------------------
 General::PortBounds::PortBounds( const QString& portName, const int left, const int right ):
 portName_(portName),
 left_(left),
-right_(right) {
+right_(right)
+{
 }
 
-General::PortBounds::PortBounds( const PortBounds& other ):
-portName_(other.portName_),
-left_(other.left_),
-right_(other.right_) {
-}
-
-General::PortBounds& General::PortBounds::operator=( const PortBounds& other ) {
-	if (&other != this) {
-		portName_ = other.portName_;
-		left_ = other.left_;
-		right_ = other.right_;
-	}
-	return *this;
-}
-
-bool General::PortBounds::operator<( const PortBounds& other ) const {
+//-----------------------------------------------------------------------------
+// Function: General::PortAlignment::operator<()
+//-----------------------------------------------------------------------------
+bool General::PortBounds::operator<( const PortBounds& other ) const
+{
 	return portName_ < other.portName_;
 }
 
-bool General::PortBounds::operator==( const PortBounds& other ) const {
+//-----------------------------------------------------------------------------
+// Function: General::PortAlignment::operator==()
+//-----------------------------------------------------------------------------
+bool General::PortBounds::operator==( const PortBounds& other ) const
+{
 	return portName_ == other.portName_;
 }
 
-bool General::PortBounds::operator!=( const PortBounds& other ) const {
+//-----------------------------------------------------------------------------
+// Function: General::PortAlignment::operator!=()
+//-----------------------------------------------------------------------------
+bool General::PortBounds::operator!=( const PortBounds& other ) const
+{
 	return portName_ != other.portName_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: General::PortAlignment::PortAlignment()
+//-----------------------------------------------------------------------------
 General::PortAlignment::PortAlignment():
 port1Left_(-1),
 port1Right_(-1),
 port2Left_(-1),
 port2Right_(-1),
-invalidAlignment_(true) {
+invalidAlignment_(true)
+{
 }
 
-General::PortAlignment::PortAlignment( const PortAlignment& other ):
-port1Left_(other.port1Left_),
-port1Right_(other.port1Right_),
-port2Left_(other.port2Left_),
-port2Right_(other.port2Right_),
-invalidAlignment_(other.invalidAlignment_) {
-}
-
-General::PortAlignment& General::PortAlignment::operator=( const PortAlignment& other ) {
-	if (this != &other) {
-		port1Left_ = other.port1Left_;
-		port1Right_ = other.port1Right_;
-		port2Left_ = other.port2Left_;
-		port2Right_ = other.port2Right_;
-		invalidAlignment_ = other.invalidAlignment_;
-	}
-	return *this;
-}
-
-QString General::port2String(const QString& portName, int leftBound, int rightBound) {
+//-----------------------------------------------------------------------------
+// Function: General::port2String()
+//-----------------------------------------------------------------------------
+QString General::port2String(const QString& portName, int leftBound, int rightBound)
+{
 	QString str(portName);
 	str.append(QStringLiteral("[%1..%2]").arg(leftBound).arg(rightBound));
 	return str;
 }
 
-QString General::bool2Str(bool value) {
-	if (value) {
+//-----------------------------------------------------------------------------
+// Function: General::bool2Str()
+//-----------------------------------------------------------------------------
+QString General::bool2Str(bool value)
+{
+	if (value)
+    {
 		return QStringLiteral("true");
 	}
-	else {
+	else
+    {
 		return QStringLiteral("false");
 	}
 }
 
-General::Usage General::str2Usage(QString str,
-		General::Usage defaultValue) {
+//-----------------------------------------------------------------------------
+// Function: General::str2Usage()
+//-----------------------------------------------------------------------------
+General::Usage General::str2Usage(QString str, General::Usage defaultValue)
+{
 	if (str == QLatin1String("memory")) {
 		return General::MEMORY;
 	}
@@ -124,7 +124,11 @@ General::Usage General::str2Usage(QString str,
 	}
 }
 
-QString General::usage2Str(const General::Usage usage) {
+//-----------------------------------------------------------------------------
+// Function: General::usage2Str()
+//-----------------------------------------------------------------------------
+QString General::usage2Str(const General::Usage usage)
+{
 	switch (usage) {
 	case General::MEMORY: {
 		return QStringLiteral("memory");
@@ -142,6 +146,9 @@ QString General::usage2Str(const General::Usage usage) {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: General::str2DriverType()
+//-----------------------------------------------------------------------------
 General::DriverType General::str2DriverType(QString str, General::DriverType defaultValue)
 {
 	if (str == QLatin1String("any"))
@@ -166,6 +173,9 @@ General::DriverType General::str2DriverType(QString str, General::DriverType def
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: General::driverType2Str()
+//-----------------------------------------------------------------------------
 QString General::driverType2Str(General::DriverType type)
 {
     if (type == General::ANY)
@@ -186,26 +196,36 @@ QString General::driverType2Str(General::DriverType type)
     }
 }
 
-bool General::str2Bool(const QString str, bool defaultValue) {
-	if (str == QLatin1String("true")) {
+//-----------------------------------------------------------------------------
+// Function: General::str2Bool()
+//-----------------------------------------------------------------------------
+bool General::str2Bool(const QString str, bool defaultValue)
+{
+	if (str == QLatin1String("true"))
+    {
 		return true;
 	}
-	else if (str == QLatin1String("false")) {
+	else if (str == QLatin1String("false"))
+    {
 		return false;
 	}
-	else {
+	else
+    {
 		return defaultValue;
 	}
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: General::str2Interfacemode()
+//-----------------------------------------------------------------------------
 General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue) {
 	
 	// check all known interface mode names
-	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i) {
-		
+	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i)
+    {		
 		// if match is found
-		if (str.compare(General::INTERFACE_MODE_NAMES[i], Qt::CaseInsensitive) == 0) {
+		if (str.compare(General::INTERFACE_MODE_NAMES[i], Qt::CaseInsensitive) == 0)
+        {
 			return static_cast<General::InterfaceMode>(i);
 		}
 	}
@@ -214,12 +234,16 @@ General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceM
 	return defaultValue;
 }
 
-QString General::interfaceMode2Str(const General::InterfaceMode mode) {
+//-----------------------------------------------------------------------------
+// Function: General::interfaceMode2Str()
+//-----------------------------------------------------------------------------
+QString General::interfaceMode2Str(const General::InterfaceMode mode)
+{
 	return General::INTERFACE_MODE_NAMES[mode];
 }
 
 //-----------------------------------------------------------------------------
-// Function: getCompatibleInterfaceMode()
+// Function: General::getCompatibleInterfaceMode()
 //-----------------------------------------------------------------------------
 General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
 {
@@ -252,31 +276,13 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
     }
 }
 
-General::LibraryFilePair::LibraryFilePair(const QString filePath,
-		const QString libraryName): filePath_(filePath),
-		libraryName_(libraryName) {
-}
-
-General::LibraryFilePair::LibraryFilePair( const LibraryFilePair& other ):
-filePath_(other.filePath_),
-libraryName_(other.libraryName_) {
-}
-
-bool General::LibraryFilePair::operator==( const LibraryFilePair& other ) const {
-	return other.filePath_ == this->filePath_ && 
-		other.libraryName_ == this->libraryName_;
-}
-
-General::LibraryFilePair& General::LibraryFilePair::operator=( const LibraryFilePair& other ) {
-	if (this != &other) {
-		filePath_ = other.filePath_;
-		libraryName_ = other.libraryName_;
-	}
-	return *this;
-}
-
-QString General::getRelativePath(const QString from, const QString to) {
-	if (from.isEmpty() || to.isEmpty()) {
+//-----------------------------------------------------------------------------
+// Function: General::getRelativePath()
+//-----------------------------------------------------------------------------
+QString General::getRelativePath(QString const& from, QString const& to)
+{
+	if (from.isEmpty() || to.isEmpty())
+    {
 		return QString();
 	}
 
@@ -301,7 +307,8 @@ QString General::getRelativePath(const QString from, const QString to) {
 	// create file info instance to make sure the target file exists and to
 	// use an absolute file path to calculate the relative path.
 	QFileInfo toInfo(to);
-	if (!toInfo.exists()) {
+	if (!toInfo.exists())
+    {
 		return QString();
 	}
 
@@ -321,15 +328,19 @@ QString General::getRelativePath(const QString from, const QString to) {
     return relPath;
 }
 
-QString General::getRelativeSavePath( const QString& from, const QString& to ) {
-	if (from.isEmpty() || to.isEmpty()) {
+//-----------------------------------------------------------------------------
+// Function: General::getRelativeSavePath()
+//-----------------------------------------------------------------------------
+QString General::getRelativeSavePath( const QString& from, const QString& to )
+{
+	if (from.isEmpty() || to.isEmpty())
+    {
 		return QString();
 	}
 
 	// create file info instance to make sure that only the directory of the
 	// from parameter is used
 	QFileInfo fromInfo(from);
-
 	QString fromPath = fromInfo.absolutePath();
 
 	if (fromInfo.isDir())
@@ -352,16 +363,20 @@ QString General::getRelativeSavePath( const QString& from, const QString& to ) {
 	return ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
 }
 
-QString General::getAbsolutePath(const QString& originalPath,
-		const QString& relativePath) {
-
+//-----------------------------------------------------------------------------
+// Function: General::getAbsolutePath()
+//-----------------------------------------------------------------------------
+QString General::getAbsolutePath(QString const& originalPath,QString const& relativePath)
+{
 	// if one of the parameters is empty
-	if (originalPath.isEmpty() || relativePath.isEmpty()) {
+	if (originalPath.isEmpty() || relativePath.isEmpty())
+    {
 		return QString();
 	}
 
 	QFileInfo relativeInfo(relativePath);
-	if (relativeInfo.isAbsolute()) {
+	if (relativeInfo.isAbsolute())
+    {
 		return relativePath;
 	}
 
@@ -373,13 +388,17 @@ QString General::getAbsolutePath(const QString& originalPath,
 	return originalDir.absoluteFilePath(relativePath);
 }
 
-General::ModifiedWrite General::str2ModifiedWrite( const QString& str ) {
-	
+//-----------------------------------------------------------------------------
+// Function: General::str2ModifiedWrite()
+//-----------------------------------------------------------------------------
+General::ModifiedWrite General::str2ModifiedWrite( const QString& str )
+{	
 	// check all defined strings
-	for (unsigned int i = 0; i < General::MODIFIED_WRITE_COUNT; ++i) {
-		
+	for (unsigned int i = 0; i < General::MODIFIED_WRITE_COUNT; ++i)
+    {		
 		// if a match is found
-		if (str.compare(General::MODIFIED_WRITE_STRINGS[i], Qt::CaseInsensitive) == 0) {
+		if (str.compare(General::MODIFIED_WRITE_STRINGS[i], Qt::CaseInsensitive) == 0)
+        {
 			return static_cast<General::ModifiedWrite>(i);
 		}
 	}
@@ -388,20 +407,33 @@ General::ModifiedWrite General::str2ModifiedWrite( const QString& str ) {
 	return General::MODIFIED_WRITE_COUNT;
 }
 
-QString General::modifiedWrite2Str( const General::ModifiedWrite modWrite ) {
+//-----------------------------------------------------------------------------
+// Function: General::modifiedWrite2Str()
+//-----------------------------------------------------------------------------
+QString General::modifiedWrite2Str( const General::ModifiedWrite modWrite )
+{
 	return General::MODIFIED_WRITE_STRINGS[modWrite];
 }
 
-QString General::readAction2Str( const General::ReadAction readAction ) {
+//-----------------------------------------------------------------------------
+// Function: General::readAction2Str()
+//-----------------------------------------------------------------------------
+QString General::readAction2Str( const General::ReadAction readAction )
+{
 	return General::READ_ACTION_STRINGS[readAction];
 }
 
-General::ReadAction General::str2ReadAction( const QString& str ) {
+//-----------------------------------------------------------------------------
+// Function: General::str2ReadAction()
+//-----------------------------------------------------------------------------
+General::ReadAction General::str2ReadAction( const QString& str )
+{
 	// check all defined strings
 	for (unsigned int i = 0; i < General::READ_ACTION_COUNT; ++i) {
 		
 		// if a match is found
-		if (str.compare(General::READ_ACTION_STRINGS[i], Qt::CaseInsensitive) == 0) {
+		if (str.compare(General::READ_ACTION_STRINGS[i], Qt::CaseInsensitive) == 0)
+        {
 			return static_cast<General::ReadAction>(i);
 		}
 	}
@@ -410,14 +442,22 @@ General::ReadAction General::str2ReadAction( const QString& str ) {
 	return General::READ_ACTION_COUNT;
 }
 
-QString General::testConstraint2Str( const General::TestConstraint testConstraint ) {
+//-----------------------------------------------------------------------------
+// Function: General::testConstraint2Str()
+//-----------------------------------------------------------------------------
+QString General::testConstraint2Str( const General::TestConstraint testConstraint )
+{
 	return General::TEST_CONSTRAINT_STRINGS[testConstraint];
 }
 
-General::TestConstraint General::str2TestConstraint( const QString& str ) {
+//-----------------------------------------------------------------------------
+// Function: General::str2TestConstraint()
+//-----------------------------------------------------------------------------
+General::TestConstraint General::str2TestConstraint( const QString& str )
+{
 	// check all defined strings
-	for (unsigned int i = 0; i < General::TESTCONSTRAINT_COUNT; ++i) {
-
+	for (unsigned int i = 0; i < General::TESTCONSTRAINT_COUNT; ++i)
+    {
 		// if a match is found
 		if (str.compare(General::TEST_CONSTRAINT_STRINGS[i], Qt::CaseInsensitive) == 0) {
 			return static_cast<General::TestConstraint>(i);
@@ -428,8 +468,9 @@ General::TestConstraint General::str2TestConstraint( const QString& str ) {
 	return General::TESTCONSTRAINT_COUNT;
 }
 
-
-
+//-----------------------------------------------------------------------------
+// Function: General::str2Uint()
+//-----------------------------------------------------------------------------
 quint64 General::str2Uint( const QString& str )
 {
     if (str.isEmpty())

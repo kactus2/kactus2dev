@@ -73,16 +73,6 @@ AddressSpace & AddressSpace::operator=( const AddressSpace &other )
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpace::~AddressSpace()
-//-----------------------------------------------------------------------------
-AddressSpace::~AddressSpace()
-{
-    localMemoryMap_.clear();
-	segments_.clear();
-    parameters_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressSpace::getIsPresent()
 //-----------------------------------------------------------------------------
 QString AddressSpace::getIsPresent() const

@@ -48,13 +48,19 @@ public:
 	//! Copy constructor
 	FileSet(const FileSet& other);
 
-	//! Assignment operator
-	FileSet &operator=(const FileSet& other);
+    //! Move constructor
+    FileSet(FileSet&& other) = default;
+
+    //! Assignment operator
+    FileSet &operator=(const FileSet& other);
+
+	//! Move assignment operator
+	FileSet &operator=(FileSet&& other) = default;
 
 	/*!
      *  The destructor
 	 */
-	~FileSet();
+	virtual ~FileSet() = default;
 
 	/*! 
      *  Get the groups of this file set

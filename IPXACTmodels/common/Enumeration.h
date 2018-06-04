@@ -31,10 +31,17 @@ public:
      *
      *      @param [in] other   The enumeration to copy.
      */
-    Enumeration(Enumeration const& other);
+    Enumeration(Enumeration const& other) = default;
+
+    /*!
+    *  The move constructor.
+    *
+    *      @param [in] other   The enumeration to move.
+    */
+    Enumeration(Enumeration&& other) = default;
 
 	//! The destructor.
-	~Enumeration();
+	~Enumeration() = default;
 
     /*!
      *  Sets the enumeration value.

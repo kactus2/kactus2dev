@@ -43,11 +43,17 @@ public:
 	//! Copy constructor.
 	MemoryBlockBase(const MemoryBlockBase& other);
 
-	//! The assignment operator.
-	MemoryBlockBase& operator=(const MemoryBlockBase& other);
+    //! Move constructor.
+    MemoryBlockBase(MemoryBlockBase&& other) = default;
+
+    //! The assignment operator.
+    MemoryBlockBase& operator=(const MemoryBlockBase& other);
+
+	//! The move assignment operator.
+	MemoryBlockBase& operator=(MemoryBlockBase&& other) = default;
 
 	//! The destructor.
-	virtual ~MemoryBlockBase();
+	virtual ~MemoryBlockBase() = default;
 
 	/*!
      *  Clone this memory map item and return pointer to the copy.

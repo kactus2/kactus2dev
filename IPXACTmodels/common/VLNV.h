@@ -19,8 +19,6 @@
 #include <QStringList>
 #include <QVector>
 
-#include <QDomNode>
-
 //-----------------------------------------------------------------------------
 //! A class to hold VLNV information of a single IP-XACT document.
 //-----------------------------------------------------------------------------
@@ -50,6 +48,9 @@ public:
 	*/
 	VLNV();
 
+    //! The move constructor.
+    VLNV(VLNV&& other) = default;
+
 	/*! The Constructor.
 	 *
 	 *      @param [in] type    The type of the VLNV document (design, component...).
@@ -58,8 +59,8 @@ public:
 	 *      @param [in] name    The name of the item.
 	 *      @param [in] version The version number of the item.
 	 */
-	VLNV(QString const& type, QString const& vendor, QString const& library,
-		QString const& name, QString const& version);
+	/*VLNV(QString const& type, QString const& vendor, QString const& library,
+		QString const& name, QString const& version);*/
 
 	/*! Constructor that takes type parameter as enum
 	 *
@@ -193,8 +194,9 @@ public:
 	*/
 	QString toString(QString const& separator = QLatin1String(":")) const;
 
-	//! The assignment operator for the class
-	VLNV &operator=(const VLNV &other);
+	//! The assignment and move assignment operator for the class.
+	VLNV& operator=(const VLNV &other);
+    VLNV& operator=(VLNV&& other) = default;
 
 	/*! The < operator for comparison of the VLNV info
 	 *
@@ -241,17 +243,7 @@ public:
      *
 	 *      @return IPXactType that corresponds to the given string
 	 */
-    static QString IPXactType2String(const IPXactType &type);
-
-    /*! Parse a vlnv tag from the attributes in the node
-    *
-    * The node parameter must have attributes matching a vlnv tag
-    *
-    *      @param [in] node A reference to a QDomNode to parse the vlnv from.
-    *
-    *      @return The new vlnv instance.
-    */
-    static VLNV createVLNV(const QDomNode& node, IPXactType type);
+    static QString IPXactType2String(IPXactType const& type);
    
 private:
 

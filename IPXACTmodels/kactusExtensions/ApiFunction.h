@@ -47,7 +47,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~ApiFunction();
+    ~ApiFunction() = default;
 
     /*!
      *  Writes the contents to an XML stream.
@@ -163,6 +163,11 @@ public:
      *  Assignment operator.
      */
     ApiFunction& operator=(ApiFunction const& rhs);
+
+    /*!
+    *  Move assignment operator.
+    */
+    ApiFunction& operator=(ApiFunction&& rhs) = default;
 
 private:
     //-----------------------------------------------------------------------------

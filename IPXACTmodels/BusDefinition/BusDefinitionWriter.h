@@ -33,8 +33,12 @@ public:
 	//! The constructor.
 	BusDefinitionWriter();
 
+    // Disable copying.
+    BusDefinitionWriter(BusDefinitionWriter const& rhs) = delete;
+    BusDefinitionWriter& operator=(BusDefinitionWriter const& rhs) = delete;
+
 	//! The destructor.
-	~BusDefinitionWriter();
+	virtual ~BusDefinitionWriter() = default;
 
     /*!
      *  Writes the given bus definition into xml.
@@ -45,10 +49,6 @@ public:
     void writeBusDefinition(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const;
 
 private:
-
-	// Disable copying.
-	BusDefinitionWriter(BusDefinitionWriter const& rhs);
-	BusDefinitionWriter& operator=(BusDefinitionWriter const& rhs);
 
     /*!
      *  Writes the broadcast property of a given bus definition into xml.

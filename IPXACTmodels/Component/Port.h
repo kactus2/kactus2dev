@@ -49,15 +49,25 @@ public:
 	 */
 	Port(const Port &other);
 
+    /*!
+    *  Move constructor.
+    */
+    Port(Port&& other) = default;
+
+    /*!
+    *  Assignment operator.
+    */
+    Port& operator=(const Port &other);
+
 	/*!
-	 *  Assignment operator.
+	 *  Move assignment operator.
 	 */
-	Port &operator=(const Port &other);
+	Port& operator=(Port&& other) = default;
 
 	/*!
 	 *  The destructor.
 	 */
-	~Port();
+	virtual ~Port() = default;
     
     /*!
      *  Get a pointer to the wire element.

@@ -27,29 +27,35 @@ public:
     //! The constructor.
     ConnectionRoute(QString const& connectionName);
 
+    //! Copy constructor.
+    ConnectionRoute(ConnectionRoute const& other);
+
+    //! Disable assignment.
+    ConnectionRoute& operator=(ConnectionRoute const& rhs) = delete;
+
     //! The destructor.
-    ~ConnectionRoute();
+    virtual ~ConnectionRoute() = default;
     
     /*!
      *  Clones the vendor extension.
      *
      *      @return The clone copy of the vendor extension.
      */
-    virtual VendorExtension* clone() const;
+    virtual VendorExtension* clone() const override final;
     
     /*!
      *  Returns a type identifier for the vendor extension.
      *
      *      @return A type identifier of the vendor extension.
      */
-    virtual QString type() const;
+    virtual QString type() const override final;
     
     /*!
      *  Writes the vendor extension to XML.
      *
      *      @param [in] writer   The writer used for writing the XML.
      */
-    virtual void write(QXmlStreamWriter& writer) const;
+    virtual void write(QXmlStreamWriter& writer) const override final;
 
     /*!
      *  Sets the connection name.
@@ -101,10 +107,6 @@ public:
     QList<QPointF> getRoute() const;
 
 private:
-
-    // Disable copying.
-    ConnectionRoute(ConnectionRoute const& other);
-    ConnectionRoute& operator=(ConnectionRoute const& rhs); 
 
     //! The name of the connection.
     QString name_;

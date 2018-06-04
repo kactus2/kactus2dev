@@ -23,39 +23,6 @@ replaceDefaultFlags_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BuildModel::BuildModel()
-//-----------------------------------------------------------------------------
-BuildModel::BuildModel( const BuildModel &other ):
-command_(other.command_),
-flags_(other.flags_),
-replaceDefaultFlags_(other.replaceDefaultFlags_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: BuildModel::operator=()
-//-----------------------------------------------------------------------------
-BuildModel & BuildModel::operator=( const BuildModel &other )
-{
-	if (this != &other)
-    {
-		command_ = other.command_;
-		flags_ = other.flags_;
-		replaceDefaultFlags_ = other.replaceDefaultFlags_;
-	}
-	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BuildModel::~BuildModel()
-//-----------------------------------------------------------------------------
-BuildModel::~BuildModel()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BuildModel::getCommand()
 //-----------------------------------------------------------------------------
 QString BuildModel::getCommand() const

@@ -33,8 +33,12 @@ public:
 	//! The constructor.
 	AbstractionDefinitionReader();
 
+    // Disable copying.
+    AbstractionDefinitionReader(AbstractionDefinitionReader const& rhs) = delete;
+    AbstractionDefinitionReader& operator=(AbstractionDefinitionReader const& rhs) = delete;
+
 	//! The destructor.
-	virtual ~AbstractionDefinitionReader();
+	virtual ~AbstractionDefinitionReader() = default;
     
     /*!
      *  Creates an abstraction definition from XML description.
@@ -46,10 +50,6 @@ public:
     QSharedPointer<AbstractionDefinition> createAbstractionDefinitionFrom(QDomNode const& document) const;
 
 private:
-
-	// Disable copying.
-	AbstractionDefinitionReader(AbstractionDefinitionReader const& rhs);
-	AbstractionDefinitionReader& operator=(AbstractionDefinitionReader const& rhs);
                            
     /*!
      *  Reads the bus type from XML to an abstraction definition.

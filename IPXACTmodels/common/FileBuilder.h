@@ -46,17 +46,22 @@ public:
 	/*!
 	 *  Copy constructor.
 	 */
-	FileBuilder(const FileBuilder &other);
+	FileBuilder(const FileBuilder &other) = default;
 
 	/*!
 	 *  Assignment operator.
 	 */
 	FileBuilder &operator=(const FileBuilder &other);
 
+    /*!
+    *  Assignment operator.
+    */
+    FileBuilder &operator=(FileBuilder&& other) = default;
+
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~FileBuilder();
+	virtual ~FileBuilder() = default;
 
 	/*!
 	 *  Get the type of the file.

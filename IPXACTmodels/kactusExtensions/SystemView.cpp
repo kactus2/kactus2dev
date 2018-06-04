@@ -11,6 +11,8 @@
 
 #include "SystemView.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
+
 //-----------------------------------------------------------------------------
 // Function: SystemView::SystemView()
 //-----------------------------------------------------------------------------
@@ -27,7 +29,7 @@ SystemView::SystemView(QDomNode& viewNode) : NameGroup(), hierarchyRef_(), fileS
     QDomElement hierarchyRefElement = systemViewElement.firstChildElement(QStringLiteral("ipxact:hierarchyRef"));
     if (!hierarchyRefElement.isNull())
     {
-        hierarchyRef_ = VLNV::createVLNV(hierarchyRefElement, VLNV::DESIGN);
+        hierarchyRef_ = CommonItemsReader::createVLNVFrom(hierarchyRefElement, VLNV::DESIGN);
     }
 
     hwViewRef_ = systemViewElement.firstChildElement(QStringLiteral("kactus2:hwViewRef")).childNodes().at(0).nodeValue();
@@ -83,14 +85,6 @@ SystemView& SystemView::operator=(const SystemView &other)
     }
 
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemView::~SystemView()
-//-----------------------------------------------------------------------------
-SystemView::~SystemView()
-{
-
 }
 
 //-----------------------------------------------------------------------------

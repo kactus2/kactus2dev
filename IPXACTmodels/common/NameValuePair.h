@@ -34,13 +34,19 @@ public:
     NameValuePair(QString const& name = QString(), QString const& value = QString());
 
     //! Copy constructor.
-    NameValuePair(const NameValuePair& other);
+    NameValuePair(const NameValuePair& other) = default;
+
+    //! Move constructor.
+    NameValuePair(NameValuePair&& other) = default;
 
     //! Assignment operator.
     NameValuePair& operator=(const NameValuePair& other);
 
+    //! Move assignment operator.
+    NameValuePair& operator=(NameValuePair&& other);
+
     //! The destructor.
-    ~NameValuePair();
+    virtual ~NameValuePair() = default;
 
     /*!
      *  Get the contained value.

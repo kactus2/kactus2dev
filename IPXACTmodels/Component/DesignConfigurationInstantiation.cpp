@@ -65,15 +65,6 @@ DesignConfigurationInstantiation& DesignConfigurationInstantiation::operator=(
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignConfigurationInstantiation::~DesignConfigurationInstantiation()
-//-----------------------------------------------------------------------------
-DesignConfigurationInstantiation::~DesignConfigurationInstantiation()
-{
-    designConfigurationRef_.clear();
-    parameters_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiation::getLanguage()
 //-----------------------------------------------------------------------------
 QString DesignConfigurationInstantiation::getLanguage() const

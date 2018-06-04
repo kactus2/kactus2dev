@@ -22,13 +22,13 @@
 //-----------------------------------------------------------------------------
 // Function: Wire::Wire()
 //-----------------------------------------------------------------------------
-Wire::Wire():
-direction_(DirectionTypes::DIRECTION_INVALID),
-allLogicalDirectionsAllowed_(false),
-vector_(),
-wireTypeDefs_(new QList<QSharedPointer<WireTypeDef> > ()),
-defaultDriverValue_(),
-defaultValueAttributes_()
+Wire::Wire() :
+    direction_(DirectionTypes::DIRECTION_INVALID),
+    allLogicalDirectionsAllowed_(false),
+    vector_(),
+    wireTypeDefs_(new QList<QSharedPointer<WireTypeDef> >()),
+    defaultDriverValue_(),
+    defaultValueAttributes_()
 {
 
 }
@@ -36,14 +36,14 @@ defaultValueAttributes_()
 //-----------------------------------------------------------------------------
 // Function: Wire::Wire()
 //-----------------------------------------------------------------------------
-Wire::Wire( DirectionTypes::Direction direction, int leftBound, int rightBound,QString const& defaultValue,
-    bool allLogicalDirections ):
-direction_(direction),
-allLogicalDirectionsAllowed_(allLogicalDirections),
-vector_(),
-wireTypeDefs_(new QList<QSharedPointer<WireTypeDef> > ()),
-defaultDriverValue_(defaultValue),
-defaultValueAttributes_()
+Wire::Wire(DirectionTypes::Direction direction, int leftBound, int rightBound, QString const& defaultValue,
+    bool allLogicalDirections) :
+    direction_(direction),
+    allLogicalDirectionsAllowed_(allLogicalDirections),
+    vector_(),
+    wireTypeDefs_(new QList<QSharedPointer<WireTypeDef> >()),
+    defaultDriverValue_(defaultValue),
+    defaultValueAttributes_()
 {
     vector_ = QSharedPointer<Vector>(new Vector(QString::number(leftBound), QString::number(rightBound)));
 }
@@ -111,18 +111,6 @@ Wire & Wire::operator=( const Wire &other )
         }
 	}
 	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Wire::~Wire()
-//-----------------------------------------------------------------------------
-Wire::~Wire()
-{
-    if(vector_)
-    {
-        vector_.clear();
-    }
-    wireTypeDefs_.clear();
 }
 
 //-----------------------------------------------------------------------------

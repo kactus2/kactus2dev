@@ -35,9 +35,17 @@ public:
     InterfaceRef(const InterfaceRef& other);
 
     /*!
+    *  Move constructor.
+    */
+    InterfaceRef(InterfaceRef&& other) = default;
+
+    /*!
      *  The destructor.
      */
-    ~InterfaceRef();
+    ~InterfaceRef() = default;
+
+    //! Disable copy.
+    InterfaceRef& operator=(InterfaceRef const& other) = delete;
 
     /*!
      *  Get the isPresent value.

@@ -45,14 +45,6 @@ systemGroup_(other.systemGroup_),
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPort::~TransactionalPort()
-//-----------------------------------------------------------------------------
-TransactionalPort::~TransactionalPort()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: TransactionalPort::setSystemGroup()
 //-----------------------------------------------------------------------------
 void TransactionalPort::setSystemGroup(QString const& group)

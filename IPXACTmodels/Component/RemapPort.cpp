@@ -23,17 +23,6 @@ value_(),
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapPort::RemapPort()
-//-----------------------------------------------------------------------------
-RemapPort::RemapPort(const RemapPort &other) :
-value_(other.value_),
-    portRef_(other.portRef_),
-    portIndex_(other.portIndex_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: RemapPort::operator=()
 //-----------------------------------------------------------------------------
 RemapPort& RemapPort::operator=(const RemapPort& other)
@@ -46,14 +35,6 @@ RemapPort& RemapPort::operator=(const RemapPort& other)
     }
 
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RemapPort::~RemapPort()
-//-----------------------------------------------------------------------------
-RemapPort::~RemapPort()
-{
-
 }
 
 //-----------------------------------------------------------------------------

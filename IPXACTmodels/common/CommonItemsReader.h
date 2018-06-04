@@ -37,27 +37,28 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~CommonItemsReader();
+    virtual ~CommonItemsReader() = default;
+
+    /*!
+    *  Parse and create VLNV from XML file.
+    *
+    *      @param [in] vlnvNode    XML description of the VLNV.
+    *      @param [in] type        The type of the VLNV.
+    *
+    *      @return The new VLNV.
+    */
+    static VLNV createVLNVFrom(QDomNode const& vlnvNode, VLNV::IPXactType type);
+
+    /*!
+    *  Parses the VLNV from XML to attributes of an element.
+    *
+    *      @param [in] vlnvNode    The XML description of the VLNV.
+    *      @param [in] vlnvType    The type of the VLNV.
+    */
+    static VLNV parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType);
 
 protected:
 
-    /*!
-     *  Parse and create VLNV from XML file.
-     *
-     *      @param [in] vlnvNode    XML description of the VLNV.
-     *      @param [in] type        The type of the VLNV.
-     *
-     *      @return The new VLNV.
-     */
-    VLNV createVLNVFrom(QDomNode const& vlnvNode, VLNV::IPXactType type) const;
-
-    /*!
-     *  Parses the VLNV from XML to attributes of an element.
-     *
-     *      @param [in] vlnvNode    The XML description of the VLNV.
-     *      @param [in] vlnvType    The type of the VLNV.
-     */
-    VLNV parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType) const;
 
     /*!
      *  Parses and creates parameters from XML.

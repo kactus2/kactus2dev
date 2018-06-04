@@ -15,9 +15,6 @@
 #include <QStringList>
 #include <QObject>
 
-#include <QDomNode>
-#include <QDomNamedNodeMap>
-
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
@@ -28,16 +25,16 @@ VLNV::VLNV(): vendor_(), library_(), name_(), version_(), type_(VLNV::INVALID)
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
-VLNV::VLNV(QString const& type, 
+/*VLNV::VLNV(QString const& type, 
     QString const& vendor, QString const& library, QString const& name, QString const& version):
 vendor_(vendor.simplified()), 
 library_(library.simplified()), 
 name_(name.simplified()),
 version_(version.simplified()),
-type_(INVALID)
+type_(string2Type(type))
 {
-	type_ = string2Type(type);
-}
+
+}*/
 
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
@@ -459,25 +456,4 @@ QString VLNV::IPXactType2String(IPXactType const& type)
     {
         return QStringLiteral("invalid");
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: vlnv::createVLNV()
-//-----------------------------------------------------------------------------
-VLNV VLNV::createVLNV(const QDomNode& node, IPXactType type)
-{
-    // the vlnv info is found as attributes in the node
-    QDomNamedNodeMap attributeMap = node.attributes();
-    QString vendor = attributeMap.namedItem(QStringLiteral("vendor")).nodeValue();
-    QString library = attributeMap.namedItem(QStringLiteral("library")).nodeValue();
-    QString name = attributeMap.namedItem(QStringLiteral("name")).nodeValue();
-    QString version = attributeMap.namedItem(QStringLiteral("version")).nodeValue();
-
-    // if invalid vlnv tag
-    if (vendor.isEmpty() || library.isEmpty() || name.isEmpty() || version.isEmpty()) 
-    {
-        return VLNV();
-    }
-
-    return VLNV(type, vendor, library, name, version);
 }

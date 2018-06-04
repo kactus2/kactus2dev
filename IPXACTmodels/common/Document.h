@@ -53,8 +53,14 @@ public:
     //! Copy constructor.
 	Document(const Document &other);
 
+    //! Move constructor.
+    Document(Document&& other) = default;
+
     //! Assignment operator
 	Document &operator=(const Document &other);
+    
+    //! Move assignment operator
+    Document& operator=(Document&& other) = default;
 
     //! The destructor.
 	virtual ~Document();

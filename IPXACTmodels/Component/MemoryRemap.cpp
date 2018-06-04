@@ -14,19 +14,9 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryRemap::MemoryRemap()
 //-----------------------------------------------------------------------------
-MemoryRemap::MemoryRemap(QString const& name /* = QString() */, QString const& remapState /* = QString() */):
-MemoryMapBase(name),
-remapState_(remapState)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryRemap::MemoryRemap()
-//-----------------------------------------------------------------------------
-MemoryRemap::MemoryRemap(const MemoryRemap& other):
-MemoryMapBase(other),
-remapState_(other.remapState_)
+MemoryRemap::MemoryRemap(QString const& name, QString const& remapState) :
+    MemoryMapBase(name),
+    remapState_(remapState)
 {
 
 }
@@ -46,19 +36,11 @@ MemoryRemap& MemoryRemap::operator=(const MemoryRemap& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryRemap::~MemoryRemap()
-//-----------------------------------------------------------------------------
-MemoryRemap::~MemoryRemap()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryRemap::elementName()
 //-----------------------------------------------------------------------------
 QString MemoryRemap::elementName() const
 {
-    return QLatin1String("memory remap");
+    return QStringLiteral("memory remap");
 }
 
 //-----------------------------------------------------------------------------

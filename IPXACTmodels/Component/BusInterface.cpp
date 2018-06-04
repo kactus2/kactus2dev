@@ -93,7 +93,7 @@ mirroredSlave_()
 //-----------------------------------------------------------------------------
 // Function: BusInterface::operator=()
 //-----------------------------------------------------------------------------
-BusInterface & BusInterface::operator=( const BusInterface &other )
+BusInterface& BusInterface::operator=( const BusInterface &other )
 {
 	if (this != &other)
     {	
@@ -118,19 +118,6 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
         copyInterfaceModes(other);
 	}
 	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterface::~BusInterface()
-//-----------------------------------------------------------------------------
-BusInterface::~BusInterface()
-{
-	abstractionTypes_.clear();
-	bitSteeringAttributes_.clear();
-	parameters_.clear();
-	master_.clear();
-	slave_.clear();
-	monitor_.clear();
 }
 
 //-----------------------------------------------------------------------------

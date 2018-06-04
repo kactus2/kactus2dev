@@ -84,13 +84,6 @@ ComponentGenerator& ComponentGenerator::operator=(ComponentGenerator const& othe
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentGenerator::~ComponentGenerator()
-//-----------------------------------------------------------------------------
-ComponentGenerator::~ComponentGenerator()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentGenerator::setHidden()
 //-----------------------------------------------------------------------------
 void ComponentGenerator::setHidden(bool hidden)

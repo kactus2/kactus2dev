@@ -14,14 +14,13 @@
 //-----------------------------------------------------------------------------
 // Function: View::View()
 //-----------------------------------------------------------------------------
-View::View(QString const& name /* = QString() */, QString const& displayName /* = QString() */,
-    QString const& description /* = QString() */) :
-NameGroup(name, displayName, description),
-isPresent_(),
-envIdentifiers_(new QList<QSharedPointer<EnvironmentIdentifier> >),
-componentInstantiationRef_(),
-designInstantiationRef_(),
-designConfigurationInstantiationRef_()
+View::View(QString const& name, QString const& displayName, QString const& description) :
+    NameGroup(name, displayName, description),
+    isPresent_(),
+    envIdentifiers_(new QList<QSharedPointer<EnvironmentIdentifier> >),
+    componentInstantiationRef_(),
+    designInstantiationRef_(),
+    designConfigurationInstantiationRef_()
 {
 
 }
@@ -29,13 +28,13 @@ designConfigurationInstantiationRef_()
 //-----------------------------------------------------------------------------
 // Function: View::View()
 //-----------------------------------------------------------------------------
-View::View(const View &other):
-NameGroup(other),
-isPresent_(other.isPresent_),
-envIdentifiers_(other.envIdentifiers_),
-componentInstantiationRef_(other.componentInstantiationRef_),
-designInstantiationRef_(other.designInstantiationRef_),
-designConfigurationInstantiationRef_(other.designConfigurationInstantiationRef_)
+View::View(const View &other) :
+    NameGroup(other),
+    isPresent_(other.isPresent_),
+    envIdentifiers_(other.envIdentifiers_),
+    componentInstantiationRef_(other.componentInstantiationRef_),
+    designInstantiationRef_(other.designInstantiationRef_),
+    designConfigurationInstantiationRef_(other.designConfigurationInstantiationRef_)
 {
 
 }
@@ -56,14 +55,6 @@ View& View::operator=(const View &other)
     }
 
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: View::~View()
-//-----------------------------------------------------------------------------
-View::~View()
-{
-
 }
 
 //-----------------------------------------------------------------------------

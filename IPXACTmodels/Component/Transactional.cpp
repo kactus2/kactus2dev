@@ -78,15 +78,6 @@ Transactional& Transactional::operator=( const Transactional& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Transactional::~Transactional()
-//-----------------------------------------------------------------------------
-Transactional::~Transactional()
-{
-    protocol_.clear();
-    transTypeDefs_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: Transactional::getAllLogicalInitiativesAllowed()
 //-----------------------------------------------------------------------------
 bool Transactional::getAllLogicalInitiativesAllowed() const

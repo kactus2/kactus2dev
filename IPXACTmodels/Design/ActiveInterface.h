@@ -38,16 +38,26 @@ public:
      *  Copy constructor.
      */
     ActiveInterface(const ActiveInterface& other);
-    
+
+    /*!
+    *  Move constructor.
+    */
+    ActiveInterface(ActiveInterface&& other) = default;
+
     /*!
      *  The destructor.
      */
-    virtual ~ActiveInterface();
+    virtual ~ActiveInterface() = default;
 
     /*!
      *  Assignment operator.
      */
     ActiveInterface& operator=(const ActiveInterface& other);
+
+    /*!
+    *  Move assignment operator.
+    */
+    ActiveInterface& operator=(ActiveInterface&& other) = default;
 
     /*!
      *  Comparison operator.

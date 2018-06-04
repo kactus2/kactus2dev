@@ -15,7 +15,7 @@
 //-----------------------------------------------------------------------------
 // Function: RemapState::RemapState()
 //-----------------------------------------------------------------------------
-RemapState::RemapState(QString const& name /* = QString() */) :
+RemapState::RemapState(QString const& name) :
 NameGroup(name),
 remapPorts_(new QList<QSharedPointer<RemapPort> > ())
 {
@@ -46,14 +46,6 @@ RemapState& RemapState::operator=(const RemapState& other)
     }
 
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RemapState::~RemapState()
-//-----------------------------------------------------------------------------
-RemapState::~RemapState()
-{
-    remapPorts_.clear();
 }
 
 //-----------------------------------------------------------------------------

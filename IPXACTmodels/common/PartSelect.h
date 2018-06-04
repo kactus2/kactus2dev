@@ -45,14 +45,24 @@ public:
     PartSelect(const PartSelect& other);
 
     /*!
+    *  Move constructor.
+    */
+    PartSelect(PartSelect&& other) = default;
+
+    /*!
      *  The destructor.
      */
-    virtual ~PartSelect();
+    virtual ~PartSelect() = default;
 
     /*!
      *  Assignment operator.
      */
     PartSelect& operator=(const PartSelect& other);
+
+    /*!
+    *  Move assignment operator.
+    */
+    PartSelect& operator=(PartSelect&& other) = default;
 
     /*!
      *  Get the left value of the range.

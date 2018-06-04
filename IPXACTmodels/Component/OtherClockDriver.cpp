@@ -56,16 +56,6 @@ OtherClockDriver & OtherClockDriver::operator=( const OtherClockDriver &other )
 }
 
 //-----------------------------------------------------------------------------
-// Function: OtherClockDriver::()
-//-----------------------------------------------------------------------------
-OtherClockDriver::~OtherClockDriver()
-{
-    clockPeriod_.clear();
-    clockPulseOffset_.clear();
-    clockPulseDuration_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: OtherClockDriver::getClockName()
 //-----------------------------------------------------------------------------
 QString OtherClockDriver::getClockName() const

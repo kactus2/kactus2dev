@@ -35,17 +35,27 @@ public:
     /*!
      *  Copy constructor.
      */
-    MonitorInterface(const MonitorInterface& other);
+    MonitorInterface(const MonitorInterface& other) = default;
+
+    /*!
+    *  Move constructor.
+    */
+    MonitorInterface(MonitorInterface&& other) = default;
 
     /*!
      *  The destructor.
      */
-    virtual ~MonitorInterface();
+    virtual ~MonitorInterface() = default;
 
     /*!
      *  Assignment operator.
      */
-    MonitorInterface& operator=(const MonitorInterface& other);
+    MonitorInterface& operator=(const MonitorInterface& other) = default;
+
+    /*!
+    *  Move assignment operator.
+    */
+    MonitorInterface& operator=(MonitorInterface&& other) = default;
 
     /*!
      *  Comparison operator.

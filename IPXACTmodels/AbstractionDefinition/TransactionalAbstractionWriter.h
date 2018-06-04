@@ -32,8 +32,12 @@ public:
 	//! The constructor.
 	TransactionalAbstractionWriter(QObject* parent = 0);
 
+    // Disable copying.
+    TransactionalAbstractionWriter(TransactionalAbstractionWriter const& rhs) = delete;
+    TransactionalAbstractionWriter& operator=(TransactionalAbstractionWriter const& rhs) = delete;
+
 	//! The destructor.
-	~TransactionalAbstractionWriter();
+	virtual ~TransactionalAbstractionWriter() = default;
      
     /*!
      *  Writes the given transactional description into XML.
@@ -44,11 +48,6 @@ public:
     void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const;
 
 private:
-
-	// Disable copying.
-	TransactionalAbstractionWriter(TransactionalAbstractionWriter const& rhs);
-	TransactionalAbstractionWriter& operator=(TransactionalAbstractionWriter const& rhs);
-
         
     /*!
      *  Writes the given transactional qualifier into XML.

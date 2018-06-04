@@ -40,9 +40,17 @@ public:
     MultipleAbstractorInstances(const MultipleAbstractorInstances& other);
 
     /*!
+    *  Move constructor.
+    */
+    MultipleAbstractorInstances(MultipleAbstractorInstances&& other) = default;
+
+    /*!
      *  The destructor.
      */
-    ~MultipleAbstractorInstances();
+    ~MultipleAbstractorInstances() = default;
+
+    //! Disable copy.
+    MultipleAbstractorInstances& operator=(MultipleAbstractorInstances const& other) = delete;
 
     /*!
      *  Get the value for the isPresent.

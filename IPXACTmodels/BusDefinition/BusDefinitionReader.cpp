@@ -25,14 +25,6 @@ BusDefinitionReader::BusDefinitionReader(): DocumentReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::~BusDefinitionReader()
-//-----------------------------------------------------------------------------
-BusDefinitionReader::~BusDefinitionReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::createBusDefinitionFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomNode const& document) const

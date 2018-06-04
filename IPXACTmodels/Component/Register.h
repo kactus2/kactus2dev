@@ -43,11 +43,17 @@ public:
 	//! Copy constructor.
 	Register(const Register& other);
 
-	//! Assignment operator.
-	Register& operator=(const Register& other);
+    //! Move constructor.
+    Register(Register&& other) = default;
+
+    //! Assignment operator.
+    Register& operator=(const Register& other);
+
+	//! Move assignment operator.
+	Register& operator=(Register&& other) = default;
 
 	//! The destructor.
-	virtual ~Register();
+	virtual ~Register() = default;
 
 	/*!
      *  Clone the register and return pointer to the copy.

@@ -37,25 +37,6 @@ NameGroup::NameGroup(QString const& name, QString const& displayName, QString co
 }
 
 //-----------------------------------------------------------------------------
-// Function: NameGroup::NameGroup()
-//-----------------------------------------------------------------------------
-NameGroup::NameGroup( const NameGroup& other ):
-    name_(other.name_),
-    displayName_(other.displayName_),
-    description_(other.description_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: NameGroup::~NameGroup()
-//-----------------------------------------------------------------------------
-NameGroup::~NameGroup()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: NameGroup::operator=()
 //-----------------------------------------------------------------------------
 NameGroup& NameGroup::operator=( const NameGroup& other )

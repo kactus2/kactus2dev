@@ -34,12 +34,12 @@ public:
     /*!
      *  Copy constructor.
      */
-    Assertion(const Assertion& other);
+    Assertion(const Assertion& other) = default;
 
     /*!
      *  The destructor.
      */
-    ~Assertion();
+    virtual ~Assertion() = default;
 
     /*!
      *  Get the assert associated with this assertion.

@@ -39,24 +39,29 @@ public:
         QString const& displayName = QString(), QString const& description = QString());
 
     /*!
-     *  Constructor.
-     */
-    MonitorInterconnection();
-
-    /*!
      *  Copy constructor.
      */
     MonitorInterconnection(const MonitorInterconnection& other);
 
     /*!
+    *  Move constructor.
+    */
+    MonitorInterconnection(MonitorInterconnection&& other) = default;
+
+    /*!
      *  The destructor.
      */
-    virtual ~MonitorInterconnection();
+    virtual ~MonitorInterconnection() = default;
 
     /*!
      *  Assignment operator.
      */
     MonitorInterconnection& operator=(const MonitorInterconnection& other);
+
+    /*!
+    *  Move assignment operator.
+    */
+    MonitorInterconnection& operator=(MonitorInterconnection&& other) = default;
 
     /*!
      *  Get the monitored active interface.

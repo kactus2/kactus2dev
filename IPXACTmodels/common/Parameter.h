@@ -41,14 +41,20 @@ public:
 	Parameter();
 
 	//! Copy constructor
-	Parameter(const Parameter &other);
+	Parameter(const Parameter &other) = default;
+
+    //! Move constructor
+    Parameter(Parameter&& other) = default;
 
     //! The destructor
-    virtual ~Parameter();
+    virtual ~Parameter() = default;
 
 	//! Assignment operator
 	Parameter &operator=(const Parameter &other);
-    
+
+    //! Move assignment operator
+    Parameter &operator=(Parameter&& other) = default;
+
     virtual QString elementName() const;
 
 	/*! Get the value of the parameter

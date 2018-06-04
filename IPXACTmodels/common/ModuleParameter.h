@@ -29,13 +29,19 @@ public:
     ModuleParameter();
 
 	//! Copy constructor
-    ModuleParameter(const ModuleParameter& other);
+    ModuleParameter(const ModuleParameter& other) =default;
+
+    //! Move constructor
+    ModuleParameter(ModuleParameter&& other) = default;
 
     //! The destructor
-    virtual ~ModuleParameter();
+    virtual ~ModuleParameter() = default;
 
 	//! Assignment operator
     ModuleParameter& operator=(const ModuleParameter& other);
+
+    //! Move assignment operator
+    ModuleParameter& operator=(ModuleParameter&& other) = default;
 
     /*!
      *  Get the data type attribute.

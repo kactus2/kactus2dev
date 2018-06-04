@@ -32,7 +32,11 @@ public:
 	CatalogReader();
 
 	//! The destructor.
-	virtual ~CatalogReader();
+	virtual ~CatalogReader() = default;
+
+    //! Disable copying.
+    CatalogReader(CatalogReader const& rhs) = delete;
+    CatalogReader& operator=(CatalogReader const& rhs) = delete;
 
     /*!
      *  Creates a catalog from XML description.
@@ -44,10 +48,6 @@ public:
     QSharedPointer<Catalog> createCatalogFrom(QDomNode const& document) const;
  
 private:
-
-	//! Disable copying.
-	CatalogReader(CatalogReader const& rhs);
-	CatalogReader& operator=(CatalogReader const& rhs);
 
     /*!
      *  Reads the catalog file descriptions to the catalog.

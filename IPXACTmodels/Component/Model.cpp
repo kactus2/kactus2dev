@@ -68,18 +68,6 @@ Model& Model::operator=(Model const& other )
 }
 
 //-----------------------------------------------------------------------------
-// Function: Model::~Model()
-//-----------------------------------------------------------------------------
-Model::~Model()
-{
-	views_.clear();
-    componentInstantiations_.clear();
-    designInstantiations_.clear();
-    designConfigurationInstantiations_.clear();
-	ports_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: Model::getViews()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<View> > > Model::getViews() const

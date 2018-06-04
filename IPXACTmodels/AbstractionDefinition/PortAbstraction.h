@@ -40,12 +40,18 @@ public:
 
 	//! The copy constructor.
 	PortAbstraction(const PortAbstraction& other);
-  
+    
+    //! The move constructor.
+    PortAbstraction(PortAbstraction&& other) = default;
+
     //! The destructor.
-    ~PortAbstraction();
+    virtual ~PortAbstraction() = default;
 
 	//! Assignment operator.
 	PortAbstraction& operator=(const PortAbstraction& other);
+
+    //! Move assignment operator.
+    PortAbstraction& operator=(PortAbstraction&& other) = default;
 
     /*!
      *  Sets the logical name of the port.

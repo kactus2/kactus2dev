@@ -40,12 +40,12 @@ public:
     /*!
      *  The copy constructor.
      */
-    ConfigurableElementValue(const ConfigurableElementValue& other);
+    ConfigurableElementValue(const ConfigurableElementValue& other) = default;
 
     /*!
      *  The destructor.
      */
-    ~ConfigurableElementValue();
+    ~ConfigurableElementValue() = default;
 
     /*!
      *  Get the configurable value.

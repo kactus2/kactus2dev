@@ -26,21 +26,14 @@
 namespace XmlUtils
 {
 
-    /*! \brief removes white spaces from the given QString
+    /*! Removes white spaces from the given QString
      *
      *	This function removes white spaces from the beginning and end of the string
      *	and also replaces any embedded whitespaces with characted '_'. If you only
      *	want to remove the white spaces from the start and end use
      *	QString::trimmed() instead of this.
      *
-     *	IP-Xact types used for this function:
-     *	-Name
-     *	-NMTOKEN
-     *	-PortName
-     *	-ID
-     *	-IDREF
-     *
-     * \param str A reference to the QString where white spaces are wanted to
+     *  @param [in] str A reference to the QString where white spaces are wanted to
      * be removed from.
      *
      * \return QString containing the string that has been stripped from
@@ -60,8 +53,8 @@ namespace XmlUtils
      *  element to write the attributes to must be opened by the writer before
      *  calling this function.
      *
-     *  @param [in] writer      A QXmlStreamWriter instance that has been set up to write a document.
-     *  @param [in] attributes  A reference to a QMap that contains the attributes to be written.
+     *      @param [in] writer      A QXmlStreamWriter instance that has been set up to write a document.
+     *      @param [in] attributes  A reference to a QMap that contains the attributes to be written.
      */
     void writeAttributes(QXmlStreamWriter& writer, const QMap<QString, QString>& attributes);
 
@@ -79,7 +72,6 @@ namespace XmlUtils
     void writePositionsMap(QXmlStreamWriter& writer, QMap<QString, QPointF> const& positions,
                            QString const& identifier, QString const& refIdentifier);
 
-    
 }
 
 //-----------------------------------------------------------------------------

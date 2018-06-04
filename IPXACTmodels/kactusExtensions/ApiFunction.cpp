@@ -18,25 +18,26 @@
 //-----------------------------------------------------------------------------
 // Function: ApiFunction::ApiFunction()
 //-----------------------------------------------------------------------------
-ApiFunction::ApiFunction()
-    : name_(),
-      returnType_(QStringLiteral("void")),
-      returnValueDesc_(),
-      desc_(),
-      params_()
+ApiFunction::ApiFunction():
+    name_(),
+    returnType_(QStringLiteral("void")),
+    returnValueDesc_(),
+    desc_(),
+    params_()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunction::ApiFunction()
 //-----------------------------------------------------------------------------
-ApiFunction::ApiFunction(ApiFunction const& rhs) : name_(rhs.name_),
-                                                   returnType_(rhs.returnType_),
-                                                   returnValueDesc_(rhs.returnValueDesc_),
-                                                   desc_(rhs.desc_),
-                                                   params_()
+ApiFunction::ApiFunction(ApiFunction const& rhs): 
+    name_(rhs.name_),
+    returnType_(rhs.returnType_),
+    returnValueDesc_(rhs.returnValueDesc_),
+    desc_(rhs.desc_),
+    params_()
 {
-    foreach (QSharedPointer<ApiFunctionParameter> param, rhs.params_)
+    foreach(QSharedPointer<ApiFunctionParameter> param, rhs.params_)
     {
         params_.append(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter(*param.data())));
     }
@@ -78,13 +79,6 @@ ApiFunction::ApiFunction(QDomNode& node)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiFunction::~ApiFunction()
-//-----------------------------------------------------------------------------
-ApiFunction::~ApiFunction()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ApiFunction::write()
 //-----------------------------------------------------------------------------
 void ApiFunction::write(QXmlStreamWriter& writer)
@@ -104,7 +98,6 @@ void ApiFunction::write(QXmlStreamWriter& writer)
 
     writer.writeEndElement(); // kactus2:function
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunction::findErrors()
@@ -142,7 +135,6 @@ void ApiFunction::findErrors(QVector<QString>& errorList, QString const& parentI
         param->findErrors(errorList, thisId);     
     }
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunction::validate()

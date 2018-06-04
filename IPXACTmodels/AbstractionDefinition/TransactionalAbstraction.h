@@ -31,18 +31,23 @@ class IPXACTMODELS_EXPORT TransactionalAbstraction
 {
 public:
 
+    //! Default constructor.
 	TransactionalAbstraction();
 
-	//! \brief Copy constructor
+	//! Copy constructor.
 	TransactionalAbstraction(const TransactionalAbstraction& other);
 
-	//! \brief Assignment operator
-	TransactionalAbstraction& operator=(const TransactionalAbstraction& other);
+    //! Move constructor.
+    TransactionalAbstraction(TransactionalAbstraction&& other) = default;
 
-	/*! \brief The destructor
-	 *
-	 */
-	~TransactionalAbstraction();
+	//! Assignment operator
+	TransactionalAbstraction& operator=(const TransactionalAbstraction& other);
+    
+    //! Move assignment operator
+    TransactionalAbstraction& operator=(TransactionalAbstraction&& other) = default;
+
+	//! The destructor
+	~TransactionalAbstraction() = default;
 
     /*!
      *  Sets a qualifier for the information the transaction carries.

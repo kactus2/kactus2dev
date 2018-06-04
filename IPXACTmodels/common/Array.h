@@ -32,19 +32,18 @@ public:
      *      @param [in] left    The left side of the array.
      *      @param [in] right   The right side of the array.
      */
-    Array(QString left, QString right);
+    Array(QString const& left, QString const& right);
+
+    //! Disable copying.
+    Array(Array const& other) = delete;
 
 	/*!
 	 *  The destructor.
 	*/
-    virtual ~Array();
+    virtual ~Array() = default;
 
-private:
-    //! Disable copying.
-    Array(Array const& other);
-
-	// Disable assignment.
-    Array& operator=(Array const& rhs);
+    // Disable assignment.
+    Array& operator=(Array const& rhs) = delete;
 
 };
 #endif // ARRAY_H

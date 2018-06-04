@@ -29,10 +29,19 @@ public:
 	Protocol();
 
 	//! The destructor.
-	~Protocol();
+	virtual ~Protocol() = default;
 
     //! Copy constructor.
     Protocol(Protocol const& other);
+
+    //! Move constructor.
+    Protocol(Protocol&& other) = default;
+
+    // Disable copying.
+    Protocol& operator=(Protocol const& rhs);
+
+    // Move assignment.
+    Protocol& operator=(Protocol&& rhs) = default;
 
     /*!
      *  Sets the protocol type.
@@ -108,9 +117,6 @@ public:
     bool hasMandatoryPayloadExtension() const;
 
 private:
-
-	// Disable copying.
-	Protocol& operator=(Protocol const& rhs);
 
     //! The type of the protocol.
     QString protocolType_;

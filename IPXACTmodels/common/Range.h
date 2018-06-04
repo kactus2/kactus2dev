@@ -26,9 +26,15 @@ public:
 	//! The constructor.
 	Range(QString const& left, QString const& right);
 
-	//! The destructor.
-	virtual ~Range();
+    //! Copy constructor.
+    Range(Range const& rhs) = default;
     
+    //! The destructor.
+	virtual ~Range() = default;
+    
+    // Assignment operator.
+    Range& operator=(Range const& rhs) = default;
+
     /*!
      *  Gets the left value of the range.
      *
@@ -58,10 +64,6 @@ public:
     void setRight(QString const& newright);
 
 private:
-
-	// Disable copying.
-	Range(Range const& rhs);
-	Range& operator=(Range const& rhs);
 
     //! The left side of the range.
     QString left_;

@@ -59,14 +59,6 @@ MemoryBlockBase& MemoryBlockBase::operator=(const MemoryBlockBase& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryBlockBase::~MemoryBlockBase()
-//-----------------------------------------------------------------------------
-MemoryBlockBase::~MemoryBlockBase()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryBlockBase::getIsPresent()
 //-----------------------------------------------------------------------------
 QString MemoryBlockBase::getIsPresent() const

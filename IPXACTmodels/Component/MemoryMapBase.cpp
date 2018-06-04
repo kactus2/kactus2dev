@@ -51,14 +51,6 @@ MemoryMapBase& MemoryMapBase::operator=( const MemoryMapBase& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBase::~MemoryMapBase()
-//-----------------------------------------------------------------------------
-MemoryMapBase::~MemoryMapBase()
-{
-    memoryBlocks_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapBase::elementName()
 //-----------------------------------------------------------------------------
 QString MemoryMapBase::elementName() const

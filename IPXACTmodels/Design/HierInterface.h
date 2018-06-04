@@ -35,17 +35,28 @@ public:
     /*!
      *  Copy constructor.
      */
-    HierInterface(const HierInterface& other);
+    HierInterface(const HierInterface& other) = default;
+
+    /*!
+    *  Move constructor.
+    */
+    HierInterface(HierInterface&& other) = default;
 
     /*!
      *  The destructor.
      */
-    virtual ~HierInterface();
+    virtual ~HierInterface() = default;
 
     /*!
      *  Assignment operator.
      */
-    HierInterface& operator=(const HierInterface& other);
+    HierInterface& operator=(const HierInterface& other) = default;
+
+    /*!
+    *  Move assignment operator.
+    */
+    HierInterface& operator=(HierInterface&& other) = default;
+
 
     /*!
      *  Comparison operator.

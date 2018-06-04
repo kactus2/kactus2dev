@@ -35,11 +35,17 @@ public:
 	//! Copy constructor
 	Choice(const Choice& other);
 
+    //! Move constructor
+    Choice(Choice&& other) = default;
+
 	//! Assignment operator
 	Choice& operator=(const Choice& other);
 
+    //! Move assignment operator
+    Choice& operator=(Choice&& other) = default;
+
 	//! The destructor
-	virtual ~Choice();
+	virtual ~Choice() = default;
 
 	/*!
      *  Get the name of the choice.

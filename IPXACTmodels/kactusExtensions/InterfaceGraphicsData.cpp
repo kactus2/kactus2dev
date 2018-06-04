@@ -16,10 +16,10 @@
 //-----------------------------------------------------------------------------
 // Function: InterfaceGraphicsData::InterfaceGraphicsData()
 //-----------------------------------------------------------------------------
-InterfaceGraphicsData::InterfaceGraphicsData(QString const& name, QPointF position, QVector2D direction):
-name_(name),
-positionExtension_(new Kactus2Position(position)),
-direction_(direction)
+InterfaceGraphicsData::InterfaceGraphicsData(QString const& name, QPointF position, QVector2D direction) :
+    name_(name),
+    positionExtension_(new Kactus2Position(position)),
+    direction_(direction)
 {
 
 }
@@ -28,9 +28,9 @@ direction_(direction)
 // Function: InterfaceGraphicsData::InterfaceGraphics()
 //-----------------------------------------------------------------------------
 InterfaceGraphicsData::InterfaceGraphicsData(const InterfaceGraphicsData& other):
-name_(other.name_),
-positionExtension_(other.positionExtension_->clone()),
-direction_(other.direction_)
+    name_(other.name_),
+    positionExtension_(other.positionExtension_->clone()),
+    direction_(other.direction_)
 {
 
 }
@@ -38,10 +38,10 @@ direction_(other.direction_)
 //-----------------------------------------------------------------------------
 // Function: InterfaceGraphicsData::InterfaceGraphicsData()
 //-----------------------------------------------------------------------------
-InterfaceGraphicsData::InterfaceGraphicsData(QDomNode& node):
-name_(),
-positionExtension_(),
-direction_()
+InterfaceGraphicsData::InterfaceGraphicsData(QDomNode& node) :
+    name_(),
+    positionExtension_(),
+    direction_()
 {
     QDomElement nameElement = node.firstChildElement(QStringLiteral("kactus2:name"));
     if (!nameElement.isNull())
@@ -68,14 +68,6 @@ direction_()
         QVector2D loadDirection(directionX, directionY);
         setDirection(loadDirection);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceGraphicsData::~InterfaceGraphicsData()
-//-----------------------------------------------------------------------------
-InterfaceGraphicsData::~InterfaceGraphicsData()
-{
-
 }
 
 //-----------------------------------------------------------------------------

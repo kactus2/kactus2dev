@@ -44,14 +44,24 @@ public:
     PortReference(const PortReference& other);
 
     /*!
+    *  Move constructor.
+    */
+    PortReference(PortReference&& other) = default;
+
+    /*!
      *  The destructor.
      */
-    virtual ~PortReference();
+    virtual ~PortReference() = default;
 
     /*!
      *  Assignment operator.
      */
     PortReference& operator=(const PortReference& other);
+
+    /*!
+    *  Move assignment operator.
+    */
+    PortReference& operator=(PortReference&& other) = default;
 
     /*!
      *  Gets the name of the referenced port.     

@@ -36,9 +36,17 @@ public:
     InterconnectionConfiguration(const InterconnectionConfiguration& other);
 
     /*!
+    *  The move constructor.
+    */
+    InterconnectionConfiguration(InterconnectionConfiguration&& other) = default;
+
+    /*!
      *  The destructor.
      */
-    ~InterconnectionConfiguration();
+    ~InterconnectionConfiguration() = default;
+
+    //! Disable copy.
+    InterconnectionConfiguration& operator=(InterconnectionConfiguration const& other) = delete;
 
     /*!
      *  Get the isPresent value.

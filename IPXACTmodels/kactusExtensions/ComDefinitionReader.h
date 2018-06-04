@@ -31,7 +31,11 @@ public:
 	ComDefinitionReader();
 
 	//! The destructor.
-	~ComDefinitionReader();
+	virtual ~ComDefinitionReader() = default;
+
+    //! Disable copying.
+    ComDefinitionReader(ComDefinitionReader const& rhs) = delete;
+    ComDefinitionReader& operator=(ComDefinitionReader const& rhs) = delete;
 
     /*!
      *  Creates a Com definition from XML description.
@@ -58,9 +62,6 @@ private:
      */
     void parseProperties(QDomNode& node, QSharedPointer<ComDefinition> comDefinition) const;
 
-	//! Disable copying.
-	ComDefinitionReader(ComDefinitionReader const& rhs);
-	ComDefinitionReader& operator=(ComDefinitionReader const& rhs);
 };
 
 #endif // COMDEFINITIONREADER_H

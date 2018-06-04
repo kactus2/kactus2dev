@@ -24,14 +24,6 @@ CatalogReader::CatalogReader(): DocumentReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::~CatalogReader()
-//-----------------------------------------------------------------------------
-CatalogReader::~CatalogReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: CatalogReader::createCatalogFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<Catalog> CatalogReader::createCatalogFrom(QDomNode const& document) const

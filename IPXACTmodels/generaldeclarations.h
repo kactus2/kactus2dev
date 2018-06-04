@@ -266,7 +266,7 @@ namespace General
     */
 
     //! Specifies a port name and it's bounds.
-    struct PortBounds {
+    struct IPXACTMODELS_EXPORT PortBounds {
 
         //! The name of the port.
         QString portName_;
@@ -278,7 +278,7 @@ namespace General
         int right_;
 
         //! Default constructor
-        IPXACTMODELS_EXPORT PortBounds();
+        PortBounds();
 
         /*! The constructor
         * 
@@ -287,7 +287,7 @@ namespace General
         *      @param [in] portName The name of the port.
         *
         */
-        IPXACTMODELS_EXPORT explicit PortBounds(const QString& portName);
+        explicit PortBounds(const QString& portName);
 
         /*! The constructor
         *
@@ -296,22 +296,25 @@ namespace General
         *      @param [in] right The right bound of the port.
         *
         */
-        IPXACTMODELS_EXPORT PortBounds(const QString& portName, const int left, const int right);
+        PortBounds(const QString& portName, const int left, const int right);
 
         //! Copy constructor
-        IPXACTMODELS_EXPORT PortBounds(const PortBounds& other);
+        PortBounds(const PortBounds& other) = default;
 
         //! Assignment operator
-        IPXACTMODELS_EXPORT PortBounds& operator=(const PortBounds& other);
+        PortBounds& operator=(const PortBounds& other) = default;
+
+        //! Move assignment operator
+        PortBounds& operator=(PortBounds&& other) = default;
 
         //! Operator <
-        IPXACTMODELS_EXPORT bool operator<(const PortBounds& other) const;
+        bool operator<(const PortBounds& other) const;
 
         //! Operator ==
-        IPXACTMODELS_EXPORT bool operator==(const PortBounds& other) const;
+        bool operator==(const PortBounds& other) const;
 
         //! Operator !=
-        IPXACTMODELS_EXPORT bool operator!=(const PortBounds& other) const;
+        bool operator!=(const PortBounds& other) const;
     };
 
     /*! Convert the info into string.
@@ -349,10 +352,13 @@ namespace General
         PortAlignment();
 
         //! Copy constructor
-        PortAlignment(const PortAlignment& other);
+        PortAlignment(const PortAlignment& other) = default;
 
         //! Assignment operator
-        PortAlignment& operator=(const PortAlignment& other);
+        PortAlignment& operator=(const PortAlignment& other) = default;
+
+        //! Move assignment operator
+        PortAlignment& operator=(PortAlignment&& other) = default;
     };
 
     /*! Convert a boolean value into QString
@@ -375,49 +381,6 @@ namespace General
     */
     bool str2Bool(const QString str, bool defaultValue);
 
-    /*! Contains the file path for a file and the library for the file.
-    *
-    * This is used to get a file name from fileSet and the logical name for it.
-    */
-    struct LibraryFilePair {
-
-        //! Contains the file path and file name.
-        QString filePath_;
-
-        //! Contains the library name for the file.
-        QString libraryName_;
-
-        /*! The constructor for the struct
-        *
-        *      @param [in] filePath the path of the file
-        *      @param [in] libraryName Name of the library
-        */
-        LibraryFilePair(const QString filePath, const QString libraryName);
-
-        /*! The == operator
-        *
-        *      @param [in] other The other LibaryFilePair to check
-        *
-        *      @return bool True if they have the same file path and library name.
-        */
-        bool operator==(const LibraryFilePair& other) const;
-
-        /*! The copy constructor
-        *
-        *      @param [in] other Reference to the LibraryFilePair to copy
-        *
-        */
-        LibraryFilePair(const LibraryFilePair& other);
-
-        /*! The assignment operator
-        *
-        *      @param [in] other Reference to the LibraryFilePair to assign
-        *
-        *      @return Reference to this LibraryFilePair.
-        */
-        LibraryFilePair& operator=(const LibraryFilePair& other);
-    };
-
     /*! Get a relative file path from one location to another.
     *
     * This function can be used to create a QString that contains the relative
@@ -431,7 +394,7 @@ namespace General
     *
     *      @return QString containing the relative path.
     */
-    IPXACTMODELS_EXPORT QString getRelativePath(const QString from, const QString to);
+    IPXACTMODELS_EXPORT QString getRelativePath(QString const& from, QString const& to);
 
     /*! Get a relative file path from one location to another.
     *

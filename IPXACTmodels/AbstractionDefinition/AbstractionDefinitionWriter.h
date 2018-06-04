@@ -35,8 +35,12 @@ public:
 	//! The constructor.
 	AbstractionDefinitionWriter();
 
+    // Disable copying.
+    AbstractionDefinitionWriter(AbstractionDefinitionWriter const& rhs) = delete;
+    AbstractionDefinitionWriter& operator=(AbstractionDefinitionWriter const& rhs) = delete;
+
 	//! The destructor.
-	~AbstractionDefinitionWriter();
+	virtual ~AbstractionDefinitionWriter() = default;
     
     /*!
      *  Writes the given abstraction definition into XML.
@@ -48,10 +52,6 @@ public:
         QSharedPointer<AbstractionDefinition> abstractionDefinition) const;
 
 private:
-
-	// Disable copying.
-	AbstractionDefinitionWriter(AbstractionDefinitionWriter const& rhs);
-	AbstractionDefinitionWriter& operator=(AbstractionDefinitionWriter const& rhs);
    
     /*!
      *  Writes the bus type (VLNV) detailed in the given abstraction definition into XML.

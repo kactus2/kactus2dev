@@ -31,14 +31,6 @@ expressionParser_(expressionParser),
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefinitionValidator::~BusDefinitionValidator()
-//-----------------------------------------------------------------------------
-BusDefinitionValidator::~BusDefinitionValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusDefinitionValidator::validate()
 //-----------------------------------------------------------------------------
 bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDefinition) const

@@ -69,13 +69,6 @@ MirroredSlaveInterface& MirroredSlaveInterface::operator=(MirroredSlaveInterface
 }
 
 //-----------------------------------------------------------------------------
-// Function: MirroredSlaveInterface::~MirroredSlaveInterface()
-//-----------------------------------------------------------------------------
-MirroredSlaveInterface::~MirroredSlaveInterface()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: MirroredSlaveInterface::getRange()
 //-----------------------------------------------------------------------------
 QString MirroredSlaveInterface::getRange() const

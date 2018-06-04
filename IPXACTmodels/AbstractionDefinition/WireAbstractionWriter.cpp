@@ -26,14 +26,6 @@ WireAbstractionWriter::WireAbstractionWriter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: WireAbstractionWriter::~WireAbstractionWriter()
-//-----------------------------------------------------------------------------
-WireAbstractionWriter::~WireAbstractionWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: WireAbstractionWriter::writeWire()
 //-----------------------------------------------------------------------------
 void WireAbstractionWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wire) const

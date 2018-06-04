@@ -17,30 +17,13 @@
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
 FileDependency::FileDependency() :
-QObject(),
-file1_(),
-file2_(),
-desc_(),
-locked_(false),
-bidirectional_(false),
-manual_(false),
-status_(STATUS_UNCHANGED)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependency::FileDependency()
-//-----------------------------------------------------------------------------
-FileDependency::FileDependency(FileDependency const& rhs) :
-QObject(),
-file1_(rhs.file1_),
-file2_(rhs.file2_),
-desc_(rhs.desc_),
-locked_(rhs.locked_),
-bidirectional_(rhs.bidirectional_),
-manual_(rhs.manual_),
-status_(rhs.status_)
+    file1_(),
+    file2_(),
+    desc_(),
+    locked_(false),
+    bidirectional_(false),
+    manual_(false),
+    status_(STATUS_UNCHANGED)
 {
 
 }
@@ -49,14 +32,13 @@ status_(rhs.status_)
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
 FileDependency::FileDependency(QDomNode const& node) :
-QObject(),
-file1_(),
-file2_(),
-desc_(),
-locked_(false),
-bidirectional_(false),
-manual_(false),
-status_(STATUS_UNCHANGED)
+    file1_(),
+    file2_(),
+    desc_(),
+    locked_(false),
+    bidirectional_(false),
+    manual_(false),
+    status_(STATUS_UNCHANGED)
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -84,14 +66,6 @@ status_(STATUS_UNCHANGED)
     locked_ = General::str2Bool(node.attributes().namedItem(QStringLiteral("kactus2:locked")).nodeValue(), false);
     bidirectional_ = General::str2Bool(node.attributes().namedItem(QStringLiteral("kactus2:bidirectional")).nodeValue(), false);
     manual_ = General::str2Bool(node.attributes().namedItem(QStringLiteral("kactus2:manual")).nodeValue(), false);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependency::~FileDependency()
-//-----------------------------------------------------------------------------
-FileDependency::~FileDependency()
-{
-
 }
 
 //-----------------------------------------------------------------------------

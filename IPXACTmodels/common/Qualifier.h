@@ -38,13 +38,19 @@ public:
 	Qualifier();
 
     //! The copy constructor.
-    Qualifier(Qualifier const& rhs);
+    Qualifier(Qualifier const& rhs) = default;
+
+    //! The move constructor.
+    Qualifier(Qualifier&& rhs) = default;
 
 	//! The destructor.
-	virtual ~Qualifier();
+	virtual ~Qualifier() = default;
 
     //! The assign operator.
-    Qualifier& operator=(Qualifier const& rhs);
+    Qualifier& operator=(Qualifier const& rhs) = default;
+
+    //! The move assign operator.
+    Qualifier& operator=(Qualifier&& rhs) = default;
 
     /*!
      *  Sets the qualifier.

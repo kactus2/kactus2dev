@@ -31,20 +31,24 @@ public:
      *      @param [in] left    The left side of the vector.
      *      @param [in] right   The right side of the vector.
      */
-    Vector(QString left, QString right);
+    Vector(QString const& left, QString const& right);
 
     //! Copy constructor.
-    Vector(Vector const& other);
+    Vector(Vector const& other) = default;
+
+    //! Move constructor.
+    Vector(Vector&& other) = default;
 
 	/*!
 	 *  The destructor.
 	*/
-    virtual ~Vector();
+    virtual ~Vector() = default;
 
-private:
+    // Assignment operator.
+    Vector& operator=(Vector const& rhs) = default;
 
-	// Disable assignment.
-    Vector& operator=(Vector const& rhs);
+    // Move assignment operator.
+    Vector& operator=(Vector&& rhs) = default;
 
 };
 #endif // VECTOR_H

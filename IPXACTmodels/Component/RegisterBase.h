@@ -40,11 +40,17 @@ public:
 	//! The copy constructor.
     RegisterBase(const RegisterBase& other);
 
-	//! The assignment operator.
+    //! The move constructor.
+    RegisterBase(RegisterBase&& other) = default;
+
+    //! The assignment operator.
     RegisterBase& operator=(const RegisterBase& other);
 
+	//! The move assignment operator.
+    RegisterBase& operator=(RegisterBase&& other) = default;
+
 	//! The destructor.
-    virtual ~RegisterBase();
+    virtual ~RegisterBase() = default;
 
 	/*!
      *  Clone the register model and return pointer to the copy.

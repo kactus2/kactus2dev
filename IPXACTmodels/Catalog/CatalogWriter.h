@@ -36,8 +36,12 @@ public:
 	CatalogWriter();
 
 	//! The destructor.
-	~CatalogWriter();
+	virtual ~CatalogWriter() = default;
     
+    // Disable copying.
+    CatalogWriter(CatalogWriter const& rhs) = delete;
+    CatalogWriter& operator=(CatalogWriter const& rhs) = delete;
+
     /*!
      *  Writes the given catalog into XML.
      *
@@ -47,10 +51,6 @@ public:
     void writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
 
 private:
-
-	// Disable copying.
-	CatalogWriter(CatalogWriter const& rhs);
-	CatalogWriter& operator=(CatalogWriter const& rhs);
 
     void writeCatalogs(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
     

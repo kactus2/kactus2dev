@@ -17,11 +17,12 @@
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::ApiDefinition()
 //-----------------------------------------------------------------------------
-ApiDefinition::ApiDefinition(VLNV const& vlnv) : Document(vlnv),
-                                                 language_(),
-                                                 comDefRef_(),
-                                                 dataTypes_(new QStringList),
-												 functions_(new QList<QSharedPointer<ApiFunction> >)
+ApiDefinition::ApiDefinition(VLNV const& vlnv) :
+    Document(vlnv),
+    language_(),
+    comDefRef_(),
+    dataTypes_(new QStringList),
+    functions_(new QList<QSharedPointer<ApiFunction> >)
 {
 
 }
@@ -29,24 +30,17 @@ ApiDefinition::ApiDefinition(VLNV const& vlnv) : Document(vlnv),
 //-----------------------------------------------------------------------------
 // Function: ApiDefinition::ApiDefinition()
 //-----------------------------------------------------------------------------
-ApiDefinition::ApiDefinition(ApiDefinition const& rhs) : Document(rhs),
-                                                         language_(rhs.language_),
-                                                         comDefRef_(rhs.comDefRef_),
-                                                         dataTypes_(new QStringList(*rhs.dataTypes_)),
-                                                         functions_(new QList<QSharedPointer<ApiFunction> >)
+ApiDefinition::ApiDefinition(ApiDefinition const& rhs) :
+    Document(rhs),
+    language_(rhs.language_),
+    comDefRef_(rhs.comDefRef_),
+    dataTypes_(new QStringList(*rhs.dataTypes_)),
+    functions_(new QList<QSharedPointer<ApiFunction> >)
 {
-    foreach (QSharedPointer<ApiFunction> func, *rhs.functions_)
+    foreach(QSharedPointer<ApiFunction> func, *rhs.functions_)
     {
         functions_->append(QSharedPointer<ApiFunction>(new ApiFunction(*func.data())));
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiDefinition::~ApiDefinition()
-//-----------------------------------------------------------------------------
-ApiDefinition::~ApiDefinition()
-{
-
 }
 
 //-----------------------------------------------------------------------------

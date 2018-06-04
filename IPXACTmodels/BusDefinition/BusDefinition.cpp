@@ -78,14 +78,6 @@ BusDefinition & BusDefinition::operator=(BusDefinition const& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefinition::~BusDefinition()
-//-----------------------------------------------------------------------------
-BusDefinition::~BusDefinition()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusDefinition::clone()
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> BusDefinition::clone() const

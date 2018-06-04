@@ -41,11 +41,17 @@ public:
 	//! Copy constructor.
 	RegisterFile(const RegisterFile& other);
 
-	//! Assignment operator.
-	RegisterFile& operator=(const RegisterFile& other);
+    //! Move constructor.
+    RegisterFile(RegisterFile&& other) = default;
+
+    //! Assignment operator.
+    RegisterFile& operator=(const RegisterFile& other);
+
+	//! Move assignment operator.
+	RegisterFile& operator=(RegisterFile&& other) = default;
 
 	//! The destructor.
-	virtual ~RegisterFile();
+	virtual ~RegisterFile() = default;
 
 	/*!
      *  Clone the register file and return pointer to the copy.

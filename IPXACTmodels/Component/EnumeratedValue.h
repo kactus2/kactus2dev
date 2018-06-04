@@ -47,13 +47,19 @@ public:
 	EnumeratedValue(QString const& enumerationName = QString(), QString const& value = QString());
 
 	//! Copy constructor
-	EnumeratedValue(const EnumeratedValue& other);
+	EnumeratedValue(const EnumeratedValue& other) = default;
 
-	//! Assignment operator
-	EnumeratedValue& operator=(const EnumeratedValue& other);
+    //! Move constructor
+    EnumeratedValue(EnumeratedValue&& other) = default;
+
+    //! Assignment operator
+    EnumeratedValue& operator=(const EnumeratedValue& other);
+
+	//! Move assignment operator
+	EnumeratedValue& operator=(EnumeratedValue&& other) = default;
 
     //! The destructor
-    virtual ~EnumeratedValue();
+    virtual ~EnumeratedValue() = default;        
 
     /*!
      *  Get the usage.

@@ -47,11 +47,17 @@ public:
 	//! Copy constructor
 	SlaveInterface(const SlaveInterface& other);
 
-	//! Assignment operator
-	SlaveInterface& operator=(const SlaveInterface& other);
+    //! Move constructor
+    SlaveInterface(SlaveInterface&& other) = default;
+
+    //! Assignment operator
+    SlaveInterface& operator=(const SlaveInterface& other);
+
+	//! Move assignment operator
+	SlaveInterface& operator=(SlaveInterface&& other) = default;
 	
 	//! The destructor
-	~SlaveInterface();
+	~SlaveInterface() = default;
     
     /*!  Get the name of the referenced memory map if any.
 	 *

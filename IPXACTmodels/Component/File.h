@@ -44,11 +44,17 @@ public:
 	//! Copy constructor.
     File(const File& other);
 
-	//! Assignment operator.
-	File& operator=(const File &other);
+    //! Move constructor.
+    File(File&& other) = default;
+
+    //! Assignment operator.
+    File& operator=(const File &other);
+
+	//! Move assignment operator.
+	File& operator=(File&& other) = default;
 
 	//! The destructor.
-	~File();
+	virtual ~File() = default;
 
     //! Comparison operator
 	bool operator==(const File& other) const;

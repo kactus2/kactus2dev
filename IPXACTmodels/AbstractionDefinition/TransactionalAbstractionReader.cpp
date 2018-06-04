@@ -30,14 +30,6 @@ TransactionalAbstractionReader::TransactionalAbstractionReader(QObject* parent) 
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::~TransactionalAbstractionReader()
-//-----------------------------------------------------------------------------
-TransactionalAbstractionReader::~TransactionalAbstractionReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: TransactionalAbstractionReader::createTransactionalAbstractionFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<TransactionalAbstraction> TransactionalAbstractionReader::createTransactionalAbstractionFrom(
