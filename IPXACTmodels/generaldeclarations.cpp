@@ -279,7 +279,7 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
 //-----------------------------------------------------------------------------
 // Function: General::getRelativePath()
 //-----------------------------------------------------------------------------
-QString General::getRelativePath(QString const& from, QString const& to)
+QString General::getRelativePath(QString from, QString to)
 {
 	if (from.isEmpty() || to.isEmpty())
     {
