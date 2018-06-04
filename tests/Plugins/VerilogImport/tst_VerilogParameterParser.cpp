@@ -690,7 +690,7 @@ void tst_VerilogParameterParser::parametersToComponent()
         ") ();\n"
         "endmodule";
 
-    VLNV swvlvnv("","kyytto","raision kirjasto","swName","1.0");
+    VLNV swvlvnv(VLNV::COMPONENT,"kyytto","raision kirjasto","swName","1.0");
 	QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
 
 	QSharedPointer<ComponentInstantiation> instance( new ComponentInstantiation );
@@ -722,7 +722,7 @@ void tst_VerilogParameterParser::oldParametersToComponent()
         "parameter esa= 6, // epeli\n"
         " hopo = 22; // o olololo ollllooo \n";
 
-    VLNV swvlvnv("","kyytto","raision kirjasto","swName","1.0");
+    VLNV swvlvnv(VLNV::COMPONENT,"kyytto","raision kirjasto","swName","1.0");
     QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
 
 	QSharedPointer<ComponentInstantiation> instance( new ComponentInstantiation );
