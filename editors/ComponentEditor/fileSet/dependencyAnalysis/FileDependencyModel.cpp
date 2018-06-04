@@ -668,12 +668,8 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                 QString file2 = General::getRelativePath(basePath_,
                     QFileInfo(QFileInfo(absPath).path() + "/" + desc.filename).canonicalFilePath());
 
-                FileDependencyItem* fileItem1 = findFileItem(file1);
                 FileDependencyItem* fileItem2 = findFileItem(file2);
-
-                // First item should always be valid.
-                Q_ASSERT(fileItem1 != 0);
-
+                
                 // Check if the second file was an external (not found).
                 if (fileItem2 == 0)
                 {

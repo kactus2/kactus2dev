@@ -164,7 +164,8 @@ void ViewDocumentGenerator::writeReferencedComponentInstantiation(QString const&
     instantiationParameterFinder->addFinder(parameterFinder);
     instantiationParameterFinder->addFinder(moduleParameterFinder);
 
-    ExpressionFormatter* instantiationFormatter = new ExpressionFormatter(instantiationParameterFinder);
+    QScopedPointer<ExpressionFormatter> instantiationFormatter(
+        new ExpressionFormatter(instantiationParameterFinder));
 
     QString moduleParameterToolTip = QString("Module parameters of component instantiation ") +
         instantiation->name();
@@ -172,11 +173,11 @@ void ViewDocumentGenerator::writeReferencedComponentInstantiation(QString const&
 
     writeImplementationDetails(stream, instantiationTabs, instantiationItemTabs, instantiation);
     writeFileSetReferences(stream, instantiationTabs, instantiationItemTabs, instantiation);
-    writeFileBuildCommands(stream, instantiationTabs, instantiation, instantiationFormatter);
+    writeFileBuildCommands(stream, instantiationTabs, instantiation, instantiationFormatter.data());
     writeParameters(stream, QString("Module parameters:"), moduleParameterToolTip, instantiationTabs,
-        moduleParameters, instantiationFormatter);
+        moduleParameters, instantiationFormatter.data());
     writeParameters(stream, QString("Parameters:"), parameterToolTip, instantiationTabs, parameters,
-        instantiationFormatter);
+        instantiationFormatter.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -364,7 +365,7 @@ void ViewDocumentGenerator::writereferencedDesignConfigurationInstantiation(QStr
     instantiationParameterFinder->addFinder(configurationInstantiationParameterFinder);
     instantiationParameterFinder->addFinder(configurationFinder);
 
-    ExpressionFormatter* instantiationFormatter(new ExpressionFormatter(instantiationParameterFinder));
+    QScopedPointer<ExpressionFormatter> instantiationFormatter(new ExpressionFormatter(instantiationParameterFinder));
 
     QString parameterToolTip = QString("Parameters of design configuration instantiation %1.").
         arg(instantiation->name());
@@ -391,13 +392,13 @@ void ViewDocumentGenerator::writereferencedDesignConfigurationInstantiation(QStr
                 writeParameters(stream, header, QString("Design configuration parameters"), instantiationTabs,
                     configuration->getParameters(), configurationFormatter);
                 writeConfigurableElementValues(stream, instantiationTabs,
-                    instantiation->getDesignConfigurationReference(), instantiationFormatter);
+                    instantiation->getDesignConfigurationReference(), instantiationFormatter.data());
             }
         }
     }
 
     writeParameters(stream, QString("Design configuration instantiation parameters:"), parameterToolTip,
-        instantiationTabs, instantiation->getParameters(), instantiationFormatter);
+        instantiationTabs, instantiation->getParameters(), instantiationFormatter.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -513,7 +514,7 @@ void ViewDocumentGenerator::writeReferencedDesignInstantiation(QString const& in
         instantiationParameterFinder->addFinder(componentFinder_);
         instantiationParameterFinder->addFinder(designFinder);
 
-        ExpressionFormatter* instantiationFormatter(new ExpressionFormatter(instantiationParameterFinder));
+        QScopedPointer<ExpressionFormatter> instantiationFormatter(new ExpressionFormatter(instantiationParameterFinder));
 
         QSharedPointer<Document> designDocument =
             getLibraryHandler()->getModel(*instantiation->getDesignReference().data());
@@ -525,12 +526,12 @@ void ViewDocumentGenerator::writeReferencedDesignInstantiation(QString const& in
                 designFinder->setParameterList(instantiatedDesign->getParameters());
 
                 QString header = QString("Parameters of the referenced design %1:").arg(designVLNV->toString());
-                ExpressionFormatter* designFormatter(new ExpressionFormatter(designFinder));
+                ExpressionFormatter designFormatter(designFinder);
 
                 writeParameters(stream, header, QString("Design parameters"), instantiationTabs,
-                    instantiatedDesign->getParameters(), designFormatter);
+                    instantiatedDesign->getParameters(), &designFormatter);
 
-                writeConfigurableElementValues(stream, instantiationTabs, designVLNV, instantiationFormatter);
+                writeConfigurableElementValues(stream, instantiationTabs, designVLNV, instantiationFormatter.data());
             }
         }
     }

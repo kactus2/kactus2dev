@@ -62,9 +62,6 @@ NewPluginsDialog::~NewPluginsDialog()
 //-----------------------------------------------------------------------------
 void NewPluginsDialog::selectionChanged()
 {
-    IPlugin* plugin = static_cast<IPlugin*>(pluginsList_.currentItem()->data(PLUGIN_POINTER_ROLE).value<void*>());
-    Q_ASSERT(plugin != 0);
-
     int index = pluginsList_.currentItem()->data(PLUGIN_STACK_INDEX_ROLE).value<int>();
     detailsStack_.setCurrentIndex(index);
 }

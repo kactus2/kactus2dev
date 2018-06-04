@@ -31,10 +31,10 @@ public:
      *
      *      @return 
      */
-    PluginInfoWidget(IPlugin* plugin = 0, QWidget *parent = 0);
+    PluginInfoWidget(IPlugin* plugin = nullptr, QWidget *parent = nullptr);
 
     //! The destructor.
-    ~PluginInfoWidget();
+    virtual ~PluginInfoWidget() = default;
 
 private:
     

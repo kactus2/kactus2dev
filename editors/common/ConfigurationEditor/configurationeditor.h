@@ -45,9 +45,15 @@ public:
 	 *      @param [in] parent      The owner of this widget.
 	 */
 	ConfigurationEditor(LibraryInterface* handler, QWidget *parent);
-	
+
+    //! No copying.
+    ConfigurationEditor(const ConfigurationEditor& other) = delete;
+
 	//! The destructor.
-	virtual ~ConfigurationEditor();
+	virtual ~ConfigurationEditor() = default;
+
+    //! No assignment.
+    ConfigurationEditor& operator=(const ConfigurationEditor& other) = delete;
 
 	/*!
      *  Set the configuration to be displayed.
@@ -91,11 +97,6 @@ private slots:
 	void onConfigurationChanged(QString const& newConfigName);
 
 private:
-	//! No copying.
-	ConfigurationEditor(const ConfigurationEditor& other);
-
-	//! No assignment.
-	ConfigurationEditor& operator=(const ConfigurationEditor& other);
     
     /*!
      *  Finds the view names possible for the current design.

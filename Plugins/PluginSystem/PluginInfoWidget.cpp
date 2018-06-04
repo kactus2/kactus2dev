@@ -25,13 +25,6 @@ plugin_(plugin)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PluginInfoWidget::~PluginInfoWidget()
-//-----------------------------------------------------------------------------
-PluginInfoWidget::~PluginInfoWidget()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: PluginInfoWidget::setupLayout()
 //-----------------------------------------------------------------------------
 void PluginInfoWidget::setupLayout()
@@ -40,14 +33,14 @@ void PluginInfoWidget::setupLayout()
     
     if (plugin_)
     {
-        QLabel* descriptionLabel = new QLabel(plugin_->getDescription(), this);
-        descriptionLabel->setWordWrap(true);
-
         topLayout->addRow(tr("Name:"), new QLabel(plugin_->getName(), this));    
         topLayout->addRow(tr("Version:"), new QLabel(plugin_->getVersion(), this));
         topLayout->addRow(tr("Vendor:"), new QLabel(plugin_->getVendor(), this));
         topLayout->addRow(tr("Licensed to:"), new QLabel(plugin_->getLicenceHolder(), this));
         topLayout->addRow(tr("License:"), new QLabel(plugin_->getLicence(), this));
+     
+        QLabel* descriptionLabel = new QLabel(plugin_->getDescription(), this);
+        descriptionLabel->setWordWrap(true); 
         topLayout->addRow(tr("Description:"), descriptionLabel);
     }
 }

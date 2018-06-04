@@ -87,7 +87,6 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
 
             if (!subItemsInOrder.isEmpty())
             {
-                quint64 currentOffset = itemBaseAddress;
                 quint64 subItemLastAddress = itemBaseAddress;
 
                 if (subItemsInOrder.firstKey() > itemBaseAddress)
@@ -103,7 +102,7 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
                 {
                     subItemIterator.next();
 
-                    currentOffset = subItemIterator.key();
+                    quint64 currentOffset = subItemIterator.key();
                     if (currentOffset > subItemLastAddress + 1)
                     {
                         createAndPositionNewEmptySubItem(
