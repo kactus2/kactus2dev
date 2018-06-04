@@ -13,6 +13,7 @@
 #define REGISTERVALIDATOR_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/Component/validators/RegisterBaseValidator.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -26,10 +27,11 @@ class Choice;
 class Field;
 class FieldValidator;
 class ParameterValidator;
+class RegisterBaseValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Register.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT RegisterValidator
+class IPXACTMODELS_EXPORT RegisterValidator : public RegisterBaseValidator
 {
 public:
 
@@ -45,7 +47,7 @@ public:
         QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
-	~RegisterValidator();
+    virtual ~RegisterValidator();
     
     QSharedPointer<FieldValidator> getFieldValidator() const;
 
@@ -57,42 +59,6 @@ public:
      *      @return True, if the register is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<Register> selectedRegister) const;
-
-    /*!
-     *  Check if the register contains a valid name.
-     *
-     *      @param [in] selectedRegister    The selected register base.
-     *
-     *      @return True, if the name is valid, otherwise false.
-     */
-    bool hasValidName(QSharedPointer<RegisterBase> selectedRegister) const;
-
-    /*!
-     *  Check if the register contains a valid isPresent value.
-     *
-     *      @param [in] selectedRegister    The selected register base.
-     *
-     *      @return True, if the isPresent is valid, otherwise false.
-     */
-    bool hasValidIsPresent(QSharedPointer<RegisterBase> selectedRegister) const;
-
-    /*!
-     *  Check if the register contains a valid dimension value.
-     *
-     *      @param [in] selectedRegister    The selected register.
-     *
-     *      @return True, if the dimension is valid, otherwise false.
-     */
-    bool hasValidDimension(QSharedPointer<Register> selectedRegister) const;
-
-    /*!
-     *  Check if the register contains a valid address offset.
-     *
-     *      @param [in] selectedRegister    The selected register.
-     *
-     *      @return True, if the address offset is valid, otherwise false.
-     */
-    bool hasValidAddressOffset(QSharedPointer<Register> selectedRegister) const;
 
     /*!
      *  Check if the register contains a valid size.
@@ -131,14 +97,6 @@ public:
      */
     bool hasValidAlternateGroups(QSharedPointer<AlternateRegister> selectedRegister) const;
 
-    /*!
-     *  Check if the register contains valid parameters.
-     *
-     *      @param [in] selectedRegister    The selected register base.
-     *
-     *      @return True, if the parameters are valid, otherwise false.
-     */
-    bool hasValidParameters(QSharedPointer<RegisterBase> selectedRegister) const;
 
     /*!
      *  Locate errors within a register.
@@ -178,46 +136,6 @@ private:
     bool fieldsHaveSimilarDefinitionGroups(QSharedPointer<Field> field, QSharedPointer<Field> comparedField) const;
 
     /*!
-     *  Find errors within a name.
-     *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] selectedRegister    The selected register.
-     *      @param [in] context             Context to help locate the error.
-     */
-    void findErrorsInName(QVector<QString>& errors, QSharedPointer<RegisterBase> selectedRegister,
-        QString const& context) const;
-
-    /*!
-     *  Find errors within is present value.
-     *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] selectedRegister    The selected register.
-     *      @param [in] context             Context to help locate the error.
-     */
-    void findErrorsInIsPresent(QVector<QString>& errors, QSharedPointer<RegisterBase> selectedRegister,
-        QString const& context) const;
-
-    /*!
-     *  Find errors within dimension.
-     *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] selectedRegister    The selected register.
-     *      @param [in] context             Context to help locate the error.
-     */
-    void findErrorsInDimension(QVector<QString>& errors, QSharedPointer<Register> selectedRegister,
-        QString const& context) const;
-
-    /*!
-     *  Find errors within address offset.
-     *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] selectedRegister    The selected register.
-     *      @param [in] context             Context to help locate the error.
-     */
-    void findErrorsInAddressOffset(QVector<QString>& errors, QSharedPointer<Register> selectedRegister,
-        QString const& context) const;
-
-    /*!
      *  Find errors within size.
      *
      *      @param [in] errors              List of found errors.
@@ -255,28 +173,13 @@ private:
     void findErrorsInAlternateGroups(QVector<QString>& errors, QSharedPointer<AlternateRegister> selectedRegister,
         QString const& context) const;
 
-    /*!
-     *  Find errors within register parameters.
-     *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] selectedRegister    The selected register.
-     *      @param [in] context             Context to help locate the error.
-     */
-    void findErrorsInParameters(QVector<QString>&errors, QSharedPointer<RegisterBase> selectedRegister,
-        QString const& context) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The expression parser to use.
-    QSharedPointer<ExpressionParser> expressionParser_;
-
     //! The validator used for fields.
     QSharedPointer<FieldValidator> fieldValidator_;
 
-    //! The validator used for parameters.
-    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // REGISTERVALIDATOR_H

@@ -248,7 +248,9 @@ HEADERS += ./XmlUtils.h \
     ./Catalog/CatalogReader.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
-    ./Component/validators/AbstractionTypeValidator.h
+    ./Component/validators/AbstractionTypeValidator.h \
+    $$PWD/Component/validators/RegisterFileValidator.h \
+    $$PWD/Component/validators/RegisterBaseValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -493,4 +495,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/CatalogWriter.cpp \
     ./Catalog/IpxactFile.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
-    ./Component/validators/AbstractionTypeValidator.cpp
+    ./Component/validators/AbstractionTypeValidator.cpp \
+    $$PWD/Component/validators/RegisterFileValidator.cpp \
+    $$PWD/Component/validators/RegisterBaseValidator.cpp
