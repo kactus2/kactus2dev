@@ -20,6 +20,7 @@
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -192,8 +193,11 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
         new FieldValidator(expressionParser_, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(expressionParser_, fieldValidator, parameterValidator));
+    QSharedPointer<RegisterFileValidator> registerFileValidator (
+        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator));
+
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(expressionParser_, registerValidator, parameterValidator));
+        new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator));
     QSharedPointer<MemoryMapValidator> memoryMapValidator (
         new MemoryMapValidator(expressionParser_, addressBlockValidator, component_->getRemapStates()));
 
