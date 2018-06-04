@@ -33,7 +33,7 @@ public:
     /*!
 	 *  Allowed direction filters.
 	 */  
-    enum DirectionFilter
+    enum class DirectionFilter
     {
         IN = DirectionTypes::IN,
         OUT = DirectionTypes::OUT,
@@ -52,7 +52,7 @@ public:
 	 /*!
 	 *  Destructor.
 	 */
-    ~PortListSortProxyModel();    
+    virtual ~PortListSortProxyModel() = default;    
 
     /*!
 	 *  Gets the filter for direction of the ports.
@@ -148,7 +148,7 @@ protected:
      *
      *      @return True, if the row passes the filters, otherwise false.
 	 */
-    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
+    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
 
 private:
     //! No copying

@@ -11,14 +11,12 @@
 
 #include "namegroupbox.h"
 
-#include <IPXACTmodels/validators/namevalidator.h>
+#include <IPXACTmodels/common/validators/namevalidator.h>
 
 #include <QSizePolicy>
 #include <QLabel>
 #include <QGridLayout>
 #include <QValidator>
-#include <QRegExpValidator>
-#include <QRegExp>
 
 //-----------------------------------------------------------------------------
 // Function: namegroupbox::NameGroupBox()

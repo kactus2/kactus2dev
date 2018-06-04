@@ -179,7 +179,7 @@ QStringList SystemVerilogExpressionParser::convertToRPN(QString const& expressio
             openParenthesis--;
             nextMayBeLiteral = isArray;
         }
-        else if (expression.at(index) == ',')
+        else if (expression.at(index) == QLatin1Char(','))
         {
             while (stack.size() > 0 && (stack.last() != OPEN_ARRAY && stack.last() != OPEN_PARENTHESIS))
             {
@@ -192,7 +192,7 @@ QStringList SystemVerilogExpressionParser::convertToRPN(QString const& expressio
 
         else
         {
-            QRegularExpression separator(ANY_OPERATOR.pattern() + "|[(){}]");
+            QRegularExpression separator(ANY_OPERATOR.pattern() + QStringLiteral("|[(){}]"));
             QString unknown = expression.mid(index, separator.match(expression, index).capturedStart() - index);
             output.append(unknown.trimmed());
 

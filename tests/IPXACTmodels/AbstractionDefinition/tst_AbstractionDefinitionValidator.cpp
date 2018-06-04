@@ -17,13 +17,14 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
+#include <IPXACTmodels/common/TimingConstraint.h>
+#include <IPXACTmodels/common/CellSpecification.h>
+
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <QtTest>
-#include "IPXACTmodels/common/TimingConstraint.h"
-#include "IPXACTmodels/common/CellSpecification.h"
 
 class tst_AbstractionDefinitionValidator : public QObject
 {
@@ -47,6 +48,7 @@ private slots:
 	void invalidCellSpec();
 	void wirePortSuccessful();
 	void transactionalSuccessful();
+    void systemWirePortHasGroup();
 
 private:
 	//! The test mock for library interface.
@@ -471,6 +473,43 @@ void tst_AbstractionDefinitionValidator::transactionalSuccessful()
 
 	QCOMPARE(errorList.size(), 0);
 	QVERIFY(validator.validate(abs));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::transactionalSuccessful()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::systemWirePortHasGroup()
+{
+    QSharedPointer<AbstractionDefinition> abstraction(new AbstractionDefinition);
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    abstraction->setVlnv(VLNV("type", "vendor", "library", "name", "version"));
+    abstraction->setBusType(testBusDefVlnv_);
+    
+    QSharedPointer<PortAbstraction>systemPort(new PortAbstraction);
+    systemPort->setLogicalName("system");
+
+    QSharedPointer<WireAbstraction> wire(new WireAbstraction());
+    QSharedPointer<WirePort> systemWire(new WirePort());
+
+    wire->getSystemPorts()->append(systemWire);
+    systemPort->setWire(wire);
+
+    abstraction->getLogicalPorts()->append(systemPort);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abstraction);
+
+    QCOMPARE(errorList.size(), 1);
+    QVERIFY(validator.validate(abstraction) == false);
+
+    systemWire->setSystemGroup("testSystem");
+
+    errorList.clear();
+    validator.findErrorsIn(errorList, abstraction);
+
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abstraction));
 }
 
 QTEST_APPLESS_MAIN(tst_AbstractionDefinitionValidator)

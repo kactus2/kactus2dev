@@ -48,13 +48,7 @@ combinedRangeLabel_(new QGraphicsTextItem(this))
     setBrush(overlapBrush);
     containingScene->addItem(this);
 
-    QPointF namePosition = nameLabel_->scenePos();
-    QPointF combinPosition = combinedRangeLabel_->scenePos();
-
     setLabelPositions();
-
-    QPointF namePositionSecond = nameLabel_->scenePos();
-    QPointF combinPositionSecond = combinedRangeLabel_->scenePos();
 
     hide();
 }

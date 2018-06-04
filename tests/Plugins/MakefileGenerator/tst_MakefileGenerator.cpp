@@ -1032,7 +1032,7 @@ void tst_MakefileGenerator::noHardWare()
 	makeParser.parse( topComponent );
 
     MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
-	generator.generate(outputDir_, outputDir_, "tsydemi");
+	generator.generate(outputDir_, outputDir_);
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 0 );
 }
@@ -1615,7 +1615,7 @@ void tst_MakefileGenerator::basicGeneration()
 	mod->flags = "-sw -hw";
 
 	MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
-	generator.generate(outputDir_,outputDir_,"tsydemi");
+	generator.generate(outputDir_,outputDir_);
 
 	verifyOutputContains("software_0", "_OBJ= array.c.o");
 	verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
@@ -1660,7 +1660,7 @@ void tst_MakefileGenerator::multiObjectGeneration()
 	mod2->flags = "-a -b";
 
 	MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
-	generator.generate(outputDir_,outputDir_,"tsydemi");
+	generator.generate(outputDir_,outputDir_);
 
 	verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o");
 	verifyOutputContains("software_0", "gcc " + DEFAULT_OBJECT_FLAGS + 
@@ -1714,7 +1714,7 @@ void tst_MakefileGenerator::multiFileGeneration()
 	mod2->flags = "-a -b";
 
 	MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
-	generator.generate(outputDir_,outputDir_,"tsydemi");
+	generator.generate(outputDir_,outputDir_);
 
 	verifyOutputContains("software_0", "_OBJ= array.c.o");
 	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -joku -jotain");
@@ -1762,7 +1762,7 @@ void tst_MakefileGenerator::noCompiler()
 	mod2->flags = "-sw -hw";
 
 	MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
-	generator.generate(outputDir_,outputDir_,"tsydemi");
+	generator.generate(outputDir_,outputDir_);
 
 	verifyOutputContains("software_0", "_OBJ= array.c.o");
 }
@@ -1795,7 +1795,7 @@ void tst_MakefileGenerator::allTheWay()
 	makeParser.parse( topComponent );
 
 	MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
-	generator.generate(outputDir_,outputDir_,"tsydemi");
+	generator.generate(outputDir_,outputDir_);
 
 	verifyOutputContains("software_0", "_OBJ= array.c.o");
 	verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
@@ -1811,14 +1811,14 @@ void tst_MakefileGenerator::allTheWay()
 QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design>& design,
     QSharedPointer<DesignConfiguration>& desgconf)
 {
-    VLNV designVLNV("", "vendor", "lib", "design", "1.0");
+    VLNV designVLNV(VLNV::DESIGN, "vendor", "lib", "design", "1.0");
     design = QSharedPointer<Design>(new Design(designVLNV));
 
-    VLNV configurationVLNV("", "vendor", "lib", "design-conf", "1.0");
+    VLNV configurationVLNV(VLNV::DESIGNCONFIGURATION, "vendor", "lib", "design-conf", "1.0");
     desgconf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(configurationVLNV));
     desgconf->setDesignRef(designVLNV);
 
-    VLNV topVLNV("","vendor","lib","master-plan","1.0");
+    VLNV topVLNV(VLNV::COMPONENT,"vendor","lib","master-plan","1.0");
     QSharedPointer<Component> topComponent = QSharedPointer<Component>(new Component(topVLNV));
     topComponent->setImplementation(KactusAttribute::SYSTEM);
     
@@ -1853,7 +1853,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QStrin
     QSharedPointer<Design> design, QString softInstaName,  QSharedPointer<DesignConfiguration> desgconf,
     QSharedPointer<ComponentInstantiation>& softInsta, QString ComponentInstanceName)
 {
-    VLNV swvlvnv("","vendor","lib",swName,"1.0");
+    VLNV swvlvnv(VLNV::COMPONENT,"vendor","lib",swName,"1.0");
 	QSharedPointer<ConfigurableVLNVReference> swvlvnv2( new ConfigurableVLNVReference( swvlvnv ) );
     QSharedPointer<Component> swComponent = QSharedPointer<Component>(new Component(swvlvnv));
     QSharedPointer<ComponentInstance> softInstance( new ComponentInstance );
@@ -1885,7 +1885,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createHW(QString const& hwInsta
     QSharedPointer<Design> design, QString const& hardInstaName, QSharedPointer<DesignConfiguration> designConfig, 
     QSharedPointer<ComponentInstantiation>& hardInsta, QString const& hwName/*="hardware"*/)
 {
-	VLNV hwVLNV("", "vendor", "lib", hwName, "1.0");	
+	VLNV hwVLNV(VLNV::COMPONENT, "vendor", "lib", hwName, "1.0");
     QSharedPointer<Component> hwComponent = QSharedPointer<Component>(new Component(hwVLNV));
    
     QSharedPointer<ConfigurableVLNVReference> vlnvRef(new ConfigurableVLNVReference(hwVLNV));

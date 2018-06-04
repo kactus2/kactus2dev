@@ -23,7 +23,7 @@ class ReferenceCounter : public QObject
 
 public:
 
-    virtual ~ReferenceCounter() {};
+    virtual ~ReferenceCounter() = default;
 
 public slots:
 
@@ -32,14 +32,14 @@ public slots:
      *
      *      @param [in] id      The id of the parameter which is being referenced.
      */
-    virtual void increaseReferenceCount(QString id) = 0;
+    virtual void increaseReferenceCount(QString const& id) = 0;
 
     /*!
      *  Decrease the reference count of the parameter matching the id.
      *
      *      @param [in] id      The id of the parameter which was referenced.
      */
-    virtual void decreaseReferenceCount(QString id) = 0;
+    virtual void decreaseReferenceCount(QString const& id) = 0;
 };
 
 #endif // REFERENCECOUNTER_H

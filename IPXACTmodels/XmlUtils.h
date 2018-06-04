@@ -19,7 +19,6 @@
 #include <QString>
 #include <QMap>
 #include <QPointF>
-#include <QVector2D>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------

@@ -33,14 +33,12 @@ public:
      *
      *      @param [in] messages            For message output.
 	 *      @param [in] component           The instantiated component.
-     *      @param [in] activeView          The active view for the component. May be null
+     *      @param [in] activeView          The active view for the component.
 	 */
-    MetaComponent(MessageMediator* messages,
-        QSharedPointer<Component> component,
-        QSharedPointer<View> activeView);
+    MetaComponent(MessageMediator* messages, QSharedPointer<Component> component, QSharedPointer<View> activeView);
 
 	//! The destructor.
-	~MetaComponent();
+	virtual ~MetaComponent() = default;
     
     /*!
      *  Formats the parameters, ports and remap states, so that they are writable HDL.
@@ -145,23 +143,31 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The active view of the instance.
-    QSharedPointer<View> activeView_;
     //! The matching IP-XACT component.
     QSharedPointer<Component> component_;
+
+    //! The active view of the instance.
+    QSharedPointer<View> activeView_;
+
     //! The parameters, which are either formatted or completely parsed.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
     QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters_;
+
     //! These parameters are actually generated.
     QSharedPointer<QMap<QString,QSharedPointer<Parameter> > > metaParameters_;
+
     //! The ports of the component keyed with its physical name.
     QSharedPointer<QMap<QString,QSharedPointer<MetaPort> > > ports_;
+
     //! The filesets referred by the activeInstantiation_;
     QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
+
     //! The module name for HDL.
     QString moduleName_;
+
     //! The component instantiation referred by the active view.
     QSharedPointer<ComponentInstantiation> activeInstantiation_;
+
     //! The formatted remap states.
     QSharedPointer<QList<QSharedPointer<FormattedRemapState> > > remapStates_;
 };

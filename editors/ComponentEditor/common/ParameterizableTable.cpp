@@ -11,7 +11,6 @@
 
 #include "ParameterizableTable.h"
 
-
 #include <common/KactusColors.h>
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -19,21 +18,12 @@
 
 #include <QFont>
 
-
 //-----------------------------------------------------------------------------
 // Function: ParameterizableTable::ParametrizableTable()
 //-----------------------------------------------------------------------------
 ParameterizableTable::ParameterizableTable(QSharedPointer<ParameterFinder> parameterFinder):
 expressionParser_(),
 parameterFinder_(parameterFinder)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterizableTable::~ParametrizableTable()
-//-----------------------------------------------------------------------------
-ParameterizableTable::~ParameterizableTable()
 {
 
 }
@@ -98,19 +88,13 @@ QVariant ParameterizableTable::blackForValidOrRedForInvalidIndex(QModelIndex con
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterizableTable::isValuePlainOrExpression()
+// Function: ParameterizableTable::isValidExpression()
 //-----------------------------------------------------------------------------
-bool ParameterizableTable::isValuePlainOrExpression(QString const& value) const
+bool ParameterizableTable::isValidExpression(QString const& value) const
 {
-    return true;
-/*    if (expressionParser_->isPlainValue(value) || expressionParser_->isValidExpression(value))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }*/
+    bool validExpression = false;
+    expressionParser_->parseExpression(value, &validExpression);
+    return validExpression;
 }
 
 //-----------------------------------------------------------------------------

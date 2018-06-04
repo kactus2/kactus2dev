@@ -241,7 +241,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 // Function: ComponentInstanceEditor::setContext()
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::setContext(QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<IEditProvider> editProvider)
+     QSharedPointer<IEditProvider> editProvider)
 {
     topFinder_->setComponent(topComponent);
     editProvider_ = editProvider;

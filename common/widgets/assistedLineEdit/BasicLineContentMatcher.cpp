@@ -11,7 +11,7 @@
 
 #include "BasicLineContentMatcher.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <common/widgets/assistedLineEdit/LineContentAssistWidget.h>
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ bool BasicLineContentMatcher::fillWithContent(QString const& text, LineContentAs
 //-----------------------------------------------------------------------------
 bool BasicLineContentMatcher::enumerateMatches(QString const& text, LineContentAssistWidget* assist) const
 {
-    QRegExp exp("^" + text.toLower() + ".*");
+    QRegularExpression exp("^" + text.toLower() + ".*", QRegularExpression::DotMatchesEverythingOption);
 
     int count = 0;
     bool exactMatch = false;

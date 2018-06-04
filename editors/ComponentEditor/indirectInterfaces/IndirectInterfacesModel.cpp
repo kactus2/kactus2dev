@@ -43,13 +43,6 @@ QAbstractTableModel(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: IndirectInterfacesModel::~IndirectInterfacesModel()
-//-----------------------------------------------------------------------------
-IndirectInterfacesModel::~IndirectInterfacesModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: IndirectInterfacesModel::rowCount()
 //-----------------------------------------------------------------------------
 int IndirectInterfacesModel::rowCount(QModelIndex const& parent) const

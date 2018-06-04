@@ -130,7 +130,7 @@ bool ComponentParameterModel::validateIndex(QModelIndex const& index) const
    }
    else if (index.column() == ComponentParameterColumns::VALUE)
    {
-       return isValuePlainOrExpression(data(index).toString());
+       return isValidExpression(data(index).toString());
    }
 
    return false;

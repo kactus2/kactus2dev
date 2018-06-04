@@ -59,14 +59,6 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_e
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::~AddressSpaceGraphicsItem()
-//-----------------------------------------------------------------------------
-AddressSpaceGraphicsItem::~AddressSpaceGraphicsItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::setLabelPositions()
 //-----------------------------------------------------------------------------
 void AddressSpaceGraphicsItem::setLabelPositions()
@@ -130,7 +122,7 @@ MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(qu
 // Function: AddressSpaceGraphicsItem::condenseSpaceItem()
 //-----------------------------------------------------------------------------
 void AddressSpaceGraphicsItem::condenseItemAndChildItems(
-    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections, bool condenseMemoryItems)
+    QSharedPointer<QVector<MemoryConnectionItem*> > /*movedConnections*/, bool condenseMemoryItems)
 {
     if (!isCompressed())
     {

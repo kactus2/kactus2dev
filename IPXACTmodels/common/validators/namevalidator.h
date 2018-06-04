@@ -11,6 +11,7 @@
 // is specified to be Name-type. For example this validator does not accept
 // embedded whitespaces in input.
 //-----------------------------------------------------------------------------
+
 #ifndef NAMEVALIDATOR_H
 #define NAMEVALIDATOR_H
 
@@ -21,7 +22,8 @@
 //-----------------------------------------------------------------------------
 //! NameValidator class.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT NameValidator : public QRegExpValidator {
+class IPXACTMODELS_EXPORT NameValidator : public QRegExpValidator
+{
 	Q_OBJECT
 
 public:
@@ -31,19 +33,19 @@ public:
      *
      *      @param [in] parent   Owner of this validator.
      */
-    NameValidator(QObject* parent);
+    explicit NameValidator(QObject* parent);
+
+    //! No copying
+    NameValidator(const NameValidator& other) = delete;
+
+    //! No assignment
+    NameValidator& operator=(const NameValidator& other) = delete;
 
 	/*!
 	 *  Destructor for the name validator.
 	 */
-	virtual ~NameValidator();
+	virtual ~NameValidator() = default;
 
-private:
-	
-	//! No copying
-	NameValidator(const NameValidator& other);
-	//! No assignment
-	NameValidator& operator=(const NameValidator& other);
 };
 
 #endif // NAMEVALIDATOR_H

@@ -23,14 +23,18 @@ class FileOutputWidget : public QWidget
     Q_OBJECT
 public:
 
-	//! The constructor.
+    //! The constructor.
 	FileOutputWidget(QSharedPointer<OutputControl> model);
 
 	//! The destructor.
-    ~FileOutputWidget();
+    virtual ~FileOutputWidget() = default;
 
-    //! Editor for the path of the generated file.
-    QLineEdit* pathEditor_;
+    /*!
+     * Checks if the output setting can be accepted.    
+     *
+     *     @return  True, if acceptable, otherwise false. 
+     */
+    bool canAccept() const;
 
 signals:
 	
@@ -76,6 +80,9 @@ private:
 
 	// The "model" for the widget.
     QSharedPointer<OutputControl> model_;
+
+    //! Editor for the path of the generated file.
+    QLineEdit* pathEditor_;
 
     //! Warning is display here, namely for an existing file being overwritten.
     QLabel* generalWarningLabel_;

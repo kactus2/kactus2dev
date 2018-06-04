@@ -18,19 +18,28 @@
 #include <QDialogButtonBox>
 #include <QGroupBox>
 
-#define COLUMN_CHOOSE 0
-#define COLUMN_INSTANCE 1
-#define COLUMN_FILESET 2
-#define COLUMN_COMPILER 3
-#define COLUMN_FLAGS 4
+namespace
+{
+    //! The columns in the conflict tree view.
+    enum Columns
+    {
+        COLUMN_CHOOSE = 0,
+        COLUMN_INSTANCE,
+        COLUMN_FILESET,
+        COLUMN_COMPILER,
+        COLUMN_FLAGS,
+    };
+}
 
 //-----------------------------------------------------------------------------
 // Function: MakeParametersDialog()
 //-----------------------------------------------------------------------------
 MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> configuration,
-	QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent) :
-    configuration_(configuration), fileOutput_(new FileOutputWidget(configuration->getFileOuput())),
-    generalWarningLabel_(new QLabel), QDialog(parent)
+	QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent) : QDialog(parent),
+    configuration_(configuration),
+    fileOutput_(new FileOutputWidget(configuration->getFileOuput())),
+    generalWarningLabel_(new QLabel),
+    objectMapping_()
 {
     // Create tree widget to display conflicts.
     QTreeWidget* conflictTree = createConflictTree(parsedData);
@@ -63,13 +72,6 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
     mainLayout->addWidget(conflictTree);
     mainLayout->addWidget(fileOutput_);
     mainLayout->addLayout(bottomLayout);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~MakeParametersDialog()
-//-----------------------------------------------------------------------------
-MakeParametersDialog::~MakeParametersDialog()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +123,7 @@ void MakeParametersDialog::onItemChanged(QTreeWidgetItem *item, int column)
 //-----------------------------------------------------------------------------
 QTreeWidget* MakeParametersDialog::createConflictTree(QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData)
 {
-    QTreeWidget* conflictTree = new QTreeWidget;
+    QTreeWidget* conflictTree = new QTreeWidget(this);
 
     // Conflict tree has 5 columns.
     conflictTree->setColumnCount(5);
@@ -179,16 +181,16 @@ QTreeWidget* MakeParametersDialog::createConflictTree(QSharedPointer<QList<QShar
             conflictItem->setFirstColumnSpanned(true);
 
             // Append all interpretations of the file.
-            foreach (QSharedPointer<MakeObjectData> partisipant, conflictSet)
+            foreach (QSharedPointer<MakeObjectData> participant, conflictSet)
             {
                 // Append to the tree structure.
                 QTreeWidgetItem* participantItem = new QTreeWidgetItem;
                 conflictItem->addChild(participantItem);
                 // Must map the object file data to the item.
-                objectMapping_[participantItem] = partisipant;
+                objectMapping_[participantItem] = participant;
 
                 // Column about letting user to choose this specific object file for generation.
-                if (partisipant->isChosen)
+                if (participant->isChosen)
                 {
                     participantItem->setCheckState(COLUMN_CHOOSE, Qt::Checked);
                 }
@@ -198,20 +200,20 @@ QTreeWidget* MakeParametersDialog::createConflictTree(QSharedPointer<QList<QShar
                 }
 
                 // Column telling the instance where the object file comes from.
-                participantItem->setText(COLUMN_INSTANCE, partisipant->stackPart->instanceName);
-                participantItem->setToolTip(COLUMN_INSTANCE, partisipant->stackPart->instanceName);
+                participantItem->setText(COLUMN_INSTANCE, participant->stackPart->instanceName);
+                participantItem->setToolTip(COLUMN_INSTANCE, participant->stackPart->instanceName);
 
                 // Column telling the file set where the object file comes from.
-                participantItem->setText(COLUMN_FILESET, partisipant->fileSet->name());
-                participantItem->setToolTip(COLUMN_FILESET, partisipant->fileSet->name());
+                participantItem->setText(COLUMN_FILESET, participant->fileSet->name());
+                participantItem->setToolTip(COLUMN_FILESET, participant->fileSet->name());
 
                 // Column telling the deducted compiler for the object file.
-                participantItem->setText(COLUMN_COMPILER, partisipant->compiler);
-                participantItem->setToolTip(COLUMN_COMPILER, partisipant->compiler);
+                participantItem->setText(COLUMN_COMPILER, participant->compiler);
+                participantItem->setToolTip(COLUMN_COMPILER, participant->compiler);
 
                 // Column telling the deducted compilation flags for the object file.
-                participantItem->setText(COLUMN_FLAGS, partisipant->flags);
-                participantItem->setToolTip(COLUMN_FLAGS, partisipant->flags);
+                participantItem->setText(COLUMN_FLAGS, participant->flags);
+                participantItem->setToolTip(COLUMN_FLAGS, participant->flags);
             }
         }
     }

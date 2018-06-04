@@ -484,16 +484,16 @@ bool RemapConditionModel::validateIndex(QModelIndex const& index) const
             listOfValues.first().remove('{');
             listOfValues.last().remove('}');
 
-            foreach (QString value, listOfValues)
+            foreach(QString const& value, listOfValues)
             {
-                if (!isValuePlainOrExpression(value))
+                if (!isValidExpression(value))
                 {
                     return false;
                 }
             }
         }
 
-        else if (!isValuePlainOrExpression(targetValue))
+        else if (!isValidExpression(targetValue))
         {
             return false;
         }

@@ -12,8 +12,6 @@
 #ifndef VHDLSYNTAX_H
 #define VHDLSYNTAX_H
 
-#include <Plugins/common/HDLmath.h>
-
 #include <QRegularExpression>
 
 namespace VHDLSyntax
@@ -35,10 +33,16 @@ namespace VHDLSyntax
 
     //! Others is used to initialize a group of bits in std_logic_vector.
     const QString OTHERS_EXP = "[(]\\s*others\\s*=>\\s*" + STD_ULOGIC + "\\s*[)]";
+  
+    //! Supported mathematical operators in math expressions.
+    const QString OPERATOR = "[+-]|[/*]{2}|[/*/]";
+
+    //! Mathematical terms e.g. x or x + y.
+    const QString TERM = "(?:\\w+)(?:\\s*(?:" + OPERATOR + ")\\s*(?:\\w+))*";
 
     //! VHDL default value definition is mathematical expression, vector assignment with others, logical value
     // or other string value.
-    const QString DEFAULT = "[:][=]\\s*((?:" + HDLmath::TERM + ")|" + OTHERS_EXP + "|[^\\s:;]+)";
+    const QString DEFAULT = "[:][=]\\s*((?:" + TERM + ")|" + OTHERS_EXP + "|[^\\s:;]+)";
 
     //! VHDL pragmas begin like comments with -- followed by a reserved word.
     const QString PRAGMA = "[-][-]" + SPACE + "(?:PRAGMA|SYNTHESIS|SYNOPSYS)[^\\r\\n]*";

@@ -16,8 +16,9 @@
 //-----------------------------------------------------------------------------
 // Function: ModelSimDocument::ModelSimDocument()
 //-----------------------------------------------------------------------------
-ModelSimDocument::ModelSimDocument()
+ModelSimDocument::ModelSimDocument(QSharedPointer<ModelSimWriter> writer): writer_(writer)
 {
+
 }
 
 //-----------------------------------------------------------------------------

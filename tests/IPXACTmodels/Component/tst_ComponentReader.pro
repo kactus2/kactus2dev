@@ -13,19 +13,11 @@ TEMPLATE = app
 
 TARGET = tst_ComponentReader
 
-QT += core xml gui widgets testlib
+QT += core xml testlib
+QT -= gui
+
 CONFIG += c++11 testcase console
 DEFINES += IPXACTMODELS_LIB
-
-win32:CONFIG(release, debug|release) {
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    DESTDIR = ./debug
-}
-else:unix {
-    DESTDIR = ./release
-}
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../

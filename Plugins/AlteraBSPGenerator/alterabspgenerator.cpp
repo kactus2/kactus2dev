@@ -13,39 +13,64 @@
 
 #include <QDir>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getSettingsWidget()
+//-----------------------------------------------------------------------------
 AlteraBSPGenerator::AlteraBSPGenerator():
-utility_(NULL) {
+utility_(nullptr)
+{
 }
 
-AlteraBSPGenerator::~AlteraBSPGenerator() {
-}
-
-QString AlteraBSPGenerator::getName() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getName()
+//-----------------------------------------------------------------------------
+QString AlteraBSPGenerator::getName() const
+{
 	static QString name(tr("Altera BSP Generator"));
 	return name;
 }
 
-QString AlteraBSPGenerator::getVersion() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getVersion()
+//-----------------------------------------------------------------------------
+QString AlteraBSPGenerator::getVersion() const
+{
 	static QString version(tr("1.0"));
 	return version;
 }
 
-QString AlteraBSPGenerator::getDescription() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getDescription()
+//-----------------------------------------------------------------------------
+QString AlteraBSPGenerator::getDescription() const
+{
     static QString description(tr("Generates board support package for CPU component."));
     return description;
 }
 
-QString AlteraBSPGenerator::getVendor() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getVendor()
+//-----------------------------------------------------------------------------
+QString AlteraBSPGenerator::getVendor() const
+{
     static QString vendor(tr("TUT"));
     return vendor;
 }
 
-QString AlteraBSPGenerator::getLicence() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getLicence()
+//-----------------------------------------------------------------------------
+QString AlteraBSPGenerator::getLicence() const
+{
     static QString licence(tr("GPL2"));
     return licence;
 }
 
-QString AlteraBSPGenerator::getLicenceHolder() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getLicenceHolder()
+//-----------------------------------------------------------------------------
+QString AlteraBSPGenerator::getLicenceHolder() const
+{
     static QString holder(tr("Public"));
     return holder;
 }
@@ -66,6 +91,9 @@ QIcon AlteraBSPGenerator::getIcon() const
     return QIcon(":icons/BSPicon24.png");
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::checkGeneratorSupport()
+//-----------------------------------------------------------------------------
 bool AlteraBSPGenerator::checkGeneratorSupport(QSharedPointer<Component const> component,
     QSharedPointer<Design const> design,
     QSharedPointer<DesignConfiguration const> designConfiguration) const
@@ -92,10 +120,13 @@ bool AlteraBSPGenerator::checkGeneratorSupport(QSharedPointer<Component const> c
 	return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::runGenerator()
+//-----------------------------------------------------------------------------
 void AlteraBSPGenerator::runGenerator(IPluginUtility* utility, 
     QSharedPointer<Component> component,
-    QSharedPointer<Design> design,
-    QSharedPointer<DesignConfiguration> designConfiguration)
+    QSharedPointer<Design> /*design*/,
+    QSharedPointer<DesignConfiguration> /*designConfiguration*/)
 {
 	utility_ = utility;
 	Q_ASSERT(utility_);
@@ -137,19 +168,19 @@ void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
 
 		// find the contents of the directory
 		QDir genDir(opt.dirPath_);
-		QFileInfoList entries = genDir.entryInfoList(QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Files | QDir::Dirs);
 
 		// search the file system for generated files
-		foreach (QFileInfo entry, entries) {
+		foreach (QFileInfo const& entry,
+            genDir.entryInfoList(QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Files | QDir::Dirs))
+        {
 			addEntry(entry, xmlPath, fileSet, settings);
 		}
-
 
         QSharedPointer<View> swView = component->getModel()->findView(opt.swViewName_);
         Q_ASSERT(swView);
 
-
-        QSharedPointer<ComponentInstantiation> insta = component->getModel()->findComponentInstantiation(swView->getComponentInstantiationRef());
+        QSharedPointer<ComponentInstantiation> insta =
+            component->getModel()->findComponentInstantiation(swView->getComponentInstantiationRef());
 
         if (insta)
         {
@@ -157,18 +188,22 @@ void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
         }
 	}
 
-	if (modified) {
+	if (modified)
+    {
 		// save the changes to the file sets and SW views
 		utility_->getLibraryInterface()->writeModelToFile(component);
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::addEntry()
+//-----------------------------------------------------------------------------
 void AlteraBSPGenerator::addEntry(const QFileInfo &entry,
 	const QString& xmlPath,
 	QSharedPointer<FileSet> fileSet,
 	QSettings& settings) {
 
-	// unexisting entries are not packaged
+	// Non-existing entries are not packaged
 	if (!entry.exists()) {
 		return;
 	}
@@ -184,6 +219,9 @@ void AlteraBSPGenerator::addEntry(const QFileInfo &entry,
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getProgramRequirements()
+//-----------------------------------------------------------------------------
 QList<IPlugin::ExternalProgramRequirement> AlteraBSPGenerator::getProgramRequirements() {
 	QList<IPlugin::ExternalProgramRequirement> list;
 

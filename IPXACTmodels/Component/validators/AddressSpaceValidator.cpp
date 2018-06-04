@@ -109,9 +109,11 @@ bool AddressSpaceValidator::hasValidRange(QSharedPointer<AddressSpace> addressSp
     if (!addressSpace->getRange().isEmpty())
     {
         bool rangeOk = true;
-        quint64 range = expressionParser_->parseExpression(addressSpace->getRange()).toULongLong(&rangeOk);
+        bool expressionValid = false;
+        quint64 range =
+            expressionParser_->parseExpression(addressSpace->getRange(), &expressionValid).toULongLong(&rangeOk);
 
-        return rangeOk && range > 0;
+        return rangeOk && expressionValid && range != 0;
     }
 
     return false;
@@ -125,7 +127,9 @@ bool AddressSpaceValidator::hasValidWidth(QSharedPointer<AddressSpace> addressSp
     if (!addressSpace->getWidth().isEmpty())
     {
         bool widthOk = true;
-        quint64 width = expressionParser_->parseExpression(addressSpace->getWidth()).toULongLong(&widthOk);
+        bool expressionValid = false;
+        quint64 width =
+            expressionParser_->parseExpression(addressSpace->getWidth(), &expressionValid).toULongLong(&widthOk);
 
         return widthOk && width >= 0;
     }

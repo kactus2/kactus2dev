@@ -24,20 +24,13 @@
 PortListSortProxyModel::PortListSortProxyModel(QSharedPointer<Component> component, QObject *parent) :
 QSortFilterProxyModel(parent),
 component_(component),
-filterDirection_(ANY),
+filterDirection_(DirectionFilter::ANY),
 hideConnected_(true),
 connectedPorts_(),
 filterPorts_(),
 abstraction_()
 {
     onConnectionsReset();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~PortListSortProxyModel()
-//-----------------------------------------------------------------------------
-PortListSortProxyModel::~PortListSortProxyModel()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -70,21 +63,21 @@ void PortListSortProxyModel::setFilterPorts(QStringList const& ports)
 //-----------------------------------------------------------------------------
 void PortListSortProxyModel::setFilterInDirection(bool filterInDirection)
 {
-    if (filterDirection_ == IN && !filterInDirection)
+    if (filterDirection_ == DirectionFilter::IN && !filterInDirection)
     {
-        filterDirection_ = ANY;
+        filterDirection_ = DirectionFilter::ANY;
     }
-    else if (filterDirection_ == OUT && filterInDirection)
+    else if (filterDirection_ == DirectionFilter::OUT && filterInDirection)
     {
-        filterDirection_ = INOUT;
+        filterDirection_ = DirectionFilter::INOUT;
     }
-    else if (filterDirection_ == INOUT && !filterInDirection)
+    else if (filterDirection_ == DirectionFilter::INOUT && !filterInDirection)
     {
-        filterDirection_ = OUT;
+        filterDirection_ = DirectionFilter::OUT;
     }
-    else if (filterDirection_ == ANY && filterInDirection)
+    else if (filterDirection_ == DirectionFilter::ANY && filterInDirection)
     {
-        filterDirection_ = IN;
+        filterDirection_ = DirectionFilter::IN;
     }
     
     invalidateFilter();
@@ -95,21 +88,21 @@ void PortListSortProxyModel::setFilterInDirection(bool filterInDirection)
 //-----------------------------------------------------------------------------
 void PortListSortProxyModel::setFilterOutDirection(bool filterOutDirection)
 {
-    if (filterDirection_ == IN && filterOutDirection)
+    if (filterDirection_ == DirectionFilter::IN && filterOutDirection)
     {
-        filterDirection_ = INOUT; 
+        filterDirection_ = DirectionFilter::INOUT;
     }
-    else if (filterDirection_ == OUT && !filterOutDirection)
+    else if (filterDirection_ == DirectionFilter::OUT && !filterOutDirection)
     {
-        filterDirection_ = ANY;
+        filterDirection_ = DirectionFilter::ANY;
     }
-    else if (filterDirection_ == INOUT && !filterOutDirection)
+    else if (filterDirection_ == DirectionFilter::INOUT && !filterOutDirection)
     {
-        filterDirection_ = IN;
+        filterDirection_ = DirectionFilter::IN;
     }
-    else if (filterDirection_ == ANY && filterOutDirection)
+    else if (filterDirection_ == DirectionFilter::ANY && filterOutDirection)
     {
-        filterDirection_ = OUT;
+        filterDirection_ = DirectionFilter::OUT;
     }
 
     invalidateFilter();
@@ -196,7 +189,8 @@ bool PortListSortProxyModel::filterAcceptsRow(int source_row, const QModelIndex&
 
     // Check filter for direction.
     QSharedPointer<Port> currentPort = component_->getPort(portName);
-    if (filterDirection_ != ANY && currentPort->getDirection() != filterDirection_)
+    if (filterDirection_ != DirectionFilter::ANY && 
+        currentPort->getDirection() != static_cast<DirectionTypes::Direction>(filterDirection_))
     {
         return false;
     }

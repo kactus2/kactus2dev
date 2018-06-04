@@ -17,40 +17,40 @@
 //-----------------------------------------------------------------------------
 namespace DocumentGeneratorHTML
 {
-    static QString space()
+    inline QString space()
     {
         static const QString SPACE = QString("&nbsp;");
         return SPACE;
     }
 
-    static QString indent()
+    inline QString indent()
     {
         static const QString INDENT = QString("&nbsp;&nbsp;&nbsp;");
         return INDENT;
     }
 
-    static QString table()
+    inline QString table()
     {
         static const QString TABLE = QString("<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\" "
             "title=\"");
         return TABLE;
     }
 
-    static QString docType()
+    inline QString docType()
     {
         static const QString DOCTYPE = QString("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" "
             "\"http://www.w3.org/TR/html4/strict.dtd\">");
         return DOCTYPE;
     }
 
-    static QString encoding()
+    inline QString encoding()
     {
         static const QString ENCODING = QString("<meta http-equiv=\"Content-Type\" content=\"text/html; "
             "charset=utf-8\">");
         return ENCODING;
     }
          
-    static QString valid3wStrict()
+    inline QString valid3wStrict()
     {
         static const QString VALID_W3C_STRICT = QString("\t\t<p>\n"
             "\t\t\t<a href=\"https://validator.w3.org/#validate_by_upload\">\n"

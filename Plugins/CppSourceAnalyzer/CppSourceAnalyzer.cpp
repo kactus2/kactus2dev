@@ -17,18 +17,10 @@
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::CppSourceAnalyzer()
 //-----------------------------------------------------------------------------
-CppSourceAnalyzer::CppSourceAnalyzer()
-    : fileTypes_()
+CppSourceAnalyzer::CppSourceAnalyzer(): fileTypes_()
 {
     fileTypes_.append("cSource");
     fileTypes_.append("cppSource");
-}
-
-//-----------------------------------------------------------------------------
-// Function: CppSourceAnalyzer::~CppSourceAnalyzer()
-//-----------------------------------------------------------------------------
-CppSourceAnalyzer::~CppSourceAnalyzer()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -206,7 +198,7 @@ QString CppSourceAnalyzer::getSourceData(QFile& file)
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::removeComments()
 //-----------------------------------------------------------------------------
-QString CppSourceAnalyzer::removeComments(QString& source)
+QString CppSourceAnalyzer::removeComments(QString const& source)
 {
     QString finalData = source;
 
@@ -282,6 +274,7 @@ QString CppSourceAnalyzer::removeComments(QString& source)
 //-----------------------------------------------------------------------------
 void CppSourceAnalyzer::beginAnalysis(Component const* /*component*/, QString const& /*componentPath*/)
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -289,8 +282,10 @@ void CppSourceAnalyzer::beginAnalysis(Component const* /*component*/, QString co
 //-----------------------------------------------------------------------------
 void CppSourceAnalyzer::endAnalysis(Component const* /*component*/, QString const& /*componentPath*/)
 {
+
 }
 
-QList<IPlugin::ExternalProgramRequirement> CppSourceAnalyzer::getProgramRequirements() {
+QList<IPlugin::ExternalProgramRequirement> CppSourceAnalyzer::getProgramRequirements()
+{
 	return QList<IPlugin::ExternalProgramRequirement>();
 }

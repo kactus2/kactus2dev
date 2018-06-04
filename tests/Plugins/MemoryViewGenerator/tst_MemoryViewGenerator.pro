@@ -13,7 +13,7 @@ TEMPLATE = app
 
 TARGET = tst_MemoryViewGenerator
 
-QT += core xml gui testlib widgets
+QT += core xml testlib widgets
 CONFIG += c++11 testcase console
 
 DEFINES += MEMORYVIEWGENERATOR_LIB

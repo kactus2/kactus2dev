@@ -13,7 +13,7 @@ TEMPLATE = app
 
 TARGET = tst_VHDLGenericParser
 
-QT += core xml gui testlib widgets
+QT += core xml testlib
 CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {

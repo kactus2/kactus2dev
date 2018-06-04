@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: MCAPIHeaderGenerator.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 13.10.2014
 //
@@ -28,19 +28,13 @@
 MCAPIHeaderGenerator::MCAPIHeaderGenerator( MCAPIParser& parser, IPluginUtility* utility ) : 
 componentEndpoints_( parser.getComponentEndpoints() ), designNodes_( parser.getDesignNodes() ), utility_( utility )
 {
-}
 
-//-----------------------------------------------------------------------------
-// Function: MCAPIHeaderGenerator::~MCAPIHeaderGenerator()
-//-----------------------------------------------------------------------------
-MCAPIHeaderGenerator::~MCAPIHeaderGenerator()
-{
 }
 
 //-----------------------------------------------------------------------------
 // Function: MCAPIHeaderGenerator::generateTopLevel()
 //-----------------------------------------------------------------------------
-void MCAPIHeaderGenerator::generateTopLevel(QSharedPointer<Design> design, QSharedPointer<Component> topComponent,
+void MCAPIHeaderGenerator::generateTopLevel(QSharedPointer<Component> topComponent,
     QSharedPointer<DesignConfiguration const> desgConf, QString topDir)
 {
     foreach ( MCAPIParser::NodeData nd, designNodes_ )

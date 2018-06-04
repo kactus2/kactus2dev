@@ -26,7 +26,7 @@ VerilogDocument::VerilogDocument()
 //-----------------------------------------------------------------------------
 // Function: VerilogDocument::write()
 //-----------------------------------------------------------------------------
-void VerilogDocument::write(QString const& outputDirectory)
+void VerilogDocument::write(QString const& /*outputDirectory*/)
 {
     fileContent_.clear();
     QTextStream outputStream(&fileContent_);

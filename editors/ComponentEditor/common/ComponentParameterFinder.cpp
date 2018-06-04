@@ -30,14 +30,6 @@ ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterFinder::~ComponentParameterFinder()
-//-----------------------------------------------------------------------------
-ComponentParameterFinder::~ComponentParameterFinder()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::ComponentParameterFinder()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString const& parameterId) const
@@ -154,19 +146,19 @@ int ComponentParameterFinder::getNumberOfParameters() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterFinder::setComponent()
-//-----------------------------------------------------------------------------
-void ComponentParameterFinder::setComponent(QSharedPointer<Component const> component)
-{
-    component_ = component;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::registerParameterModel()
 //-----------------------------------------------------------------------------
 void ComponentParameterFinder::registerParameterModel(QAbstractItemModel const* /*model*/)
 {
     // Nothing to do.
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::setComponent()
+//-----------------------------------------------------------------------------
+void ComponentParameterFinder::setComponent(QSharedPointer<Component const> component)
+{
+    component_ = component;
 }
 
 //-----------------------------------------------------------------------------

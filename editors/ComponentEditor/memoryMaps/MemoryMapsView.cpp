@@ -30,15 +30,15 @@
 MemoryMapsView::MemoryMapsView(QWidget* parent):
 EditableTreeView(true, QString(tr("Add memory map")), QString(tr("Add memory remap")), QString(tr("Remove row")),
     QString(tr("Remove all memory remaps")), parent),
-pressedPoint_(),
-copyAction_(tr("Copy"), this),
-pasteAction_(tr("Paste"), this),
-importAction_(tr("Import csv-file"), this),
-exportAction_(tr("Export csv-file"), this),
-copyRowsAction_(tr("Copy elements"), this),
-pasteRowsAction_(tr("Paste elements"), this),
-importExportable_(false),
-defaultImportExportPath_()
+    defaultImportExportPath_(), 
+    pressedPoint_(),
+    copyAction_(tr("Copy"), this),
+    pasteAction_(tr("Paste"), this),
+    importAction_(tr("Import csv-file"), this),
+    exportAction_(tr("Export csv-file"), this),
+    copyRowsAction_(tr("Copy elements"), this),
+    pasteRowsAction_(tr("Paste elements"), this),
+    importExportable_(false)
 {
     setAlternatingRowColors(false);
 
@@ -50,14 +50,6 @@ defaultImportExportPath_()
     setToolTip("Double click to add a new memory map.");
 
     setupActions();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapsView::~MemoryMapsView()
-//-----------------------------------------------------------------------------
-MemoryMapsView::~MemoryMapsView()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -142,7 +134,7 @@ void MemoryMapsView::contextMenuEvent(QContextMenuEvent* event)
 
     if (clipMime->hasImage())
     {
-        if (index.isValid() && (clipMime->hasFormat(remapMime) || clipMime->hasFormat(mapMime)) ||
+        if ((index.isValid() && (clipMime->hasFormat(remapMime) || clipMime->hasFormat(mapMime))) ||
             (!index.isValid() && clipMime->hasFormat(mapMime)))
         {
             containsCorrectMimeData = true;

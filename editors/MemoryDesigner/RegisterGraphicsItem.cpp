@@ -139,21 +139,19 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem const> register
         quint64 fieldOffset = fieldMemory.fieldOffset;
         quint64 fieldWidth = fieldMemory.fieldWidth;
         quint64 lastBit = subItemIterator.key();
-        if (lastBit >= 0)
+
+        if (firstUnusedBit > 0 && lastBit < firstUnusedBit - 1)
         {
-            if (firstUnusedBit > 0 && lastBit < firstUnusedBit - 1)
-            {
-                createEmptyFieldItem(lastBit + 1, firstUnusedBit - 1, oneBitWidth, registerEnd,
-                    fieldsStartPosition, fieldFont);
-            }
-
-            createFieldGraphicsItem(fieldItem, fieldOffset, fieldWidth, false, oneBitWidth, registerEnd,
+            createEmptyFieldItem(lastBit + 1, firstUnusedBit - 1, oneBitWidth, registerEnd,
                 fieldsStartPosition, fieldFont);
+        }
 
-            if (fieldOffset < firstUnusedBit)
-            {
-                firstUnusedBit = fieldOffset;
-            }
+        createFieldGraphicsItem(fieldItem, fieldOffset, fieldWidth, false, oneBitWidth, registerEnd,
+            fieldsStartPosition, fieldFont);
+
+        if (fieldOffset < firstUnusedBit)
+        {
+            firstUnusedBit = fieldOffset;
         }
     }
 

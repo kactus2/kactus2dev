@@ -40,7 +40,7 @@ public:
         QString const& kactusVersion, QString const& generatorVersion);
 
     //! The destructor.
-    ~VerilogWriterFactory();
+    virtual ~VerilogWriterFactory() = default;
 
     /*!
      *  Creates writers for the given formatted HDL component.
@@ -51,7 +51,7 @@ public:
      *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
     virtual QSharedPointer<GenerationOutput> prepareComponent(QString const& outputPath,
-        QSharedPointer<MetaComponent> component);
+        QSharedPointer<MetaComponent> component) override final;
 
     /*!
      *  Creates writers for the given meta designs.
@@ -60,22 +60,23 @@ public:
      *
      *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
-    virtual QList<QSharedPointer<GenerationOutput> > prepareDesign(QList<QSharedPointer<MetaDesign> >& designs);
+    virtual QList<QSharedPointer<GenerationOutput> > prepareDesign(QList<QSharedPointer<MetaDesign> >& designs)
+        override final;
     
     /*!
      *  Returns the language of the factory.
      */
-    virtual QString getLanguage() const;
+    virtual QString getLanguage() const override final;
     
     /*!
      *  Returns true, if it is desirable to save the output to file set by default.
      */
-    virtual bool getSaveToFileset() const;
+    virtual bool getSaveToFileset() const override final;
     
     /*!
      *  Returns the group identifier suitable for the produced files.
      */
-    virtual QString getGroupIdentifier() const;
+    virtual QString getGroupIdentifier() const override final;
 
 private:
 

@@ -14,8 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: MakeConfiguration::MakeConfiguration()
 //-----------------------------------------------------------------------------
-MakeConfiguration::MakeConfiguration(SWStackParser* parser) :
-    outputControl_(new OutputControl)
+MakeConfiguration::MakeConfiguration(SWStackParser* parser) : outputControl_(new OutputControl)
 {
     // Must have the parser for the data.
     if (!parser)
@@ -28,7 +27,7 @@ MakeConfiguration::MakeConfiguration(SWStackParser* parser) :
 
     // Append to the master make file to the list, no VLNV is directly associated with it.
     QSharedPointer<MakeDocument> masterFile(new MakeDocument);
-    masterFile->fileName_ = *parser->masterName_;
+    masterFile->fileName_ = MAKEFILE_MASTER_NAME;
     outputControl_->getOutputs()->append(masterFile);
 
     foreach (QSharedPointer<MakeFileData> mfd, *parser->getParsedData())
@@ -50,12 +49,6 @@ MakeConfiguration::MakeConfiguration(SWStackParser* parser) :
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: MakeConfiguration::~MakeConfiguration()
-//-----------------------------------------------------------------------------
-MakeConfiguration::~MakeConfiguration()
-{
-}
 
 //-----------------------------------------------------------------------------
 // Function: MakeConfiguration::validSelections()

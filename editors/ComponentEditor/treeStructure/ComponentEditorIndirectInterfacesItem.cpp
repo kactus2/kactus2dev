@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ComponentEditorIndirectInterfacesItem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 04.08.2017
 //
@@ -27,19 +27,19 @@ ComponentEditorIndirectInterfacesItem::ComponentEditorIndirectInterfacesItem(Com
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser,
-    ComponentEditorItem* parent, QWidget* parentWnd):
+    ComponentEditorItem* parent, QWidget* parentWnd) :
 ComponentEditorItem(model, libHandler, component, parent),
-indirectInterfaces_(component->getIndirectInterfaces()),
-validator_(new IndirectInterfaceValidator(component, expressionParser, 
-    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())))),
-parentWnd_(parentWnd),
-expressionParser_(expressionParser)
+    indirectInterfaces_(component->getIndirectInterfaces()),
+    expressionParser_(expressionParser),
+    validator_(new IndirectInterfaceValidator(component, expressionParser,
+        QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())))),
+    parentWnd_(parentWnd)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
     setReferenceCounter(referenceCounter);
 
-	foreach (QSharedPointer<IndirectInterface> indirectInterface, *indirectInterfaces_)
+    foreach(QSharedPointer<IndirectInterface> indirectInterface, *indirectInterfaces_)
     {
 		QSharedPointer<SingleIndirectInterfaceItem> interfaceItem(
             new SingleIndirectInterfaceItem(indirectInterface, model, libHandler, component, referenceCounter_,
@@ -52,30 +52,6 @@ expressionParser_(expressionParser)
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Function: componenteditorIndirectInterfacesitem::~ComponentEditorIndirectInterfacesItem()
-//-----------------------------------------------------------------------------
-ComponentEditorIndirectInterfacesItem::~ComponentEditorIndirectInterfacesItem() 
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorIndirectInterfacesitem::createIndirectInterfaceValidator()
-//-----------------------------------------------------------------------------
-/*void ComponentEditorIndirectInterfacesItem::createIndirectInterfaceValidator()
-{
-    QSharedPointer<PortMapValidator> portMapValidator(
-        new PortMapValidator(expressionParser_, component_->getPorts(), libHandler_));
-
-    QSharedPointer<ParameterValidator2014> parameterValidator(
-        new ParameterValidator2014(expressionParser_, component_->getChoices()));
-
-    validator_ = QSharedPointer<IndirectInterfaceValidator>(new IndirectInterfaceValidator(expressionParser_,
-        component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
-        component_->getMemoryMaps(), component_->getIndirectInterfaces(), component_->getFileSets(),
-        component_->getRemapStates(), portMapValidator, parameterValidator, libHandler_));
-}
-*/
 //-----------------------------------------------------------------------------
 // Function: componenteditorIndirectInterfacesitem::getFont()
 //-----------------------------------------------------------------------------

@@ -13,22 +13,13 @@ TEMPLATE = app
 
 TARGET = tst_BusDefinitionReader
 
-QT += core xml gui testlib
+QT += core xml testlib
+QT -= gui
+
 CONFIG += c++11 testcase console
 DEFINES += IPXACTMODELS_LIB
 
-win32:CONFIG(release, debug|release) {
-    DESTDIR = ./release
-	LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-}
-else:win32:CONFIG(debug, debug|release) {
-    DESTDIR = ./debug
-	LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
-}
-else:unix {
-    DESTDIR = ./release
-	LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-}
+DESTDIR = ./release
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../

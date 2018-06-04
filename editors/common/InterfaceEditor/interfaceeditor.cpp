@@ -35,7 +35,7 @@
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <IPXACTmodels/validators/namevalidator.h>
+#include <IPXACTmodels/common/validators/namevalidator.h>
 
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>

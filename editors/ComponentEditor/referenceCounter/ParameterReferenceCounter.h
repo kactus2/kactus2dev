@@ -33,12 +33,18 @@ public:
      *
      *      @param [in] parameterFinder     The parameter finder.
      */
-    ParameterReferenceCounter(QSharedPointer<ParameterFinder> parameterFinder);
+    explicit ParameterReferenceCounter(QSharedPointer<ParameterFinder> parameterFinder);
+
+    //! No copying.
+    ParameterReferenceCounter(const ParameterReferenceCounter& other) = delete;
+
+    //! No assignment.
+    ParameterReferenceCounter& operator=(const ParameterReferenceCounter& other) = delete;
 
     /*!
      *  The destructor.
      */
-    ~ParameterReferenceCounter();
+    virtual ~ParameterReferenceCounter() = default;
 
     /*!
      *  Count the references made to the selected parameter in the selected parameters.
@@ -102,27 +108,16 @@ public slots:
      *
      *      @param [in] id      The id of the parameter which is being referenced.
      */
-    virtual void increaseReferenceCount(QString id);
+    virtual void increaseReferenceCount(QString const& id) override;
     
     /*!
      *  Decrease the reference count of the parameter matching the id.
      *
      *      @param [in] id      The id of the parameter which was referenced.
      */
-    virtual void decreaseReferenceCount(QString id);
-
-    /*!
-     *  Recalculate references made to the selected parameters.
-     *
-     *      @param [in] parameterList   The selected parameters.
-     */
-    virtual void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameterList);
+    virtual void decreaseReferenceCount(QString const& id) override;
 
 private:
-
-	//! No copying. No assignment.
-    ParameterReferenceCounter(const ParameterReferenceCounter& other);
-    ParameterReferenceCounter& operator=(const ParameterReferenceCounter& other);
 
     //-----------------------------------------------------------------------------
     // Data.

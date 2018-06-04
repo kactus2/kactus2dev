@@ -41,8 +41,12 @@ public:
         GenerationTuple input,
         GenerationSettings* settings);
 
+    // Disable copying.
+    GenerationControl(GenerationControl const& rhs) = delete;
+    GenerationControl& operator=(GenerationControl const& rhs) = delete;
+
 	//! The destructor.
-    ~GenerationControl();
+    virtual ~GenerationControl() = default;
 
     /*!
      *  Tries to write documents to file system. Returns true if succeeds, else false.
@@ -113,10 +117,6 @@ protected:
 
 private:
 
-	// Disable copying.
-	GenerationControl(GenerationControl const& rhs);
-	GenerationControl& operator=(GenerationControl const& rhs);
-    
     /*!
      *  Returns the default output path.     
      */

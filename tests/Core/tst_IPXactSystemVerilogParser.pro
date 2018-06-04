@@ -13,7 +13,8 @@ TEMPLATE = app
 
 TARGET = tst_IPXactSystemVerilogParser
 
-QT += core xml gui testlib
+QT += core xml testlib
+QT -= gui widgets
 CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {

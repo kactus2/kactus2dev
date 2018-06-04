@@ -23,12 +23,12 @@ public:
     /*!
      *  Constructor.
      */
-    SnippetHighlighter(QTextDocument* parent);
+    explicit SnippetHighlighter(QTextDocument* parent);
 
     /*!
      *  Destructor.
      */
-    ~SnippetHighlighter();
+    virtual ~SnippetHighlighter();
 
     /*!
      *  Adds magic words.

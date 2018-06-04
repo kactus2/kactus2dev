@@ -26,21 +26,13 @@
 // Function: DesignDiagramResolver::DesignDiagramResolver()
 //-----------------------------------------------------------------------------
 DesignDiagramResolver::DesignDiagramResolver(QSharedPointer<ListParameterFinder> designParameterFinder):
-designParameterFinder_(designParameterFinder),
-designAndInstanceParameterFinder_(new MultipleParameterFinder()),
-expressionParser_(new IPXactSystemVerilogParser(designAndInstanceParameterFinder_)),
-expressionFormatter_(new ExpressionFormatter(designAndInstanceParameterFinder_)),
-valueFormatter_()
+    designParameterFinder_(designParameterFinder),
+    designAndInstanceParameterFinder_(new MultipleParameterFinder()),
+    expressionParser_(new IPXactSystemVerilogParser(designAndInstanceParameterFinder_)),
+    expressionFormatter_(new ExpressionFormatter(designAndInstanceParameterFinder_)),
+    valueFormatter_()
 {
     designAndInstanceParameterFinder_->addFinder(designParameterFinder);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignDiagramResolver::~DesignDiagramResolver()
-//-----------------------------------------------------------------------------
-DesignDiagramResolver::~DesignDiagramResolver()
-{
-
 }
 
 //-----------------------------------------------------------------------------

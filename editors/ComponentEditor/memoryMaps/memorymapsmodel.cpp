@@ -45,19 +45,11 @@ MemoryMapsModel::MemoryMapsModel(QSharedPointer<Component> component,
 QAbstractItemModel(parent),
     ParameterizableTable(parameterFinder),
     component_(component),
-    rootMemoryMaps_(component->getMemoryMaps()),
-    expressionFormatter_(expressionFormatter),
+    expressionFormatter_(expressionFormatter), 
+    rootMemoryMaps_(component->getMemoryMaps()),    
     memoryMapValidator_(memoryMapValidator)
 {
     setExpressionParser(expressionParser);
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapsmodel::MemoryMapsModel()
-//-----------------------------------------------------------------------------
-MemoryMapsModel::~MemoryMapsModel()
-{
-
 }
 
 //-----------------------------------------------------------------------------

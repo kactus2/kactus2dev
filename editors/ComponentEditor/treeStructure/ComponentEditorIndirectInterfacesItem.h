@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ComponentEditorIndirectInterfacesItem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 04.08.2017
 //
@@ -50,8 +50,14 @@ public:
 		ComponentEditorItem* parent,
         QWidget* parentWnd);
 
+    //! No copying
+    ComponentEditorIndirectInterfacesItem(const ComponentEditorIndirectInterfacesItem& other) = delete;
+
+    //! No assignment
+    ComponentEditorIndirectInterfacesItem& operator=(const ComponentEditorIndirectInterfacesItem& other) = delete;
+
 	//! The destructor
-	virtual ~ComponentEditorIndirectInterfacesItem();
+	virtual ~ComponentEditorIndirectInterfacesItem() = default;
 
 	/*! Get the font to be used for text of this item.
 	*
@@ -59,43 +65,33 @@ public:
 	*
 	*      @return QFont instance that defines the font to be used.
 	*/
-	virtual QFont getFont() const;
+	virtual QFont getFont() const override;
 
 	/*! Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
 	*/
-	virtual QString getTooltip() const;
+	virtual QString getTooltip() const override;
 
 	/*! Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return The text to display.
 	*/
-	virtual QString text() const;
+	virtual QString text() const override;
 
 	/*! Get The editor of this item.
 	 *
 	 *      @return The editor to use for this item.
 	*/
-	virtual ItemEditor* editor();
+	virtual ItemEditor* editor() override;
 
 	/*! Add a new child to the item.
 	 *
 	 *      @param [in] index The index to add the child into.
 	*/
-	virtual void createChild(int index);
+	virtual void createChild(int index) override;
 
 private:
-	//! No copying
-	ComponentEditorIndirectInterfacesItem(const ComponentEditorIndirectInterfacesItem& other);
-
-	//! No assignment
-	ComponentEditorIndirectInterfacesItem& operator=(const ComponentEditorIndirectInterfacesItem& other);
-
-    /*!
-     *  Create the validator for bus interfaces.
-     */
-    //void createIndirectInterfaceValidator();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -104,14 +100,14 @@ private:
 	//! Contains the bus interfaces to edit.
 	QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces_;
 
-    //! The parent window.
-    QWidget* parentWnd_;
-
     //! The expression parser used to define the results of expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! Validator for bus interfaces.
     QSharedPointer<IndirectInterfaceValidator> validator_;
+
+    //! The parent window.
+    QWidget* parentWnd_;
 };
 
 #endif // COMPONENTEDITOR_INDIRECT_INTERFACES_ITEM_H

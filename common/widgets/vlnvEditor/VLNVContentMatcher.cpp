@@ -11,7 +11,7 @@
 
 #include "VLNVContentMatcher.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <common/widgets/assistedLineEdit/LineContentAssistWidget.h>
 #include <common/widgets/vlnvEditor/VLNVDataTree.h>
 
@@ -74,7 +74,7 @@ bool VLNVContentMatcher::fillWithContent(QString const& text, LineContentAssistW
 //-----------------------------------------------------------------------------
 bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssistWidget* assist) const
 {
-    QRegExp exp("^" + text.toLower() + ".*");
+    QRegularExpression exp("^" + text.toLower() + ".*");
 
     int count = 0;
     bool exactMatch = false;

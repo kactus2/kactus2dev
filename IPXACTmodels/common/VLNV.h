@@ -90,7 +90,7 @@ public:
 	VLNV(VLNV const& other);
 
 	//! The destructor
-	~VLNV();
+	~VLNV() = default;
 
     /*! Get the vendor of the VLNV.
 	 *

@@ -34,8 +34,11 @@ public:
     //! Copy constructor.
     IndirectInterface(IndirectInterface const& other);
 
+    // Disable assignment.
+    IndirectInterface& operator=(IndirectInterface const& rhs) = delete;
+
 	//! The destructor.
-	virtual ~IndirectInterface();
+	virtual ~IndirectInterface() = default;
 
 	/*!
      *  Get the attributes of the indirect interface.
@@ -137,9 +140,6 @@ public:
 
 private:
 
-	// Disable assignment.
-	IndirectInterface& operator=(IndirectInterface const& rhs);
-  
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

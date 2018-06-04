@@ -32,6 +32,7 @@ namespace
     };
 }
 
+
 //-----------------------------------------------------------------------------
 // Function: FileOutputWidget::FileOutputWidget()
 //-----------------------------------------------------------------------------
@@ -110,10 +111,11 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<OutputControl> configuration) 
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileOutputWidget::~FileOutputWidget()
+// Function: FileOutputWidget::canAccept()
 //-----------------------------------------------------------------------------
-FileOutputWidget::~FileOutputWidget()
+bool FileOutputWidget::canAccept() const
 {
+    return pathEditor_->hasFocus() == false;
 }
 
 //-----------------------------------------------------------------------------

@@ -88,7 +88,7 @@ void FileTypeEditorDelegate::updateSuggestedItems() const
 
     if (typeNames.isEmpty())
     {
-        for (int i = 0; i < FileTypes::FILE_TYPE_COUNT; i++)
+        for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; i++)
         {
             typeNames.append(FileTypes::FILE_TYPES[i]);
         }

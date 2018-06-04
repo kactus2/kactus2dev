@@ -12,8 +12,9 @@
 #include "TextContentAssistWidget.h"
 
 #include <algorithm>
+
 #include <QScrollBar>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QToolTip>
 #include <QTextCursor>
 #include <QApplication>
@@ -134,7 +135,7 @@ bool TextContentAssistWidget::tryHandleKey(QKeyEvent* e)
 void TextContentAssistWidget::updateAssist(QKeyEvent* e)
 {
     // Invoke the content assist for certain keys.
-    if (e->text().contains(QRegExp("^[a-z|A-z|0-9|_|;|Ä|ä|Ö|ö|Å|å|(|)|,|.|&]$")) ||
+    if (e->text().contains(QRegularExpression("^[a-z|A-z|0-9|_|;|Ä|ä|Ö|ö|Å|å|(|)|,|.|&]$")) ||
         e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Return ||
         (contentFound_ && (e->key() == Qt::Key_Down || e->key() == Qt::Key_Up || e->text().contains(' '))))
     {
@@ -293,7 +294,7 @@ void TextContentAssistWidget::moveCloseToCursor(int cursorPos)
 //-----------------------------------------------------------------------------
 bool TextContentAssistWidget::canCommitWith(QKeyEvent* e) const
 {
-    return (!e->text().contains(QRegExp("^[a-z|A-z|0-9|_|;|Ä|ä|Ö|ö|Å|å]$")) &&
+    return (!e->text().contains(QRegularExpression("^[a-z|A-z|0-9|_|;|Ä|ä|Ö|ö|Å|å]$")) &&
             e->key() != Qt::Key_Backspace && e->key() != Qt::Key_Escape &&
             e->key() != Qt::Key_Up && e->key() != Qt::Key_Down &&
             e->key() != Qt::Key_Left && e->key() != Qt::Key_Right &&

@@ -210,9 +210,6 @@ void BusInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void BusInterfaceItem::moveItemByMouse()
 {
-    QPointF currentPosition = pos();
-    QPointF mappedPosition = oldColumn_->mapToScene(pos());
-
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
     HWColumn* column = dynamic_cast<HWColumn*>(parentItem());

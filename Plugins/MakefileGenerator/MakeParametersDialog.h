@@ -35,23 +35,24 @@ public:
     MakeParametersDialog(QSharedPointer<MakeConfiguration> configuration,
         QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent);
 
+    // Disable copying.
+    MakeParametersDialog(MakeParametersDialog const& rhs) = delete;
+    MakeParametersDialog& operator=(MakeParametersDialog const& rhs) = delete;
+
     /*!
      *  Destructor.
      */
-    ~MakeParametersDialog();
+    virtual ~MakeParametersDialog() = default;
 
 public slots:
 
-    virtual void accept();
+    virtual void accept() override;
 
 private slots:
 
     void onItemChanged(QTreeWidgetItem *item, int column);
 
 private:
-    // Disable copying.
-    MakeParametersDialog(MakeParametersDialog const& rhs);
-    MakeParametersDialog& operator=(MakeParametersDialog const& rhs);
 
     QTreeWidget* createConflictTree(QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData);
 

@@ -26,7 +26,10 @@ struct ModelSimDocument : public GenerationOutput
     QSharedPointer<ModelSimWriter> writer_;
 
     //! The constructor.
-    ModelSimDocument();
+    explicit ModelSimDocument(QSharedPointer<ModelSimWriter> writer);
+
+    //! The destructor.
+    virtual ~ModelSimDocument() = default;
 
     /*!
      *  Writes the content. 

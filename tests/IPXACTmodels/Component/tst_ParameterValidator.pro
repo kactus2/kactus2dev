@@ -13,26 +13,16 @@ TEMPLATE = app
 
 TARGET = tst_ParameterValidator
 
-QT += core xml gui testlib
-CONFIG += c++11 testcase console
+QT += core gui xml testlib
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
-}
+CONFIG += c++11 testcase console
+DEFINES += IPXACTMODELS_LIB
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../
 
 DEPENDPATH += .
+DEPENDPATH += ../../../
 
 OBJECTS_DIR += $$DESTDIR
 

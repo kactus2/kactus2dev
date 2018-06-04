@@ -276,7 +276,8 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
 // Function: MemoryMapGraphicsItem::condenseItemAndChildItems()
 //-----------------------------------------------------------------------------
 void MemoryMapGraphicsItem::condenseItemAndChildItems(
-    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections, bool condenseMemoryItems)
+    QSharedPointer<QVector<MemoryConnectionItem*> > /*movedConnections*/, 
+    bool condenseMemoryItems)
 {
     if (!isCompressed())
     {

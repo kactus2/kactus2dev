@@ -17,8 +17,8 @@
 #include <library/LibraryItem.h>
 #include <library/LibraryHandler.h>
 
-#include <IPXACTmodels/validators/namevalidator.h>
-#include <IPXACTmodels/validators/NMTokenValidator.h>
+#include <IPXACTmodels/common/validators/namevalidator.h>
+#include <IPXACTmodels/common/validators/NMTokenValidator.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 

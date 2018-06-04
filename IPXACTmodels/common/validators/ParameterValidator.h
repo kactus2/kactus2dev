@@ -38,8 +38,12 @@ public:
     ParameterValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices);
 
+    // Disable copying.
+    ParameterValidator(ParameterValidator const& rhs) = delete;
+    ParameterValidator& operator=(ParameterValidator const& rhs) = delete;
+
 	//! The destructor.
-	virtual ~ParameterValidator();
+	virtual ~ParameterValidator() = default;
     
     /*!
      *  Change the available choices.
@@ -265,15 +269,6 @@ protected:
         QString const& context) const;
    
     /*!
-     *  Check if the value is valid for format.
-     *
-     *      @param [in] value   The value being examined.
-     *
-     *      @return True, if the value is in a valid format, false otherwise.
-     */
-    bool hasValidValueForFormat(QString const& value) const;
-   
-    /*!
      *  Finds the errors in choice value.
      *
      *      @param [in] errors      List of found errors
@@ -334,10 +329,6 @@ protected:
         const;
 
 private:
-
-	// Disable copying.
-	ParameterValidator(ParameterValidator const& rhs);
-	ParameterValidator& operator=(ParameterValidator const& rhs);
 
     /*!
      *  Checks if the value of the given parameter is less than the specified minimum value.

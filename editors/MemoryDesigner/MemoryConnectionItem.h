@@ -44,10 +44,14 @@ public:
         MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, qreal yTransfer = 0,
         QGraphicsItem* parent = 0);
 
+    // Disable copying.
+    MemoryConnectionItem(MemoryConnectionItem const& rhs) = delete;
+    MemoryConnectionItem& operator=(MemoryConnectionItem const& rhs) = delete;
+
 	/*!
      *  The Destructor.
      */
-    virtual ~MemoryConnectionItem();
+    virtual ~MemoryConnectionItem() = default;
 
     /*!
      *  Move the connection in y-coordinate by the given amount without moving connected items.
@@ -179,9 +183,6 @@ public:
     qreal getConnectionLowPoint(MainMemoryGraphicsItem* originItem) const;
 
 private:
-    // Disable copying.
-    MemoryConnectionItem(MemoryConnectionItem const& rhs);
-    MemoryConnectionItem& operator=(MemoryConnectionItem const& rhs);
 
     /*!
      *  Compress the contained end item using addresses.
@@ -392,14 +393,14 @@ private:
     //! Connection end range.
     quint64 connectionLastAddress_;
 
-    //! Y transfer of the connection.
-    qreal yTransfer_;
-
     //! Width of the memory connection item.
     qreal connectionWidth_;
 
+    //! Y transfer of the connection.
+    qreal yTransfer_;
+
     //! The connection line modifier used in the unusual memory connections.
-    const int BRIDGEMODIFIER_;
+    const int BRIDGEMODIFIER_ = 10;
 };
 
 //-----------------------------------------------------------------------------

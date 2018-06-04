@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
-#include <IPXACTmodels/validators/namevalidator.h>
+#include <IPXACTmodels/common/validators/namevalidator.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>

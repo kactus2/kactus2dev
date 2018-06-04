@@ -39,11 +39,10 @@ secondItemStartLabel_(new QGraphicsTextItem(this)),
 secondItemEndLabel_(new QGraphicsTextItem(this)),
 startItem_(startItem),
 endItem_(endItem),
-yTransfer_(yTransfer),
 connectionBaseAddress_(firstStartValue),
 connectionLastAddress_(firstEndValue),
 connectionWidth_(getConnectionWidth()),
-BRIDGEMODIFIER_(10)
+yTransfer_(yTransfer)
 {
     setupLabels(firstStartValue, firstEndValue);
 
@@ -60,14 +59,6 @@ BRIDGEMODIFIER_(10)
     endItem_->addMemoryConnection(this);
 
     createPath();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::~MemoryConnectionItem()
-//-----------------------------------------------------------------------------
-MemoryConnectionItem::~MemoryConnectionItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------

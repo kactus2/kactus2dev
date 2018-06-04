@@ -1743,7 +1743,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     if (column->getContentType() == ColumnTypes::IO)
     {
         for (QMap<BusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin(); cur != oldPositions.end(); 
-            cur++)
+            ++cur)
         {
             if (cur.key()->scenePos() != cur.value())
             {
@@ -1880,7 +1880,7 @@ void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponen
 
         // Create child undo commands for the ports with changed position.
         for (QMap<BusPortItem*, QPointF>::iterator current = oldPositions.begin(); 
-            current != oldPositions.end(); current++)
+            current != oldPositions.end(); ++current)
         {
             if (current.key()->pos() != current.value())
             {
@@ -2387,7 +2387,7 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
         for (int i = 1; i < adHocConnection->getInternalPortReferences()->size(); ++i)
         {
             QSharedPointer<PortReference> secondaryPort = adHocConnection->getInternalPortReferences()->at(i);
-            createConnectionForAdHocPorts(adHocConnection, secondaryPort, primaryPort, primaryPortItem);
+            createConnectionForAdHocPorts(adHocConnection, secondaryPort, primaryPortItem);
         }    
     }
 
@@ -2410,12 +2410,12 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
         {
             QSharedPointer<PortReference> connectedExternalPort = 
                 adHocConnection->getExternalPortReferences()->at(j);
-            createConnectionForAdHocPorts(adHocConnection, connectedExternalPort, externalPort, topPortItem);
+            createConnectionForAdHocPorts(adHocConnection, connectedExternalPort, topPortItem);
         }
 
         foreach (QSharedPointer<PortReference> internalPort, *adHocConnection->getInternalPortReferences())
         {
-            createConnectionForAdHocPorts(adHocConnection, internalPort, externalPort, topPortItem);
+            createConnectionForAdHocPorts(adHocConnection, internalPort, topPortItem);
         }
 
     }
@@ -2509,7 +2509,7 @@ void HWDesignDiagram::createAdHocTieOffConnection(QSharedPointer<AdHocConnection
 // Function: HWDesignDiagram::createConnectionForAdHocPorts()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnection> adHocConnection, 
-    QSharedPointer<PortReference> secondaryPort, QSharedPointer<PortReference> primaryPort, 
+    QSharedPointer<PortReference> secondaryPort, 
     ConnectionEndpoint* primaryPortItem)
 { 
     HWConnectionEndpoint* secondaryPortItem(0);
@@ -2651,7 +2651,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             {
                 new PortMoveCommand(component->getBusPort(current.key()), current.value(), this, pasteCmd);
             }
-            current++;
+            ++current;
         }  
     }
 }
@@ -2733,7 +2733,7 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
                 {
                     new ItemMoveCommand(cur.key(), cur.value(), targetColumn, this, pasteCmd);
                 }
-                cur++;
+                ++cur;
             }  
         }
     }

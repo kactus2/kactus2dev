@@ -28,12 +28,12 @@ namespace
     const QString DIRECTION = "in|out|inout|buffer|linkage";
 
     //! VHDL port type definition is <typename>[(<left> downto <right>)].
-    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + HDLmath::TERM +
-        ")\\s+\\w+\\s+(?:" + HDLmath::TERM + ")\\s*[)])?";
+    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + VHDLSyntax::TERM +
+        ")\\s+\\w+\\s+(?:" + VHDLSyntax::TERM + ")\\s*[)])?";
 
     //! Vector bounds are defined as (<left> downto <right>).
-    const QRegularExpression VECTOR_BOUNDS("[(]\\s*(" + HDLmath::TERM + ")\\s+\\w+\\s+" + 
-        "(" + HDLmath::TERM + ")\\s*[)]");
+    const QRegularExpression VECTOR_BOUNDS("[(]\\s*(" + VHDLSyntax::TERM + ")\\s+\\w+\\s+" +
+        "(" + VHDLSyntax::TERM + ")\\s*[)]");
 
     /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
      *  A pragma e.g. synthesis translate_off may be inserted in the declaration before the ending

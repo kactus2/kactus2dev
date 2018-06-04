@@ -27,24 +27,17 @@ ModelSimWriterFactory::ModelSimWriterFactory(LibraryInterface* library,
     QString const& kactusVersion, QString const& generatorVersion) :
     library_(library),
     messages_(messages),
-    settings_(settings),
-    kactusVersion_(kactusVersion),
-    generatorVersion_(generatorVersion)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModelSimWriterFactory::~ModelSimWriterFactory()
-//-----------------------------------------------------------------------------
-ModelSimWriterFactory::~ModelSimWriterFactory()
+    settings_(settings),    
+    generatorVersion_(generatorVersion),
+    kactusVersion_(kactusVersion)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ModelSimWriterFactory::prepareComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<GenerationOutput> ModelSimWriterFactory::prepareComponent(QString const& outputPath,
-    QSharedPointer<MetaComponent> component)
+QSharedPointer<GenerationOutput> ModelSimWriterFactory::prepareComponent(QString const& /*outputPath*/,
+    QSharedPointer<MetaComponent> /*component*/)
 {
     return QSharedPointer<ModelSimDocument>();
 }
@@ -54,7 +47,8 @@ QSharedPointer<GenerationOutput> ModelSimWriterFactory::prepareComponent(QString
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<GenerationOutput> > ModelSimWriterFactory::prepareDesign(QList<QSharedPointer<MetaDesign> >& designs)
 {
-    QSharedPointer<ModelSimDocument> document = QSharedPointer<ModelSimDocument>(new ModelSimDocument);
+    QSharedPointer<ModelSimDocument> document = 
+        QSharedPointer<ModelSimDocument>(new ModelSimDocument(QSharedPointer<ModelSimWriter>(new ModelSimWriter)));
 
     QList<QSharedPointer<MetaInstance> > components;
 
@@ -97,7 +91,7 @@ QList<QSharedPointer<GenerationOutput> > ModelSimWriterFactory::prepareDesign(QL
 //-----------------------------------------------------------------------------
 QString ModelSimWriterFactory::getLanguage() const
 {
-    return QStringLiteral("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------

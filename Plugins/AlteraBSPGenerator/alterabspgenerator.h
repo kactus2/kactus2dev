@@ -1,9 +1,14 @@
-/* 
- *	Created on: 15.2.2013
- *	Author:		Antti Kamppi
- * File name:	alterabspgenerator.h
- * Project:	Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: alterabspgenerator.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 15.2.2013
+//
+// Description:
+// Generator plugin for Altera Board Support Package (BSP) files.
+//-----------------------------------------------------------------------------
+
 
 #ifndef ALTERABSPGENERATOR_H
 #define ALTERABSPGENERATOR_H
@@ -19,11 +24,11 @@
 
 class IPluginUtility;
 
-/*! \brief The plugin to generate C-headers of component memory maps.
- *
- */
-class ALTERABSPGENERATOR_EXPORT AlteraBSPGenerator : public QObject, public IGeneratorPlugin {
-
+//-----------------------------------------------------------------------------
+//! Generator plugin for Altera Board Support Package (BSP) files.
+//-----------------------------------------------------------------------------
+class ALTERABSPGENERATOR_EXPORT AlteraBSPGenerator : public QObject, public IGeneratorPlugin
+{
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "kactus2.plugins.AlteraBSPGenerator" FILE "alteraBSPGenerator.json")
 
@@ -32,7 +37,7 @@ class ALTERABSPGENERATOR_EXPORT AlteraBSPGenerator : public QObject, public IGen
 
 public:
 
-	/*! \brief The constructor
+	/*!  The constructor
 	 *
 	 * Method: 		AlteraBSPGenerator
 	 * Full name:	AlteraBSPGenerator::AlteraBSPGenerator
@@ -40,49 +45,55 @@ public:
 	 *
 	*/
 	AlteraBSPGenerator();
-	
-	//! \brief The destructor
-	virtual ~AlteraBSPGenerator();
 
-	//! \brief Returns the name of the plugin.
-    virtual QString getName() const;
+    //!  No copying
+    AlteraBSPGenerator(const AlteraBSPGenerator& other) = delete;
 
-	//! \brief Returns the version of the plugin.
-    virtual QString getVersion() const;
+    //!  No assignment
+    AlteraBSPGenerator& operator=(const AlteraBSPGenerator& other) = delete;
 
-	//! \brief Returns the description of the plugin.
-    virtual QString getDescription() const;
+	//!  The destructor
+	virtual ~AlteraBSPGenerator() = default;
+
+	//!  Returns the name of the plugin.
+    virtual QString getName() const override final;
+
+	//!  Returns the version of the plugin.
+    virtual QString getVersion() const override final;
+
+	//!  Returns the description of the plugin.
+    virtual QString getDescription() const override final;
 
     /*!
      *  Returns the vendor of the plugin.
      */
-    virtual QString getVendor() const;
+    virtual QString getVendor() const override final;
 
     /*!
      *  Returns the licence of the plugin.
      */
-    virtual QString getLicence() const;
+    virtual QString getLicence() const override final;
 
     /*!
      *  Returns the holder of the licence of the plugin.
      */
-    virtual QString getLicenceHolder() const;
+    virtual QString getLicenceHolder() const override final;
 
-	//! \brief Returns the icon for the generator.
+	//!  Returns the icon for the generator.
     /*!
      *  Returns the settings widget.
      */
-    virtual QWidget* getSettingsWidget();
+    virtual QWidget* getSettingsWidget() override final;
 
     /*!
      *  This is used to access the settings modified by function getSettingsWidget().
      */
-    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
+    virtual PluginSettingsModel* getSettingsModel() override final {return nullptr;}
 
     /*!
      *  Returns the icon for the generator.
      */
-    virtual QIcon getIcon() const;
+    virtual QIcon getIcon() const override final;
 
     /*!
      *  Checks whether the generator may run for the given component or design. 
@@ -96,7 +107,7 @@ public:
      */
     virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
         QSharedPointer<Design const> design,
-        QSharedPointer<DesignConfiguration const> designConfiguration) const;
+        QSharedPointer<DesignConfiguration const> designConfiguration) const override final;
 
     /*!
      *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
@@ -111,34 +122,22 @@ public:
     virtual void runGenerator(IPluginUtility* utility, 
         QSharedPointer<Component> component,
         QSharedPointer<Design> design,
-        QSharedPointer<DesignConfiguration> designConfiguration);
+        QSharedPointer<DesignConfiguration> designConfiguration) override final;
 
-	 //! \brief Returns the external program requirements of the plugin.
-	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
+	 //!  Returns the external program requirements of the plugin.
+	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements() override final;
 
 private:
 
-	//! \brief No copying
-	AlteraBSPGenerator(const AlteraBSPGenerator& other);
-
-	//! \brief No assignment
-	AlteraBSPGenerator& operator=(const AlteraBSPGenerator& other);
-
-	/*! \brief Parse the entries in the file system and add them to specified file set.
+	/*!
+	 * Parse the entries in the file system and add them to specified file set.
 	 *
-	 * Method: 		addEntry
-	 * Full name:	AlteraBSPGenerator::addEntry
-	 * Access:		private 
-	 *
-	 * \param entry The entry to add.
-	 * \param xmlPath Path to the top component xml file.
-	 * \param fileSet Pointer to the file set to add the entries to.
-	 * \param settings Contains the file type settings.
-	 *
-	*/
-	void addEntry(const QFileInfo &entry, 
-		const QString& xmlPath,
-		QSharedPointer<FileSet> fileSet,
+	 *     @param [in] entry    The entry to add.
+	 *     @param [in] xmlPath  Path to the top component xml file.
+	 *     @param [in] fileSet  The file set to add the entries to.
+	 *     @param [in] settings  Contains the file type settings.
+	 */
+	 void addEntry(const QFileInfo &entry, const QString& xmlPath, QSharedPointer<FileSet> fileSet,
 		QSettings& settings);
 
 	//! The plugin utility.

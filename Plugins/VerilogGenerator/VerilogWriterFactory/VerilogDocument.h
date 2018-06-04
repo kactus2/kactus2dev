@@ -66,12 +66,15 @@ struct VerilogDocument : public GenerationOutput
     //! The constructor.
     VerilogDocument();
     
+    //! The destructor.
+    virtual  ~VerilogDocument() = default;
+
     /*!
      *  Writes the content. 
      *
      *      @param [in] outputDirectory         The possible output directory.
      */
-	void write(QString const& outputDirectory);
+	virtual void write(QString const& outputDirectory) override;
     
     /*!
      *  Finds position for body text highlight in document, if any exists.
@@ -79,7 +82,7 @@ struct VerilogDocument : public GenerationOutput
 	 *      @param [out] begin                  The position where the highlight begins, if successful.
      *      @param [out] end                    The position where the highlight ends, if successful.
      */
-    void getBodyHighlight(int& begin, int& end) const;
+    virtual void getBodyHighlight(int& begin, int& end) const override;
 
     /*!
      *  Finds the module implementation in Verilog code.

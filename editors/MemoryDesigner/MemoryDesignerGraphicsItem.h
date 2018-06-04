@@ -51,10 +51,14 @@ public:
         QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> componentInstance,
         QGraphicsItem* parent = 0);
 
+    // Disable copying.
+    MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& rhs) = delete;
+    MemoryDesignerGraphicsItem& operator=(MemoryDesignerGraphicsItem const& rhs) = delete;
+
 	/*!
      *  The destructor.
      */
-    virtual ~MemoryDesignerGraphicsItem();
+    virtual ~MemoryDesignerGraphicsItem() = default;
 
     /*!
      *  Get the type of the memory item.
@@ -295,9 +299,6 @@ private slots:
     void openItemEditor();
 
 private:
-    // Disable copying.
-    MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& rhs);
-    MemoryDesignerGraphicsItem& operator=(MemoryDesignerGraphicsItem const& rhs);
 
     /*!
      *  Get the available width of this item.
@@ -367,20 +368,20 @@ private:
     //! Display name of the item.
     QString displayName_;
 
+    //! Map containing memory connection items and their base addresses.
+    QMap<quint64, MemoryConnectionItem*> memoryConnections_;
+
     //! The containing component instance.
     QSharedPointer<ConnectivityComponent const> containingInstance_;
 
-    //! Map containing memory connection items and their base addresses.
-    QMap<quint64, MemoryConnectionItem*> memoryConnections_;
+    //! VLNV for the containing component.
+    VLNV componentVLNV_;
 
     //! Action for opening the component document editor.
     QAction* openComponentAction_;
 
     //! Action for opening the component editor in the memory item.
     QAction* openItemEditorAction_;
-
-    //! VLNV for the containing component.
-    VLNV componentVLNV_;
 
     //! List of string identifying the memory item.
     QVector<QString> identifierChain_;
