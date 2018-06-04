@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busportsdelegate.h
+// File: AbstractionPortsDelegate.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,8 +9,8 @@
 // The delegate that provides editors for logical port properties in Abstraction Definition.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSPORTSDELEGATE_H
-#define BUSPORTSDELEGATE_H
+#ifndef ABSTRACTIONPORTSDELEGATE_H
+#define ABSTRACTIONPORTSDELEGATE_H
 
 #include <QStyledItemDelegate>
 
@@ -18,7 +18,7 @@ class BusDefinition;
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors for logical port properties in Abstraction Definition.
 //-----------------------------------------------------------------------------
-class BusPortsDelegate : public QStyledItemDelegate
+class AbstractionPortsDelegate : public QStyledItemDelegate
 {
 	Q_OBJECT
 
@@ -29,12 +29,12 @@ public:
 	 *
 	 *      @param [in] parent  The owner of this instance
      */
-	BusPortsDelegate(QObject *parent);
+    AbstractionPortsDelegate(QObject *parent);
 	
 	/*!
      *  The destructor.
      */
-	virtual ~BusPortsDelegate();
+	virtual ~AbstractionPortsDelegate() = default;
 
 	/*!
      *  Create a new editor for the given item
@@ -81,11 +81,11 @@ private slots:
 
 private:
 	//! No copying. No assignment.
-	BusPortsDelegate(const BusPortsDelegate& other);
-	BusPortsDelegate& operator=(const BusPortsDelegate& other);
+    AbstractionPortsDelegate(const AbstractionPortsDelegate& other);
+    AbstractionPortsDelegate& operator=(const AbstractionPortsDelegate& other);
 
     //! The bus definition referenced by the edited abstraction definition.
     QSharedPointer<BusDefinition> busDefinition_;
 };
 
-#endif // BUSPORTSDELEGATE_H
+#endif // ABSTRACTIONPORTSDELEGATE_H

@@ -70,14 +70,6 @@ extendDisplay_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this,
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefGroup::~BusDefGroup()
-//-----------------------------------------------------------------------------
-BusDefGroup::~BusDefGroup()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusDefGroup::setBusDef()
 //-----------------------------------------------------------------------------
 void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )

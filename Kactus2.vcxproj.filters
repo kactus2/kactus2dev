@@ -3166,18 +3166,6 @@
     <ClCompile Include="GeneratedFiles\moc_busdefgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusDefinitionEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\absdefgroup.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -3185,15 +3173,6 @@
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\BusDefinitionEditor.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\busportsdelegate.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\busportsmodel.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\busportsview.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
@@ -4438,6 +4417,27 @@
     <ClCompile Include="GeneratedFiles\moc_LibraryLoader.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusDefinitionEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsModel.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractionPortsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractionPortsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsDelegate.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsView.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractionPortsView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5556,15 +5556,6 @@
     <CustomBuild Include="editors\BusDefinitionEditor\BusDefinitionEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\busportsdelegate.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\busportsmodel.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\busportsview.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
@@ -6059,6 +6050,15 @@
     </CustomBuild>
     <CustomBuild Include="library\LibraryLoader.h">
       <Filter>Header Files\library</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsModel.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsDelegate.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsView.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
