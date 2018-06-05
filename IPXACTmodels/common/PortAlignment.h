@@ -32,18 +32,12 @@ public:
     PortAlignment(int leftAlignment = 0, int rightAlignment = 0);
 
     //! The copy constructor.
-    PortAlignment(PortAlignment const& other) = default;
-
-    //! The move constructor.
-    PortAlignment(PortAlignment&& other) = default;
+    PortAlignment(PortAlignment const& other);
 
 	/*!
 	 *  The destructor.
 	*/
-    ~PortAlignment() = default;
-
-    // Disable assignment.
-    PortAlignment& operator=(PortAlignment const& rhs) = delete;
+    ~PortAlignment();
 
     /*!
      *  Get the higher (left) alignment of the port.
@@ -88,6 +82,9 @@ public:
     void setAlignmentValidity(bool validity);
 
 private:
+
+	// Disable assignment.
+    PortAlignment& operator=(PortAlignment const& rhs);
     
 	//-----------------------------------------------------------------------------
 	// Data.

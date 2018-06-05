@@ -30,19 +30,13 @@ public:
 	MasterInterface();
 
 	//! Copy constructor.
-	MasterInterface(const MasterInterface& other) = default;
+	MasterInterface(const MasterInterface& other);
 
-    //! Move constructor.
-    MasterInterface(MasterInterface&& other) = default;
-
-    //! Assignment operator.
-    MasterInterface& operator=(const MasterInterface& other);
-
-	//! Move assignment operator.
-	MasterInterface& operator=(MasterInterface&& other) = default;
+	//! Assignment operator.
+	MasterInterface& operator=(const MasterInterface& other);
 
 	//! The destructor.
-	~MasterInterface() = default;
+	~MasterInterface();
     
 	/*! Set the address space reference.
 	 *

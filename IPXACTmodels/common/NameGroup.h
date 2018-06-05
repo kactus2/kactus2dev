@@ -40,16 +40,10 @@ public:
 	 *
 	 *      @param [in] other    Reference to the NameGroup to copy.
 	*/
-	NameGroup(const NameGroup& other) = default;
-
-    /*! The move constructor
-    *
-    *      @param [in] other    Reference to the NameGroup to move.
-    */
-    NameGroup(NameGroup&& other) = default;
+	NameGroup(const NameGroup& other);
 
     //! The destructor.
-    virtual ~NameGroup() = default;
+    virtual ~NameGroup();
 
 	/*! The assignment operator
 	 *
@@ -58,14 +52,6 @@ public:
 	 *      @return Reference to this NameGroup.
 	*/
 	NameGroup& operator=(const NameGroup& other);
-
-    /*! The move assignment operator
-    *
-    *      @param [in] other   Reference to the NameGroup to assign.
-    *
-    *      @return Reference to this NameGroup.
-    */
-    NameGroup& operator=(NameGroup&& other) = default;
 
     /*!
      *  Gets the name element in the name group.

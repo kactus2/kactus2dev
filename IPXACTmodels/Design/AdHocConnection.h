@@ -48,7 +48,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~AdHocConnection() = default;
+    virtual ~AdHocConnection();
 
     /*!
      *  Copy constructor.
@@ -56,19 +56,9 @@ public:
     AdHocConnection(const AdHocConnection& other);
 
     /*!
-    *  Move constructor.
-    */
-    AdHocConnection(AdHocConnection&& other) = default;
-
-    /*!
      *  Assignment operator.
      */
     AdHocConnection& operator=(const AdHocConnection& other);
-
-    /*!
-    *  Move assignment operator.
-    */
-    AdHocConnection& operator=(AdHocConnection&& other) = default;
 
     /*!
      *  Gets the internal port references of the connection.

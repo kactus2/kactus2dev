@@ -20,26 +20,26 @@
 //-----------------------------------------------------------------------------
 // Function: File::File()
 //-----------------------------------------------------------------------------
-File::File(QString const& filePath, QString const& fileType) :
-    Extendable(),
-    fileId_(),
-    attributes_(),
-    name_(filePath),
-    fileName_(),
-    isPresent_(),
-    fileTypes_(new QStringList()),
-    structural_(false),
-    includeFile_(false),
-    externalDeclarations_(false),
-    logicalName_(),
-    logicalNameDefault_(false),
-    exportedNames_(new QStringList()),
-    buildCommand_(),
-    dependencies_(new QStringList()),
-    defines_(new QList<QSharedPointer<NameValuePair> >()),
-    imageTypes_(new QStringList()),
-    description_(),
-    pendingHash_()
+File::File(QString const& filePath /* = QString() */, QString const& fileType /* = QString() */) :
+Extendable(),
+fileId_(),
+attributes_(),
+name_(filePath),
+fileName_(),
+isPresent_(),
+fileTypes_(new QStringList()),
+structural_(false),
+includeFile_(false),
+externalDeclarations_(false),
+logicalName_(),
+logicalNameDefault_(false),
+exportedNames_(new QStringList()),
+buildCommand_(),
+dependencies_(new QStringList()),
+defines_(new QList<QSharedPointer<NameValuePair> > ()),
+imageTypes_(new QStringList()),
+description_(),
+pendingHash_()
 {
 	parseFileName();
 
@@ -53,25 +53,25 @@ File::File(QString const& filePath, QString const& fileType) :
 // Function: File::File()
 //-----------------------------------------------------------------------------
 File::File(const File& other) :
-    Extendable(other),
-    fileId_(other.fileId_),
-    attributes_(other.attributes_),
-    name_(other.name_),
-    fileName_(other.fileName_),
-    isPresent_(other.isPresent_),
-    fileTypes_(new QStringList()),
-    structural_(other.structural_),
-    includeFile_(other.includeFile_),
-    externalDeclarations_(other.externalDeclarations_),
-    logicalName_(other.logicalName_),
-    logicalNameDefault_(other.logicalNameDefault_),
-    exportedNames_(new QStringList()),
-    buildCommand_(),
-    dependencies_(new QStringList()),
-    defines_(new QList<QSharedPointer<NameValuePair> >()),
-    imageTypes_(new QStringList()),
-    description_(other.description_),
-    pendingHash_(other.pendingHash_)
+Extendable(other),
+fileId_(other.fileId_),
+attributes_(other.attributes_),
+name_(other.name_),
+fileName_(other.fileName_),
+isPresent_(other.isPresent_),
+fileTypes_(new QStringList()),
+structural_(other.structural_),
+includeFile_(other.includeFile_),
+externalDeclarations_(other.externalDeclarations_),
+logicalName_(other.logicalName_),
+logicalNameDefault_(other.logicalNameDefault_),
+exportedNames_(new QStringList()),
+buildCommand_(),
+dependencies_(new QStringList()),
+defines_(new QList<QSharedPointer<NameValuePair> > ()),
+imageTypes_(new QStringList()),
+description_(other.description_),
+pendingHash_(other.pendingHash_)
 {
     copyBuildCommand(other);
     copyDefines(other);
@@ -109,6 +109,14 @@ File& File::operator=(const File &other)
         copyStringLists(other);
     }
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: File::~File()
+//-----------------------------------------------------------------------------
+File::~File()
+{
+
 }
 
 //-----------------------------------------------------------------------------

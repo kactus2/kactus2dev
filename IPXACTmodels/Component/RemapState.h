@@ -45,30 +45,16 @@ public:
 	RemapState(const RemapState &other);
 
     /*!
-    *  Move constructor.
-    *
-    *      @param [in] other   The remap state to be moved.
-    */
-    RemapState(RemapState&& other) = default;
-
-    /*!
-    *  Assignment operator.
-    *
-    *      @param [in] other   The remap state being assigned.
-    */
-    RemapState &operator=(const RemapState &other);
-
-    /*!
-	 *  Move assignment operator.
+	 *  Assignment operator.
 	 *
-	 *      @param [in] other   The remap state being moved.
+	 *      @param [in] other   The remap state being assigned.
 	 */
-	RemapState &operator=(RemapState&& other) = default;
+	RemapState &operator=(const RemapState &other);
 
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~RemapState() = default;
+	~RemapState();
 
     /*!
 	 *  Get the list of the remap ports for this remap state.

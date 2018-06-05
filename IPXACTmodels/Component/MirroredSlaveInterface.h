@@ -51,19 +51,13 @@ public:
 	//! Copy constructor
 	MirroredSlaveInterface(const MirroredSlaveInterface& other);
 
-    //! Move constructor
-    MirroredSlaveInterface(MirroredSlaveInterface&& other) = default;
-
-    //! Assignment operator
-    MirroredSlaveInterface& operator=(const MirroredSlaveInterface& other);
-
-	//! Move assignment operator
-	MirroredSlaveInterface& operator=(MirroredSlaveInterface&& other) = default;
+	//! Assignment operator
+	MirroredSlaveInterface& operator=(const MirroredSlaveInterface& other);
 
 	/*! The destructor
 	 *
 	 */
-	~MirroredSlaveInterface() = default;
+	~MirroredSlaveInterface();
 
 	/*! Get the range of the mirrored slave interface.
 	 *

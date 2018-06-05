@@ -38,6 +38,14 @@ viewName_(other.viewName_)
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractorInstance::~AbstractorInstance()
+//-----------------------------------------------------------------------------
+AbstractorInstance::~AbstractorInstance()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractorInstance::getAbstractorRef()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConfigurableVLNVReference> AbstractorInstance::getAbstractorRef() const

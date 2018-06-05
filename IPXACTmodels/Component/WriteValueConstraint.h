@@ -40,17 +40,11 @@ public:
 	//! Copy constructor.
 	WriteValueConstraint(WriteValueConstraint const& other);
 
-    //! Move constructor.
-    WriteValueConstraint(WriteValueConstraint&& other) = default;
-
-    //! Assignment operator.
-    WriteValueConstraint& operator=(WriteValueConstraint const& other);
-
-	//! Move assignment operator.
-	WriteValueConstraint& operator=(WriteValueConstraint&& other) = default;
+	//! Assignment operator.
+	WriteValueConstraint& operator=(WriteValueConstraint const& other);
 
 	//! The destructor.
-	virtual ~WriteValueConstraint() = default;
+	virtual ~WriteValueConstraint();
 
 	/*! 
      *  Get the type of the constraint.

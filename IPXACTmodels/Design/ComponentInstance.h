@@ -50,11 +50,6 @@ public:
     ComponentInstance(ComponentInstance const& other);
 
     /*!
-    *  Move constructor.
-    */
-    ComponentInstance(ComponentInstance&& other) = default;
-
-    /*!
      *  The destructor.
      */
     virtual ~ComponentInstance() = default;
@@ -246,12 +241,7 @@ public:
      *  Assignment operator.
      */
     ComponentInstance& operator=(ComponentInstance const& other);
-
-    /*!
-    *  Move assignment operator.
-    */
-    ComponentInstance& operator=(ComponentInstance&& other) = default;
-
+    
     /*!
      *  Get the Uuid of the instance.
 	 *

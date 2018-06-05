@@ -24,6 +24,25 @@ isAddress_(false),
 }
 
 //-----------------------------------------------------------------------------
+// Function: Qualifier::Qualifier()
+//-----------------------------------------------------------------------------
+Qualifier::Qualifier(Qualifier const& other):
+isAddress_(other.isAddress_),
+    isData_(other.isData_),
+    isClock_(other.isClock_),
+    isReset_(other.isReset_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::~Qualifier()
+//-----------------------------------------------------------------------------
+Qualifier::~Qualifier()
+{
+}
+
+//-----------------------------------------------------------------------------
 // Function: Qualifier::isSet()
 //-----------------------------------------------------------------------------
 bool Qualifier::isSet()
@@ -72,4 +91,19 @@ void Qualifier::setType(Type qualifierType)
     isData_ = (qualifierType == Data || qualifierType == Data_Address);
     isClock_ = (qualifierType == Clock);
     isReset_ = (qualifierType == Reset);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::operator=()
+//-----------------------------------------------------------------------------
+Qualifier& Qualifier::operator=(Qualifier const& other)
+{
+    if (this != &other)
+    {
+        isAddress_ = other.isAddress_;
+        isData_ = other.isData_;
+        isClock_ = other.isClock_;
+        isReset_ = other.isReset_;
+    }
+    return *this;
 }

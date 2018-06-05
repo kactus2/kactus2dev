@@ -59,36 +59,26 @@ public:
 	DesignConfiguration(const DesignConfiguration& other);
 
     /*!
-    *  Move constructor.
-    */
-    DesignConfiguration(DesignConfiguration&& other) = default;
-
-    /*!
 	 *  Assignment operator.
 	 */
 	DesignConfiguration& operator=(const DesignConfiguration& other);
 
     /*!
-    *  Move assignment operator.
-    */
-    DesignConfiguration& operator=(DesignConfiguration&& other) = default;
-
-    /*!
 	 *  The destructor.
 	 */
-	virtual ~DesignConfiguration() = default;
+	virtual ~DesignConfiguration();
 
     /*!
 	 *  Clone this design configuration.
 	 */
-	virtual QSharedPointer<Document> clone() const override final;
+	virtual QSharedPointer<Document> clone() const;
 
     /*!
 	 *  Set the vlnv.
 	 *
 	 *      @param [in] vlnv    Reference to the vlnv to be set.
 	 */
-	virtual void setVlnv(const VLNV& vlnv) override final;
+	virtual void setVlnv(const VLNV& vlnv);
 
     /*!
      *  Get the design reference.
@@ -153,14 +143,14 @@ public:
      *
      *      @return Empty QStringlist (contains VLNV dependencies).
      */
-    virtual QStringList getDependentFiles() const override final;
+    virtual QStringList getDependentFiles() const;
 
     /*!
      *  Get the list of VLNVs needed by this design configuration.
      *
      *      @return A list of pointers to VLNVs that are needed in this design configuration.
      */
-    virtual QList<VLNV> getDependentVLNVs() const override final;
+    virtual QList<VLNV> getDependentVLNVs() const;
 
     /*!
 	 *  Add a new view configuration to the design configuration.
@@ -168,14 +158,14 @@ public:
 	 *      @param [in] instanceName    The name of the component instance that's view is set.
 	 *      @param [in] viewName        The name of the component's view that is set as active.
 	 */
-	void addViewConfiguration(QString const& instanceName, QString const& viewName);
+	virtual void addViewConfiguration(QString const& instanceName, QString const& viewName);
 
     /*!
 	 *  Remove the view configuration.
 	 *
 	 *      @param [in] instanceName    The instance name of the view configuration to be removed.
 	 */
-	void removeViewConfiguration(QString const& instanceName);
+	virtual void removeViewConfiguration(QString const& instanceName);
 
     /*!
 	 *  Get the active view configuration for the given component instance.

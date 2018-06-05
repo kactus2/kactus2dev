@@ -32,6 +32,24 @@ attributes_()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConfigurableElementValue::ConfigurableElementValue()
+//-----------------------------------------------------------------------------
+ConfigurableElementValue::ConfigurableElementValue(const ConfigurableElementValue& other):
+value_(other.value_),
+attributes_(other.attributes_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementValue::~ConfigurableElementValue()
+//-----------------------------------------------------------------------------
+ConfigurableElementValue::~ConfigurableElementValue()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConfigurableElementValue::getConfigurableValue()
 //-----------------------------------------------------------------------------
 QString ConfigurableElementValue::getConfigurableValue() const

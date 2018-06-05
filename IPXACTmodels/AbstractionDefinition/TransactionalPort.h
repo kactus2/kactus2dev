@@ -34,14 +34,8 @@ public:
     //! Copy constructor.
     TransactionalPort(TransactionalPort const& other);
 
-    //! Move constructor.
-    TransactionalPort(TransactionalPort&& other) = default;
-
-    // Disable assignment.
-    TransactionalPort& operator=(TransactionalPort const& rhs) = delete;
-
     //! The destructor.
-    ~TransactionalPort() = default;
+    ~TransactionalPort();
         
     /*!
      *  Sets the group name for system mode.
@@ -136,6 +130,9 @@ public:
     QSharedPointer<Protocol> getProtocol() const;
 
 private:
+
+    // Disable assignment.
+    TransactionalPort& operator=(TransactionalPort const& rhs);
 
     //! The group this transactional port belongs to in system mode.
     QString systemGroup_;

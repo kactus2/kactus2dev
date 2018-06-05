@@ -31,6 +31,14 @@ TransparentBridge::TransparentBridge(TransparentBridge const& other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransparentBridge::~TransparentBridge()
+//-----------------------------------------------------------------------------
+TransparentBridge::~TransparentBridge()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: TransparentBridge::setMasterRef()
 //-----------------------------------------------------------------------------
 void TransparentBridge::setMasterRef(QString const& masterInterfaceName)

@@ -22,6 +22,24 @@ isPresent_()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModuleParameter::ModuleParameter()
+//-----------------------------------------------------------------------------
+ModuleParameter::ModuleParameter(const ModuleParameter& other) :
+Parameter(other),
+isPresent_(other.isPresent_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameter::~ModuleParameter()
+//-----------------------------------------------------------------------------
+ModuleParameter::~ModuleParameter()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModuleParameter::operator =()
 //-----------------------------------------------------------------------------
 ModuleParameter& ModuleParameter::operator =(const ModuleParameter& other)

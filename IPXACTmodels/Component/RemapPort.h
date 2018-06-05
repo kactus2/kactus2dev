@@ -31,21 +31,15 @@ public:
     RemapPort(QString const& portReference = QString());
 
 	//! Copy constructor.
-	RemapPort(const RemapPort &other) = default;
-
-    //! Move constructor.
-    RemapPort(RemapPort&& other) = default;
+	RemapPort(const RemapPort &other);
 
     //! Assignment operator.
-    RemapPort &operator=(const RemapPort &other);
-
-    //! Move assignment operator.
-	RemapPort &operator=(RemapPort&& other) = default;
+	RemapPort &operator=(const RemapPort &other);
 
 	/*! 
      *  The destructor
 	 */
-	~RemapPort() = default;
+	~RemapPort();
 
 	/*!
      *  Get the value of the port reference.

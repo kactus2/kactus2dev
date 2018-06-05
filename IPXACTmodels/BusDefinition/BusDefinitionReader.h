@@ -30,12 +30,8 @@ public:
 	//! The constructor.
 	BusDefinitionReader();
 
-    //! Disable copying.
-    BusDefinitionReader(BusDefinitionReader const& rhs) = delete;
-    BusDefinitionReader& operator=(BusDefinitionReader const& rhs) = delete;
-
 	//! The destructor.
-	virtual ~BusDefinitionReader() = default;
+	~BusDefinitionReader();
 
     /*!
      *  Creates a bus definition from XML description.
@@ -47,6 +43,10 @@ public:
     QSharedPointer<BusDefinition> createBusDefinitionFrom(QDomNode const& document) const;
  
 private:
+
+	//! Disable copying.
+	BusDefinitionReader(BusDefinitionReader const& rhs);
+	BusDefinitionReader& operator=(BusDefinitionReader const& rhs);
         
     /*!
      *  Reads the direct connection property from XML to a bus definition.

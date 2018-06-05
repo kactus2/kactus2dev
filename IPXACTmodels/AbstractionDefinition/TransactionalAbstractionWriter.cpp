@@ -28,6 +28,14 @@ TransactionalAbstractionWriter::TransactionalAbstractionWriter(QObject *parent):
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransactionalAbstractionWriter::~TransactionalAbstractionWriter()
+//-----------------------------------------------------------------------------
+TransactionalAbstractionWriter::~TransactionalAbstractionWriter()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: TransactionalAbstractionWriter::writeTransactional()
 //-----------------------------------------------------------------------------
 void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer, 

@@ -80,6 +80,14 @@ TransactionalAbstraction& TransactionalAbstraction::operator=(TransactionalAbstr
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransactionalAbstraction::~TransactionalAbstraction()
+//-----------------------------------------------------------------------------
+TransactionalAbstraction::~TransactionalAbstraction()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: TransactionalAbstraction::getQualifier()
 //-----------------------------------------------------------------------------
 Qualifier TransactionalAbstraction::getQualifier() const

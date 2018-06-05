@@ -22,6 +22,16 @@ fileType_(fileType)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Function::SourceFile()
+//-----------------------------------------------------------------------------
+Function::SourceFile::SourceFile(const SourceFile& other) :
+sourceName_(other.sourceName_),
+fileType_(other.fileType_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: Function::getSourceName()
 //-----------------------------------------------------------------------------
 QString Function::SourceFile::getSourceName() const
@@ -107,6 +117,15 @@ Function& Function::operator=(const Function& other)
     }
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Function::~Function()
+//-----------------------------------------------------------------------------
+Function::~Function()
+{
+    arguments_.clear();
+    sourceFiles_.clear();
 }
 
 //-----------------------------------------------------------------------------

@@ -23,6 +23,14 @@ DocumentReader::DocumentReader() : CommonItemsReader()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DocumentReader::~DocumentReader()
+//-----------------------------------------------------------------------------
+DocumentReader::~DocumentReader()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: DocumentReader::parseTopComments()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseTopComments(QDomNode const& documentNode, QSharedPointer<Document> document) const

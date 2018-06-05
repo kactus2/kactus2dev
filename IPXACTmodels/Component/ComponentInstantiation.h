@@ -46,24 +46,14 @@ public:
     ComponentInstantiation(const ComponentInstantiation& other);
 
     /*!
-    *  The move constructor.
-    */
-    ComponentInstantiation(ComponentInstantiation&& other) = default;
-
-    /*!
-    *  The assignment operator.
-    */
-    ComponentInstantiation& operator=(const ComponentInstantiation& other);
-
-    /*!
-     *  The move assignment operator.
+     *  The assignment operator.
      */
-    ComponentInstantiation& operator=(ComponentInstantiation&& other) = default;
+    ComponentInstantiation& operator=(const ComponentInstantiation& other);
 
     /*!
      *  The destructor.
      */
-    virtual ~ComponentInstantiation() = default;
+    ~ComponentInstantiation();
 
     /*!
      *  Check if the instantiation is virtual.

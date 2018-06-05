@@ -67,25 +67,15 @@ public:
 	 */
 	Design(Design const& other);
 
-    /*!
-    *  Move constructor.
-    */
-    Design(Design&& other) = default;
-
 	/*!
 	 *  Assignment operator.
 	 */
 	Design& operator=(Design const& other);
 
-    /*!
-    *  Move assignment operator.
-    */
-    Design& operator=(Design&& other) = default;
-
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~Design() = default;
+	virtual ~Design();
 
 	/*!
 	 *  Clone this design.

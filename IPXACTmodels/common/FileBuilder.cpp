@@ -37,6 +37,18 @@ userFileType_()
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileBuilder::FileBuilder()
+//-----------------------------------------------------------------------------
+FileBuilder::FileBuilder( const FileBuilder &other ):
+BuildModel(other),
+Extendable(other),
+fileType_(other.fileType_),
+userFileType_(other.userFileType_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileBuilder::operator=()
 //-----------------------------------------------------------------------------
 FileBuilder & FileBuilder::operator=( const FileBuilder &other )
@@ -50,6 +62,14 @@ FileBuilder & FileBuilder::operator=( const FileBuilder &other )
         userFileType_ = other.userFileType_;
 	}
 	return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileBuilder::~FileBuilder()
+//-----------------------------------------------------------------------------
+FileBuilder::~FileBuilder()
+{
+
 }
 
 //-----------------------------------------------------------------------------

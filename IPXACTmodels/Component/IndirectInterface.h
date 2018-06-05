@@ -34,9 +34,6 @@ public:
     //! Copy constructor.
     IndirectInterface(IndirectInterface const& other);
 
-    //! Move constructor.
-    IndirectInterface(IndirectInterface&& other) = default;
-
     // Disable assignment.
     IndirectInterface& operator=(IndirectInterface const& rhs) = delete;
 

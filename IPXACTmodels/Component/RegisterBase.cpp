@@ -59,6 +59,14 @@ RegisterBase& RegisterBase::operator=(const RegisterBase& other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: RegisterBase::~RegisterBase()
+//-----------------------------------------------------------------------------
+RegisterBase::~RegisterBase()
+{
+    parameters_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: RegisterBase::getIsPresent()
 //-----------------------------------------------------------------------------
 QString RegisterBase::getIsPresent() const

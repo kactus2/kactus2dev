@@ -6,7 +6,7 @@
 // Date: 05.08.2015
 //
 // Description:
-// Kactus2 type for a boolean value, that can contain an unspecified value.
+// <Short description of the class/file contents>
 //-----------------------------------------------------------------------------
 
 #include "BooleanValue.h"
@@ -29,11 +29,22 @@ BooleanValue::BooleanValue(BooleanValue const& other) :
 }
 
 //-----------------------------------------------------------------------------
+// Function: BooleanValue::~BooleanValue()
+//-----------------------------------------------------------------------------
+BooleanValue::~BooleanValue()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: BooleanValue::operator=()
 //-----------------------------------------------------------------------------
 BooleanValue& BooleanValue::operator=(BooleanValue const& other)
 {
-    value_ = other.value_;
+    if (this != &other)
+    {
+        value_ = other.value_;
+    }
     return *this;
 }
 

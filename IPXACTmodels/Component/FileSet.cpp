@@ -21,14 +21,14 @@
 //-----------------------------------------------------------------------------
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
-FileSet::FileSet(const QString& name, const QString& group) :
-    NameGroup(name),
-    Extendable(),
-    groups_(new QStringList()),
-    files_(new QList<QSharedPointer<File> >()),
-    defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> >()),
-    dependencies_(new QStringList()),
-    functions_(new QList<QSharedPointer<Function> >())
+FileSet::FileSet(const QString& name /* = QString() */, const QString& group /* = QString() */) :
+NameGroup(name),
+Extendable(),
+groups_(new QStringList()),
+files_(new QList<QSharedPointer<File> > ()),
+defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
+dependencies_(new QStringList()),
+functions_(new QList<QSharedPointer<Function> > ())
 {
     if (!group.isEmpty())
     {
@@ -76,6 +76,16 @@ FileSet& FileSet::operator=(const FileSet& other)
     }
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSet::~FileSet()
+//-----------------------------------------------------------------------------
+FileSet::~FileSet()
+{
+    files_.clear();
+    defaultFileBuilders_.clear();
+    functions_->clear();
 }
 
 //-----------------------------------------------------------------------------

@@ -99,6 +99,14 @@ WireAbstraction& WireAbstraction::operator=(WireAbstraction const& other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: WireAbstraction::~WireAbstraction()
+//-----------------------------------------------------------------------------
+WireAbstraction::~WireAbstraction()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: WireAbstraction::setDefaultValue()
 //-----------------------------------------------------------------------------
 void WireAbstraction::setDefaultValue(QString const& defaultValue)

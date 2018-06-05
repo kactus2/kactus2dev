@@ -45,24 +45,14 @@ public:
     DesignConfigurationInstantiation(const DesignConfigurationInstantiation& other);
 
     /*!
-    *  The move constructor.
-    */
-    DesignConfigurationInstantiation(DesignConfigurationInstantiation&& other) = default;
-
-    /*!
-    *  The assignment operator.
-    */
-    DesignConfigurationInstantiation& operator=(const DesignConfigurationInstantiation& other);
-
-    /*!
-     *  The move assignment operator.
+     *  The assignment operator.
      */
-    DesignConfigurationInstantiation& operator=(DesignConfigurationInstantiation&& other) = default;
+    DesignConfigurationInstantiation& operator=(const DesignConfigurationInstantiation& other);
 
     /*!
      *  The destructor.
      */
-    virtual ~DesignConfigurationInstantiation() = default;
+    ~DesignConfigurationInstantiation();
 
     /*!
      *  Get the HDL used for instantiation.

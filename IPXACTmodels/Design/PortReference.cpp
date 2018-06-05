@@ -39,6 +39,14 @@ portRef_(other.portRef_),
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortReference::~PortReference()
+//-----------------------------------------------------------------------------
+PortReference::~PortReference()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortReference::operator=()
 //-----------------------------------------------------------------------------
 PortReference& PortReference::operator=( const PortReference& other)

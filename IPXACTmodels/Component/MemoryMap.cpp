@@ -60,6 +60,14 @@ MemoryMap& MemoryMap::operator=(const MemoryMap& other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: memorymap::~MemoryMap()
+//-----------------------------------------------------------------------------
+MemoryMap::~MemoryMap()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: memorymap::getMemoryRemaps()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<MemoryRemap> > > MemoryMap::getMemoryRemaps() const

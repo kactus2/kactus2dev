@@ -36,12 +36,8 @@ public:
 	 */
     BusDefinitionValidator(QSharedPointer<ExpressionParser> expressionParser);
 
-    // Disable copying.
-    BusDefinitionValidator(BusDefinitionValidator const& rhs) = delete;
-    BusDefinitionValidator& operator=(BusDefinitionValidator const& rhs) = delete;
-
 	//! The destructor.
-	virtual ~BusDefinitionValidator() = default;
+	virtual ~BusDefinitionValidator();
     
     /*!
      *  Validates the given BusDefinition.
@@ -61,6 +57,10 @@ public:
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<const BusDefinition> busDefinition) const;
 
 private:
+
+	// Disable copying.
+	BusDefinitionValidator(BusDefinitionValidator const& rhs);
+	BusDefinitionValidator& operator=(BusDefinitionValidator const& rhs);
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

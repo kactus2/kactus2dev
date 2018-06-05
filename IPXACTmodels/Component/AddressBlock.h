@@ -44,24 +44,18 @@ public:
     //! The copy constructor.
     AddressBlock(const AddressBlock &other);
 
-    //! The move constructor.
-    AddressBlock(AddressBlock&& other) = default;
-
 	//! The assignment operator.
 	AddressBlock &operator=(const AddressBlock &other);
 
-    //! The move assignment operator.
-    AddressBlock &operator=(AddressBlock&& other);
-
 	//! The destructor.
-	virtual ~AddressBlock() = default;
+	~AddressBlock();
 
     /*!
      *  Clone this address block and return pointer to the copy.
      *
      *      @return Pointer to the cloned address block.
      */
-    virtual QSharedPointer<MemoryBlockBase> clone() const override final;
+    virtual QSharedPointer<MemoryBlockBase> clone() const;
 
     /*!
      *  Get the type identifier.

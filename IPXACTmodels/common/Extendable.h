@@ -27,7 +27,7 @@ class IPXACTMODELS_EXPORT Extendable
 public:
 
 	//! The destructor.
-	virtual ~Extendable() = default;
+	virtual ~Extendable();
             
     /*!
      *  Gets the vendor extensions for the element.
@@ -46,10 +46,7 @@ protected:
 
     //! Assignment operation.
     Extendable& operator=(Extendable const& rhs);
-
-    //! Move assignment operation.
-    Extendable& operator=(Extendable&& rhs) = default;
-
+    
     /*!
      *  Copies vendor extensions from another element.
      *

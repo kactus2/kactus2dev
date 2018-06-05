@@ -23,6 +23,25 @@ leftAlignment_(leftAlignment),
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAlignment::PortAlignment()
+//-----------------------------------------------------------------------------
+PortAlignment::PortAlignment(PortAlignment const& other):
+leftAlignment_(other.leftAlignment_),
+    rightAlignment_(other.rightAlignment_),
+    validAlignment_(other.validAlignment_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAlignment::~PortAlignment()
+//-----------------------------------------------------------------------------
+PortAlignment::~PortAlignment()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAlignment::getLeftAlignment()
 //-----------------------------------------------------------------------------
 int PortAlignment::getLeftAlignment() const

@@ -40,24 +40,14 @@ public:
     WireTypeDef(const WireTypeDef& other);
 
     /*!
-    *  The move constructor.
-    */
-    WireTypeDef(WireTypeDef&& other) = default;
-
-    /*!
-    *  Assignment operator.
-    */
-    WireTypeDef& operator=(const WireTypeDef& other);
-
-    /*!
      *  Assignment operator.
      */
-    WireTypeDef& operator=(WireTypeDef&& other) = default;
+    WireTypeDef& operator=(const WireTypeDef& other);
 
     /*!
      *  The destructor.
      */
-    ~WireTypeDef() = default;
+    ~WireTypeDef();
 
     /*!
      *  Check if a wire type definition has been determined for a given view.

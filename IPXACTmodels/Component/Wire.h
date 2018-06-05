@@ -56,25 +56,15 @@ public:
 	 */
 	Wire(Wire const& other);
 
-    /*!
-    * Move constructor.
-    */
-    Wire(Wire&& other) = default;
-
-    /*!
-    *  Assignment operator.
-    */
-    Wire &operator=(const Wire &other);
-
 	/*!
-	 *  Move assignment operator.
+	 *  Assignment operator.
 	 */
-	Wire &operator=(Wire&& other) = default;
+	Wire &operator=(const Wire &other);
 
 	/*!
 	 *  The destructor.
 	 */
-	~Wire() = default;
+	~Wire();
 
 	/*! \brief Check if the wire element is in valid state or not.
 	* 

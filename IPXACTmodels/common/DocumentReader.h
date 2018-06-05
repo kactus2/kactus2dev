@@ -38,11 +38,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~DocumentReader() = default;
-
-    // Disable copying.
-    DocumentReader(DocumentReader const& rhs) = delete;
-    DocumentReader& operator=(DocumentReader const& rhs) = delete;
+    virtual ~DocumentReader();
 
 protected:
 
@@ -107,6 +103,12 @@ protected:
      *      @param [in] document            The document in which the parsed attributes are stored.
      */
     void parseKactusAttributes(QDomNode const& attributesNode, QSharedPointer<Document> document) const;
+
+private:
+
+	// Disable copying.
+    DocumentReader(DocumentReader const& rhs);
+    DocumentReader& operator=(DocumentReader const& rhs);
 
 };
 

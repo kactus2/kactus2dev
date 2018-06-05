@@ -36,14 +36,8 @@ public:
     //! Copy constructor.
     WirePort(WirePort const& other);
 
-    //! Move constructor.
-    WirePort(WirePort&& other) = default;
-
-    // Disable copying.
-    WirePort& operator=(WirePort const& rhs) = delete;
-
 	//! The destructor.
-	~WirePort() = default;
+	~WirePort();
     
     /*!
      *  Sets the group name for system mode.
@@ -186,6 +180,9 @@ public:
     QSharedPointer<CellSpecification> getMirroredDriveConstraint() const;
 
 private:
+
+	// Disable copying.
+    WirePort& operator=(WirePort const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.

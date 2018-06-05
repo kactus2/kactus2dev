@@ -24,6 +24,18 @@ value_(value)
 }
 
 //-----------------------------------------------------------------------------
+// Function: EnumeratedValue::EnumeratedValue()
+//-----------------------------------------------------------------------------
+EnumeratedValue::EnumeratedValue(const EnumeratedValue& other) :
+NameGroup(other),
+Extendable(other),
+usage_(other.usage_),
+value_(other.value_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: EnumeratedValue::operator=()
 //-----------------------------------------------------------------------------
 EnumeratedValue& EnumeratedValue::operator=(const EnumeratedValue& other)
@@ -37,6 +49,14 @@ EnumeratedValue& EnumeratedValue::operator=(const EnumeratedValue& other)
     }
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumeratedValue::~EnumeratedValue()
+//-----------------------------------------------------------------------------
+EnumeratedValue::~EnumeratedValue()
+{
+
 }
 
 //-----------------------------------------------------------------------------

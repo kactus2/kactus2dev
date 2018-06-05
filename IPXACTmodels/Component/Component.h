@@ -76,26 +76,20 @@ public:
 	//! Copy constructor.
 	Component(const Component &other);
 
-    //! Move constructor.
-    Component(Component&& other) = default;
-
 	//! Assignment operator.
 	Component& operator=(const Component &other);
-
-    //! Move assignment operator.
-    Component& operator=(Component&& other) = default;
 
 	/*!
      *  The destructor
 	 */
-	virtual ~Component() = default;
+	virtual ~Component();
 
 	/*!
      *  Clone this component and return pointer to the copy.
 	 * 
 	 *      @return Pointer to the cloned component.
 	 */
-	virtual QSharedPointer<Document> clone()  const override final;
+	virtual QSharedPointer<Document> clone()  const;
 
 	/*!
      *  Is this a bus component.
@@ -510,14 +504,14 @@ public:
 	 *
 	 *      @return A list containing the paths to the files.
 	 */
-	virtual QStringList getDependentFiles() const override final;
+	virtual QStringList getDependentFiles() const;
 
 	/*!
      *  Get list of the VLNVs needed by this component.
 	 *
 	 *      @return QList containing pointers to the VLNVs.
 	 */
-	virtual QList<VLNV> getDependentVLNVs() const override final;
+	virtual QList<VLNV> getDependentVLNVs() const;
 
     /*!
      *  Get the names of the remap states.
@@ -859,7 +853,7 @@ public:
 	 *
 	 *      @return QStringList containing the relative directory paths.
 	 */
-	virtual QStringList getDependentDirs() const override final;
+	virtual QStringList getDependentDirs() const;
 
 private:
 

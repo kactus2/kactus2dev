@@ -32,6 +32,14 @@ value_(other.value_),
 }
 
 //-----------------------------------------------------------------------------
+// Function: TimingConstraint::~TimingConstraint()
+//-----------------------------------------------------------------------------
+TimingConstraint::~TimingConstraint()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: TimingConstraint::setValue()
 //-----------------------------------------------------------------------------
 void TimingConstraint::setValue(double delayPercentage)

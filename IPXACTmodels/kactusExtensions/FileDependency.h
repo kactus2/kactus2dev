@@ -15,15 +15,15 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/VendorExtension.h>
 
-#include <QDomNode>
 #include <QString>
+#include <QDomNode>
 #include <QXmlStreamWriter>
 #include <QObject>
 
 //-----------------------------------------------------------------------------
 //! File dependency class.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT FileDependency : public VendorExtension
+class IPXACTMODELS_EXPORT FileDependency : public QObject, public VendorExtension
 {
 public:
     //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ public:
     /*!
      *  Copy constructor.
      */
-    FileDependency(FileDependency const& rhs) = default;
+    FileDependency(FileDependency const& rhs);
 
     /*!
      *  Constructor which reads the file dependency from an XML node.
@@ -56,7 +56,7 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~FileDependency() = default;
+    ~FileDependency();
 
     /*!
      *  Clone the file dependency.

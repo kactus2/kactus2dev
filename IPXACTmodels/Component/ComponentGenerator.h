@@ -56,17 +56,11 @@ public:
 	//! Copy constructor.
 	ComponentGenerator(const ComponentGenerator &other);
 
-    //! Move constructor.
-    ComponentGenerator(ComponentGenerator&& other) = default;
-
-    //! Assignment operator.
-    ComponentGenerator &operator=(const ComponentGenerator &other);
-
-	//! Move ssignment operator.
-	ComponentGenerator &operator=(ComponentGenerator&& other) = default;
+	//! Assignment operator.
+	ComponentGenerator &operator=(const ComponentGenerator &other);
 
 	//! The destructor.
-	virtual ~ComponentGenerator() = default;
+	~ComponentGenerator();
 
     	/*! Set the hidden setting for this component generator.
 	 *

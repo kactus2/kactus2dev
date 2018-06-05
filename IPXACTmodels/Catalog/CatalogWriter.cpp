@@ -23,6 +23,14 @@ CatalogWriter::CatalogWriter(): DocumentWriter()
 }
 
 //-----------------------------------------------------------------------------
+// Function: CatalogWriter::~CatalogWriter()
+//-----------------------------------------------------------------------------
+CatalogWriter::~CatalogWriter()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: CatalogWriter::writeCatalog()
 //-----------------------------------------------------------------------------
 void CatalogWriter::writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const

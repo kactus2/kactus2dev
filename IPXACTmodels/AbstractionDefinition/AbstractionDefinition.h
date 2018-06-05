@@ -37,30 +37,24 @@ public:
 	//! Copy constructor.
 	AbstractionDefinition(AbstractionDefinition const& other);
 
-    //! Move constructor.
-    AbstractionDefinition(AbstractionDefinition&& other) = default;
-
 	//! Assignment operator.
 	AbstractionDefinition &operator=(AbstractionDefinition const& other);
 
-    //! Move assignment operator.
-    AbstractionDefinition &operator=(AbstractionDefinition&& other) = default;
-
 	//! The destructor.
-	virtual ~AbstractionDefinition() = default;
+	virtual ~AbstractionDefinition();
 
 	/*!
 	 *  Creates a perfect copy of the Bus Definition.
 	 *
 	 *      @return Copy of the bus definition.
 	 */
-	virtual QSharedPointer<Document> clone() const override final;
+	virtual QSharedPointer<Document> clone() const;
 
 	/*! Set the VLNV for the bus definition.
 	*
 	*      @param [in] vlnv     The vlnv to set
 	*/
-	virtual void setVlnv(VLNV const& vlnv) override final;
+	virtual void setVlnv(const VLNV& vlnv);
 
 	/*! Get the vlnv tag of the bus definition that this abstraction definition details.
 	 * 
@@ -90,7 +84,7 @@ public:
 	 *
 	 *      @return The dependency VLNVs.
 	 */
-	virtual QList<VLNV> getDependentVLNVs() const override final;
+	virtual QList<VLNV> getDependentVLNVs() const;
 
 	/*! Get the file dependencies of this busDefinition.
      *
@@ -98,7 +92,7 @@ public:
      *
      *      @remark This function never returns anything because busDefinition only has VLNV dependencies.
 	 */
-	virtual QStringList getDependentFiles() const override final;
+	virtual QStringList getDependentFiles() const;
 
     /*!
      *  Checks if the abstraction definition has a definition for a port in a given mode.

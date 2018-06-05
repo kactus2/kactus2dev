@@ -82,6 +82,14 @@ void WireTypeDef::copyViewNameReferences(QSharedPointer<QStringList> newViewRefe
 }
 
 //-----------------------------------------------------------------------------
+// Function: WireTypeDef::~WireTypeDef()
+//-----------------------------------------------------------------------------
+WireTypeDef::~WireTypeDef()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: WireTypeDef::hasView()
 //-----------------------------------------------------------------------------
 bool WireTypeDef::hasView(QString const& viewName)

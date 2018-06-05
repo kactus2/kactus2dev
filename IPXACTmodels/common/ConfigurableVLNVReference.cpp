@@ -28,11 +28,14 @@ ConfigurableVLNVReference::ConfigurableVLNVReference(const ConfigurableVLNVRefer
 VLNV(other),
 configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> >)
 {
-    foreach(QSharedPointer<ConfigurableElementValue> configurable, *other.configurableElementValues_)
+    foreach (QSharedPointer<ConfigurableElementValue> configurable, *other.configurableElementValues_)
     {
-        QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
-            new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
-        configurableElementValues_->append(copy);
+        if (configurable)
+        {
+            QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
+                new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
+            configurableElementValues_->append(copy);
+        }
     }
 }
 
@@ -55,6 +58,14 @@ VLNV(configurableVLNV),
 configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> > )
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableVLNVReference::~ConfigurableVLNVReference()
+//-----------------------------------------------------------------------------
+ConfigurableVLNVReference::~ConfigurableVLNVReference()
+{
+    configurableElementValues_->clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -114,25 +125,4 @@ QString ConfigurableVLNVReference::getSingleConfigurableElementValue(QString con
     }
 
     return QString();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableVLNVReference::operator=()
-//-----------------------------------------------------------------------------
-ConfigurableVLNVReference& ConfigurableVLNVReference::operator=(ConfigurableVLNVReference const& other)
-{
-    if (other != *this)
-    {
-        VLNV::operator=(other);
-
-        configurableElementValues_->clear();
-        foreach(QSharedPointer<ConfigurableElementValue> configurable, *other.configurableElementValues_)
-        {
-            QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
-                new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
-            configurableElementValues_->append(copy);
-        }
-    }
-
-    return *this;
 }

@@ -22,6 +22,14 @@ BusDefinitionWriter::BusDefinitionWriter(): DocumentWriter()
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusDefinitionWriter::~BusDefinitionWriter()
+//-----------------------------------------------------------------------------
+BusDefinitionWriter::~BusDefinitionWriter()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeBusDefinition()
 //-----------------------------------------------------------------------------
 void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer, 

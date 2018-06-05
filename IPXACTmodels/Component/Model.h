@@ -42,19 +42,13 @@ public:
 	//! Copy constructor.
 	Model(const Model &other);
 
-    //! Move constructor.
-    Model(Model&& other) = default;
-
-    //! Assignment operator.
-    Model& operator=(const Model& other);
-
-	//! Move assignment operator.
-	Model& operator=(Model&& other) = default;
+	//! Assignment operator.
+	Model& operator=(const Model& other);
 
 	/*!
      *  The destructor.
 	 */
-	~Model() = default;
+	~Model();
 
 	/*!
      *  Get the views of this model.

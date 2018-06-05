@@ -39,19 +39,13 @@ public:
         QString const& range = QLatin1String(""));
 	
 	//! The destructor.
-	virtual ~Segment() = default;
+	~Segment();
 
 	//! The copy constructor.
 	Segment(const Segment& other);
 
-    //! The move constructor.
-    Segment(Segment&& other) = default;
-
-    //! The assignment operator.
-    Segment& operator=(const Segment& other);
-
-	//! The move assignment operator.
-	Segment& operator=(Segment&& other) = default;
+	//! The assignment operator.
+	Segment& operator=(const Segment& other);
 
     /*!
      *  Gets the presence.

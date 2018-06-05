@@ -74,6 +74,15 @@ SlaveInterface& SlaveInterface::operator=(SlaveInterface const& other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: SlaveInterface::~SlaveInterface()
+//-----------------------------------------------------------------------------
+SlaveInterface::~SlaveInterface()
+{
+	bridges_->clear();
+	fileSetRefGroup_->clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: SlaveInterface::getMemoryMapRef()
 //-----------------------------------------------------------------------------
 QString SlaveInterface::getMemoryMapRef() const

@@ -44,30 +44,16 @@ public:
     MemoryMapBase(const MemoryMapBase& other);
 
     /*!
-    *  Move constructor.
-    *
-    *      @param [in] other   The abstract memory map to be moved.
-    */
-    MemoryMapBase(MemoryMapBase&& other) = default;
-
-    /*!
-    *  Assignment operator.
-    *
-    *      @param [in] other   The abstract memory map to be assigned.
-    */
-    MemoryMapBase &operator=(const MemoryMapBase& other);
-
-    /*!
-     *  Move assignment operator.
+     *  Assignment operator.
      *
-     *      @param [in] other   The abstract memory map to be move assigned.
+     *      @param [in] other   The abstract memory map to be assigned.
      */
-    MemoryMapBase &operator=(MemoryMapBase&& other) = default;
+    MemoryMapBase &operator=(const MemoryMapBase& other);
 
     /*!
      *  The destructor.
      */
-    virtual ~MemoryMapBase() = default;
+    virtual ~MemoryMapBase();
     
     /*!
      *  Get the element name of the memory map.

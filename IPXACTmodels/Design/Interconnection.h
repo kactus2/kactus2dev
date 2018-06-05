@@ -51,24 +51,14 @@ public:
     Interconnection(const Interconnection& other);
 
     /*!
-    *  Move constructor.
-    */
-    Interconnection(Interconnection&& other) = default;
-
-    /*!
      *  The destructor.
      */
-    virtual ~Interconnection() = default;
+    virtual ~Interconnection();
 
     /*!
      *  Assignment operator.
      */
     Interconnection& operator=(const Interconnection& other);
-
-    /*!
-    *  Move assignment operator.
-    */
-    Interconnection& operator=(Interconnection&& other) = default;
 
     /*!
      *  Checks if the interconnection is treated as an off-page connection.

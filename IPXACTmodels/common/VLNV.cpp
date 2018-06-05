@@ -15,6 +15,9 @@
 #include <QStringList>
 #include <QObject>
 
+#include <QDomNode>
+#include <QDomNamedNodeMap>
+
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
@@ -25,16 +28,16 @@ VLNV::VLNV(): vendor_(), library_(), name_(), version_(), type_(VLNV::INVALID)
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
-/*VLNV::VLNV(QString const& type, 
+VLNV::VLNV(QString const& type, 
     QString const& vendor, QString const& library, QString const& name, QString const& version):
 vendor_(vendor.simplified()), 
 library_(library.simplified()), 
 name_(name.simplified()),
 version_(version.simplified()),
-type_(string2Type(type))
+type_(INVALID)
 {
-
-}*/
+	type_ = string2Type(type);
+}
 
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()

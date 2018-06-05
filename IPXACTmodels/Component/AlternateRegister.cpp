@@ -51,6 +51,14 @@ AlternateRegister& AlternateRegister::operator=(const AlternateRegister& other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: AlternateRegister::~AlternateRegister()
+//-----------------------------------------------------------------------------
+AlternateRegister::~AlternateRegister()
+{
+	alternateGroups_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: AlternateRegister::clone()
 //-----------------------------------------------------------------------------
 QSharedPointer<RegisterBase> AlternateRegister::clone()

@@ -68,25 +68,15 @@ public:
 	 */
 	View(const View &other);
 
-    /*!
-    *  Move constructor.
-    */
-    View(View&& other) = default;
-
-    /*!
-    *  Assignment operator.
-    */
-    View& operator=(const View &other);
-
 	/*!
-	 *  Move assignment operator.
+	 *  Assignment operator.
 	 */
-	View& operator=(View&& other) = default;
+	View& operator=(const View &other);
 
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~View() = default;
+	~View();
 
 	/*!
 	 *  Get a list of envIdentifiers.

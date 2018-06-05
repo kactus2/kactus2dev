@@ -47,17 +47,11 @@ public:
 	//! Copy constructor
 	Field(const Field& other);
 
-    //! Move constructor
-    Field(Field&& other) = default;
-
-    //! Assignment operator
-    Field& operator=(const Field& other);
-
 	//! Assignment operator
-	Field& operator=(Field&& other) = default;
+	Field& operator=(const Field& other);
 
 	//! The destructor.
-	virtual ~Field() = default;
+	virtual ~Field();
     
     /*!
      *  Get the id of the field.

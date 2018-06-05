@@ -56,26 +56,26 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ComInterface() = default;
+    ~ComInterface();
 
     /*!
      *  Copies the com interface.
      *
      *      @return The copied com interface.
      */
-    virtual ComInterface* clone() const override final;
+    virtual ComInterface* clone() const;
 
     /*!
      *  Get the type of the com interface.
      *
      *      @return The com interface type.
      */
-    virtual QString type() const override final;
+    virtual QString type() const;
 
     /*!
      *  Writes the contents of the COM interface to an XML stream.
      */
-    virtual void write(QXmlStreamWriter& writer) const override final;
+    virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Returns true if the contents of the COM interface are valid.

@@ -53,6 +53,14 @@ viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
 }
 
 //-----------------------------------------------------------------------------
+// Function: ViewConfiguration::~ViewConfiguration()
+//-----------------------------------------------------------------------------
+ViewConfiguration::~ViewConfiguration()
+{
+    viewConfigurables_->clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ViewConfiguration::getInstanceName()
 //-----------------------------------------------------------------------------
 QString ViewConfiguration::getInstanceName() const

@@ -18,6 +18,7 @@
 #include <editors/common/ColumnTypes.h>
 
 #include <QString>
+#include <QDomNode>
 #include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
@@ -36,11 +37,6 @@ public:
      */
     ColumnDesc(QString const& name, ColumnTypes::ColumnContentType contentType,
                unsigned int allowedItems = ColumnTypes::NONE, unsigned int minWidth = 259);
-
-    //! Copy constructor
-    ColumnDesc(const ColumnDesc& other) = default;
-
-    virtual ~ColumnDesc() = default;
 
     /*!
      *  Clone constructor.
@@ -114,11 +110,11 @@ public:
 
     void setPosition(unsigned int x);
 
-    //! Assignment operator
-    ColumnDesc& operator=(const ColumnDesc& other) = default;
+    //! Copy constructor
+    ColumnDesc(const ColumnDesc& other);
 
-    //! Move assignment operator
-    ColumnDesc& operator=(ColumnDesc&& other) = default;
+    //! Assignment operator
+    ColumnDesc& operator=(const ColumnDesc& other);
 
 private:
     //-----------------------------------------------------------------------------

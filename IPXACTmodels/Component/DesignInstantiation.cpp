@@ -53,6 +53,14 @@ DesignInstantiation& DesignInstantiation::operator=(DesignInstantiation const& o
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignInstantiation::~DesignInstantiation()
+//-----------------------------------------------------------------------------
+DesignInstantiation::~DesignInstantiation()
+{
+    designRef_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignInstantiation::getDesignReference()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConfigurableVLNVReference> DesignInstantiation::getDesignReference() const

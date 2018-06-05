@@ -78,6 +78,17 @@ Design& Design::operator=( const Design& other )
 }
 
 //-----------------------------------------------------------------------------
+// Function: Design::~Design()
+//-----------------------------------------------------------------------------
+Design::~Design()
+{
+    componentInstances_.clear();
+    interconnections_.clear();
+    monitorInterconnections_.clear();
+    adHocConnections_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Design::close()
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> Design::clone() const

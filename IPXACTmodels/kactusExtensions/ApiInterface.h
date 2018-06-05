@@ -76,26 +76,26 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ApiInterface() = default;
+    ~ApiInterface();
 
     /*!
      *  Clones the api interface.
      *
      *      @return A cloned api interface.
      */
-    virtual ApiInterface* clone() const override final;
+    virtual ApiInterface* clone() const;
 
     /*!
      *  Gets the api interface type.
      *
      *      @return The type of the api interface.
      */
-    virtual QString type() const override final;
+    virtual QString type() const;
 
     /*!
      *  Writes the contents of the API interface to an XML stream.
      */
-    virtual void write(QXmlStreamWriter& writer) const override final;
+    virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Returns true if the contents of the API interface are valid.
@@ -150,11 +150,6 @@ public:
      *  Assignment operator.
      */
     ApiInterface& operator=(ApiInterface const& rhs);
-
-    /*!
-    *  Move assignment operator.
-    */
-    ApiInterface& operator=(ApiInterface&& rhs) = default;
 
 private:
 

@@ -14,6 +14,13 @@
 #include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
+//-----------------------------------------------------------------------------
+// Function: Extendable::~Extendable()
+//-----------------------------------------------------------------------------
+Extendable::~Extendable()
+{
+
+}
 
 //-----------------------------------------------------------------------------
 // Function: Extendable::getVendorExtensions()

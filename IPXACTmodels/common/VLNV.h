@@ -48,9 +48,6 @@ public:
 	*/
 	VLNV();
 
-    //! The move constructor.
-    VLNV(VLNV&& other) = default;
-
 	/*! The Constructor.
 	 *
 	 *      @param [in] type    The type of the VLNV document (design, component...).
@@ -59,8 +56,8 @@ public:
 	 *      @param [in] name    The name of the item.
 	 *      @param [in] version The version number of the item.
 	 */
-	/*VLNV(QString const& type, QString const& vendor, QString const& library,
-		QString const& name, QString const& version);*/
+	VLNV(QString const& type, QString const& vendor, QString const& library,
+		QString const& name, QString const& version);
 
 	/*! Constructor that takes type parameter as enum
 	 *
@@ -194,9 +191,8 @@ public:
 	*/
 	QString toString(QString const& separator = QLatin1String(":")) const;
 
-	//! The assignment and move assignment operator for the class.
-	VLNV& operator=(const VLNV &other);
-    VLNV& operator=(VLNV&& other) = default;
+	//! The assignment operator for the class
+	VLNV &operator=(const VLNV &other);
 
 	/*! The < operator for comparison of the VLNV info
 	 *

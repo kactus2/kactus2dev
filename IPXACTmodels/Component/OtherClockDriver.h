@@ -38,19 +38,13 @@ public:
 	//! Copy constructor.
 	OtherClockDriver(const OtherClockDriver &other);
 
-    //! Move constructor.
-    OtherClockDriver(OtherClockDriver&& other) = default;
-
-    //! Assignment operator.
-    OtherClockDriver &operator=(const OtherClockDriver &other);
-
-	//! Move assignment operator.
-	OtherClockDriver &operator=(OtherClockDriver&& other) = default;
+	//! Assignment operator.
+	OtherClockDriver &operator=(const OtherClockDriver &other);
 
 	/*!
      *  The destructor.
 	 */
-	~OtherClockDriver() = default;
+	~OtherClockDriver();
 
     /*!
      *  Get the name of the clock.

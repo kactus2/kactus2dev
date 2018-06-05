@@ -33,17 +33,11 @@ public:
 	//! Copy constructor.
 	IpxactFile(IpxactFile const& other);
 
-    //! Move constructor.
-    IpxactFile(IpxactFile&& other) = default;
-
 	//! Assignment operator.
 	IpxactFile &operator=(IpxactFile const& other);
 
-    //! Move assignment operator.
-    IpxactFile &operator=(IpxactFile&& other) = default;
-
 	//! The destructor.
-	virtual ~IpxactFile() = default;
+	virtual ~IpxactFile();
 
 	/*! Set the VLNV for the file.
 	*

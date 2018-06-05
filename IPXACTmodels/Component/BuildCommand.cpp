@@ -22,6 +22,16 @@ flagsAppend_()
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: BuildCommand::BuildCommand()
+//-----------------------------------------------------------------------------
+BuildCommand::BuildCommand(const BuildCommand &other) :
+BuildModel(other),
+targetName_(other.targetName_),
+flagsAppend_(other.flagsAppend_)
+{
+
+}
 
 //-----------------------------------------------------------------------------
 // Function: BuildCommand::BuildCommand()
@@ -36,6 +46,14 @@ BuildCommand & BuildCommand::operator=(const BuildCommand &other)
     }
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BuildCommand::~BuildCommand()
+//-----------------------------------------------------------------------------
+BuildCommand::~BuildCommand()
+{
+
 }
 
 //-----------------------------------------------------------------------------

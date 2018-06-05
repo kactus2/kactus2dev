@@ -32,6 +32,14 @@ GenericVendorExtension* GenericVendorExtension::clone() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::~GenericVendorExtension()
+//-----------------------------------------------------------------------------
+GenericVendorExtension::~GenericVendorExtension()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::type()
 //-----------------------------------------------------------------------------
 QString GenericVendorExtension::type() const

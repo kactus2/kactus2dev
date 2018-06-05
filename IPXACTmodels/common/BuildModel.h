@@ -33,28 +33,17 @@ public:
 	/*!
 	 *  Copy constructor.
 	 */
-	BuildModel(BuildModel const& other) = default;
-
-    /*!
-    *  Move constructor.
-    */
-    BuildModel(BuildModel&& other) = default;
+	BuildModel(const BuildModel &other);
 
 	/*!
 	 *  Assignment operator.
 	 */
-	BuildModel& operator=(const BuildModel &other) = default;
-    
-    /*!
-    *  Move assignment operator.
-    */
-    BuildModel& operator=(BuildModel&& other) = default;
-
+	BuildModel &operator=(const BuildModel &other);
 
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~BuildModel() = default;
+	virtual ~BuildModel();
 
     /*!
      *  Get the command.

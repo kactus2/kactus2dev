@@ -50,7 +50,7 @@ public:
 		SourceFile(QString const& sourceName = QString(), QString const& fileType = QString());
 
         //! Copy constructor.
-        SourceFile(const SourceFile& other) = default;
+        SourceFile(const SourceFile& other);
 
         /*!
          *  Gets the source name.
@@ -89,21 +89,15 @@ public:
     Function(QString const& fileReference = QString());
 
 	// Copy constructor
-	Function(const Function &other);
+	 Function(const Function &other);
 
-    // Move constructor
-    Function(Function&& other) = default;
-
-    // Assignment operator
-    Function& operator=(const Function& other);
-
-	// Move assignment operator
-	Function& operator=(Function&& other) = default;
+	// Assignment operator
+	 Function& operator=(const Function& other);
 
 	/*!
      *  The destructor.
 	 */
-	~Function() = default;
+	~Function();
 
 	/*! 
      *  Get the value of the replicate-attribute.

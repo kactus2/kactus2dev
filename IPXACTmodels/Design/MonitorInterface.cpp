@@ -23,6 +23,40 @@ path_()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MonitorInterface::MonitorInterface()
+//-----------------------------------------------------------------------------
+MonitorInterface::MonitorInterface(const MonitorInterface& other) :
+HierInterface(other),
+componentReference_(other.componentReference_),
+path_(other.path_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: MonitorInterface::~MonitorInterface()
+//-----------------------------------------------------------------------------
+MonitorInterface::~MonitorInterface()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: MonitorInterface::operator=()
+//-----------------------------------------------------------------------------
+MonitorInterface& MonitorInterface::operator=(const MonitorInterface& other)
+{
+    if (this != &other)
+    {
+        HierInterface::operator=(other);
+        componentReference_ = other.componentReference_;
+        path_ = other.path_;
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MonitorInterface::operator==()
 //-----------------------------------------------------------------------------
 bool MonitorInterface::operator==(const MonitorInterface& other)

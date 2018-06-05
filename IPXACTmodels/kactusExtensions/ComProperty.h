@@ -43,28 +43,28 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ComProperty() = default;
+    ~ComProperty();
 
     /*!
      *  Copy the com property.
      *
      *      @return The copied com property.
      */
-    virtual ComProperty* clone() const override final;
+    virtual ComProperty* clone() const;
 
     /*!
      *  Get the type of the com property extension.
      *
      *      @return The type of this extension.
      */
-    virtual QString type() const override final;
+    virtual QString type() const;
 
     /*!
      *  Writes the contents of the property to an XML stream.
      *
      *      @param [in] write The XML stream writer.
      */
-    virtual void write(QXmlStreamWriter& writer) const override final;
+    virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Returns true if the property contents are valid.
@@ -141,11 +141,6 @@ public:
      *  Assignment operator.
      */
     ComProperty& operator=(ComProperty const& rhs);
-
-    /*!
-    *  Move assignment operator.
-    */
-    ComProperty& operator=(ComProperty&& rhs) = default;
 
 private:
     //-----------------------------------------------------------------------------

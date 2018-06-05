@@ -6,7 +6,7 @@
 // Date: 05.08.2015
 //
 // Description:
-// Kactus2 type for a boolean value, that can contain an unspecified value.
+// Kactus2 vendor extension for a boolean value, that can contain an unspecified value.
 //-----------------------------------------------------------------------------
 
 #ifndef BOOLEANVALUE_H
@@ -16,9 +16,6 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-//-----------------------------------------------------------------------------
-//! Kactus2 type for a boolean value, that can contain an unspecified value.
-//-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT BooleanValue 
 {
 public:
@@ -28,18 +25,12 @@ public:
 
     //! Copy constructor;
     BooleanValue(BooleanValue const& other);
-    
-    //! Move constructor;
-    BooleanValue(BooleanValue&& other) = default;
 
 	//! The destructor.
-	~BooleanValue() = default;
+	~BooleanValue();
 
     //! Assignment operator.
     BooleanValue& operator=(BooleanValue const& other);
-    
-    //! Move assignment operator.
-    BooleanValue& operator=(BooleanValue&& other) = default;
 
     /*!
      *  Set a boolean value.

@@ -56,6 +56,14 @@ RegisterDefinition& RegisterDefinition::operator=( const RegisterDefinition& oth
 }
 
 //-----------------------------------------------------------------------------
+// Function: RegisterDefinition::~RegisterDefinition()
+//-----------------------------------------------------------------------------
+RegisterDefinition::~RegisterDefinition()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: RegisterDefinition::getVolatile()
 //-----------------------------------------------------------------------------
 QString RegisterDefinition::getVolatile() const

@@ -74,6 +74,14 @@ AddressBlock& AddressBlock::operator=( const AddressBlock& other )
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlock::~AddressBlock()
+//-----------------------------------------------------------------------------
+AddressBlock::~AddressBlock()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlock::clone()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryBlockBase> AddressBlock::clone() const

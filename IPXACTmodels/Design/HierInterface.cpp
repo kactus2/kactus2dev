@@ -29,6 +29,42 @@ description_()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HierInterface::HierInterface()
+//-----------------------------------------------------------------------------
+HierInterface::HierInterface(const HierInterface& other) :
+Extendable(other),
+busRef_(other.busRef_),
+isPresent_(other.isPresent_),
+description_(other.description_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierInterface::~HierInterface()
+//-----------------------------------------------------------------------------
+HierInterface::~HierInterface()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierInterface::operator=()
+//-----------------------------------------------------------------------------
+HierInterface& HierInterface::operator=(const HierInterface& other)
+{
+    if (this != &other)
+    {
+        Extendable::operator =(other);
+        busRef_ = other.busRef_;
+        isPresent_ = other.isPresent_;
+        description_ = other.description_;
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HierInterface::operator==()
 //-----------------------------------------------------------------------------
 bool HierInterface::operator==(const HierInterface& other)

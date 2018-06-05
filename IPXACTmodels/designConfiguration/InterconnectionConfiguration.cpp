@@ -42,6 +42,14 @@ abstractorInstances_(new QList<QSharedPointer<MultipleAbstractorInstances> > )
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectionConfiguration::~InterconnectionConfiguration()
+//-----------------------------------------------------------------------------
+InterconnectionConfiguration::~InterconnectionConfiguration()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectionConfiguration::getIsPresent()
 //-----------------------------------------------------------------------------
 QString InterconnectionConfiguration::getIsPresent() const

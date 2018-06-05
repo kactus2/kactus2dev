@@ -35,11 +35,6 @@ public:
      *  The copy constructor.
      */
     ConfigurableVLNVReference(const ConfigurableVLNVReference& other);
-   
-    /*!
-    *  The move constructor.
-    */
-    ConfigurableVLNVReference(ConfigurableVLNVReference&& other) = default;
 
     /*!
      *  The constructor.
@@ -63,7 +58,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~ConfigurableVLNVReference() = default;
+    ~ConfigurableVLNVReference();
 
     /*!
      *  Sets the VLNV reference.
@@ -105,9 +100,6 @@ public:
      */
     QString getSingleConfigurableElementValue(QString const& referenceId) const;
     
-    //! Assignment operator.
-    ConfigurableVLNVReference& operator=(ConfigurableVLNVReference const& other);
-
 private:
 
     //! A list of configurable element values

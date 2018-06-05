@@ -28,6 +28,18 @@ monitorInterfaces_(new QList<QSharedPointer<MonitorInterface> > ())
 //-----------------------------------------------------------------------------
 // Function: MonitorInterconnection::MonitorInterconnection()
 //-----------------------------------------------------------------------------
+MonitorInterconnection::MonitorInterconnection() :
+NameGroup(),
+isPresent_(),
+monitoredActiveInterface_(new MonitorInterface()),
+monitorInterfaces_(new QList<QSharedPointer<MonitorInterface> > ())
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: MonitorInterconnection::MonitorInterconnection()
+//-----------------------------------------------------------------------------
 MonitorInterconnection::MonitorInterconnection(const MonitorInterconnection& other) :
 NameGroup(other),
 isPresent_(other.isPresent_),
@@ -43,6 +55,15 @@ monitorInterfaces_(new QList<QSharedPointer<MonitorInterface> > ())
             monitorInterfaces_->append(copy);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MonitorInterconnection::~MonitorInterconnection()
+//-----------------------------------------------------------------------------
+MonitorInterconnection::~MonitorInterconnection()
+{
+    monitoredActiveInterface_.clear();
+    monitorInterfaces_.clear();
 }
 
 //-----------------------------------------------------------------------------

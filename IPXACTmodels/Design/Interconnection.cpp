@@ -75,6 +75,16 @@ isPresent_(other.isPresent_)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Interconnection::~Interconnection()
+//-----------------------------------------------------------------------------
+Interconnection::~Interconnection()
+{
+    startInterface_.clear();
+    activeInterfaces_.clear();
+    hierInterfaces_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Interconnection::operator=()
 //-----------------------------------------------------------------------------
 Interconnection& Interconnection::operator=( const Interconnection& other)

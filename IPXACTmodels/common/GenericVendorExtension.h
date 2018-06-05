@@ -34,30 +34,24 @@ public:
 	 */
 	GenericVendorExtension(QDomNode const& extensionNode);
 
-    // Disable copying.
-    GenericVendorExtension(GenericVendorExtension const& other) = delete;
-
     /*!
      *  Clones the vendor extension.
      *
      *      @return The clone copy of the vendor extension.
      */
-    virtual GenericVendorExtension* clone() const override final;
+    virtual GenericVendorExtension* clone() const;
 
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~GenericVendorExtension() = default;
-    
-    //! Disable assign.
-    GenericVendorExtension& operator=(GenericVendorExtension const& rhs) = delete;
+	virtual ~GenericVendorExtension();
 
     /*!
      *  Returns a type identifier for the vendor extension.
      *
      *      @return A type identifier of the vendor extension.
      */
-    virtual QString type() const override final;
+    virtual QString type() const;
 
     //! Returns the DOM node presentation of the extension.
     QDomNode node();
@@ -67,9 +61,14 @@ public:
      *
      *      @param [in] writer   The writer used for writing the XML.
      */
-    virtual void write(QXmlStreamWriter& writer) const override final;
+    virtual void write(QXmlStreamWriter& writer) const;
 
 private:
+	// Disable copying.
+    GenericVendorExtension(GenericVendorExtension const& other);
+
+    //! Disable assign.
+    GenericVendorExtension& operator=(GenericVendorExtension const& rhs);
 
     /*!
      *  Writes a DOM node to XML using a given XML writer.

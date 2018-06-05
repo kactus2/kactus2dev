@@ -39,24 +39,24 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ComDefinition() = default;
+    virtual ~ComDefinition();
 
     /*!
      *  Makes a copy of the document.
      *
      *      @return The created copy of the COM definition.
      */
-    virtual QSharedPointer<Document> clone()  const override final;
+    virtual QSharedPointer<Document> clone()  const;
 
     /*!
      *  Returns the dependent files (none).
      */
-    virtual QStringList getDependentFiles() const override final;
+    virtual QStringList getDependentFiles() const;
 
     /*!
      *  Returns the dependent VLNVs (none).
      */
-    virtual QList<VLNV> getDependentVLNVs() const override final;
+    virtual QList<VLNV> getDependentVLNVs() const;
 
     /*!
      *  Adds a new transfer type to the communication definition.

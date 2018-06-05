@@ -45,9 +45,9 @@ Document(other),
     extends_(other.extends_),
     logicalPorts_(new QList<QSharedPointer<PortAbstraction> >())
 {
-    for (auto port = other.logicalPorts_->cbegin(); port != other.logicalPorts_->cend(); ++port)
+    foreach (QSharedPointer<PortAbstraction> port, *other.logicalPorts_)
     {
-        logicalPorts_->append(QSharedPointer<PortAbstraction>(new PortAbstraction(**port)));
+        logicalPorts_->append(QSharedPointer<PortAbstraction>(new PortAbstraction(*port)));
     }
 }
 
@@ -62,12 +62,20 @@ AbstractionDefinition & AbstractionDefinition::operator=(AbstractionDefinition c
         busType_ = other.busType_;
 		extends_ = other.extends_;
 
-        for (auto port = other.logicalPorts_->cbegin(); port != other.logicalPorts_->cend(); ++port)
+        foreach (QSharedPointer<PortAbstraction> port, *other.logicalPorts_)
         {
-            logicalPorts_->append(QSharedPointer<PortAbstraction>(new PortAbstraction(**port)));
+            logicalPorts_->append(QSharedPointer<PortAbstraction>(new PortAbstraction(*port)));
         }
 	}
 	return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::~AbstractionDefinition()
+//-----------------------------------------------------------------------------
+AbstractionDefinition::~AbstractionDefinition()
+{
+
 }
 
 //-----------------------------------------------------------------------------

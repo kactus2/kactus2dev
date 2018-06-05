@@ -56,14 +56,14 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~InterfaceGraphicsData() = default;
+    virtual ~InterfaceGraphicsData();
 
     /*!
      *  Clones the interface graphics data.
      *
      *      @return Cloned interface graphics data.
      */
-    virtual InterfaceGraphicsData* clone() const override final;
+    virtual InterfaceGraphicsData* clone() const;
     
     /*!
      *  Assignment operator.
@@ -71,21 +71,16 @@ public:
     InterfaceGraphicsData& operator=(InterfaceGraphicsData const& rhs);
 
     /*!
-    *  Move assignment operator.
-    */
-    InterfaceGraphicsData& operator=(InterfaceGraphicsData&& rhs) = default;
-
-    /*!
      *  Gets the interface graphics data type.
      *
      *      @return The type of the interface graphics data.
      */
-    virtual QString type() const override final;
+    virtual QString type() const;
 
     /*!
      *  Writes the contents of the interface graphics data to an XML stream.
      */
-    virtual void write(QXmlStreamWriter& writer) const override final;
+    virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Set a name.

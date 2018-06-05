@@ -31,35 +31,30 @@ class IPXACTMODELS_EXPORT Catalog: public Document
 public:
 
 	//! The default constructor.
-	explicit Catalog(VLNV const & vlnv = VLNV());
+	Catalog(VLNV const & vlnv = VLNV());
 
 	//! Copy constructor.
 	Catalog(Catalog const& other);
 
-    //! Move constructor.
-    Catalog(Catalog&& other) = default;
 
 	//! Assignment operator.
 	Catalog &operator=(Catalog const& other);
 
-    //! Move assign operator.
-    Catalog &operator=(Catalog&& other) = default;
-
 	//! The destructor.
-	virtual ~Catalog() = default;
+	virtual ~Catalog();
 
 	/*!
-	 *  Creates a perfect copy of the catalog.
+	 *  Creates a perfect copy of the Bus Definition.
 	 *
-	 *      @return Copy of the catalog.
+	 *      @return Copy of the bus definition.
 	 */
-	virtual QSharedPointer<Document> clone() const override final;
+	virtual QSharedPointer<Document> clone() const;
 
-	/*! Set the VLNV for the catalog.
+	/*! Set the VLNV for the bus definition.
 	*
 	*      @param [in] vlnv     The vlnv to set
 	*/
-	virtual void setVlnv(const VLNV& vlnv) override final;
+	virtual void setVlnv(const VLNV& vlnv);
 
     /*!
      *  Get the catalog descriptions in the catalog.
@@ -121,7 +116,7 @@ public:
 	 *
 	 *      @return The dependency VLNVs.
 	 */
-	virtual QList<VLNV> getDependentVLNVs() const override final;
+	virtual QList<VLNV> getDependentVLNVs() const;
 
 	/*! Get the file dependencies of this catalog.
      *
@@ -129,7 +124,7 @@ public:
      *
      *      @remark This function never returns anything because catalog only has VLNV dependencies.
 	 */
-	virtual QStringList getDependentFiles() const override final;
+	virtual QStringList getDependentFiles() const;
 
 private:
 

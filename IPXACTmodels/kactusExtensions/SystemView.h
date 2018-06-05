@@ -57,7 +57,7 @@ public:
 	/*!
      *  Destructor.
 	 */
-	virtual ~SystemView() = default;
+	~SystemView();
 
     /*!
      *  Clone this system view.

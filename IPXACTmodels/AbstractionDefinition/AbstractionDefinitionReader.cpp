@@ -27,6 +27,14 @@ AbstractionDefinitionReader::AbstractionDefinitionReader() : DocumentReader()
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionReader::~AbstractionDefinitionReader()
+//-----------------------------------------------------------------------------
+AbstractionDefinitionReader::~AbstractionDefinitionReader()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionReader::createAbstractionDefinitionFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstractionDefinitionFrom(
@@ -93,7 +101,6 @@ void AbstractionDefinitionReader::parsePorts(QDomNode definitionNode,
 
     QDomNodeList portNodes = definitionNode.firstChildElement(
         QStringLiteral("ipxact:ports")).elementsByTagName(QStringLiteral("ipxact:port"));
-
     int portCount = portNodes.count();
     for (int i = 0; i < portCount; i++)
     {

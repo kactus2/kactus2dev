@@ -19,8 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
-ComDefinition::ComDefinition(VLNV const& vlnv):
-    Document(vlnv),
+ComDefinition::ComDefinition(VLNV const& vlnv) : Document(vlnv),
     transferTypes_(new QStringList),
     properties_(new QList<QSharedPointer<ComProperty> >)
 {
@@ -29,8 +28,7 @@ ComDefinition::ComDefinition(VLNV const& vlnv):
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
-ComDefinition::ComDefinition(ComDefinition const& rhs):
-    Document(rhs),
+ComDefinition::ComDefinition(ComDefinition const& rhs) : Document(rhs),
     transferTypes_(new QStringList(*rhs.transferTypes_)),
     properties_(new QList<QSharedPointer<ComProperty> >)
 {
@@ -39,6 +37,13 @@ ComDefinition::ComDefinition(ComDefinition const& rhs):
     {
         properties_->append(QSharedPointer<ComProperty>(new ComProperty(*property.data())));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinition::~ComDefinition()
+//-----------------------------------------------------------------------------
+ComDefinition::~ComDefinition()
+{
 }
 
 //-----------------------------------------------------------------------------

@@ -162,6 +162,25 @@ Component& Component::operator=( const Component& other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::~Component()
+//-----------------------------------------------------------------------------
+Component::~Component()
+{
+    busInterfaces_.clear();
+    indirectInterfaces_.clear();
+    channels_.clear();
+    remapStates_.clear();
+    addressSpaces_.clear();
+    memoryMaps_.clear();
+    model_.clear();
+    componentGenerators_.clear();
+    choices_.clear();
+    fileSets_.clear();
+    cpus_.clear();
+    otherClockDrivers_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::clone()
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> Component::clone() const 

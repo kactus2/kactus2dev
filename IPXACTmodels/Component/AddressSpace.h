@@ -46,17 +46,11 @@ public:
 	//! The copy constructor.
 	AddressSpace(const AddressSpace &other);
 
-    //! The move constructor.
-    AddressSpace(AddressSpace&& other) = default;
-
 	//! The assignment operator.
 	AddressSpace &operator=(const AddressSpace &other);
 
-    //! The move assignment operator.
-    AddressSpace &operator=(AddressSpace&& other);
-
 	//! The destructor.
-	virtual ~AddressSpace() = default;
+	~AddressSpace();
 
     /*!
      *  Gets the presence.

@@ -44,24 +44,14 @@ public:
     DesignInstantiation(const DesignInstantiation& other);
 
     /*!
-    *  The move constructor.
-    */
-    DesignInstantiation(DesignInstantiation&& other) = default;
-
-    /*!
-    *  The assignment operator.
-    */
-    DesignInstantiation& operator=(const DesignInstantiation& other);
-
-    /*!
-     *  The move assignment operator.
+     *  The assignment operator.
      */
-    DesignInstantiation& operator=(DesignInstantiation&& other) = default;
+    DesignInstantiation& operator=(const DesignInstantiation& other);
 
     /*!
      *  The destructor.
      */
-    virtual ~DesignInstantiation() = default;
+    ~DesignInstantiation();
 
     /*!
      *  Get the design reference.

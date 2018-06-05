@@ -58,6 +58,15 @@ NameGroup(other),
 }
 
 //-----------------------------------------------------------------------------
+// Function: AdHocConnection::~AdHocConnection()
+//-----------------------------------------------------------------------------
+AdHocConnection::~AdHocConnection()
+{
+    internalPortReferences_.clear();
+    externalPortReferences_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: AdHocConnection::operator=()
 //-----------------------------------------------------------------------------
 AdHocConnection& AdHocConnection::operator=( const AdHocConnection& other )

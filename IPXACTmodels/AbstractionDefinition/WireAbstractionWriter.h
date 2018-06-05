@@ -30,12 +30,8 @@ public:
     //! The constructor;
     WireAbstractionWriter();
     
-    // Disable copying.
-    WireAbstractionWriter(WireAbstractionWriter const& rhs);
-    WireAbstractionWriter& operator=(WireAbstractionWriter const& rhs);
-
     //! The destructor.
-    ~WireAbstractionWriter() = default;
+    ~WireAbstractionWriter();
   
     /*!
      *  Writes the given wire into XML.

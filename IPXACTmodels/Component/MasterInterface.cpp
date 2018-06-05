@@ -27,6 +27,17 @@ baseAttributes_()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MasterInterface::MasterInterface()
+//-----------------------------------------------------------------------------
+MasterInterface::MasterInterface(MasterInterface const& other):
+addressSpaceRef_(other.addressSpaceRef_),
+isPresent_(other.isPresent_),
+baseAddress_(other.baseAddress_),
+baseAttributes_(other.baseAttributes_)
+{
+}
+
+//-----------------------------------------------------------------------------
 // Function: MasterInterface::operator=()
 //-----------------------------------------------------------------------------
 MasterInterface& MasterInterface::operator=(MasterInterface const& other)
@@ -40,6 +51,13 @@ MasterInterface& MasterInterface::operator=(MasterInterface const& other)
     }
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterInterface::~MasterInterface()
+//-----------------------------------------------------------------------------
+MasterInterface::~MasterInterface()
+{
 }
 
 //-----------------------------------------------------------------------------

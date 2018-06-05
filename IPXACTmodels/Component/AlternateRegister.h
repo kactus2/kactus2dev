@@ -40,24 +40,18 @@ public:
 	//! Copy constructor.
 	AlternateRegister(const AlternateRegister& other);
 
-    //! move constructor.
-    AlternateRegister(AlternateRegister&& other) = default;
-
 	//! Assignment operator.
 	AlternateRegister& operator=(const AlternateRegister& other);
 
-    //! Assignment operator.
-    AlternateRegister& operator=(AlternateRegister&& other) = default;
-
 	//! The destructor.
-	virtual ~AlternateRegister() = default;
+	virtual ~AlternateRegister();
 
 	/*!
      *  Clone the alternate register and return pointer to the copy.
 	 * 
 	 *      @return Pointer to the cloned alternate register.
 	 */
-    virtual QSharedPointer<RegisterBase> clone() override final;
+    virtual QSharedPointer<RegisterBase> clone();
 	/*!
      *  Get the list of the alternate groups.
 	 *

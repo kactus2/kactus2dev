@@ -36,7 +36,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~AbstractionType() = default;
+    virtual ~AbstractionType();
 
     /*!
      *  Copy constructor.
@@ -44,19 +44,9 @@ public:
     AbstractionType(const AbstractionType &other);
 
     /*!
-    *  Move constructor.
-    */
-    AbstractionType(AbstractionType&& other) = default;
-
-    /*!
      *  Assignment operator.
      */
     AbstractionType &operator=(const AbstractionType &other);
-
-    /*!
-    *  Move assignment operator.
-    */
-    AbstractionType &operator=(AbstractionType&& other) = default;
 
     /*!
      *  Set the view references.

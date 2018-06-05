@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: NameValuePair::NameValuePair()
 //-----------------------------------------------------------------------------
-NameValuePair::NameValuePair(QString const& name, QString const& value) :
+NameValuePair::NameValuePair(QString const& name /* = QString() */, QString const& value /* = QString() */) :
 NameGroup(name),
 Extendable(),
 value_(value)
@@ -22,6 +22,16 @@ value_(value)
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: NameValuePair::NameValuePair()
+//-----------------------------------------------------------------------------
+NameValuePair::NameValuePair(const NameValuePair& other):
+NameGroup(other),
+Extendable(other),
+value_(other.value_)
+{
+
+}
 
 //-----------------------------------------------------------------------------
 // Function: NameValuePair::operator=()
@@ -36,6 +46,14 @@ NameValuePair& NameValuePair::operator=(const NameValuePair& other)
     }
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: NameValuePair::~NameValuePair()
+//-----------------------------------------------------------------------------
+NameValuePair::~NameValuePair()
+{
+
 }
 
 //-----------------------------------------------------------------------------

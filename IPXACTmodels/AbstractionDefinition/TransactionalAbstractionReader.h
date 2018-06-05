@@ -34,13 +34,9 @@ public:
      *      @param [in] parent   The parent object.
      */
     TransactionalAbstractionReader(QObject* parent = 0);
-    
-    // Disable copying.
-    TransactionalAbstractionReader(TransactionalAbstractionReader const& rhs) = delete;
-    TransactionalAbstractionReader& operator=(TransactionalAbstractionReader const& rhs) = delete;
 
     //! The destructor.
-    virtual ~TransactionalAbstractionReader() = default;
+    ~TransactionalAbstractionReader();
         
     /*!
      *  Creates a transactional for abstraction definition from XML description.
@@ -52,6 +48,9 @@ public:
     QSharedPointer<TransactionalAbstraction> createTransactionalAbstractionFrom(QDomNode const& transactionalNode) const;
 
 private:	
+    // Disable copying.
+    TransactionalAbstractionReader(TransactionalAbstractionReader const& rhs);
+    TransactionalAbstractionReader& operator=(TransactionalAbstractionReader const& rhs);
                                
     /*!
      *  Reads the qualifier from XML to a transactional.

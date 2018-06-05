@@ -52,6 +52,14 @@ abstractorInstances_(new QList<QSharedPointer<AbstractorInstance> >)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MultipleAbstractorInstances::~MultipleAbstractorInstances()
+//-----------------------------------------------------------------------------
+MultipleAbstractorInstances::~MultipleAbstractorInstances()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: MultipleAbstractorInstances::getIsPresent()
 //-----------------------------------------------------------------------------
 QString MultipleAbstractorInstances::getIsPresent() const

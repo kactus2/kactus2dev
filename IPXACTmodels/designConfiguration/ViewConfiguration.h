@@ -45,17 +45,9 @@ public:
     ViewConfiguration(const ViewConfiguration& other);
 
     /*!
-    *  Move constructor.
-    */
-    ViewConfiguration(ViewConfiguration&& other) = default;
-
-    /*!
      *  The destructor.
      */
-    ~ViewConfiguration() = default;
-
-    //! Move assignment.
-    ViewConfiguration& operator=(ViewConfiguration&& other) = default;
+    ~ViewConfiguration();
 
     /*!
      *  Get the name of this instance.

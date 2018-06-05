@@ -12,8 +12,6 @@
 
 #include "ApiInterface.h"
 
-#include <IPXACTmodels/common/CommonItemsReader.h>
-
 //-----------------------------------------------------------------------------
 // Function: str2DependencyDirection()
 //-----------------------------------------------------------------------------
@@ -52,10 +50,10 @@ QString dependencyDirection2Str(DependencyDirection dir)
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
 ApiInterface::ApiInterface() :
-    NameGroup(),
-    apiType_(),
-    dependencyDir_(DEPENDENCY_PROVIDER),
-    defaultPos_()
+NameGroup(),
+apiType_(),
+dependencyDir_(DEPENDENCY_PROVIDER),
+defaultPos_()
 {
 
 }
@@ -64,10 +62,10 @@ ApiInterface::ApiInterface() :
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
 ApiInterface::ApiInterface(ApiInterface const& rhs) :
-    NameGroup(rhs),
-    apiType_(rhs.apiType_),
-    dependencyDir_(rhs.dependencyDir_),
-    defaultPos_(rhs.defaultPos_)
+NameGroup(rhs),
+apiType_(rhs.apiType_),
+dependencyDir_(rhs.dependencyDir_),
+defaultPos_(rhs.defaultPos_)
 {
 
 }
@@ -76,10 +74,10 @@ ApiInterface::ApiInterface(ApiInterface const& rhs) :
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
 ApiInterface::ApiInterface(QDomNode& node) :
-    NameGroup(),
-    apiType_(),
-    dependencyDir_(DEPENDENCY_PROVIDER),
-    defaultPos_()
+NameGroup(),
+apiType_(),
+dependencyDir_(DEPENDENCY_PROVIDER),
+defaultPos_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -104,7 +102,7 @@ ApiInterface::ApiInterface(QDomNode& node) :
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:apiType"))
         {
-            apiType_ = CommonItemsReader::parseVLNVAttributes(childNode, VLNV::APIDEFINITION);
+            apiType_ = VLNV::createVLNV(childNode, VLNV::APIDEFINITION);
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:dependencyDirection"))
         {
@@ -116,6 +114,14 @@ ApiInterface::ApiInterface(QDomNode& node) :
             defaultPos_.setY(childNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt());
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiInterface::~ApiInterface()
+//-----------------------------------------------------------------------------
+ApiInterface::~ApiInterface()
+{
+
 }
 
 //-----------------------------------------------------------------------------

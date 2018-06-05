@@ -38,6 +38,14 @@ maximum_(other.maximum_)
 }
 
 //-----------------------------------------------------------------------------
+// Function: WriteValueConstraint::~WriteValueConstraint()
+//-----------------------------------------------------------------------------
+WriteValueConstraint::~WriteValueConstraint()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: WriteValueConstraint::operator=()
 //-----------------------------------------------------------------------------
 WriteValueConstraint& WriteValueConstraint::operator=(WriteValueConstraint const& other)

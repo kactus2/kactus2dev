@@ -37,6 +37,14 @@ excludePorts_(new QStringList())
 }
 
 //-----------------------------------------------------------------------------
+// Function: ActiveInterface::~ActiveInterface()
+//-----------------------------------------------------------------------------
+ActiveInterface::~ActiveInterface()
+{
+    excludePorts_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ActiveInterface::operator=()
 //-----------------------------------------------------------------------------
 ActiveInterface& ActiveInterface::operator=(const ActiveInterface& other)

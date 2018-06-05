@@ -31,19 +31,13 @@ public:
 	BuildCommand();
 
 	//! The copy constructor.
-	BuildCommand(const BuildCommand &other) = default;
-
-    //! The move constructor.
-    BuildCommand(BuildCommand&& other) = default;
+	BuildCommand(const BuildCommand &other);
 
 	//! The assignment operator.
 	BuildCommand &operator=(const BuildCommand &other);
 
-    //! The move assignment operator.
-    BuildCommand &operator=(BuildCommand&& other) = default;
-
     //! The destructor.
-	virtual ~BuildCommand() = default;
+	virtual ~BuildCommand();
 
     /*!
      *  Get the target name.

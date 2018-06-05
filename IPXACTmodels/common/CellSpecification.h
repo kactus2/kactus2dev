@@ -46,18 +46,9 @@ public:
     //! The copy constructor.
     CellSpecification(CellSpecification const& other);
 
-    //! The move constructor.
-    CellSpecification(CellSpecification&& other) = default;
-
     //! The destructor.
     ~CellSpecification();
-       
-    // Disable assignment.
-    CellSpecification& operator=(CellSpecification const& rhs) = delete;
-
-    // Move assignment.
-    CellSpecification& operator=(CellSpecification&& rhs) = default;
-
+        
     /*!
      *  Sets the cell strength.
      *
@@ -101,6 +92,8 @@ public:
     CellClassType getCellClass() const;
 
 private:
+    // Disable assignment.
+    CellSpecification& operator=(CellSpecification const& rhs);
 
     //! The cell strength.
     CellStrengthType cellStrength_;

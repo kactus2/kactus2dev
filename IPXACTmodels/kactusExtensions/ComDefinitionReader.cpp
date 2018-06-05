@@ -24,6 +24,14 @@ ComDefinitionReader::ComDefinitionReader(): DocumentReader()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComDefinitionReader::~ComDefinitionReader()
+//-----------------------------------------------------------------------------
+ComDefinitionReader::~ComDefinitionReader()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComDefinitionReader::createComDefinitionFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomNode const& document) const
