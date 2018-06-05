@@ -46,7 +46,12 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
-    ../../../IPXACTmodels/common/ParameterWriter.h
+    ../../../IPXACTmodels/common/ParameterWriter.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h \
+    ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/common/CommonItemsReader.h \
+    ../../../IPXACTmodels/BusDefinition/BusDefinition.h \
+    ../../../IPXACTmodels/common/BooleanValue.h
 SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
@@ -92,4 +97,9 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_DesignWriter.cpp
+    ./tst_DesignWriter.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.cpp \
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
+    ../../../IPXACTmodels/BusDefinition/BusDefinition.cpp \
+    ../../../IPXACTmodels/common/BooleanValue.cpp

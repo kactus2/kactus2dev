@@ -1107,8 +1107,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidName()
     QFETCH(QString, name);
     QFETCH(bool, isValid);
 
-    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection());
-    testConnection->setName(name);
+    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection(name));    
 
     QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(0);
 
@@ -1151,8 +1150,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidIsPresent()
     QFETCH(QString, isPresent);
     QFETCH(bool, isValid);
 
-    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection());
-    testConnection->setName("Yatagarasu");
+    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection("Yatagarasu"));
     testConnection->setIsPresent(isPresent);
 
     QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(0);
@@ -1208,9 +1206,8 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInter
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > containedInstances (
         new QList<QSharedPointer<ComponentInstance> > ());
 
-    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection());
-    testConnection->setName("Balduran");
-
+    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection("Balduran"));
+    
     if (startInterfaceExists)
     {
         QSharedPointer<MonitorInterface> testInterface (new MonitorInterface(componentReference, busReference));
@@ -1333,8 +1330,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces()
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > containedInstances (
         new QList<QSharedPointer<ComponentInstance> > ());
 
-    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection());
-    testConnection->setName("Balduran");
+    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection("Balduran"));
 
     QSharedPointer<MonitorInterface> testInterface (new MonitorInterface(componentReference, busReference));
     if (monitorInterfaceExists)
@@ -1472,8 +1468,7 @@ void tst_DesignValidator::testHasValidMonitorInterconnections()
 
     LibraryMock* mockLibrary (new LibraryMock(this));
 
-    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection());
-    testConnection->setName("testConnection");
+    QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection("testConnection"));    
 
     if (createInterconnection)
     {

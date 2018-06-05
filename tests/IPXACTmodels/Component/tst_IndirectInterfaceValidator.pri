@@ -36,6 +36,7 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/Field.h \
     ../../../IPXACTmodels/Component/File.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../IPXACTmodels/kactusExtensions/FileDependency.h \
     ../../../IPXACTmodels/Component/FileSet.h \
     ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/Component/Function.h \
@@ -84,7 +85,11 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../IPXACTmodels/generaldeclarations.h \
-    ../../../IPXACTmodels/kactusExtensions/FileDependency.h
+    ../../../IPXACTmodels/common/NameGroupReader.h \
+    ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/common/CommonItemsReader.h \
+    ../../../IPXACTmodels/BusDefinition/BusDefinition.h \
+    ../../../IPXACTmodels/common/GenericVendorExtension.h
 SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/AddressBlock.cpp \
@@ -118,6 +123,7 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
     ../../../IPXACTmodels/Component/File.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../IPXACTmodels/kactusExtensions/FileDependency.cpp \
     ../../../IPXACTmodels/Component/FileSet.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/Component/Function.cpp \
@@ -167,4 +173,8 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_IndirectInterfaceValidator.cpp \
-    ../../../IPXACTmodels/kactusExtensions/FileDependency.cpp
+    ../../../IPXACTmodels/common/ParameterReader.cpp \
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
+    ../../../IPXACTmodels/BusDefinition/BusDefinition.cpp \
+    ../../../IPXACTmodels/common/GenericVendorExtension.cpp

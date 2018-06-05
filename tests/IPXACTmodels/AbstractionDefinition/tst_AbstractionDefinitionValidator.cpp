@@ -69,7 +69,7 @@ private:
 tst_AbstractionDefinitionValidator::tst_AbstractionDefinitionValidator() :
 library_(new LibraryMock(this)), expressionParser_(new SystemVerilogExpressionParser())
 {
-	testBusDefVlnv_ = VLNV("type","vendor","library","test_bus_def","version");
+	testBusDefVlnv_ = VLNV(VLNV::BUSDEFINITION,"vendor","library","test_bus_def","version");
 	QSharedPointer<BusDefinition> testBusDef(new BusDefinition);
 	testBusDef->setVlnv(testBusDefVlnv_);
 	library_->addComponent(testBusDef);
@@ -89,7 +89,7 @@ void tst_AbstractionDefinitionValidator::baseCase()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -126,8 +126,8 @@ void tst_AbstractionDefinitionValidator::busFail()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
-	abs->setBusType(VLNV("type","vendor","library","bogus","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
+	abs->setBusType(VLNV(VLNV::BUSDEFINITION,"vendor","library","bogus","version"));
 	abs->getLogicalPorts()->append(port_);
 
 	QVector<QString> errorList;
@@ -145,11 +145,11 @@ void tst_AbstractionDefinitionValidator::extendFail()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
-	abs->setExtends(VLNV("type","vendor","library","bogus","version"));
+	abs->setExtends(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","bogus","version"));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, abs);
@@ -166,7 +166,7 @@ void tst_AbstractionDefinitionValidator::paraFail()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -193,7 +193,7 @@ void tst_AbstractionDefinitionValidator::portFail()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -216,7 +216,7 @@ void tst_AbstractionDefinitionValidator::noDublicatePorts()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -246,7 +246,7 @@ void tst_AbstractionDefinitionValidator::wireFail()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -272,7 +272,7 @@ void tst_AbstractionDefinitionValidator::invalidWirePort()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -303,7 +303,7 @@ void tst_AbstractionDefinitionValidator::invalidTransactionalPort()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -335,7 +335,7 @@ void tst_AbstractionDefinitionValidator::invalidTimingConstraint()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -372,7 +372,7 @@ void tst_AbstractionDefinitionValidator::invalidCellSpec()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -409,7 +409,7 @@ void tst_AbstractionDefinitionValidator::wirePortSuccessful()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -451,7 +451,7 @@ void tst_AbstractionDefinitionValidator::transactionalSuccessful()
 	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV("type","vendor","library","name","version"));
+	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -483,7 +483,7 @@ void tst_AbstractionDefinitionValidator::systemWirePortHasGroup()
     QSharedPointer<AbstractionDefinition> abstraction(new AbstractionDefinition);
     AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-    abstraction->setVlnv(VLNV("type", "vendor", "library", "name", "version"));
+    abstraction->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
     abstraction->setBusType(testBusDefVlnv_);
     
     QSharedPointer<PortAbstraction>systemPort(new PortAbstraction);

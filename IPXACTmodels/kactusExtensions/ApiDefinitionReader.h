@@ -31,7 +31,7 @@ public:
 	ApiDefinitionReader();
 
 	//! The destructor.
-	~ApiDefinitionReader();
+	virtual ~ApiDefinitionReader();
 
     /*!
      *  Creates a Api definition from XML description.
@@ -41,7 +41,11 @@ public:
      *      @return The created Api definition.
      */
     QSharedPointer<ApiDefinition> createApiDefinitionFrom(QDomNode const& document) const;
- 
+
+    //! Disable copying.
+    ApiDefinitionReader(ApiDefinitionReader const& rhs) = delete;
+    ApiDefinitionReader& operator=(ApiDefinitionReader const& rhs) = delete;
+
 private:
 
     /*!
@@ -57,10 +61,6 @@ private:
      *      @param [in] node The source XML node.
      */
     void parseFunctions(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition) const;
-
-	//! Disable copying.
-	ApiDefinitionReader(ApiDefinitionReader const& rhs);
-	ApiDefinitionReader& operator=(ApiDefinitionReader const& rhs);
 };
 
 #endif // ApiDEFINITIONREADER_H

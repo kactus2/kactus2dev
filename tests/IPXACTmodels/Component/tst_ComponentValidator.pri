@@ -15,6 +15,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/Component/AddressSpace.h \
     ../../../IPXACTmodels/Component/validators/AddressSpaceValidator.h \
     ../../../IPXACTmodels/Component/AlternateRegister.h \
+    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h \
     ../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
     ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Assertion.h \
@@ -32,6 +33,8 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/Component/Choice.h \
     ../../../IPXACTmodels/Component/validators/ChoiceValidator.h \
     ../../../IPXACTmodels/common/ClockUnit.h \
+    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
+    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
     ../../../IPXACTmodels/kactusExtensions/ComInterface.h \
     ../../../IPXACTmodels/kactusExtensions/ComProperty.h \
     ../../../IPXACTmodels/Component/Component.h \
@@ -43,6 +46,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/Component/validators/ComponentValidator.h \
     ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
+    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h \
     ../../../IPXACTmodels/Component/Cpu.h \
     ../../../IPXACTmodels/Design/Design.h \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.h \
@@ -58,6 +62,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/Component/validators/FieldValidator.h \
     ../../../IPXACTmodels/Component/File.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../IPXACTmodels/kactusExtensions/FileDependency.h \
     ../../../IPXACTmodels/Component/FileSet.h \
     ../../../IPXACTmodels/Component/validators/FileSetValidator.h \
     ../../../IPXACTmodels/common/FileTypes.h \
@@ -141,11 +146,9 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../MockObjects/LibraryMock.h \
-    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
-    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
-    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h \
-    ../../../IPXACTmodels/kactusExtensions/FileDependency.h
+    ../../../IPXACTmodels/common/CommonItemsReader.h \
+    ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/validators/AbstractionTypeValidator.cpp \
@@ -159,6 +162,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/Component/AddressSpace.cpp \
     ../../../IPXACTmodels/Component/validators/AddressSpaceValidator.cpp \
     ../../../IPXACTmodels/Component/AlternateRegister.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ApiInterface.cpp \
     ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \
@@ -176,6 +180,8 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/Component/Choice.cpp \
     ../../../IPXACTmodels/Component/validators/ChoiceValidator.cpp \
     ../../../IPXACTmodels/common/ClockUnit.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ComInterface.cpp \
     ../../../IPXACTmodels/kactusExtensions/ComProperty.cpp \
     ../../../IPXACTmodels/Component/Component.cpp \
@@ -187,6 +193,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/Component/validators/ComponentValidator.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
+    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp \
     ../../../IPXACTmodels/Component/Cpu.cpp \
     ../../../IPXACTmodels/Design/Design.cpp \
     ../../../IPXACTmodels/designConfiguration/DesignConfiguration.cpp \
@@ -202,6 +209,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
     ../../../IPXACTmodels/Component/File.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../IPXACTmodels/kactusExtensions/FileDependency.cpp \
     ../../../IPXACTmodels/Component/FileSet.cpp \
     ../../../IPXACTmodels/Component/validators/FileSetValidator.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
@@ -285,8 +293,6 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_ComponentValidator.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
-    ../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp \
-    ../../../IPXACTmodels/kactusExtensions/FileDependency.cpp
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp

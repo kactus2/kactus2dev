@@ -25,7 +25,7 @@ public:
 	LibraryMock(QObject* parent);
 
 	//! The destructor.
-	~LibraryMock();
+	virtual ~LibraryMock();
 
     /*!
      *  Method description.

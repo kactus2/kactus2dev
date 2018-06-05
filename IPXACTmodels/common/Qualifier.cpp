@@ -68,8 +68,8 @@ bool Qualifier::isReset() const
 //-----------------------------------------------------------------------------
 void Qualifier::setType(Type qualifierType)
 {
-    isAddress_ = qualifierType == Data || qualifierType == Data_Address;
-    isData_ = qualifierType == Address || qualifierType == Data_Address;
-    isClock_ = qualifierType == Clock;
-    isReset_ = qualifierType == Reset;
+    isAddress_ = (qualifierType == Address || qualifierType == Data_Address);
+    isData_ = (qualifierType == Data || qualifierType == Data_Address);
+    isClock_ = (qualifierType == Clock);
+    isReset_ = (qualifierType == Reset);
 }
