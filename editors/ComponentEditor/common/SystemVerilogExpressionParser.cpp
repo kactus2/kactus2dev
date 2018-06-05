@@ -44,39 +44,6 @@ namespace
     const QRegularExpression ANY_OPERATOR(BINARY_OPERATOR.pattern() + "|" + UNARY_OPERATOR.pattern());
 }
 
-const QMap<QString, int> SystemVerilogExpressionParser::operator_precedence =
-{
-    {"<", 1},
-    {">", 1},
-    {"<=", 1},
-    {">=", 1},
-    {"==", 1},
-    {"+", 2},
-    {"-", 2},
-    {"*", 3},
-    {"/", 3},
-    {"**", 4},
-    {"$clog2", 5},
-    {"$pow", 5},
-    {"(", 6},
-    {")", 6},
-    {"{", 6},
-    {"}", 6}
-};
-
-const QMap<QString, int> SystemVerilogExpressionParser::base_formats =
-{
-    {"", 10},
-    {"d", 10},
-    {"D", 10},
-    {"h", 16},
-    {"H", 16},
-    {"o", 8},
-    {"O", 8},
-    {"b", 2},
-    {"B", 2},
-};
-
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::SystemVerilogExpressionParser()
 //-----------------------------------------------------------------------------
@@ -91,6 +58,45 @@ SystemVerilogExpressionParser::SystemVerilogExpressionParser()
 QString SystemVerilogExpressionParser::parseExpression(QString const& expression, bool* validExpression) const
 {
     return solveRPN(convertToRPN(expression), validExpression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::isArrayExpression()
+//-----------------------------------------------------------------------------
+bool SystemVerilogExpressionParser::isArrayExpression(QString const& expression) const
+{
+    return expression.contains(OPEN_ARRAY) && expression.contains(CLOSE_ARRAY);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::isPlainValue()
+//-----------------------------------------------------------------------------
+bool SystemVerilogExpressionParser::isPlainValue(QString const& expression) const
+{
+    return expression.isEmpty() || isLiteral(expression) || isStringLiteral(expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::baseForExpression()
+//-----------------------------------------------------------------------------
+int SystemVerilogExpressionParser::baseForExpression(QString const& expression) const
+{
+    int greatestBase = 0;
+
+    const QStringList expressionList(convertToRPN(expression));
+    for (QString const& token : expressionList)
+    {
+        if (isLiteral(token))
+        {
+            greatestBase = qMax(greatestBase, getBaseForNumber(token));
+        }
+        else if (isSymbol(token))
+        {
+            greatestBase = qMax(greatestBase, getBaseForSymbol(token));
+        }
+    }
+
+    return greatestBase;
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +133,7 @@ QStringList SystemVerilogExpressionParser::convertToRPN(QString const& expressio
         else if (operatorMatch.hasMatch())
         {
             while (stack.size() > 0 &&
-                operator_precedence.value(stack.last()) >= operator_precedence.value(operatorMatch.captured()) &&
+                operatorPrecedence(stack.last()) >= operatorPrecedence(operatorMatch.captured()) &&
                 stack.last() != OPEN_PARENTHESIS_STRING)
             {
                 output.append(stack.takeLast());
@@ -295,37 +301,6 @@ QString SystemVerilogExpressionParser::solveRPN(QStringList const& rpn, bool* va
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::isPlainValue()
-//-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isPlainValue(QString const& expression) const
-{
-    return expression.isEmpty() || isLiteral(expression) || isStringLiteral(expression);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::baseForExpression()
-//-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::baseForExpression(QString const& expression) const
-{
-    int greatestBase = 0;
-
-    const QStringList expressionList(convertToRPN(expression));
-    for (QString const& token : expressionList)
-    {
-        if (isLiteral(token))
-        {
-            greatestBase = qMax(greatestBase, getBaseForNumber(token));
-        }
-        else if (isSymbol(token))
-        {
-            greatestBase = qMax(greatestBase, getBaseForSymbol(token));
-        }
-    }
-
-    return greatestBase;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isStringLiteral()
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isStringLiteral(QString const& expression) const
@@ -333,14 +308,6 @@ bool SystemVerilogExpressionParser::isStringLiteral(QString const& expression) c
     static QRegularExpression stringExpression(SystemVerilogSyntax::STRING_LITERAL);
     return stringExpression.match(expression, 0, QRegularExpression::NormalMatch,
         QRegularExpression::AnchoredMatchOption).hasMatch();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::isArrayExpression()
-//-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isArrayExpression(QString const& expression) const
-{
-    return expression.contains(OPEN_ARRAY) && expression.contains(CLOSE_ARRAY);
 }
 
 //-----------------------------------------------------------------------------
@@ -582,6 +549,60 @@ int SystemVerilogExpressionParser::getBaseForSymbol(QString const& symbol) const
     return getBaseForNumber(symbol);
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::operatorPrecedence()
+//-----------------------------------------------------------------------------
+unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString const & oper) const
+{
+    static QMap<QString, int> operator_precedence =
+    {
+        { "<", 1 },
+        { ">", 1 },
+        { "<=", 1 },
+        { ">=", 1 },
+        { "==", 1 },
+        { "+", 2 },
+        { "-", 2 },
+        { "*", 3 },
+        { "/", 3 },
+        { "**", 4 },
+        { "$clog2", 5 },
+        { "$pow", 5 },
+        { "(", 6 },
+        { ")", 6 },
+        { "{", 6 },
+        { "}", 6 }
+    };
+
+    return operator_precedence.value(oper, 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::getBaseForNumber()
+//-----------------------------------------------------------------------------
+int SystemVerilogExpressionParser::getBaseForNumber(QString const& constantNumber) const
+{
+    static QMap<QString, int> base_formats =
+    {
+        { "", 10 },
+        { "d", 10 },
+        { "D", 10 },
+        { "h", 16 },
+        { "H", 16 },
+        { "o", 8 },
+        { "O", 8 },
+        { "b", 2 },
+        { "B", 2 },
+    };
+
+    static QRegularExpression baseFormat("'" + SystemVerilogSyntax::SIGNED + "([dDbBoOhH]?)");
+
+    QString format = baseFormat.match(constantNumber).captured(1);
+
+    return base_formats.value(format, 0);
+}
+
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getDecimalPrecision()
 //-----------------------------------------------------------------------------
@@ -595,15 +616,4 @@ int SystemVerilogExpressionParser::getDecimalPrecision(QString const& term) cons
     }
 
     return decimalLength;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::getBaseForNumber()
-//-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::getBaseForNumber(QString const& constantNumber) const
-{
-    static QRegularExpression baseFormat("'" + SystemVerilogSyntax::SIGNED + "([dDbBoOhH]?)");
-
-    QString format = baseFormat.match(constantNumber).captured(1);
-    return base_formats.value(format, 0);
 }

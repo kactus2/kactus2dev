@@ -192,7 +192,7 @@ public:
 	QString toString(QString const& separator = QLatin1String(":")) const;
 
 	//! The assignment operator for the class
-	VLNV &operator=(const VLNV &other);
+	VLNV &operator=(const VLNV &other) = default;
 
 	/*! The < operator for comparison of the VLNV info
 	 *

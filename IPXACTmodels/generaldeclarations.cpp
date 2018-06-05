@@ -252,8 +252,11 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
     }
 }
 
-QString General::getRelativePath(QString from, QString to)
-		return QString();
+QString General::getRelativePath(QString from, QString to)  
+{
+    if (from.isEmpty() || to.isEmpty())
+    {
+        return QString();
 	}
 
 	// create file info instance to make sure that only the directory of the

@@ -15,9 +15,6 @@
 #include <QStringList>
 #include <QObject>
 
-#include <QDomNode>
-#include <QDomNamedNodeMap>
-
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
@@ -253,23 +250,6 @@ bool VLNV::isValid(QVector<QString>& errors, QString const& parentIdentifier) co
 QString VLNV::toString(QString const& separator) const
 {
     return vendor_ + separator + library_ + separator + name_ + separator + version_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VLNV::operator=()
-//-----------------------------------------------------------------------------
-VLNV& VLNV::operator=(VLNV const& other)
-{
-	// if we are not assigning to self
-	if (this != &other)
-    {
-		vendor_ = other.vendor_.simplified();
-		library_ = other.library_.simplified();
-		name_ = other.name_.simplified();
-		version_ = other.version_.simplified();
-		type_ = other.type_;
-	}
-	return *this;
 }
 
 //-----------------------------------------------------------------------------
