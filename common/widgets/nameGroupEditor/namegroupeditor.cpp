@@ -111,9 +111,6 @@ void NameGroupEditor::refresh()
 //-----------------------------------------------------------------------------
 void NameGroupEditor::setupLayout()
 {
-    // set the maximum height and width for this widget
-    //setMaximumHeight(NameGroupEditor::MAX_EDITOR_HEIGHT);
-
     // the layout manager for this widget
     QGridLayout* layout = new QGridLayout(this);
 
