@@ -588,6 +588,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h \
     ./editors/BusDefinitionEditor/AbstractionPortsModel.h \
+    ./editors/BusDefinitionEditor/AbstractionPortsDelegate.h \
+    ./editors/BusDefinitionEditor/AbstractionPortsView.h \
     ./editors/common/ColumnTypes.h \
     ./editors/common/DefaultRouting.h \
     ./editors/common/DesignDiagramResolver.h \
@@ -760,8 +762,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/BusDefinitionEditor/AbstractionPortsDelegate.h \
-    ./editors/BusDefinitionEditor/AbstractionPortsView.h
+    ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1252,11 +1253,11 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./editors/BusDefinitionEditor/absdefgroup.cpp \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
+    ./editors/BusDefinitionEditor/AbstractionPortsDelegate.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsModel.cpp \
+    ./editors/BusDefinitionEditor/AbstractionPortsView.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
-    ./editors/BusDefinitionEditor/AbstractionPortsDelegate.cpp \
-    ./editors/BusDefinitionEditor/AbstractionPortsView.cpp \
     ./editors/CatalogEditor/CatalogEditor.cpp \
     ./editors/CatalogEditor/CatalogFileDelegate.cpp \
     ./editors/CatalogEditor/CatalogFileFilter.cpp \
@@ -1422,5 +1423,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.cpp
 RESOURCES += kactus.qrc

@@ -4438,6 +4438,12 @@
     <ClCompile Include="GeneratedFiles\moc_AbstractionPortsView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractionWirePortsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsEditor.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6058,6 +6064,9 @@
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsView.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionWirePortsEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
   </ItemGroup>
