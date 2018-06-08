@@ -154,7 +154,7 @@ void SingleMemoryMapEditor::setupLayout()
         this, SLOT(onRemapStateSelected(QString const&)), Qt::UniqueConnection);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
+    topOfPageLayout->addWidget(&nameEditor_, 0);
     topOfPageLayout->addWidget(memoryMapDefinitionGroup, 0);
 
     QWidget* topOfPageWidget = new QWidget();
