@@ -272,7 +272,7 @@ void SingleAddressBlockEditor::setupLayout()
         this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
+    topOfPageLayout->addWidget(&nameEditor_, 0);
     topOfPageLayout->addWidget(addressBlockDefinitionGroup, 0);
 
     QWidget* topOfPageWidget = new QWidget();
