@@ -68,7 +68,8 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 		}
 		else if (childNode.nodeName() == QLatin1String("kactus2:comDefinitionRef"))
 		{
-			apiDefinition->setComDefinitionRef( CommonItemsReader::createVLNVFrom(childNode, VLNV::COMDEFINITION) );
+			apiDefinition->setComDefinitionRef(
+                CommonItemsReader::parseVLNVAttributes(childNode, VLNV::COMDEFINITION));
 		}
 		else if (childNode.nodeName() == QLatin1String("kactus2:dataTypes"))
 		{
