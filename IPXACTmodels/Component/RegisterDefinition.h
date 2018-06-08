@@ -38,6 +38,8 @@ public:
 	 *
 	 *      @param [in] name    Name of the register definition.
 	 */
+    RegisterDefinition(QString const& name, QString const& addressOffset );
+
 	RegisterDefinition(QString const& name = QString());
 
 	//! Copy constructor.

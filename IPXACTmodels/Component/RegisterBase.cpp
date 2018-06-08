@@ -6,7 +6,7 @@
 // Date: 28.09.2015
 //
 // Description:
-// Describes the base class for ipxact:register, registerFile and alternateRegister.
+// Describes the base class for ipxact:register, RegisterBase and alternateRegister.
 //-----------------------------------------------------------------------------
 
 #include "RegisterBase.h"
@@ -19,19 +19,33 @@
 RegisterBase::RegisterBase(QString const& name /* = QString() */) :
 NameGroup(name),
 Extendable(),
+dimension_(),
+addressOffset_(),
 isPresent_(),
 typeIdentifier_(),
 parameters_(new QList<QSharedPointer<Parameter> > ())
 {
 
 }
+RegisterBase::RegisterBase(QString const& name,QString const& addressOffset) :
+NameGroup(name),
+Extendable(),
+dimension_(),
+addressOffset_(addressOffset),
+isPresent_(),
+typeIdentifier_(),
+parameters_(new QList<QSharedPointer<Parameter> > ())
+{
 
+}
 //-----------------------------------------------------------------------------
 // Function: RegisterBase::RegisterBase()
 //-----------------------------------------------------------------------------
 RegisterBase::RegisterBase (const RegisterBase& other):
 NameGroup(other),
 Extendable(other),
+dimension_(other.dimension_),
+addressOffset_(other.addressOffset_),
 isPresent_(other.isPresent_),
 typeIdentifier_(other.typeIdentifier_),
 parameters_(new QList<QSharedPointer<Parameter> > ())
@@ -48,6 +62,8 @@ RegisterBase& RegisterBase::operator=(const RegisterBase& other)
     {
         NameGroup::operator=(other);
         Extendable::operator=(other);
+        dimension_=other.dimension_;
+        addressOffset_ = other.addressOffset_;
         isPresent_ = other.isPresent_;
         typeIdentifier_ = other.typeIdentifier_;
 
@@ -96,6 +112,37 @@ QString RegisterBase::getTypeIdentifier() const
 void RegisterBase::setTypeIdentifier(QString const& newTypeIdentifier)
 {
     typeIdentifier_ = newTypeIdentifier;
+}
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::()
+//-----------------------------------------------------------------------------
+QString RegisterBase::getDimension() const
+{
+    return dimension_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::setDimension()
+//-----------------------------------------------------------------------------
+void RegisterBase::setDimension(QString const& newDimension)
+{
+    dimension_ = newDimension;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::getAddressOffset()
+//-----------------------------------------------------------------------------
+QString RegisterBase::getAddressOffset() const
+{
+    return addressOffset_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::setAddressOffset()
+//-----------------------------------------------------------------------------
+void RegisterBase::setAddressOffset(QString const& newAddressOffset)
+{
+    addressOffset_ = newAddressOffset;
 }
 
 //-----------------------------------------------------------------------------
