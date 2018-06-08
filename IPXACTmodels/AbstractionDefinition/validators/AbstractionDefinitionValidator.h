@@ -17,11 +17,12 @@
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/ProtocolValidator.h>
 
+#include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
+#include <IPXACTmodels/AbstractionDefinition/WirePort.h>
+
 #include <QString>
 #include <QVector>
 #include <QSet>
-#include "../TransactionalPort.h"
-#include "../WirePort.h"
 
 class AbstractionDefinition;
 class ExpressionParser;
@@ -38,11 +39,14 @@ public:
 	 *  The constructor.
 	 *
 	 */
-    AbstractionDefinitionValidator(LibraryInterface* library,
-        QSharedPointer<ExpressionParser> expressionParser);
+    AbstractionDefinitionValidator(LibraryInterface* library, QSharedPointer<ExpressionParser> expressionParser);
+
+    // Disable copying.
+    AbstractionDefinitionValidator(AbstractionDefinitionValidator const& rhs) = delete;
+    AbstractionDefinitionValidator& operator=(AbstractionDefinitionValidator const& rhs) = delete;
 
 	//! The destructor.
-	virtual ~AbstractionDefinitionValidator();
+	~AbstractionDefinitionValidator() = default;
 
     /*!
      *  Validates the given AbstractionDefinition.
@@ -63,10 +67,6 @@ public:
 		QSharedPointer<AbstractionDefinition> abstractionDefinition) const;
 
 private:
-
-    // Disable copying.
-    AbstractionDefinitionValidator(AbstractionDefinitionValidator const& rhs);
-    AbstractionDefinitionValidator& operator=(AbstractionDefinitionValidator const& rhs);
 
 	/*!
 	 *  Validates the given PortAbstraction.
@@ -104,6 +104,17 @@ private:
 	 */
 	void findErrorsInTransactionalPort(QVector<QString>& errors, QString const& context,
 		QSharedPointer<TransactionalPort> transPort) const;
+
+    /*!
+    *  Validates the given system mode WirePort.
+    *
+    *      @param [in] wirePort			The WirePort to validate.
+    *      @param [in] ports			Collection of ports within the abstraction definition.
+    *
+    *      @return True, if the WirePort is valid IP-XACT, otherwise false.
+    */
+     bool isValidSystemWirePort(QSharedPointer<WirePort> systemWirePort, 
+         QSharedPointer<QList<QSharedPointer<PortAbstraction>>> ports) const;
 	
 	/*!
 	 *  Validates the given WirePort.
@@ -115,6 +126,17 @@ private:
 	 */
 	bool isValidWirePort(QSharedPointer<WirePort> wirePort,
         QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
+    
+    /*!
+    *   Finds possible errors in a system mode WirePort and creates a list of them.
+    *
+    *      @param [in] errors      List of found errors.
+    *      @param [in] wirePort	The WirePort whose errors to find.
+    *      @param [in] context     Context to help locate the errors.
+    *      @param [in] ports		Collection of ports within the abstraction definition.
+    */
+    void findErrorsInSystemWirePort(QVector<QString>& errors, QSharedPointer<WirePort> systemWirePort,
+        QString const & context, QSharedPointer<QList<QSharedPointer<PortAbstraction>>> ports) const;
 	
 	/*!
 	 *   Finds possible errors in a WirePort and creates a list of them.

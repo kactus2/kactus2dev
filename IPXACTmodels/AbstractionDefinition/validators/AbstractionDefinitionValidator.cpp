@@ -46,14 +46,6 @@ library_(library),
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionValidator::~AbstractionDefinitionValidator()
-//-----------------------------------------------------------------------------
-AbstractionDefinitionValidator::~AbstractionDefinitionValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionValidator::validateInstantiation()
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefinition> abstractionDefinition) const
@@ -228,7 +220,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
         {
             foreach(QSharedPointer<WirePort> systemWirePort, *wire->getSystemPorts())
             {
-                if (!isValidWirePort(systemWirePort, ports))
+                if (!isValidSystemWirePort(systemWirePort, ports))
                 {
                     return false;
                 }
@@ -331,7 +323,7 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
         {
             foreach(QSharedPointer<WirePort> wirePort, *wire->getSystemPorts())
             {
-                findErrorsInWirePort(errors, wirePort, context, ports);
+                findErrorsInSystemWirePort(errors, wirePort, context, ports);
             }
         }
 	}
@@ -436,6 +428,20 @@ void AbstractionDefinitionValidator::findErrorsInTransactionalPort(QVector<QStri
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::isValidSystemWirePort()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionValidator::isValidSystemWirePort(QSharedPointer<WirePort> systemWirePort,
+    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
+{
+    if (systemWirePort->getSystemGroup().isEmpty())
+    {
+        return false;
+    }
+
+    return isValidWirePort(systemWirePort, ports);
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionValidator::isValidWirePort()
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionValidator::isValidWirePort(QSharedPointer<WirePort> wirePort, 
@@ -456,6 +462,21 @@ bool AbstractionDefinitionValidator::isValidWirePort(QSharedPointer<WirePort> wi
 	}
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::findErrorsInSystemWirePort()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionValidator::findErrorsInSystemWirePort(QVector<QString>& errors,
+    QSharedPointer<WirePort> systemWirePort, QString const& context,
+    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
+{
+    if (systemWirePort->getSystemGroup().isEmpty())
+    {
+        errors.append(QObject::tr("No system group defined within %1.").arg(context));
+    }
+
+    findErrorsInWirePort(errors, systemWirePort, context, ports);
 }
 
 //-----------------------------------------------------------------------------
