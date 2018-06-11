@@ -139,6 +139,12 @@ private slots:
      */
     void onIsPresentEdited();
 
+
+    /*!
+     *  Sets the edited reserved value for the field.
+     */
+    void onReservedEdited();
+
     /*!
      *  Sets the edited field ID value for the field.
      */
@@ -256,6 +262,9 @@ private:
 
     //! The presence editor.
     ExpressionEditor* isPresentEditor_;
+
+    //! The reserved editor.
+    ExpressionEditor* reservedEditor_;
 
     //! The editor for fieldID.
     QLineEdit* fieldIdEditor_;
