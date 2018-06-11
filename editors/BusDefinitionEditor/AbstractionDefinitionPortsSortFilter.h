@@ -23,17 +23,34 @@ class AbstractionDefinitionPortsSortFilter : public QSortFilterProxyModel
 
 public:
 
+    //! Storage for the column indexes.
+    struct ColumnHandles
+    {
+        //! Index of the name column.
+        int nameColumn_;
+
+        //! Index of the mode column.
+        int modeColumn_;
+
+        //! Index of the system group column.
+        int systemGroupColumn_;
+
+        //! Index of the description column.
+        int descriptionColumn_;
+    };
+
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   Pointer to the owner of this model.
+     *      @param [in] columns     Storage for the column indexes.
+     *      @param [in] parent      Pointer to the owner of this model.
 	 */
-	AbstractionDefinitionPortsSortFilter(QObject *parent);
+	AbstractionDefinitionPortsSortFilter(ColumnHandles columns, QObject *parent);
 	
 	/*!
 	 *  The destructor.
 	 */
-    virtual ~AbstractionDefinitionPortsSortFilter();
+    virtual ~AbstractionDefinitionPortsSortFilter() = default;
 
 	/*!
 	 *  Get the data for the specified item.
@@ -67,6 +84,13 @@ private:
      *      @return True, if the system group is mandatory, false otherwise.
      */
     bool isSystemGroupMandatory(QModelIndex const& index) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Storage for the used column indexes.
+    ColumnHandles columns_;
 };
 
 #endif // ABSTRACTIONDEFINITIONPORTSSORTFILTER_H

@@ -1,32 +1,33 @@
 //-----------------------------------------------------------------------------
-// File: AbstractionWirePortsEditor.h
+// File: AbstractionTransactionalPortsEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 04.06.2018
+// Date: 05.06.2018
 //
 // Description:
-// Editor for the wire ports of an abstraction definition.
+// Editor for the transactional ports of an abstraction definition.
 //-----------------------------------------------------------------------------
 
-#ifndef ABSTRACTIONWIREPORTSEDITOR_H
-#define ABSTRACTIONWIREPORTSEDITOR_H
+#ifndef ABSTRACTIOTRANSACTIONALPORTSEDITOR_H
+#define ABSTRACTIOTRANSACTIONALPORTSEDITOR_H
 
-#include <editors/BusDefinitionEditor/AbstractionWirePortsModel.h>
-#include <editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h>
 #include <editors/BusDefinitionEditor/AbstractionPortsView.h>
+#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.h>
+#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h>
 
 #include <QWidget>
 #include <QObject>
+#include <QModelIndexList>
 
 class AbstractionDefinitionPortsSortFilter;
 class AbstractionDefinition;
 class BusDefinition;
 
 //-----------------------------------------------------------------------------
-//! Editor for the wire ports of an abstraction definition.
+//! Editor for the transactional ports of an abstraction definition.
 //-----------------------------------------------------------------------------
-class AbstractionWirePortsEditor : public QWidget
+class AbstractionTransactionalPortsEditor : public QWidget
 {
     Q_OBJECT
 
@@ -37,12 +38,12 @@ public:
      *
      *      @param [in] parent          The owner of the editor.
      */
-    AbstractionWirePortsEditor(QWidget *parent);
+    AbstractionTransactionalPortsEditor(QWidget *parent);
 
     /*!
      *  The destructor.
      */
-    virtual ~AbstractionWirePortsEditor() = default;
+    virtual ~AbstractionTransactionalPortsEditor() = default;
 
     /*!
      *  Saves the changes made in the editor.
@@ -81,14 +82,6 @@ signals:
     void noticeMessage(QString const& message);
 
     /*!
-     *  Inform that a port abstraction has been renamed.
-     *
-     *      @param [in] oldName     Old name of the port abstraction.
-     *      @param [in] newName     New name for the port abstraction.
-     */
-    void portRenamed(QString const& oldName, QString const& newName);
-
-    /*!
      *  Inform that a port abstraction has been removed.
      *
      *      @param [in] portName    Name of the removed port abstraction.
@@ -120,8 +113,8 @@ private slots:
 
 private:
     //! No copying. No assignment.
-    AbstractionWirePortsEditor(const AbstractionWirePortsEditor& other);
-    AbstractionWirePortsEditor& operator=(const AbstractionWirePortsEditor& other);
+    AbstractionTransactionalPortsEditor(const AbstractionTransactionalPortsEditor& other);
+    AbstractionTransactionalPortsEditor& operator=(const AbstractionTransactionalPortsEditor& other);
 
     /*!
      *  Sets the editor layout.
@@ -139,17 +132,17 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The table view to display the logical signals
+    //! The table view to display the logical signals.
     AbstractionPortsView portView_;
 
     //! Proxy model for sorting abstract ports.
     AbstractionDefinitionPortsSortFilter* portProxy_;
 
     //! The model that contains the logical signals of Abstraction Definition.
-    AbstractionWirePortsModel portModel_;
+    AbstractionTransactionalPortsModel portModel_;
 
     //! The item delegate for portView_.
-    AbstractionWirePortsDelegate portDelegate_;
+    AbstractionTransactionalPortsDelegate portDelegate_;
 };
 
-#endif // ABSTRACTIONWIREPORTSEDITOR_H
+#endif // ABSTRACTIOTRANSACTIONALPORTSEDITOR_H

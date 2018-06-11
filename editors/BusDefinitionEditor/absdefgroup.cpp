@@ -29,8 +29,9 @@ QGroupBox(tr("Signals (Abstraction Definition)"), parent),
 vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendVLNVEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 descriptionEditor_(new QPlainTextEdit(this)),
-wirePortsEditor_(this),
 portTabs_(this),
+wirePortsEditor_(&portTabs_),
+transactionalPortsEditor_(&portTabs_),
 abstraction_()
 {
     extendVLNVEditor_->setToolTip(QString("Extended abstraction definition is not currently supported in Kactus2"));
@@ -41,9 +42,9 @@ abstraction_()
     extendVLNVEditor_->setDisabled(true);
 
     portTabs_.addTab(&wirePortsEditor_, QStringLiteral("Wire ports"));
+    portTabs_.addTab(&transactionalPortsEditor_, QStringLiteral("Transactional ports"));
 
-    connect(&wirePortsEditor_, SIGNAL(contentChanged(const QModelIndex&, const QModelIndex&)),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&wirePortsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&wirePortsEditor_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
     connect(&wirePortsEditor_, SIGNAL(errorMessage(const QString&)),
@@ -51,6 +52,17 @@ abstraction_()
     connect(&wirePortsEditor_, SIGNAL(portRenamed(const QString&, const QString&)),
         this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
     connect(&wirePortsEditor_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
+        this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
+
+    connect(&transactionalPortsEditor_, SIGNAL(contentChanged()),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&transactionalPortsEditor_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(&transactionalPortsEditor_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(&transactionalPortsEditor_, SIGNAL(portRenamed(const QString&, const QString&)),
+        this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
+    connect(&transactionalPortsEditor_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
     connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
@@ -72,6 +84,7 @@ AbsDefGroup::~AbsDefGroup()
 void AbsDefGroup::save()
 {
     wirePortsEditor_.save();
+    transactionalPortsEditor_.save();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,6 +95,7 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
     abstraction_ = absDef;
 
     wirePortsEditor_.setAbsDef(absDef);
+    transactionalPortsEditor_.setAbsDef(absDef);
     vlnvDisplay_->setVLNV(absDef->getVlnv());
 
     if (absDef->getExtends().isValid())
@@ -101,6 +115,7 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 void AbsDefGroup::setBusDef(QSharedPointer<BusDefinition> busDefinition)
 {
     wirePortsEditor_.setBusDef(busDefinition);
+    transactionalPortsEditor_.setBusDef(busDefinition);
 }
 
 //-----------------------------------------------------------------------------

@@ -18,16 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionPortsSortFilter::AbstractionDefinitionPortsSortFilter()
 //-----------------------------------------------------------------------------
-AbstractionDefinitionPortsSortFilter::AbstractionDefinitionPortsSortFilter(QObject *parent):
-QSortFilterProxyModel(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionPortsSortFilter::~AbstractionDefinitionPortsSortFilter()
-//-----------------------------------------------------------------------------
-AbstractionDefinitionPortsSortFilter::~AbstractionDefinitionPortsSortFilter()
+AbstractionDefinitionPortsSortFilter::AbstractionDefinitionPortsSortFilter(ColumnHandles columns, QObject *parent):
+QSortFilterProxyModel(parent),
+columns_(columns)
 {
 
 }
@@ -54,7 +47,7 @@ QVariant AbstractionDefinitionPortsSortFilter::data(const QModelIndex &index, in
 QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
 {
     bool systemGroupIsMandatory = isSystemGroupMandatory(index);
-    if (index.column() == LogicalPortColumns::NAME || systemGroupIsMandatory)
+    if (index.column() == columns_.nameColumn_ || systemGroupIsMandatory)
     {
         return KactusColors::MANDATORY_FIELD;
     }
@@ -68,14 +61,14 @@ QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIn
     }
     else
     {
-        QModelIndex previousNameIndex = index.sibling(previousRow, LogicalPortColumns::NAME);
+        QModelIndex previousNameIndex = index.sibling(previousRow, columns_.nameColumn_);
         previousName = previousNameIndex.data(Qt::DisplayRole).toString();
     }
 
-    QModelIndex nameIndex = index.sibling(index.row(), LogicalPortColumns::NAME);
+    QModelIndex nameIndex = index.sibling(index.row(), columns_.nameColumn_);
     QString name = nameIndex.data(Qt::DisplayRole).toString();
 
-    QModelIndex previousColorIndex = index.sibling(previousRow, LogicalPortColumns::DESCRIPTION);
+    QModelIndex previousColorIndex = index.sibling(previousRow, columns_.descriptionColumn_);
     previousColor = previousColorIndex.data(Qt::BackgroundRole).value<QColor>();
 
     if (name.compare(previousName) == 0)
@@ -95,9 +88,9 @@ QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIn
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionPortsSortFilter::isSystemGroupMandatory(QModelIndex const& index) const
 {
-    if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
+    if (index.column() == columns_.systemGroupColumn_)
     {
-        QModelIndex modeIndex = index.sibling(index.row(), LogicalPortColumns::MODE);
+        QModelIndex modeIndex = index.sibling(index.row(), columns_.modeColumn_);
         QString portMode = modeIndex.data(Qt::DisplayRole).toString();
         if (portMode.compare(QStringLiteral("system"), Qt::CaseInsensitive) == 0)
         {

@@ -2,11 +2,11 @@
 // File: AbstractionPortsDelegate.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Antti Kamppi
-// Date: 27.6.2011
+// Author: Mikko Teuho
+// Date: 06.06.2018
 //
 // Description:
-// The delegate that provides editors for logical port properties in Abstraction Definition.
+// Master delegate for abstraction definition wire and transactional ports.
 //-----------------------------------------------------------------------------
 
 #ifndef ABSTRACTIONPORTSDELEGATE_H
@@ -16,7 +16,7 @@
 
 class BusDefinition;
 //-----------------------------------------------------------------------------
-//! The delegate that provides editors for logical port properties in Abstraction Definition.
+//! Master delegate for abstraction definition wire and transactional ports.
 //-----------------------------------------------------------------------------
 class AbstractionPortsDelegate : public QStyledItemDelegate
 {
@@ -72,17 +72,97 @@ public:
      */
     void setBusDef(QSharedPointer<BusDefinition> busDefinition);
 
-private slots:
+protected slots:
 
 	/*!
      *  Commit the data from the sending editor and close the editor.
 	 */
 	void commitAndCloseEditor();
 
+protected:
+
+    /*!
+     *  Get the list of available qualifier values.
+     *
+     *      @return The list of available qualifier values.
+     */
+    virtual QStringList getQualifierList() const;
+
+    /*!
+     *  Check if the editor used in the selected index column is a line editor.
+     *
+     *      @param [in] indexColumn     The selected index column.
+     *
+     *      @return True, if the editor used in the selected column is a line editor, false otherwise.
+     */
+    virtual bool editorIsLineEditor(int indexColumn) const;
+
+    /*!
+     *  Check if the editor used in the selected index column is a combo box editor.
+     *
+     *      @param [in] indexColumn     The selected index column.
+     *
+     *      @return True, if the editor used in the selected column is a combo box editor, false otherwise.
+     */
+    virtual bool editorIsComboBox(int indexColumn) const;
+
 private:
 	//! No copying. No assignment.
     AbstractionPortsDelegate(const AbstractionPortsDelegate& other);
     AbstractionPortsDelegate& operator=(const AbstractionPortsDelegate& other);
+
+    /*!
+     *  Get the column number of the qualifier column.
+     *
+     *      @return Column number of the qualifier column.
+     */
+    virtual int qualifierColumn() const = 0;
+
+    /*!
+     *  Get the column number of the width column.
+     *
+     *      @return Column number of the width column.
+     */
+    virtual int widthColumn() const = 0;
+
+    /*!
+     *  Get the column number of the mode column.
+     *
+     *      @return Column number of the mode column.
+     */
+    virtual int modeColum() const = 0;
+
+    /*!
+     *  Get the column number of the presence column.
+     *
+     *      @return Column number of the presence column.
+     */
+    virtual int presenceColumn() const = 0;
+
+    /*!
+     *  Get the column number of the system group column.
+     *
+     *      @return Column number of the system group column.
+     */
+    virtual int systemGroupColumn() const = 0;
+
+    /*!
+     *  Get the column number of the name column.
+     *
+     *      @return Column number of the name column.
+     */
+    virtual int nameColumn() const = 0;
+
+    /*!
+     *  Get the column number of the description column.
+     *
+     *      @return Column number of the description column.
+     */
+    virtual int descriptionColumn() const = 0;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The bus definition referenced by the edited abstraction definition.
     QSharedPointer<BusDefinition> busDefinition_;

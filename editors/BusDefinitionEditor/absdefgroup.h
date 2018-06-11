@@ -13,6 +13,7 @@
 #define ABSDEFGROUP_H
 
 #include <editors/BusDefinitionEditor/AbstractionWirePortsEditor.h>
+#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
@@ -134,11 +135,14 @@ private:
     //! Editor for the description of the abstraction definition.
     QPlainTextEdit* descriptionEditor_;
 
+    //! Contains tabs for wire and transactional ports.
+    QTabWidget portTabs_;
+
     //! Editor for wire ports.
     AbstractionWirePortsEditor wirePortsEditor_;
 
-    //! Contains tabs for wire and transactional ports.
-    QTabWidget portTabs_;
+    //! Editor for transactional ports.
+    AbstractionTransactionalPortsEditor transactionalPortsEditor_;
 
     //! The edited abstraction definition.
     QSharedPointer<AbstractionDefinition> abstraction_;

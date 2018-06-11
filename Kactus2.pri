@@ -587,8 +587,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/busdefgroup.h \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h \
-    ./editors/BusDefinitionEditor/AbstractionPortsModel.h \
-    ./editors/BusDefinitionEditor/AbstractionPortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionPortsView.h \
     ./editors/common/ColumnTypes.h \
     ./editors/common/DefaultRouting.h \
@@ -762,7 +760,14 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.h
+    ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsModel.h \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.h \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.h \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortColumns.h \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.h \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
+    ./editors/BusDefinitionEditor/AbstractionPortsDelegate.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1253,8 +1258,8 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./editors/BusDefinitionEditor/absdefgroup.cpp \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
-    ./editors/BusDefinitionEditor/AbstractionPortsDelegate.cpp \
-    ./editors/BusDefinitionEditor/AbstractionPortsModel.cpp \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.cpp \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsModel.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsView.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
@@ -1424,5 +1429,9 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.cpp
+    ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.cpp \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.cpp \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.cpp \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.cpp \
+    ./editors/BusDefinitionEditor/AbstractionPortsDelegate.cpp
 RESOURCES += kactus.qrc
