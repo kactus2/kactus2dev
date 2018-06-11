@@ -76,7 +76,7 @@ protected:
      *
      *      @return The decimal value of the constant or the given string.
      */
-    QString parseConstant(QString const& token) const;
+    QString parseConstant(QString token) const;
 
     /*!
      *  Checks if the given expression is a symbol e.g. reference.
@@ -112,7 +112,7 @@ protected:
     *
     *      @return The precedenve value where bigger value has higher precedence.
     */
-    unsigned int operatorPrecedence(QString const& oper) const;
+    unsigned int operatorPrecedence(QString oper) const;
 
 private:
 
