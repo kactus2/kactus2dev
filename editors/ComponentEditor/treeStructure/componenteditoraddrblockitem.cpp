@@ -236,7 +236,7 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 
         QSharedPointer<ComponentEditorRegisterFileItem> regFileItem = item.dynamicCast<ComponentEditorRegisterFileItem>();
         if(regFileItem){
-          //regFileItem->setVisualizer(visualizer_);
+          regFileItem->setVisualizer(visualizer_);
           continue;
         }
 

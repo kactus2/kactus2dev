@@ -7,6 +7,9 @@
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <QSharedPointer>
 
+class MemoryVisualizationItem;
+class MemoryMapsVisualizer;
+class RegisterFileGraphItem;
 class RegisterFileValidator;
 class ComponentEditorRegisterFileItem : public ComponentEditorItem
 {
@@ -42,21 +45,33 @@ public:
         virtual QString text() const;
         virtual bool isValid() const;
         virtual ItemEditor* editor();
+        //virtual void createChild(int index);
+        virtual ItemVisualizer* visualizer();
+        virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
+        virtual QGraphicsItem* getGraphicsItem();
+        virtual void removeGraphicsItem();
 
 protected slots:
+        virtual void updateGraphics();
+        virtual void onGraphicsChanged();
+
 private:
         //! No copying. No assignment.
         ComponentEditorRegisterFileItem(const ComponentEditorRegisterFileItem& other);
         ComponentEditorRegisterFileItem& operator=(const ComponentEditorRegisterFileItem& other);
 
+        void resizeGraphicsToCurrentDimensionSize();
+        void createDimensionGraphicsItem(int dimensionIndex, MemoryVisualizationItem* parentItem);
+        void removeDimensionGraphicsItem(int dimensionIndex, MemoryVisualizationItem* parentItem);
+
         //! The address block being edited.
         QSharedPointer<RegisterFile> registerFile_;
 
-//        //! The visualizer for memory maps.
-//        MemoryMapsVisualizer* visualizer_;
+        //! The visualizer for memory maps.
+        MemoryMapsVisualizer* visualizer_;
 
-//        //! The graph item which visualizes the address block.
-//        AddressBlockGraphItem* graphItem_;
+        //! The graph items that visualizes the register file dimensions.
+        QList<RegisterFileGraphItem*> registerFileDimensions_;
 
         //! The expression parser to use.
         QSharedPointer<ExpressionParser> expressionParser_;

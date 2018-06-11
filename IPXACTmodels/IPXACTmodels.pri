@@ -242,15 +242,17 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
+    ./Component/validators/RegisterFileValidator.h \
+    ./Component/validators/RegisterBaseValidator.h \
     ./Component/validators/ViewValidator.h \
     ./Catalog/Catalog.h \
     ./Catalog/IpxactFile.h \
     ./Catalog/CatalogReader.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
-    ./Component/validators/AbstractionTypeValidator.h \
-    $$PWD/Component/validators/RegisterFileValidator.h \
-    $$PWD/Component/validators/RegisterBaseValidator.h
+    ./Component/validators/AbstractionTypeValidator.h
+
+
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -489,12 +491,13 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryMapValidator.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
+    ./Component/validators/RegisterFileValidator.cpp \
+    ./Component/validators/RegisterBaseValidator.cpp \
     ./Component/validators/ViewValidator.cpp \
     ./Catalog/Catalog.cpp \
     ./Catalog/CatalogReader.cpp \
     ./Catalog/CatalogWriter.cpp \
     ./Catalog/IpxactFile.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
-    ./Component/validators/AbstractionTypeValidator.cpp \
-    $$PWD/Component/validators/RegisterFileValidator.cpp \
-    $$PWD/Component/validators/RegisterBaseValidator.cpp
+    ./Component/validators/AbstractionTypeValidator.cpp
+
