@@ -760,7 +760,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/AbstractionPortsView.h \
     ./editors/ComponentEditor/treeStructure/componenteditorregisterfileitem.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/RegisterDataTableView.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1424,5 +1425,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorregisterfileitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
+    ./editors/ComponentEditor/memoryMaps/RegisterDataTableView.cpp
 RESOURCES += kactus.qrc

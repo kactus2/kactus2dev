@@ -15,8 +15,7 @@
 #include "addressblockmodel.h"
 #include "ExpressionProxyModel.h"
 #include "AddressBlockColumns.h"
-
-#include <common/views/EditableTableView/editabletableview.h>
+#include "RegisterDataTableView.h"
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -35,7 +34,7 @@ AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<RegisterValidator> registerValidator, QWidget* parent):
 QGroupBox(tr("Registers summary"), parent),
-    view_(new EditableTableView(this)),
+    view_(new RegisterDataTableView(this)),
     model_(0)
 {
     view_->verticalHeader()->show();
@@ -94,8 +93,11 @@ QGroupBox(tr("Registers summary"), parent),
 	connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
-	connect(view_, SIGNAL(addItem(const QModelIndex&)),	
-        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(addRegister(const QModelIndex&)),
+        model_, SLOT(onAddRegister(const QModelIndex&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(addRegisterFile(const QModelIndex&)),
+        model_, SLOT(onAddRegisterFile(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)), 
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 

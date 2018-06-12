@@ -45,7 +45,7 @@ public:
         virtual QString text() const;
         virtual bool isValid() const;
         virtual ItemEditor* editor();
-        //virtual void createChild(int index);
+        virtual void createChild(int index);
         virtual ItemVisualizer* visualizer();
         virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
         virtual QGraphicsItem* getGraphicsItem();

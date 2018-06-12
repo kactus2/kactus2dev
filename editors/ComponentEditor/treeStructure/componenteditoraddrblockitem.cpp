@@ -169,7 +169,29 @@ void ComponentEditorAddrBlockItem::createChild( int index )
         onGraphicsChanged();
 
 		childItems_.insert(index, regItem);
+        return;
 	}
+    QSharedPointer<RegisterFile> regFile = regmodel.dynamicCast<RegisterFile>();
+    if (regFile)
+    {
+        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regFile, model_,
+            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
+            expressionParser_, addressBlockValidator_->getRegisterFileValidator(), this));
+        regFileItem->setLocked(locked_);
+
+        if (visualizer_)
+        {
+            regFileItem->setVisualizer(visualizer_);
+        }
+
+        onGraphicsChanged();
+
+        childItems_.insert(index, regFileItem);
+        return;
+    }
+
+
+
 }
 
 //-----------------------------------------------------------------------------

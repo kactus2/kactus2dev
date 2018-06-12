@@ -24,6 +24,7 @@
 
 class Choice;
 class Register;
+class RegisterFile;
 class RegisterValidator;
 class RegisterExpressionsGatherer;
 class ReferenceCalculator;
@@ -169,7 +170,9 @@ public slots:
 	 *
 	 *      @param [in] index   The index identifying the position for new item.
 	 */
-	virtual void onAddItem(const QModelIndex& index);
+    virtual void onAddRegister(const QModelIndex& index);
+    virtual void onAddRegisterFile(const QModelIndex& index);
+
 
 	/*!
      *  Remove the item in the given index.
@@ -224,6 +227,7 @@ private:
 	//! No assignment.
 	AddressBlockModel& operator=(const AddressBlockModel& other);
 
+    void onAddItem(QSharedPointer<RegisterBase> regItem, QModelIndex const& index);
     /*!
      *  Get the value for the corresponding index.
      *

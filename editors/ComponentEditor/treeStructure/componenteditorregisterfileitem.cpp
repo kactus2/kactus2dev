@@ -2,6 +2,7 @@
 #include "componenteditorregisteritem.h"
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
@@ -75,6 +76,62 @@ bool ComponentEditorRegisterFileItem::isValid() const
     return registerFileValidator_->validate(registerFile_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterFileItem::createChild( int index )
+{
+    QSharedPointer<RegisterBase> regmodel = registerFile_->getRegisterData()->at(index);
+
+    QSharedPointer<Register> reg = regmodel.dynamicCast<Register>();
+    if (reg)
+    {
+        QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
+            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
+            expressionParser_, registerFileValidator_->getRegisterValidator(), this));
+        regItem->setLocked(locked_);
+
+        if (visualizer_)
+        {
+            regItem->setVisualizer(visualizer_);
+        }
+
+        if (reg->getFields()->isEmpty())
+        {
+            QSharedPointer<Field> newField (new Field());
+            reg->getFields()->append(newField);
+
+            regItem->createChild(0);
+        }
+
+        onGraphicsChanged();
+
+        childItems_.insert(index, regItem);
+        return;
+    }
+
+    QSharedPointer<RegisterFile> regFile = regmodel.dynamicCast<RegisterFile>();
+    if (regFile)
+    {
+        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regFile, model_,
+            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
+            expressionParser_, registerFileValidator_, this));
+        regFileItem->setLocked(locked_);
+
+        if (visualizer_)
+        {
+            regFileItem->setVisualizer(visualizer_);
+        }
+        onGraphicsChanged();
+
+        childItems_.insert(index, regFileItem);
+        return;
+    }
+
+
+
+
+}
 
 class dummy_editor: public ItemEditor{
   public:

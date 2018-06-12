@@ -19,7 +19,7 @@
 #include <QGroupBox>
 
 class AddressBlockModel;
-class EditableTableView;
+class RegisterDataTableView;
 class ExpressionFormatter;
 class LibraryInterface;
 class ParameterFinder;
@@ -132,7 +132,7 @@ private:
 	AddressBlockEditor& operator=(const AddressBlockEditor& other);
 
 	//! The view to display the items.
-    EditableTableView* view_;
+    RegisterDataTableView* view_;
 
 	//! Pointer to the model that manages the details of address block.
 	AddressBlockModel* model_;

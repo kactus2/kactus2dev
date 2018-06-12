@@ -190,6 +190,15 @@ protected:
     void addImportExportActionsForContextMenu(QMenu& menu);
 
     /*!
+     *  Counts the number of rows in a list of indexes.
+     *
+     *      @param [in] indexes   The indexes to count.
+     *
+     *      @return The number of rows in the indexes.
+     */
+    int countRows(QModelIndexList const& indexes);
+
+    /*!
      *  Handler for intercepting events.
      *
      *      @param [in] target   The target for the event.
@@ -274,14 +283,7 @@ private:
 	EditableTableView(const EditableTableView& other);
 	EditableTableView& operator=(const EditableTableView& other);
 
-    /*!
-     *  Counts the number of rows in a list of indexes.
-     *
-     *      @param [in] indexes   The indexes to count.
-     *
-     *      @return The number of rows in the indexes.
-     */
-    int countRows(QModelIndexList const& indexes);
+
 
     /*!
      *  Generates a unique name within the table for the item.
