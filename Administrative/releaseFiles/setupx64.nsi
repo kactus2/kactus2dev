@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "3.5.0 64-bit"
+!define PRODUCT_VERSION "3.6.0 64-bit"
 !define PRODUCT_PUBLISHER "TUT"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -57,7 +57,6 @@ ShowUnInstDetails show
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite on
-  File "..\..\x64\executable\Qt5CLucene.dll"
   File "..\..\x64\executable\Qt5Core.dll"
   File "..\..\x64\executable\Qt5Gui.dll"
   File "..\..\x64\executable\Qt5Help.dll"
@@ -67,12 +66,13 @@ Section "MainSection" SEC01
   File "..\..\x64\executable\Qt5Widgets.dll"
   File "..\..\x64\executable\Qt5Xml.dll"
   File "..\..\x64\executable\Qt5XmlPatterns.dll"
+  File "..\..\x64\executable\Qt5Svg.dll"
   File "..\..\x64\executable\libEGL.dll"
   File "..\..\x64\executable\libGLESv2.dll"
-  File "..\..\x64\executable\icuin50.dll"
-  File "..\..\x64\executable\icudt50.dll"
-  File "..\..\x64\executable\icuuc50.dll"
-  File "..\..\x64\executable\D3DCompiler_43.dll"
+  File "..\..\x64\executable\icuin51.dll"
+  File "..\..\x64\executable\icudt51.dll"
+  File "..\..\x64\executable\icuuc51.dll"
+  File "..\..\x64\executable\d3dcompiler_47.dll"
   File "..\..\x64\executable\IPXACTmodels.dll"
   File "..\..\x64\executable\Kactus2.exe"
   File "gpl2.txt"
@@ -80,10 +80,6 @@ Section "MainSection" SEC01
   File "..\..\README.md"
   File "..\..\executable\upgrade.cfg"
   File /oname=DefaultSettings.ini "DefaultSettingsWin.ini"
-  
-  SetOutPath "$INSTDIR\accessible"
-  SetOverwrite on
-  File "..\..\x64\executable\accessible\qtaccessiblewidgets.dll"
   
   SetOutPath "$INSTDIR\platforms"
   SetOverwrite on
@@ -113,7 +109,8 @@ Section "MainSection" SEC01
   File "..\..\x64\executable\Plugins\VerilogSourceAnalyzer.dll"
   File "..\..\x64\executable\Plugins\VHDLImport.dll"
   File "..\..\x64\executable\Plugins\MemoryViewGenerator.dll"
-  
+  File "..\..\x64\executable\Plugins\LinuxDeviceTreeGenerator.dll"
+
   SetOutPath "$INSTDIR\Help"
   SetOverwrite on
   File "..\..\Help\Kactus2Help.qhc"
@@ -212,6 +209,7 @@ Section Uninstall
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\VHDLImport.dll"
+  Delete "$INSTDIR\Plugins\LinuxDeviceTreeGenerator.dll"
   Delete "$INSTDIR\Plugins\MemoryViewGenerator.dll"
   Delete "$INSTDIR\Plugins\VerilogImport.dll"
   Delete "$INSTDIR\Plugins\VHDLGenerator.dll"
@@ -231,7 +229,6 @@ Section Uninstall
   Delete "$INSTDIR\sqldrivers\qsqlite.dll"
   Delete "$INSTDIR\platforms\qminimal.dll"
   Delete "$INSTDIR\platforms\qwindows.dll"
-  Delete "$INSTDIR\accessible\qtaccessiblewidgets.dll"
   Delete "$INSTDIR\DefaultSettings.ini"
   Delete "$INSTDIR\upgrade.cfg"
   Delete "$INSTDIR\README.md"
@@ -239,12 +236,13 @@ Section Uninstall
   Delete "$INSTDIR\gpl2.txt"
   Delete "$INSTDIR\Kactus2.exe"
   Delete "$INSTDIR\IPXACTmodels.dll"
-  Delete "$INSTDIR\D3DCompiler_43.dll"
-  Delete "$INSTDIR\icuuc50.dll"
-  Delete "$INSTDIR\icudt50.dll"
-  Delete "$INSTDIR\icuin50.dll"
+  Delete "$INSTDIR\d3dcompiler_47.dll"
+  Delete "$INSTDIR\icuuc51.dll"
+  Delete "$INSTDIR\icudt51.dll"
+  Delete "$INSTDIR\icuin51.dll"
   Delete "$INSTDIR\libGLESv2.dll"
   Delete "$INSTDIR\libEGL.dll"
+  Delete "$INSTDIR\Qt5Svg.dll"
   Delete "$INSTDIR\Qt5XmlPatterns.dll"
   Delete "$INSTDIR\Qt5Xml.dll"
   Delete "$INSTDIR\Qt5Widgets.dll"
@@ -254,7 +252,6 @@ Section Uninstall
   Delete "$INSTDIR\Qt5Help.dll"
   Delete "$INSTDIR\Qt5Gui.dll"
   Delete "$INSTDIR\Qt5Core.dll"
-  Delete "$INSTDIR\Qt5CLucene.dll"
 
   Delete "$SMPROGRAMS\Kactus2\Uninstall.lnk"
   Delete "$DESKTOP\Kactus2.lnk"

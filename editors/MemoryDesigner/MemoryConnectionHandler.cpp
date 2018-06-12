@@ -593,10 +593,10 @@ void MemoryConnectionHandler::changeMasterAddressSpaceColumn(MainMemoryGraphicsI
 
     qreal columnWidth = originalColumn->boundingRect().width();
     qreal currentColumnPosition = originalColumn->pos().x() - columnWidth;
-    MemoryColumn* currentColumn = 0;
+    
     while (currentColumnPosition >= 0)
     {
-        currentColumn = columnHandler_->findColumnAtPosition(QPointF(currentColumnPosition, 0));
+        MemoryColumn* currentColumn = columnHandler_->findColumnAtPosition(QPointF(currentColumnPosition, 0));
         if (currentColumn &&
             currentColumn->name().contains(MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME, Qt::CaseInsensitive))
         {
@@ -1047,10 +1047,9 @@ void MemoryConnectionHandler::changeSpaceItemColumn(MainMemoryGraphicsItem* spac
     qreal columnWidth = originalColumn->boundingRect().width();
     qreal currentColumnPosition = originalColumn->scenePos().x() - columnWidth;
 
-    MemoryColumn* currentColumn = 0;
     while (currentColumnPosition >= 0)
     {
-        currentColumn = columnHandler_->findColumnAtPosition(QPointF(currentColumnPosition, 0));
+        MemoryColumn* currentColumn = columnHandler_->findColumnAtPosition(QPointF(currentColumnPosition, 0));
         if (currentColumn &&
             currentColumn->name().contains(MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME, Qt::CaseInsensitive))
         {
