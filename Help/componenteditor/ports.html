@@ -36,19 +36,15 @@
       manually.
     </p>
     <p>
-      The port <b>type</b> is optional. Typical values in VHDL are
-      'std_logic' for scalar ports (i.e. 1 bit) and and
-      'std_logic_vector' for vectored ports (multibit). 
-    </p>
-    <p>
-      The <b>type definition</b> is an optional language specific reference
-      to where the type is defined, e.g. package or header file. Type 
-      definition will be included at the beginnig of the generated top-level
-      code. In VHDL, 'std_logic' types are defined in
+      The port <b>type</b> is optional together with a <b>type definition</b> 
+	  that an optional language specific reference to where the type is 
+	  defined, e.g. package or header file. Typical values in VHDL are 
+      'std_logic' for scalar ports (i.e. 1 bit) and and 'std_logic_vector'
+	  for vectored ports (multibit). In VHDL, 'std_logic' types are defined in
       'IEEE.std_logic_1164.all' ('all' means that the whole package is
       included). In SystemC, the type definition is the include file
-      name, e.g. 'systemc.h'. Type definition has no effect if type 
-      is not set.
+      name, e.g. 'systemc.h'. The type definition has no effect if type 
+      is not set. The type can be applied to specific view(s) or all views.
     </p>
     <p>
       <b>Default value</b> is optional and can be used to assign a value for 
@@ -109,9 +105,15 @@
     </ul>
     <hr>
     <p>
-      EXAMPLE. Figure shows the relation between VHDL source code and
-      port editor. Names, directions, and bounds are obvious. Width is extremely simple and
-      type and its definition are optinal.<br>
+      EXAMPLE. The figure shows the relation between VHDL source code and the
+      port editor. The names, directions, and bounds are obvious. Width is derived 
+	  from the bounds, if given, but otherwise set to 1 to denote a scalar port.
+	  The type of the ports is std_logic for clk and rst_n, and std_logic_vector 
+	  for data_in and data_out. For data_out, the type is defined only for view flat.
+	  In other ports no view is defined so the same type is applied for all views 
+	  (not shown in the figure below). The type definition is IEEE.std_logic_1164.all
+	  for each port.
+	  <br>
       <img src="../images/ports.png" alt="VHDL and screen_cap">
     </p>
 
