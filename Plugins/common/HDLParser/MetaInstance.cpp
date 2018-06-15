@@ -89,12 +89,15 @@ void MetaInstance::cullInterfaces()
 {
     foreach(QSharedPointer<BusInterface> busInterface, *getComponent()->getBusInterfaces())
     {
-        // Find the correct abstraction type.
+        // Find the correct abstraction type.        
+        QString viewName = QString();
         QSharedPointer<AbstractionType> absType;
         if (getActiveView())
         {
-            absType = busInterface->getAbstractionContainingView(getActiveView()->name());
+            viewName = getActiveView()->name();
         }
+
+        absType = busInterface->getAbstractionContainingView(viewName);
 
         if (!absType)
         {
