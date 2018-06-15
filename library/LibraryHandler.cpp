@@ -885,7 +885,7 @@ void LibraryHandler::onFileChanged(QString const& path)
     auto changedDocument = std::find_if(documentCache_.begin(), documentCache_.end(),
         [path] (const DocumentInfo& s) { return s.path.compare(path) == 0; } );
 
-    if (changedDocument != documentCache_.end())
+    if (changedDocument != documentCache_.end() && changedDocument.key().isValid())
     {
         emit updatedVLNV(changedDocument.key());
     }
@@ -916,9 +916,6 @@ void LibraryHandler::syncronizeModels()
             treeModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
     connect(this, SIGNAL(updatedVLNV(VLNV const&)),
             hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
-
-    connect(this, SIGNAL(updatedVLNV(VLNV const&)),
-        this, SIGNAL(updatedVLNV(VLNV const&)), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
