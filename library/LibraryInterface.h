@@ -38,6 +38,18 @@ public:
     */
     virtual QSharedPointer<Document> getModel(VLNV const& vlnv) = 0;
 
+    /*! Convenience function for getting the model that matches given VLNV, if the type is known beforehand.
+    *
+    *      @param [in] vlnv    Identifies the desired document.
+    *
+    *      @return The model that matches the document.
+    */
+    template <class T>
+    QSharedPointer<T> getModel(VLNV const& vlnv)
+    {
+        return getModel(vlnv).dynamicCast<T>();
+    }
+
     /*! Get a model that matches given VLNV for read-only access. May be used when no changes are to be made
      *  for the document.
      * 
@@ -46,6 +58,18 @@ public:
      *      @return The model that matches the document. The ownership of the object remains on Library Handler.
     */
     virtual QSharedPointer<Document const> getModelReadOnly(VLNV const& vlnv) = 0;
+
+    /*! Convenience function for getting the model that matches given VLNV, if the type is known beforehand.
+    *
+    *      @param [in] vlnv    Identifies the desired document.
+    *
+    *      @return The read-only model that matches the document.
+    */
+    template <class T>
+    QSharedPointer<T const> getModelReadOnly(VLNV const& vlnv)
+    {
+        return getModelReadOnly(vlnv).dynamicCast<T const>();
+    }
 
     /*! Checks if the library already contains the specified VLNV.
      *

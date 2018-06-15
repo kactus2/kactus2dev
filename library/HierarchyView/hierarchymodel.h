@@ -45,7 +45,7 @@ public:
     HierarchyModel(LibraryInterface* handler, QObject* parent);
     
     //! The destructor
-    virtual ~HierarchyModel();
+    virtual ~HierarchyModel() = default;
 
     /*! Get the data for the headers of this model.
      *

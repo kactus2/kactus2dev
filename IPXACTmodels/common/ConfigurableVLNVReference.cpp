@@ -30,12 +30,9 @@ configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> >)
 {
     foreach (QSharedPointer<ConfigurableElementValue> configurable, *other.configurableElementValues_)
     {
-        if (configurable)
-        {
             QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
                 new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
             configurableElementValues_->append(copy);
-        }
     }
 }
 
@@ -65,7 +62,7 @@ configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> > 
 //-----------------------------------------------------------------------------
 ConfigurableVLNVReference::~ConfigurableVLNVReference()
 {
-    configurableElementValues_->clear();
+    
 }
 
 //-----------------------------------------------------------------------------
