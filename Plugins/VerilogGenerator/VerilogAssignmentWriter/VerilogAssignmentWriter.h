@@ -37,15 +37,21 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~VerilogAssignmentWriter();
+    virtual ~VerilogAssignmentWriter() = default;
+
+    // Disable copying.
+    VerilogAssignmentWriter(VerilogAssignmentWriter const& rhs) = delete;
+    VerilogAssignmentWriter& operator=(VerilogAssignmentWriter const& rhs) = delete;
 
     /*!
      *  Writes the assignments to the given output.
      *
      *      @param [in] output   The output to write to.
      */
-    virtual void write(QTextStream& output) const;    
+    virtual void write(QTextStream& output) const override;    
     
+private:
+
     /*!
     *  Creates an assignment for a port.
     *
@@ -53,21 +59,32 @@ public:
     */
     QString assignmentForPort() const;
 
-private:
+    /*!
+    *  Creates the logical side of the port assignment.
+    *
+    *      @return The logical side for the port connection.
+    */
+    QString createLogicalAssignment(bool assignToPort) const;
 
-	// Disable copying.
-	VerilogAssignmentWriter(VerilogAssignmentWriter const& rhs);
-	VerilogAssignmentWriter& operator=(VerilogAssignmentWriter const& rhs);
-       
+    /*!
+    *  Creates the physical side of the port assignment.
+    *
+    *      @return The physical side for the port connection.
+    */
+    QString createPhysicalAssignment() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Ports
     QString portWireName_;
-    QSharedPointer<MetaPortAssignment> mpa_;
+
+    QSharedPointer<MetaPortAssignment> portAssignment_;
+
     QSharedPointer<MetaPort> mPort_;
-    bool isInHierPort_;
+
+    bool isHierarchicalPort_;
 };
 
 #endif // VERILOGASSIGNMENTWRITER_H
