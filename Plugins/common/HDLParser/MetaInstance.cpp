@@ -180,8 +180,6 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
 {
     foreach (QSharedPointer<MetaInterface> mInterface, *interfaces_)
     {
-        bool thisIfUsesThePort = false;
-
         foreach(QSharedPointer<PortMap> pMap, *mInterface->absType_->getPortMaps())
         {
             // The mapping must have a physical port.
@@ -218,8 +216,6 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
                     mInterface->absDef_->getVlnv().toString()));
                 continue;
             }
-
-            thisIfUsesThePort = true;
 
             // Every mapping using the port creates a new assignment for the port.
             QSharedPointer<MetaPortAssignment> mUpPortAssignment(new MetaPortAssignment);
@@ -261,10 +257,7 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
             mPort->downAssignments_.insert(pMap->getLogicalPort()->name_, mDownPortAssignment);
 
             // Associate the meta port with the interface.
-            if (thisIfUsesThePort)
-            {
-                mInterface->ports_.insert(mPort->port_->name(), mPort);
-            }
+            mInterface->ports_.insert(mPort->port_->name(), mPort);
         }
     }
 }
