@@ -26,7 +26,9 @@ class Choice;
 class Register;
 class RegisterFile;
 class RegisterValidator;
+class RegisterFileValidator;
 class RegisterExpressionsGatherer;
+class RegisterFileExpressionsGatherer;
 class ReferenceCalculator;
 
 //-----------------------------------------------------------------------------
@@ -52,9 +54,9 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<RegisterValidator> registerValidator,
+        QSharedPointer<RegisterFileValidator> registerFileValidator,
 		QObject *parent);
-	
+
 	//! The destructor.
 	virtual ~AddressBlockModel();
 
@@ -116,7 +118,7 @@ public:
 	 *      @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-    
+
     /*!
      *  Get the list of acceptable mime types.
      *
@@ -220,7 +222,7 @@ signals:
 	void itemRemoved(int index);
 
 private:
-	
+
 	//! No copying.
 	AddressBlockModel(const AddressBlockModel& other);
 
@@ -240,7 +242,7 @@ private:
      *
      *      @param [in] removedRegister     The removed register.
      */
-    void decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister);
+    void decreaseReferencesWithRemovedRegister(QSharedPointer<RegisterBase> removedRegister);
 
     /*!
      *  Get the names of the contained registers.
@@ -258,7 +260,8 @@ private:
      */
     void increaseReferencesInPastedRegister(QSharedPointer<Register> pastedRegister,
         RegisterExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
-
+    void increaseReferencesInPastedRegisterFile(QSharedPointer<RegisterFile> pastedRegisterFile,
+        RegisterFileExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -279,7 +282,9 @@ private:
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
     //! The validator used for registers.
-    QSharedPointer<RegisterValidator> registerValidator_;
+    QSharedPointer<RegisterFileValidator> registerFileValidator_;
+		//! The validator used for registers.
+		QSharedPointer<RegisterValidator> registerValidator_;
 };
 
 #endif // ADDRESSBLOCKMODEL_H
