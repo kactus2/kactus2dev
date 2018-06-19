@@ -1,14 +1,23 @@
 #include "componenteditorregisterfileitem.h"
 #include "componenteditorregisteritem.h"
-#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
-#include <IPXACTmodels/Component/Register.h>
-#include <IPXACTmodels/Component/Field.h>
-#include <IPXACTmodels/Component/RegisterFile.h>
-#include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+
+
+
+
+#include <editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
+
+
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
+#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
+
+
 #include <QApplication>
 ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<RegisterFile> registerFile,
                                                            ComponentEditorTreeModel* model,
