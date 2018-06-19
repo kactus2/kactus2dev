@@ -133,17 +133,19 @@ void ComponentEditorRegisterFileItem::createChild( int index )
 
 }
 
-class dummy_editor: public ItemEditor{
-  public:
-    dummy_editor(QSharedPointer<Component> component,
-                 LibraryInterface* handler,
-                 QWidget *parent = 0) : ItemEditor(component, handler,parent){}
-    void refresh() {}
-};
-
 ItemEditor* ComponentEditorRegisterFileItem::editor(){
-    if(!editor_){
-        editor_ = new dummy_editor(component_, libHandler_);
+    if (!editor_)
+    {
+        editor_ = new SingleRegisterFileEditor(registerFile_, component_, libHandler_, parameterFinder_, expressionFormatter_,
+            expressionParser_, registerFileValidator_);
+        editor_->setProtection(locked_);
+        connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
     }
     return editor_;
 }
