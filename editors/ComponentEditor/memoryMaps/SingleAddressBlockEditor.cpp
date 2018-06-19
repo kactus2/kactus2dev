@@ -40,7 +40,7 @@ SingleAddressBlockEditor::SingleAddressBlockEditor(QSharedPointer<AddressBlock> 
 ItemEditor(component, handler, parent),
     nameEditor_(addressBlock, this, tr("Address block name and description")),
     registersEditor_(new AddressBlockEditor(addressBlock, component, handler, parameterFinder, expressionFormatter,
-    addressBlockValidator->getRegisterValidator(), this)),
+    addressBlockValidator->getRegisterFileValidator(), this)),
     usageEditor_(),
     baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
     rangeEditor_(new ExpressionEditor(parameterFinder, this)),

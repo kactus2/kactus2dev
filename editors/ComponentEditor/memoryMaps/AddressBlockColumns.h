@@ -18,8 +18,9 @@ namespace AddressBlockColumns
     enum Column {
         NAME = 0,
         REGISTER_OFFSET,
+        REGISTERFILE_RANGE,
         REGISTER_SIZE,
-        REGISTER_DIMENSION,        
+        REGISTER_DIMENSION,
         VOLATILE,
         REGISTER_ACCESS,
         IS_PRESENT,
