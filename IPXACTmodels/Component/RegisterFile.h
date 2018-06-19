@@ -49,7 +49,7 @@ public:
 
 	/*!
      *  Clone the register file and return pointer to the copy.
-	 * 
+	 *
 	 *      @return Pointer to the cloned register file.
 	 */
     virtual QSharedPointer<RegisterBase> clone();
@@ -81,7 +81,7 @@ public:
 	 *      @return The range of the registerFile.
 	 */
     QString getRange() const;
-    
+
 	/*!
      *  Set the range of the registerFile.
 	 *
@@ -89,13 +89,14 @@ public:
 	 */
     void setRange(QString const& newRange);
 
+  QStringList getAllRegisterOffsets() const;
 	/*!
      *  Get the registerData elements of the reigsterFile.
 	 *
 	 *      @return Pointer to a list containing the register data.
 	 */
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > getRegisterData() const;
-    
+
 	/*!
      *  Set the registerData for the registerFile.
 	 *

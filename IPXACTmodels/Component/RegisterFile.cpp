@@ -103,6 +103,18 @@ void RegisterFile::setRegisterData(QSharedPointer<QList<QSharedPointer<RegisterB
     registerData_ = newRegisterData;
 }
 
+QStringList RegisterFile::getAllRegisterOffsets() const
+{
+    QStringList registerOffsets;
+
+    foreach (QSharedPointer<RegisterBase> registerBase, *registerData_)
+    {
+      registerOffsets.append(registerBase->getAddressOffset());
+    }
+
+    return registerOffsets;
+}
+
 //-----------------------------------------------------------------------------
 // Function: RegisterFile::copyRegisterData()
 //-----------------------------------------------------------------------------
