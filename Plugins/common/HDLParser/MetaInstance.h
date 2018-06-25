@@ -45,19 +45,22 @@ public:
         QSharedPointer<View> activeView);
 
 	//! The destructor.
-    ~MetaInstance();
+    virtual ~MetaInstance() = default;
     
+    // Disable copying.
+    MetaInstance(MetaInstance const& rhs) = delete;
+    MetaInstance& operator=(MetaInstance const& rhs) = delete;
+
 	/*!
 	 *  Parses the interfaces and ports for explicit values of this particular meta instance.
      *
      */
     void parseInstance();
 
-
     /*!
     *   Parses the expression using the parser and returns the result.
     */
-    static QString parseExpression(IPXactSystemVerilogParser& parser, const QString& expression);
+    static QString parseExpression(IPXactSystemVerilogParser const& parser, QString const& expression);
     
     /*!
      *  Returns list of culled interfaces.
@@ -70,28 +73,25 @@ public:
     QSharedPointer<ComponentInstance> getComponentInstance() const { return componentInstance_; }
 
 private:
-	// Disable copying.
-	MetaInstance(MetaInstance const& rhs);
-    MetaInstance& operator=(MetaInstance const& rhs);
     
     /*!
-     *  Culls the interfaces of the component.
+     *  Parse the interfaces of the component instance.
      */
-    virtual void cullInterfaces();
+    void parseInterfaces();
     
     /*!
      *  Culls and parses the ports of the component.
      *
      *      @param [in] parser          Used to parse expressions.
      */
-    virtual void parsePorts(IPXactSystemVerilogParser& parser);
+    void parsePorts(IPXactSystemVerilogParser const& parser);
     
     /*!
      *  Creates assignments for port maps.
      *
      *      @param [in] parser          Used to parse expressions.
      */
-    virtual void parsePortAssignments(IPXactSystemVerilogParser& parser);
+    void parsePortAssignments(IPXactSystemVerilogParser const& parser);
 
     /*!
      *  Finds the mapped logical port bounds for a port map.
@@ -101,8 +101,8 @@ private:
      *
      *      @return The logical port bounds for the port map in an instance.
      */
-	static QPair<QString, QString> logicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
-        QSharedPointer<PortMap> portMap);
+	QPair<QString, QString> logicalPortBoundsInMapping(IPXactSystemVerilogParser const& parser,
+        QSharedPointer<PortMap> portMap) const;
     
     /*!
      *  Finds the mapped physical port bounds for a port map.
@@ -112,8 +112,8 @@ private:
      *
      *      @return The physical port bounds for the port map in an instance.
      */
-    static QPair<QString, QString> physicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
-        QSharedPointer<PortMap> portMap);
+    QPair<QString, QString> physicalPortBoundsInMapping(IPXactSystemVerilogParser const& parser,
+        QSharedPointer<PortMap> portMap) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -121,10 +121,12 @@ private:
 
     //! The matching IP-XACT component instance.
     QSharedPointer<ComponentInstance> componentInstance_;
+
     //! The component library.
     LibraryInterface* library_;
+
     //! The parsed interfaces of the instance, keyed with its name.
-    QSharedPointer<QMap<QString,QSharedPointer<MetaInterface> > > interfaces_;
+    QSharedPointer<QMap<QString, QSharedPointer<MetaInterface> > > interfaces_;
 };
 
 #endif // METAINSTANCE_H

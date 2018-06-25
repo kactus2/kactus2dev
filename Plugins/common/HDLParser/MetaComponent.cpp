@@ -42,8 +42,8 @@ MetaComponent::MetaComponent(MessageMediator* messages,
     // Try to find a component instantiation for the view.
     if (activeView_)
     {
-        activeInstantiation_ = component_->getModel()->
-            findComponentInstantiation(activeView_->getComponentInstantiationRef());
+        activeInstantiation_ = component_->getModel()->findComponentInstantiation(
+            activeView_->getComponentInstantiationRef());
 
         if (activeInstantiation_)
         {
@@ -55,161 +55,12 @@ MetaComponent::MetaComponent(MessageMediator* messages,
 
     if (moduleName_.isEmpty())
     {
-        // No module name. -> Take the name from the VLNV of the component.
+        // If no module name is set, take the name from the VLNV of the component.
         moduleName_ = component_->getVlnv().getName();
     }
 
-    // Must cull the parameters before can use them!
-    cullParameters();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaComponent::cullMetaParameters()
-//-----------------------------------------------------------------------------
-void MetaComponent::cullMetaParameters()
-{
-    foreach(QSharedPointer<Parameter> original, *getParameters())
-    {
-        QSharedPointer<Parameter> mParameter(original);
-
-        getMetaParameters()->insert(original->name(), mParameter);
-    }
-
-    foreach(QSharedPointer<Parameter> pOriginal, *getModuleParameters())
-    {
-        QSharedPointer<ModuleParameter> original = qSharedPointerDynamicCast<ModuleParameter>(pOriginal);
-
-        if (!original)
-        {
-            continue;
-        }
-
-        QMap<QString, QSharedPointer<Parameter> >::iterator i = getMetaParameters()->find(original->name());
-
-        if (i != getMetaParameters()->end())
-        {
-            getMetaParameters()->erase(i);
-        }
-
-        QSharedPointer<ModuleParameter> mParameter = QSharedPointer<ModuleParameter>(original);
-        getMetaParameters()->insert(original->name(), mParameter);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaComponent::parsesFileSets()
-//-----------------------------------------------------------------------------
-void MetaComponent::parsesFileSets()
-{
-    foreach(QString fileSetRef, *activeInstantiation_->getFileSetReferences())
-    {
-        QSharedPointer<FileSet> fileSet = component_->getFileSet(fileSetRef);
-
-        if (fileSet)
-        {
-            fileSets_->append(fileSet);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaComponent::sortModuleParameters()
-//-----------------------------------------------------------------------------
-void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters)
-{
-    // Create reference parameters.
-    QList<QSharedPointer<Parameter> > refParameters;
-    refParameters.append(*sortParameters.data());
-
-    // Go through existing ones on the instance.
-    for (QList<QSharedPointer<Parameter> >::Iterator parameterAdd =
-        refParameters.begin(); parameterAdd != refParameters.end(); ++parameterAdd)
-    {
-        // The first position for the second pass.
-        QList<QSharedPointer<Parameter> >::Iterator minPos =
-            sortParameters->begin();
-
-        // The value of the inspected parameter.
-        QString valueAdd = (*parameterAdd)->getValue();
-
-        // First pass: Detect if the parameter depends on another parameter.
-        for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp =
-            sortParameters->begin();
-            parameterCmp != sortParameters->end(); ++parameterCmp)
-        {
-            if (valueAdd.contains((*parameterCmp)->getValueId()))
-            {
-                // A match found: The parameter must be positioned after this one!
-                minPos = ++parameterCmp;
-
-                // The first one needed is the relevant one, so break here.
-                break;
-            }
-        }
-
-        // If true, the parameter will be appended to the end of the list.
-        bool append = true;
-
-        // The second pass: Find the actual position before the parameter is referred.
-        for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp = minPos;
-            parameterCmp != sortParameters->end(); ++parameterCmp)
-        {
-            // The value of the the compared parameter.
-            QString valueCmp = (*parameterCmp)->getValue();
-
-            // Check if it contains a reference to the inspected parameter.
-            if (valueCmp.contains((*parameterAdd)->getValueId()))
-            {
-                // Take a direct shared pointer to the referring parameter.
-                QSharedPointer<Parameter> parameterRef = *parameterCmp;
-
-                // Remove the inspected parameter from the previous place.
-                sortParameters->removeOne(*parameterAdd);
-
-                // See where the referring parameter is located now.
-                int cmpLoc = sortParameters->indexOf(*parameterCmp);
-
-                // Then the inspected parameter comes before it is referred.
-                sortParameters->insert(cmpLoc, *parameterAdd);
-
-                // It will not be inserted twice, so break here.
-                append = false;
-                break;
-            }
-        }
-
-        // If there was no match in the second pass, or no second pass at all, append to the end.
-        if (append)
-        {
-            // Remove the inspected parameter from the previous place.
-            sortParameters->removeOne(*parameterAdd);
-            // Append at the end of the list.
-            sortParameters->append(*parameterAdd);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaComponent::cullParameters()
-//-----------------------------------------------------------------------------
-void MetaComponent::cullParameters()
-{
-    // Cull all the component parameters for the original parameters.
-    foreach(QSharedPointer<Parameter> parameterOrig, *component_->getParameters())
-    {
-        QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-        parameters_->append(parameterCpy);
-    }
-
-    // If there is an active component instantiation, take its module parameters as well.
-    if (activeInstantiation_)
-    {
-        foreach(QSharedPointer<ModuleParameter> parameterOrig, *activeInstantiation_->getModuleParameters())
-        {
-            QSharedPointer<ModuleParameter> parameterCpy(new ModuleParameter(*parameterOrig));
-            moduleParameters_->append(parameterCpy);
-        }
-    }
+    // Must parse the parameters before can use them!
+    parseParameters();
 }
 
 //-----------------------------------------------------------------------------
@@ -218,7 +69,7 @@ void MetaComponent::cullParameters()
 void MetaComponent::formatComponent()
 {
     // Initialize the parameter finders.
-    QSharedPointer<MultipleParameterFinder> parameterFinder (new MultipleParameterFinder());
+    QSharedPointer<MultipleParameterFinder> parameterFinder(new MultipleParameterFinder());
     QSharedPointer<ComponentParameterFinder> componentFinder(new ComponentParameterFinder(component_));
     QSharedPointer<ListParameterFinder> moduleFinder(new ListParameterFinder());
     moduleFinder->setParameterList(getModuleParameters());
@@ -226,64 +77,150 @@ void MetaComponent::formatComponent()
     parameterFinder->addFinder(moduleFinder);
 
     //! The formatter for expressions.
-    QSharedPointer<ExpressionFormatter> formatter = 
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
+    ExpressionFormatter formatter(parameterFinder);
 
-    // Format parameters and ports.
     formatParameters(formatter);
     formatPorts(formatter);
-
-    // Find and parse the component stuff that (currently) does not exists in the hierarchy parsing.
     parseRemapStates(formatter);
 
-    cullMetaParameters();
+    parseMetaParameters();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::parseMetaParameters()
+//-----------------------------------------------------------------------------
+void MetaComponent::parseMetaParameters()
+{
+    foreach(QSharedPointer<Parameter> original, *getParameters())
+    {
+        metaParameters_->insert(original->name(), original);
+    }
+
+    for (QSharedPointer<Parameter> pOriginal : *getModuleParameters())
+    {
+        QSharedPointer<ModuleParameter> original = pOriginal.dynamicCast<ModuleParameter>();
+        if (original)
+        {
+            auto i = metaParameters_->find(original->name());
+            if (i != metaParameters_->end())
+            {
+                metaParameters_->erase(i);
+            }
+            
+            metaParameters_->insert(original->name(), original);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::parseParameters()
+//-----------------------------------------------------------------------------
+void MetaComponent::parseParameters()
+{
+    // Copy all the component parameters for the original parameters.
+    for (QSharedPointer<Parameter> parameterOrig : *component_->getParameters())
+    {       
+        parameters_->append(QSharedPointer<Parameter>(new Parameter(*parameterOrig)));
+    }
+
+    // If there is an active component instantiation, take its module parameters as well.
+    if (activeInstantiation_)
+    {
+        for (QSharedPointer<ModuleParameter> parameterOrig : *activeInstantiation_->getModuleParameters())
+        {
+            moduleParameters_->append(QSharedPointer<ModuleParameter>(new ModuleParameter(*parameterOrig)));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: MetaComponent::formatParameters()
 //-----------------------------------------------------------------------------
-void MetaComponent::formatParameters(QSharedPointer<ExpressionFormatter> formatter)
+void MetaComponent::formatParameters(ExpressionFormatter const& formatter)
 {
-    // Sort the parameters.
     sortParameters(parameters_);
-
-    // Format the parameters.
-    foreach(QSharedPointer<Parameter> parameter, *parameters_)
+    for (QSharedPointer<Parameter> parameter : *parameters_)
     {
-        parameter->setValue(formatter->formatReferringExpression(parameter->getValue()));
+        parameter->setValue(formatter.formatReferringExpression(parameter->getValue()));
     }
 
-    // Sort the module parameters.
     sortParameters(moduleParameters_);
-
-    // Format the module parameters.
-    foreach(QSharedPointer<Parameter> parameter, *moduleParameters_)
+    for (QSharedPointer<Parameter> moduleParameter : *moduleParameters_)
     {
-        parameter->setValue(formatter->formatReferringExpression(parameter->getValue()));
+        moduleParameter->setValue(formatter.formatReferringExpression(moduleParameter->getValue()));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::sortParameters()
+//-----------------------------------------------------------------------------
+void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters) const
+{
+    // Go through existing ones on the instance.
+    foreach (QSharedPointer<Parameter> current, *sortParameters)
+    {
+        // The value of the inspected parameter.
+        QString currentValue = current->getValue();
+
+        // The start position for the second pass.
+        auto startPosition = std::find_if(sortParameters->begin(), sortParameters->end(),
+            [&currentValue](auto referenced) { return currentValue.contains(referenced->getValueId()); });
+
+        // If none found, next search starts from the beginning.
+        if (startPosition == sortParameters->end())
+        {
+            startPosition = sortParameters->begin();
+        }
+
+        auto firstReferencing = std::find_if(startPosition, sortParameters->end(),
+            [&currentValue](auto referencing) { return referencing->getValue().contains(currentValue); });
+        
+        // Move to end of the list, unless referencing parameter is found.
+        int target = sortParameters->size();
+        if (firstReferencing != sortParameters->end())
+        {
+            target = sortParameters->indexOf(*firstReferencing);
+
+            if (target > sortParameters->indexOf(current))
+            {
+                --target;
+            }
+        }
+
+        sortParameters->removeOne(current);
+        sortParameters->insert(target, current);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::parsesFileSets()
+//-----------------------------------------------------------------------------
+void MetaComponent::parsesFileSets()
+{
+    for (QString const& fileSetRef : *activeInstantiation_->getFileSetReferences())
+    {
+        QSharedPointer<FileSet> fileSet = component_->getFileSet(fileSetRef);
+        if (fileSet)
+        {
+            fileSets_->append(fileSet);
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: MetaComponent::formatPorts()
 //-----------------------------------------------------------------------------
-void MetaComponent::formatPorts(QSharedPointer<ExpressionFormatter> formatter)
+void MetaComponent::formatPorts(ExpressionFormatter const& formatter)
 {
-    foreach (QSharedPointer<Port> cport, *component_->getPorts())
+    for (QSharedPointer<Port> cport : *component_->getPorts())
     {
-        // Create generation port.
         QSharedPointer<MetaPort> mPort(new MetaPort);
-
-        // Needs a reference to the IP-XACT port.
         mPort->port_ = cport;
+        mPort->arrayBounds_.first = formatter.formatReferringExpression(cport->getArrayLeft());
+        mPort->arrayBounds_.second = formatter.formatReferringExpression(cport->getArrayRight());
+        mPort->vectorBounds_.first = formatter.formatReferringExpression(cport->getLeftBound());
+        mPort->vectorBounds_.second = formatter.formatReferringExpression(cport->getRightBound());
 
-        // Both vector and array bounds may be needed.
-        mPort->arrayBounds_.first = formatter->formatReferringExpression(cport->getArrayLeft());
-        mPort->arrayBounds_.second = formatter->formatReferringExpression(cport->getArrayRight());
-
-        mPort->vectorBounds_.first = formatter->formatReferringExpression(cport->getLeftBound());
-        mPort->vectorBounds_.second = formatter->formatReferringExpression(cport->getRightBound());
-
-        // Add to the list.
         ports_->insert(cport->name(), mPort);
     }
 }
@@ -291,27 +228,24 @@ void MetaComponent::formatPorts(QSharedPointer<ExpressionFormatter> formatter)
 //-----------------------------------------------------------------------------
 // Function: MetaComponent::parseRemapStates
 //-----------------------------------------------------------------------------
-void MetaComponent::parseRemapStates(QSharedPointer<ExpressionFormatter> formatter)
+void MetaComponent::parseRemapStates(ExpressionFormatter const& formatter)
 {
-    // Go through configured remap states.
-    foreach(QSharedPointer<RemapState> currentState, *component_->getRemapStates())
+    for (QSharedPointer<RemapState> currentState : *component_->getRemapStates())
     {
-        // Create new remap state for the generation.
-        QSharedPointer<FormattedRemapState> grms(new FormattedRemapState);
-        grms->state_ = currentState;
-        remapStates_->append(grms);
+        QSharedPointer<FormattedRemapState> remapState(new FormattedRemapState);
+        remapState->state_ = currentState;
+        remapStates_->append(remapState);
 
         // Each port referred by the state must be listed.
-        foreach(QSharedPointer<RemapPort> rmport, *currentState->getRemapPorts())
+        for (QSharedPointer<RemapPort> remapPort : *currentState->getRemapPorts())
         {
-            QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort
-                (new QPair<QSharedPointer<Port>,QString>);
-
             // Pick the port name, and the value needed for it to remap state become effective.
-            parsedPort->first = component_->getPort(rmport->getPortNameRef());
-            parsedPort->second = formatter->formatReferringExpression(rmport->getValue());
+            QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort
+                (new QPair<QSharedPointer<Port>, QString>);
+            parsedPort->first = component_->getPort(remapPort->getPortNameRef());
+            parsedPort->second = formatter.formatReferringExpression(remapPort->getValue());
 
-            grms->ports_.append(parsedPort);
+            remapState->ports_.append(parsedPort);
         }
     }
 }

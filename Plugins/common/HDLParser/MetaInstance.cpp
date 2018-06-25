@@ -23,27 +23,17 @@
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::MetaInstance()
 //-----------------------------------------------------------------------------
-MetaInstance::MetaInstance(
-    QSharedPointer<ComponentInstance> componentInstance,
+MetaInstance::MetaInstance(QSharedPointer<ComponentInstance> componentInstance,
     LibraryInterface* library,
     MessageMediator* messages,
     QSharedPointer<Component> component,
     QSharedPointer<View> activeView) :
-MetaComponent(
-    messages,
-    component,
-    activeView),
+MetaComponent(messages, component, activeView),
     componentInstance_(componentInstance),
     library_(library),
     interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >)
 {
-}
 
-//-----------------------------------------------------------------------------
-// Function: MetaInstance::~MetaInstance()
-//-----------------------------------------------------------------------------
-MetaInstance::~MetaInstance()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -60,77 +50,68 @@ void MetaInstance::parseInstance()
     IPXactSystemVerilogParser instanceParser(instanceFinder);
 
     // Parse the interfaces and ports.
-    cullInterfaces();
+    parseInterfaces();
     parsePorts(instanceParser);
     parsePortAssignments(instanceParser);
 
-    cullMetaParameters();
+    parseMetaParameters(); 
 }
 
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::parseExpression()
 //-----------------------------------------------------------------------------
-QString MetaInstance::parseExpression(IPXactSystemVerilogParser& parser, const QString& expression)
+QString MetaInstance::parseExpression(IPXactSystemVerilogParser const& parser,  QString const& expression)
 {
     QString value = parser.parseExpression(expression);
 
-    if (value == "x")
+    if (value == QStringLiteral("x"))
     {
-        return "0";
+        return QStringLiteral("0");
     }
 
     return value;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaInstance::cullInterfaces()
+// Function: MetaInstance::parseInterfaces()
 //-----------------------------------------------------------------------------
-void MetaInstance::cullInterfaces()
+void MetaInstance::parseInterfaces()
 {
     foreach(QSharedPointer<BusInterface> busInterface, *getComponent()->getBusInterfaces())
     {
         // Find the correct abstraction type.        
-        QString viewName = QString();
-        QSharedPointer<AbstractionType> absType;
+        QString viewName = QString();        
         if (getActiveView())
         {
             viewName = getActiveView()->name();
         }
 
-        absType = busInterface->getAbstractionContainingView(viewName);
-
+        QSharedPointer<AbstractionType> absType = busInterface->getAbstractionContainingView(viewName);
         if (!absType)
         {
-            messages_->showError(QObject::tr
-                ("Component %1: Bus interface %2 does not have an abstraction type!")
-                .arg(getComponent()->getVlnv().toString(),
-                busInterface->name()));
+            messages_->showError(
+                QObject::tr("Component %1: Bus interface %2 does not have an abstraction type.")
+                .arg(getComponent()->getVlnv().toString(), busInterface->name()));
             continue;
         }
 
         // An abstraction definition is needed. It comes through VLNV reference.
         QSharedPointer<ConfigurableVLNVReference> absRef = absType->getAbstractionRef();
-
         if (!absRef)
         {
-            messages_->showError(QObject::tr
-                ("Component %1: Abstraction type of bus interface %2 does not have abstraction reference!")
-                .arg(getComponent()->getVlnv().toString(),
-                busInterface->name()));
+            messages_->showError(
+                QObject::tr("Component %1: Abstraction type in bus interface %2 does not have abstraction reference.")
+                .arg(getComponent()->getVlnv().toString(), busInterface->name()));
             continue;
         }
 
         // Find the abstraction definition from the library.
-        QSharedPointer<AbstractionDefinition> absDef =
-            library_->getModel(*absRef).dynamicCast<AbstractionDefinition>();
-
+        QSharedPointer<AbstractionDefinition> absDef = library_->getModel<AbstractionDefinition>(*absRef);
         if (!absDef)
         {
-            messages_->showError(QObject::tr
-                ("Component %1: Abstraction definition for bus interface %2 was not found: %3")
-                .arg(getComponent()->getVlnv().toString(),
-                busInterface->name(),
-                absRef->toString()));
+            messages_->showError(
+                QObject::tr("Component %1: Abstraction definition for bus interface %2 was not found: %3")
+                .arg(getComponent()->getVlnv().toString(), busInterface->name(), absRef->toString()));
             continue;
         }
 
@@ -148,27 +129,18 @@ void MetaInstance::cullInterfaces()
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::parsePorts()
 //-----------------------------------------------------------------------------
-void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
+void MetaInstance::parsePorts(IPXactSystemVerilogParser const& parser)
 {
     foreach (QSharedPointer<Port> cport, *getComponent()->getPorts())
-    {
-        // Create generation port.
+    {        
         QSharedPointer<MetaPort> mPort(new MetaPort);
-
-        // Needs a reference to the IP-XACT port.
         mPort->port_ = cport;
-
-        // Both vector and array bounds may be needed.
         mPort->arrayBounds_.first = parseExpression(parser, cport->getArrayLeft());
         mPort->arrayBounds_.second = parseExpression(parser, cport->getArrayRight());
-
         mPort->vectorBounds_.first = parseExpression(parser, cport->getLeftBound());
         mPort->vectorBounds_.second = parseExpression(parser, cport->getRightBound());
-
-        // Parse the default value.
         mPort->defaultValue_ = parseExpression(parser, cport->getDefaultValue());
 
-        // Append to the list
         getPorts()->insert(cport->name(), mPort);
     }
 }
@@ -176,20 +148,14 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::parsePortAssignments()
 //-----------------------------------------------------------------------------
-void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
+void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser const& parser)
 {
     foreach (QSharedPointer<MetaInterface> mInterface, *interfaces_)
     {
         foreach(QSharedPointer<PortMap> pMap, *mInterface->absType_->getPortMaps())
         {
-            // The mapping must have a physical port.
-            if (!pMap->getPhysicalPort())
-            {
-                continue;
-            }
-
-            // The mapping must have a logical port.
-            if (!pMap->getLogicalPort())
+            if (!pMap->getPhysicalPort() || !pMap->getLogicalPort() ||
+                !getPorts()->contains(pMap->getPhysicalPort()->name_))
             {
                 continue;
             }
@@ -197,11 +163,6 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
             // The physical port must match an existing component port.
             QSharedPointer<MetaPort> mPort = getPorts()->value(pMap->getPhysicalPort()->name_);
 
-            if (!mPort)
-            {
-                continue;
-            }
-                
             // The abstraction definition must have a port abstraction with the same name.
             QSharedPointer<PortAbstraction> portAbstraction= mInterface->absDef_->
                 getPort(pMap->getLogicalPort()->name_);
@@ -239,10 +200,10 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
                 // Pick the total width of the physical bounds.
                 int left = parseExpression(parser, physicalBounds.first).toInt();
                 int right = parseExpression(parser, physicalBounds.second).toInt();
+
                 // This is [abs(physical.left – physical.right):0]
-                int widthMinusOne = abs(left - right);
-                logicalBounds.first = QString::number(widthMinusOne);
-                logicalBounds.second = "0";
+                logicalBounds.first = QString::number(abs(left - right));
+                logicalBounds.second = QStringLiteral("0");
             }
 
             // Assign the values.
@@ -252,6 +213,7 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
             // Create a copy of the assignments.
             QSharedPointer<MetaPortAssignment> mDownPortAssignment
                 (new MetaPortAssignment(*mUpPortAssignment.data()));
+
             // There must be an assignment for both directions in hierarchy.
             mPort->upAssignments_.insert(pMap->getLogicalPort()->name_, mUpPortAssignment);
             mPort->downAssignments_.insert(pMap->getLogicalPort()->name_, mDownPortAssignment);
@@ -265,10 +227,10 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser& parser)
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::logicalPortBoundsInMapping()
 //-----------------------------------------------------------------------------
-QPair<QString, QString> MetaInstance::logicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
-    QSharedPointer<PortMap> portMap)
+QPair<QString, QString> MetaInstance::logicalPortBoundsInMapping(IPXactSystemVerilogParser const& parser,
+    QSharedPointer<PortMap> portMap) const
 {
-    QPair<QString, QString> bounds("", "");
+    QPair<QString, QString> bounds;
 
     QSharedPointer<PortMap::LogicalPort> logicalPort = portMap->getLogicalPort();
 
@@ -285,10 +247,10 @@ QPair<QString, QString> MetaInstance::logicalPortBoundsInMapping(IPXactSystemVer
 //-----------------------------------------------------------------------------
 // Function: MetaInstance::physicalPortBoundsInMapping()
 //-----------------------------------------------------------------------------
-QPair<QString, QString> MetaInstance::physicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
-    QSharedPointer<PortMap> portMap)
+QPair<QString, QString> MetaInstance::physicalPortBoundsInMapping(IPXactSystemVerilogParser const& parser,
+    QSharedPointer<PortMap> portMap) const
 {
-    QPair<QString, QString> bounds("", "");
+    QPair<QString, QString> bounds;
 
     QSharedPointer<PortMap::PhysicalPort> physPort = portMap->getPhysicalPort();
 

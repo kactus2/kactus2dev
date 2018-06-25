@@ -43,8 +43,12 @@ public:
         QSharedPointer<MetaInstance> topInstance);
 
     //! The destructor.
-    ~MetaDesign();
-    
+    ~MetaDesign() = default;
+
+    // Disable copying.
+    MetaDesign(MetaDesign const& rhs) = delete;
+    MetaDesign& operator=(MetaDesign const& rhs) = delete;
+
     /*!
      *  Parses a hierarchy of designs and return the list of them.
      *
@@ -78,14 +82,10 @@ public:
 
 private:
 
-    // Disable copying.
-    MetaDesign(MetaDesign const& rhs);
-    MetaDesign& operator=(MetaDesign const& rhs);
-
     /*!
      *  Finds the component instances within the design, also determines if they are hierarchical.
      */
-    void cullInstances();
+    void findInstances();
 
     /*!
      *  Parses the design_: The instances, the interconnections, the ad-hocs.
@@ -204,19 +204,18 @@ private:
      *
      *      @return The found design, or null.
      */
-    QSharedPointer<Design> findDesignFromInstantiation(QSharedPointer<DesignInstantiation> dis);
+    QSharedPointer<Design> findDesignFromInstantiation(QSharedPointer<DesignInstantiation> designInstantiation,
+        QSharedPointer<DesignConfiguration> configurationInstantiation);
 
     /*!
      *  Finds a design and design configuration from a design instantiation.
      *
-     *      @param [in] disg                    Where from the design configuration is searched.
-     *      @param [out] subDesign              The design pointed by the design configuration.
+     *      @param [in] configurationInstantiation                    Where from the design configuration is searched.
      *
      *      @return The found design configuration, or null.
      */
     QSharedPointer<DesignConfiguration> findDesignConfigurationFromInsantiation(
-        QSharedPointer<DesignConfigurationInstantiation> disg,
-        QSharedPointer<Design> &subDesign);
+        QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation);
 
 
     /*!
