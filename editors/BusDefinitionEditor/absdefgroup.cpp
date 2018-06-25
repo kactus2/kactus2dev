@@ -99,6 +99,11 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
     transactionalPortsEditor_.setAbsDef(absDef);
     vlnvDisplay_->setVLNV(absDef->getVlnv());
 
+    if (abstractionContainsTransactionalPorts())
+    {
+        portTabs_.setCurrentWidget(&transactionalPortsEditor_);
+    }
+
     if (absDef->getExtends().isValid())
     {
         extendVLNVEditor_->setVLNV(absDef->getExtends());
@@ -108,6 +113,22 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
     {
         descriptionEditor_->setPlainText(absDef->getDescription());
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::abstractionContainsTransactionalPorts()
+//-----------------------------------------------------------------------------
+bool AbsDefGroup::abstractionContainsTransactionalPorts() const
+{
+    foreach(QSharedPointer<PortAbstraction> logicalPort, *abstraction_->getLogicalPorts())
+    {
+        if (logicalPort->hasTransactional())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

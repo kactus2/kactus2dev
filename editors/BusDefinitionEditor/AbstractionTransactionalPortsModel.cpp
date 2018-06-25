@@ -240,14 +240,14 @@ QVariant AbstractionTransactionalPortsModel::data(QModelIndex const& index, int 
             (index.column() == AbstractionTransactionalPortColumns::MODE && 
                 (port.mode_ == General::INTERFACE_MODE_COUNT || table_.count(port) > 1)))
         {
-            return  KactusColors::ERROR;
+            return KactusColors::ERROR;
         }
         else if (index.column() == AbstractionTransactionalPortColumns::SYSTEM_GROUP)
         {
             if (port.mode_ != General::SYSTEM || !busDefinition_ || 
                 !busDefinition_->getSystemGroupNames().contains(port.transactionalPort_->getSystemGroup()))
             {
-                return  KactusColors::ERROR;
+                return KactusColors::ERROR;
             }
         }
     }

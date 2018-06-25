@@ -122,6 +122,13 @@ private:
      */
 	void setupLayout();
     
+    /*!
+     *  Check if the abstraction definition contains transactional ports.
+     *
+     *      @return True, if the abstraction definition contains any transactional ports.
+     */
+    bool abstractionContainsTransactionalPorts() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

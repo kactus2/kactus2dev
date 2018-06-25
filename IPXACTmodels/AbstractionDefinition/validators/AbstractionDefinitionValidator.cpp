@@ -25,6 +25,7 @@
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/TransactionalTypes.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <IPXACTmodels/common/validators/CellSpecificationValidator.h>
 #include <IPXACTmodels/common/validators/TimingConstraintValidator.h>
@@ -65,10 +66,11 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
 	}
 
 	// The defined bus must exist in the library as a component.
-	if (!library_->contains(abstractionDefinition->getBusType()))
-	{
-		return false;
-	}
+    QSharedPointer<const BusDefinition> busDefinition = getBusDefinition(abstractionDefinition);
+    if (!busDefinition)
+    {
+        return false;
+    }
 
 	// If this is an extension to another abstraction definition, it must exist.
 	if (!abstractionDefinition->getExtends().isEmpty() && !library_->contains(abstractionDefinition->getExtends()))
@@ -103,7 +105,7 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
             return false;
         }
 
-		if (!isValidPortAbstraction(portAbstraction, abstractionDefinition->getLogicalPorts()))
+		if (!isValidPortAbstraction(portAbstraction, abstractionDefinition->getLogicalPorts(), busDefinition))
 		{
 			return false;
 		}
@@ -128,11 +130,12 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 	}
 
 	// The defined bus must exist in the library as a component.
-	if (!library_->contains(abstractionDefinition->getBusType()))
-	{
-		errors.append(QObject::tr("The bus definition %1 referenced in %2 is not found in the library.")
-			.arg(abstractionDefinition->getBusType().toString(), abstractionDefinition->getVlnv().toString()));
-	}
+    QSharedPointer<const BusDefinition> busDefinition = getBusDefinition(abstractionDefinition);
+    if (!busDefinition)
+    {
+        errors.append(QObject::tr("The bus definition %1 referenced in %2 is not found in the library.")
+            .arg(abstractionDefinition->getBusType().toString(), abstractionDefinition->getVlnv().toString()));
+    }
 
 	// If this is an extension to another abstraction definition, it must exist.
 	if (!abstractionDefinition->getExtends().isEmpty() && !library_->contains(abstractionDefinition->getExtends()))
@@ -167,7 +170,7 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
                context));
         }
 
-		findErrorsInPortAbstraction(errors, port, abstractionDefinition->getLogicalPorts());
+		findErrorsInPortAbstraction(errors, port, abstractionDefinition->getLogicalPorts(), busDefinition);
 
         logicalNames.append(port->getLogicalName());
 	}
@@ -177,7 +180,8 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 // Function: AbstractionDefinitionValidator::isValidPortAbstraction()
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortAbstraction> port,
-	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
+    QSharedPointer<QList<QSharedPointer<PortAbstraction>>> ports,
+    QSharedPointer<const BusDefinition> busDefinition) const
 {
 	// The name must be non-empty.
 	if (!hasValidName(port->getLogicalName()))
@@ -201,6 +205,8 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 	{
 		return false;
 	}
+
+    QStringList& systemGroups = busDefinition->getSystemGroupNames();
 
 	if (wire)
 	{
@@ -228,7 +234,8 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
         {
             foreach(QSharedPointer<WirePort> systemWirePort, *wire->getSystemPorts())
             {
-                if (!isValidWirePort(systemWirePort, ports))
+                if (!isValidWirePort(systemWirePort, ports) ||
+                    !systemGroups.contains(systemWirePort->getSystemGroup()))
                 {
                     return false;
                 }
@@ -254,7 +261,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
         {
             foreach(QSharedPointer<TransactionalPort> transPort, *transactional->getSystemPorts())
             {
-                if (!isValidTransactionalPort(transPort))
+                if (!isValidTransactionalPort(transPort) || !systemGroups.contains(transPort->getSystemGroup()))
                 {
                     return false;
                 }
@@ -268,9 +275,9 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionValidator::findErrorsInPortAbstraction()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString>& errors, 
-    QSharedPointer<PortAbstraction> port,
-    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
+void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString>& errors,
+    QSharedPointer<PortAbstraction> port, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports,
+    QSharedPointer<const BusDefinition> busDefinition) const
 {
 	// The name must be non-empty.
 	if (!hasValidName(port->getLogicalName()))
@@ -304,6 +311,14 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
 
     QString context = QObject::tr("port %1").arg(port->getLogicalName());
 
+    QStringList systemGroupNames;
+    QString busDefinitionIdentifier(":::");
+    if (busDefinition)
+    {
+        systemGroupNames = busDefinition->getSystemGroupNames();
+        busDefinitionIdentifier = busDefinition->getVlnv().toString();
+    }
+
 	if (wire)
 	{
 		// Default value must be valid expression if defined.
@@ -332,6 +347,8 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
             foreach(QSharedPointer<WirePort> wirePort, *wire->getSystemPorts())
             {
                 findErrorsInWirePort(errors, wirePort, context, ports);
+                findErrorsInSystemGroup(
+                    errors, wirePort->getSystemGroup(), context, systemGroupNames, busDefinitionIdentifier);
             }
         }
 	}
@@ -355,6 +372,8 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
             foreach(QSharedPointer<TransactionalPort> transPort, *transactional->getSystemPorts())
             {
                 findErrorsInTransactionalPort(errors, context, transPort);
+                findErrorsInSystemGroup(
+                    errors, transPort->getSystemGroup(), context, systemGroupNames, busDefinitionIdentifier);
             }
         }
 	}
@@ -606,4 +625,40 @@ bool AbstractionDefinitionValidator::hasValidName(QString const& name) const
 	}
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::getBusDefinition()
+//-----------------------------------------------------------------------------
+QSharedPointer<const BusDefinition> AbstractionDefinitionValidator::getBusDefinition(
+    QSharedPointer<AbstractionDefinition> abstraction) const
+{
+    QSharedPointer<const Document> busDefinitionDocument = library_->getModelReadOnly(abstraction->getBusType());
+    if (busDefinitionDocument)
+    {
+        QSharedPointer<const BusDefinition> busDefinition =
+            busDefinitionDocument.dynamicCast<const BusDefinition>();
+
+        return busDefinition;
+    }
+
+    return QSharedPointer<const BusDefinition>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::findErrorsInSystemGroup()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionValidator::findErrorsInSystemGroup(QVector<QString>& errors, QString const& systemGroup,
+    QString const& context, QStringList const& availableSystemNames, QString const& busDefinitionIdentifier) const
+{
+    if (systemGroup.isEmpty())
+    {
+        errors.append(QObject::tr("System group must be assigned for %1.").arg(context));
+    }
+    else if (!availableSystemNames.contains(systemGroup))
+    {
+        errors.append(QObject::tr(
+            "The system group %1 in %2 is not defined in system groups of bus definition %3.")
+            .arg(systemGroup, context, busDefinitionIdentifier));
+    }
 }
