@@ -128,7 +128,7 @@ void SingleRegisterEditor::setupLayout()
         this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
+    topOfPageLayout->addWidget(&nameEditor_, 0);
     topOfPageLayout->addWidget(registerDefinitionGroup, 0);
 
     QWidget* topOfPageWidget = new QWidget();

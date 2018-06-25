@@ -139,7 +139,7 @@ VLNV LibraryLoader::getDocumentVLNV(QString const& path)
 
     documentFile.close();
 
-    return VLNV(type, vendor, library, name, version);
+    return VLNV(VLNV::string2Type(type), vendor, library, name, version);
 }
 
 //-----------------------------------------------------------------------------

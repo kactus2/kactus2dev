@@ -41,10 +41,10 @@ public:
     Qualifier(Qualifier const& rhs);
 
 	//! The destructor.
-	virtual ~Qualifier();
+	~Qualifier() = default;
 
     //! The assign operator.
-    Qualifier& operator=(Qualifier const& rhs);
+    Qualifier& operator=(Qualifier const& other);
 
     /*!
      *  Sets the qualifier.

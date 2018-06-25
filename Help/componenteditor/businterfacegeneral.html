@@ -138,7 +138,13 @@
     <p>     
       <b>Abstraction definition</b> contains an optional <i>VLNV</i>-reference to 
       the <i>abstraction definition</i> document that defines the logical signals
-      on the bus. <i>Port maps</i> define how they are connected to the physical ports on the component.
+      on the bus. If multiple abstraction definitions are defined, <b>view references</b>
+	  specify which view(s) the abstraction is applied to. All views are considered,
+	  if the view reference is empty.
+	</p>
+	<p>
+	  <i>Port maps</i> on the other tab define how the logical signals in the <b>abstraction
+	  definition</b> are connected to the physical ports on the component.
     </p>
     <h3>Parameters</h3>
     <p>

@@ -76,7 +76,7 @@ protected:
      *
      *      @return The decimal value of the constant or the given string.
      */
-    QString parseConstant(QString const& token) const;
+    QString parseConstant(QString token) const;
 
     /*!
      *  Checks if the given expression is a symbol e.g. reference.
@@ -104,6 +104,15 @@ protected:
      *      @return The base for the symbol.
      */
     virtual int getBaseForSymbol(QString const& symbol) const;
+
+    /*!
+    *  Get the operator precedence value for the given operator.
+    *
+    *      @param [in] oper  The operator whose precedence to get.
+    *
+    *      @return The precedenve value where bigger value has higher precedence.
+    */
+    unsigned int operatorPrecedence(QString oper) const;
 
 private:
 
@@ -224,13 +233,6 @@ private:
      *      @return The base for the selected number. Either 2, 8, 10 or 16.
      */
     int getBaseForNumber(QString const& constantNumber) const;
-
-    // Operator precedence mapping. The operator is the key and the precedence is the value.
-    // A greater value implies greater precedence.
-    static const QMap<QString, int> operator_precedence;
-
-    // Base format mapping for SystemVerilog numeric formats.
-    static const  QMap<QString, int> base_formats;
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

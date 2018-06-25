@@ -20,6 +20,7 @@
 
 #include <QMap>
 #include <QIcon>
+
 //-----------------------------------------------------------------------------
 // Function: HierarchyModel::HierarchyModel()
 //-----------------------------------------------------------------------------
@@ -35,13 +36,6 @@ QAbstractItemModel(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::~HierarchyModel()
-//-----------------------------------------------------------------------------
-HierarchyModel::~HierarchyModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: HierarchyModel::onResetModel()
 //-----------------------------------------------------------------------------
 void HierarchyModel::onResetModel()
@@ -50,33 +44,28 @@ void HierarchyModel::onResetModel()
 
     rootItem_->clear();
 
-    QList<VLNV> absDefs;
+    QVector<VLNV> absDefs;
 
     // add all items to this model
     foreach (VLNV const& itemVlnv, handler_->getAllVLNVs())
     {
-    	// make sure the item can be parsed
-    	QSharedPointer<Document const> document = handler_->getModelReadOnly(itemVlnv);
-    	if (document)
+        VLNV::IPXactType documentType = handler_->getDocumentType(itemVlnv);
+        if (documentType == VLNV::ABSTRACTIONDEFINITION)
         {
-            VLNV::IPXactType documentType = handler_->getDocumentType(itemVlnv);
-            if (documentType == VLNV::ABSTRACTIONDEFINITION)
-            {
-                absDefs.append(itemVlnv);
-            }
+            absDefs.append(itemVlnv);
+        }
 
-            //! Add supported item types only. Designs and configurations will be created by their top-components.
-            if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION || 
-                documentType == VLNV::CATALOG || documentType == VLNV::COMPONENT || 
-                documentType == VLNV::APIDEFINITION || documentType == VLNV::COMDEFINITION)
-            {
-                rootItem_->createChild(itemVlnv);
-            }
-    	}
+        //! Add supported item types only. Designs and configurations will be created by their top-components.
+        if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION ||
+            documentType == VLNV::CATALOG || documentType == VLNV::COMPONENT ||
+            documentType == VLNV::APIDEFINITION || documentType == VLNV::COMDEFINITION)
+        {
+            rootItem_->createChild(itemVlnv);
+        }
     }
 
     // create the abstraction definitions
-    foreach (VLNV const& absDefVlnv, absDefs) 
+    for (VLNV const& absDefVlnv : absDefs) 
     {
     	QSharedPointer<AbstractionDefinition const> absDef = 
             handler_->getModelReadOnly(absDefVlnv).staticCast<AbstractionDefinition const>();

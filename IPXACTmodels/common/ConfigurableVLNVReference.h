@@ -58,7 +58,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~ConfigurableVLNVReference();
+    virtual ~ConfigurableVLNVReference();
 
     /*!
      *  Sets the VLNV reference.

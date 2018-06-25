@@ -2834,7 +2834,7 @@ void HWDesignDiagram::showAdhocPort(AdHocItem* portItem)
     }
 
     QSharedPointer<Kactus2Placeholder> newPortExtension = interfaceItem->getDataGroup();
-    if (!newPortExtension)
+    if (newPortExtension.isNull())
     {
         newPortExtension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:adHocVisible"));
         newPortExtension->setAttribute("portName", portItem->name());

@@ -8,6 +8,40 @@
               * Changed or Information
 ===============================================================================
 
+12/06/2018 3.6.0
+----------------------------------------------------
+
++ Added support to run Kactus2 from command-line without GUI
++ Added editor for port type definitions
++ Added support for multiple abstraction definitions in a bus interface
++ Improvements to Memory Designer
+    * Improved item scaling in non-compressed mode
+	* Improved search through hierarchies
+	* Improved visulization for multiple address spaces connected to one memory map
++ Added feature to save HW, System and Memory Designer view as a PNG, JPG or SVG image
++ Improved expression parsing
+	* Support for exp, pow and sqrt functions
+	* Better suppport for string expressions and their comparison
+	* Faster parsing algorithm
++ Added Linux Device Tree Generator plugin
++ IP-XACT library handling improved for better performance and readability
++ HW and System design area size now adjusts to contents
+	
+- Restored automatic item selection in library view when component instance is selected
+- Fixed addressSpaceRef-attribute parsing and writing
+- Fixed export dialog from hierarchy view
+- Fixed missing type information in VHDL generation
+- Fixed error in entity parsing in VHDL import
+- Fixed a crash when creating a new HW Design
+- Fixed a crash in saving user settings for code editor
+- Fixed an issue where Component file set directories were lost on refresh
+
+* Changed binary name to kactus2 (previously Kactus2) in Linux
+* Enabled C++11 by default in Linux compilation
+* Improved Linux installation in user-specified directory
+* Migrated to Qt 5.10.1
+* Migrated to VS2017
+
 23/11/2017 3.5.0
 ----------------------------------------------------
 

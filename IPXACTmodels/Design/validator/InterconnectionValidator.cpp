@@ -368,8 +368,11 @@ bool InterconnectionValidator::hasValidMonitorInterfaces(QSharedPointer<MonitorI
     if (!connection->getMonitorInterfaces()->isEmpty())
     {
         QMap<QString, QString> interfaceReferences;
-        interfaceReferences.insert(connection->getMonitoredActiveInterface()->getComponentReference(),
-            connection->getMonitoredActiveInterface()->getBusReference());
+        if (connection->getMonitoredActiveInterface())
+        {
+            interfaceReferences.insert(connection->getMonitoredActiveInterface()->getComponentReference(),
+                connection->getMonitoredActiveInterface()->getBusReference());
+        }
 
         foreach (QSharedPointer<MonitorInterface> monitorInterface, *connection->getMonitorInterfaces())
         {

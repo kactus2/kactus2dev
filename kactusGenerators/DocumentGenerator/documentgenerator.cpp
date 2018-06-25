@@ -888,7 +888,7 @@ void DocumentGenerator::writeFile( QSharedPointer<File> file, QTextStream& strea
 
     QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
 
-	QStringList fileTypes = *file->getFileTypes().data();
+	QStringList fileTypes = *file->getFileTypes();
 
 	stream << "\t\t\t\t<tr>" << endl;
 	stream << "\t\t\t\t\t<td><a href=\"" << pathFromhtmlToFile << "\">" << fileInfo.fileName() << "</a></td>" <<

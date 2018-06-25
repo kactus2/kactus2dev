@@ -23,6 +23,7 @@
 #include <QBrush>
 #include <QFont>
 #include <QPen>
+#include <QtMath>
 
 namespace AddressSpaceItemConstants
 {
@@ -572,7 +573,7 @@ bool AddressSpaceGraphicsItem::hasProblemConnection(
             MemoryConnectionItem* comparisonConnection = comparisonIterator.value();
 
             qreal rectangleTopDifference =
-                abs(connectionItem->sceneBoundingRect().top() - comparisonConnection->sceneBoundingRect().top());
+                qFabs(connectionItem->sceneBoundingRect().top() - comparisonConnection->sceneBoundingRect().top());
 
             if (connectionItem->getConnectionEndItem() == comparisonConnection->getConnectionEndItem() &&
                 connectionItem->getRangeStartValue() != comparisonConnection->getRangeStartValue() &&

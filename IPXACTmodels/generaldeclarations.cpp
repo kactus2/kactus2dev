@@ -252,32 +252,11 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
     }
 }
 
-General::LibraryFilePair::LibraryFilePair(const QString filePath,
-		const QString libraryName): filePath_(filePath),
-		libraryName_(libraryName) {
-}
-
-General::LibraryFilePair::LibraryFilePair( const LibraryFilePair& other ):
-filePath_(other.filePath_),
-libraryName_(other.libraryName_) {
-}
-
-bool General::LibraryFilePair::operator==( const LibraryFilePair& other ) const {
-	return other.filePath_ == this->filePath_ && 
-		other.libraryName_ == this->libraryName_;
-}
-
-General::LibraryFilePair& General::LibraryFilePair::operator=( const LibraryFilePair& other ) {
-	if (this != &other) {
-		filePath_ = other.filePath_;
-		libraryName_ = other.libraryName_;
-	}
-	return *this;
-}
-
-QString General::getRelativePath(const QString from, const QString to) {
-	if (from.isEmpty() || to.isEmpty()) {
-		return QString();
+QString General::getRelativePath(QString from, QString to)  
+{
+    if (from.isEmpty() || to.isEmpty())
+    {
+        return QString();
 	}
 
 	// create file info instance to make sure that only the directory of the

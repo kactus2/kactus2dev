@@ -316,7 +316,7 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
             else if (documentType == VLNV::DESIGN)
             {
                 // Determine the design type.
-                QSharedPointer<const Design> design = handler_->getModelReadOnly(vlnv).staticCast<const Design>();
+                QSharedPointer<const Design> design = handler_->getModelReadOnly<Design>(vlnv);
                 if (design && (design->getImplementation() == KactusAttribute::SW ||
                     design->getImplementation() == KactusAttribute::SYSTEM))
                 {
@@ -499,7 +499,14 @@ void LibraryTreeModel::onResetModel()
     // get the items to be displayed from the data source
     foreach (VLNV const& item, handler_->getAllVLNVs())
     {
-        rootItem_->createChild(item, LibraryItem::ROOT);
+        VLNV::IPXactType documentType = item.getType();
+        if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION ||
+            documentType == VLNV::CATALOG || documentType == VLNV::COMPONENT ||
+            documentType == VLNV::DESIGN || documentType == VLNV::DESIGNCONFIGURATION ||
+            documentType == VLNV::APIDEFINITION || documentType == VLNV::COMDEFINITION)
+        {
+            rootItem_->createChild(item, LibraryItem::ROOT);
+        }
     }
 
     validate(rootItem_);

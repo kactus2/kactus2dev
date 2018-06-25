@@ -23,17 +23,9 @@ CommonItemsReader::CommonItemsReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonItemsReader::~CommonItemsReader()
-//-----------------------------------------------------------------------------
-CommonItemsReader::~CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: CommonItemsReader::createVLNVFrom()
 //-----------------------------------------------------------------------------
-VLNV CommonItemsReader::createVLNVFrom(QDomNode const& vlnvNode, VLNV::IPXactType type) const
+VLNV CommonItemsReader::createVLNVFrom(QDomNode const& vlnvNode, VLNV::IPXactType type)
 {
     QString vendor = vlnvNode.firstChildElement(QStringLiteral("ipxact:vendor")).firstChild().nodeValue();
     QString library = vlnvNode.firstChildElement(QStringLiteral("ipxact:library")).firstChild().nodeValue();
@@ -53,7 +45,7 @@ VLNV CommonItemsReader::createVLNVFrom(QDomNode const& vlnvNode, VLNV::IPXactTyp
 //-----------------------------------------------------------------------------
 // Function: CommonItemsReader::parseVLNVAttributes()
 //-----------------------------------------------------------------------------
-VLNV CommonItemsReader::parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType) const
+VLNV CommonItemsReader::parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType)
 {
     QDomNamedNodeMap attributes = vlnvNode.attributes();
 

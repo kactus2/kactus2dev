@@ -431,7 +431,7 @@ namespace General
     *
     *      @return QString containing the relative path.
     */
-    IPXACTMODELS_EXPORT QString getRelativePath(const QString from, const QString to);
+    IPXACTMODELS_EXPORT QString getRelativePath(QString from, QString to);
 
     /*! Get a relative file path from one location to another.
     *

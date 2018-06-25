@@ -663,7 +663,7 @@ bool HierarchyItem::hasChild(VLNV const& vlnv)
 void HierarchyItem::parseComponent(VLNV const& vlnv)
 {
     type_ = HierarchyItem::COMPONENT;
-    component_ = library_->getModelReadOnly(vlnv).staticCast<Component const>();
+    component_ = library_->getModelReadOnly<Component>(vlnv);
     Q_ASSERT(component_);
 
     isValid_ = library_->isValid(vlnv);
@@ -684,7 +684,7 @@ void HierarchyItem::parseComponent(VLNV const& vlnv)
 void HierarchyItem::parseCatalog(VLNV const& vlnv)
 {
     type_ = HierarchyItem::CATALOG;
-    catalog_ = library_->getModelReadOnly(vlnv).staticCast<Catalog const>();
+    catalog_ = library_->getModelReadOnly<Catalog>(vlnv);
     Q_ASSERT(catalog_);
 
     isValid_ = library_->isValid(vlnv);
@@ -755,8 +755,7 @@ VLNV HierarchyItem::findDesignReference(QSharedPointer<View> view)
                 }
                 else
                 {
-                    QSharedPointer<Document const> document = library_->getModelReadOnly(configurationVLNV);
-                    return document.dynamicCast<DesignConfiguration const>()->getDesignRef();
+                    return library_->getModelReadOnly<DesignConfiguration>(configurationVLNV)->getDesignRef();                   
                 }
             }
         }
@@ -803,7 +802,7 @@ void HierarchyItem::createChildItemForDesign(VLNV const& designVLNV, QString con
 void HierarchyItem::parseBusDefinition(VLNV const& vlnv)
 {
     type_ = HierarchyItem::BUSDEFINITION;
-    busDef_ = library_->getModelReadOnly(vlnv).staticCast<BusDefinition const>();
+    busDef_ = library_->getModelReadOnly<BusDefinition>(vlnv);
 
     isValid_ = library_->isValid(vlnv);
 }
@@ -814,7 +813,7 @@ void HierarchyItem::parseBusDefinition(VLNV const& vlnv)
 void HierarchyItem::parseAbsDefinition(VLNV const& vlnv)
 {
     type_ = HierarchyItem::ABSDEFINITION;
-    absDef_ = library_->getModelReadOnly(vlnv).staticCast<AbstractionDefinition const>();
+    absDef_ = library_->getModelReadOnly<AbstractionDefinition>(vlnv);
 
     isValid_ = library_->isValid(vlnv);
 }
@@ -825,7 +824,7 @@ void HierarchyItem::parseAbsDefinition(VLNV const& vlnv)
 void HierarchyItem::parseComDefinition(VLNV const& vlnv)
 {
     type_ = HierarchyItem::COMDEFINITION;
-    comDef_ = library_->getModelReadOnly(vlnv).staticCast<ComDefinition const>();
+    comDef_ = library_->getModelReadOnly<ComDefinition>(vlnv);
 
     isValid_ = library_->isValid(vlnv);
 }
@@ -836,7 +835,7 @@ void HierarchyItem::parseComDefinition(VLNV const& vlnv)
 void HierarchyItem::parseApiDefinition(VLNV const& vlnv)
 {
     type_ = HierarchyItem::APIDEFINITION;
-    apiDef_ = library_->getModelReadOnly(vlnv).staticCast<ApiDefinition const>();
+    apiDef_ = library_->getModelReadOnly<ApiDefinition>(vlnv);
 
     isValid_ = library_->isValid(vlnv);
 }
@@ -850,7 +849,7 @@ void HierarchyItem::parseDesign(VLNV const& vlnv, KactusAttribute::Implementatio
     instanceCount_.clear();
 
     viewName_ = viewName;
-    design_ = library_->getModelReadOnly(vlnv).staticCast<Design const>();
+    design_ = library_->getModelReadOnly<Design>(vlnv);
     isValid_ = library_->isValid(vlnv);
 
     if (implementation == KactusAttribute::HW)

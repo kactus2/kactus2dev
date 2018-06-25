@@ -19,6 +19,7 @@
 #include <editors/MemoryDesigner/MemoryConnectionAddressCalculator.h>
 
 #include <QSharedPointer>
+#include <QTextStream>
 
 class LibraryInterface;
 class Component;

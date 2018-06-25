@@ -14,6 +14,7 @@
 #include "ApiDefinition.h"
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
+#include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionReader::ApiDefinitionReader()
@@ -67,7 +68,8 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 		}
 		else if (childNode.nodeName() == QLatin1String("kactus2:comDefinitionRef"))
 		{
-			apiDefinition->setComDefinitionRef( VLNV::createVLNV(childNode, VLNV::COMDEFINITION) );
+			apiDefinition->setComDefinitionRef(
+                CommonItemsReader::parseVLNVAttributes(childNode, VLNV::COMDEFINITION));
 		}
 		else if (childNode.nodeName() == QLatin1String("kactus2:dataTypes"))
 		{

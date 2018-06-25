@@ -19,8 +19,6 @@
 #include <QStringList>
 #include <QVector>
 
-#include <QDomNode>
-
 //-----------------------------------------------------------------------------
 //! A class to hold VLNV information of a single IP-XACT document.
 //-----------------------------------------------------------------------------
@@ -194,7 +192,7 @@ public:
 	QString toString(QString const& separator = QLatin1String(":")) const;
 
 	//! The assignment operator for the class
-	VLNV &operator=(const VLNV &other);
+	VLNV &operator=(const VLNV &other) = default;
 
 	/*! The < operator for comparison of the VLNV info
 	 *
@@ -241,17 +239,7 @@ public:
      *
 	 *      @return IPXactType that corresponds to the given string
 	 */
-    static QString IPXactType2String(const IPXactType &type);
-
-    /*! Parse a vlnv tag from the attributes in the node
-    *
-    * The node parameter must have attributes matching a vlnv tag
-    *
-    *      @param [in] node A reference to a QDomNode to parse the vlnv from.
-    *
-    *      @return The new vlnv instance.
-    */
-    static VLNV createVLNV(const QDomNode& node, IPXactType type);
+    static QString IPXactType2String(IPXactType const& type);
    
 private:
 

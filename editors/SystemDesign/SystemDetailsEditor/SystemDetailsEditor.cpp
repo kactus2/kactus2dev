@@ -77,8 +77,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
 
     // connect the new design.
     designWidget_ = designWidget;
-    connect(designWidget_, SIGNAL(refreshed()),
-            this, SLOT(onRefresh()), Qt::UniqueConnection);
+    connect(designWidget_, SIGNAL(refreshed()), this, SLOT(onRefresh()), Qt::UniqueConnection);
     
     // Update the HW reference VLNV and view combo box based on the component whose design is being edited.
     component_ = designWidget->getEditedComponent();

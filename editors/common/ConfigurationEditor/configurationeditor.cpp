@@ -67,14 +67,6 @@ QWidget(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConfigurationEditor::~ConfigurationEditor()
-//-----------------------------------------------------------------------------
-ConfigurationEditor::~ConfigurationEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ConfigurationEditor::setConfiguration()
 //-----------------------------------------------------------------------------
 void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)

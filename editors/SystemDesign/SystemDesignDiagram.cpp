@@ -2031,7 +2031,7 @@ SystemComponentItem* SystemDesignDiagram::getComponent(QString const& instanceNa
     }
 
     emit errorMessage(tr("Component %1 was not found in the design").arg(instanceName));
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -2216,7 +2216,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             continue;
         }
 
-        SystemComponentItem* comp2;
+        SystemComponentItem* comp2 = nullptr;
 
         QString endComponentReference ="";
         QString endcomReference = conn->getEndInterface()->getBusReference();
@@ -2226,7 +2226,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             endComponentReference = activeEndInterface->getComponentReference();
             comp2 = getComponent(nameMappings.value(endComponentReference));
 
-            if (comp2 == 0)
+            if (comp2 == nullptr)
             {
                 emit errorMessage(tr("Component '%1' was not found in the design").arg(
                     nameMappings.value(endComponentReference)));
@@ -2244,7 +2244,11 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             continue;
         }
 
-        ConnectionEndpoint* port2 = comp2->getSWPort(endcomReference, SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+        ConnectionEndpoint* port2 = 0;
+        if (comp2 != nullptr)
+        {
+            port2 = comp2->getSWPort(endcomReference, SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+        }
 
         if (port2 == 0)
         {
@@ -2259,10 +2263,8 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             port2 = port2->getOffPageConnector();
         }
 
-        GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-                                                                conn->name(),
-                                                                conn->displayName(),
-                                                                conn->description(), this);
+        GraphicsConnection* connection = new GraphicsConnection(
+            port1, port2, true, conn->name(), conn->displayName(), conn->description(), this);
 
         if (conn->isOffPage())
         {

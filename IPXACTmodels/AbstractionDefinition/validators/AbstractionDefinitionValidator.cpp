@@ -47,14 +47,6 @@ library_(library),
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionValidator::~AbstractionDefinitionValidator()
-//-----------------------------------------------------------------------------
-AbstractionDefinitionValidator::~AbstractionDefinitionValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionValidator::validateInstantiation()
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefinition> abstractionDefinition) const

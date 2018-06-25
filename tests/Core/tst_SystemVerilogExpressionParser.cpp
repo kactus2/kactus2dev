@@ -402,7 +402,7 @@ void tst_SystemVerilogExpressionParser::testParseMultiply_data()
 
     //! Fixed-point numbers.
     QTest::newRow("Two times one half equals one") << "2*0.5" << "1.0" << true;
-    QTest::newRow("Multiple fraction digits") << "0.250*0.25" << "0.062" << true;
+    QTest::newRow("Multiple fraction digits") << "0.240*0.21" << "0.050" << true;
     QTest::newRow("Zero times anything is zero") << "0.0*42" << "0.0" << true;
     QTest::newRow("Large real multiplication 10000.1 * 20002") << "10000.1 * 20002" << "200022000.2" << true;
 

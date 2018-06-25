@@ -248,21 +248,18 @@ void tst_DocumentGenerator::testInvalidVlnvInConstructor()
 {
     VLNV invalidVlnv(VLNV::COMPONENT, "invalid", "library", "component", "0");
 
-    DocumentGenerator* generator (new DocumentGenerator(&library_, invalidVlnv, &designWidgetFactory_,
-        &expressionFormatterFactory_, generatorParentWidget_));
+    DocumentGenerator generator (&library_, invalidVlnv, &designWidgetFactory_,
+        &expressionFormatterFactory_, generatorParentWidget_);
 
-    QSignalSpy spy(generator, SIGNAL(errorMessage(QString const&)));
+    QSignalSpy spy(&generator, SIGNAL(errorMessage(QString const&)));
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
-    generator->writeDocumentation(stream, targetPath_);
+    generator.writeDocumentation(stream, targetPath_);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().at(0).toString(), QString("VLNV was not found in the library."));
@@ -278,7 +275,7 @@ void tst_DocumentGenerator::testFileHeaderIsWritten()
     QSettings settings;
     settings.setValue("General/Username", "testUser");
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -289,9 +286,6 @@ void tst_DocumentGenerator::testFileHeaderIsWritten()
     generator->writeHtmlHeader(stream);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(getDoctypeString() + "\n"
     "<html>\n"
@@ -375,7 +369,7 @@ void tst_DocumentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     topComponent_->getViews()->append(view);
     topComponent_->getMemoryMaps()->append(memoryMaps);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -386,9 +380,6 @@ void tst_DocumentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     generator->writeTableOfContents(runningNumber, stream);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t<a href=\"#" + topComponent_->getVlnv().toString() + "\">1. Component" + getSpaceString() +
@@ -456,7 +447,7 @@ void tst_DocumentGenerator::testParametersWrittenWithOnlyTopComponent()
     topComponent_->getParameters()->append(refParameter);
     topComponent_->setHierarchy(KactusAttribute::FLAT);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -467,9 +458,6 @@ void tst_DocumentGenerator::testParametersWrittenWithOnlyTopComponent()
     generator->writeParameters(stream, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".kts_params\">0.1 Kactus2 attributes</a></h2>\n"
@@ -562,7 +550,7 @@ void tst_DocumentGenerator::testMemoryMapsWrittenWithTopComponent()
 
     topComponent_->getMemoryMaps()->append(memoryMap);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -573,9 +561,6 @@ void tst_DocumentGenerator::testMemoryMapsWrittenWithTopComponent()
     generator->writeMemoryMaps(stream, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
@@ -634,7 +619,7 @@ void tst_DocumentGenerator::testAddressBlocksWrittenWithTopComponent()
         "32", registers);
     addressBlocks.append(testAddressBlock);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -645,9 +630,6 @@ void tst_DocumentGenerator::testAddressBlocksWrittenWithTopComponent()
     generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
     
     QString expectedOutput(
         "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." +
@@ -722,7 +704,7 @@ void tst_DocumentGenerator::testExpressionsInAddressBlocks()
 
     topComponent_->getParameters()->append(targetParameter);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -733,9 +715,6 @@ void tst_DocumentGenerator::testExpressionsInAddressBlocks()
     generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." +
@@ -805,7 +784,7 @@ void tst_DocumentGenerator::testRegistersWrittenWithTopComponent()
     QSharedPointer <Register> testRegister = createTestRegister("register", "4", "2", "2", "exampleDescription");
     registers.append(testRegister);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -816,9 +795,6 @@ void tst_DocumentGenerator::testRegistersWrittenWithTopComponent()
     generator->writeRegisters(registers, stream, subHeaderNumber, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".register." + testRegister->name() +
@@ -888,7 +864,7 @@ void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
     QSharedPointer<Register> fieldRegister =createTestRegister("FieldRegister", "10", "10", "10", "");
     fieldRegister->getFields()->append(testField);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -897,9 +873,6 @@ void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
     generator->writeFields(fieldRegister, stream);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t\t<h4>Register " + fieldRegister->name() + " contains the following fields:</h4>\n"
@@ -986,7 +959,7 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 
     topComponent_->getMemoryMaps()->append(memoryMaps);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -997,9 +970,6 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
     generator->writeMemoryMaps(stream, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
@@ -1130,7 +1100,7 @@ void tst_DocumentGenerator::testPortsWrittenWithOnlyTopComponent()
 
     topComponent_->getParameters()->append(componentParameters);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -1141,9 +1111,6 @@ void tst_DocumentGenerator::testPortsWrittenWithOnlyTopComponent()
     generator->writePorts(stream, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".ports\">0.1 Ports</a></h2>\n"
@@ -1218,7 +1185,7 @@ void tst_DocumentGenerator::testBusInterfacesWrittenWithoutPorts()
 
     topComponent_->getBusInterfaces()->append(busInterface);
 
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -1229,9 +1196,6 @@ void tst_DocumentGenerator::testBusInterfacesWrittenWithoutPorts()
     generator->writeInterfaces(stream, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".interfaces\">0.1 Bus interfaces</a></h2>\n"
@@ -1279,7 +1243,7 @@ void tst_DocumentGenerator::testBusInterfacesWrittenWithoutPorts()
 //-----------------------------------------------------------------------------
 void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
 {
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QSharedPointer<FileSet> testFileSet (new FileSet);
     testFileSet->setName("testFileSet");
@@ -1297,9 +1261,6 @@ void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
     generator->writeFileSets(stream, subHeaderNumber);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString groups = testFileSet->getGroups()->join(", ");
 
@@ -1361,15 +1322,12 @@ void tst_DocumentGenerator::testViewsWrittenForTopComponent()
     int subHeaderNumber = 1;
     QStringList pictureList;
 
-    ViewDocumentGenerator* generator = createViewGenerator();
+    QScopedPointer<ViewDocumentGenerator> generator(createViewGenerator());
 
     generator->setComponent(topComponent_, subHeaderNumber, QString());
     generator->writeViews(stream, subHeaderNumber, pictureList);
 
     targetFile.close();
-
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".views\">1.1 Views</a></h2>\n"
@@ -1452,7 +1410,7 @@ void tst_DocumentGenerator::testDesignIsWritten()
 
     topComponent_->getDesignInstantiations()->append(designInstantiation);
 
-    ViewDocumentGenerator* generator = createViewGenerator();
+    QScopedPointer<ViewDocumentGenerator> generator(createViewGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -1465,8 +1423,6 @@ void tst_DocumentGenerator::testDesignIsWritten()
     generator->writeViews(stream, subHeaderNumber, files);
 
     targetFile.close();
-    delete generator;
-    generator = 0;
 
     QString expectedOutput(
         "\t\t\t<h2><a id=\"Test:TestLibrary:TestComponent:1.0.views\">1.1 Views</a></h2>\n"
@@ -1521,7 +1477,7 @@ void tst_DocumentGenerator::testDesignIsWritten()
 //-----------------------------------------------------------------------------
 void tst_DocumentGenerator::testEndOfDocumentWrittenForTopComponent()
 {
-    DocumentGenerator* generator = createTestGenerator();
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);

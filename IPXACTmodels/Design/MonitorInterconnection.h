@@ -35,7 +35,8 @@ public:
      *      @param [in] displayName         Display name.
      *      @param [in] description         Description.
      */
-    MonitorInterconnection(QString const name, QSharedPointer<MonitorInterface> activeInterface,
+    MonitorInterconnection(QString const& name, 
+        QSharedPointer<MonitorInterface> activeInterface = QSharedPointer<MonitorInterface>(0),
         QString const& displayName = QString(), QString const& description = QString());
 
     /*!

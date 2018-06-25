@@ -25,7 +25,6 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/Kactus2Placeholder.h \
     ./kactusExtensions/Kactus2Position.h \
     ./kactusExtensions/Kactus2Value.h \
-    ./kactusExtensions/Kactus2Vector.h \
     ./kactusExtensions/KactusAttribute.h \
     ./kactusExtensions/SystemView.h \
     ./kactusExtensions/validators/ApiDefinitionValidator.h \
@@ -221,8 +220,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/ViewReader.h \
     ./Component/ViewWriter.h \
     ./Component/validators/AddressBlockValidator.h \
-    ./Component/validators/AddressSpaceValidator.h \
-    ./Component/validators/BuildCommandValidator.h \
+    ./Component/validators/AddressSpaceValidator.h \    
     ./Component/validators/BusInterfaceValidator.h \
     ./Component/validators/ChannelValidator.h \
     ./Component/validators/ChoiceValidator.h \
@@ -277,7 +275,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/Kactus2Placeholder.cpp \
     ./kactusExtensions/Kactus2Position.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
-    ./kactusExtensions/Kactus2Vector.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
     ./kactusExtensions/SystemView.cpp \
     ./kactusExtensions/validators/ApiDefinitionValidator.cpp \

@@ -15,9 +15,6 @@
 #include <QStringList>
 #include <QObject>
 
-#include <QDomNode>
-#include <QDomNamedNodeMap>
-
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
@@ -256,23 +253,6 @@ QString VLNV::toString(QString const& separator) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VLNV::operator=()
-//-----------------------------------------------------------------------------
-VLNV& VLNV::operator=(VLNV const& other)
-{
-	// if we are not assigning to self
-	if (this != &other)
-    {
-		vendor_ = other.vendor_.simplified();
-		library_ = other.library_.simplified();
-		name_ = other.name_.simplified();
-		version_ = other.version_.simplified();
-		type_ = other.type_;
-	}
-	return *this;
-}
-
-//-----------------------------------------------------------------------------
 // Function: VLNV::operator<()
 //-----------------------------------------------------------------------------
 bool VLNV::operator<(const VLNV &other) const
@@ -459,25 +439,4 @@ QString VLNV::IPXactType2String(IPXactType const& type)
     {
         return QStringLiteral("invalid");
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: vlnv::createVLNV()
-//-----------------------------------------------------------------------------
-VLNV VLNV::createVLNV(const QDomNode& node, IPXactType type)
-{
-    // the vlnv info is found as attributes in the node
-    QDomNamedNodeMap attributeMap = node.attributes();
-    QString vendor = attributeMap.namedItem(QStringLiteral("vendor")).nodeValue();
-    QString library = attributeMap.namedItem(QStringLiteral("library")).nodeValue();
-    QString name = attributeMap.namedItem(QStringLiteral("name")).nodeValue();
-    QString version = attributeMap.namedItem(QStringLiteral("version")).nodeValue();
-
-    // if invalid vlnv tag
-    if (vendor.isEmpty() || library.isEmpty() || name.isEmpty() || version.isEmpty()) 
-    {
-        return VLNV();
-    }
-
-    return VLNV(type, vendor, library, name, version);
 }

@@ -12,6 +12,8 @@
 
 #include "ApiInterface.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
+
 //-----------------------------------------------------------------------------
 // Function: str2DependencyDirection()
 //-----------------------------------------------------------------------------
@@ -102,7 +104,7 @@ defaultPos_()
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:apiType"))
         {
-            apiType_ = VLNV::createVLNV(childNode, VLNV::APIDEFINITION);
+            apiType_ = CommonItemsReader::parseVLNVAttributes(childNode, VLNV::APIDEFINITION);
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:dependencyDirection"))
         {

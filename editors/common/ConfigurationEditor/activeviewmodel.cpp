@@ -166,11 +166,7 @@ int ActiveViewModel::columnCount(const QModelIndex& parent /*= QModelIndex()*/ )
 //-----------------------------------------------------------------------------
 QVariant ActiveViewModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const
 {
-	if (!index.isValid())
-    {
-		return QVariant();
-    }
-	else if (index.row() < 0 || index.row() >= table_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
 		return QVariant();
     }
@@ -195,28 +191,29 @@ QVariant ActiveViewModel::data(const QModelIndex& index, int role /*= Qt::Displa
 		// if the possible view names are requested.
         if (index.column() == ActiveViewColumns::ACTIVE_VIEW)
         {
-			// search the diagram component that matches the asked instance name.
-			ComponentItem* searched = 0;
+			// search the diagram component that matches the asked instance name.			
 			foreach (ComponentItem* diaComp, instances_)
             {
 				// if instance name matches
 				if (diaComp->name() == table_.at(index.row()).instanceName_)
                 {
-					searched = diaComp;
-					break;
+					return diaComp->componentModel()->getViewNames();					
 				}
 			}
-			Q_ASSERT(searched);
 
 			// return the views the component model contains.
-            return searched->componentModel()->getViewNames();
+            return QVariant();
 		}
 		else
-			return QVariant();
+        {
+            return QVariant();
+        }		
 	}
 	// is unsupported role
-	else
-		return QVariant();
+    else
+    {
+        return QVariant();
+    }		
 }
 
 //-----------------------------------------------------------------------------

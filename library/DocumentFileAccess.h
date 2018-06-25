@@ -18,6 +18,7 @@
 
 #include <QSharedPointer>
 #include <QString>
+#include <QDomDocument>
 
 class Document;
 

@@ -5328,15 +5328,6 @@
     <CustomBuild Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
-      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
-      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\ParameterCompleter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </CustomBuild>
@@ -6107,6 +6098,15 @@
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\ComponentParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

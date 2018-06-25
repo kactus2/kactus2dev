@@ -36,13 +36,6 @@ isAddress_(other.isAddress_),
 }
 
 //-----------------------------------------------------------------------------
-// Function: Qualifier::~Qualifier()
-//-----------------------------------------------------------------------------
-Qualifier::~Qualifier()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: Qualifier::isSet()
 //-----------------------------------------------------------------------------
 bool Qualifier::isSet()
@@ -87,48 +80,10 @@ bool Qualifier::isReset() const
 //-----------------------------------------------------------------------------
 void Qualifier::setType(Type qualifierType)
 {
-    if (qualifierType == Data)
-    {
-        isAddress_ = false;
-        isData_ = true;
-        isClock_ = false;
-        isReset_ = false;
-    }
-    else if (qualifierType == Address)
-    {
-        isAddress_ = true;
-        isData_ = false;
-        isClock_ = false;
-        isReset_ = false;
-    }
-    else if (qualifierType == Data_Address)
-    {
-        isAddress_ = true;
-        isData_ = true;
-        isClock_ = false;
-        isReset_ = false;
-    }
-    else if (qualifierType == Clock)
-    {
-        isData_ = false;
-        isAddress_ = false;
-        isClock_ = true;
-        isReset_ = false;
-    }
-    else if (qualifierType == Reset)
-    {
-        isData_ = false;
-        isAddress_ = false;
-        isClock_ = false;
-        isReset_ = true;
-    }
-    else
-    {
-        isData_ = false;
-        isAddress_ = false;
-        isClock_ = false;
-        isReset_ = false;
-    }
+    isAddress_ = (qualifierType == Address || qualifierType == Data_Address);
+    isData_ = (qualifierType == Data || qualifierType == Data_Address);
+    isClock_ = (qualifierType == Clock);
+    isReset_ = (qualifierType == Reset);
 }
 
 //-----------------------------------------------------------------------------

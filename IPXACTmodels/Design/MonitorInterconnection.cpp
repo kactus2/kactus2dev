@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: MonitorInterconnection::MonitorInterconnection()
 //-----------------------------------------------------------------------------
-MonitorInterconnection::MonitorInterconnection(QString const name,
+MonitorInterconnection::MonitorInterconnection(QString const& name,
     QSharedPointer<MonitorInterface> activeInterface, QString const& displayName /* = QString() */,
     QString const& description /* = QString() */) :
 NameGroup(name, displayName, description),

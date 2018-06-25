@@ -12,6 +12,8 @@
 
 #include "ComInterface.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
@@ -77,7 +79,7 @@ defaultPos_()
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:comType"))
         {
-            comType_ = VLNV::createVLNV(childNode, VLNV::COMDEFINITION);
+            comType_ = CommonItemsReader::parseVLNVAttributes(childNode, VLNV::COMDEFINITION);
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:transferType"))
         {
@@ -93,7 +95,7 @@ defaultPos_()
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:comImplementationRef"))
         {
-            comImplementation_ = VLNV::createVLNV(childNode, VLNV::COMPONENT);
+            comImplementation_ = CommonItemsReader::parseVLNVAttributes(childNode, VLNV::COMPONENT);
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:position"))
         {

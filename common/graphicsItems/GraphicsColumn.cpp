@@ -325,7 +325,7 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
         // If not found, create a new one with default properties.
         if (newIndex == layout_->getColumns().size())
         {
-            newIndex = layout_->autoCreateColumn();
+            layout_->autoCreateColumn();
             return;
         }
 

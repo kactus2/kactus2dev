@@ -116,7 +116,7 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     }
     else
     {
-        messageChannel_->showMessage(QObject::tr("Document was not supported type"));
+        messageChannel_->showMessage(QObject::tr("File '%1' was not supported type").arg(path));
         return QSharedPointer<Document>();
     }
 }
