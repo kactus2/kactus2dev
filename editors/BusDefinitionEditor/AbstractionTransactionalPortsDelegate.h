@@ -50,6 +50,15 @@ public:
 protected:
 
     /*!
+     *  Check if the editor used in the selected index column is a line editor.
+     *
+     *      @param [in] indexColumn     The selected index column.
+     *
+     *      @return True, if the editor used in the selected column is a line editor, false otherwise.
+     */
+    virtual bool editorIsLineEditor(int indexColumn) const;
+
+    /*!
      *  Check if the editor used in the selected index column is a combo box editor.
      *
      *      @param [in] indexColumn     The selected index column.

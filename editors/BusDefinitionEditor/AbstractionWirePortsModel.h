@@ -266,11 +266,15 @@ private:
         //! Defines the wirePort represented on the row.
         QSharedPointer<WirePort> wire_;
 
-		//! The default constructor.
+		/*!
+         *  The default constructor.
+         */
 		SignalRow();
 
-		//! Copy constructor
-		SignalRow(SignalRow const& other);
+		/*!
+         *  Copy constructor
+         */
+		SignalRow(SignalRow const& other) = default;
 
 		/*!
 		 *  Comparison of two SignalRows.

@@ -53,6 +53,27 @@ QWidget* AbstractionTransactionalPortsDelegate::createEditor(QWidget* parent, QS
         connect(kindCombo, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return kindCombo;
     }
+    else if (index.column() == AbstractionTransactionalPortColumns::PROTOCOLTYPE)
+    {
+        QComboBox* protocolTypeCombo = new QComboBox(parent);
+        protocolTypeCombo->setEditable(true);
+
+        QStringList list = { "", "tlm" };
+        protocolTypeCombo->addItems(list);
+
+        connect(protocolTypeCombo, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return protocolTypeCombo;
+    }
+    else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADTYPE)
+    {
+        QComboBox* payloadTypeCombo = new QComboBox(parent);
+
+        QStringList list = { "none", "generic", "specific" };
+        payloadTypeCombo->addItems(list);
+
+        connect(payloadTypeCombo, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return payloadTypeCombo;
+    }
     else
     {
         return AbstractionPortsDelegate::createEditor(parent, option, index);
@@ -116,11 +137,23 @@ int AbstractionTransactionalPortsDelegate::descriptionColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionTransactionalPortsDelegate::editorIsLineEditor()
+//-----------------------------------------------------------------------------
+bool AbstractionTransactionalPortsDelegate::editorIsLineEditor(int indexColumn) const
+{
+    return AbstractionPortsDelegate::editorIsLineEditor(indexColumn) ||
+        indexColumn == AbstractionTransactionalPortColumns::PAYLOADNAME ||
+        indexColumn == AbstractionTransactionalPortColumns::PAYLOADEXTENSION;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsDelegate::editorIsComboBox()
 //-----------------------------------------------------------------------------
 bool AbstractionTransactionalPortsDelegate::editorIsComboBox(int indexColumn) const
 {
     return AbstractionPortsDelegate::editorIsComboBox(indexColumn) ||
         indexColumn == AbstractionTransactionalPortColumns::INITIATIVE ||
-        indexColumn == AbstractionTransactionalPortColumns::KIND;
+        indexColumn == AbstractionTransactionalPortColumns::KIND ||
+        indexColumn == AbstractionTransactionalPortColumns::PROTOCOLTYPE ||
+        indexColumn == AbstractionTransactionalPortColumns::PAYLOADTYPE;
 }

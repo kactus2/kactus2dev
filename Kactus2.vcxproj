@@ -421,6 +421,7 @@ CreateHelp
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.cpp" />
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsEditor.cpp" />
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsModel.cpp" />
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.cpp" />
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsDelegate.cpp" />
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsEditor.cpp" />
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsModel.cpp" />
@@ -2678,6 +2679,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
+    <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h" />
     <ClInclude Include="editors\BusDefinitionEditor\LogicalPortColumns.h" />
     <CustomBuild Include="editors\CatalogEditor\CatalogEditor.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

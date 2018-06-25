@@ -43,6 +43,7 @@ extendDisplay_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this,
     extendDisplay_->setDisabled(true);
 
     extendDisplay_->setToolTip(QStringLiteral("Extended bus definition is not currently supported in Kactus2"));
+    extendDisplay_->setMandatory(false);
 
     QRegularExpression numberExpression(QString("[0-9]*"));
     QRegularExpressionValidator* numberValidator = new QRegularExpressionValidator(numberExpression, this);

@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PresenceTypes.h>
+#include <IPXACTmodels/common/Protocol.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <QStringList>
@@ -117,11 +118,27 @@ QVariant AbstractionTransactionalPortsModel::headerData(int section, Qt::Orienta
     }
     else if (section == AbstractionTransactionalPortColumns::SYSTEM_GROUP)
     {
-        return tr("System group");
+        return tr("System\ngroup");
     }
     else if (section == AbstractionTransactionalPortColumns::QUALIFIER)
     {
         return tr("Qualifier");
+    }
+    else if (section == AbstractionTransactionalPortColumns::PROTOCOLTYPE)
+    {
+        return tr("Protocol\ntype");
+    }
+    else if (section == AbstractionTransactionalPortColumns::PAYLOADNAME)
+    {
+        return tr("Payload\nname");
+    }
+    else if (section == AbstractionTransactionalPortColumns::PAYLOADTYPE)
+    {
+        return tr("Payload\ntype");
+    }
+    else if (section == AbstractionTransactionalPortColumns::PAYLOADEXTENSION)
+    {
+        return tr("Payload\nextension");
     }
     else if (section == AbstractionTransactionalPortColumns::DESCRIPTION)
     {
@@ -186,6 +203,31 @@ QVariant AbstractionTransactionalPortsModel::data(QModelIndex const& index, int 
         {
             return qualifierToString(port.abstraction_->getTransactional()->getQualifier());
         }
+        else if ((index.column() == AbstractionTransactionalPortColumns::PROTOCOLTYPE ||
+            index.column() == AbstractionTransactionalPortColumns::PAYLOADNAME ||
+            index.column() == AbstractionTransactionalPortColumns::PAYLOADTYPE ||
+            index.column() == AbstractionTransactionalPortColumns::PAYLOADEXTENSION) &&
+            port.transactionalPort_->getProtocol())
+        {
+            QSharedPointer<Protocol> portProtocol = port.transactionalPort_->getProtocol();
+            if (index.column() == AbstractionTransactionalPortColumns::PROTOCOLTYPE)
+            {
+                return getProtocolTypeText(portProtocol);
+            }
+            else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADNAME)
+            {
+                return portProtocol->getPayloadName();
+            }
+            else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADTYPE)
+            {
+                return portProtocol->getPayloadType();
+            }
+            else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADEXTENSION)
+            {
+                return portProtocol->getPayloadExtension();
+            }
+        }
+
         else if (index.column() == AbstractionTransactionalPortColumns::DESCRIPTION)
         {
             return port.abstraction_->description();
@@ -280,6 +322,54 @@ bool AbstractionTransactionalPortsModel::setData(QModelIndex const& index, QVari
     else if (index.column() == AbstractionTransactionalPortColumns::QUALIFIER)
     {
         port.abstraction_->getTransactional()->setQualifier(toQualifier(value.toString()));
+    }
+    else if (index.column() == AbstractionTransactionalPortColumns::PROTOCOLTYPE ||
+        index.column() == AbstractionTransactionalPortColumns::PAYLOADNAME ||
+        index.column() == AbstractionTransactionalPortColumns::PAYLOADTYPE ||
+        index.column() == AbstractionTransactionalPortColumns::PAYLOADEXTENSION)
+    {
+        QSharedPointer<Protocol> portProtocol = port.transactionalPort_->getProtocol();
+        if (!portProtocol)
+        {
+            if (value.toString().isEmpty())
+            {
+                return false;
+            }
+            else
+            {
+                portProtocol = QSharedPointer<Protocol>(new Protocol());
+                port.transactionalPort_->setProtocol(portProtocol);
+            }
+        }
+
+        if (index.column() == AbstractionTransactionalPortColumns::PROTOCOLTYPE)
+        {
+            portProtocol->setProtocolType(value.toString());
+        }
+        else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADNAME)
+        {
+            portProtocol->setPayloadName(value.toString());
+        }
+        else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADTYPE)
+        {
+            QString payloadType = value.toString();
+            if (payloadType.compare("none", Qt::CaseInsensitive) == 0)
+            {
+                payloadType = "";
+            }
+            portProtocol->setPayloadType(payloadType);
+        }
+        else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADEXTENSION)
+        {
+            portProtocol->setPayloadExtension(value.toString(), false);
+        }
+
+        if (portProtocol && portProcotolTypeIsEmpty(portProtocol) &&
+            portProtocol->getPayloadName().isEmpty() && portProtocol->getPayloadType().isEmpty() &&
+            portProtocol->getPayloadExtension().isEmpty())
+        {
+            port.transactionalPort_->setProtocol(QSharedPointer<Protocol>());
+        }
     }
     else if (index.column() == AbstractionTransactionalPortColumns::DESCRIPTION)
     {
@@ -748,7 +838,7 @@ void AbstractionTransactionalPortsModel::createRow(QSharedPointer<PortAbstractio
     QSharedPointer<TransactionalPort> modeSpesific, General::InterfaceMode mode) 
 {
     Q_ASSERT_X(portAbs, "BusPortsModel::createRow", "Null Port Abstraction pointer given as parameter");
-    Q_ASSERT_X(modeSpesific, "BusPortsModel::createRow", "Null WirePort pointer given as parameter");
+    Q_ASSERT_X(modeSpesific, "BusPortsModel::createRow", "Null TransactionalPort pointer given as parameter");
 
     AbstractionTransactionalPortsModel::SignalRow port;
     port.mode_ = mode;
@@ -805,23 +895,36 @@ Qualifier::Type AbstractionTransactionalPortsModel::toQualifier(QString const& s
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionTransactionalPortsModel::getProtocolTypeText()
+//-----------------------------------------------------------------------------
+QString AbstractionTransactionalPortsModel::getProtocolTypeText(QSharedPointer<Protocol> portProtocol) const
+{
+    QString protocolType = portProtocol->getProtocolType();
+    if (protocolType.compare("tlm", Qt::CaseSensitive) != 0)
+    {
+        protocolType = portProtocol->getCustomProtocolType();
+    }
+
+    return protocolType;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTransactionalPortsModel::portProcotolTypeIsEmpty()
+//-----------------------------------------------------------------------------
+bool AbstractionTransactionalPortsModel::portProcotolTypeIsEmpty(QSharedPointer<Protocol> portProtocol) const
+{
+    return portProtocol->getProtocolType().isEmpty() ||
+        (portProtocol->getProtocolType().compare("custom", Qt::CaseInsensitive) == 0 &&
+            portProtocol->getCustomProtocolType().isEmpty());
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsModel::SignalRow::SignalRow()
 //-----------------------------------------------------------------------------
 AbstractionTransactionalPortsModel::SignalRow::SignalRow():
 abstraction_(QSharedPointer<PortAbstraction>(new PortAbstraction())),
 mode_(General::INTERFACE_MODE_COUNT),
 transactionalPort_(QSharedPointer<TransactionalPort>(new TransactionalPort()))
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsModel::SignalRow::SignalRow()
-//-----------------------------------------------------------------------------
-AbstractionTransactionalPortsModel::SignalRow::SignalRow(SignalRow const& other):
-abstraction_(other.abstraction_),
-mode_(other.mode_),
-transactionalPort_(QSharedPointer<TransactionalPort>(new TransactionalPort(*other.transactionalPort_)))
 {
 
 }

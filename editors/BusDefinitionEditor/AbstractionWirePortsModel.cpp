@@ -834,17 +834,6 @@ wire_(QSharedPointer<WirePort>(new WirePort()))
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsModel::SignalRow::SignalRow()
-//-----------------------------------------------------------------------------
-AbstractionWirePortsModel::SignalRow::SignalRow(SignalRow const& other):
-abstraction_(other.abstraction_),
-mode_(other.mode_),
-wire_(QSharedPointer<WirePort>(new WirePort(*other.wire_)))
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsModel::SignalRow::operator==()
 //-----------------------------------------------------------------------------
 bool AbstractionWirePortsModel::SignalRow::operator==(SignalRow const& other) const

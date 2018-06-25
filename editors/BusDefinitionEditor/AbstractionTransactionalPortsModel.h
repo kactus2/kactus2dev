@@ -29,6 +29,7 @@
 
 class BusDefinition;
 class AbstractionDefinition;
+class Protocol;
 
 //-----------------------------------------------------------------------------
 //! Data model for the transactional ports within abstraction definition.
@@ -260,11 +261,15 @@ private:
         //! Defines the transactionalPort represented on the row.
         QSharedPointer<TransactionalPort> transactionalPort_;
 
-		//! The default constructor.
+		/*!
+         *  The default constructor.
+         */
 		SignalRow();
 
-		//! Copy constructor
-		SignalRow(SignalRow const& other);
+		/*!
+         *  Copy constructor
+         */
+		SignalRow(SignalRow const& other) = default;
 
 		/*!
 		 *  Comparison of two SignalRows.
@@ -367,6 +372,24 @@ private:
      *      @return Initiative value usable for the transactional port.
      */
     QString getInitiativeForSetData(QString const& newInitiativeValue) const;
+
+    /*!
+     *  Get the protocol type of the selected protocol.
+     *
+     *      @param [in] portProtocol    The selected protocol.
+     *
+     *      @return The type of the selected protocol.
+     */
+    QString getProtocolTypeText(QSharedPointer<Protocol> portProtocol) const;
+
+    /*!
+     *  Check if the protocol type of the selected protocol is empty.
+     *
+     *      @param [in] portProtocol    The selected protocol.
+     *
+     *      @return True, if the port protocol is empty, false otherwise.
+     */
+    bool portProcotolTypeIsEmpty(QSharedPointer<Protocol> portProtocol) const;
 
     //-----------------------------------------------------------------------------
     // Data.

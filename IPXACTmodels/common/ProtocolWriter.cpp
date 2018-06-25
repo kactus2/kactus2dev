@@ -70,7 +70,8 @@ void ProtocolWriter::writeProtocolType(QXmlStreamWriter& writer, QSharedPointer<
 //-----------------------------------------------------------------------------
 void ProtocolWriter::writePayload(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const
 {
-    if (!portProtocol->getPayloadType().isEmpty())
+    if (!portProtocol->getPayloadType().isEmpty() || !portProtocol->getPayloadName().isEmpty() ||
+        !portProtocol->getPayloadExtension().isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:payload"));
 

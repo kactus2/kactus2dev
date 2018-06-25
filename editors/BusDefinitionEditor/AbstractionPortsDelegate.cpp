@@ -112,8 +112,15 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
         Q_ASSERT_X(box, "BusPortsDelegate::setEditorData", "Type conversion failed for combo box");
 
         QString text = index.data(Qt::DisplayRole).toString();
-
-        box->setCurrentIndex(box->findText(text));
+        int textIndex = box->findText(text);
+        if (textIndex >= 0)
+        {
+            box->setCurrentIndex(textIndex);
+        }
+        else
+        {
+            box->setCurrentText(text);
+        }
     }
 
     else

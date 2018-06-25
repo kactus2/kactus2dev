@@ -14,7 +14,7 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
-#include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
+#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.h>
 #include <editors/BusDefinitionEditor/AbstractionTransactionalPortColumns.h>
 
 #include <QVBoxLayout>
@@ -35,7 +35,7 @@ portDelegate_(this)
     transactionalColumns.systemGroupColumn_ = AbstractionTransactionalPortColumns::SYSTEM_GROUP;
     transactionalColumns.descriptionColumn_ = AbstractionTransactionalPortColumns::DESCRIPTION;
 
-    portProxy_ = new AbstractionDefinitionPortsSortFilter(transactionalColumns, this);
+    portProxy_ = new AbstractionTransactionalPortsSortFilter(transactionalColumns, this);
     portProxy_->setSourceModel(&portModel_);
 
     portView_.setModel(portProxy_);

@@ -4468,6 +4468,9 @@
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6801,6 +6804,9 @@
       <Filter>Header Files\library</Filter>
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortColumns.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
   </ItemGroup>

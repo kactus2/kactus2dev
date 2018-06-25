@@ -40,6 +40,7 @@ abstraction_()
     extendVLNVEditor_->setTitle(tr("Extended abstraction definition"));
 
     extendVLNVEditor_->setDisabled(true);
+    extendVLNVEditor_->setMandatory(false);
 
     portTabs_.addTab(&wirePortsEditor_, QStringLiteral("Wire ports"));
     portTabs_.addTab(&transactionalPortsEditor_, QStringLiteral("Transactional ports"));

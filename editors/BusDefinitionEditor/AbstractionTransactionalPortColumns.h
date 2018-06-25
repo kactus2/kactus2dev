@@ -22,6 +22,10 @@ namespace AbstractionTransactionalPortColumns
         BUSWIDTH,
         SYSTEM_GROUP,
         QUALIFIER,
+        PROTOCOLTYPE,
+        PAYLOADNAME,
+        PAYLOADTYPE,
+        PAYLOADEXTENSION,
         DESCRIPTION,
         COLUMN_COUNT
     };

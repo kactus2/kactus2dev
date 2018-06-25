@@ -62,10 +62,7 @@ public:
 	 */
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-private:
-	//! No copying. No assignment.
-	AbstractionDefinitionPortsSortFilter(const AbstractionDefinitionPortsSortFilter& other);
-	AbstractionDefinitionPortsSortFilter& operator=(const AbstractionDefinitionPortsSortFilter& other);
+protected:
 
     /*!
      *  Get the background color for the selected index.
@@ -74,7 +71,12 @@ private:
      *
      *      @return Background color for the selected index.
      */
-    QColor getBackgroundColorForIndex(QModelIndex const& index) const;
+    virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
+
+private:
+	//! No copying. No assignment.
+	AbstractionDefinitionPortsSortFilter(const AbstractionDefinitionPortsSortFilter& other);
+	AbstractionDefinitionPortsSortFilter& operator=(const AbstractionDefinitionPortsSortFilter& other);
 
     /*!
      *  Check if the system group column is mandatory for the selected index.
