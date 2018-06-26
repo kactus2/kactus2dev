@@ -28,6 +28,8 @@ class AbstractionDefinition;
 class ExpressionParser;
 class LibraryInterface;
 class PortAbstraction;
+class BusDefinition;
+
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:AbstractionDefinition.
 //-----------------------------------------------------------------------------
@@ -73,9 +75,11 @@ private:
 	 *
 	 *      @param [in] port			The PortAbstraction to validate.		
 	 *      @param [in] ports			Collection of ports within the abstraction definition.
+     *      @param [in] busDefinition   The bus definition used by the abstraction definition.
 	 */
-	bool isValidPortAbstraction(QSharedPointer<PortAbstraction> port,
-        QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
+    bool isValidPortAbstraction(QSharedPointer<PortAbstraction> port,
+        QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports,
+        QSharedPointer<const BusDefinition> busDefinition) const;
 
 	/*!
 	*   Finds possible errors in a PortAbstraction and creates a list of them.
@@ -83,10 +87,12 @@ private:
 	 *      @param [in] errors			List of found errors.
 	 *      @param [in] port			The PortAbstraction whose errors to find.
 	 *      @param [in] ports			Collection of ports within the abstraction definition.
+     *      @param [in] busDefinition   Bus definition used by the abstraction definition.
 	 */
 	void findErrorsInPortAbstraction(QVector<QString>& errors,
 		QSharedPointer<PortAbstraction> port, 
-        QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
+        QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports,
+        QSharedPointer<const BusDefinition> busDefinition) const;
 
 	/*!
 	 *  Validates the given TransactionalPort.
@@ -105,17 +111,6 @@ private:
 	void findErrorsInTransactionalPort(QVector<QString>& errors, QString const& context,
 		QSharedPointer<TransactionalPort> transPort) const;
 
-    /*!
-    *  Validates the given system mode WirePort.
-    *
-    *      @param [in] wirePort			The WirePort to validate.
-    *      @param [in] ports			Collection of ports within the abstraction definition.
-    *
-    *      @return True, if the WirePort is valid IP-XACT, otherwise false.
-    */
-     bool isValidSystemWirePort(QSharedPointer<WirePort> systemWirePort, 
-         QSharedPointer<QList<QSharedPointer<PortAbstraction>>> ports) const;
-	
 	/*!
 	 *  Validates the given WirePort.
 	 *
@@ -127,17 +122,6 @@ private:
 	bool isValidWirePort(QSharedPointer<WirePort> wirePort,
         QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
     
-    /*!
-    *   Finds possible errors in a system mode WirePort and creates a list of them.
-    *
-    *      @param [in] errors      List of found errors.
-    *      @param [in] wirePort	The WirePort whose errors to find.
-    *      @param [in] context     Context to help locate the errors.
-    *      @param [in] ports		Collection of ports within the abstraction definition.
-    */
-    void findErrorsInSystemWirePort(QVector<QString>& errors, QSharedPointer<WirePort> systemWirePort,
-        QString const & context, QSharedPointer<QList<QSharedPointer<PortAbstraction>>> ports) const;
-	
 	/*!
 	 *   Finds possible errors in a WirePort and creates a list of them.
 	 *
@@ -178,6 +162,33 @@ private:
      *      @return True, if the name is valid, otherwise false.
      */
 	bool hasValidName(QString const& name) const;
+
+    /*!
+     *  Get the bus definition used by the selected abstraction definition
+     *
+     *      @param [in] abstraction     The selected abstraction definition.
+     *
+     *      @return The bus definition used by the selected abstraction definition.
+     */
+    QSharedPointer<const BusDefinition> getBusDefinition(QSharedPointer<AbstractionDefinition> abstraction) const;
+
+    /*!
+     *  Find errors in the selected port system group.
+     *
+     *      @param [in] errors                      List of found errors.
+     *      @param [in] systemGroup                 The selected system group.
+     *      @param [in] context                     Context to help locate the errors.
+     *      @param [in] availableSystemNames        List of the available system names.
+     *      @param [in] busDefinitionIdentifier     Identifier for the bus definition containing the system names.
+     *
+     *      @return 
+     */
+    void findErrorsInSystemGroup(QVector<QString>& errors, QString const& systemGroup, QString const& context,
+        QStringList const& availableSystemNames, QString const& busDefinitionIdentifier) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The IP-XACT library available.
     LibraryInterface* library_;

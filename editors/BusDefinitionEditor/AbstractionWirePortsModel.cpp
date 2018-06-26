@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busportsmodel.cpp
+// File: AbstractionWirePortsModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // Data model for the wires within abstraction definition.
 //-----------------------------------------------------------------------------
 
-#include "AbstractionPortsModel.h"
+#include "AbstractionWirePortsModel.h"
 #include "LogicalPortColumns.h"
 
 #include <IPXACTmodels/common/DirectionTypes.h>
@@ -23,9 +23,9 @@
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::AbstractionPortsModel()
+// Function: AbstractionWirePortsModel::AbstractionWirePortsModel()
 //-----------------------------------------------------------------------------
-AbstractionPortsModel::AbstractionPortsModel(QObject *parent):
+AbstractionWirePortsModel::AbstractionWirePortsModel(QObject *parent):
 QAbstractTableModel(parent),
 absDef_(),
 busDefinition_(),
@@ -35,9 +35,9 @@ table_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::rowCount()
+// Function: AbstractionWirePortsModel::rowCount()
 //-----------------------------------------------------------------------------
-int AbstractionPortsModel::rowCount(QModelIndex const& parent) const
+int AbstractionWirePortsModel::rowCount(QModelIndex const& parent) const
 {
 	if (parent.isValid())
     {
@@ -48,9 +48,9 @@ int AbstractionPortsModel::rowCount(QModelIndex const& parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::columnCount()
+// Function: AbstractionWirePortsModel::columnCount()
 //-----------------------------------------------------------------------------
-int AbstractionPortsModel::columnCount(QModelIndex const& parent) const
+int AbstractionWirePortsModel::columnCount(QModelIndex const& parent) const
 {
 	if (parent.isValid())
     {
@@ -61,9 +61,9 @@ int AbstractionPortsModel::columnCount(QModelIndex const& parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::flags()
+// Function: AbstractionWirePortsModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags AbstractionPortsModel::flags(const QModelIndex& index) const
+Qt::ItemFlags AbstractionWirePortsModel::flags(const QModelIndex& index) const
 {
     if (!index.isValid())
     {
@@ -84,9 +84,9 @@ Qt::ItemFlags AbstractionPortsModel::flags(const QModelIndex& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::headerData()
+// Function: AbstractionWirePortsModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant AbstractionPortsModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant AbstractionWirePortsModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role != Qt::DisplayRole && orientation == Qt::Horizontal)
     {
@@ -140,16 +140,16 @@ QVariant AbstractionPortsModel::headerData(int section, Qt::Orientation orientat
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::data()
+// Function: AbstractionWirePortsModel::data()
 //-----------------------------------------------------------------------------
-QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
+QVariant AbstractionWirePortsModel::data(QModelIndex const& index, int role) const
 {
 	if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
 		return QVariant();
     }
             
-    AbstractionPortsModel::SignalRow const& port = table_.at(index.row());
+    AbstractionWirePortsModel::SignalRow const& port = table_.at(index.row());
 
 	if (role == Qt::DisplayRole) 
     {
@@ -231,9 +231,9 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::setData()
+// Function: AbstractionWirePortsModel::setData()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& value, int role)
+bool AbstractionWirePortsModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
     QString oldData = data(index, Qt::DisplayRole).toString();
 
@@ -243,7 +243,7 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
         return false;
     }
 
-    AbstractionPortsModel::SignalRow& port = table_[index.row()];
+    AbstractionWirePortsModel::SignalRow& port = table_[index.row()];
     if (index.column() == LogicalPortColumns::NAME)
     {		
         QString newName = value.toString();
@@ -253,8 +253,11 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
         {
             selectedPort = QSharedPointer<PortAbstraction>(new PortAbstraction());
             selectedPort->setLogicalName(newName);
-            selectedPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
             absDef_->getLogicalPorts()->append(selectedPort);
+        }
+        if (!selectedPort->getWire())
+        {
+            selectedPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
         }
 
         if (!portHasOtherSignals(port))
@@ -317,7 +320,7 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     {
         for (int i = 0; i < table_.size(); ++i)
         {
-            AbstractionPortsModel::SignalRow signal = table_.at(i);
+            AbstractionWirePortsModel::SignalRow signal = table_.at(i);
 
             if (signal.abstraction_->getLogicalName().compare(port.abstraction_->getLogicalName()) == 0 &&
                 signal != port)
@@ -333,9 +336,9 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::portHasOtherSignals()
+// Function: AbstractionWirePortsModel::portHasOtherSignals()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::portHasOtherSignals(AbstractionPortsModel::SignalRow const& portSignal) const
+bool AbstractionWirePortsModel::portHasOtherSignals(AbstractionWirePortsModel::SignalRow const& portSignal) const
 {
     General::InterfaceMode portMode = portSignal.mode_;
     QSharedPointer<WireAbstraction> portWire = portSignal.abstraction_->getWire();
@@ -355,9 +358,9 @@ bool AbstractionPortsModel::portHasOtherSignals(AbstractionPortsModel::SignalRow
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::sendDataChangeForAllChangedItems()
+// Function: AbstractionWirePortsModel::sendDataChangeForAllChangedItems()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::sendDataChangeForAllChangedItems(QModelIndexList changedIndexes)
+void AbstractionWirePortsModel::sendDataChangeForAllChangedItems(QModelIndexList changedIndexes)
 {
     QModelIndex firstIndex = changedIndexes.first();
     QModelIndex lastIndex = changedIndexes.last();
@@ -378,9 +381,9 @@ void AbstractionPortsModel::sendDataChangeForAllChangedItems(QModelIndexList cha
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::setAbsDef()
+// Function: AbstractionWirePortsModel::setAbsDef()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
+void AbstractionWirePortsModel::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 {
     Q_ASSERT_X(absDef, "BusPortsModel::setAbsDef", "Null Abstraction Definition given as parameter");
 
@@ -424,23 +427,23 @@ void AbstractionPortsModel::setAbsDef(QSharedPointer<AbstractionDefinition> absD
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::setBusDef()
+// Function: AbstractionWirePortsModel::setBusDef()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::setBusDef(QSharedPointer<BusDefinition> busDefinition)
+void AbstractionWirePortsModel::setBusDef(QSharedPointer<BusDefinition> busDefinition)
 {
     busDefinition_ = busDefinition;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::save()
+// Function: AbstractionWirePortsModel::save()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::save()
+void AbstractionWirePortsModel::save()
 {
     QVector<QSharedPointer<PortAbstraction> > savedPorts;
 
     for (int i = 0; i < table_.size(); i++) 
     {
-        AbstractionPortsModel::SignalRow portOnRow = table_.at(i);
+        AbstractionWirePortsModel::SignalRow portOnRow = table_.at(i);
 
         QSharedPointer<PortAbstraction> portAbs = portOnRow.abstraction_;
 
@@ -468,11 +471,11 @@ void AbstractionPortsModel::save()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::addSignal()
+// Function: AbstractionWirePortsModel::addSignal()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::addSignal()
+void AbstractionWirePortsModel::addSignal()
 {
-    AbstractionPortsModel::SignalRow port;
+    AbstractionWirePortsModel::SignalRow port;
     port.abstraction_ = QSharedPointer<PortAbstraction>(new PortAbstraction());
     port.abstraction_->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
     port.wire_ = QSharedPointer<WirePort>(new WirePort());
@@ -487,35 +490,35 @@ void AbstractionPortsModel::addSignal()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::addMaster()
+// Function: AbstractionWirePortsModel::addMaster()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::addMaster(QModelIndexList const& indexes)
+void AbstractionWirePortsModel::addMaster(QModelIndexList const& indexes)
 {
     createNewSignal(General::MASTER, indexes);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::addSlave()
+// Function: AbstractionWirePortsModel::addSlave()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::addSlave(QModelIndexList const& indexes)
+void AbstractionWirePortsModel::addSlave(QModelIndexList const& indexes)
 {
     createNewSignal(General::SLAVE, indexes);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::createNewSignal()
+// Function: AbstractionWirePortsModel::createNewSignal()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::createNewSignal(General::InterfaceMode newSignalMode, QModelIndexList const& selection)
+void AbstractionWirePortsModel::createNewSignal(General::InterfaceMode newSignalMode, QModelIndexList const& selection)
 {
-    QVector<AbstractionPortsModel::SignalRow> targetPorts = getIndexedPorts(selection);
+    QVector<AbstractionWirePortsModel::SignalRow> targetPorts = getIndexedPorts(selection);
 
     beginResetModel();
 
-    foreach(AbstractionPortsModel::SignalRow signal, targetPorts)
+    foreach(AbstractionWirePortsModel::SignalRow signal, targetPorts)
     {
         if (!modeExistsForPort(newSignalMode, signal.abstraction_->getLogicalName()))
         {
-            AbstractionPortsModel::SignalRow newSignal(signal);
+            AbstractionWirePortsModel::SignalRow newSignal(signal);
             newSignal.mode_ = newSignalMode;
             newSignal.wire_->setSystemGroup("");
 
@@ -540,17 +543,17 @@ void AbstractionPortsModel::createNewSignal(General::InterfaceMode newSignalMode
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::addSystem()
+// Function: AbstractionWirePortsModel::addSystem()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::addSystem(QModelIndexList const& indexes)
+void AbstractionWirePortsModel::addSystem(QModelIndexList const& indexes)
 {
-    QVector<AbstractionPortsModel::SignalRow> targetPorts = getIndexedPorts(indexes);
+    QVector<AbstractionWirePortsModel::SignalRow> targetPorts = getIndexedPorts(indexes);
     
     beginResetModel();
 
-    foreach(AbstractionPortsModel::SignalRow signal, targetPorts)
+    foreach(AbstractionWirePortsModel::SignalRow signal, targetPorts)
     {
-        AbstractionPortsModel::SignalRow newSystemSignal(signal);
+        AbstractionWirePortsModel::SignalRow newSystemSignal(signal);
         newSystemSignal.mode_ = General::SYSTEM;
         newSystemSignal.wire_->setSystemGroup("");
 
@@ -561,20 +564,20 @@ void AbstractionPortsModel::addSystem(QModelIndexList const& indexes)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::addAllSystems()
+// Function: AbstractionWirePortsModel::addAllSystems()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::addAllSystems(QModelIndexList const& indexes)
+void AbstractionWirePortsModel::addAllSystems(QModelIndexList const& indexes)
 {
-    QVector<AbstractionPortsModel::SignalRow> targetPorts = getIndexedPorts(indexes);
+    QVector<AbstractionWirePortsModel::SignalRow> targetPorts = getIndexedPorts(indexes);
 
     beginResetModel();
 
-    foreach(AbstractionPortsModel::SignalRow signal, targetPorts)
+    foreach(AbstractionWirePortsModel::SignalRow signal, targetPorts)
     {
         QStringList systemGroups = getMissingSystemGroupsForSignal(signal);
         foreach(QString group, systemGroups)
         {
-            AbstractionPortsModel::SignalRow newSystemSignal(signal);
+            AbstractionWirePortsModel::SignalRow newSystemSignal(signal);
             newSystemSignal.mode_ = General::SYSTEM;
             newSystemSignal.wire_->setSystemGroup(group);
 
@@ -586,9 +589,9 @@ void AbstractionPortsModel::addAllSystems(QModelIndexList const& indexes)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::getMissingSystemGroupsForSignal()
+// Function: AbstractionWirePortsModel::getMissingSystemGroupsForSignal()
 //-----------------------------------------------------------------------------
-QStringList AbstractionPortsModel::getMissingSystemGroupsForSignal(AbstractionPortsModel::SignalRow const& signal)
+QStringList AbstractionWirePortsModel::getMissingSystemGroupsForSignal(AbstractionWirePortsModel::SignalRow const& signal)
     const
 {
     QStringList missingSystemGroups;
@@ -597,7 +600,7 @@ QStringList AbstractionPortsModel::getMissingSystemGroupsForSignal(AbstractionPo
         missingSystemGroups = busDefinition_->getSystemGroupNames();
     }
 
-    foreach(AbstractionPortsModel::SignalRow const& comparisonSignal, table_)
+    foreach(AbstractionWirePortsModel::SignalRow const& comparisonSignal, table_)
     {
         if (comparisonSignal.abstraction_->getLogicalName() == signal.abstraction_->getLogicalName() &&
             comparisonSignal.mode_ == General::SYSTEM)
@@ -610,18 +613,18 @@ QStringList AbstractionPortsModel::getMissingSystemGroupsForSignal(AbstractionPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::getIndexedPorts()
+// Function: AbstractionWirePortsModel::getIndexedPorts()
 //-----------------------------------------------------------------------------
-QVector<AbstractionPortsModel::SignalRow> AbstractionPortsModel::getIndexedPorts(QModelIndexList const& selection)
+QVector<AbstractionWirePortsModel::SignalRow> AbstractionWirePortsModel::getIndexedPorts(QModelIndexList const& selection)
 {
-    QVector<AbstractionPortsModel::SignalRow> targetPorts;
+    QVector<AbstractionWirePortsModel::SignalRow> targetPorts;
 
     // Find all ports that match given indexes.
     foreach(QModelIndex index, selection)
     {
         if (0 <= index.row() && index.row() <= table_.size())
         {
-            AbstractionPortsModel::SignalRow temp = table_.at(index.row());
+            AbstractionWirePortsModel::SignalRow temp = table_.at(index.row());
             if (!portHasBeenSelected(temp, targetPorts))
             {
                 targetPorts.append(temp);
@@ -633,12 +636,12 @@ QVector<AbstractionPortsModel::SignalRow> AbstractionPortsModel::getIndexedPorts
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::portHasBeenSelected()
+// Function: AbstractionWirePortsModel::portHasBeenSelected()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::portHasBeenSelected(AbstractionPortsModel::SignalRow const& portSignal,
-    QVector<AbstractionPortsModel::SignalRow> const& selectedPorts) const
+bool AbstractionWirePortsModel::portHasBeenSelected(AbstractionWirePortsModel::SignalRow const& portSignal,
+    QVector<AbstractionWirePortsModel::SignalRow> const& selectedPorts) const
 {
-    foreach(AbstractionPortsModel::SignalRow const& signal, selectedPorts)
+    foreach(AbstractionWirePortsModel::SignalRow const& signal, selectedPorts)
     {
         if (signal.abstraction_->getLogicalName() == portSignal.abstraction_->getLogicalName())
         {
@@ -650,11 +653,11 @@ bool AbstractionPortsModel::portHasBeenSelected(AbstractionPortsModel::SignalRow
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::modeExistsForPort()
+// Function: AbstractionWirePortsModel::modeExistsForPort()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::modeExistsForPort(General::InterfaceMode const& mode, QString const& portName) const
+bool AbstractionWirePortsModel::modeExistsForPort(General::InterfaceMode const& mode, QString const& portName) const
 {
-    foreach(AbstractionPortsModel::SignalRow signal, table_)
+    foreach(AbstractionWirePortsModel::SignalRow signal, table_)
     {
         if (signal.abstraction_->getLogicalName().compare(portName) == 0 && signal.mode_ == mode)
         {
@@ -666,12 +669,12 @@ bool AbstractionPortsModel::modeExistsForPort(General::InterfaceMode const& mode
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::getMirroredDirectionForSignal()
+// Function: AbstractionWirePortsModel::getMirroredDirectionForSignal()
 //-----------------------------------------------------------------------------
-DirectionTypes::Direction AbstractionPortsModel::getMirroredDirectionForSignal(QString const& portName,
+DirectionTypes::Direction AbstractionWirePortsModel::getMirroredDirectionForSignal(QString const& portName,
     General::InterfaceMode const& opposingMode) const
 {
-    foreach(AbstractionPortsModel::SignalRow signal, table_)
+    foreach(AbstractionWirePortsModel::SignalRow signal, table_)
     {
         if (signal.mode_ == opposingMode && signal.abstraction_->getLogicalName().compare(portName) == 0)
         {
@@ -683,13 +686,13 @@ DirectionTypes::Direction AbstractionPortsModel::getMirroredDirectionForSignal(Q
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::onRemoveItem()
+// Function: AbstractionWirePortsModel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::onRemoveItem(QModelIndex const& index)
+void AbstractionWirePortsModel::onRemoveItem(QModelIndex const& index)
 {
     if (0 <= index.row() && index.row() <= table_.size()) 
     {
-        AbstractionPortsModel::SignalRow portToRemove = table_.at(index.row());
+        AbstractionWirePortsModel::SignalRow portToRemove = table_.at(index.row());
 
         QString removedName = portToRemove.abstraction_->getLogicalName();
         General::InterfaceMode removedMode = portToRemove.mode_;
@@ -698,7 +701,7 @@ void AbstractionPortsModel::onRemoveItem(QModelIndex const& index)
         table_.removeAt(table_.indexOf(portToRemove));
         
         bool removeAbstraction = true;
-        foreach (AbstractionPortsModel::SignalRow const& row, table_)
+        foreach (AbstractionWirePortsModel::SignalRow const& row, table_)
         {
             if (row.abstraction_ == portToRemove.abstraction_)
             {
@@ -719,11 +722,11 @@ void AbstractionPortsModel::onRemoveItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::savePort()
+// Function: AbstractionWirePortsModel::savePort()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i)
+void AbstractionWirePortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i)
 {
-    AbstractionPortsModel::SignalRow sourcePort = table_.at(i);
+    AbstractionWirePortsModel::SignalRow sourcePort = table_.at(i);
 
     // Set the wirePort placement according to the mode in the table.
     if (sourcePort.mode_ == General::MASTER)
@@ -741,15 +744,15 @@ void AbstractionPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, in
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::createRow()
+// Function: AbstractionWirePortsModel::createRow()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::createRow(QSharedPointer<PortAbstraction> portAbs,
+void AbstractionWirePortsModel::createRow(QSharedPointer<PortAbstraction> portAbs,
     QSharedPointer<WirePort> modeSpesific, General::InterfaceMode mode) 
 {
     Q_ASSERT_X(portAbs, "BusPortsModel::createRow", "Null Port Abstraction pointer given as parameter");
     Q_ASSERT_X(modeSpesific, "BusPortsModel::createRow", "Null WirePort pointer given as parameter");
 
-    AbstractionPortsModel::SignalRow port;
+    AbstractionWirePortsModel::SignalRow port;
     port.mode_ = mode;
     port.abstraction_ = portAbs;
     port.wire_ = modeSpesific;
@@ -758,9 +761,9 @@ void AbstractionPortsModel::createRow(QSharedPointer<PortAbstraction> portAbs,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::toString()
+// Function: AbstractionWirePortsModel::toString()
 //-----------------------------------------------------------------------------
-QString AbstractionPortsModel::toString(Qualifier qualifier) const
+QString AbstractionWirePortsModel::toString(Qualifier qualifier) const
 {
     if (qualifier.isData() && qualifier.isAddress())
     {
@@ -789,9 +792,9 @@ QString AbstractionPortsModel::toString(Qualifier qualifier) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::toQualifier()
+// Function: AbstractionWirePortsModel::toQualifier()
 //-----------------------------------------------------------------------------
-Qualifier::Type AbstractionPortsModel::toQualifier(QString const& str) const
+Qualifier::Type AbstractionWirePortsModel::toQualifier(QString const& str) const
 {
     if (str == "address")
     {
@@ -820,9 +823,9 @@ Qualifier::Type AbstractionPortsModel::toQualifier(QString const& str) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::SignalRow()
+// Function: AbstractionWirePortsModel::SignalRow::SignalRow()
 //-----------------------------------------------------------------------------
-AbstractionPortsModel::SignalRow::SignalRow():
+AbstractionWirePortsModel::SignalRow::SignalRow():
 abstraction_(QSharedPointer<PortAbstraction>(new PortAbstraction())),
 mode_(General::INTERFACE_MODE_COUNT),
 wire_(QSharedPointer<WirePort>(new WirePort()))
@@ -831,20 +834,9 @@ wire_(QSharedPointer<WirePort>(new WirePort()))
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::SignalRow()
+// Function: AbstractionWirePortsModel::SignalRow::operator==()
 //-----------------------------------------------------------------------------
-AbstractionPortsModel::SignalRow::SignalRow(SignalRow const& other):
-abstraction_(other.abstraction_),
-mode_(other.mode_),
-wire_(QSharedPointer<WirePort>(new WirePort(*other.wire_)))
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::operator==()
-//-----------------------------------------------------------------------------
-bool AbstractionPortsModel::SignalRow::operator==(SignalRow const& other) const
+bool AbstractionWirePortsModel::SignalRow::operator==(SignalRow const& other) const
 {
     return  abstraction_->getLogicalName() == other.abstraction_->getLogicalName() &&
         mode_ == other.mode_ &&
@@ -852,9 +844,9 @@ bool AbstractionPortsModel::SignalRow::operator==(SignalRow const& other) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::operator!=()
+// Function: AbstractionWirePortsModel::SignalRow::operator!=()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::SignalRow::operator!=(SignalRow const& other) const
+bool AbstractionWirePortsModel::SignalRow::operator!=(SignalRow const& other) const
 {
     return  abstraction_->getLogicalName() != other.abstraction_->getLogicalName() ||
         mode_ != other.mode_ ||
@@ -862,9 +854,9 @@ bool AbstractionPortsModel::SignalRow::operator!=(SignalRow const& other) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::operator<()
+// Function: AbstractionWirePortsModel::SignalRow::operator<()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::SignalRow::operator<( const SignalRow& other ) const
+bool AbstractionWirePortsModel::SignalRow::operator<( const SignalRow& other ) const
 {
 	// Order by name, mode and system group.
 	if (abstraction_->getLogicalName() == other.abstraction_->getLogicalName()) 

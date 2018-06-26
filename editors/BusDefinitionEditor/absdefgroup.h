@@ -12,9 +12,8 @@
 #ifndef ABSDEFGROUP_H
 #define ABSDEFGROUP_H
 
-#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
-#include <editors/BusDefinitionEditor/AbstractionPortsDelegate.h>
-#include <editors/BusDefinitionEditor/AbstractionPortsView.h>
+#include <editors/BusDefinitionEditor/AbstractionWirePortsEditor.h>
+#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
@@ -24,6 +23,7 @@
 #include <QSortFilterProxyModel>
 #include <QPlainTextEdit>
 #include <QModelIndexList>
+#include <QTabWidget>
 
 class BusDefinition;
 class VLNVDisplayer;
@@ -107,26 +107,6 @@ signals:
 
 private slots:
 
-    /*!
-     *  Handles the adding of new master signals.
-     */
-    void onAddMaster();
-
-    /*!
-     *  Handles the adding of new slave signals.
-     */
-    void onAddSlave();
-
-    /*!
-     *  Handles the adding of new system signals.
-     */
-    void onAddSystem();
-
-    /*!
-     *  Handles the adding of missing system group signals.
-     */
-    void onAddAllSystems();
-
 	/*!
      *  Handler for changing the description of the abstraction definition.
      */
@@ -143,27 +123,15 @@ private:
 	void setupLayout();
     
     /*!
-     *  Get a list of the selected indexes.
+     *  Check if the abstraction definition contains transactional ports.
      *
-     *      @return List of the selected indexes.
+     *      @return True, if the abstraction definition contains any transactional ports.
      */
-    QModelIndexList getSelectedIndexes();
+    bool abstractionContainsTransactionalPorts() const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! The table view to display the logical signals
-    AbstractionPortsView portView_;
-
-    //! Proxy model for sorting abstract ports.
-    AbstractionDefinitionPortsSortFilter* portProxy_;
-
-	//! The model that contains the logical signals of Abstraction Definition.
-    AbstractionPortsModel portModel_;
-
-    //! The item delegate for portView_.
-    AbstractionPortsDelegate portDelegate_;
 
     //! Displays the VLNV of the abstraction definition.
     VLNVDisplayer* vlnvDisplay_;
@@ -173,6 +141,15 @@ private:
 
     //! Editor for the description of the abstraction definition.
     QPlainTextEdit* descriptionEditor_;
+
+    //! Contains tabs for wire and transactional ports.
+    QTabWidget portTabs_;
+
+    //! Editor for wire ports.
+    AbstractionWirePortsEditor wirePortsEditor_;
+
+    //! Editor for transactional ports.
+    AbstractionTransactionalPortsEditor transactionalPortsEditor_;
 
     //! The edited abstraction definition.
     QSharedPointer<AbstractionDefinition> abstraction_;

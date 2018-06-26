@@ -23,17 +23,34 @@ class AbstractionDefinitionPortsSortFilter : public QSortFilterProxyModel
 
 public:
 
+    //! Storage for the column indexes.
+    struct ColumnHandles
+    {
+        //! Index of the name column.
+        int nameColumn_;
+
+        //! Index of the mode column.
+        int modeColumn_;
+
+        //! Index of the system group column.
+        int systemGroupColumn_;
+
+        //! Index of the description column.
+        int descriptionColumn_;
+    };
+
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   Pointer to the owner of this model.
+     *      @param [in] columns     Storage for the column indexes.
+     *      @param [in] parent      Pointer to the owner of this model.
 	 */
-	AbstractionDefinitionPortsSortFilter(QObject *parent);
+	AbstractionDefinitionPortsSortFilter(ColumnHandles columns, QObject *parent);
 	
 	/*!
 	 *  The destructor.
 	 */
-    virtual ~AbstractionDefinitionPortsSortFilter();
+    virtual ~AbstractionDefinitionPortsSortFilter() = default;
 
 	/*!
 	 *  Get the data for the specified item.
@@ -45,10 +62,7 @@ public:
 	 */
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-private:
-	//! No copying. No assignment.
-	AbstractionDefinitionPortsSortFilter(const AbstractionDefinitionPortsSortFilter& other);
-	AbstractionDefinitionPortsSortFilter& operator=(const AbstractionDefinitionPortsSortFilter& other);
+protected:
 
     /*!
      *  Get the background color for the selected index.
@@ -57,7 +71,12 @@ private:
      *
      *      @return Background color for the selected index.
      */
-    QColor getBackgroundColorForIndex(QModelIndex const& index) const;
+    virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
+
+private:
+	//! No copying. No assignment.
+	AbstractionDefinitionPortsSortFilter(const AbstractionDefinitionPortsSortFilter& other);
+	AbstractionDefinitionPortsSortFilter& operator=(const AbstractionDefinitionPortsSortFilter& other);
 
     /*!
      *  Check if the system group column is mandatory for the selected index.
@@ -67,6 +86,13 @@ private:
      *      @return True, if the system group is mandatory, false otherwise.
      */
     bool isSystemGroupMandatory(QModelIndex const& index) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Storage for the used column indexes.
+    ColumnHandles columns_;
 };
 
 #endif // ABSTRACTIONDEFINITIONPORTSSORTFILTER_H

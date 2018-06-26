@@ -40,7 +40,7 @@ qualifier_(other.qualifier_),
     driverType_(other.driverType_),
     onMaster_(),
     onSlave_(), 
-    onSystem_()
+    onSystem_(new QList<QSharedPointer<WirePort> >())
 {
     if (other.onMaster_)
     {
@@ -60,7 +60,7 @@ qualifier_(other.qualifier_),
         onSlave_ = QSharedPointer<WirePort>();
     }   
 
-    onSystem_ = other.onSystem_;
+    Utilities::copyList(onSystem_, other.onSystem_);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ WireAbstraction& WireAbstraction::operator=(WireAbstraction const& other)
 			onSlave_ = QSharedPointer<WirePort>();
         }   
 
-	    onSystem_ = other.onSystem_;
+        Utilities::copyList(onSystem_, other.onSystem_);
 	}
 	return *this;
 }

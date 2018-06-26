@@ -53,13 +53,6 @@ bool ProtocolValidator::validate(QSharedPointer<Protocol> protocol) const
         {
             return false;
         }
-
-        if (!protocol->getPayloadExtension().isEmpty() && 
-            protocol->getPayloadExtension() != QLatin1String("mandatory") &&
-            protocol->getPayloadExtension() != QLatin1String("optional"))
-        {
-            return false;
-        }
     }
 
 	return true;
@@ -89,14 +82,6 @@ void ProtocolValidator::findErrorsIn(QVector<QString>& errors,
             protocol->getPayloadType() != QLatin1String("specific"))
         {
             errors.append(QObject::tr("The payload type '%1' is invalid.").arg(protocol->getPayloadType()));
-        }
-
-        if (!protocol->getPayloadExtension().isEmpty() && 
-            protocol->getPayloadExtension() != QLatin1String("mandatory") &&
-            protocol->getPayloadExtension() != QLatin1String("optional"))
-        {
-            errors.append(QObject::tr("The payload extension '%1' is invalid.").arg(
-                protocol->getPayloadExtension()));
         }
     }
 }

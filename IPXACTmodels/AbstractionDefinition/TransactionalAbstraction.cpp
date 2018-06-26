@@ -47,6 +47,8 @@ qualifier_(other.qualifier_),
     {
 		onSlave_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onSlave_.data()));
 	}
+
+    Utilities::copyList(onSystem_, other.onSystem_);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +77,8 @@ TransactionalAbstraction& TransactionalAbstraction::operator=(TransactionalAbstr
 			onSlave_ = QSharedPointer<TransactionalPort>();
         }
 
-	}
+        Utilities::copyList(onSystem_, other.onSystem_);
+    }
 	return *this;
 }
 

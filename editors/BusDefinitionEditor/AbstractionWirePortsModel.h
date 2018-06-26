@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AbstractionPortsModel.h
+// File: AbstractionWirePortsModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,8 +9,8 @@
 // Data model for the wires within abstraction definition.
 //-----------------------------------------------------------------------------
 
-#ifndef ABSTRACTIONPORTSMODEL_H
-#define ABSTRACTIONPORTSMODEL_H
+#ifndef ABSTRACTIONWIREPORTSMODEL_H
+#define ABSTRACTIONWIREPORTSMODEL_H
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -31,7 +31,7 @@ class BusDefinition;
 //-----------------------------------------------------------------------------
 //! Data model for the wires within abstraction definition.
 //-----------------------------------------------------------------------------
-class AbstractionPortsModel : public QAbstractTableModel
+class AbstractionWirePortsModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -42,12 +42,12 @@ public:
 	 *
 	 *      @param [in] parent   Pointer to the owner of this model.
 	 */
-	AbstractionPortsModel(QObject *parent);
+    AbstractionWirePortsModel(QObject *parent);
 	
 	/*!
 	 *  The destructor.
 	 */
-    virtual ~AbstractionPortsModel() = default;
+    virtual ~AbstractionWirePortsModel() = default;
 
 	/*!
 	 *  Get the number of rows an item contains.
@@ -208,8 +208,8 @@ signals:
 
 private:
 	//! No copying. No assignment.
-	AbstractionPortsModel(const AbstractionPortsModel& other);
-	AbstractionPortsModel& operator=(const AbstractionPortsModel& other);
+    AbstractionWirePortsModel(const AbstractionWirePortsModel& other);
+    AbstractionWirePortsModel& operator=(const AbstractionWirePortsModel& other);
     
 	/*!
 	 *  Save the port from table to a port abstraction.
@@ -266,11 +266,15 @@ private:
         //! Defines the wirePort represented on the row.
         QSharedPointer<WirePort> wire_;
 
-		//! The default constructor.
+		/*!
+         *  The default constructor.
+         */
 		SignalRow();
 
-		//! Copy constructor
-		SignalRow(SignalRow const& other);
+		/*!
+         *  Copy constructor
+         */
+		SignalRow(SignalRow const& other) = default;
 
 		/*!
 		 *  Comparison of two SignalRows.
@@ -315,7 +319,7 @@ private:
      *
      *      @return List of ports contained within the selected indexes.
      */
-    QVector<AbstractionPortsModel::SignalRow> getIndexedPorts(QModelIndexList const& selection);
+    QVector<AbstractionWirePortsModel::SignalRow> getIndexedPorts(QModelIndexList const& selection);
 
     /*!
      *  Check if selected signaled port has already been selected.
@@ -325,8 +329,8 @@ private:
      *
      *      @return True, if the signaled port has been selected, false otherwise.
      */
-    bool portHasBeenSelected(AbstractionPortsModel::SignalRow const& portSignal,
-        QVector<AbstractionPortsModel::SignalRow> const& selectedPorts) const;
+    bool portHasBeenSelected(AbstractionWirePortsModel::SignalRow const& portSignal,
+        QVector<AbstractionWirePortsModel::SignalRow> const& selectedPorts) const;
 
     /*!
      *  Check if the selected port already contains the selected signal.
@@ -356,7 +360,7 @@ private:
      *
      *      @return The system groups that have not been connected to the system signals of the selected port.
      */
-    QStringList getMissingSystemGroupsForSignal(AbstractionPortsModel::SignalRow const& signal) const;
+    QStringList getMissingSystemGroupsForSignal(AbstractionWirePortsModel::SignalRow const& signal) const;
 
     /*!
      *  Check if the selected port contains other signals.
@@ -365,7 +369,7 @@ private:
      *
      *      @return True, if the selected port contains other signals, false otherwise.
      */
-    bool portHasOtherSignals(AbstractionPortsModel::SignalRow const& portSignal) const;
+    bool portHasOtherSignals(AbstractionWirePortsModel::SignalRow const& portSignal) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -381,4 +385,4 @@ private:
 	QList<SignalRow> table_;
 };
 
-#endif // ABSTRACTIONPORTSMODEL_H
+#endif // ABSTRACTIONWIREPORTSMODEL_H
