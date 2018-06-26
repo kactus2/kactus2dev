@@ -63,10 +63,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QuartusGenerator.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="quartus_generator.png">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

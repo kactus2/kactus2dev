@@ -50,7 +50,13 @@ public:
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~QuartusProjectGenerator();
+	virtual ~QuartusProjectGenerator() = default;
+
+    //! No copying
+    QuartusProjectGenerator(const QuartusProjectGenerator& other) = delete;
+
+    //! No assignment
+    QuartusProjectGenerator& operator=(const QuartusProjectGenerator& other) = delete;
 
     /*!
      *  Gets the name of the plugin.
@@ -166,12 +172,6 @@ private slots:
     void onNoticeMessage(QString const& message);
 
 private:
-
-	//! No copying
-	QuartusProjectGenerator(const QuartusProjectGenerator& other);
-
-	//! No assignment
-	QuartusProjectGenerator& operator=(const QuartusProjectGenerator& other);
 
     /*!
      *  Gets the view of the current design or design configuration.

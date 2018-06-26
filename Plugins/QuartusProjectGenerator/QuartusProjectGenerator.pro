@@ -8,7 +8,7 @@ TARGET = QuartusProjectGenerator
 QT += core xml widgets gui printsupport
 CONFIG += c++11 plugin release
 
-DEFINES += QUARTUSGENERATOR_LIB
+DEFINES += QUARTUSGENERATOR_LIB QT_NO_CAST_FROM_ASCII
 INCLUDEPATH += ./generatedFiles \
     . \
     ./../.. \

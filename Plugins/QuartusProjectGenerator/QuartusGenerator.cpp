@@ -16,6 +16,8 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 
+#include <IPXACTmodels/utilities/ComponentSearch.h>
+
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <library/LibraryInterface.h>
 
@@ -25,30 +27,12 @@
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::QuartusGenerator()
 //-----------------------------------------------------------------------------
-QuartusGenerator::QuartusGenerator(QString outputPath, IPluginUtility* utility):
-outputPath_(outputPath),
-utility_(utility),
-files_(), 
-assignments_(),  
-handler_(utility->getLibraryInterface()),
-parent_(utility->getParentWidget()),
-timeReplacement_()
-{
-	// Make sure the output path is a directory.
-	QFileInfo outPutInfo(outputPath_);
-
-	if (!outPutInfo.isDir())
-	{
-		outputPath_ = outPutInfo.absolutePath();
-	}
-
-	Q_ASSERT_X(handler_, "QuartusGenerator constructor", "Null LibraryHandler pointer given for generator");
-}
-
-//-----------------------------------------------------------------------------
-// Function: QuartusGenerator::~QuartusGenerator()
-//-----------------------------------------------------------------------------
-QuartusGenerator::~QuartusGenerator()
+QuartusGenerator::QuartusGenerator(IPluginUtility* utility) :
+    utility_(utility),
+    files_(),
+    assignments_(),
+    handler_(utility->getLibraryInterface()),
+    timeReplacement_()
 {
 
 }
@@ -62,36 +46,88 @@ void QuartusGenerator::readExistingPinMap(QSharedPointer<Component> component)
 
 	// find the file wrapper that holds the assignments
     QSharedPointer<File> fileWrapper = getQuartusPinMap(component);
-
-    if (!fileWrapper.data())
+    if (fileWrapper.isNull())
     {
 		utility_->printInfo(tr("No pin map found on the component"));
 		return;
 	}
 
-	QString pinmapPath = General::getAbsolutePath(handler_->getPath(component->getVlnv()), fileWrapper->name());
-	
-	// if the file did not exist
+	QString pinmapPath = General::getAbsolutePath(handler_->getPath(component->getVlnv()), fileWrapper->name());	
 	QFileInfo pinmapInfo(pinmapPath);
 	if (!pinmapInfo.exists())
     {
-		utility_->printError(tr("The pin map file %1 was not found in file system").arg(pinmapPath));
+		utility_->printError(tr("The pin map file %1 was not found in file system.").arg(pinmapPath));
 		return;
 	}
 
 	QFile mappingsFile(pinmapPath);
-
-	// if the file can not be opened for reading
 	if (!mappingsFile.open(QIODevice::ReadOnly))
     {
-		utility_->printError(tr("File %1 could not be opened for reading").arg(pinmapPath));
+		utility_->printError(tr("File %1 could not be opened for reading.").arg(pinmapPath));
 		return;
 	}
+
 	QTextStream stream(&mappingsFile);
-
-    assignments_ = stream.readAll().split("\n");
-
+    assignments_ = stream.readAll().split(QStringLiteral("\n"));
 	mappingsFile.close();
+}
+
+//-----------------------------------------------------------------------------
+// Function: QuartusGenerator::parseFiles()
+//-----------------------------------------------------------------------------
+void QuartusGenerator::parseFiles(QSharedPointer<Component> component, QSharedPointer<View> view)
+{
+    Q_ASSERT_X(component, "QuartusGenerator::parseFiles", "Null component-pointer given as parameter");
+
+    if (!view)
+    {
+        utility_->printInfo(tr("Component %1 didn't contain an active view, adding all found RTL-files from "
+            "component file sets.").arg(component->getVlnv().getName()));
+
+        parseAllFileSets(component);
+    }
+    else
+    {
+        utility_->printInfo(tr("Processing view %1 of component %2").arg(view->name(), 
+            component->getVlnv().toString()));
+
+        if (view->isHierarchical())
+        {
+            parseFilesFromHierarchicalView(view, component);
+        }
+        else
+        {
+            parseFilesFromFlatView(component, view);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QuartusGenerator::generateProject()
+//-----------------------------------------------------------------------------
+void QuartusGenerator::generateProject(QString const& outputPath, QString const& top_entity, 
+    QString const& generatorInformation)
+{
+    // If the output dir doesn't exist then create it.
+    QDir outputDir(outputPath);
+    if (!outputDir.exists())
+    {
+        outputDir.mkpath(outputPath);
+    }
+
+    utility_->printInfo(tr("Writing Quartus project file."));
+    writeQuartusProjectFile(outputPath, top_entity, generatorInformation);
+
+    utility_->printInfo(tr("Writing Quartus settings file."));
+    writeQuartusSettingsFile(outputPath, top_entity, generatorInformation);
+}
+
+//-----------------------------------------------------------------------------
+// Function: QuartusGenerator::replaceTime()
+//-----------------------------------------------------------------------------
+void QuartusGenerator::replaceTime(QString const& newTime)
+{
+    timeReplacement_ = newTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,13 +135,15 @@ void QuartusGenerator::readExistingPinMap(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 QSharedPointer<File> QuartusGenerator::getQuartusPinMap(QSharedPointer<Component> component)
 {
-    foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+    QStringList pinTypes({ QStringLiteral("quartusPinmap"), QStringLiteral("quartusPinFile") });
+
+    for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
     {
-        foreach (QSharedPointer<File> currentFile, *fileSet->getFiles())
+        for (QSharedPointer<File> currentFile : *fileSet->getFiles())
         {
-            foreach (QString fileType, *currentFile->getFileTypes())
+            for (QString fileType : *currentFile->getFileTypes())
             {
-                if (fileType == "quartusPinmap" || fileType == "quartusPinFile")
+                if (pinTypes.contains(fileType))
                 {
                     return currentFile;
                 }
@@ -117,130 +155,47 @@ QSharedPointer<File> QuartusGenerator::getQuartusPinMap(QSharedPointer<Component
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusGenerator::generateProject()
-//-----------------------------------------------------------------------------
-void QuartusGenerator::generateProject(const QString& top_entity,
-    QString const& generatorInformation)
-{
-	// if the output dir doesn't exist then create it
-	QDir outputDir(outputPath_);
-	if (!outputDir.exists())
-    {
-		outputDir.mkpath(outputPath_);
-	}
-
-    utility_->printInfo(tr("Writing Quartus project file."));
-	writeQuartusProjectFile(top_entity, generatorInformation);
-
-    utility_->printInfo(tr("Writing Quartus settings file."));
-	writeQuartusSettingsFile(top_entity, generatorInformation);
-}
-
-//-----------------------------------------------------------------------------
 // Function: QuartusGenerator::writeQuartusProjectFile()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::writeQuartusProjectFile(const QString& top_entity,
+void QuartusGenerator::writeQuartusProjectFile(QString const& outputPath, QString const& top_entity, 
     QString const& generatorInformation)
 {
-	// save previous working directory
+	// Save previous working directory.
 	QDir savedCurrentDir = QDir::current();
 
-    QSharedPointer<QFile> quartusProjectFile = createQuartusProjectFile(top_entity, ".qpf");
-
+    QFile* quartusProjectFile = createQuartusProjectFile(outputPath, top_entity, QStringLiteral(".qpf"));
     if (quartusProjectFile->isOpen())
     {
-        QTextStream stream(quartusProjectFile.data());
+        QTextStream stream(quartusProjectFile);
 
         writeHeader(stream, generatorInformation);
 
-        QString entityName = top_entity;
-        entityName.remove(".comp");
-
-        // write project info
-        stream << "QUARTUS_VERSION = \"10.0\"" << endl << endl;
-        stream << "# Revisions" << endl << endl;
-        stream << "PROJECT_REVISION = \"";
-        stream << entityName;
-        stream << "\"" << endl;
+        // write project info.
+        stream << QStringLiteral("QUARTUS_VERSION = \"10.0\"") << endl << endl;
+        stream << QStringLiteral("# Revisions") << endl << endl;
+        stream << QStringLiteral("PROJECT_REVISION = \"");
+        stream << top_entity;
+        stream << QStringLiteral("\"") << endl;
 
         quartusProjectFile->close();
 
         utility_->printInfo(tr("Finished writing file %1.").arg(quartusProjectFile->fileName()));
     }
 
-    // restore previous working directory
+    // Restore previous working directory.
 	QDir::setCurrent(savedCurrentDir.path());
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusGenerator::writeQuartusSettingsFile()
-//-----------------------------------------------------------------------------
-void QuartusGenerator::writeQuartusSettingsFile(const QString& top_entity,
-    QString const& generatorInformation)
-{
-	QDir savedCurrentDir = QDir::current();
-
-    QSharedPointer<QFile> quartusSettingsFile = createQuartusProjectFile(top_entity, ".qsf");
-
-    if (quartusSettingsFile->isOpen())
-    {
-        QTextStream stream(quartusSettingsFile.data());
-
-        writeHeader(stream, generatorInformation);
-
-        stream << "set_global_assignment -name TOP_LEVEL_ENTITY " << top_entity << endl;
-        stream << "set_global_assignment -name ORIGINAL_QUARTUS_VERSION \"10.0 SP1\"" << endl;
-
-        for (int i = 0; i < files_.size(); ++i)
-        {
-            QFileInfo fileInfo(files_.at(i));
-
-            if (fileInfo.suffix() == QString("vhd") || fileInfo.suffix() == QString("vhdl") )
-            {
-                stream << "set_global_assignment -name VHDL_FILE " << files_.at(i) << endl;
-            }
-            else if (fileInfo.suffix() == QString("v"))
-            {
-                stream << "set_global_assignment -name VERILOG_FILE " << files_.at(i) << endl;
-            }
-            else if (fileInfo.suffix() == QString("qip"))
-            {
-                stream << "set_global_assignment -name QIP_FILE " << files_.at(i) << endl;
-            }
-            else if (fileInfo.suffix() == QString("sdc"))
-            {
-                stream << "set_global_assignment -name SDC_FILE " << files_.at(i) << endl;
-            }	
-
-        }
-
-        // write the pin assignments
-        for (int i = 0; i < assignments_.size(); ++i)
-        {
-            stream << assignments_.at(i) << endl;
-        }
-
-        quartusSettingsFile->close();
-
-        utility_->printInfo(tr("Finished writing file %1").arg(quartusSettingsFile->fileName()));
-    }
-
-    QDir::setCurrent(savedCurrentDir.path());
-}
-
-
-//-----------------------------------------------------------------------------
 // Function: QuartusGenerator::createQuartusProjectFile()
 //-----------------------------------------------------------------------------
-QSharedPointer<QFile> QuartusGenerator::createQuartusProjectFile(QString const& topEntity, QString const& fileSuffix)
+QFile* QuartusGenerator::createQuartusProjectFile(QString const& outputPath, QString const& topEntity,
+    QString const& fileSuffix)
 {
-    QDir::setCurrent(outputPath_);
-
-    // create file instance for the project file
-    QString fileName = topEntity;
-    fileName.remove(".comp");
-    fileName += fileSuffix;
-    QSharedPointer<QFile> quartusProjectFile (new QFile(fileName));
+    QDir::setCurrent(outputPath);
+    
+    QString fileName = topEntity + fileSuffix;
+    QFile* quartusProjectFile = new QFile(fileName);
 
     if (!quartusProjectFile->open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
@@ -256,124 +211,97 @@ QSharedPointer<QFile> QuartusGenerator::createQuartusProjectFile(QString const& 
 //-----------------------------------------------------------------------------
 void QuartusGenerator::writeHeader(QTextStream& stream, QString const& generatorInformation)
 {
-    QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
-
-    if (!timeReplacement_.isEmpty())
+    QString currentTime = timeReplacement_;
+    if (currentTime.isEmpty())
     {
-        currentTime = timeReplacement_;
+        currentTime = QDateTime::currentDateTime().toString(QStringLiteral("hh:mm:ss dd.MM.yyyy"));
     }
 
-	stream << "# ----------------------------------------------------------- #" << endl << endl;
-	stream << tr("# Quartus project generated by Kactus2") << endl;
+    stream << "# ----------------------------------------------------------- #" << endl << endl;
+    stream << tr("# Quartus project generated by Kactus2") << endl;
     stream << tr("# Date created ") << currentTime << endl;
     stream << tr("# This file was generated with ") << generatorInformation << endl << endl;
-	stream << "# ----------------------------------------------------------- #" << endl << endl;
+    stream << "# ----------------------------------------------------------- #" << endl << endl;
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusGenerator::parseFiles()
+// Function: QuartusGenerator::writeQuartusSettingsFile()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::parseFiles(QSharedPointer<Component> component, QSharedPointer<View> view)
+void QuartusGenerator::writeQuartusSettingsFile(QString const& outputPath, QString const& top_entity,
+    QString const& generatorInformation)
 {
-	Q_ASSERT_X(component, "QuartusGenerator::parseFiles", "Null component-pointer given as parameter");
+    // Save previous working directory.
+	QDir savedCurrentDir = QDir::current();
 
-	if (!view)
+    QFile* quartusSettingsFile = createQuartusProjectFile(outputPath, top_entity, QStringLiteral(".qsf"));
+    if (quartusSettingsFile->isOpen())
     {
-        utility_->printInfo(tr("Component %1 didn't contain an active view, adding all found RTL-files from "
-            "component file sets.").arg(component->getVlnv().getName()));
+        QTextStream stream(quartusSettingsFile);
 
-        parseBlindFileSet(component);
-        return;
-	}
+        writeHeader(stream, generatorInformation);
 
-    utility_->printInfo(tr("Processing view %1 of component %2").arg(view->name(), component->getVlnv().toString()));
+        stream << "set_global_assignment -name TOP_LEVEL_ENTITY " << top_entity << endl;
+        stream << "set_global_assignment -name ORIGINAL_QUARTUS_VERSION \"10.0 SP1\"" << endl;
 
-	if (!view->isHierarchical())
-	{
-		QSharedPointer<QStringList> fileSets( new QStringList );
+        writeIncludedFiles(stream);
+        writePinAssignments(stream);
 
-		foreach ( QSharedPointer<ComponentInstantiation> insta, *component->getComponentInstantiations() )
-		{
-			if ( view->getComponentInstantiationRef() == insta->name() )
-			{
-				fileSets = insta->getFileSetReferences();
-				break;
-			}
-		}
+        quartusSettingsFile->close();
 
-		parseFileSets(component, fileSets);
-	}
-	else
-    {
-        parseFilesFromHierarchicalView(view, component);
-	}
+        utility_->printInfo(tr("Finished writing file %1").arg(quartusSettingsFile->fileName()));
+    }
+
+    // Restore previous working directory.
+    QDir::setCurrent(savedCurrentDir.path());
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusGenerator::parseFileSets()
+// Function: QuartusGenerator::writeIncludedFiles()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::parseFileSets(QSharedPointer<Component> component, QSharedPointer<QStringList> fileSetNames)
+void QuartusGenerator::writeIncludedFiles(QTextStream& stream)
 {
-	Q_ASSERT_X(component, "ModelsimGenerator::parseFileSets", "Null component-pointer given as parameter");
-
-	QString basePath = handler_->getPath(component->getVlnv());
-	if (basePath.isEmpty())
+    for (QString const& fileName : files_)
     {
-        utility_->printError(tr("Component %1 was not found within library. Stopping generation.").
-            arg(component->getVlnv().toString()));
-        return;
-	}
+        QString fileSuffix = QFileInfo(fileName).suffix();
 
-	foreach (QString fileSetName, *fileSetNames)
-    {
-		if (!component->hasFileSet(fileSetName))
+        if (fileSuffix.compare(QLatin1String("vhd")) == 0 || fileSuffix.compare(QLatin1String("vhdl")) == 0)
         {
-            utility_->printError(tr("Fileset %1 was not found within component %2.").
-                arg(fileSetName, component->getVlnv().toString()));
-            continue;
-		}
-
-		QSharedPointer<FileSet> fileSet = component->getFileSet(fileSetName);
-
-        foreach (QSharedPointer<File> file, *fileSet->getFiles())
+            stream << "set_global_assignment -name VHDL_FILE " << fileName << endl;
+        }
+        else if (fileSuffix.compare(QLatin1String("v")) == 0)
         {
-            parseSingleFile(file, basePath, component->getVlnv().toString());
-		}
-	}
+            stream << "set_global_assignment -name VERILOG_FILE " << fileName << endl;
+        }
+        else if (fileSuffix.compare(QLatin1String("sv")) == 0)
+        {
+            stream << "set_global_assignment -name SYSTEMVERILOG_FILE " << fileName << endl;
+        }
+        else if (fileSuffix.compare(QLatin1String("qip")) == 0)
+        {
+            stream << "set_global_assignment -name QIP_FILE " << fileName << endl;
+        }
+        else if (fileSuffix.compare(QLatin1String("sdc")) == 0)
+        {
+            stream << "set_global_assignment -name SDC_FILE " << fileName << endl;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusGenerator::parseSingleFile()
+// Function: QuartusGenerator::writePinAssignments()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::parseSingleFile(QSharedPointer<File> currentFile, QString const& basePath,
-    QString const& componentVLNV)
+void QuartusGenerator::writePinAssignments(QTextStream &stream)
 {
-	QString absolutePath = General::getAbsolutePath(basePath, currentFile->name());
-
-    QFileInfo filePathInfo(absolutePath);
-    if (absolutePath.isEmpty())
+    for (QString const& assignment : assignments_)
     {
-        utility_->printError(tr("The file %1 was not found within %2").arg(currentFile->getFileName(), absolutePath));
-        return;
-    }
-
-    if (!filePathInfo.exists())
-    {
-        utility_->printError(tr("The file %1 needed by component %2 was not found in the file system.").
-            arg(absolutePath, componentVLNV));
-        return;
-    }
-
-    if (!files_.contains(absolutePath))
-    {
-        files_.append(absolutePath);
+        stream << assignment << endl;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusGenerator::parseBlindFileSet()
+// Function: QuartusGenerator::parseAllFileSets()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::parseBlindFileSet(QSharedPointer<Component> component)
+void QuartusGenerator::parseAllFileSets(QSharedPointer<Component> component)
 {
     Q_ASSERT_X(component, "ModelsimGenerator::parseBlindFileSet", "Null component pointer given as parameter");
 
@@ -384,17 +312,80 @@ void QuartusGenerator::parseBlindFileSet(QSharedPointer<Component> component)
         return;
     }
 
-    // Get all RTL files of the component.
-	foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+    QString componentVLNV = component->getVlnv().toString();
+
+    // Parse all RTL files of the component.
+	for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
 	{
-		foreach (QSharedPointer<File> file, *fileSet->getFiles())
+		for (QSharedPointer<File> file : *fileSet->getFiles())
 		{
-			if ( file->isRTLFile() )
+			if (file->isRTLFile())
 			{
-                parseSingleFile(file, basePath, component->getVlnv().toString());
+                parseSingleFile(file, basePath, componentVLNV);
             }
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: QuartusGenerator::parseSingleFile()
+//-----------------------------------------------------------------------------
+void QuartusGenerator::parseSingleFile(QSharedPointer<File> targetFile, QString const& basePath,
+    QString const& componentVLNV)
+{
+    QString absolutePath = General::getAbsolutePath(basePath, targetFile->name());
+    if (absolutePath.isEmpty())
+    {
+        utility_->printError(tr("The file %1 was not found within %2").arg(targetFile->getFileName(),
+            absolutePath));
+        return;
+    }
+
+    QFileInfo filePathInfo(absolutePath);
+    if (!filePathInfo.exists())
+    {
+        utility_->printError(tr("The file %1 needed by component %2 was not found in the file system.").arg(
+            absolutePath, componentVLNV));
+        return;
+    }
+
+    if (files_.contains(absolutePath) == false)
+    {
+        files_.append(absolutePath);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QuartusGenerator::parseFileSets()
+//-----------------------------------------------------------------------------
+void QuartusGenerator::parseFileSets(QSharedPointer<Component> component, QStringList const& fileSetNames)
+{
+    Q_ASSERT_X(component, "ModelsimGenerator::parseFileSets", "Null component-pointer given as parameter");
+
+    QString basePath = handler_->getPath(component->getVlnv());
+    if (basePath.isEmpty())
+    {
+        utility_->printError(tr("Component %1 was not found within library. Stopping generation.").
+            arg(component->getVlnv().toString()));
+        return;
+    }
+
+    for (QString const& fileSetName : fileSetNames)
+    {
+        if (!component->hasFileSet(fileSetName))
+        {
+            utility_->printError(tr("Fileset %1 was not found within component %2.").
+                arg(fileSetName, component->getVlnv().toString()));
+            continue;
+        }
+
+        QSharedPointer<FileSet> fileSet = component->getFileSet(fileSetName);
+
+        for (QSharedPointer<File> file : *fileSet->getFiles())
+        {
+            parseSingleFile(file, basePath, component->getVlnv().toString());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -402,58 +393,23 @@ void QuartusGenerator::parseBlindFileSet(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 void QuartusGenerator::parseFilesFromHierarchicalView(QSharedPointer<View> view, QSharedPointer<Component> component)
 {
-    VLNV designVLNV;
-    QSharedPointer<Design> design;
+    VLNV designVLNV = ComponentSearch::findDesignReference(component, view);
+    VLNV desConfVLNV = ComponentSearch::findDesignConfigurationReference(component, view);
 
-    VLNV desConfVLNV;
-    QSharedPointer<DesignConfiguration> designConf;
+    QSharedPointer<const DesignConfiguration> designConf;
 
-	VLNV vlnv;
-
-	foreach (QSharedPointer<DesignInstantiation> insta, *component->getDesignInstantiations() )
-	{
-		if ( view->getDesignInstantiationRef() == insta->name() )
-		{
-			vlnv = (*insta->getDesignReference());
-			break;
-		}
-	}
-
-	foreach ( QSharedPointer<DesignConfigurationInstantiation> insta,
-		*component->getDesignConfigurationInstantiations() )
-	{
-		if ( view->getDesignConfigurationInstantiationRef() == insta->name() )
-		{
-			vlnv = (*insta->getDesignConfigurationReference());
-			break;
-		}
-	}
-
-    if (!handler_->contains(vlnv))
+    if (desConfVLNV.isValid())
     {
-        utility_->printError(tr("Hierarchy reference %1 referenced within view %2 in component %3 was not found "
-            "in the library. Stopping generation.").arg(vlnv.toString(), view->name(),
-            component->getVlnv().getName()));
-        return;
+        designConf = handler_->getModelReadOnly<DesignConfiguration>(desConfVLNV);
+
+        if (designVLNV.isValid() == false)
+        {
+            designVLNV = designConf->getDesignRef();
+        }
     }
-
-    vlnv.setType(handler_->getDocumentType(vlnv));
-    if (vlnv.getType() == VLNV::DESIGNCONFIGURATION)
+    else if (designVLNV.isValid() == false)
     {
-        desConfVLNV = vlnv;
-        QSharedPointer<Document> libComp = handler_->getModel(desConfVLNV);
-        designConf = libComp.staticCast<DesignConfiguration>();
-
-        designVLNV = designConf->getDesignRef();
-    }
-    else if (vlnv.getType() == VLNV::DESIGN)
-    {
-        designVLNV = vlnv;
-    }
-    else
-    {
-        utility_->printError(tr("Item %1 was neither a design nor design configuration. Stopping generation.").
-            arg(vlnv.toString()));
+        utility_->printError(tr("Could not find valid design. Stopping generation."));
         return;
     }
 
@@ -464,82 +420,75 @@ void QuartusGenerator::parseFilesFromHierarchicalView(QSharedPointer<View> view,
         return;
     }
 
-    QSharedPointer<Document> libComp = handler_->getModel(designVLNV);
-    design = libComp.staticCast<Design>();
+    QSharedPointer<const Design> design = handler_->getModelReadOnly<Design>(designVLNV);
 
 	readDesign(design, designConf);
 
-	QSharedPointer<QStringList> fileSets( new QStringList );
-
-	foreach ( QSharedPointer<ComponentInstantiation> insta, *component->getComponentInstantiations() )
-	{
-		if ( view->getComponentInstantiationRef() == insta->name() )
-		{
-			fileSets = insta->getFileSetReferences();
-			break;
-		}
-	}
-
-	parseFileSets(component, fileSets);
+    parseFilesFromFlatView(component, view);
 }
 
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::readDesign()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
-                                  const QSharedPointer<DesignConfiguration> desConf)
+void QuartusGenerator::readDesign(QSharedPointer<const Design> design, 
+    QSharedPointer<const DesignConfiguration> desConf)
 {
-	Q_ASSERT_X(design, "ModelsimGenerator::readDesign", "Null Design-pointer given as parameter");
+    Q_ASSERT_X(design, "ModelsimGenerator::readDesign", "Null Design-pointer given as parameter");
 
-	foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
+    for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
     {
-		VLNV vlnv = *instance->getComponentRef();
+        VLNV vlnv = *instance->getComponentRef();
 
-		if (!handler_->contains(vlnv))
+        if (!handler_->contains(vlnv))
         {
-            utility_->printError(tr("Component %1 was not found within library. Stopping generation.").
+            utility_->printError(tr("Component %1 was not found within library. Skipping.").
                 arg(vlnv.toString()));
-			continue;
-		}
-
-		QSharedPointer<Component> component;
-		QSharedPointer<Document> libComp = handler_->getModel(vlnv);
-
-		if (libComp->getVlnv().getType() == VLNV::COMPONENT)
-        {
-			component = libComp.staticCast<Component>();
+            continue;
         }
-		else
+
+        QSharedPointer<Component> component = handler_->getModel<Component>(vlnv);
+        if (component.isNull())
         {
             utility_->printError(tr("Referenced item %1 was not a component.").arg(vlnv.toString()));
-			continue;
-		}
+            continue;
+        }
 
-		QSharedPointer<View> view;
+        QSharedPointer<View> view;
 
-		if (desConf && desConf->hasActiveView(instance->getInstanceName()))
+        if (desConf && desConf->hasActiveView(instance->getInstanceName()))
         {
             QMap<QString, QString> viewOverrides = desConf->getKactus2ViewOverrides();
 
-            QString viewName =
-				viewOverrides.value(instance->getUuid(), desConf->getActiveView(instance->getInstanceName()));
-			view = component->getModel()->findView(viewName);
-		}
-		// if design configuration is not used or view was not found
-		else
-        {
-            utility_->printInfo(tr("No active view selected for instance %1 of component %2.").
-                arg(instance->getInstanceName(), vlnv.toString()));
-		}
+            QString viewName = viewOverrides.value(instance->getUuid(), 
+                desConf->getActiveView(instance->getInstanceName()));
 
-		parseFiles(component, view);
-	}
+            view = ComponentSearch::findByName(viewName, *component->getViews());
+        }
+        // if design configuration is not used or view was not found
+        else
+        {
+            utility_->printInfo(tr("No active view selected for instance %1 of component %2.").arg(
+                instance->getInstanceName(), vlnv.toString()));
+        }
+
+        parseFiles(component, view);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusGenerator::replaceTime()
+// Function: QuartusGenerator::parseFilesFromFlatView()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::replaceTime(QString const& newTime)
+void QuartusGenerator::parseFilesFromFlatView(QSharedPointer<Component> component, QSharedPointer<View> view)
 {
-    timeReplacement_ = newTime;
+    QStringList fileSets;
+
+    auto instance = ComponentSearch::findByName(view->getComponentInstantiationRef(),
+        *component->getComponentInstantiations());
+
+    if (instance)
+    {
+        fileSets = *instance->getFileSetReferences();
+    }
+
+    parseFileSets(component, fileSets);
 }
