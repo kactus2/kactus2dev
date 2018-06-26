@@ -6,7 +6,7 @@
 
 #include "generaldeclarations.h"
 
-#include "XmlUtils.h"
+#include <IPXACTmodels/utilities/XmlUtils.h>
 
 #include <QString>
 #include <QDomNamedNodeMap>

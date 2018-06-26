@@ -11,8 +11,6 @@
 
 #include "Design.h"
 
-#include <IPXACTmodels/XmlUtils.h>
-
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>

@@ -546,10 +546,11 @@
     <ClCompile Include="kactusExtensions\validators\ComDefinitionValidator.cpp" />
     <ClCompile Include="kactusExtensions\validators\SystemDesignConfigurationValidator.cpp" />
     <ClCompile Include="kactusExtensions\validators\SystemViewConfigurationValidator.cpp" />
-    <ClCompile Include="XmlUtils.cpp" />
+    <ClCompile Include="utilities\XmlUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
+    <ClInclude Include="utilities\XmlUtils.h" />
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -2461,7 +2462,6 @@
     <ClInclude Include="kactusExtensions\validators\ComDefinitionValidator.h" />
     <ClInclude Include="kactusExtensions\validators\SystemDesignConfigurationValidator.h" />
     <ClInclude Include="kactusExtensions\validators\SystemViewConfigurationValidator.h" />
-    <ClInclude Include="XmlUtils.h" />
     <ClInclude Include="BusDefinition\BusDefinition.h" />
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>

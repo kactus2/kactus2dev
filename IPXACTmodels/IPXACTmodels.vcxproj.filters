@@ -129,6 +129,12 @@
     <Filter Include="Header Files\Catalog\validators">
       <UniqueIdentifier>{64de22a1-b68b-4616-88ed-eb3641e323ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\utilities">
+      <UniqueIdentifier>{2f3204f3-1ca5-4000-bf6e-a525ffc7e46c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utilities">
+      <UniqueIdentifier>{54d2758c-a610-4b1c-9a03-7f22e6644109}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BusDefinition\BusDefinition.cpp">
@@ -207,9 +213,6 @@
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="generaldeclarations.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="XmlUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AbstractionDefinition\AbstractionDefinition.cpp">
@@ -995,6 +998,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_NMTokenValidator.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="utilities\XmlUtils.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1052,9 +1058,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ipxactmodels_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XmlUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h">
@@ -1518,6 +1521,9 @@
     </ClInclude>
     <ClInclude Include="common\validators\ParameterValidator.h">
       <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities\XmlUtils.h">
+      <Filter>Header Files\utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

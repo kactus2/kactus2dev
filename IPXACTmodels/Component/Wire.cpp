@@ -12,7 +12,6 @@
 #include "Wire.h"
 
 #include <IPXACTmodels/common/Vector.h>
-#include <IPXACTmodels/XmlUtils.h>
 
 #include <QString>
 #include <QList>
