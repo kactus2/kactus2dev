@@ -12,7 +12,7 @@
 #ifndef XMLUTILS_H
 #define XMLUTILS_H
 
-#include "ipxactmodels_global.h"
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QXmlStreamWriter>
 #include <QDomNode>

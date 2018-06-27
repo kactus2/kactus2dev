@@ -85,7 +85,7 @@ QString VerilogSourceAnalyzer::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* VerilogSourceAnalyzer::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

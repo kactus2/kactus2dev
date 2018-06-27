@@ -11,6 +11,8 @@
 
 #include "ComponentSearch.h"
 
+#include "Search.h"
+
 #include <IPXACTmodels/Component/Model.h>
 
 //-----------------------------------------------------------------------------
@@ -18,7 +20,7 @@
 //-----------------------------------------------------------------------------
 VLNV ComponentSearch::findDesignReference(QSharedPointer<Component> component, QString const& viewName)
 {
-    return findDesignReference(component, findByName(viewName, *component->getViews()));
+    return findDesignReference(component, Search::findByName(viewName, *component->getViews()));
 }
 
 //-----------------------------------------------------------------------------
@@ -28,7 +30,7 @@ VLNV ComponentSearch::findDesignReference(QSharedPointer<Component> component, Q
 {
     if (view.isNull() == false)
     {
-        auto designInstantion = findByName(view->getDesignInstantiationRef(),
+        auto designInstantion = Search::findByName(view->getDesignInstantiationRef(),
             *component->getDesignInstantiations());
 
         if (designInstantion)
@@ -47,7 +49,7 @@ VLNV ComponentSearch::findDesignConfigurationReference(QSharedPointer<Component>
 {
     if (view.isNull() == false)
     {
-        auto configurationInstantiation = findByName(view->getDesignConfigurationInstantiationRef(),
+        auto configurationInstantiation = Search::findByName(view->getDesignConfigurationInstantiationRef(),
             *component->getDesignConfigurationInstantiations());
 
         if (configurationInstantiation)
@@ -64,5 +66,5 @@ VLNV ComponentSearch::findDesignConfigurationReference(QSharedPointer<Component>
 //-----------------------------------------------------------------------------
 QSharedPointer<View> ComponentSearch::findView(QSharedPointer<Component> component, QString const& viewName)
 {
-    return findByName(viewName, *component->getViews());
+    return Search::findByName(viewName, *component->getViews());
 }

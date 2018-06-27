@@ -31,21 +31,6 @@ namespace ComponentSearch
     VLNV findDesignConfigurationReference(QSharedPointer<Component> component, QSharedPointer<View> view);
 
     QSharedPointer<View> findView(QSharedPointer<Component> component, QString const& viewName);
-
-    template <typename ContainerItem, template <typename> class Container>
-    QSharedPointer<ContainerItem> findByName(QString const& name, 
-        Container<QSharedPointer<ContainerItem> > container)
-    {
-        for (auto item : container)
-        {
-            if (item->name().compare(name) == 0)
-            {
-                return item;
-            }
-        }
-
-        return QSharedPointer<ContainerItem>();
-    }
 };
 
 //-----------------------------------------------------------------------------

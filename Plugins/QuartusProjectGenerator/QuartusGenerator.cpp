@@ -16,6 +16,7 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 
+#include <IPXACTmodels/utilities/Search.h>
 #include <IPXACTmodels/utilities/ComponentSearch.h>
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
@@ -105,7 +106,7 @@ void QuartusGenerator::parseFiles(QSharedPointer<Component> component, QSharedPo
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::generateProject()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::generateProject(QString const& outputPath, QString const& top_entity, 
+void QuartusGenerator::generateProject(QString const& outputPath, QString const& topEntity, 
     QString const& generatorInformation)
 {
     // If the output dir doesn't exist then create it.
@@ -116,10 +117,10 @@ void QuartusGenerator::generateProject(QString const& outputPath, QString const&
     }
 
     utility_->printInfo(tr("Writing Quartus project file."));
-    writeQuartusProjectFile(outputPath, top_entity, generatorInformation);
+    writeQuartusProjectFile(outputPath, topEntity, generatorInformation);
 
     utility_->printInfo(tr("Writing Quartus settings file."));
-    writeQuartusSettingsFile(outputPath, top_entity, generatorInformation);
+    writeQuartusSettingsFile(outputPath, topEntity, generatorInformation);
 }
 
 //-----------------------------------------------------------------------------
@@ -157,13 +158,13 @@ QSharedPointer<File> QuartusGenerator::getQuartusPinMap(QSharedPointer<Component
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::writeQuartusProjectFile()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::writeQuartusProjectFile(QString const& outputPath, QString const& top_entity, 
+void QuartusGenerator::writeQuartusProjectFile(QString const& outputPath, QString const& topEntity, 
     QString const& generatorInformation)
 {
 	// Save previous working directory.
 	QDir savedCurrentDir = QDir::current();
 
-    QFile* quartusProjectFile = createQuartusProjectFile(outputPath, top_entity, QStringLiteral(".qpf"));
+    QFile* quartusProjectFile = createQuartusProjectFile(outputPath, topEntity, QStringLiteral(".qpf"));
     if (quartusProjectFile->isOpen())
     {
         QTextStream stream(quartusProjectFile);
@@ -174,7 +175,7 @@ void QuartusGenerator::writeQuartusProjectFile(QString const& outputPath, QStrin
         stream << QStringLiteral("QUARTUS_VERSION = \"10.0\"") << endl << endl;
         stream << QStringLiteral("# Revisions") << endl << endl;
         stream << QStringLiteral("PROJECT_REVISION = \"");
-        stream << top_entity;
+        stream << topEntity;
         stream << QStringLiteral("\"") << endl;
 
         quartusProjectFile->close();
@@ -227,20 +228,20 @@ void QuartusGenerator::writeHeader(QTextStream& stream, QString const& generator
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::writeQuartusSettingsFile()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::writeQuartusSettingsFile(QString const& outputPath, QString const& top_entity,
+void QuartusGenerator::writeQuartusSettingsFile(QString const& outputPath, QString const& topEntity,
     QString const& generatorInformation)
 {
     // Save previous working directory.
 	QDir savedCurrentDir = QDir::current();
 
-    QFile* quartusSettingsFile = createQuartusProjectFile(outputPath, top_entity, QStringLiteral(".qsf"));
+    QFile* quartusSettingsFile = createQuartusProjectFile(outputPath, topEntity, QStringLiteral(".qsf"));
     if (quartusSettingsFile->isOpen())
     {
         QTextStream stream(quartusSettingsFile);
 
         writeHeader(stream, generatorInformation);
 
-        stream << "set_global_assignment -name TOP_LEVEL_ENTITY " << top_entity << endl;
+        stream << "set_global_assignment -name TOP_LEVEL_ENTITY " << topEntity << endl;
         stream << "set_global_assignment -name ORIGINAL_QUARTUS_VERSION \"10.0 SP1\"" << endl;
 
         writeIncludedFiles(stream);
@@ -303,12 +304,12 @@ void QuartusGenerator::writePinAssignments(QTextStream &stream)
 //-----------------------------------------------------------------------------
 void QuartusGenerator::parseAllFileSets(QSharedPointer<Component> component)
 {
-    Q_ASSERT_X(component, "ModelsimGenerator::parseBlindFileSet", "Null component pointer given as parameter");
+    Q_ASSERT_X(component, "ModelsimGenerator::parseAllFileSets", "Null component pointer given as parameter");
 
     QString basePath = handler_->getPath(component->getVlnv());
     if (basePath.isEmpty())
     {
-        utility_->printError(tr("Component %1:%2:%3:%4 was not found in library."));
+        utility_->printError(tr("Component %1was not found in library.").arg(component->getVlnv().toString()));
         return;
     }
 
@@ -374,16 +375,15 @@ void QuartusGenerator::parseFileSets(QSharedPointer<Component> component, QStrin
     {
         if (!component->hasFileSet(fileSetName))
         {
-            utility_->printError(tr("Fileset %1 was not found within component %2.").
-                arg(fileSetName, component->getVlnv().toString()));
-            continue;
+            utility_->printError(tr("Fileset %1 was not found within component %2.").arg(fileSetName, 
+                component->getVlnv().toString()));
         }
-
-        QSharedPointer<FileSet> fileSet = component->getFileSet(fileSetName);
-
-        for (QSharedPointer<File> file : *fileSet->getFiles())
+        else
         {
-            parseSingleFile(file, basePath, component->getVlnv().toString());
+            for (QSharedPointer<File> file : *component->getFileSet(fileSetName)->getFiles())
+            {
+                parseSingleFile(file, basePath, component->getVlnv().toString());
+            }
         }
     }
 }
@@ -462,7 +462,7 @@ void QuartusGenerator::readDesign(QSharedPointer<const Design> design,
             QString viewName = viewOverrides.value(instance->getUuid(), 
                 desConf->getActiveView(instance->getInstanceName()));
 
-            view = ComponentSearch::findByName(viewName, *component->getViews());
+            view = Search::findByName(viewName, *component->getViews());
         }
         // if design configuration is not used or view was not found
         else
@@ -482,7 +482,7 @@ void QuartusGenerator::parseFilesFromFlatView(QSharedPointer<Component> componen
 {
     QStringList fileSets;
 
-    auto instance = ComponentSearch::findByName(view->getComponentInstantiationRef(),
+    auto instance = Search::findByName(view->getComponentInstantiationRef(),
         *component->getComponentInstantiations());
 
     if (instance)

@@ -120,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{19FABF05-9AD2-4437-84E9-5A60DF6E7BAE}</ProjectGuid>

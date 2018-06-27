@@ -98,7 +98,7 @@ QString LinuxDeviceTreePlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* LinuxDeviceTreePlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ QWidget* LinuxDeviceTreePlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsModel* LinuxDeviceTreePlugin::getSettingsModel()
 {
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

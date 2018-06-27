@@ -151,6 +151,9 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryViewGenerator.h">
@@ -217,6 +220,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

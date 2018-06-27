@@ -80,7 +80,7 @@ QString VerilogImporter::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* VerilogImporter::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

@@ -4,7 +4,8 @@
 
 HEADERS += ../../MockObjects/LibraryMock.h \
     ../../../Plugins/QuartusProjectGenerator/QuartusGenerator.h \
-    ../../../IPXACTmodels/utilities/ComponentSearch.h
+    ../../../IPXACTmodels/utilities/ComponentSearch.h \
+	../../../IPXACTmodels/utilities/Search.h
 SOURCES += ../../MockObjects/LibraryMock.cpp \
     ../../../Plugins/QuartusProjectGenerator/QuartusGenerator.cpp \
     ./tst_QuartusProjectGenerator.cpp \

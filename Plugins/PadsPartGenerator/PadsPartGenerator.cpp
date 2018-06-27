@@ -139,7 +139,7 @@ QString PadsPartGenerator::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* PadsPartGenerator::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

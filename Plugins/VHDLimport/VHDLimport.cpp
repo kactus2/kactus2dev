@@ -109,7 +109,7 @@ QString VHDLimport::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* VHDLimport::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

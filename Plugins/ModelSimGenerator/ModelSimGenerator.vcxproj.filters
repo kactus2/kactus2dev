@@ -163,6 +163,9 @@
     <ClCompile Include="ModelSimWriterFactory\ModelSimWriter.cpp">
       <Filter>Source Files\ModelSimWriterFactory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ModelSimGenerator.qrc">
@@ -250,6 +253,12 @@
     </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h">
       <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -143,6 +143,7 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp" />
@@ -246,6 +247,8 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="ModelSimWriterFactory\ModelSimDocument.h" />
     <ClInclude Include="ModelSimWriterFactory\ModelSimWriter.h" />
     <ClInclude Include="ModelSimWriterFactory\ModelSimWriterFactory.h" />

@@ -66,11 +66,11 @@ public:
 	/*! Generate the Quartus project files (.qpf .qsf)
 	 *
      *      @param [in] outputPath              The directory path, where the project files are generated.
-     *      @param [in] top_entity              The name of the topmost entity.
+     *      @param [in] topEntity              The name of the topmost entity.
      *      @param [in] generatorInformation    The generator information to write in the header.
 	 *
 	 */
-	void generateProject(QString const& outputPath, QString const& top_entity,QString const& generatorInformation);
+	void generateProject(QString const& outputPath, QString const& topEntity,QString const& generatorInformation);
 
     /*!
      *  Replace the printed time with the given text.
@@ -102,7 +102,7 @@ private:
     *
     *      @param [in] outPutDir Path to the directory where the .qpf file is written to
     */
-    void writeQuartusProjectFile(QString const& outputPath, QString const& top_entity, QString const& generatorInformation);
+    void writeQuartusProjectFile(QString const& outputPath, QString const& topEntity, QString const& generatorInformation);
     
     /*!
     *  Create a quartus file.
@@ -128,7 +128,7 @@ private:
     *      @param [in] topEntity                The name of the topmost entity for the file name.
     *      @param [in] generatorInformation     The generator information to write in the header.
     */
-    void writeQuartusSettingsFile(QString const& outputPath, QString const& top_entity, QString const& generatorInformation);
+    void writeQuartusSettingsFile(QString const& outputPath, QString const& topEntity, QString const& generatorInformation);
    
     /*! Writes all the related files into the Quartus settings file.
      *

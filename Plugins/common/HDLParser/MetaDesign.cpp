@@ -15,6 +15,8 @@
 
 #include <library/LibraryInterface.h>
 
+#include <IPXACTmodels/utilities/ComponentSearch.h>
+
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
@@ -211,7 +213,8 @@ void MetaDesign::findInstances()
         QSharedPointer<View> activeView;
         if (designConf_)
         {
-            activeView = component->getModel()->findView(designConf_->getActiveView(instance->getInstanceName()));
+            activeView = ComponentSearch::findView(component,
+                designConf_->getActiveView(instance->getInstanceName()));
         }
 
         // No chosen active view -> If there is only one in the component, use it.

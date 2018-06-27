@@ -21,7 +21,7 @@
 #include <editors/common/diagramgrid.h>
 #include <editors/common/Association/Association.h>
 
-#include <IPXACTmodels/XmlUtils.h>
+#include <IPXACTmodels/utilities/XmlUtils.h>
 #include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>

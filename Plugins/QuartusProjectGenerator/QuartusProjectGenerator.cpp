@@ -99,7 +99,7 @@ QString QuartusProjectGenerator::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* QuartusProjectGenerator::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

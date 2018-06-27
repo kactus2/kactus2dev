@@ -80,7 +80,7 @@ QString AlteraBSPGenerator::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* AlteraBSPGenerator::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

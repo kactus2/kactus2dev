@@ -13,6 +13,8 @@
 
 #include <common/ui/MessageMediator.h>
 
+#include <IPXACTmodels/utilities/Search.h>
+
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
@@ -42,8 +44,8 @@ MetaComponent::MetaComponent(MessageMediator* messages,
     // Try to find a component instantiation for the view.
     if (activeView_)
     {
-        activeInstantiation_ = component_->getModel()->findComponentInstantiation(
-            activeView_->getComponentInstantiationRef());
+        activeInstantiation_ = Search::findByName(activeView_->getComponentInstantiationRef(),
+            *component_->getComponentInstantiations());
 
         if (activeInstantiation_)
         {
@@ -91,7 +93,7 @@ void MetaComponent::formatComponent()
 //-----------------------------------------------------------------------------
 void MetaComponent::parseMetaParameters()
 {
-    foreach(QSharedPointer<Parameter> original, *getParameters())
+    for (QSharedPointer<Parameter> original : *getParameters())
     {
         metaParameters_->insert(original->name(), original);
     }

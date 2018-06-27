@@ -98,7 +98,7 @@ QString VHDLGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* VHDLGeneratorPlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ QWidget* VHDLGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsModel* VHDLGeneratorPlugin::getSettingsModel()
 {
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

@@ -91,7 +91,7 @@ QString ModelSimGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* ModelSimGeneratorPlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
