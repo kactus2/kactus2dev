@@ -39,7 +39,7 @@ absDef_(absDef),
 busDefGroup_(libHandler, this),
 absDefGroup_(libHandler, this),
 expressionParser_(new SystemVerilogExpressionParser()),
-busDefinitionValidator_(new BusDefinitionValidator(expressionParser_)),
+busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_)),
 absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
 {
     if (absDef_)

@@ -24,8 +24,8 @@
 CatalogFileDelegate::CatalogFileDelegate(LibraryInterface* library, QObject *parent):
 QStyledItemDelegate(parent),    
     library_(library),
-    matcher_(new VLNVContentMatcher(library)),
-    dataTree_(new VLNVDataTree())
+matcher_(new VLNVContentMatcher()),
+dataTree_(new VLNVDataTree())
 
 {
     

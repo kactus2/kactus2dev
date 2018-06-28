@@ -518,7 +518,7 @@ void AbstractionWirePortsModel::createNewSignal(General::InterfaceMode newSignal
     {
         if (!modeExistsForPort(newSignalMode, signal.abstraction_->getLogicalName()))
         {
-            AbstractionWirePortsModel::SignalRow newSignal(signal);
+            AbstractionWirePortsModel::SignalRow newSignal = constructCopySignal(signal);
             newSignal.mode_ = newSignalMode;
             newSignal.wire_->setSystemGroup("");
 
@@ -540,6 +540,21 @@ void AbstractionWirePortsModel::createNewSignal(General::InterfaceMode newSignal
     }
 
     endResetModel();
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionWirePortsModel::constructCopySignal()
+//-----------------------------------------------------------------------------
+AbstractionWirePortsModel::SignalRow AbstractionWirePortsModel::constructCopySignal(
+    AbstractionWirePortsModel::SignalRow signal) const
+{
+    AbstractionWirePortsModel::SignalRow newSignal;
+    newSignal.abstraction_ = signal.abstraction_;
+    newSignal.wire_ = QSharedPointer<WirePort>(new WirePort());
+
+    return newSignal;
 }
 
 //-----------------------------------------------------------------------------
@@ -553,7 +568,7 @@ void AbstractionWirePortsModel::addSystem(QModelIndexList const& indexes)
 
     foreach(AbstractionWirePortsModel::SignalRow signal, targetPorts)
     {
-        AbstractionWirePortsModel::SignalRow newSystemSignal(signal);
+        AbstractionWirePortsModel::SignalRow newSystemSignal = constructCopySignal(signal);
         newSystemSignal.mode_ = General::SYSTEM;
         newSystemSignal.wire_->setSystemGroup("");
 
@@ -561,6 +576,7 @@ void AbstractionWirePortsModel::addSystem(QModelIndexList const& indexes)
     }
 
     endResetModel();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -577,7 +593,7 @@ void AbstractionWirePortsModel::addAllSystems(QModelIndexList const& indexes)
         QStringList systemGroups = getMissingSystemGroupsForSignal(signal);
         foreach(QString group, systemGroups)
         {
-            AbstractionWirePortsModel::SignalRow newSystemSignal(signal);
+            AbstractionWirePortsModel::SignalRow newSystemSignal = constructCopySignal(signal);
             newSystemSignal.mode_ = General::SYSTEM;
             newSystemSignal.wire_->setSystemGroup(group);
 
@@ -586,6 +602,7 @@ void AbstractionWirePortsModel::addAllSystems(QModelIndexList const& indexes)
     }
 
     endResetModel();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

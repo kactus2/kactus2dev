@@ -36,7 +36,7 @@ abstraction_()
 {
     extendVLNVEditor_->setToolTip(QString("Extended abstraction definition is not currently supported in Kactus2"));
 
-    vlnvDisplay_->setTitle(QStringLiteral("Abstraction definition VLNV"));
+    vlnvDisplay_->setTitle(QStringLiteral("Abstraction definition"));
     extendVLNVEditor_->setTitle(tr("Extended abstraction definition"));
 
     extendVLNVEditor_->setDisabled(true);

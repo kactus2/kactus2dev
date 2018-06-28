@@ -391,6 +391,16 @@ private:
      */
     bool portProcotolTypeIsEmpty(QSharedPointer<Protocol> portProtocol) const;
 
+    /*!
+     *  Construct a copy of the port abstraction of the selected signal.
+     *
+     *      @param [in] signal  The selected port signal.
+     *
+     *      @return The constructed copy signal.
+     */
+    AbstractionTransactionalPortsModel::SignalRow constructSignalCopy(
+        AbstractionTransactionalPortsModel::SignalRow signal);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

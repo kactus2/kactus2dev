@@ -371,6 +371,15 @@ private:
      */
     bool portHasOtherSignals(AbstractionWirePortsModel::SignalRow const& portSignal) const;
 
+    /*!
+     *  Construct a copy of the port abstraction of the selected signal.
+     *
+     *      @param [in] signal  The selected port signal.
+     *
+     *      @return The constructed copy of the signal.
+     */
+    AbstractionWirePortsModel::SignalRow constructCopySignal(AbstractionWirePortsModel::SignalRow signal) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
