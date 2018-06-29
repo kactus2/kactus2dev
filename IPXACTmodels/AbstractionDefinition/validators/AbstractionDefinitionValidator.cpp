@@ -304,7 +304,7 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
     QString context = QObject::tr("port %1").arg(port->getLogicalName());
 
     QStringList systemGroupNames;
-    QString busDefinitionIdentifier(":::");
+    QString busDefinitionIdentifier = QStringLiteral(":::");
     if (busDefinition)
     {
         systemGroupNames = busDefinition->getSystemGroupNames();
