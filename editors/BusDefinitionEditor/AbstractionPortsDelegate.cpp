@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::AbstractionPortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionPortsDelegate::AbstractionPortsDelegate(QObject *parent):
+AbstractionPortsDelegate::AbstractionPortsDelegate(QObject *parent) :
 QStyledItemDelegate(parent),
 busDefinition_(0)
 {

@@ -29,7 +29,7 @@ public:
 	 *      @param [in] parent  The owner of this instance
      */
     AbstractionTransactionalPortsDelegate(QObject *parent);
-	
+
 	/*!
      *  The destructor.
      */

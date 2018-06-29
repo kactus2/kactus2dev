@@ -617,7 +617,8 @@ void AbstractionTransactionalPortsModel::addSlave(QModelIndexList const& indexes
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsModel::createNewSignal()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsModel::createNewSignal(General::InterfaceMode newSignalMode, QModelIndexList const& selection)
+void AbstractionTransactionalPortsModel::createNewSignal(General::InterfaceMode newSignalMode,
+    QModelIndexList const& selection)
 {
     QVector<AbstractionTransactionalPortsModel::SignalRow> targetPorts = getIndexedPorts(selection);
 
@@ -627,21 +628,29 @@ void AbstractionTransactionalPortsModel::createNewSignal(General::InterfaceMode 
     {
         if (!modeExistsForPort(newSignalMode, signal.abstraction_->getLogicalName()))
         {
-            AbstractionTransactionalPortsModel::SignalRow newSignal(signal);
+            AbstractionTransactionalPortsModel::SignalRow newSignal = constructSignalCopy(signal);
             newSignal.mode_ = newSignalMode;
             newSignal.transactionalPort_->setSystemGroup("");
-
-            General::InterfaceMode opposingSignal = General::MASTER;
-            if (newSignalMode == General::MASTER)
-            {
-                opposingSignal = General::SLAVE;
-            }
 
             table_.append(newSignal);
         }
     }
 
     endResetModel();
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTransactionalPortsModel::constructSignalCopy()
+//-----------------------------------------------------------------------------
+AbstractionTransactionalPortsModel::SignalRow AbstractionTransactionalPortsModel::constructSignalCopy(
+    AbstractionTransactionalPortsModel::SignalRow signal)
+{
+    AbstractionTransactionalPortsModel::SignalRow newSignal;
+    newSignal.abstraction_ = signal.abstraction_;
+    newSignal.transactionalPort_ = QSharedPointer<TransactionalPort>(new TransactionalPort());
+
+    return newSignal;
 }
 
 //-----------------------------------------------------------------------------
@@ -655,7 +664,7 @@ void AbstractionTransactionalPortsModel::addSystem(QModelIndexList const& indexe
 
     foreach(AbstractionTransactionalPortsModel::SignalRow signal, targetPorts)
     {
-        AbstractionTransactionalPortsModel::SignalRow newSystemSignal(signal);
+        AbstractionTransactionalPortsModel::SignalRow newSystemSignal = constructSignalCopy(signal);
         newSystemSignal.mode_ = General::SYSTEM;
         newSystemSignal.transactionalPort_->setSystemGroup("");
 
@@ -663,6 +672,7 @@ void AbstractionTransactionalPortsModel::addSystem(QModelIndexList const& indexe
     }
 
     endResetModel();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -679,7 +689,7 @@ void AbstractionTransactionalPortsModel::addAllSystems(QModelIndexList const& in
         QStringList systemGroups = getMissingSystemGroupsForSignal(signal);
         foreach(QString group, systemGroups)
         {
-            AbstractionTransactionalPortsModel::SignalRow newSystemSignal(signal);
+            AbstractionTransactionalPortsModel::SignalRow newSystemSignal = constructSignalCopy(signal);
             newSystemSignal.mode_ = General::SYSTEM;
             newSystemSignal.transactionalPort_->setSystemGroup(group);
 
@@ -688,6 +698,7 @@ void AbstractionTransactionalPortsModel::addAllSystems(QModelIndexList const& in
     }
 
     endResetModel();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

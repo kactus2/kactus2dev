@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor()
 //-----------------------------------------------------------------------------
-AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor(QWidget *parent) :
+AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor(QWidget *parent):
 QWidget(parent),
 portView_(this),
 portProxy_(),

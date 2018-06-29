@@ -14,6 +14,8 @@
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <library/LibraryInterface.h>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
@@ -27,23 +29,21 @@
 //-----------------------------------------------------------------------------
 BusDefGroup::BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent):
 QGroupBox(tr("General (Bus Definition)"), parent),
+library_(libraryHandler),
 busDef_(),
 directConnection_(tr("Allow non-mirrored connections"), this),
 isBroadcast_(tr("Support broadcast"), this),
 isAddressable_(tr("Addressable bus"), this),
 maxMastersEditor_(this),
 maxSlavesEditor_(this),
-systemgroupEditor_(tr("System group names"), this),
+systemGroupEditor_(libraryHandler, this),
 descriptionEditor_(this),
 vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
-extendDisplay_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this))
+extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
 {
-    vlnvDisplay_->setTitle(QStringLiteral("Bus definition VLNV"));
-    extendDisplay_->setTitle(QStringLiteral("Extended bus definition VLNV"));
-    extendDisplay_->setDisabled(true);
-
-    extendDisplay_->setToolTip(QStringLiteral("Extended bus definition is not currently supported in Kactus2"));
-    extendDisplay_->setMandatory(false);
+    vlnvDisplay_->setTitle(QStringLiteral("Bus definition"));
+    extendEditor_->setTitle(QStringLiteral("Extended bus definition"));
+    extendEditor_->setMandatory(false);
 
     QRegularExpression numberExpression(QString("[0-9]*"));
     QRegularExpressionValidator* numberValidator = new QRegularExpressionValidator(numberExpression, this);
@@ -53,8 +53,6 @@ extendDisplay_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this,
     maxMastersEditor_.setPlaceholderText(tr("unbound"));
     maxSlavesEditor_.setPlaceholderText(tr("unbound"));
 
-    systemgroupEditor_.initialize();
-
     setupLayout();
 
 	connect(&maxMastersEditor_, SIGNAL(editingFinished()), this, SLOT(onMastersChanged()), Qt::UniqueConnection);
@@ -63,11 +61,15 @@ extendDisplay_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this,
 	connect(&directConnection_, SIGNAL(toggled(bool)),
         this, SLOT(onDirectConnectionChanged(bool)), Qt::UniqueConnection);
     connect(&isBroadcast_, SIGNAL(toggled(bool)), this, SLOT(onIsBroadcastChanged(bool)), Qt::UniqueConnection);
-	connect(&isAddressable_, SIGNAL(toggled(bool)), this, SLOT(onIsAddressableChanged(bool)), Qt::UniqueConnection);
+	connect(&isAddressable_, SIGNAL(toggled(bool)),
+        this, SLOT(onIsAddressableChanged(bool)), Qt::UniqueConnection);
 
-    connect(&systemgroupEditor_, SIGNAL(contentChanged()), this, SLOT(onSystemNamesChanged()), Qt::UniqueConnection);
+    connect(&systemGroupEditor_, SIGNAL(contentChanged()),
+        this, SLOT(onSystemNamesChanged()), Qt::UniqueConnection);
 
     connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+
+    connect(extendEditor_, SIGNAL(vlnvEdited()), this, SLOT(onExtendChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -77,10 +79,11 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 {
 	busDef_ = busDef;
     vlnvDisplay_->setVLNV(busDef_->getVlnv());
+    extendEditor_->setVLNV(busDef_->getExtends());
 
-    if (busDef->getExtends().isValid())
+    if (busDef_->getExtends().isValid())
     {
-        extendDisplay_->setVLNV(busDef_->getExtends());
+        setupExtendedBus();
     }
 
     directConnection_.setChecked(busDef_->getDirectConnection());
@@ -90,7 +93,7 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
     maxMastersEditor_.setText(busDef_->getMaxMasters());
 	maxSlavesEditor_.setText(busDef_->getMaxSlaves());
 
-    systemgroupEditor_.setItems(busDef_->getSystemGroupNames());
+    systemGroupEditor_.setItems(busDef_);
 
     descriptionEditor_.setPlainText(busDef_->getDescription());
 }
@@ -145,10 +148,19 @@ void BusDefGroup::onSlavesChanged()
 //-----------------------------------------------------------------------------
 void BusDefGroup::onSystemNamesChanged()
 {
-    QStringList systemGroupNames = systemgroupEditor_.items();
-    systemGroupNames.removeDuplicates();
+    QStringList systemGroupNames;
+    for (int i = 0; i < systemGroupEditor_.count(); ++i)
+    {
+        QListWidgetItem* systemItem = systemGroupEditor_.item(i);
+        QString systemName = systemItem->text();
+        if (!systemGroupNames.contains(systemName))
+        {
+            systemGroupNames.append(systemName);
+        }
+    }
 
     busDef_->setSystemGroupNames(systemGroupNames);
+
     emit contentChanged();
 }
 
@@ -159,6 +171,20 @@ void BusDefGroup::onDescriptionChanged()
 {
     busDef_->setDescription(descriptionEditor_.toPlainText());
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: busdefgroup::onExtendChanged()
+//-----------------------------------------------------------------------------
+void BusDefGroup::onExtendChanged()
+{
+    busDef_->setExtends(extendEditor_->getVLNV());
+    setupExtendedBus();
+
+    systemGroupEditor_.setItems(busDef_);
+    onSystemNamesChanged();
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -184,11 +210,16 @@ void BusDefGroup::setupLayout()
     QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionGroup);
     descriptionLayout->addWidget(&descriptionEditor_);
 
+    QGroupBox* systemGroupBox = new QGroupBox(tr("System group names"), this);
+
+    QVBoxLayout* systemGroupLayout = new QVBoxLayout(systemGroupBox);
+    systemGroupLayout->addWidget(&systemGroupEditor_);
+
     QGridLayout* topLayout = new QGridLayout(this);
     topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
-    topLayout->addWidget(extendDisplay_, 0, 1, 1, 1);
+    topLayout->addWidget(extendEditor_, 0, 1, 1, 1);
     topLayout->addWidget(selectionGroup, 1, 0, 1, 1);
-    topLayout->addWidget(&systemgroupEditor_, 1, 1, 1, 1);
+    topLayout->addWidget(systemGroupBox, 1, 1, 1, 1);
     topLayout->addWidget(descriptionGroup, 0, 2, 2, 2);
 
     topLayout->setColumnStretch(0, 25);
@@ -197,4 +228,68 @@ void BusDefGroup::setupLayout()
 
     maxMastersEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
     maxSlavesEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+}
+
+//-----------------------------------------------------------------------------
+// Function: busdefgroup::setupExtendedBus()
+//-----------------------------------------------------------------------------
+void BusDefGroup::setupExtendedBus()
+{
+    QSharedPointer<const BusDefinition> extendedBus = getExtendedBus(busDef_);
+    if (extendedBus)
+    {
+        extendBusDefinition(extendedBus);
+        descriptionEditor_.setPlaceholderText(extendedBus->getDescription());
+        return;
+    }
+
+    removeBusExtension();
+    descriptionEditor_.setPlaceholderText(QString(""));
+}
+
+//-----------------------------------------------------------------------------
+// Function: busdefgroup::getExtendedBus()
+//-----------------------------------------------------------------------------
+QSharedPointer<const BusDefinition> BusDefGroup::getExtendedBus(QSharedPointer<const BusDefinition> busDefinition)
+    const
+{
+    VLNV extendedVLNV = busDefinition->getExtends();
+    if (extendedVLNV.isValid() && extendedVLNV.getType() == VLNV::BUSDEFINITION)
+    {
+        QSharedPointer<const Document> extendedDocument = library_->getModelReadOnly(extendedVLNV);
+        if (extendedDocument)
+        {
+            QSharedPointer<const BusDefinition> extendedBus = extendedDocument.dynamicCast<const BusDefinition>();
+            if (extendedBus)
+            {
+                return extendedBus;
+            }
+        }
+    }
+
+    return QSharedPointer<const BusDefinition>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: busdefgroup::extendBusDefinition()
+//-----------------------------------------------------------------------------
+void BusDefGroup::extendBusDefinition(QSharedPointer<const BusDefinition> extendedBus)
+{
+    directConnection_.setChecked(extendedBus->getDirectConnection());
+    isBroadcast_.setChecked(extendedBus->getBroadcast().toBool());
+    isAddressable_.setChecked(extendedBus->getIsAddressable());
+
+    directConnection_.setDisabled(true);
+    isBroadcast_.setDisabled(true);
+    isAddressable_.setDisabled(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: busdefgroup::removeBusExtension()
+//-----------------------------------------------------------------------------
+void BusDefGroup::removeBusExtension()
+{
+    directConnection_.setDisabled(false);
+    isBroadcast_.setDisabled(false);
+    isAddressable_.setDisabled(false);
 }

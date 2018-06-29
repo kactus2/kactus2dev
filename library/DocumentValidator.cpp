@@ -65,7 +65,8 @@ bool DocumentValidator::validate(QSharedPointer<Document> document)
     }
     else if (documentType == VLNV::BUSDEFINITION)
     {
-        BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+        BusDefinitionValidator validator(
+            library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
         return validator.validate(document.dynamicCast<BusDefinition>());
     } 
     else if (documentType == VLNV::CATALOG)
@@ -151,7 +152,8 @@ void DocumentValidator::changeComponentValidatorParameterFinder(QSharedPointer<C
 void DocumentValidator::findErrorsInBusDefinition(QSharedPointer<BusDefinition> busDefinition,
     QVector<QString>& errorList)
 {
-    BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+    BusDefinitionValidator validator(
+        library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
     validator.findErrorsIn(errorList, busDefinition);
 }
 

@@ -14,7 +14,6 @@
 
 #include <common/widgets/assistedLineEdit/ILineContentMatcher.h>
 
-class LibraryInterface;
 class VLNVDataNode;
 
 //-----------------------------------------------------------------------------
@@ -25,10 +24,8 @@ class VLNVContentMatcher : public ILineContentMatcher
 public:
     /*!
      *	Constructor.
-     *
-     *      @param [in] lh    The library interface.
      */
-    VLNVContentMatcher(LibraryInterface* lh);
+    VLNVContentMatcher();
 
     /*!
      *  Destructor.
@@ -87,9 +84,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The library interface.
-    LibraryInterface* lh_;
 
     //! The data node.
     VLNVDataNode const* node_;

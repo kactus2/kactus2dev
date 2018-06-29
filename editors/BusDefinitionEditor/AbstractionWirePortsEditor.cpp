@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsEditor::AbstractionWirePortsEditor()
 //-----------------------------------------------------------------------------
-AbstractionWirePortsEditor::AbstractionWirePortsEditor(QWidget *parent) :
+AbstractionWirePortsEditor::AbstractionWirePortsEditor(QWidget *parent):
 QWidget(parent),
 portView_(this),
 portProxy_(),

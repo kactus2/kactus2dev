@@ -15,6 +15,7 @@
 #include <QStyledItemDelegate>
 
 class BusDefinition;
+
 //-----------------------------------------------------------------------------
 //! Master delegate for abstraction definition wire and transactional ports.
 //-----------------------------------------------------------------------------
@@ -30,7 +31,7 @@ public:
 	 *      @param [in] parent  The owner of this instance
      */
     AbstractionPortsDelegate(QObject *parent);
-	
+
 	/*!
      *  The destructor.
      */
