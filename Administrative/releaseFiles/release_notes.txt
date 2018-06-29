@@ -8,6 +8,17 @@
               * Changed or Information
 ===============================================================================
 
+29/06/2018 3.6.50
+----------------------------------------------------
+
++ Added editor for AbstractionDefinition transactional ports
++ Added option to extend BusDefinitions
++ Added editor for field reserved-value
++ Added SystemVerilog files to be included in generated Quartus projects
+
+- Fixed an issue where modifying/removing files outside Kactus2 caused the application to crash
+- Fixed an issue where editing AbstractionDefinition port properties affected all modes
+
 12/06/2018 3.6.0
 ----------------------------------------------------
 

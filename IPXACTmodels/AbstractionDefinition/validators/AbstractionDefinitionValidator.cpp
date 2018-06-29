@@ -198,7 +198,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 		return false;
 	}
 
-    QStringList& systemGroups = busDefinition->getSystemGroupNames();
+    QStringList systemGroups = busDefinition->getSystemGroupNames();
 
 	if (wire)
 	{
@@ -304,7 +304,7 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
     QString context = QObject::tr("port %1").arg(port->getLogicalName());
 
     QStringList systemGroupNames;
-    QString busDefinitionIdentifier(":::");
+    QString busDefinitionIdentifier = QStringLiteral(":::");
     if (busDefinition)
     {
         systemGroupNames = busDefinition->getSystemGroupNames();
