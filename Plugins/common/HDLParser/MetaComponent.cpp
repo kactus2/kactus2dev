@@ -166,7 +166,8 @@ void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter
 
         // The start position for the second pass.
         auto startPosition = std::find_if(sortParameters->begin(), sortParameters->end(),
-            [&currentValue](auto referenced) { return currentValue.contains(referenced->getValueId()); });
+            [&currentValue](QSharedPointer<Parameter> referenced) { return currentValue.contains(
+                referenced->getValueId()); });
 
         // If none found, next search starts from the beginning.
         if (startPosition == sortParameters->end())
@@ -175,7 +176,8 @@ void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter
         }
 
         auto firstReferencing = std::find_if(startPosition, sortParameters->end(),
-            [&currentValue](auto referencing) { return referencing->getValue().contains(currentValue); });
+            [&currentValue](QSharedPointer<Parameter> referencing){ return referencing->getValue().contains(
+                currentValue); });
         
         // Move to end of the list, unless referencing parameter is found.
         int target = sortParameters->size();
