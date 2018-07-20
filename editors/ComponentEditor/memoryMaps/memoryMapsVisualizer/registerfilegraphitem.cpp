@@ -88,15 +88,8 @@ quint64 RegisterFileGraphItem::getLastAddress() const
 
 int RegisterFileGraphItem::getBitWidth() const
 {
-    int width = 0;
-    foreach (MemoryVisualizationItem* child, childItems_.values())
-    {
-        if (dynamic_cast<MemoryGapItem*>(child) == 0)
-        {
-            width = qMax(child->getBitWidth(), width);
-        }
-    }
-    return width;
+  MemoryVisualizationItem* parent = static_cast<MemoryVisualizationItem*>(parentItem());
+  return parent->getBitWidth();
 }
 
 unsigned int RegisterFileGraphItem::getAddressUnitSize() const
@@ -110,4 +103,3 @@ bool RegisterFileGraphItem::isPresent() const
 {
     return regFile_->getIsPresent().isEmpty() || parseExpression(regFile_->getIsPresent()) == 1;
 }
-
