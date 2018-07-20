@@ -220,7 +220,9 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
                             return false;
                         }
 
-                        reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+                        if(targetRegister->getIsPresent().isEmpty() or expressionParser_->parseExpression(targetRegister->getIsPresent()).toInt()){
+                          reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+                        }
                     }
 
                     registerNames.append(targetRegister->name());
