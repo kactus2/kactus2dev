@@ -497,7 +497,9 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
                     arg(selectedRegister->name()));
             }
 
-            reservedArea.addArea(field->name(), rangeBegin, rangeEnd);
+            if(field->getIsPresent().isEmpty() || expressionParser_->parseExpression(field->getIsPresent()).toInt()){
+              reservedArea.addArea(field->name(), rangeBegin, rangeEnd);
+            }
 
             if (!field->getTypeIdentifier().isEmpty() && fieldTypeIdentifiers.contains(field->getTypeIdentifier()))
             {

@@ -526,7 +526,7 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                     errors.append(QObject::tr("Register %1 size must not be greater than the containing "
                         "addressBlock %2 width.").arg(targetRegister->name()).arg(addressBlock->name()));
                 }
-                
+
                 if (!hasValidVolatileForRegister(addressBlock, targetRegister))
                 {
                     errors.append(QObject::tr("Volatile value cannot be set to false for addressBlock %1 "
@@ -563,9 +563,11 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                     qint64 registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
                         toLongLong();
 
-                     qint64 registerEnd = registerBegin + registerSize - 1;
+                    qint64 registerEnd = registerBegin + registerSize - 1;
 
-                    reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+                    if(targetRegister->getIsPresent().isEmpty() or expressionParser_->parseExpression(targetRegister->getIsPresent()).toInt()){
+                      reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+                    }
 
                     if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
                     {
