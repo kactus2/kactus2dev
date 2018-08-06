@@ -64,6 +64,9 @@ private slots:
     void testParseMathFunctions();
     void testParseMathFunctions_data();
 
+    void testBitwiseOperations();
+    void testBitwiseOperations_data();
+
     void testParserPerformance();
     void testParserPerformance_data();
 };
@@ -886,6 +889,27 @@ void tst_SystemVerilogExpressionParser::testParseMathFunctions_data()
     QTest::newRow("Exp() of 0 is 1") << "$exp(0)" << "1" << true;
     QTest::newRow("Exp() of 1") << "$exp(1)" << QString::number(qExp(1)) << true;
     QTest::newRow("Exp() of -2") << "$exp(-2)" << QString::number(qExp(-2)) << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testBitwiseOperations()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testBitwiseOperations()
+{
+    testInputs();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testBitwiseOperations_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testBitwiseOperations_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<QString>("expectedResult");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("Negation") << "~4'b001" << "6" << true;
+
 }
 
 //-----------------------------------------------------------------------------

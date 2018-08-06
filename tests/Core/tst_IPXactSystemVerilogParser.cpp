@@ -211,6 +211,8 @@ void tst_IPXactSystemVerilogParser::testExpressionWithParameterReferences_data()
     QTest::newRow("Parameter value plus parameter value") << "one + one" << "2" << true;
     QTest::newRow("Parameter value multiplied") << "4*one" << "4" << true;
 
+    QTest::newRow("Parameter value negated") << "~one" << "-2" << true;
+
     QTest::newRow("Reference to unknown parameter") << "unknown" << "x"  << false;
     QTest::newRow("Parameter value plus unknown parameter value") << "one + unknown" << "x" << false;
 

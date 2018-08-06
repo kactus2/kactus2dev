@@ -28,11 +28,9 @@ namespace
         SystemVerilogSyntax::BOOLEAN_VALUE + "|" +
         SystemVerilogSyntax::STRING_LITERAL);
 
-
-
     const QRegularExpression BINARY_OPERATOR("\\*\\*|[*/%]|[+-]|<<|>>|<=?|>=?|!==?|===?|[&|]{1,2}|[\\^]|[$]pow");
 
-    const QRegularExpression UNARY_OPERATOR("[$]clog2|[$]exp|[$]sqrt");
+    const QRegularExpression UNARY_OPERATOR("[$]clog2|[$]exp|[$]sqrt|~");
 
     const QChar OPEN_PARENTHESIS('(');
     const QChar CLOSE_PARENTHESIS(')');
@@ -356,7 +354,8 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
 
         qreal result = 0;
 
-        if (operation.compare(QLatin1String("**")) == 0 || operation.compare(QLatin1String("$pow")) == 0){
+        if (operation.compare(QLatin1String("**")) == 0 || operation.compare(QLatin1String("$pow")) == 0)
+        {
             if (leftOperand == 0 && rightOperand < 0)
             {
                 return QStringLiteral("x");
@@ -364,10 +363,14 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
 
             result = qPow(leftOperand, rightOperand);
         }
-        else if (operation.compare(QLatin1String("*")) == 0){
+
+        else if (operation.compare(QLatin1String("*")) == 0)
+        {
             result = leftOperand*rightOperand;
         }
-        else if (operation.compare(QLatin1String("/")) == 0){
+
+        else if (operation.compare(QLatin1String("/")) == 0)
+        {
             if (rightOperand == 0)
             {
                 return QStringLiteral("x");
@@ -375,63 +378,94 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
 
             result = leftOperand/rightOperand;
         }
-        else if (operation.compare(QLatin1String("%")) == 0){
-            if (rightOperand == 0 or leftTerm.contains(".") || rightTerm.contains("."))
+
+        else if (operation.compare(QLatin1String("%")) == 0)
+        {
+            if (rightOperand == 0 || leftTerm.contains(".") || rightTerm.contains("."))
             {
                 return QStringLiteral("x");
             }
 
             result = leftTerm.toLongLong() % rightTerm.toLongLong();
         }
-        else if (operation.compare(QLatin1String("+")) == 0){
+
+        else if (operation.compare(QLatin1String("+")) == 0)
+        {
             result = leftOperand + rightOperand;
         }
-        else if (operation.compare(QLatin1String("-")) == 0){
+
+        else if (operation.compare(QLatin1String("-")) == 0)
+        {
             result = leftOperand - rightOperand;
         }
-        else if (operation.compare(QLatin1String("<<")) == 0){
-          if (leftTerm.contains('.') || rightTerm.contains(".")){
-            return QStringLiteral("x");
-          }
-          result = leftTerm.toLongLong() << rightTerm.toLongLong();
 
-        }
-        else if (operation.compare(QLatin1String(">>")) == 0){
-          if (leftTerm.contains('.') || rightTerm.contains(".")){
+        else if (operation.compare(QLatin1String("<<")) == 0)
+        {
+          if (leftTerm.contains('.') || rightTerm.contains("."))
+          {
             return QStringLiteral("x");
           }
+
           result = leftTerm.toLongLong() << rightTerm.toLongLong();
         }
+
+        else if (operation.compare(QLatin1String(">>")) == 0)
+        {
+            if (leftTerm.contains('.') || rightTerm.contains("."))
+            {
+                return QStringLiteral("x");
+            }
+
+          result = leftTerm.toLongLong() << rightTerm.toLongLong();
+        }
+
         else if ((operation.compare(QLatin1String(">")) == 0 && leftOperand > rightOperand) ||
             (operation.compare(QLatin1String("<")) == 0 && leftOperand < rightOperand) ||
             (operation.compare(QLatin1String("==")) == 0 && leftOperand == rightOperand) ||
             (operation.compare(QLatin1String(">=")) == 0 && leftOperand >= rightOperand) ||
             (operation.compare(QLatin1String("<=")) == 0 && leftOperand <= rightOperand) ||
-            (operation.compare(QLatin1String("!=")) == 0 && leftOperand != rightOperand)){
+            (operation.compare(QLatin1String("!=")) == 0 && leftOperand != rightOperand))
+        {
             return QStringLiteral("1");
         }
-        else if (operation.compare(QLatin1String("||"))==0){
-          result = leftTerm.toLongLong() || rightTerm.toLongLong();
+
+        else if (operation.compare(QLatin1String("||")) == 0)
+        {
+            result = leftTerm.toLongLong() || rightTerm.toLongLong();
         }
-        else if (operation.compare(QLatin1String("&&"))==0){
-          result = leftTerm.toLongLong() && rightTerm.toLongLong();
+
+        else if (operation.compare(QLatin1String("&&")) == 0)
+        {
+            result = leftTerm.toLongLong() && rightTerm.toLongLong();
         }
-        else if (operation.compare(QLatin1String("|"))==0){
-          if (leftTerm.contains('.') || rightTerm.contains(".")){
-            return QStringLiteral("x");
+
+        else if (operation.compare(QLatin1String("|")) == 0)
+        {
+          if (leftTerm.contains('.') || rightTerm.contains("."))
+          {
+                return QStringLiteral("x");
           }
+
           result = leftTerm.toLongLong() | rightTerm.toLongLong();
         }
-        else if (operation.compare(QLatin1String("^"))==0){
-          if (leftTerm.contains('.') || rightTerm.contains(".")){
-            return QStringLiteral("x");
+
+        else if (operation.compare(QLatin1String("^")) == 0)
+        {
+          if (leftTerm.contains('.') || rightTerm.contains("."))
+          {
+                return QStringLiteral("x");
           }
+          
           result = leftTerm.toLongLong() ^ rightTerm.toLongLong();
         }
-        else if (operation.compare(QLatin1String("&"))==0){
-          if (leftTerm.contains('.') || rightTerm.contains(".")){
-            return QStringLiteral("x");
+
+        else if (operation.compare(QLatin1String("&"))==0)
+        {
+          if (leftTerm.contains('.') || rightTerm.contains("."))
+          {
+                return QStringLiteral("x");
           }
+          
           result = leftTerm.toLongLong() & rightTerm.toLongLong();
         }
 
@@ -447,6 +481,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
                 qMax(getDecimalPrecision(leftTerm), getDecimalPrecision(rightTerm)));
         }
     }
+
     else if (isStringLiteral(leftTerm) && isStringLiteral(rightTerm))
     {
         if ((operation.compare(QLatin1String("==")) == 0 && leftTerm.compare(rightTerm) == 0) ||
@@ -459,10 +494,8 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
             return QStringLiteral("0");
         }
     }
-    else
-    {
-        return QStringLiteral("x");
-    }
+
+    return QStringLiteral("x");
 }
 
 //-----------------------------------------------------------------------------
@@ -481,6 +514,10 @@ QString SystemVerilogExpressionParser::solveUnary(QString const& operation, QStr
     else if (operation.compare(QLatin1String("$sqrt")) == 0)
     {
         return solveSqrt(term);
+    }
+    else if (operation.compare(QLatin1String("~")) == 0)
+    {
+        return QString::number(~term.toLongLong());
     }
 
     return QStringLiteral("x");
@@ -601,6 +638,7 @@ unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString oper) con
        {"*"      , 10},
        {"/"      , 10},
        {"**"     , 11},
+       { "~"     , 12},
        {"$clog2" , 12},
        {"$pow"   , 12},
        {"("      , 13},
