@@ -148,6 +148,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_LinuxDeviceTreeDialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VHDLGenerator_global.h">
@@ -217,6 +220,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

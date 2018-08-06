@@ -56,6 +56,20 @@ public:
 	 */
 	void write(QTextStream& stream) const;
 
+    /*!
+     *  Write the generic declarations of the component to the text stream.
+     *
+     *      @param [in] stream  The text stream to write into.
+     */
+    void writeGenerics(QTextStream& stream) const;
+    
+    /*!
+     *  Write the port declarations of the component to the text stream.
+     *
+     *      @param [in] stream  The text stream to write into.
+     */
+    void writePorts(QTextStream& stream) const;
+
 	/*!
      *  Get the type name of the vhdl component declaration.
 	 *

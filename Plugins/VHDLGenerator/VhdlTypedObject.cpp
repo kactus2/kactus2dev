@@ -62,18 +62,3 @@ void VhdlTypedObject::setDefaultValue(const QString& defaultValue)
 {
     defaultValue_ = defaultValue;
 }
-
-/*
-//-----------------------------------------------------------------------------
-// Function: vhdlobject::getReplacedName()
-//-----------------------------------------------------------------------------
-QString VhdlObject::getReplacedName() const
-{
-    QString replacedName = name_;
-    replacedName.replace(":","_");
-    replacedName.replace(".","_");
-    replacedName.replace("-","_");
-
-    return replacedName;
-}
-*/

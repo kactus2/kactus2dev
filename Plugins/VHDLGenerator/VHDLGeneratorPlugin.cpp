@@ -297,7 +297,7 @@ void VHDLGeneratorPlugin::generate(QSharedPointer<Component> component, QString 
         QString basePath = utility_->getLibraryInterface()->getPath(component->getVlnv());
         QString relativePath = General::getRelativePath(basePath, filePath);
 
-        generator.addRTLView(viewSettings->getFileSetName(), filePath);
+        generator.addRTLView(viewSettings->getFileSetName(), relativePath);
         utility_->getLibraryInterface()->writeModelToFile(component);
     }
 

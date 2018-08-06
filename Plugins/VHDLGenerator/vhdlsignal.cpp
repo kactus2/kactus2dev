@@ -19,7 +19,7 @@ VhdlTypedObject(name, signalType, defaultValue, description),
 left_(leftBound),
 right_(rightBound) {
 
-	if (type().isEmpty()) {
+	if (signalType.isEmpty()) {
 		setType(VhdlGeneral::useDefaultType(left_, right_));
 	}	
 	Q_ASSERT(!type().isEmpty());

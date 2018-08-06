@@ -14,10 +14,13 @@
 #include "vhdlcomponentdeclaration.h"
 #include "vhdlgeneral.h"
 
+#include <IPXACTmodels/utilities/ComponentSearch.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -51,45 +54,19 @@ portMap_()
 	QSharedPointer<Component> component = compDeclaration_->componentModel();
 	Q_ASSERT(component);
 
-	// Look up the view instantiation.
-	QSharedPointer<View> view;
-
-	foreach ( QSharedPointer<View> currentView, *component->getViews() )
-	{
-		if ( currentView->name() == viewName )
-		{
-			view = currentView;
-			break;
-		}
-	}
-
 	// Look up the component instantiation.
-	QSharedPointer<ComponentInstantiation> cimp;
-
-	if ( view )
-	{
-		foreach ( QSharedPointer<ComponentInstantiation> currentInsta, *component->getComponentInstantiations() )
-		{
-			if ( currentInsta->name() == view->getComponentInstantiationRef() )
-			{
-				cimp = currentInsta;
-				break;
-			}
-		}
-	}
+	QSharedPointer<ComponentInstantiation> instantiation =
+        ComponentSearch::findComponentInstantiation(component, viewName);
  	
-	if ( cimp )
+	if (instantiation)
 	{
-		// set the module name that is used
-		componentModuleName_ = cimp->getModuleName();
+		componentModuleName_ = instantiation->getModuleName();
 		compDeclaration_->setEntityName(componentModuleName_);
-
-		// get the architecture name for this instance
-		architecture_ = cimp->getArchitectureName();
+		architecture_ = instantiation->getArchitectureName();
 	}
 
-	// get the default values of the in and inout ports
-	foreach ( QSharedPointer<Port> port, *component->getPorts() )
+	// Get the default values of the in and inout ports.
+	for (QSharedPointer<Port> port : *component->getPorts())
 	{
 		defaultPortConnections_.insert( port->name(), port->getWire()->getDefaultDriverValue() );
 	}
@@ -99,45 +76,46 @@ portMap_()
 	for (QMap<QString, QString>::iterator i = defaultPortConnections_.begin();
 		i != defaultPortConnections_.end(); ++i)
 	{
-		// get the VLNVs of the abstraction definitions for the port
-		QSharedPointer<QList<QSharedPointer<AbstractionType> > > absTypes;
+		// Get the VLNVs of the abstraction definition for the port
+		QSharedPointer<AbstractionType> absType;
         QSharedPointer<BusInterface> portInterface(component->getInterfaceForPort(i.key()));
         if (!portInterface.isNull())
         {
-            absTypes = portInterface->getAbstractionTypes();
+            absType = portInterface->getAbstractionContainingView(viewName);
         }        
 
 		// if the port is not in any interface then use the ports own default value.
-		if (!absTypes || absTypes->empty())
+		if (absType.isNull())
 		{
 			tempDefaults.insert(i.key(), i.value());
 		}
         else
         {
-            // try to find the abstraction definition and use it's default value if possible
-            foreach (QSharedPointer<AbstractionType> abstraction, *absTypes)
+            // if the abs def does not exist in the library
+            VLNV abstractionVLNV = *absType->getAbstractionRef();
+            if (handler->getDocumentType(abstractionVLNV) != VLNV::ABSTRACTIONDEFINITION)
             {
-                // if the abs def does not exist in the library
-                if (handler->getDocumentType(*abstraction->getAbstractionRef()) != VLNV::ABSTRACTIONDEFINITION)
-                {
-                    if (!tempDefaults.contains(i.key()))
-                    {
-                        tempDefaults.insert(i.key(), i.value());
-                    }
-
-                    continue;
-                }
-
-                QSharedPointer<Document> libComp = handler->getModel(*abstraction->getAbstractionRef());
-                QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
-
                 if (!tempDefaults.contains(i.key()))
+                {
+                    tempDefaults.insert(i.key(), i.value());
+                }                
+            }
+            else
+            {                
+                auto absDef = handler->getModelReadOnly<AbstractionDefinition>(abstractionVLNV);
+                auto absPort = absDef->getPort(i.key());
+                if (absPort.isNull() == false && absPort->getDefaultValue().isEmpty() == false)
+                {
+                    tempDefaults.insert(i.key(), absPort->getDefaultValue());
+                }
+                else if (!tempDefaults.contains(i.key()))
                 {
                     tempDefaults.insert(i.key(), i.value());
                 }
             }
         }
 	}
+
 	defaultPortConnections_ = tempDefaults;
 }
 
@@ -201,7 +179,6 @@ void VhdlComponentInstance::write( QTextStream& stream ) const
 			i.key().write(stream);
 			stream << " => ";
 			stream << i.value().toString();
-			//i.value().write(stream);
 
 			// if this is not the last port map to print, add comma (,)
 			if (i + 1 != portMap_.end())
@@ -238,17 +215,9 @@ void VhdlComponentInstance::addPortMap( const VhdlConnectionEndPoint& endpoint, 
 //-----------------------------------------------------------------------------
 // Function: vhdlcomponentinstance::addPortMap()
 //-----------------------------------------------------------------------------
-void VhdlComponentInstance::addPortMap( const QString& portName, const QString& portLeft, const QString& portRight,
-    const QString& portType, const QString& signalName, const QString& signalLeft, const QString& signalRight,
-    const QString& signalType)
+void VhdlComponentInstance::addPortMap(VhdlPortMap const& instancePort, VhdlPortMap const& signalMapping)
 {
-	// create a map for the port of this instance
-	VhdlPortMap instancePort(portName, portLeft, portRight, portType);
-
-	// create a map for the defaultValue/top port that is connected
-	VhdlPortMap signalMapping(signalName, signalLeft, signalRight, signalType);
-
-	addMapping(instancePort, signalMapping);
+    addMapping(instancePort, signalMapping);
 }
 
 //-----------------------------------------------------------------------------

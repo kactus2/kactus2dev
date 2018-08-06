@@ -31,6 +31,9 @@ namespace ComponentSearch
     VLNV findDesignConfigurationReference(QSharedPointer<Component> component, QSharedPointer<View> view);
 
     QSharedPointer<View> findView(QSharedPointer<Component> component, QString const& viewName);
+
+    QSharedPointer<ComponentInstantiation> findComponentInstantiation(QSharedPointer<Component> component,
+        QString const& viewName);
 };
 
 //-----------------------------------------------------------------------------

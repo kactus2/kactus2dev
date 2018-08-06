@@ -132,7 +132,7 @@ public:
      *
      *      @return The port with the given name.
      */
-    QSharedPointer<PortAbstraction> getPort(QString const& portName);
+    QSharedPointer<PortAbstraction> getPort(QString const& portName) const;
 
     /*!
      *  Gets the logical ports in the abstraction description.

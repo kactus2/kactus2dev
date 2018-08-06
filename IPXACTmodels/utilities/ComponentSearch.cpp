@@ -68,3 +68,25 @@ QSharedPointer<View> ComponentSearch::findView(QSharedPointer<Component> compone
 {
     return Search::findByName(viewName, *component->getViews());
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentSearch::findComponentInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstantiation> ComponentSearch::findComponentInstantiation(
+    QSharedPointer<Component> component, QString const& viewName)
+{
+    QSharedPointer<View> view = findView(component, viewName);
+
+    if (view)
+    {
+        foreach(QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
+        {
+            if (instantiation->name() == view->getComponentInstantiationRef())
+            {
+                return instantiation;
+            }
+        }
+    }
+
+    return QSharedPointer<ComponentInstantiation>();
+}

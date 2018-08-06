@@ -84,92 +84,108 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const
 	// write the generic declarations
 	if (!generics_.isEmpty())
     {
-		stream << "  "<< "  "  << "generic (" << endl;
-        for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin();
-            i != generics_.end(); ++i)
-        {
-			stream << "  " << "  " << "  " ;
-			i.value()->write(stream);
-
-			// if this is not the last generic to write
-			if (i + 1 != generics_.end())
-            {
-				stream << ";";
-			}
-
-			if (!i.value()->description().isEmpty())
-            {
-				stream << " ";
-				VhdlGeneral::writeDescription(i.value()->description(), stream);
-			}
-			else
-            {
-				stream << endl;
-			}
-		}
-		stream << "  " << "  " << ");" << endl;
+        writeGenerics(stream);
 	}
 
 	// write the port declarations
 	if (!ports_.isEmpty() && VhdlPort::hasRealPorts(ports_))
     {
-		stream << "  " << "  " << "port (" << endl;
-		QString previousInterface;
-		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin();
-            i != ports_.end(); ++i)
-        {
-			// if the port is first in the interface, then introduce the interface
-			if (i.key().interface() != previousInterface)
-            {
-				const QString interfaceName = i.key().interface();
-
-				stream << endl << "  " << "  " << "  " << "-- ";
-
-				if (interfaceName == QString("none"))
-                {
-					stream << "These ports are not in any interface" << endl;
-				}
-				else if (interfaceName == QString("several"))
-                {
-					stream << "There ports are contained in many interfaces" << endl;
-				}
-				else
-                {
-                    stream << "Interface: " << interfaceName << endl;
-					const QString description = component_->getBusInterface(
-						interfaceName)->description();
-					if (!description.isEmpty())
-                    {
-						VhdlGeneral::writeDescription(description, stream, QString("      "));
-					}
-				}
-				previousInterface = interfaceName;
-			}
-			
-			stream << "  " << "  " << "  "; //3 indents
-			i.value()->write(stream); // print the actual port definition
-
-
-			// if this is not the last port to write
-			if (i + 1 != ports_.end())
-            {
-				stream << ";";
-			}
-
-			if (!i.value()->description().isEmpty())
-            {
-				stream << " ";
-				VhdlGeneral::writeDescription(i.value()->description(), stream);
-			}
-			else
-            {
-				stream << endl;
-			}
-		}
-		stream << "    );" << endl;
+        writePorts(stream);
 	}
 
 	stream << "  end component;" << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: vhdlcomponentdeclaration::writeGenerics()
+//-----------------------------------------------------------------------------
+void VhdlComponentDeclaration::writeGenerics(QTextStream& stream) const
+{
+    stream << "  " << "  " << "generic (" << endl;
+    for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin();
+        i != generics_.end(); ++i)
+    {
+        stream << "  " << "  " << "  ";
+        i.value()->write(stream);
+
+        // if this is not the last generic to write
+        if (i + 1 != generics_.end())
+        {
+            stream << ";";
+        }
+
+        if (!i.value()->description().isEmpty())
+        {
+            stream << " ";
+            VhdlGeneral::writeDescription(i.value()->description(), stream);
+        }
+        else
+        {
+            stream << endl;
+        }
+    }
+    stream << "  " << "  " << ");" << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: vhdlcomponentdeclaration::writeGenerics()
+//-----------------------------------------------------------------------------
+void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
+{
+    stream << "  " << "  " << "port (" << endl;
+    QString previousInterface;
+    for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin();
+        i != ports_.end(); ++i)
+    {
+        // if the port is first in the interface, then introduce the interface
+        if (i.key().interface() != previousInterface)
+        {
+            const QString interfaceName = i.key().interface();
+
+            stream << endl << "  " << "  " << "  " << "-- ";
+
+            if (interfaceName == QString("none"))
+            {
+                stream << "These ports are not in any interface" << endl;
+            }
+            else if (interfaceName == QString("several"))
+            {
+                stream << "There ports are contained in many interfaces" << endl;
+            }
+            else
+            {
+                stream << "Interface: " << interfaceName << endl;
+                const QString description = component_->getBusInterface(
+                    interfaceName)->description();
+                if (!description.isEmpty())
+                {
+                    VhdlGeneral::writeDescription(description, stream, QString("      "));
+                }
+            }
+            previousInterface = interfaceName;
+        }
+
+        stream << "  " << "  " << "  "; //3 indents
+        i.value()->write(stream); // print the actual port definition
+
+
+                                  // if this is not the last port to write
+        if (i + 1 != ports_.end())
+        {
+            stream << ";";
+        }
+
+        if (!i.value()->description().isEmpty())
+        {
+            stream << " ";
+            VhdlGeneral::writeDescription(i.value()->description(), stream);
+        }
+        else
+        {
+            stream << endl;
+        }
+    }
+    stream << "    );" << endl;
 }
 
 //-----------------------------------------------------------------------------

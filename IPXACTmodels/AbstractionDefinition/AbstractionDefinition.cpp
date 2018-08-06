@@ -247,11 +247,11 @@ DirectionTypes::Direction AbstractionDefinition::getPortDirection(QString const&
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::getPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& portName)
+QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& portName) const
 {
     if (logicalPorts_)
     {
-        foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+        for (QSharedPointer<PortAbstraction> port : *logicalPorts_)
         {
             if (port->getLogicalName() == portName)
             {

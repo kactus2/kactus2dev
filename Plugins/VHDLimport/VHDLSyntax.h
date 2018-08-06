@@ -20,7 +20,7 @@ namespace VHDLSyntax
     const QString SPACE = "[ \\t]*";    
 
     //! Platform-independent endline.
-    const QString ENDLINE = "(\\r\\n?|\\n\\r?)";
+    const QString ENDLINE = "(?:\\r\\n?|\\n\\r?)";
 
     //! VHDL comment.
     const QString COMMENT = "[-][-]" + SPACE + "([^\\r\\n]*)(?=" + ENDLINE + "|$)";
@@ -54,7 +54,7 @@ namespace VHDLSyntax
      *  If there is a comment on the same line, it will be captured to the description by VhdlParser.
      *  Additional comments may follow the last declaration before the end of the string.
      */
-    const QString DECLARATION_END = "(?:\\s*[;]" + SPACE + "(?:" + COMMENT + "))|"
+    const QString DECLARATION_END = "(?:\\s*[;]" + SPACE + "(" + COMMENT + "))|"
                                     "(?:(?=\\s*[;]))|"
                                     "(?:" + SPACE + "(?:" + COMMENT + ")?(?=(?:\\s*(?:" + COMMENT + ")*\\s*)*$))";
     
