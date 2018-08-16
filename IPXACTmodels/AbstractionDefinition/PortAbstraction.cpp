@@ -182,9 +182,9 @@ QSharedPointer<TransactionalAbstraction> PortAbstraction::getTransactional() con
 //-----------------------------------------------------------------------------
 QString PortAbstraction::getDefaultValue() const
 {
-	if (wire_.isNull())
+	if (hasWire() == false)
     {
-		return QStringLiteral("");
+		return QString();
     }
 
 	return wire_->getDefaultValue();
@@ -195,7 +195,7 @@ QString PortAbstraction::getDefaultValue() const
 //-----------------------------------------------------------------------------
 void PortAbstraction::setDefaultValue(QString const& defaultValue)
 {
-    if (wire_.isNull())
+    if (hasWire() == false)
     {
         wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction());
     }
@@ -208,11 +208,11 @@ void PortAbstraction::setDefaultValue(QString const& defaultValue)
 //-----------------------------------------------------------------------------
 Qualifier PortAbstraction::getQualifier() const
 {
-    if (!wire_.isNull())
+    if (hasWire())
     {
         return wire_->getQualifier();
     }
-    else if (!transactional_.isNull())
+    else if (hasTransactional())
     {
          return transactional_->getQualifier();
     }
@@ -227,7 +227,7 @@ Qualifier PortAbstraction::getQualifier() const
 //-----------------------------------------------------------------------------
 void PortAbstraction::setRequiresDriver(bool requiresDriver)
 {
-    if (wire_.isNull())
+    if (hasWire() == false)
     {
         wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction());
     }
@@ -240,7 +240,7 @@ void PortAbstraction::setRequiresDriver(bool requiresDriver)
 //-----------------------------------------------------------------------------
 bool PortAbstraction::requiresDriver() const
 {
-    if (wire_.isNull())
+    if (hasWire() == false)
     {
         return false;
     }
@@ -289,7 +289,7 @@ bool PortAbstraction::hasMode(General::InterfaceMode mode, QString const& system
     if (hasWire())
     {
         return wire_->hasMode(mode, systemGroup);
-    }
+    }    
     else
     {
         return false;

@@ -201,7 +201,7 @@ General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceM
 
 QString General::interfaceMode2Str(const General::InterfaceMode mode)
 {
-	return General::INTERFACE_MODE_NAMES[mode];
+ 	return General::INTERFACE_MODE_NAMES[mode];
 }
 
 //-----------------------------------------------------------------------------

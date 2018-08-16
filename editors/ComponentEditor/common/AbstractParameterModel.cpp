@@ -414,13 +414,16 @@ QString AbstractParameterModel::evaluateValueFor(QSharedPointer<Parameter> param
 //-----------------------------------------------------------------------------
 QSharedPointer<Choice> AbstractParameterModel::findChoice(QString const& choiceName) const
 {
-    foreach (QSharedPointer<Choice> choice, *choices_)
+    if (choices_)
     {
-        if (choice->name() == choiceName)
+        foreach(QSharedPointer<Choice> choice, *choices_)
         {
-            return choice;
+            if (choice->name() == choiceName)
+            {
+                return choice;
+            }
         }
-    }	
+    }
 
     return QSharedPointer<Choice>(new Choice());
 }
