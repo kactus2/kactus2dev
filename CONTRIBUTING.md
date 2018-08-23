@@ -1,5 +1,5 @@
 # Reporting bugs and requesting new features
-Issues and feature requests should be reported at Kactus2 project management site: https://kactus2.cs.tut.fi. 
+Issues and feature requests should be reported at Kactus2 Github issue tracker: https://github.com/kactus2/kactus2dev/issues.
 
 ## Guidelines:
 - Before submitting a new issue, please check the list of current issues, if the issue is already reported. If so, 
@@ -12,8 +12,7 @@ you are welcome to add additional details by commenting on the existing issue.
 Small changes to sources may be accepted through pull requests. Please provide clear description of the changes in the pull request.
 
 # Contributing to the Kactus2 project
-If you want to contribute to Kactus2, you should see the wiki at the project management site (link above). 
-It has guides on essentials like building with Visual Studio, plugin development and code style.
+If you want to contribute to Kactus2, you should first see the wiki for guides on essentials like plugin development and code style.
 
 Please note that contributions to Kactus2 core, the IP-XACTmodels library, and the plugins provided by TUT will not be 
 included in a release unless we accept them and you agree to transfer the copyrights of the changes to TUT.
