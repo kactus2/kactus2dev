@@ -24,7 +24,7 @@ class VERILOGGENERATORPLUGIN_EXPORT VerilogWireWriter : public Writer
 public:
 
     //! The constructor.
-    VerilogWireWriter(QString name, QPair<QString, QString> bounds);
+    VerilogWireWriter(QString name, QPair<QString, QString> bounds, QPair<QString, QString> array);
 
 	//! The destructor.
 	virtual ~VerilogWireWriter();
@@ -54,11 +54,12 @@ private:
      *
      *      @return The formatted size.
      */
-    QString formattedSize() const;
+    QString formattedSize(QPair<QString, QString> const& bounds) const;
 
     //! The wire.
     QString name_;
     QPair<QString, QString> bounds_;
+    QPair<QString, QString> array_;
 };
 
 #endif // VERILOGWIREWRITER_H

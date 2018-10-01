@@ -413,14 +413,14 @@ void tst_VerilogWriterFactory::testHierarchicalConnections()
         "    wire        instance1_full;\n"
         "\n"
         "    // Assignments for the ports of the encompassing component:\n"
-        "    assign data_wire[7:0] = data_to_instance[7:0];\n"
+        "    assign data_wire = data_to_instance;\n"
         "    assign enable_wire = enable_to_instance;\n"
         "    assign full_from_instance = full_wire;\n"
         "    assign clk_wire = top_clk;\n"
         "\n"
         "    // instance1 assignments:\n"
         "    assign instance1_clk = clk_wire;\n"
-        "    assign instance1_data_in[7:0] = data_wire[7:0];\n"
+        "    assign instance1_data_in = data_wire;\n"
         "    assign instance1_enable = enable_wire;\n"
         "    assign full_wire = instance1_full;\n"
         "\n"
@@ -488,12 +488,12 @@ void tst_VerilogWriterFactory::testInstanceSlicedHierarchicalConnections()
     verifyOutputContains("wire [3:0]  instance1_odata1;");
     verifyOutputContains("wire [3:0]  instance1_odata2");
 
-    verifyOutputContains("assign data_from_instance[7:0] = odata_wire[7:0];");
-    verifyOutputContains("assign idata_wire[7:0] = data_to_instance[7:0];");
+    verifyOutputContains("assign data_from_instance = odata_wire;");
+    verifyOutputContains("assign idata_wire = data_to_instance;");
 
-    verifyOutputContains("assign instance1_idata1[3:0] = idata_wire[3:0];");
+    verifyOutputContains("assign instance1_idata1 = idata_wire[3:0];");
     verifyOutputContains("assign instance1_idata2[3:0] = idata_wire[7:4];");
-    verifyOutputContains("assign odata_wire[3:0] = instance1_odata1[3:0];");
+    verifyOutputContains("assign odata_wire[3:0] = instance1_odata1;");
     verifyOutputContains("assign odata_wire[7:4] = instance1_odata2[3:0];");
 
     verifyOutputContains(
@@ -557,13 +557,13 @@ void tst_VerilogWriterFactory::testTopSlicedHierarchicalConnections()
     verifyOutputContains("wire [7:0]  instance1_idata;");
     verifyOutputContains("wire [7:0]  instance1_odata;");
 
-    verifyOutputContains("assign data_from_instance1[3:0] = odata_wire[3:0];");
+    verifyOutputContains("assign data_from_instance1 = odata_wire[3:0];");
     verifyOutputContains("assign data_from_instance2[3:0] = odata_wire[7:4];");
-    verifyOutputContains("assign idata_wire[3:0] = data_to_instance1[3:0];");
+    verifyOutputContains("assign idata_wire[3:0] = data_to_instance1;");
     verifyOutputContains("assign idata_wire[7:4] = data_to_instance2[3:0];");
 
-    verifyOutputContains("assign instance1_idata[7:0] = idata_wire[7:0];");
-    verifyOutputContains("assign odata_wire[7:0] = instance1_odata[7:0];");
+    verifyOutputContains("assign instance1_idata = idata_wire;");
+    verifyOutputContains("assign odata_wire = instance1_odata;");
 
     verifyOutputContains(
         "    TestInstance instance1(\n"
@@ -742,9 +742,9 @@ void tst_VerilogWriterFactory::testMasterToSlaveInterconnection()
     verifyOutputContains("wire [7:0]  sender_data_out;");
     verifyOutputContains("wire        sender_enable_out;");
 
-    verifyOutputContains("assign receiver_data_in[7:0] = sender_to_receiver_DATA[7:0];");
+    verifyOutputContains("assign receiver_data_in = sender_to_receiver_DATA;");
     verifyOutputContains("assign receiver_enable_in = sender_to_receiver_ENABLE;");
-    verifyOutputContains("assign sender_to_receiver_DATA[7:0] = sender_data_out[7:0];");
+    verifyOutputContains("assign sender_to_receiver_DATA = sender_data_out;");
     verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
 
     verifyOutputContains(
@@ -895,11 +895,11 @@ void tst_VerilogWriterFactory::testLogicalSlicedMasterToSlaveInterconnection()
     verifyOutputContains("wire [7:0]  sender_data_out;");
     verifyOutputContains("wire        sender_enable_out;");
 
-    verifyOutputContains("assign receiver_data_in[3:0] = sender_to_receiver_DATA1[3:0];");
-    verifyOutputContains("assign receiver_data_in[7:4] = sender_to_receiver_DATA2[3:0];");
+    verifyOutputContains("assign receiver_data_in[3:0] = sender_to_receiver_DATA1;");
+    verifyOutputContains("assign receiver_data_in[7:4] = sender_to_receiver_DATA2;");
     verifyOutputContains("assign receiver_enable_in = sender_to_receiver_ENABLE;");
-    verifyOutputContains("assign sender_to_receiver_DATA1[3:0] = sender_data_out[3:0];");
-    verifyOutputContains("assign sender_to_receiver_DATA2[3:0] = sender_data_out[7:4];");
+    verifyOutputContains("assign sender_to_receiver_DATA1 = sender_data_out[3:0];");
+    verifyOutputContains("assign sender_to_receiver_DATA2 = sender_data_out[7:4];");
     verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
 
     verifyOutputContains(
@@ -955,10 +955,10 @@ void tst_VerilogWriterFactory::testPortSlicedMasterToSlaveInterconnection()
     verifyOutputContains("wire        sender_enable_out;");
 
     verifyOutputContains("assign receiver_data_in[3:0] = sender_to_receiver_DATA[7:4];");
-    verifyOutputContains("assign receiver_data_in2[3:0] = sender_to_receiver_DATA[3:0];");
+    verifyOutputContains("assign receiver_data_in2 = sender_to_receiver_DATA[3:0];");
     verifyOutputContains("assign receiver_enable_in = sender_to_receiver_ENABLE;");
     verifyOutputContains("assign sender_to_receiver_DATA[7:4] = sender_data_out[3:0];");
-    verifyOutputContains("assign sender_to_receiver_DATA[3:0] = sender_data_out2[3:0];");
+    verifyOutputContains("assign sender_to_receiver_DATA[3:0] = sender_data_out2;");
     verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
 
     verifyOutputContains(
@@ -1051,11 +1051,11 @@ void tst_VerilogWriterFactory::testMasterToMultipleSlavesInterconnections()
     verifyOutputContains("wire [7:0]  sender_data_out;");
     verifyOutputContains("wire        sender_enable_out;");
 
-    verifyOutputContains("assign receiver1_data_in[7:0] = sender_to_receiver_DATA[7:0];");
+    verifyOutputContains("assign receiver1_data_in = sender_to_receiver_DATA;");
     verifyOutputContains("assign receiver1_enable_in = sender_to_receiver_ENABLE;");
-    verifyOutputContains("assign receiver2_data_in[7:0] = sender_to_receiver_DATA[7:0];");
+    verifyOutputContains("assign receiver2_data_in = sender_to_receiver_DATA;");
     verifyOutputContains("assign receiver2_enable_in = sender_to_receiver_ENABLE;");
-    verifyOutputContains("assign sender_to_receiver_DATA[7:0] = sender_data_out[7:0];");
+    verifyOutputContains("assign sender_to_receiver_DATA = sender_data_out;");
     verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
 
     verifyOutputContains(
@@ -1109,11 +1109,11 @@ void tst_VerilogWriterFactory::testAdhocConnectionBetweenComponentInstances()
     verifyOutputContains("wire [7:0]  sender_data_out;");
     verifyOutputContains("wire        sender_enable_out;");
 
-    verifyOutputContains("assign receiver1_data_in[7:0] = dataAdHoc[7:0];");
+    verifyOutputContains("assign receiver1_data_in = dataAdHoc;");
     verifyOutputContains("assign receiver1_enable_in = enableAdHoc;");
-    verifyOutputContains("assign receiver2_data_in[7:0] = dataAdHoc[7:0];");
+    verifyOutputContains("assign receiver2_data_in = dataAdHoc;");
     verifyOutputContains("assign receiver2_enable_in = enableAdHoc;");
-    verifyOutputContains("assign dataAdHoc[7:0] = sender_data_out[7:0];");
+    verifyOutputContains("assign dataAdHoc = sender_data_out;");
     verifyOutputContains("assign enableAdHoc = sender_enable_out;");
 
     verifyOutputContains(
@@ -1162,10 +1162,10 @@ void tst_VerilogWriterFactory::testPartSelectedAdhocConnectionBetweenComponentIn
     verifyOutputContains("wire [7:0]  receiver2_data_in;");
     verifyOutputContains("wire [7:0]  sender_data_out;");
 
-    verifyOutputContains("assign receiver1_data_in[3:0] = dataAdHoc1[3:0];");
-    verifyOutputContains("assign receiver2_data_in[3:0] = dataAdHoc2[3:0];");
-    verifyOutputContains("assign dataAdHoc1[3:0] = sender_data_out[3:0];");
-    verifyOutputContains("assign dataAdHoc2[3:0] = sender_data_out[7:4];");
+    verifyOutputContains("assign receiver1_data_in[3:0] = dataAdHoc1;");
+    verifyOutputContains("assign receiver2_data_in[3:0] = dataAdHoc2;");
+    verifyOutputContains("assign dataAdHoc1 = sender_data_out[3:0];");
+    verifyOutputContains("assign dataAdHoc2 = sender_data_out[7:4];");
 
     verifyOutputContains(
         "    TestReceiver receiver1(\n"
@@ -1289,7 +1289,7 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
         "module TestComponent();\n"
         "\n"
         "    // tieOffer port wires:\n"
-        "    wire [-1:0] tieOffer_n/aTieOff;\n"
+        "    wire [-1:0]  tieOffer_n/aTieOff;\n"
         "    wire [9:0]  tieOffer_numberedTieOff;\n"
         "    wire [3:0]  tieOffer_oneTieOff;\n"
         "    wire [4:0]  tieOffer_slicedTieOff;\n"
@@ -1372,10 +1372,10 @@ void tst_VerilogWriterFactory::testHierarchicalAdhocConnection()
     verifyOutputContains("wire [7:0]  sender_data_out;");
     verifyOutputContains("wire        sender_enable_out;");
 
-    verifyOutputContains("assign data_from_sender[7:0] = dataAdHoc[7:0];");
+    verifyOutputContains("assign data_from_sender = dataAdHoc;");
     verifyOutputContains("assign enable_from_sender = enableAdHoc;");
 
-    verifyOutputContains("assign dataAdHoc[7:0] = sender_data_out[7:0];");
+    verifyOutputContains("assign dataAdHoc = sender_data_out;");
     verifyOutputContains("assign enableAdHoc = sender_enable_out;");
 
     verifyOutputContains(

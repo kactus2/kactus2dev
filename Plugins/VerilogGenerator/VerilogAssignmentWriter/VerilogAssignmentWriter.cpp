@@ -88,8 +88,11 @@ QString VerilogAssignmentWriter::createLogicalAssignment(bool assignToPort) cons
 
         // The bounds of the wire that will be assigned to selected bounds of the component port.
         QPair<QString, QString> wireBounds = portAssignment_->wire_->bounds_;
-
-        if (logicalBounds.first == logicalBounds.second)
+        if (logicalBounds == wireBounds)
+        {
+            logicalAssign.remove(QStringLiteral("[<logicalLeft>:<logicalRight>]"));
+        }
+        else if (logicalBounds.first == logicalBounds.second)
         {
             if (wireBounds.first == wireBounds.second)
             {
@@ -135,9 +138,13 @@ QString VerilogAssignmentWriter::createPhysicalAssignment() const
     QString portAssign = portWireName_ + QStringLiteral("[<physicalLeft>:<physicalRight>]");
 
     QPair<QString, QString> portBounds = portAssignment_->physicalBounds_;
-
+    QPair<QString, QString> logicalBounds = portAssignment_->logicalBounds_;
+    if (logicalBounds == portBounds && logicalBounds == mPort_->vectorBounds_)
+    {
+        portAssign.remove(QStringLiteral("[<physicalLeft>:<physicalRight>]"));
+    }
     // Use bounds only if they are not the same.
-    if (portBounds.first == portBounds.second)
+    else if (portBounds.first == portBounds.second)
     {
         if (mPort_->vectorBounds_.first == mPort_->vectorBounds_.second)
         {

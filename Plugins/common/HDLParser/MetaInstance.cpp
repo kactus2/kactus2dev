@@ -164,8 +164,7 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser const& parser)
             QSharedPointer<MetaPort> mPort = getPorts()->value(pMap->getPhysicalPort()->name_);
 
             // The abstraction definition must have a port abstraction with the same name.
-            QSharedPointer<PortAbstraction> portAbstraction= mInterface->absDef_->
-                getPort(pMap->getLogicalPort()->name_);
+            QSharedPointer<PortAbstraction> portAbstraction = mInterface->absDef_->getPort(pMap->getLogicalPort()->name_);
 
             if (!portAbstraction)
             {
@@ -177,12 +176,6 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser const& parser)
                     mInterface->absDef_->getVlnv().toString()));
                 continue;
             }
-
-            // Every mapping using the port creates a new assignment for the port.
-            QSharedPointer<MetaPortAssignment> mUpPortAssignment(new MetaPortAssignment);
-
-            // The default value comes from the port abstraction.
-            mUpPortAssignment->defaultValue_ = portAbstraction->getDefaultValue();
 
             // Parse the port map bounds.
             QPair<QString, QString> logicalBounds = logicalPortBoundsInMapping(parser, pMap);
@@ -206,13 +199,16 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser const& parser)
                 logicalBounds.second = QStringLiteral("0");
             }
 
-            // Assign the values.
+            // Every mapping using the port creates a new assignment for the port.
+            QSharedPointer<MetaPortAssignment> mUpPortAssignment(new MetaPortAssignment);
             mUpPortAssignment->logicalBounds_ = logicalBounds;
             mUpPortAssignment->physicalBounds_ = physicalBounds;
 
+            // The default value comes from the port abstraction.
+            mUpPortAssignment->defaultValue_ = portAbstraction->getDefaultValue();
+
             // Create a copy of the assignments.
-            QSharedPointer<MetaPortAssignment> mDownPortAssignment
-                (new MetaPortAssignment(*mUpPortAssignment.data()));
+            QSharedPointer<MetaPortAssignment> mDownPortAssignment(new MetaPortAssignment(*mUpPortAssignment));
 
             // There must be an assignment for both directions in hierarchy.
             mPort->upAssignments_.insert(pMap->getLogicalPort()->name_, mUpPortAssignment);

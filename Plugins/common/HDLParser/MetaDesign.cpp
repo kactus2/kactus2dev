@@ -469,12 +469,13 @@ void MetaDesign::wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
             {
                 assignments = mPort->upAssignments_.values(pAbs->getLogicalName());
             }
+            
+            QList<QSharedPointer<MetaWire> > connectedWires;
 
             // ...and associate them with the wire.
             for (QSharedPointer<MetaPortAssignment> assignment : assignments)
             {
                 QSharedPointer<MetaWire> mWire = mIterconnect->wires_.value(pAbs->getLogicalName());
-
                 if (!mWire)
                 {
                     mWire = QSharedPointer<MetaWire>(new MetaWire);
@@ -484,8 +485,17 @@ void MetaDesign::wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
                     mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
                 }
 
-                ++mWire->refCount;
-                assignment->wire_ = mWire;
+                if (assignment->wire_.isNull() || connectedWires.contains(assignment->wire_))
+                {
+                    ++mWire->refCount;
+                    assignment->wire_ = mWire;
+                    connectedWires.append(mWire);
+                }
+                else
+                {
+                    ++assignment->wire_->refCount;
+                    connectedWires.append(assignment->wire_);
+                }
 
                 // Also assign larger bounds for wire, if applicable.
                 assignLargerBounds(mWire, assignment->logicalBounds_);
@@ -634,6 +644,7 @@ void MetaDesign::parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
     {
         assignLargerBounds(mWire, assignment->logicalBounds_);
     }
+
 }
 
 //-----------------------------------------------------------------------------
