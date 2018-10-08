@@ -46,7 +46,7 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~EditableTableView();
+	virtual ~EditableTableView() = default;
 
 	/*!
      *  Enable/disable the import/export csv file functionality.
