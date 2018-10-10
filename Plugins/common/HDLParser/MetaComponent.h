@@ -40,17 +40,14 @@ public:
 	//! The destructor.
 	virtual ~MetaComponent() = default;
     
+    // Disable copying.
+    MetaComponent(MetaComponent const& rhs) = delete;
+    MetaComponent& operator=(MetaComponent const& rhs) = delete;
+
     /*!
      *  Formats the parameters, ports and remap states, so that they are writable HDL.
      */
     void formatComponent();
-
-    /*!
-     *  Sorts list of parameters based on their interdependencies.
-     *
-     *      @param [out] sortParameters         The list containing the parameters that will be sorted.
-     */
-	static void sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters);
     
     /*!
      *  Returns the associated component.
@@ -90,7 +87,7 @@ public:
     /*!
      *  Sets name of the associated HDL module.
      */
-    void setModuleName(QString const& val) { moduleName_ = val; }
+    void setModuleName(QString const& name) { moduleName_ = name; }
     
     /*!
      *  Returns list of formatted remap states.
@@ -104,40 +101,45 @@ public:
 
 protected:
 
-    void cullMetaParameters();
+    void parseMetaParameters();
 
     //! The messages.
     MessageMediator* messages_;
 
 private:
-	// Disable copying.
-	MetaComponent(MetaComponent const& rhs);
-    MetaComponent& operator=(MetaComponent const& rhs);
+
+    /*!
+    *  Parses and copies parameter declarations of the component and active instantiation if any exists.
+    */
+    virtual void parseParameters();
+
+    /*!
+    *  Formats the found parameter declarations.
+    */
+    void formatParameters(ExpressionFormatter const& formatter);
+
+    /*!
+    *  Sorts list of parameters based on their interdependencies.
+    *
+    *      @param [out] sortParameters         The list containing the parameters that will be sorted.
+    */
+    void sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters) const;
     
     /*!
      *  Associates the meta object file sets pointed by the active component instance.
      */
     virtual void parsesFileSets();
-    
-    /*!
-     *  Culls and copies parameter declarations of the component and active instantiation if any exists.
-     */
-    virtual void cullParameters();
-    
-    /*!
-     *  Formats the found parameter declarations.
-     */
-    virtual void formatParameters(QSharedPointer<ExpressionFormatter> formatter);
+
     
     /*!
      *  Culls and formats the ports of the component.
      */
-    virtual void formatPorts(QSharedPointer<ExpressionFormatter> formatter);
+    virtual void formatPorts(ExpressionFormatter const& formatter);
 
     /*!
      *  Goes through the remap states, connects remaps to correct ports.
      */
-    void parseRemapStates(QSharedPointer<ExpressionFormatter> formatter);
+    void parseRemapStates(ExpressionFormatter const& formatter);
 
     //-----------------------------------------------------------------------------
     // Data.

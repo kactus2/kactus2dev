@@ -98,7 +98,7 @@ QString VHDLGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* VHDLGeneratorPlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ QWidget* VHDLGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsModel* VHDLGeneratorPlugin::getSettingsModel()
 {
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -297,7 +297,7 @@ void VHDLGeneratorPlugin::generate(QSharedPointer<Component> component, QString 
         QString basePath = utility_->getLibraryInterface()->getPath(component->getVlnv());
         QString relativePath = General::getRelativePath(basePath, filePath);
 
-        generator.addRTLView(viewSettings->getFileSetName(), filePath);
+        generator.addRTLView(viewSettings->getFileSetName(), relativePath);
         utility_->getLibraryInterface()->writeModelToFile(component);
     }
 

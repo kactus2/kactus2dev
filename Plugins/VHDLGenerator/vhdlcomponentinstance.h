@@ -26,9 +26,8 @@
 #include <QMap>
 #include <QTextStream>
 
-class VhdlComponentDeclaration;
-class BusInterface;
 class LibraryInterface;
+class VhdlComponentDeclaration;
 
 //-----------------------------------------------------------------------------
 //! Represents one vhdl component instantiation.
@@ -86,18 +85,10 @@ public:
 	/*!
      *  Add a new port map for the instance.
 	 *
-	 *      @param [in] portName        The name of the port on this instance.
-	 *      @param [in] portLeft        The left bound of this instance's port.
-	 *      @param [in] portRight       The right bound of this instance's port.
-	 *      @param [in] portType        The type of the port.
-	 *      @param [in] signalName      The name of the signal/top port to connect the instance to.
-	 *      @param [in] signalLeft      The left bound of the signal/top port.
-	 *      @param [in] signalRight     The right bound of the signal/top port.
-	 *      @param [in] signalType      The type of the signal.
+	 *      @param [in] left        The left side of the port map connection.
+	 *      @param [in] right       The right side fo the port map connection.
 	 */
-	void addPortMap(const QString& portName, const QString& portLeft, const QString& portRight,
-        const QString& portType, const QString& signalName, const QString& signalLeft, const QString& signalRight,
-		const QString& signalType);
+    void addPortMap(VhdlPortMap const& left, VhdlPortMap const& right);
 
 	/*!
      *  Add a new generic map to the instance.

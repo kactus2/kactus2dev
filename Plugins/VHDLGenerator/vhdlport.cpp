@@ -25,7 +25,7 @@ commentOut_(true),
 parser_(parser)
 {
 	// if type is not set then use the defaults
-	if (type().isEmpty())
+	if (port->getTypeName().isEmpty())
     {
 		if (size() == 1)
         {
@@ -54,7 +54,6 @@ void VhdlPort::write( QTextStream& stream ) const {
 
 int VhdlPort::size() const {
     return parser_->parseExpression(left_).toInt() - parser_->parseExpression(right_).toInt() + 1;
-	return 0;
 }
 
 QString VhdlPort::left() const {

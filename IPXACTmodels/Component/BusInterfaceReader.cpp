@@ -20,7 +20,7 @@
 
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
-#include <IPXACTmodels/XmlUtils.h>
+#include <IPXACTmodels/utilities/XmlUtils.h>
 
 #include <QXmlStreamWriter>
 #include <QDomNamedNodeMap>

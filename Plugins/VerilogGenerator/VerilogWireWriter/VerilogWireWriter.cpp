@@ -14,8 +14,8 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogWireWriter::VerilogWireWriter()
 //-----------------------------------------------------------------------------
-VerilogWireWriter::VerilogWireWriter(QString name, QPair<QString, QString> bounds)
-    : name_(name), bounds_(bounds)
+VerilogWireWriter::VerilogWireWriter(QString name, QPair<QString, QString> bounds, QPair<QString, QString> array)
+    : name_(name), bounds_(bounds), array_(array)
 {
 
 }
@@ -41,8 +41,9 @@ void VerilogWireWriter::write(QTextStream& output) const
 //-----------------------------------------------------------------------------
 QString VerilogWireWriter::createDeclaration() const
 {
-    QString declaration("wire <size> <name>;");    
-    declaration.replace("<size>", formattedSize().leftJustified(6));
+    QString declaration("wire <size> <array> <name>;");    
+    declaration.replace("<size>", formattedSize(bounds_).leftJustified(5));
+    declaration.replace("<array>", formattedSize(array_));
     declaration.replace("<name>", name_);
 
     return declaration;
@@ -51,13 +52,13 @@ QString VerilogWireWriter::createDeclaration() const
 //-----------------------------------------------------------------------------
 // Function: VerilogWireWriter::formattedSize()
 //-----------------------------------------------------------------------------
-QString VerilogWireWriter::formattedSize() const
+QString VerilogWireWriter::formattedSize(QPair<QString, QString> const& bounds) const
 {
 	QString sizeString;
 
-	if (bounds_.first != bounds_.second)
+	if (bounds.first != bounds.second)
 	{
-		sizeString = "[" + bounds_.first + ":" + bounds_.second + "]";
+		sizeString = "[" + bounds.first + ":" + bounds.second + "]";
 	}
 
     return sizeString;

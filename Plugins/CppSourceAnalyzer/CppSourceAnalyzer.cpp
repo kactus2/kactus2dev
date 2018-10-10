@@ -76,7 +76,7 @@ QString CppSourceAnalyzer::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* CppSourceAnalyzer::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

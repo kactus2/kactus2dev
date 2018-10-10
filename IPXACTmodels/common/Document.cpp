@@ -12,9 +12,9 @@
 #include "Document.h"
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/XmlUtils.h>
 #include <IPXACTmodels/common/VLNV.h>
+
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QString>
 #include <QSharedPointer>

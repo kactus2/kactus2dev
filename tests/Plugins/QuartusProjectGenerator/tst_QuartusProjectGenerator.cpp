@@ -47,8 +47,6 @@ public:
 
 private slots:
 
-    void initTestCase();
-    void cleanupTestCase();
     void init();
     void cleanup();
 
@@ -157,21 +155,6 @@ QString tst_QuartusProjectGenerator::getKactusVersion() const
     return QString();
 }
 
-    //-----------------------------------------------------------------------------
-// Function: tst_QuartusProjectGenerator::initTestCase()
-//-----------------------------------------------------------------------------
-void tst_QuartusProjectGenerator::initTestCase()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_QuartusProjectGenerator::cleanupTestCase()
-//-----------------------------------------------------------------------------
-void tst_QuartusProjectGenerator::cleanupTestCase()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: tst_QuartusProjectGenerator::init()
@@ -180,7 +163,7 @@ void tst_QuartusProjectGenerator::init()
 {
     library_.clear();
 
-    quartusGenerator_ = new QuartusGenerator(targetPath_, this);
+    quartusGenerator_ = new QuartusGenerator(this);
 
     topComponent_ = createTestComponent("topComponent");
 
@@ -218,7 +201,7 @@ void tst_QuartusProjectGenerator::testGeneratorWithoutFilesets()
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
+    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"
@@ -269,7 +252,7 @@ void tst_QuartusProjectGenerator::testGeneratorWithDesignContainingTopComponentV
     quartusGenerator_->replaceTime(currentTime);
 
     quartusGenerator_->parseFiles(topComponent_, quartusTestView);
-    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
+    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"
@@ -384,7 +367,7 @@ void tst_QuartusProjectGenerator::testGeneratorWithDesignContainingInstances()
     quartusGenerator_->replaceTime(currentTime);
 
     quartusGenerator_->parseFiles(topComponent_, quartusDesignView);
-    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
+    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"
@@ -494,7 +477,7 @@ void tst_QuartusProjectGenerator::testGeneratorWithConfiguredViews()
     quartusGenerator_->replaceTime(currentTime);
 
     quartusGenerator_->parseFiles(topComponent_, quartusDesignView);
-    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
+    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"
@@ -606,7 +589,7 @@ void tst_QuartusProjectGenerator::testGeneratorInInstancesWithoutActiveViews()
     quartusGenerator_->replaceTime(currentTime);
 
     quartusGenerator_->parseFiles(topComponent_, quartusDesignView);
-    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
+    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"

@@ -61,7 +61,7 @@ public:
 	 *      @param [in] parameterFinder             The parameter finder.
 	 *      @param [in] elementFinder               Configurable elements finder.
 	 *      @param [in] elementExpressionFormatter  Expression formatter for configurable element values.
-	 *      @param [in] defaultValueFormatter       Expression fromatter for default values.
+	 *      @param [in] defaultValueFormatter       Expression formatter for default values.
 	 *      @param [in] elementExpressionParser     Parser for configurable element values.
 	 *      @param [in] defaultValueParser          Parser for default values.
 	 *      @param [in] parent                      The parent object.

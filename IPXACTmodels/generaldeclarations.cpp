@@ -6,7 +6,7 @@
 
 #include "generaldeclarations.h"
 
-#include "XmlUtils.h"
+#include <IPXACTmodels/utilities/XmlUtils.h>
 
 #include <QString>
 #include <QDomNamedNodeMap>
@@ -21,48 +21,36 @@
 #include <qmath.h>
 
 
-General::PortBounds::PortBounds():
-portName_(),
-left_(0),
-right_(0) {
+General::PortBounds::PortBounds(): portName_(), left_(0), right_(0)
+{
+
 }
 
-General::PortBounds::PortBounds( const QString& portName ):
-portName_(portName),
-left_(0),
-right_(0) {
+General::PortBounds::PortBounds( const QString& portName ): portName_(portName), left_(0), right_(0)
+{
+
 }
 
 General::PortBounds::PortBounds( const QString& portName, const int left, const int right ):
 portName_(portName),
 left_(left),
-right_(right) {
+right_(right)
+{
+
 }
 
-General::PortBounds::PortBounds( const PortBounds& other ):
-portName_(other.portName_),
-left_(other.left_),
-right_(other.right_) {
-}
-
-General::PortBounds& General::PortBounds::operator=( const PortBounds& other ) {
-	if (&other != this) {
-		portName_ = other.portName_;
-		left_ = other.left_;
-		right_ = other.right_;
-	}
-	return *this;
-}
-
-bool General::PortBounds::operator<( const PortBounds& other ) const {
+bool General::PortBounds::operator<( const PortBounds& other ) const
+{
 	return portName_ < other.portName_;
 }
 
-bool General::PortBounds::operator==( const PortBounds& other ) const {
+bool General::PortBounds::operator==( const PortBounds& other ) const
+{
 	return portName_ == other.portName_;
 }
 
-bool General::PortBounds::operator!=( const PortBounds& other ) const {
+bool General::PortBounds::operator!=( const PortBounds& other ) const
+{
 	return portName_ != other.portName_;
 }
 
@@ -71,74 +59,67 @@ port1Left_(-1),
 port1Right_(-1),
 port2Left_(-1),
 port2Right_(-1),
-invalidAlignment_(true) {
+invalidAlignment_(true)
+{
+
 }
 
-General::PortAlignment::PortAlignment( const PortAlignment& other ):
-port1Left_(other.port1Left_),
-port1Right_(other.port1Right_),
-port2Left_(other.port2Left_),
-port2Right_(other.port2Right_),
-invalidAlignment_(other.invalidAlignment_) {
-}
-
-General::PortAlignment& General::PortAlignment::operator=( const PortAlignment& other ) {
-	if (this != &other) {
-		port1Left_ = other.port1Left_;
-		port1Right_ = other.port1Right_;
-		port2Left_ = other.port2Left_;
-		port2Right_ = other.port2Right_;
-		invalidAlignment_ = other.invalidAlignment_;
-	}
-	return *this;
-}
-
-QString General::port2String(const QString& portName, int leftBound, int rightBound) {
+QString General::port2String(const QString& portName, int leftBound, int rightBound)
+{
 	QString str(portName);
 	str.append(QStringLiteral("[%1..%2]").arg(leftBound).arg(rightBound));
 	return str;
 }
 
-QString General::bool2Str(bool value) {
-	if (value) {
+QString General::bool2Str(bool value)
+{
+	if (value)
+    {
 		return QStringLiteral("true");
 	}
-	else {
+	else
+    {
 		return QStringLiteral("false");
 	}
 }
 
-General::Usage General::str2Usage(QString str,
-		General::Usage defaultValue) {
-	if (str == QLatin1String("memory")) {
+General::Usage General::str2Usage(QString str, General::Usage defaultValue)
+{
+	if (str == QLatin1String("memory"))
+    {
 		return General::MEMORY;
 	}
-	else if (str == QLatin1String("register")) {
+	else if (str == QLatin1String("register"))
+    {
 		return General::REGISTER;
 	}
-	else if (str ==	QLatin1String("reserved")) {
+	else if (str ==	QLatin1String("reserved"))
+    {
 		return General::RESERVED;
 	}
-	else {
+	else
+    {
 		return defaultValue;
 	}
 }
 
-QString General::usage2Str(const General::Usage usage) {
-	switch (usage) {
-	case General::MEMORY: {
+QString General::usage2Str(const General::Usage usage)
+{
+	if (usage == General::MEMORY)
+    {
 		return QStringLiteral("memory");
 	}
-	case General::REGISTER: {
+    else if (usage == General::REGISTER)
+    {
 		return QStringLiteral("register");
 	}
-	case General::RESERVED: {
+	else if (usage == General::RESERVED)
+    {
 		return QStringLiteral("reserved");
 	}
-	// if UNSPECIFIED_USAGE
-	default: {
-		return QString();
-	}
+    else
+    {
+        return QString();	
 	}
 }
 
@@ -186,26 +167,30 @@ QString General::driverType2Str(General::DriverType type)
     }
 }
 
-bool General::str2Bool(const QString str, bool defaultValue) {
-	if (str == QLatin1String("true")) {
+bool General::str2Bool(const QString str, bool defaultValue)
+{
+	if (str == QLatin1String("true"))
+    {
 		return true;
 	}
-	else if (str == QLatin1String("false")) {
+	else if (str == QLatin1String("false"))
+    {
 		return false;
 	}
-	else {
+	else
+    {
 		return defaultValue;
 	}
 }
 
 
-General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue) {
-	
+General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue)
+{
 	// check all known interface mode names
-	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i) {
-		
-		// if match is found
-		if (str.compare(General::INTERFACE_MODE_NAMES[i], Qt::CaseInsensitive) == 0) {
+	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i)
+    {
+		if (str.compare(General::INTERFACE_MODE_NAMES[i], Qt::CaseInsensitive) == 0)
+        {
 			return static_cast<General::InterfaceMode>(i);
 		}
 	}
@@ -214,41 +199,47 @@ General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceM
 	return defaultValue;
 }
 
-QString General::interfaceMode2Str(const General::InterfaceMode mode) {
-	return General::INTERFACE_MODE_NAMES[mode];
+QString General::interfaceMode2Str(const General::InterfaceMode mode)
+{
+ 	return General::INTERFACE_MODE_NAMES[mode];
 }
 
 //-----------------------------------------------------------------------------
-// Function: getCompatibleInterfaceMode()
+// Function: General::getCompatibleInterfaceMode()
 //-----------------------------------------------------------------------------
 General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
 {
-    switch (mode)
+    if (mode == General::MASTER)
     {
-    case General::MASTER: {
-            return MIRROREDMASTER;
-        }
-    case General::SLAVE: {
-            return MIRROREDSLAVE;
-        }
-    case General::SYSTEM: {
-            return MIRROREDSYSTEM;
-        }
-    case General::MIRROREDMASTER: {
-            return MASTER;
-        }
-    case General::MIRROREDSLAVE: {
-            return SLAVE;
-        }
-    case General::MIRROREDSYSTEM: {
-            return SYSTEM;
-        }
-    case General::MONITOR: {
-            return MONITOR;
-        }
-    default: {
-            return INTERFACE_MODE_COUNT;
-        }
+        return MIRROREDMASTER;
+    }
+    else if (mode == General::SLAVE)
+    {
+        return MIRROREDSLAVE;
+    }
+    else if (mode == General::SYSTEM)
+    {
+        return MIRROREDSYSTEM;
+    }
+    else if (mode == General::MIRROREDMASTER)
+    {
+        return MASTER;
+    }
+    else if (mode == General::MIRROREDSLAVE)
+    {
+        return SLAVE;
+    }
+    else if (mode == General::MIRROREDSYSTEM)
+    {
+        return SYSTEM;
+    }
+    else if (mode == General::MONITOR)
+    {
+        return MONITOR;
+    }
+    else
+    {
+        return INTERFACE_MODE_COUNT;
     }
 }
 
@@ -300,8 +291,10 @@ QString General::getRelativePath(QString from, QString to)
     return relPath;
 }
 
-QString General::getRelativeSavePath( const QString& from, const QString& to ) {
-	if (from.isEmpty() || to.isEmpty()) {
+QString General::getRelativeSavePath( const QString& from, const QString& to )
+{
+	if (from.isEmpty() || to.isEmpty())
+    {
 		return QString();
 	}
 
@@ -331,11 +324,10 @@ QString General::getRelativeSavePath( const QString& from, const QString& to ) {
 	return ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
 }
 
-QString General::getAbsolutePath(const QString& originalPath,
-		const QString& relativePath) {
-
-	// if one of the parameters is empty
-	if (originalPath.isEmpty() || relativePath.isEmpty()) {
+QString General::getAbsolutePath(const QString& originalPath, const QString& relativePath)
+{
+	if (originalPath.isEmpty() || relativePath.isEmpty())
+    {
 		return QString();
 	}
 
@@ -352,13 +344,13 @@ QString General::getAbsolutePath(const QString& originalPath,
 	return originalDir.absoluteFilePath(relativePath);
 }
 
-General::ModifiedWrite General::str2ModifiedWrite( const QString& str ) {
-	
+General::ModifiedWrite General::str2ModifiedWrite( const QString& str )
+{	
 	// check all defined strings
-	for (unsigned int i = 0; i < General::MODIFIED_WRITE_COUNT; ++i) {
-		
-		// if a match is found
-		if (str.compare(General::MODIFIED_WRITE_STRINGS[i], Qt::CaseInsensitive) == 0) {
+	for (unsigned int i = 0; i < General::MODIFIED_WRITE_COUNT; ++i)
+    {				
+		if (str.compare(General::MODIFIED_WRITE_STRINGS[i], Qt::CaseInsensitive) == 0)
+        {
 			return static_cast<General::ModifiedWrite>(i);
 		}
 	}
@@ -367,20 +359,23 @@ General::ModifiedWrite General::str2ModifiedWrite( const QString& str ) {
 	return General::MODIFIED_WRITE_COUNT;
 }
 
-QString General::modifiedWrite2Str( const General::ModifiedWrite modWrite ) {
+QString General::modifiedWrite2Str( const General::ModifiedWrite modWrite )
+{
 	return General::MODIFIED_WRITE_STRINGS[modWrite];
 }
 
-QString General::readAction2Str( const General::ReadAction readAction ) {
+QString General::readAction2Str( const General::ReadAction readAction )
+{
 	return General::READ_ACTION_STRINGS[readAction];
 }
 
-General::ReadAction General::str2ReadAction( const QString& str ) {
+General::ReadAction General::str2ReadAction( const QString& str )
+{
 	// check all defined strings
-	for (unsigned int i = 0; i < General::READ_ACTION_COUNT; ++i) {
-		
-		// if a match is found
-		if (str.compare(General::READ_ACTION_STRINGS[i], Qt::CaseInsensitive) == 0) {
+	for (unsigned int i = 0; i < General::READ_ACTION_COUNT; ++i)
+    {
+		if (str.compare(General::READ_ACTION_STRINGS[i], Qt::CaseInsensitive) == 0)
+        {
 			return static_cast<General::ReadAction>(i);
 		}
 	}
@@ -389,92 +384,22 @@ General::ReadAction General::str2ReadAction( const QString& str ) {
 	return General::READ_ACTION_COUNT;
 }
 
-QString General::testConstraint2Str( const General::TestConstraint testConstraint ) {
+QString General::testConstraint2Str( const General::TestConstraint testConstraint )
+{
 	return General::TEST_CONSTRAINT_STRINGS[testConstraint];
 }
 
-General::TestConstraint General::str2TestConstraint( const QString& str ) {
+General::TestConstraint General::str2TestConstraint( const QString& str )
+{
 	// check all defined strings
-	for (unsigned int i = 0; i < General::TESTCONSTRAINT_COUNT; ++i) {
-
-		// if a match is found
-		if (str.compare(General::TEST_CONSTRAINT_STRINGS[i], Qt::CaseInsensitive) == 0) {
+	for (unsigned int i = 0; i < General::TESTCONSTRAINT_COUNT; ++i)
+    {
+		if (str.compare(General::TEST_CONSTRAINT_STRINGS[i], Qt::CaseInsensitive) == 0)
+        {
 			return static_cast<General::TestConstraint>(i);
 		}
 	}
 
 	// if none of the defined strings matched
 	return General::TESTCONSTRAINT_COUNT;
-}
-
-
-
-quint64 General::str2Uint( const QString& str )
-{
-    if (str.isEmpty())
-    {
-        return 0;
-    }
-
-    // used to detect if the conversion was successful
-    bool success = true;
-    quint64 number = 0;
-
-    // if starts with "0x" then it is hexadecimal digit
-    if (str.startsWith(QStringLiteral("0x"), Qt::CaseInsensitive))
-    {
-        number = str.toULongLong(&success, 16);
-        if (success)
-        {
-            return number;
-        }
-    }
-
-    // needed because the last letter is chopped if one is found
-    QString strNumber = str;
-
-    // the multiple is the last letter if one exists
-    const QChar multiple = strNumber.at(strNumber.size()-1);
-    quint64 multiplier = 1;
-
-    // get the correct multiplier and remove the letter from the string
-    if (multiple == QLatin1Char('k') || multiple == QLatin1Char('K'))
-    {
-        multiplier = qPow(2, 10);
-        strNumber.chop(1);
-    }
-    else if (multiple == QLatin1Char('M'))
-    {
-        multiplier = qPow(2, 20);
-        strNumber.chop(1);
-    }
-    else if (multiple == QLatin1Char('G'))
-    {
-        multiplier = qPow(2, 30);
-        strNumber.chop(1);
-    }
-    else if (multiple == QLatin1Char('T'))
-    {
-        multiplier = qPow(2, 40);
-        strNumber.chop(1);
-    }
-    else if (multiple == QLatin1Char('P'))
-    {
-        multiplier = qPow(2, 50);
-        strNumber.chop(1);
-    }
-
-    // try to convert the number 
-    number = strNumber.toULongLong(&success);
-
-    // if the conversion failed
-    if (!success)
-    {
-        return 0;
-    }
-    // otherwise return the correct int-format
-    else
-    {
-        return number * multiplier;
-    }
 }

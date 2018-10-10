@@ -291,7 +291,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
 
             // Create a wire for it.
             document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter
-                (physName, mPort->vectorBounds_)));
+                (physName, mPort->vectorBounds_, mPort->arrayBounds_)));
 
             // Then create assignments, that connect it to logical wires.
             foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
@@ -331,7 +331,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
             {
                 document->connectionWireWriters_->
                     add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter
-                    (VerilogSyntax::legalizeName(gw->name_), gw->bounds_)));
+                    (VerilogSyntax::legalizeName(gw->name_), gw->bounds_, gw->arrayBounds_)));
             }
         }
     }
@@ -363,7 +363,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
         {
             document->adHocWireWriters_->
                 add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(
-                VerilogSyntax::legalizeName(adHoc->name_), adHoc->bounds_)));
+                VerilogSyntax::legalizeName(adHoc->name_), adHoc->bounds_, adHoc->arrayBounds_)));
         }
     }
 }

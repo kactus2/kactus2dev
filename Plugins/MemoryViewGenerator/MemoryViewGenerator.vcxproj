@@ -138,6 +138,7 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp" />
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp" />
@@ -232,6 +233,8 @@
     <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h" />
     <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h" />
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h" />
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="..\common\HDLParser\MetaComponent.h" />
     <ClInclude Include="..\common\HDLParser\MetaDesign.h" />
     <ClInclude Include="..\common\HDLParser\MetaInstance.h" />

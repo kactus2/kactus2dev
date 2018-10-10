@@ -35,16 +35,7 @@
 //-----------------------------------------------------------------------------
 // Function: QuartusProjectGenerator::QuartusProjectGenerator()
 //-----------------------------------------------------------------------------
-QuartusProjectGenerator::QuartusProjectGenerator():
-utility_(NULL)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: QuartusProjectGenerator::~QuartusProjectGenerator()
-//-----------------------------------------------------------------------------
-QuartusProjectGenerator::~QuartusProjectGenerator()
+QuartusProjectGenerator::QuartusProjectGenerator(): utility_(nullptr)
 {
 
 }
@@ -63,7 +54,7 @@ QString QuartusProjectGenerator::getName() const
 //-----------------------------------------------------------------------------
 QString QuartusProjectGenerator::getVersion() const
 {
-    static QString version(tr("1.0"));
+    static QString version(tr("1.1"));
     return version;
 }
 
@@ -72,7 +63,7 @@ QString QuartusProjectGenerator::getVersion() const
 //-----------------------------------------------------------------------------
 QString QuartusProjectGenerator::getDescription() const
 {
-    static QString description(tr("Generates quartus project file and quartus settings file for hw design."));
+    static QString description(tr("Generates quartus project file and quartus settings file for a HW design."));
     return description;
 }
 
@@ -108,16 +99,15 @@ QString QuartusProjectGenerator::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* QuartusProjectGenerator::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getIcon()
 //-----------------------------------------------------------------------------
 QIcon QuartusProjectGenerator::getIcon() const
 {
-    return QIcon(":icons/quartus_generator.png");
+    return QIcon(QStringLiteral(":icons/quartus_generator.png"));
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +142,7 @@ void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
     utility_ = utility;
 
     QString path = QFileDialog::getExistingDirectory(utility->getParentWidget(),
-        tr("Set the directory where the Quartus project is created to"),
+        tr("Set the directory for the Quartus project"),
         utility->getLibraryInterface()->getPath(component->getVlnv()));
 
 	if (path.isEmpty())
@@ -163,18 +153,18 @@ void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
 
 	QSharedPointer<View> openView = getOpenView(component, designConfiguration, design);
 
-	QuartusGenerator quartusGenerator(path, utility);
+	QuartusGenerator quartusGenerator(utility);
 
 	connect(&quartusGenerator, SIGNAL(errorMessage(QString const&)),
 		this, SLOT(onErrorMessage(QString const&)), Qt::UniqueConnection);
 	connect(&quartusGenerator, SIGNAL(noticeMessage(QString const&)),
 		this, SLOT(onNoticeMessage(QString const&)), Qt::UniqueConnection);
 
-	QString generatorInformation = getName() + " " + getVersion();
+	QString generatorInformation = getName() + QLatin1Char(' ') + getVersion();
 
 	quartusGenerator.readExistingPinMap(component);
 	quartusGenerator.parseFiles(component, openView);
-	quartusGenerator.generateProject(component->getVlnv().getName(), generatorInformation);
+	quartusGenerator.generateProject(path, component->getVlnv().getName(), generatorInformation);
 
 	utility->printInfo(tr("Quartus project generation complete."));
 }

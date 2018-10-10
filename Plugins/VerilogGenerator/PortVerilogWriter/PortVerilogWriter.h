@@ -73,13 +73,8 @@ private:
     /*!
      *  Returns vector bounds representation for the port.
      */
-    QString vectorBounds() const;
+    QString formatBounds(QPair<QString, QString> const& bounds) const;
     
-    
-    /*!
-     *  Returns array bounds representation for the port.
-     */
-    QString arrayBounds() const;
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

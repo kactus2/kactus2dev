@@ -12,8 +12,6 @@
 #include "NameGroup.h"
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <IPXACTmodels/XmlUtils.h>
-
 //-----------------------------------------------------------------------------
 // Function: NameGroup::NameGroup()
 //-----------------------------------------------------------------------------

@@ -14,6 +14,8 @@
 
 #include <common/widgets/listManager/listmanager.h>
 
+#include <editors/BusDefinitionEditor/SystemGroupListEditor.h>
+
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <QGroupBox>
@@ -99,6 +101,11 @@ private slots:
      */
     void onDescriptionChanged();
 
+    /*!
+     *  Handles the changes in bus definition extend.
+     */
+    void onExtendChanged();
+
 private:
 	//! No copying. No assignment.
 	BusDefGroup(const BusDefGroup& other);
@@ -108,8 +115,41 @@ private:
      *  Sets the widget layout.
      */
     void setupLayout();
+
+    /*!
+     *  Setup the extended bus definition.
+     */
+    void setupExtendedBus();
+
+    /*!
+     *  Get the extended bus definition for the selected bus definition.
+     *
+     *      @param [in] busDefinition   The selected bus definition.
+     *
+     *      @return The extended bus definition.
+     */
+    QSharedPointer<const BusDefinition> getExtendedBus(QSharedPointer<const BusDefinition> busDefinition) const;
     
-	//! The bus definition to edit.
+    /*!
+     *  Lock editors according to the selected extended bus definition.
+     *
+     *      @param [in] extendedBus     The selected extended bus definition.
+     */
+    void extendBusDefinition(QSharedPointer<const BusDefinition> extendedBus);
+
+    /*!
+     *  Remove the lock on editors caused by the previous extended bus definition.
+     */
+    void removeBusExtension();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+    
+    //! The library interface.
+    LibraryInterface* library_;
+
+    //! The bus definition to edit.
 	QSharedPointer<BusDefinition> busDef_;
 
 	//! Check box to set the direct connection option.
@@ -128,7 +168,7 @@ private:
 	QLineEdit maxSlavesEditor_;
 
     //! Editor for system group names.
-    ListManager systemgroupEditor_;
+    SystemGroupListEditor systemGroupEditor_;
 
     //! Editor for bus definition description.
     QPlainTextEdit descriptionEditor_;
@@ -137,7 +177,7 @@ private:
     VLNVDisplayer* vlnvDisplay_;
 
     //! Editor for the bus definition extension.
-    VLNVEditor* extendDisplay_;
+    VLNVEditor* extendEditor_;
 };
 
 #endif // BUSDEFGROUP_H

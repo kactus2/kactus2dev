@@ -144,6 +144,7 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\common\HDLParser\HDLCommandLineParser.cpp" />
     <ClCompile Include="..\LinuxDeviceTree\LinuxDeviceTreeDialog.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
@@ -232,6 +233,8 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="..\common\HDLParser\HDLCommandLineParser.h" />
     <CustomBuild Include="..\LinuxDeviceTree\LinuxDeviceTreeDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

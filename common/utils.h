@@ -129,36 +129,6 @@ namespace Utils
     };
 
 
-    /*! Convert a string to unsigned int format.
-     * 
-     * The multiples in the string are converted as following:
-     * k/K = 2^10
-     * M   = 2^20
-     * G   = 2^30
-     * T   = 2^40
-     * P   = 2^50
-     * 
-     * \param str The string to convert.
-     *
-     * \return The result of the conversion.
-    */
-    quint64 str2Uint(const QString& str);
-
-    /*! Convert a string to int format.
-     * 
-     * The multiples in the string are converted as following:
-     * k/K = 2^10
-     * M   = 2^20
-     * G   = 2^30
-     * T   = 2^40
-     * P   = 2^50
-     * 
-     * \param str The string to convert.
-     *
-     * \return The result of the conversion.
-    */
-    qint64 str2Int(const QString& str);
-
     //! Regular expression to validate URLs.
     const QRegularExpression URL_VALIDITY_REG_EXP = QRegularExpression(
         "^[a-z]{3,9}[:][/]{2}[a-z0-9]+([-.][a-z0-9]+)*([/][-a-z0-9_.;,?=&%#~+]*)*$",

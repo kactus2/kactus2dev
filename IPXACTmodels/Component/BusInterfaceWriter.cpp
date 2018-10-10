@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/SlaveInterface.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
-#include "../XmlUtils.h"
+#include <IPXACTmodels/utilities/XmlUtils.h>
 
 #include <QXmlStreamWriter>
 #include <QDomNamedNodeMap>

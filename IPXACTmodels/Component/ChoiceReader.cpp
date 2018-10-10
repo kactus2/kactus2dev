@@ -10,7 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include "ChoiceReader.h"
-#include "../XmlUtils.h"
+
+#include <IPXACTmodels/utilities/XmlUtils.h>
 
 //-----------------------------------------------------------------------------
 // Function: ChoiceReader::ChoiceReader()

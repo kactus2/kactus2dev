@@ -313,6 +313,9 @@
     <ClCompile Include="..\common\HDLParser\HDLCommandLineParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Writer.h">
@@ -424,6 +427,12 @@
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\HDLParser\HDLCommandLineParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

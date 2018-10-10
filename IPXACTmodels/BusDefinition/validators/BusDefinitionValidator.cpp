@@ -13,19 +13,20 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator.h>
-
-#include <IPXACTmodels/Component/Choice.h>
+#include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionValidator::BusDefinitionValidator()
 //-----------------------------------------------------------------------------
-BusDefinitionValidator::BusDefinitionValidator(QSharedPointer<ExpressionParser> expressionParser):
-expressionParser_(expressionParser), 
-    parameterValidator_(new ParameterValidator(expressionParser, 
-    QSharedPointer<QList<QSharedPointer<Choice> > >()))
+BusDefinitionValidator::BusDefinitionValidator(LibraryInterface* library,
+    QSharedPointer<ExpressionParser> expressionParser):
+library_(library),
+expressionParser_(expressionParser),
+parameterValidator_(new ParameterValidator(expressionParser, QSharedPointer<QList<QSharedPointer<Choice> > >()))
 {
 
 }
@@ -47,6 +48,11 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
 	{
 		return false;
 	}
+
+    if (!extendIsValid(busDefinition))
+    {
+        return false;
+    }
     
     bool validMasters = false;
     expressionParser_->parseExpression(busDefinition->getMaxMasters(), &validMasters);
@@ -74,6 +80,16 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusDefinitionValidator::extendIsValid()
+//-----------------------------------------------------------------------------
+bool BusDefinitionValidator::extendIsValid(QSharedPointer<const BusDefinition> busDefinition) const
+{
+    VLNV extendVLNV = busDefinition->getExtends();
+    return extendVLNV.isEmpty() ||
+        (library_->getModelReadOnly(extendVLNV) && extendVLNV.getType() == VLNV::BUSDEFINITION);
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusDefinitionValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
@@ -83,6 +99,12 @@ void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 	if (busDefinition->getVlnv().isValid(errors, context))
     {
         context = QObject::tr("bus definition %1").arg(busDefinition->getVlnv().toString());
+    }
+
+    if (!extendIsValid(busDefinition))
+    {
+        errors.append(QObject::tr("Extend VLNV '%1' is not valid within %2.").arg(
+            busDefinition->getExtends().toString(), context));
     }
 
     bool mastersValid = false;

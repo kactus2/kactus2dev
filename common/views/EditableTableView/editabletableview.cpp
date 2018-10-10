@@ -85,13 +85,6 @@ QTableView(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: EditableTableView::~EditableTableView()
-//-----------------------------------------------------------------------------
-EditableTableView::~EditableTableView()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: EditableTableView::setAllowImportExport()
 //-----------------------------------------------------------------------------
 void EditableTableView::setAllowImportExport(bool allow)
@@ -132,7 +125,7 @@ void EditableTableView::setCornerButtonText(QString const& text)
 //-----------------------------------------------------------------------------
 void EditableTableView::mouseMoveEvent(QMouseEvent* event)
 {
-    QModelIndex selected;
+    QModelIndex selected = indexAt(event->pos());
 
 	if (itemsDraggable_)
     {
@@ -140,8 +133,7 @@ void EditableTableView::mouseMoveEvent(QMouseEvent* event)
 		if (event->buttons() & Qt::LeftButton)
         {
 			QModelIndex startIndex = indexAt(pressedPoint_);
-			QModelIndex thisIndex = indexAt(event->pos());
-            selected = thisIndex;
+			QModelIndex thisIndex = selected;
 
 			// if the model is a sort proxy then convert the indexes to source indexes
 			QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
@@ -532,9 +524,8 @@ void EditableTableView::onPasteAction()
 
 	int targetRow = posToPaste.row();
 	int startColumn = posToPaste.column();
-
-    QString subtype("plain");
-    QString pasteText = QApplication::clipboard()->text(subtype);
+    
+    QString pasteText = QApplication::clipboard()->text(QStringLiteral("plain"));
 
 	// Split the string from clip board into rows.
 	QStringList rowsToAdd = pasteText.split("\n", QString::SkipEmptyParts);
@@ -547,7 +538,7 @@ void EditableTableView::onPasteAction()
         proxyModel->setDynamicSortFilter(false);
     }
 
-	foreach (QString row, rowsToAdd)
+	foreach (QString const& row, rowsToAdd)
     {
 		// New row starts always on same column.
 		int targetColumn = qMax(0, startColumn);
@@ -565,7 +556,6 @@ void EditableTableView::onPasteAction()
                     column = getUniqueName(column);
                 }
 
-//                 model()->setData(itemToSet, column, Qt::UserRole+1);
                 model()->setData(itemToSet, column, Qt::EditRole);
 			}
 
@@ -691,8 +681,23 @@ void EditableTableView::onCSVExport(const QString& filePath)
 		for (int column = 0; column < columnCount; column++)
         {
 			QModelIndex index = model()->index(row, column, QModelIndex());
-			stream << index.data(Qt::DisplayRole).toString();
-			stream << ";";
+            QString data = index.data(Qt::EditRole).toString();
+
+            if (data.isEmpty())
+            {
+                data = index.data(Qt::DisplayRole).toString();
+            }
+
+            bool multiline = data.contains(QStringLiteral("\n"));
+            if (multiline)
+            {
+                stream << "\"" << data << "\"" << ";";
+            }
+            else
+            {
+                stream << data << ";";
+            }
+			
 		}
 		stream << endl;
 	}
@@ -735,40 +740,50 @@ void EditableTableView::onCSVImport(const QString& filePath)
 	// read the headers from the file
 	QString headers = stream.readLine();
 
-	// the model containing the actual data
-	QAbstractTableModel* origModel = NULL;
-
+    // the model containing the actual data
+	QAbstractTableModel* targetModel = NULL;
 	QSortFilterProxyModel* proxyModel = qobject_cast<QSortFilterProxyModel*>(model());
 	
 	// if view is connected to proxy model
 	if (proxyModel)
     {
-		origModel = qobject_cast<QAbstractTableModel*>(proxyModel->sourceModel());
+		targetModel = qobject_cast<QAbstractTableModel*>(proxyModel->sourceModel());
 	}
 	// if view is connected directly to actual model
 	else
     {
-		origModel = qobject_cast<QAbstractTableModel*>(model());
+		targetModel = qobject_cast<QAbstractTableModel*>(model());
 	}
-	Q_ASSERT(origModel);
+	Q_ASSERT(targetModel);
 
-	int columnCount = origModel->columnCount(QModelIndex());
+	int columnCount = targetModel->columnCount(QModelIndex());
 
 	while (!stream.atEnd())
     {
 		QString line = stream.readLine();
-		QStringList columns = line.split(";");
-
-		// add a new empty row
-		emit addItem(QModelIndex());
-
-		// data is always added to the last row
-		int rowCount = origModel->rowCount(QModelIndex());
-
-		for (int col = 0; col < columnCount && col < columns.size(); ++col)
+        while (line.count(QLatin1Char(';')) < columnCount - 1 && !stream.atEnd())
         {
-			QModelIndex index = origModel->index(rowCount - 1, col, QModelIndex());
-			origModel->setData(index, columns.at(col), Qt::EditRole);
+            line.append(QStringLiteral("\n"));
+            line.append(stream.readLine());
+        }
+
+		QStringList items = line.split(";");
+
+        // add a new empty row
+        // data is always added to the last row
+		emit addItem(QModelIndex());
+		int rowCount = targetModel->rowCount(QModelIndex());
+
+		for (int column = 0; column < columnCount && column < items.size(); ++column)
+        {
+            QString item = items.at(column);
+            if (item.startsWith(QLatin1Char('"')) && item.endsWith(QLatin1Char('"')))
+            {
+                item = item.mid(1, item.length() - 2);
+            }
+
+			QModelIndex index = targetModel->index(rowCount - 1, column, QModelIndex());
+			targetModel->setData(index, item, Qt::EditRole);
 		}
 	}
 

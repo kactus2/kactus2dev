@@ -30,12 +30,14 @@ HEADERS += ../../common/utils.h \
     ./vhdlsignal.h \
     ./VhdlTypedObject.h \
     ./VHDLGenerator_global.h \
+    ../LinuxDeviceTree/LinuxDeviceTreeDialog.h \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
     ./VHDLGeneratorDialog.h \
     ./VHDLGeneratorPlugin.h \
     ./vhdlgenerator2.h \
     ./vhdlcomponentinstance.h \
-    ../LinuxDeviceTree/LinuxDeviceTreeDialog.h
+    ../../IPXACTmodels/utilities/ComponentSearch.h \
+    ../../IPXACTmodels/utilities/Search.h
 SOURCES += ../../common/utils.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
@@ -45,6 +47,7 @@ SOURCES += ../../common/utils.cpp \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../common/HDLParser/HDLCommandLineParser.cpp \
+    ../LinuxDeviceTree/LinuxDeviceTreeDialog.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ./vhdlcomponentdeclaration.cpp \
@@ -61,5 +64,5 @@ SOURCES += ../../common/utils.cpp \
     ./vhdlportsorter.cpp \
     ./vhdlsignal.cpp \
     ./VhdlTypedObject.cpp \
-    ../LinuxDeviceTree/LinuxDeviceTreeDialog.cpp
+    ../../IPXACTmodels/utilities/ComponentSearch.cpp
 RESOURCES += VHDLGenerator.qrc

@@ -18,7 +18,7 @@
 #include <Plugins/PluginSystem/PluginInfoWidget.h>
 #include <Plugins/PluginSystem/NewPluginsDialog.h>
 
-#include <IPXACTmodels/XmlUtils.h>
+#include <IPXACTmodels/utilities/XmlUtils.h>
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -135,9 +135,9 @@ void PluginSettingsPage::apply()
             Q_ASSERT(plugin != 0);
 
             // Retrieve the settings widget index from the data and save custom settings.
-            int index = item->data(0, PLUGIN_STACK_INDEX_ROLE).toInt();
-            QWidget* settingsWidget = settingsStack_.widget(index);
-            Q_ASSERT(settingsWidget != 0);
+            //int index = item->data(0, PLUGIN_STACK_INDEX_ROLE).toInt();
+            //QWidget* settingsWidget = settingsStack_.widget(index);
+            //Q_ASSERT(settingsWidget != 0);
 
             // Save the active state.
             settings_.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
@@ -213,7 +213,10 @@ QTreeWidgetItem* PluginSettingsPage::createPluginItem(IPlugin* plugin)
 
     // Retrieve the settings widget and load the current settings.
     QWidget* settingsWidget = plugin->getSettingsWidget();
-    settingsStack_.addWidget(settingsWidget);        
+    if (settingsWidget != nullptr)
+    {
+        settingsStack_.addWidget(settingsWidget);
+    }    
 
     infoStack_.addWidget(new PluginInfoWidget(plugin));
 

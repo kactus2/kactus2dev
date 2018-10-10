@@ -21,6 +21,7 @@
 class BusDefinition;
 class ExpressionParser;
 class ParameterValidator;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:BusDefinition.
@@ -32,9 +33,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
+     *      @param [in] library             The library interface.
      *      @param [in] expressionParser    The expression parser to use.
 	 */
-    BusDefinitionValidator(QSharedPointer<ExpressionParser> expressionParser);
+    BusDefinitionValidator(LibraryInterface* library, QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
 	virtual ~BusDefinitionValidator();
@@ -61,6 +63,22 @@ private:
 	// Disable copying.
 	BusDefinitionValidator(BusDefinitionValidator const& rhs);
 	BusDefinitionValidator& operator=(BusDefinitionValidator const& rhs);
+
+    /*!
+     *  Check if the extend value of the selected bus definition is valid.
+     *
+     *      @param [in] busDefinition   The selected bus definition.
+     *
+     *      @return True, if the extend value is valid, false otherwise.
+     */
+    bool extendIsValid(QSharedPointer<const BusDefinition> busDefinition) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The library interface.
+    LibraryInterface* library_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

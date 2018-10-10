@@ -10,7 +10,7 @@
 <h2>Expressions</h2>
 
 <p>Many fields within Kactus2 accept expresions as their input value for easy
-and fast configuration. The function sign <i>f(x)</i> is used to identify
+and fast configuration. The function sign <em>f(x)</em> is used to identify
 these fields. The input should conform to the SystemVerilog
 syntax to be acceptable.
 </p>
@@ -19,8 +19,8 @@ syntax to be acceptable.
 <p>
 Constant numeric values can be given as decimal values (e.g. 15) or by explicitly
 defining the base (e.g. 'h0F for 15 in hexadecimal). The possible bases are
-<b>'b</b> (binary), <b>'o</b> (octal), <b>'d</b> (decimal) and <b>'h</b>
-(hexadecimal).
+<strong>'b</strong> (binary), <strong>'o</strong> (octal), 
+<strong>'d</strong> (decimal) and <strong>'h</strong> (hexadecimal).
 Also fractional numbers (e.g. 0.25) can be used where applicable.
 Other numeric formats, e.g. 0x000F and 0b0010, will not be accepted.
 </p>
@@ -47,6 +47,21 @@ Boolean true and false are accepted and will be interpret as 1 and 0, respective
 	  <td>2*4 (8)</td>
 	</tr>
 	<tr>
+	  <td>&&,||</td>
+	  <td>Basic logical operations: AND,OR</td>
+	  <td>1 || 0 (true)</td>
+	</tr>
+	<tr>
+	  <td>&,|,^,~</td>
+	  <td>Bitwise logical operations: AND,OR,XOR,NOT</td>
+	  <td>4'b0011 & 4'b0110 (2)</td>
+	</tr>
+	<tr>
+	  <td>&lt;&lt;,&gt;&gt;</td>
+	  <td>Shift operations</td>
+	  <td>4'b0011 &lt;&lt; 1 (6)</td>
+	</tr>
+	<tr>
 	  <td>**</td>
 	  <td>Power operation</td>
 	  <td>2**4 (16)</td>
@@ -55,7 +70,12 @@ Boolean true and false are accepted and will be interpret as 1 and 0, respective
 	  <td>&lt;,&gt;,&lt;=,&gt;=,==,!=</td>
 	  <td>Comparison of two values</td>
 	  <td>4 &gt;= 2 (true)</td>
-	</tr>	
+	</tr>
+	<tr>
+	  <td>==,!=</td>
+	  <td>Comparison of string values</td>
+	  <td>"abc" != "bcd" (true)</td>
+	</tr>
 	<tr>
 	  <td>$clog2()</td>
 	  <td>Ceiling of logarithm of base 2</td>

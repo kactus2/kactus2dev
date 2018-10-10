@@ -15,6 +15,7 @@
 
 class Port;
 class ExpressionParser;
+
 /*! \brief VhdlPort represents one port declaration in vhdl.
  * 
  * VhdlPort is used within top component entity and component declarations
@@ -49,32 +50,32 @@ public:
 	 * 
 	 * \return int The size of the port.
 	*/
-	virtual int size() const;
+	int size() const;
 
 	/*! \brief Get the left bound of the port.
 	 *
 	 * \return int The left bound.
 	*/
-	virtual QString left() const;
+	QString left() const;
 
 	/*! \brief Get the right bound of the port.
 	 *
 	 * \return int The right bound.
 	*/
-	virtual QString right() const;
+	QString right() const;
 
 	/*! \brief Set the port to be commented out or not.
 	 *
 	 * \param commentOut If true then the port is commented out when written.
 	 *
 	*/
-	virtual void setCommented(bool commentOut);
+	void setCommented(bool commentOut);
 
 	/*! \brief Check if the port is commented out or not.
 	 *
 	 * \return bool True if the port is commented out.
 	*/
-	virtual bool isCommented() const;
+	bool isCommented() const;
 
 	/*! \brief Checks the map for uncommented ports that are used in synthesis.
 	 *

@@ -10,8 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include "BusDefinition.h"
-
-#include <IPXACTmodels/XmlUtils.h>
   
 #include <QDomDocument>
 #include <QString>

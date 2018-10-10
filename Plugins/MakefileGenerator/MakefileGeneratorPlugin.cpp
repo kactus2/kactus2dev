@@ -90,7 +90,7 @@ QString MakefileGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* MakefileGeneratorPlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

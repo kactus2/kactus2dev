@@ -28,9 +28,9 @@ namespace
         SystemVerilogSyntax::BOOLEAN_VALUE + "|" +
         SystemVerilogSyntax::STRING_LITERAL);
 
-    const QRegularExpression BINARY_OPERATOR("[/*][/*]|[-+/*//]|[<>]=?|[!=]=|[$]pow");
+    const QRegularExpression BINARY_OPERATOR("\\*\\*|[*/%]|[+-]|<<|>>|<=?|>=?|!==?|===?|[&|]{1,2}|[\\^]|[$]pow");
 
-    const QRegularExpression UNARY_OPERATOR("[$]clog2|[$]exp|[$]sqrt");
+    const QRegularExpression UNARY_OPERATOR("[$]clog2|[$]exp|[$]sqrt|~");
 
     const QChar OPEN_PARENTHESIS('(');
     const QChar CLOSE_PARENTHESIS(')');
@@ -354,19 +354,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
 
         qreal result = 0;
 
-        if (operation.compare(QLatin1String("+")) == 0)
-        {
-            result = leftOperand + rightOperand;
-        }
-        else if (operation.compare(QLatin1String("-")) == 0)
-        {
-            result = leftOperand - rightOperand;
-        }
-        else if (operation.compare(QLatin1String("*")) == 0)
-        {
-            result = leftOperand*rightOperand;
-        }
-        else if (operation.compare(QLatin1String("**")) == 0 || operation.compare(QLatin1String("$pow")) == 0)
+        if (operation.compare(QLatin1String("**")) == 0 || operation.compare(QLatin1String("$pow")) == 0)
         {
             if (leftOperand == 0 && rightOperand < 0)
             {
@@ -375,6 +363,12 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
 
             result = qPow(leftOperand, rightOperand);
         }
+
+        else if (operation.compare(QLatin1String("*")) == 0)
+        {
+            result = leftOperand*rightOperand;
+        }
+
         else if (operation.compare(QLatin1String("/")) == 0)
         {
             if (rightOperand == 0)
@@ -385,19 +379,98 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
             result = leftOperand/rightOperand;
         }
 
-        if ((operation.compare(QLatin1String(">")) == 0 && leftOperand > rightOperand) ||
-                (operation.compare(QLatin1String("<")) == 0 && leftOperand < rightOperand) ||
-                (operation.compare(QLatin1String("==")) == 0 && leftOperand == rightOperand) ||
-                (operation.compare(QLatin1String(">=")) == 0 && leftOperand >= rightOperand) ||
-                (operation.compare(QLatin1String("<=")) == 0 && leftOperand <= rightOperand) ||
-                (operation.compare(QLatin1String("!=")) == 0 && leftOperand != rightOperand))
+        else if (operation.compare(QLatin1String("%")) == 0)
+        {
+            if (rightOperand == 0 || leftTerm.contains(".") || rightTerm.contains("."))
+            {
+                return QStringLiteral("x");
+            }
+
+            result = leftTerm.toLongLong() % rightTerm.toLongLong();
+        }
+
+        else if (operation.compare(QLatin1String("+")) == 0)
+        {
+            result = leftOperand + rightOperand;
+        }
+
+        else if (operation.compare(QLatin1String("-")) == 0)
+        {
+            result = leftOperand - rightOperand;
+        }
+
+        else if (operation.compare(QLatin1String("<<")) == 0)
+        {
+          if (leftTerm.contains('.') || rightTerm.contains("."))
+          {
+            return QStringLiteral("x");
+          }
+
+          result = leftTerm.toLongLong() << rightTerm.toLongLong();
+        }
+
+        else if (operation.compare(QLatin1String(">>")) == 0)
+        {
+            if (leftTerm.contains('.') || rightTerm.contains("."))
+            {
+                return QStringLiteral("x");
+            }
+
+          result = leftTerm.toLongLong() << rightTerm.toLongLong();
+        }
+
+        else if ((operation.compare(QLatin1String(">")) == 0 && leftOperand > rightOperand) ||
+            (operation.compare(QLatin1String("<")) == 0 && leftOperand < rightOperand) ||
+            (operation.compare(QLatin1String("==")) == 0 && leftOperand == rightOperand) ||
+            (operation.compare(QLatin1String(">=")) == 0 && leftOperand >= rightOperand) ||
+            (operation.compare(QLatin1String("<=")) == 0 && leftOperand <= rightOperand) ||
+            (operation.compare(QLatin1String("!=")) == 0 && leftOperand != rightOperand))
         {
             return QStringLiteral("1");
         }
 
-        if (!leftTerm.contains('.') &&
-                (operation.compare(QLatin1String("/")) == 0 ||
-                 (operation.compare(QLatin1String("**")) == 0 && rightOperand < 0)))
+        else if (operation.compare(QLatin1String("||")) == 0)
+        {
+            result = leftTerm.toLongLong() || rightTerm.toLongLong();
+        }
+
+        else if (operation.compare(QLatin1String("&&")) == 0)
+        {
+            result = leftTerm.toLongLong() && rightTerm.toLongLong();
+        }
+
+        else if (operation.compare(QLatin1String("|")) == 0)
+        {
+          if (leftTerm.contains('.') || rightTerm.contains("."))
+          {
+                return QStringLiteral("x");
+          }
+
+          result = leftTerm.toLongLong() | rightTerm.toLongLong();
+        }
+
+        else if (operation.compare(QLatin1String("^")) == 0)
+        {
+          if (leftTerm.contains('.') || rightTerm.contains("."))
+          {
+                return QStringLiteral("x");
+          }
+          
+          result = leftTerm.toLongLong() ^ rightTerm.toLongLong();
+        }
+
+        else if (operation.compare(QLatin1String("&"))==0)
+        {
+          if (leftTerm.contains('.') || rightTerm.contains("."))
+          {
+                return QStringLiteral("x");
+          }
+          
+          result = leftTerm.toLongLong() & rightTerm.toLongLong();
+        }
+
+        if (!leftTerm.contains('.') &&  (operation.compare(QLatin1String("/")) == 0 ||
+           (operation.compare(QLatin1String("**")) == 0 && rightOperand < 0)))
         {
             int integerResult = result;
             return QString::number(integerResult);
@@ -408,6 +481,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
                 qMax(getDecimalPrecision(leftTerm), getDecimalPrecision(rightTerm)));
         }
     }
+
     else if (isStringLiteral(leftTerm) && isStringLiteral(rightTerm))
     {
         if ((operation.compare(QLatin1String("==")) == 0 && leftTerm.compare(rightTerm) == 0) ||
@@ -420,10 +494,8 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
             return QStringLiteral("0");
         }
     }
-    else
-    {
-        return QStringLiteral("x");
-    }
+
+    return QStringLiteral("x");
 }
 
 //-----------------------------------------------------------------------------
@@ -442,6 +514,10 @@ QString SystemVerilogExpressionParser::solveUnary(QString const& operation, QStr
     else if (operation.compare(QLatin1String("$sqrt")) == 0)
     {
         return solveSqrt(term);
+    }
+    else if (operation.compare(QLatin1String("~")) == 0)
+    {
+        return QString::number(~term.toLongLong());
     }
 
     return QStringLiteral("x");
@@ -543,22 +619,32 @@ unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString oper) con
 {
     const static QMap<QString, int> operator_precedence =
     {
-        { "<", 1 },
-        { ">", 1 },
-        { "<=", 1 },
-        { ">=", 1 },
-        { "==", 1 },
-        { "+", 2 },
-        { "-", 2 },
-        { "*", 3 },
-        { "/", 3 },
-        { "**", 4 },
-        { "$clog2", 5 },
-        { "$pow", 5 },
-        { "(", 6 },
-        { ")", 6 },
-        { "{", 6 },
-        { "}", 6 }
+       {"||"     , 1},
+       {"&&"     , 2},
+       {"|"      , 3},
+       {"^"      , 4},
+       {"&"      , 5},
+       {"=="     , 6},
+       {"!="     , 6},
+       {"<"      , 7},
+       {">"      , 7},
+       {"<="     , 7},
+       {">="     , 7},
+       {"<<"     , 8},
+       {">>"     , 8},
+       {"+"      , 9},
+       {"-"      , 9},
+       {"%"      , 10},
+       {"*"      , 10},
+       {"/"      , 10},
+       {"**"     , 11},
+       { "~"     , 12},
+       {"$clog2" , 12},
+       {"$pow"   , 12},
+       {"("      , 13},
+       {")"      , 13},
+       {"{"      , 13},
+       {"}"      , 13}
     };
 
     return operator_precedence.value(oper, 0);

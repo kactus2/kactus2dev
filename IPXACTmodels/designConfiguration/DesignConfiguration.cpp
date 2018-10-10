@@ -18,7 +18,6 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <IPXACTmodels/common/VLNV.h>
-#include <IPXACTmodels/XmlUtils.h>
 
 #include <QList>
 #include <QDomNode>

@@ -2,30 +2,25 @@
 // File: AbstractionPortsDelegate.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Antti Kamppi
-// Date: 27.6.2011
+// Author: Mikko Teuho
+// Date: 06.06.2018
 //
 // Description:
-// The delegate that provides editors for logical port properties in Abstraction Definition.
+// Master delegate for abstraction definition wire and transactional ports.
 //-----------------------------------------------------------------------------
 
 #include "AbstractionPortsDelegate.h"
-#include "LogicalPortColumns.h"
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <QComboBox>
 #include <QStringList>
 #include <QLineEdit>
-#include <QIntValidator>
-#include <QSpinBox>
-
-#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::AbstractionPortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionPortsDelegate::AbstractionPortsDelegate(QObject *parent):
+AbstractionPortsDelegate::AbstractionPortsDelegate(QObject *parent) :
 QStyledItemDelegate(parent),
 busDefinition_(0)
 {
@@ -38,88 +33,42 @@ busDefinition_(0)
 QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     const QModelIndex& index ) const
 {
-    if (index.column() == LogicalPortColumns::QUALIFIER)
+    if (index.column() == qualifierColumn())
     {
         QComboBox* box = new QComboBox(parent);
-        QStringList list;
-        list.append("none");
-        list.append("address");
-        list.append("data");
-        list.append("data/address");
-        list.append("clock");
-        list.append("reset");
-
+        QStringList list = getQualifierList();
         box->addItems(list);
 
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
-
-    else if (index.column() == LogicalPortColumns::WIDTH)
+    else if (index.column() == widthColumn())
     {
         QLineEdit* line = new QLineEdit(parent);
         connect(line, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return line;
     }
-
-    else if (index.column() == LogicalPortColumns::MODE)
+    else if (index.column() == modeColum())
     {
         QComboBox* box = new QComboBox(parent);
 
-        QStringList list;
-        list.append(QString("master"));
-        list.append(QString("slave"));
-        list.append(QString("system"));
+        QStringList list = { "master", "slave", "system" };
         box->addItems(list);
 
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
-
-    else if (index.column() == LogicalPortColumns::DIRECTION)
+    else if (index.column() == presenceColumn())
     {
         QComboBox* box = new QComboBox(parent);
 
-        QStringList list;
-        list.append("in");
-        list.append("out");
-        list.append("inout");
+        QStringList list = { "required", "optional", "illegal" };
         box->addItems(list);
 
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
-
-    else if (index.column() == LogicalPortColumns::PRESENCE)
-    {
-        QComboBox* box = new QComboBox(parent);
-
-        QStringList list;
-        list.append(QString("required"));
-        list.append(QString("optional"));
-        list.append(QString("illegal"));
-        box->addItems(list);
-
-        connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-        return box;
-    }
-
-    else if (index.column() == LogicalPortColumns::DRIVER)
-    {
-        QComboBox* box = new QComboBox(parent);
-
-        QStringList list;
-        list.append(QString("none"));
-        list.append(QString("any"));
-        list.append(QString("clock"));
-        list.append(QString("singleShot"));
-        box->addItems(list);
-
-        connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-        return box;
-    }
-
-    else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
+    else if (index.column() == systemGroupColumn())
     {
         if (busDefinition_)
         {
@@ -144,42 +93,34 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) const
 {
-    if (index.column() == LogicalPortColumns::NAME)
+    if (editorIsLineEditor(index.column()))
     {
         QLineEdit* line = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT_X(line, "BusPortsDelegate::setEditorData", "Type conversion failed for QLineEdit");
 
         QString text = index.data(Qt::DisplayRole).toString();
-        if (text != QLatin1String("unnamed"))
+        line->setText(text);
+
+        if (index.column() == nameColumn() && text == QLatin1String("unnamed"))
         {
-            line->setText(text);
+            line->clear();
         }
     }
-
-    else if (index.column() == LogicalPortColumns::WIDTH ||
-        index.column() == LogicalPortColumns::DESCRIPTION ||
-        index.column() == LogicalPortColumns::DEFAULT_VALUE)
-    {
-        QLineEdit* line = qobject_cast<QLineEdit*>(editor);
-        Q_ASSERT_X(line, "BusPortsDelegate::setEditorData",	"Type conversion failed for QLineEdit");
-
-        QString text = index.data(Qt::DisplayRole).toString();
-        line->setText(text);
-    }
-
-    else if (index.column() == LogicalPortColumns::QUALIFIER ||
-        index.column() == LogicalPortColumns::MODE ||
-        index.column() == LogicalPortColumns::DIRECTION ||
-        index.column() == LogicalPortColumns::PRESENCE ||
-        index.column() == LogicalPortColumns::DRIVER ||
-        index.column() == LogicalPortColumns::SYSTEM_GROUP)
+    else if (editorIsComboBox(index.column()))
     {
         QComboBox* box = qobject_cast<QComboBox*>(editor);
         Q_ASSERT_X(box, "BusPortsDelegate::setEditorData", "Type conversion failed for combo box");
 
         QString text = index.data(Qt::DisplayRole).toString();
-
-        box->setCurrentIndex(box->findText(text));
+        int textIndex = box->findText(text);
+        if (textIndex >= 0)
+        {
+            box->setCurrentIndex(textIndex);
+        }
+        else
+        {
+            box->setCurrentText(text);
+        }
     }
 
     else
@@ -189,28 +130,36 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::editorIsLineEditor()
+//-----------------------------------------------------------------------------
+bool AbstractionPortsDelegate::editorIsLineEditor(int indexColumn) const
+{
+    return indexColumn == nameColumn() || indexColumn == widthColumn() || indexColumn == descriptionColumn();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::editorIsComboBox()
+//-----------------------------------------------------------------------------
+bool AbstractionPortsDelegate::editorIsComboBox(int indexColumn) const
+{
+    return indexColumn == qualifierColumn() || indexColumn == modeColum() || indexColumn == presenceColumn() ||
+        indexColumn == systemGroupColumn();
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::setModelData()
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index)
     const
 {
-    if (index.column() == LogicalPortColumns::NAME ||
-        index.column() == LogicalPortColumns::WIDTH ||
-        index.column() == LogicalPortColumns::DEFAULT_VALUE ||
-        index.column() == LogicalPortColumns::DESCRIPTION)
+    if (editorIsLineEditor(index.column()))
     {
         QLineEdit* lineEditor = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT_X(lineEditor, "BusPortsDelegate::setModelData", "Type conversion failed for normal QLineEdit");
 
         model->setData(index, lineEditor->text(), Qt::EditRole);
     }
-
-    else if (index.column() == LogicalPortColumns::QUALIFIER ||
-        index.column() == LogicalPortColumns::MODE ||
-        index.column() == LogicalPortColumns::DIRECTION ||
-        index.column() == LogicalPortColumns::PRESENCE || 
-        index.column() == LogicalPortColumns::DRIVER ||
-        index.column() == LogicalPortColumns::SYSTEM_GROUP)
+    else if (editorIsComboBox(index.column()))
     {
         QComboBox* selector = qobject_cast<QComboBox*>(editor);
         Q_ASSERT_X(selector, "BusPortsDelegate::setModelData", "Type conversion failed for combo box");
@@ -244,4 +193,13 @@ void AbstractionPortsDelegate::commitAndCloseEditor()
 void AbstractionPortsDelegate::setBusDef(QSharedPointer<BusDefinition> busDefinition)
 {
     busDefinition_ = busDefinition;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::getQualifierList()
+//-----------------------------------------------------------------------------
+QStringList AbstractionPortsDelegate::getQualifierList() const
+{
+    QStringList list = { "none", "address", "data", "data/address" };
+    return list;
 }

@@ -184,9 +184,6 @@
     <ClInclude Include="verilogimport_global.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\VerilogGenerator\veriloggeneratorplugin.json">
-      <FileType>Document</FileType>
-    </None>
     <None Include="verilogimportplugin.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

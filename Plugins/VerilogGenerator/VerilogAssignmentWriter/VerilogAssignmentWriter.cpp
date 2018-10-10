@@ -21,16 +21,9 @@ VerilogAssignmentWriter::VerilogAssignmentWriter(QString portWireName,
     QSharedPointer<MetaPort> mPort,
     bool isHierPort) :
     portWireName_(portWireName),
-    mpa_(portAssignment),
+    portAssignment_(portAssignment),
     mPort_(mPort),
-    isInHierPort_(isHierPort)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogAssignmentWriter::~VerilogAssignmentWriter()
-//-----------------------------------------------------------------------------
-VerilogAssignmentWriter::~VerilogAssignmentWriter()
+    isHierarchicalPort_(isHierPort)
 {
 }
 
@@ -43,7 +36,7 @@ void VerilogAssignmentWriter::write(QTextStream& output) const
 
     if (!outputLine.isEmpty())
     {
-        output << "    assign " << outputLine << ";" <<endl;
+        output << QStringLiteral("    assign ") << outputLine << QStringLiteral(";") << endl;
     }
 }
 
@@ -52,96 +45,121 @@ void VerilogAssignmentWriter::write(QTextStream& output) const
 //-----------------------------------------------------------------------------
 QString VerilogAssignmentWriter::assignmentForPort() const
 {
-    DirectionTypes::Direction dir = mPort_->port_->getDirection();
-    bool isOutPort = (dir == DirectionTypes::OUT || dir == DirectionTypes::INOUT);
-    bool isInPort = (dir == DirectionTypes::IN || dir == DirectionTypes::INOUT);
+    DirectionTypes::Direction direction = mPort_->port_->getDirection();
+    bool isOutPort = (direction == DirectionTypes::OUT || direction == DirectionTypes::INOUT);
+    bool isInPort = (direction == DirectionTypes::IN || direction == DirectionTypes::INOUT);
 
-    QString assignmentString;
+    bool assignToPort = (!isHierarchicalPort_ && isInPort) || (isHierarchicalPort_ && isOutPort);
+    bool assignToWire = (isHierarchicalPort_ && isInPort) || (!isHierarchicalPort_ && isOutPort);
+    
+    QString logicalAssign = createLogicalAssignment(assignToPort);
+    QString physicalAssign = createPhysicalAssignment();
 
-    if ((!isInHierPort_ && isInPort) || (isInHierPort_ && isOutPort))
+    if (logicalAssign.isEmpty() || physicalAssign.isEmpty())
     {
-        assignmentString = "<portWireName>[<physicalLeft>:<physicalRight>] = <logicalWireName>[<logicalLeft>:<logicalRight>]";
+        return QString();
     }
-    else if ((!isInHierPort_ && isOutPort) || (isInHierPort_ && isInPort))
+
+    if (assignToPort)
     {
-        assignmentString = "<logicalWireName>[<logicalLeft>:<logicalRight>] = <portWireName>[<physicalLeft>:<physicalRight>]";
+        return physicalAssign +  QStringLiteral(" = ") + logicalAssign;
+    }
+    else if (assignToWire)
+    {
+        return logicalAssign + QStringLiteral(" = ") + physicalAssign;
     }
     else
     {
-        return "";
+        return QString();
     }
+}
 
-    // The selected bounds of the component port that will be assigned.
-    QPair<QString,QString> portBounds = mpa_->physicalBounds_;
-    // The bounds of the wire that will be assigned to selected bounds of the component port.
-    QPair<QString,QString> wireBounds;
-    // The bounds of the selected part wire that will be assigned to selected bounds of the component port.
-    QPair<QString,QString> logicalBounds;
-
-    if (mpa_->wire_)
+//-----------------------------------------------------------------------------
+// Function: VerilogAssignmentWriter::createLogicalAssignment()
+//-----------------------------------------------------------------------------
+QString VerilogAssignmentWriter::createLogicalAssignment(bool assignToPort) const
+{
+    if (portAssignment_->wire_)
     {
-        logicalBounds = mpa_->logicalBounds_;
-        wireBounds = mpa_->wire_->bounds_;
+        QString logicalAssign = QStringLiteral("<logicalWireName>[<logicalLeft>:<logicalRight>]");
 
-        // Use bounds only if they are not the same.
-        if (logicalBounds.first == logicalBounds.second)
+        // The bounds of the selected part wire that will be assigned to selected bounds of the component port.
+        QPair<QString, QString> logicalBounds = portAssignment_->logicalBounds_;
+
+        // The bounds of the wire that will be assigned to selected bounds of the component port.
+        QPair<QString, QString> wireBounds = portAssignment_->wire_->bounds_;
+        if (logicalBounds == wireBounds)
         {
-            // If the chosen port bounds differ, must select the bit.
+            logicalAssign.remove(QStringLiteral("[<logicalLeft>:<logicalRight>]"));
+        }
+        else if (logicalBounds.first == logicalBounds.second)
+        {
             if (wireBounds.first == wireBounds.second)
             {
-                assignmentString.remove("[<logicalLeft>:<logicalRight>]");
+                logicalAssign.remove(QStringLiteral("[<logicalLeft>:<logicalRight>]"));
             }
-            else
+            else  // If the chosen port bounds differ, must select the bit.
             {
-                assignmentString.replace("<logicalLeft>:<logicalRight>", logicalBounds.first);
+                logicalAssign.replace(QStringLiteral("<logicalLeft>:<logicalRight>"), logicalBounds.first);
             }
         }
         else
         {
-            assignmentString.replace("<logicalLeft>", logicalBounds.first);
-            assignmentString.replace("<logicalRight>", logicalBounds.second);
+            logicalAssign.replace(QStringLiteral("<logicalLeft>"), logicalBounds.first);
+            logicalAssign.replace(QStringLiteral("<logicalRight>"), logicalBounds.second);
         }
 
-        assignmentString.replace("<logicalWireName>", VerilogSyntax::legalizeName(mpa_->wire_->name_));
+        logicalAssign.replace(QStringLiteral("<logicalWireName>"),
+            VerilogSyntax::legalizeName(portAssignment_->wire_->name_));
+        return logicalAssign;
     }
-    else if ((!isInHierPort_ && isInPort) || (isInHierPort_ && isOutPort))
-    {
-        QString defaultValue = mpa_->defaultValue_;
-
+    else if (assignToPort)
+    {    
+        // If a default value is assigned to a physical port, it shall be used.
+        QString defaultValue = portAssignment_->defaultValue_;
         if (defaultValue.isEmpty())
         {
             defaultValue = mPort_->defaultValue_;
         }
 
-        // If a default value is assigned to a physical port, it shall be used.
-        assignmentString.remove("[<logicalLeft>:<logicalRight>]");
-        assignmentString.replace("<logicalWireName>", defaultValue);
+        return defaultValue;
     }
     else
     {
-        return "";
+        return QString();
     }
+}
 
-    // Use bounds only if they are not the same.
-    if (portBounds.first == portBounds.second)
+//-----------------------------------------------------------------------------
+// Function: VerilogAssignmentWriter::createPhysicalAssignment()
+//-----------------------------------------------------------------------------
+QString VerilogAssignmentWriter::createPhysicalAssignment() const
+{
+    QString portAssign = portWireName_ + QStringLiteral("[<physicalLeft>:<physicalRight>]");
+
+    QPair<QString, QString> portBounds = portAssignment_->physicalBounds_;
+    QPair<QString, QString> logicalBounds = portAssignment_->logicalBounds_;
+    if (logicalBounds == portBounds && logicalBounds == mPort_->vectorBounds_)
     {
-        // If the chosen wire bounds differ, must select the bit.
+        portAssign.remove(QStringLiteral("[<physicalLeft>:<physicalRight>]"));
+    }
+    // Use bounds only if they are not the same.
+    else if (portBounds.first == portBounds.second)
+    {
         if (mPort_->vectorBounds_.first == mPort_->vectorBounds_.second)
         {
-            assignmentString.remove("[<physicalLeft>:<physicalRight>]");
+            portAssign.remove(QStringLiteral("[<physicalLeft>:<physicalRight>]"));
         }
-        else
+        else // If the chosen wire bounds differ, must select the bit.
         {
-            assignmentString.replace("<physicalLeft>:<physicalRight>", portBounds.first);
+            portAssign.replace(QStringLiteral("<physicalLeft>:<physicalRight>"), portBounds.first);
         }
     }
     else
     {
-        assignmentString.replace("<physicalLeft>", portBounds.first);
-        assignmentString.replace("<physicalRight>", portBounds.second);
+        portAssign.replace(QStringLiteral("<physicalLeft>"), portBounds.first);
+        portAssign.replace(QStringLiteral("<physicalRight>"), portBounds.second);
     }
 
-    assignmentString.replace("<portWireName>", portWireName_);
-
-    return assignmentString;
+    return portAssign;
 }

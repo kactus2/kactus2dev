@@ -17,12 +17,10 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <library/LibraryInterface.h>
-
 //-----------------------------------------------------------------------------
 // Function: VLNVContentMatcher()
 //-----------------------------------------------------------------------------
-VLNVContentMatcher::VLNVContentMatcher(LibraryInterface* lh) : lh_(lh), node_(0)
+VLNVContentMatcher::VLNVContentMatcher() : node_(0)
 {
 }
 

@@ -50,6 +50,8 @@ struct MetaWire
 {
     //! The bounds of the wire.
     QPair<QString,QString> bounds_;
+    //! The array bounds of the wire.
+    QPair<QString, QString> arrayBounds_;
     //! The name of the wire, to tell it apart from other wires of the same interconnection.
     QString name_;
     //! The hierarchical ports that are assigned to the wire.

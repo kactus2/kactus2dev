@@ -88,7 +88,7 @@ void tst_VHDLPortParser::testPortIsParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getPorts()->count(), 1);
+    QVERIFY(importComponent_->getPorts()->count() >= 1);
 
     QSharedPointer<Port> createdPort = importComponent_->getPorts()->first();
     QCOMPARE(createdPort->name(), expectedName);
@@ -138,7 +138,8 @@ void tst_VHDLPortParser::testPortIsParsed_data()
 
     QTest::newRow("name type, direction, default value and description") << 
         "entity test is\n"
-        "   port (data : out std_logic_vector(31 downto 0) := (others => '0') -- data from ip\n"
+        "   port (data : out std_logic_vector(31 downto 0) := (others => '0'); -- data from ip\n"
+        "   clk : in std_logic \n"
         ");\n"
         "end test;"
         << "data" << DirectionTypes::OUT << "31" << "0" << "std_logic_vector" << "IEEE.std_logic_1164.all"

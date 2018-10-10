@@ -13,7 +13,7 @@
 
 #include "IPlugin.h"
 
-#include <IPXACTmodels/XmlUtils.h>
+#include <IPXACTmodels/utilities/XmlUtils.h>
 
 #include <QCoreApplication>
 #include <QDir>

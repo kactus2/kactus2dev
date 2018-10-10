@@ -266,7 +266,7 @@ namespace General
     */
 
     //! Specifies a port name and it's bounds.
-    struct PortBounds {
+    struct IPXACTMODELS_EXPORT PortBounds {
 
         //! The name of the port.
         QString portName_;
@@ -278,7 +278,7 @@ namespace General
         int right_;
 
         //! Default constructor
-        IPXACTMODELS_EXPORT PortBounds();
+         PortBounds();
 
         /*! The constructor
         * 
@@ -287,7 +287,7 @@ namespace General
         *      @param [in] portName The name of the port.
         *
         */
-        IPXACTMODELS_EXPORT explicit PortBounds(const QString& portName);
+        explicit PortBounds(const QString& portName);
 
         /*! The constructor
         *
@@ -296,22 +296,22 @@ namespace General
         *      @param [in] right The right bound of the port.
         *
         */
-        IPXACTMODELS_EXPORT PortBounds(const QString& portName, const int left, const int right);
+        PortBounds(const QString& portName, const int left, const int right);
 
         //! Copy constructor
-        IPXACTMODELS_EXPORT PortBounds(const PortBounds& other);
+        PortBounds(const PortBounds& other) = default;
 
         //! Assignment operator
-        IPXACTMODELS_EXPORT PortBounds& operator=(const PortBounds& other);
+        PortBounds& operator=(const PortBounds& other) = default;
 
         //! Operator <
-        IPXACTMODELS_EXPORT bool operator<(const PortBounds& other) const;
+        bool operator<(const PortBounds& other) const;
 
         //! Operator ==
-        IPXACTMODELS_EXPORT bool operator==(const PortBounds& other) const;
+        bool operator==(const PortBounds& other) const;
 
         //! Operator !=
-        IPXACTMODELS_EXPORT bool operator!=(const PortBounds& other) const;
+        bool operator!=(const PortBounds& other) const;
     };
 
     /*! Convert the info into string.
@@ -349,10 +349,10 @@ namespace General
         PortAlignment();
 
         //! Copy constructor
-        PortAlignment(const PortAlignment& other);
+        PortAlignment(const PortAlignment& other) = default;
 
         //! Assignment operator
-        PortAlignment& operator=(const PortAlignment& other);
+        PortAlignment& operator=(const PortAlignment& other) = default;
     };
 
     /*! Convert a boolean value into QString
@@ -463,21 +463,6 @@ namespace General
     *      @return The absolute path of the target directory/file
     */
     IPXACTMODELS_EXPORT QString getAbsolutePath(const QString& originalPath, const QString& relativePath);
-
-    /*! Convert a string to unsigned int format.
-    * 
-    * The multiples in the string are converted as following:
-    * k/K = 2^10
-    * M   = 2^20
-    * G   = 2^30
-    * T   = 2^40
-    * P   = 2^50
-    * 
-    *      @param [in] str The string to convert.
-    *
-    *      @return The result of the conversion.
-    */
-    quint64 str2Uint(const QString& str);
 }
 
 #endif /* GENERALDECLARATIONS_H_ */

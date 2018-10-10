@@ -89,7 +89,7 @@ QString MemoryMapHeaderGenerator::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 QWidget* MemoryMapHeaderGenerator::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

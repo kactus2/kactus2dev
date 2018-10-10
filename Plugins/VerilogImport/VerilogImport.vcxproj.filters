@@ -101,6 +101,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="verilogimportplugin.json" />
-    <None Include="..\VerilogGenerator\veriloggeneratorplugin.json" />
   </ItemGroup>
 </Project>

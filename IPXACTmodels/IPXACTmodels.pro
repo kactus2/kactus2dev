@@ -8,7 +8,7 @@ TARGET = IPXACTmodels
 QT += core xml gui
 CONFIG += c++11 release
 
-DEFINES += IPXACTMODELS_LIB
+DEFINES += IPXACTMODELS_LIB QT_NO_CAST_FROM_ASCII
 INCLUDEPATH += ./GeneratedFiles \
     . \
     ./GeneratedFiles/Release \

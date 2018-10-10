@@ -77,7 +77,7 @@ sudo apt-get install qt5-default qttools5-private-dev qttools5-dev-tools libqt5s
 b) Manually download and install from https://www.qt.io/download/
 
 When using manually installed Qt5, you need to make sure that Kactus2 install is configured accordingly:
-Open file configure in the Kactus2 root directory and set the path to Qt5 binaries in the 
+Open the file configure in the Kactus2 root directory and set the path to Qt5 binaries in the 
 variable QTBIN_PATH. 
   
 Example: 
@@ -194,8 +194,8 @@ subject to changes in the near future.
 Settings and configurations
 ----------------------------------------------------
 
-Kactus2 uses a settings file storing user-specific tool settings. The default location is
-~/.config/TUT/Kactus2.ini in Linux and C:\Users\<username>\AppData\Roaming\TUT\Kactus2.ini
+Kactus2 uses a settings file for storing user-specific tool settings. The file default location
+is ~/.config/TUT/Kactus2.ini in Linux and C:\Users\<username>\AppData\Roaming\TUT\Kactus2.ini
 in Windows. The location can be checked on the general settings page in Kactus2.
 
 A system wide default settings file is located in /etc/xdg and C:\ProgramData, respectively.
@@ -205,7 +205,7 @@ the user's file is missing a requested value.
 Modifying the settings files manually is not recommended and should be done only by advanced 
 users. Most of the time all required changes can be applied in the Kactus2 GUI.
 
-In addtion, Kactus2 uses the file configure.cfg for updating the users' settings when
+In addition, Kactus2 uses the file configure.cfg for updating the users' settings when
 new setting options are introduced in the tool. Please do not modify this file as it will
 break the compatibility with earlier versions.
 
