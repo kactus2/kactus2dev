@@ -36,8 +36,9 @@ public:
      *      @param [in] name    The register name.
      */
     RegisterBase(QString const& name = QString());
+    RegisterBase(QString const& name, QString const& addressOffset);
 
-	//! The copy constructor.
+    //! The copy constructor.
     RegisterBase(const RegisterBase& other);
 
 	//! The assignment operator.
@@ -66,7 +67,34 @@ public:
      *      @param [in] newIsPresent    The new value for is present.
      */
     void setIsPresent(QString const& newIsPresent);
-    
+    /*!
+     *  Get the dimension of the register.
+     *
+     *      @return The value of the dim-element.
+     */
+    QString getDimension() const;
+
+    /*!
+     *  Set the dimension of the registerFile.
+     *
+     *      @param [in] newDimension    The new value for dim-element.
+     */
+    void setDimension(QString const& newDimension);
+
+    /*!
+     *  Get the address offset of the registerFile.
+     *
+     *      @return The offset.
+     */
+    QString getAddressOffset() const;
+
+    /*!
+     *  Set the address offset.
+     *
+     *      @param [in] newAddressOffset    The new offset.
+     */
+    void setAddressOffset(QString const& newAddressOffset);
+
     /*!
      *  Get the register type identifier.
      *
@@ -95,6 +123,13 @@ public:
      */
     void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
 
+protected:
+    //! Contains dimensions of a register array.
+    QString dimension_;
+
+    //! Offset from the base address.
+    QString addressOffset_;
+
 private:
 
     /*!
@@ -113,6 +148,7 @@ private:
 
     //! The type identifier.
     QString typeIdentifier_;
+
 
 	//! Contains the parameters.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;

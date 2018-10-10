@@ -252,11 +252,7 @@ QStringList AddressBlock::getAllRegisterOffsets() const
 
     foreach (QSharedPointer<RegisterBase> registerBase, *registerData_)
     {
-        QSharedPointer<Register> reg = registerBase.dynamicCast<Register>();
-        if (reg)
-        {
-            registerOffsets.append(reg->getAddressOffset());
-        }
+      registerOffsets.append(registerBase->getAddressOffset());
     }
 
     return registerOffsets;

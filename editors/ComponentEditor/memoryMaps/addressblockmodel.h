@@ -24,8 +24,11 @@
 
 class Choice;
 class Register;
+class RegisterFile;
 class RegisterValidator;
+class RegisterFileValidator;
 class RegisterExpressionsGatherer;
+class RegisterFileExpressionsGatherer;
 class ReferenceCalculator;
 
 //-----------------------------------------------------------------------------
@@ -51,9 +54,9 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<RegisterValidator> registerValidator,
+        QSharedPointer<RegisterFileValidator> registerFileValidator,
 		QObject *parent);
-	
+
 	//! The destructor.
 	virtual ~AddressBlockModel();
 
@@ -115,7 +118,7 @@ public:
 	 *      @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-    
+
     /*!
      *  Get the list of acceptable mime types.
      *
@@ -169,7 +172,9 @@ public slots:
 	 *
 	 *      @param [in] index   The index identifying the position for new item.
 	 */
-	virtual void onAddItem(const QModelIndex& index);
+    virtual void onAddRegister(const QModelIndex& index);
+    virtual void onAddRegisterFile(const QModelIndex& index);
+
 
 	/*!
      *  Remove the item in the given index.
@@ -217,13 +222,14 @@ signals:
 	void itemRemoved(int index);
 
 private:
-	
+
 	//! No copying.
 	AddressBlockModel(const AddressBlockModel& other);
 
 	//! No assignment.
 	AddressBlockModel& operator=(const AddressBlockModel& other);
 
+    void onAddItem(QSharedPointer<RegisterBase> regItem, QModelIndex const& index);
     /*!
      *  Get the value for the corresponding index.
      *
@@ -236,7 +242,7 @@ private:
      *
      *      @param [in] removedRegister     The removed register.
      */
-    void decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister);
+    void decreaseReferencesWithRemovedRegister(QSharedPointer<RegisterBase> removedRegister);
 
     /*!
      *  Get the names of the contained registers.
@@ -254,7 +260,8 @@ private:
      */
     void increaseReferencesInPastedRegister(QSharedPointer<Register> pastedRegister,
         RegisterExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
-
+    void increaseReferencesInPastedRegisterFile(QSharedPointer<RegisterFile> pastedRegisterFile,
+        RegisterFileExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -275,7 +282,9 @@ private:
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
     //! The validator used for registers.
-    QSharedPointer<RegisterValidator> registerValidator_;
+    QSharedPointer<RegisterFileValidator> registerFileValidator_;
+		//! The validator used for registers.
+		QSharedPointer<RegisterValidator> registerValidator_;
 };
 
 #endif // ADDRESSBLOCKMODEL_H

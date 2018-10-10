@@ -41,6 +41,7 @@
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
@@ -104,10 +105,11 @@ assertionValidator_()
 
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_));
-    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(
-        parser, fieldValidator, parameterValidator_));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator, parameterValidator_));
+    QSharedPointer<RegisterFileValidator> registerFileValidator (new RegisterFileValidator(parser, registerValidator, parameterValidator_));
+
     QSharedPointer<AddressBlockValidator> addressBlockValidator(new AddressBlockValidator(
-        parser, registerValidator, parameterValidator_));
+        parser, registerValidator, registerFileValidator, parameterValidator_));
 
     QSharedPointer<MemoryMapBaseValidator> localMapValidator (new MemoryMapBaseValidator(
         parser, addressBlockValidator));

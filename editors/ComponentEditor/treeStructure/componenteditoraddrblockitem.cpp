@@ -11,6 +11,7 @@
 
 #include "componenteditoraddrblockitem.h"
 #include "componenteditorregisteritem.h"
+#include "componenteditorregisterfileitem.h"
 
 #include <editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
@@ -19,6 +20,7 @@
 
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
 
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
@@ -49,17 +51,32 @@ addressBlockValidator_(addressBlockValidator)
     foreach (QSharedPointer<RegisterBase> regModel, *addrBlock->getRegisterData())
     {
 		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
-		
-		// if the item was a register 
 		if (reg)
         {
 			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
                 libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
                 expressionParser_, addressBlockValidator_->getRegisterValidator(), this));
 			childItems_.append(regItem);
+            continue;
 		}
-	}
 
+        QSharedPointer<RegisterFile> regfile = regModel.dynamicCast<RegisterFile>();
+        if(regfile){
+            QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(
+                        new ComponentEditorRegisterFileItem(regfile,
+                                                            model,
+                                                            libHandler,
+                                                            component,
+                                                            parameterFinder_,
+                                                            expressionFormatter_,
+                                                            referenceCounter_,
+                                                            expressionParser_,
+                                                            addressBlockValidator_->getRegisterFileValidator(),
+                                                            this));
+            childItems_.append(regFileItem);
+            continue;
+        }
+	}
 	Q_ASSERT(addrBlock_);
 }
 
@@ -152,7 +169,29 @@ void ComponentEditorAddrBlockItem::createChild( int index )
         onGraphicsChanged();
 
 		childItems_.insert(index, regItem);
+        return;
 	}
+    QSharedPointer<RegisterFile> regFile = regmodel.dynamicCast<RegisterFile>();
+    if (regFile)
+    {
+        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regFile, model_,
+            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
+            expressionParser_, addressBlockValidator_->getRegisterFileValidator(), this));
+        regFileItem->setLocked(locked_);
+
+        if (visualizer_)
+        {
+            regFileItem->setVisualizer(visualizer_);
+        }
+
+        onGraphicsChanged();
+
+        childItems_.insert(index, regFileItem);
+        return;
+    }
+
+
+
 }
 
 //-----------------------------------------------------------------------------
@@ -211,8 +250,18 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 	// update the visualizers for register items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
     {
-		QSharedPointer<ComponentEditorRegisterItem> regItem = item.staticCast<ComponentEditorRegisterItem>();
-		regItem->setVisualizer(visualizer_);
+        QSharedPointer<ComponentEditorRegisterItem> regItem = item.dynamicCast<ComponentEditorRegisterItem>();
+        if(regItem){
+          regItem->setVisualizer(visualizer_);
+          continue;
+        }
+
+        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem = item.dynamicCast<ComponentEditorRegisterFileItem>();
+        if(regFileItem){
+          regFileItem->setVisualizer(visualizer_);
+          continue;
+        }
+
 	}
 
 	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);

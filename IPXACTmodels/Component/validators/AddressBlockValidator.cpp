@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/Component/validators/MemoryReserve.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
@@ -30,9 +31,11 @@
 //-----------------------------------------------------------------------------
 AddressBlockValidator::AddressBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<RegisterValidator> registerValidator,
+    QSharedPointer<RegisterFileValidator> registerFileValidator,
     QSharedPointer<ParameterValidator> parameterValidator):
 expressionParser_(expressionParser),
 registerValidator_(registerValidator),
+  registerFileValidator_(registerFileValidator),
 parameterValidator_(parameterValidator)
 {
 
@@ -55,14 +58,26 @@ QSharedPointer<RegisterValidator> AddressBlockValidator::getRegisterValidator() 
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::getRegisterFileValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<RegisterFileValidator> AddressBlockValidator::getRegisterFileValidator() const
+{
+    return registerFileValidator_;
+}
+//-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::validate()
 //-----------------------------------------------------------------------------
 bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits)
     const
 {
-    return hasValidName(addressBlock) && hasValidIsPresent(addressBlock) && hasValidBaseAddress(addressBlock) &&
-        hasValidRange(addressBlock) && hasValidWidth(addressBlock) && hasValidParameters(addressBlock) &&
-        hasValidRegisterData(addressBlock, addressUnitBits) && hasValidUsage(addressBlock);
+    return  hasValidName(addressBlock) &&
+            hasValidIsPresent(addressBlock) &&
+            hasValidBaseAddress(addressBlock) &&
+            hasValidRange(addressBlock) &&
+            hasValidWidth(addressBlock) &&
+            hasValidParameters(addressBlock) &&
+            hasValidRegisterData(addressBlock, addressUnitBits) &&
+            hasValidUsage(addressBlock);
 }
 
 //-----------------------------------------------------------------------------

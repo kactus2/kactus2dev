@@ -11,10 +11,10 @@
 
 #include "AddressBlockExpressionsGatherer.h"
 #include "RegisterExpressionsGatherer.h"
-
+#include "RegisterFileExpressionsGatherer.h"
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
-
+#include <IPXACTmodels/Component/RegisterFile.h>
 //-----------------------------------------------------------------------------
 // Function: AddressBlockExpressionsGatherer::AddressBlockExpressionGatherer()
 //-----------------------------------------------------------------------------
@@ -43,14 +43,18 @@ QStringList AddressBlockExpressionGatherer::getExpressions(QSharedPointer<Addres
     expressionList.append(currentAddressBlock->getWidth());
 
     RegisterExpressionsGatherer registerGatherer;
+    RegisterFileExpressionsGatherer registerFileGatherer;
 
     foreach (QSharedPointer<RegisterBase> registerModel, *currentAddressBlock->getRegisterData())
     {
         QSharedPointer<Register> targetRegister = registerModel.dynamicCast<Register>();
-
+        QSharedPointer<RegisterFile> targetRegisterFile = registerModel.dynamicCast<RegisterFile>();
         if (targetRegister)
         {
-            expressionList.append(registerGatherer.getExpressions(targetRegister));
+          expressionList.append(registerGatherer.getExpressions(targetRegister));
+        }
+        else if(targetRegisterFile){
+          expressionList.append(registerFileGatherer.getExpressions(targetRegisterFile));
         }
     }
 

@@ -15,11 +15,20 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterDefinition::RegisterDefinition()
 //-----------------------------------------------------------------------------
+
+RegisterDefinition::RegisterDefinition(QString const& name, QString const& addressOffset) :
+  RegisterBase(name, addressOffset),
+  volatile_(),
+  access_(AccessTypes::ACCESS_COUNT),
+  fields_(new QList<QSharedPointer<Field> > ())
+{
+
+}
 RegisterDefinition::RegisterDefinition(QString const& name /* = QString() */) :
-RegisterBase(name),
-volatile_(),
-access_(AccessTypes::ACCESS_COUNT),
-fields_(new QList<QSharedPointer<Field> > ())
+  RegisterBase(name),
+  volatile_(),
+  access_(AccessTypes::ACCESS_COUNT),
+  fields_(new QList<QSharedPointer<Field> > ())
 {
 
 }

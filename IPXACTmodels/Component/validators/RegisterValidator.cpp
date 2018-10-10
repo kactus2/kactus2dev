@@ -12,7 +12,6 @@
 #include "RegisterValidator.h"
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
-
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -24,7 +23,7 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
-#include <IPXACTmodels/common/Parameter.h>
+
 
 #include <QRegularExpression>
 
@@ -32,10 +31,9 @@
 // Function: RegisterValidator::RegisterValidator()
 //-----------------------------------------------------------------------------
 RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator> parameterValidator):
-expressionParser_(expressionParser),
-fieldValidator_(fieldValidator),
-parameterValidator_(parameterValidator)
+                                     QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator> parameterValidator):
+    RegisterBaseValidator(expressionParser,parameterValidator),
+    fieldValidator_(fieldValidator)
 {
 
 }
@@ -61,82 +59,10 @@ QSharedPointer<FieldValidator> RegisterValidator::getFieldValidator() const
 //-----------------------------------------------------------------------------
 bool RegisterValidator::validate(QSharedPointer<Register> selectedRegister) const
 {
-    return hasValidName(selectedRegister) && hasValidIsPresent(selectedRegister) &&
-        hasValidDimension(selectedRegister) && hasValidAddressOffset(selectedRegister) &&
-        hasValidSize(selectedRegister) && hasValidFields(selectedRegister, selectedRegister->getSize()) &&
-        hasValidAlternateRegisters(selectedRegister) && hasValidParameters(selectedRegister);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::hasValidName()
-//-----------------------------------------------------------------------------
-bool RegisterValidator::hasValidName(QSharedPointer<RegisterBase> selectedRegister) const
-{
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(selectedRegister->name());
-
-    if (selectedRegister->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::hasValidIsPresent()
-//-----------------------------------------------------------------------------
-bool RegisterValidator::hasValidIsPresent(QSharedPointer<RegisterBase> selectedRegister) const
-{
-    if (!selectedRegister->getIsPresent().isEmpty())
-    {
-        QString solvedValue = expressionParser_->parseExpression(selectedRegister->getIsPresent());
-
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-
-        if (!toIntOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::hasValidDimension()
-//-----------------------------------------------------------------------------
-bool RegisterValidator::hasValidDimension(QSharedPointer<Register> selectedRegister) const
-{
-    if (!selectedRegister->getDimension().isEmpty())
-    {
-        bool dimensionValid = false;
-        QString solvedValue = expressionParser_->parseExpression(selectedRegister->getDimension(), &dimensionValid);
-
-        bool toIntOk = true;
-        solvedValue.toULongLong(&toIntOk);
-
-        return dimensionValid && toIntOk;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::hasValidAddressOffset()
-//-----------------------------------------------------------------------------
-bool RegisterValidator::hasValidAddressOffset(QSharedPointer<Register> selectedRegister) const
-{
-    bool changeOk = true; 
-    bool expressionValid = false;
-
-    QString solvedValue =
-        expressionParser_->parseExpression(selectedRegister->getAddressOffset(), &expressionValid);
-    quint64 offsetInt = solvedValue.toULongLong(&changeOk);
-
-    return changeOk && expressionValid;
+    return RegisterBaseValidator::validate(selectedRegister) &&
+           hasValidSize(selectedRegister) &&
+           hasValidFields(selectedRegister, selectedRegister->getSize()) &&
+           hasValidAlternateRegisters(selectedRegister);
 }
 
 //-----------------------------------------------------------------------------
@@ -274,29 +200,6 @@ bool RegisterValidator::hasValidAlternateGroups(QSharedPointer<AlternateRegister
     return alternateGroupsOk;
 }
 
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::hasValidParameters()
-//-----------------------------------------------------------------------------
-bool RegisterValidator::hasValidParameters(QSharedPointer<RegisterBase> selectedRegister) const
-{
-    if (!selectedRegister->getParameters()->isEmpty())
-    {
-        QStringList parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *selectedRegister->getParameters())
-        {
-            if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
-            {
-                return false;
-            }
-            else
-            {
-                parameterNames.append(parameter->name());
-            }
-        }
-    }
-
-    return true;
-}
 
 //-----------------------------------------------------------------------------
 // Function: RegisterValidator::fieldHasValidAccess()
@@ -389,62 +292,10 @@ void RegisterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Re
     findErrorsInDimension(errors, selectedRegister, context);
     findErrorsInAddressOffset(errors, selectedRegister, context);
     findErrorsInSize(errors, selectedRegister, context);
+
     findErrorsInFields(errors, selectedRegister, selectedRegister->getSize(), registerContext);
     findErrorsInAlternateRegisters(errors, selectedRegister);
     findErrorsInParameters(errors, selectedRegister, registerContext);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::findErrorsInName()
-//-----------------------------------------------------------------------------
-void RegisterValidator::findErrorsInName(QVector<QString>& errors, QSharedPointer<RegisterBase> selectedRegister,
-    QString const& context) const
-{
-    if (!hasValidName(selectedRegister))
-    {
-        errors.append(
-            QObject::tr("Invalid name specified for register '%1' within %2")
-            .arg(selectedRegister->name(), context));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::findErrorsInIsPresent()
-//-----------------------------------------------------------------------------
-void RegisterValidator::findErrorsInIsPresent(QVector<QString>& errors,
-    QSharedPointer<RegisterBase> selectedRegister, QString const& context) const
-{
-    if (!hasValidIsPresent(selectedRegister))
-    {
-        errors.append(QObject::tr("Invalid isPresent set for %1 within %2").arg(selectedRegister->name()).
-            arg(context));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::findErrorsInDimension()
-//-----------------------------------------------------------------------------
-void RegisterValidator::findErrorsInDimension(QVector<QString>& errors, QSharedPointer<Register> selectedRegister,
-    QString const& context) const
-{
-    if (!hasValidDimension(selectedRegister))
-    {
-        errors.append(QObject::tr("Invalid dimension set for register %1 within %2").arg(selectedRegister->name()).
-            arg(context));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::findErrorsInAddressOffset()
-//-----------------------------------------------------------------------------
-void RegisterValidator::findErrorsInAddressOffset(QVector<QString>& errors,
-    QSharedPointer<Register> selectedRegister, QString const& context) const
-{
-    if (!hasValidAddressOffset(selectedRegister))
-    {
-        errors.append(QObject::tr("Invalid address offset set for register %1 within %2")
-            .arg(selectedRegister->name()).arg(context));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -576,31 +427,5 @@ void RegisterValidator::findErrorsInAlternateGroups(QVector<QString>& errors,
     {
         errors.append(QObject::tr("Alternate groups are not unique or not empty in %1 within %2").
             arg(selectedRegister->name()).arg(context));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::findErrorsInParameters()
-//-----------------------------------------------------------------------------
-void RegisterValidator::findErrorsInParameters(QVector<QString>&errors,
-    QSharedPointer<RegisterBase> selectedRegister, QString const& context) const
-{
-    if (!selectedRegister->getParameters()->isEmpty())
-    {
-        QStringList parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *selectedRegister->getParameters())
-        {
-            if (parameterNames.contains(parameter->name()))
-            {
-                errors.append(QObject::tr("Name %1 of parameters in %2 is not unique.").arg(parameter->name(),
-                    context));
-            }
-            else
-            {
-                parameterNames.append(parameter->name());
-            }
-
-            parameterValidator_->findErrorsIn(errors, parameter, context);
-        }
     }
 }

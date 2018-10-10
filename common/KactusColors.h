@@ -83,6 +83,7 @@ namespace KactusColors
 
     QColor const MEM_MAP_COLOR =  HW_COMPONENT;
     QColor const ADDR_BLOCK_COLOR = QColor(194, 214, 244);
+    QColor const REGISTER_FILE_COLOR = QColor(203, 219, 244);
     QColor const REGISTER_COLOR = QColor(216, 229, 248);
     QColor const FIELD_COLOR = QColor(235, 241, 251);
 

@@ -56,33 +56,6 @@ public:
 	 */
     virtual QSharedPointer<RegisterBase> clone();
     
-    /*!
-     *  Get the dimension of the register.
-     *
-     *      @return The value of the dim-element.
-     */
-    QString getDimension() const;
-
-    /*!
-     *  Set the dimension of the register.
-     *
-     *      @param [in] newDimension    The new value for the dim-element.
-     */
-    void setDimension(QString const& newDimension);
-
-	/*!
-     *  Get the addressOffset of the register.
-	 *
-	 *      @return The address offset.
-	 */
-    QString getAddressOffset() const;
-
-    /*!
-     *  Set the addressOffset for this register.
-     *
-     *      @param [in] addressOffset   The new addressOffset.
-     */
-    void setAddressOffset(QString const& addressOffset);
 
     /*!
      *  Get the alternate registers of this register.
@@ -124,12 +97,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! Assigns an unbounded dimension to the register.
-    QString dimension_;
-
-	//! Offset from the base address.
-	QString addressOffset_;
 
     //! The width of the registers, in bits.
     QString size_;
