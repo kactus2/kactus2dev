@@ -1,7 +1,18 @@
+//-----------------------------------------------------------------------------
+// File: SingleRegisterFileEditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Dan Chianucci
+// Date: 19.06.2018
+//
+// Description:
+// Editor for a single register file item in component editor tree.
+//-----------------------------------------------------------------------------
 #ifndef SINGLEREGISTERFILEEDITOR_H
 #define SINGLEREGISTERFILEEDITOR_H
 
 #include "registerfileeditor.h"
+
 #include <editors/ComponentEditor/itemeditor.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
@@ -14,12 +25,27 @@ class ExpressionFormatter;
 class ExpressionEditor;
 class ExpressionParser;
 class RegisterFileValidator;
+
+//-----------------------------------------------------------------------------
+//! Editor for a single register file item in component editor tree.
+//-----------------------------------------------------------------------------
 class SingleRegisterFileEditor : public ItemEditor
 {
     Q_OBJECT
 
 public:
 
+    /*!
+    * The constructor.
+    *
+    *     @param [in] registerFile             The register file to edit.
+    *     @param [in] component                The component containing the register file.
+    *     @param [in] handler                  The available IP-XACT library.
+    *     @param [in] parameterFinder          Finder for parameters.
+    *     @param [in] expressionFormatter      Formatter for expressions.
+    *     @param [in] registerFileValidator    Validator for register files.
+    *     @param [in] parent                   The parent widget.
+    */
     SingleRegisterFileEditor(QSharedPointer<RegisterFile> selectedRegisterFile,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
@@ -29,9 +55,14 @@ public:
         QSharedPointer<RegisterFileValidator> registerFileValidator,
         QWidget* parent = 0);
 
+    //! The destructor.
+    virtual ~SingleRegisterFileEditor() = default;
 
-    virtual ~SingleRegisterFileEditor();
+    //! No copying.
+    SingleRegisterFileEditor(const SingleRegisterFileEditor& other) = delete;
+    SingleRegisterFileEditor& operator=(const SingleRegisterFileEditor& other) = delete;
 
+    //! Refresh the editor.
     virtual void refresh();
 
 protected:
@@ -39,27 +70,49 @@ protected:
     virtual void showEvent(QShowEvent* event);
 
 private slots:
+
+    //! Called when offset is changed.
     void onOffsetEdited();
+
+    //! Called when range is changed.
     void onRangeEdited();
+
+    //! Called when dimension is changed.
     void onDimensionEdited();
+
+    //! Called when isPresent is changed.
     void onIsPresentEdited();
 
 private:
 
-    SingleRegisterFileEditor(const SingleRegisterFileEditor& other);
-    SingleRegisterFileEditor& operator=(const SingleRegisterFileEditor& other);
-
+    //! Set the editor layout.
     void setupLayout();
+
+    //! Connect the editor signals.
     void connectSignals();
 
+    
+    /*!
+     * Get the formatted value of a given expression.
+     *
+     *     @param [in] expression  The expression to format.
+     *
+     *     @return The formatted value.
+     */
     QString formattedValueFor(QString const& expression) const;
-    void changeExpressionEditorsSignalBlockStatus(bool blockStatus) const;
+
+    /*!
+     * Block/unblock signals from expression editor.
+     *
+     *     @param [in] blockStatus  If true, signals are blocked, otherwise signals are enabled.
+     */
+     void changeExpressionEditorsSignalBlockStatus(bool blockStatus) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The selected register.
+    //! The register file edited in the editor.
     QSharedPointer<RegisterFile> registerFile_;
 
     //! The name editor.
@@ -68,13 +121,22 @@ private:
     //! The editor for the registers fields.
     RegisterFileEditor* registerFileEditor_;
 
+    //! The editor for register file offset.
     ExpressionEditor* offsetEditor_;
+    
+    //! The editor for register file range.
     ExpressionEditor* rangeEditor_;
+
+    //! The editor for register file dimension.
     ExpressionEditor* dimensionEditor_;
+
+    //! The editor for register file isPresent property.
     ExpressionEditor* isPresentEditor_;
 
-
+    //! Parser for expression.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Validator for register files.
     QSharedPointer<RegisterFileValidator> registerFileValidator_;
 };
 

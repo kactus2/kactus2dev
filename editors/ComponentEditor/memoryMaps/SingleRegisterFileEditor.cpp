@@ -1,3 +1,14 @@
+//-----------------------------------------------------------------------------
+// File: SingleRegisterFileEditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Dan Chianucci
+// Date: 19.06.2018
+//
+// Description:
+// Editor for a single register file item in component editor tree.
+//-----------------------------------------------------------------------------
+
 #include "SingleRegisterFileEditor.h"
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
@@ -9,19 +20,23 @@
 #include <QScrollArea>
 #include <QSplitter>
 
+//-----------------------------------------------------------------------------
+// Function: SingleRegisterFileEditor::SingleRegisterFileEditor()
+//-----------------------------------------------------------------------------
 SingleRegisterFileEditor::SingleRegisterFileEditor(
-        QSharedPointer<RegisterFile> registerFile,
-        QSharedPointer<Component> component,
-        LibraryInterface* handler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<RegisterFileValidator> registerFileValidator,
-        QWidget* parent /* = 0 */):
+    QSharedPointer<RegisterFile> registerFile,
+    QSharedPointer<Component> component,
+    LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<RegisterFileValidator> registerFileValidator,
+    QWidget* parent /* = 0 */) :
     ItemEditor(component, handler, parent),
     registerFile_(registerFile),
     nameEditor_(registerFile, this, tr("Register File name and description")),
-    registerFileEditor_(new RegisterFileEditor(registerFile_, component, handler, parameterFinder, expressionFormatter, registerFileValidator, this)),
+    registerFileEditor_(new RegisterFileEditor(registerFile_, component, handler,
+        parameterFinder, expressionFormatter, registerFileValidator, this)),
     offsetEditor_(new ExpressionEditor(parameterFinder, this)),
     rangeEditor_(new ExpressionEditor(parameterFinder, this)),
     dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
@@ -29,7 +44,6 @@ SingleRegisterFileEditor::SingleRegisterFileEditor(
     expressionParser_(expressionParser),
     registerFileValidator_(registerFileValidator)
 {
-
     offsetEditor_->setFixedHeight(20);
     rangeEditor_->setFixedHeight(20);
     dimensionEditor_->setFixedHeight(20);
@@ -61,17 +75,6 @@ SingleRegisterFileEditor::SingleRegisterFileEditor(
 
     offsetEditor_->setProperty("mandatoryField", true);
     rangeEditor_->setProperty("mandatoryField", true);
-}
-
-
-
-
-//-----------------------------------------------------------------------------
-// Function: SingleRegisterFileEditor::~SingleRegisterFileEditor()
-//-----------------------------------------------------------------------------
-SingleRegisterFileEditor::~SingleRegisterFileEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +111,6 @@ void SingleRegisterFileEditor::refresh()
     changeExpressionEditorsSignalBlockStatus(false);
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterFileEditor::onRangeChanged()
 //-----------------------------------------------------------------------------
@@ -120,6 +122,9 @@ void SingleRegisterFileEditor::onRangeEdited()
     rangeEditor_->setToolTip(formattedValueFor(registerFile_->getRange()));
 }
 
+//-----------------------------------------------------------------------------
+// Function: SingleRegisterFileEditor::onDimensionEdited()
+//-----------------------------------------------------------------------------
 void SingleRegisterFileEditor::onDimensionEdited()
 {
     dimensionEditor_->finishEditingCurrentWord();
@@ -130,6 +135,9 @@ void SingleRegisterFileEditor::onDimensionEdited()
     dimensionEditor_->setToolTip(formattedValueFor(newDimension));
 }
 
+//-----------------------------------------------------------------------------
+// Function: SingleRegisterFileEditor::onOffsetEdited()
+//-----------------------------------------------------------------------------
 void SingleRegisterFileEditor::onOffsetEdited()
 {
     offsetEditor_->finishEditingCurrentWord();
@@ -138,6 +146,7 @@ void SingleRegisterFileEditor::onOffsetEdited()
     QString formattedAddressOffset = formattedValueFor(registerFile_->getAddressOffset());
     offsetEditor_->setToolTip(formattedAddressOffset);
 }
+
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterEditor::onIsPresentEdited()
 //-----------------------------------------------------------------------------
@@ -159,7 +168,6 @@ QString SingleRegisterFileEditor::formattedValueFor(QString const& expression) c
     return ExpressionFormatter::format(expression, expressionParser_);
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterFileEditor::setupLayout()
 //-----------------------------------------------------------------------------
@@ -173,14 +181,13 @@ void SingleRegisterFileEditor::setupLayout()
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox* registerDefinitionGroup = new QGroupBox(tr("Register definition"));
+    QGroupBox* registerDefinitionGroup = new QGroupBox(tr("Register file definition"));
 
     QFormLayout* registerDefinitionLayout = new QFormLayout(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
     registerDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
     registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
     registerDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
-
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
     topOfPageLayout->addWidget(&nameEditor_, 0);
@@ -213,6 +220,7 @@ void SingleRegisterFileEditor::setupLayout()
 
     scrollArea->setWidget(verticalSplitter);
 }
+
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterFileEditor::connectSignals()
 //-----------------------------------------------------------------------------
@@ -261,7 +269,6 @@ void SingleRegisterFileEditor::connectSignals()
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registerFileEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterFileEditor::changeExpressionEditorSignalBlocks()

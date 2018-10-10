@@ -1,3 +1,13 @@
+//-----------------------------------------------------------------------------
+// File: registerfiledelegate.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Dan Chianucci
+// Date: 19.06.2018
+//
+// Description:
+// The delegate that provides editors to add/remove/edit the details of register file
+//-----------------------------------------------------------------------------
 #ifndef REGISTERFILEDELEGATE_H
 #define REGISTERFILEDELEGATE_H
 
@@ -24,7 +34,11 @@ public:
         QObject *parent);
 
   //! The destructor.
-  virtual ~RegisterFileDelegate();
+  virtual ~RegisterFileDelegate() = default;
+
+  //! No copying
+  RegisterFileDelegate(const RegisterFileDelegate& other) = delete;
+  RegisterFileDelegate& operator=(const RegisterFileDelegate& other) = delete;
 
   /*!
    *  Create a new editor for the given item
@@ -71,9 +85,6 @@ protected:
 
 private:
 
-  //! No copying
-  RegisterFileDelegate(const RegisterFileDelegate& other);
-  RegisterFileDelegate& operator=(const RegisterFileDelegate& other);
 };
 
 #endif // REGISTERFILEDELEGATE_H

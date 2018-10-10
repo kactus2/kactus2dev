@@ -5,7 +5,7 @@
 class QSortFilterProxyModel;
 class RegisterDataTableView : public EditableTableView
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
     RegisterDataTableView(QWidget *parent);
 

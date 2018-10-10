@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: RegisterFileValidator.h
+// File: RegisterFileValidator.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Mikko Teuho
-// Date: 19.11.2015
+// Author: Dan Chianucci
+// Date: 04.06.2018
 //
 // Description:
-// Validator for ipxact:Register.
+// Validator for ipxact:RegisterFile.
 //-----------------------------------------------------------------------------
 
 #include "RegisterFileValidator.h"
@@ -23,18 +23,13 @@
 // Function: RegisterFileValidator::RegisterFileValidator()
 //-----------------------------------------------------------------------------
 RegisterFileValidator::RegisterFileValidator(QSharedPointer<ExpressionParser> expressionParser,
-                                     QSharedPointer<RegisterValidator> registerValidator,
-                                     QSharedPointer<ParameterValidator> parameterValidator):
-    RegisterBaseValidator(expressionParser,parameterValidator),
+    QSharedPointer<RegisterValidator> registerValidator,
+    QSharedPointer<ParameterValidator> parameterValidator) :
+    RegisterBaseValidator(expressionParser, parameterValidator),
     registerValidator_(registerValidator)
 {
 
 }
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileValidator::~RegisterFileValidator()
-//-----------------------------------------------------------------------------
-RegisterFileValidator::~RegisterFileValidator(){}
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileValidator::getRegisterValidator()
@@ -50,8 +45,8 @@ QSharedPointer<RegisterValidator> RegisterFileValidator::getRegisterValidator() 
 bool RegisterFileValidator::validate(QSharedPointer<RegisterFile> selectedRegisterFile) const
 {
     return RegisterBaseValidator::validate(selectedRegisterFile) &&
-           hasValidRange(selectedRegisterFile) &&
-           hasValidRegisterData(selectedRegisterFile);
+        hasValidRange(selectedRegisterFile) &&
+        hasValidRegisterData(selectedRegisterFile);
 }
 
 //-----------------------------------------------------------------------------
@@ -65,13 +60,14 @@ bool RegisterFileValidator::hasValidRange(QSharedPointer<RegisterFile> selectedR
     return toIntOk && range > 0;
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterFileValidator::hasValidRegisterData()
+//-----------------------------------------------------------------------------
 bool RegisterFileValidator::hasValidRegisterData(QSharedPointer<RegisterFile> selectedRegisterFile) const
 {
     //TODO
     return true;
 }
-
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileValidator::findErrorsIn()
@@ -88,15 +84,15 @@ void RegisterFileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointe
     findErrorsInParameters(errors, selectedRegisterFile, registerContext);
 
     findErrorsInRange(errors, selectedRegisterFile, context);
-    findErrorsInRegisterData(errors, selectedRegisterFile,registerContext);
+    findErrorsInRegisterData(errors, selectedRegisterFile, registerContext);
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileValidator::findErrorsInSize()
 //-----------------------------------------------------------------------------
 void RegisterFileValidator::findErrorsInRange(QVector<QString>& errors,
-                                              QSharedPointer<RegisterFile> selectedRegisterFile,
-                                              QString const& context) const
+    QSharedPointer<RegisterFile> selectedRegisterFile,
+    QString const& context) const
 {
     if (!hasValidRange(selectedRegisterFile))
     {
@@ -105,9 +101,12 @@ void RegisterFileValidator::findErrorsInRange(QVector<QString>& errors,
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterFileValidator::findErrorsInRegisterData()
+//-----------------------------------------------------------------------------
 void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
-                                                     QSharedPointer<RegisterFile> selectedRegisterFile,
-                                                     QString const& context) const
+    QSharedPointer<RegisterFile> selectedRegisterFile,
+    QString const& context) const
 {
     //TODO
 }

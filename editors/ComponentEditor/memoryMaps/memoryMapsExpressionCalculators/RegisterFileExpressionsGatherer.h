@@ -22,24 +22,22 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~RegisterFileExpressionsGatherer();
-
-    /*!
-     *  Get the expressions from a given register.
-     *
-     *      @param [in] currentRegister     The given register.
-     *
-     *      @return A list containing all the expressions used in a register.
-     */
-    QStringList getExpressions(QSharedPointer<RegisterFile> currentRegisterFile) const;
-
-private:
+    virtual ~RegisterFileExpressionsGatherer() = default;
 
     //! No copying
-    RegisterFileExpressionsGatherer(const RegisterFileExpressionsGatherer& other);
+    RegisterFileExpressionsGatherer(const RegisterFileExpressionsGatherer& other) = delete;
 
     //! No assignment
-    RegisterFileExpressionsGatherer& operator=(const RegisterFileExpressionsGatherer& other);
+    RegisterFileExpressionsGatherer& operator=(const RegisterFileExpressionsGatherer& other) = delete;
+
+    /*!
+     *  Get the expressions from a given register file.
+     *
+     *      @param [in] currentRegister     The given register file.
+     *
+     *      @return A list containing all the expressions used in a register file.
+     */
+    QStringList getExpressions(QSharedPointer<RegisterFile> currentRegisterFile) const;
 
 };
 

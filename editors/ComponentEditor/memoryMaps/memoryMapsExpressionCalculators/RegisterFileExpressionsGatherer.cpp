@@ -9,32 +9,31 @@
 // Gathers expressions from a register file and its registers.
 //-----------------------------------------------------------------------------
 
-
 #include "RegisterFileExpressionsGatherer.h"
 #include "RegisterExpressionsGatherer.h"
 
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Register.h>
 
+//-----------------------------------------------------------------------------
+// Function: RegisterFileExpressionsGatherer::RegisterFileExpressionsGatherer()
+//-----------------------------------------------------------------------------
 RegisterFileExpressionsGatherer::RegisterFileExpressionsGatherer()
 {
 
 }
-RegisterFileExpressionsGatherer::~RegisterFileExpressionsGatherer()
-{
 
-}
+//-----------------------------------------------------------------------------
+// Function: RegisterFileExpressionsGatherer::getExpressions()
+//-----------------------------------------------------------------------------
 QStringList RegisterFileExpressionsGatherer::getExpressions(QSharedPointer<RegisterFile> currentRegisterFile) const
 {
-
     QStringList expressionList;
 
     expressionList.append(currentRegisterFile->getAddressOffset());
     expressionList.append(currentRegisterFile->getRange());
     expressionList.append(currentRegisterFile->getDimension());
     expressionList.append(currentRegisterFile->getIsPresent());
-
-
 
     RegisterExpressionsGatherer regGatherer;
 
@@ -43,14 +42,14 @@ QStringList RegisterFileExpressionsGatherer::getExpressions(QSharedPointer<Regis
         QSharedPointer<Register> regItem = regBase.dynamicCast<Register>();
         QSharedPointer<RegisterFile> regFileItem = regBase.dynamicCast<RegisterFile >();
 
-        if(regItem){
+        if(regItem)
+        {
             expressionList.append(regGatherer.getExpressions(regItem));
         }
-
-        else if(regFileItem){
+        else if(regFileItem)
+        {
             expressionList.append(getExpressions(regFileItem));
         }
-
     }
 
     return expressionList;

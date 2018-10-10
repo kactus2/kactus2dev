@@ -2,11 +2,11 @@
 // File: registerfiledelegate.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Antti Kamppi
-// Date: 24.08.2012
+// Author: Dan Chianucci
+// Date: 19.06.2018
 //
 // Description:
-// The delegate that provides editors to add/remove/edit the details of address block.
+// The delegate that provides editors to add/remove/edit the details of register file
 //-----------------------------------------------------------------------------
 
 #include "registerfiledelegate.h"
@@ -18,17 +18,9 @@
 // Function: RegisterFileDelegate::RegisterFileDelegate()
 //-----------------------------------------------------------------------------
 RegisterFileDelegate::RegisterFileDelegate(QCompleter* parameterNameCompleter,
-                                           QSharedPointer<ParameterFinder> parameterFinder,
-                                           QObject *parent):
-  ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileDelegate::~RegisterFileDelegate()
-//-----------------------------------------------------------------------------
-RegisterFileDelegate::~RegisterFileDelegate()
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QObject *parent) :
+    ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
 {
 
 }
@@ -37,7 +29,7 @@ RegisterFileDelegate::~RegisterFileDelegate()
 // Function: RegisterFileDelegate::createEditor()
 //-----------------------------------------------------------------------------
 QWidget* RegisterFileDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
-    QModelIndex const& index ) const
+    QModelIndex const& index) const
 {
     if (index.column() == AddressBlockColumns::VOLATILE)
     {

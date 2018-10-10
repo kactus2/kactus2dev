@@ -1,8 +1,17 @@
+//-----------------------------------------------------------------------------
+// File: componenteditorregisterfileitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Dan Chianucci
+// Date: 19.06.2018
+//
+// Description:
+// Item representing a register file in the component editor browser tree.
+//-----------------------------------------------------------------------------
+
 #include "componenteditorregisterfileitem.h"
+
 #include "componenteditorregisteritem.h"
-
-
-
 
 #include <editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
@@ -10,26 +19,27 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
-
-
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 
-
 #include <QApplication>
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem()
+//-----------------------------------------------------------------------------
 ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<RegisterFile> registerFile,
-                                                           ComponentEditorTreeModel* model,
-                                                           LibraryInterface* libHandler,
-                                                           QSharedPointer<Component> component,
-                                                           QSharedPointer<ParameterFinder> parameterFinder,
-                                                           QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                                           QSharedPointer<ReferenceCounter> referenceCounter,
-                                                           QSharedPointer<ExpressionParser> expressionParser,
-                                                           QSharedPointer<RegisterFileValidator> registerFileValidator,
-                                                           ComponentEditorItem* parent):
-    ComponentEditorItem( model, libHandler, component, parent),
+    ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<RegisterFileValidator> registerFileValidator,
+    ComponentEditorItem* parent) :
+    ComponentEditorItem(model, libHandler, component, parent),
     registerFile_(registerFile),
     visualizer_(NULL),
     registerFileDimensions_(),
@@ -65,17 +75,21 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
 
 }
 
-
-
-QString ComponentEditorRegisterFileItem::getTooltip() const {
-    return tr("Contains details of a single register file within an address block or another register file");
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorRegisterFileItem::getTooltip() const
+{
+    return tr("Contains details of a single register file");
 }
 
-QString ComponentEditorRegisterFileItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorRegisterFileItem::text() const
+{
     return registerFile_->name();
 }
-
-
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorregisteritem::isValid()
@@ -142,11 +156,15 @@ void ComponentEditorRegisterFileItem::createChild( int index )
 
 }
 
-ItemEditor* ComponentEditorRegisterFileItem::editor(){
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorRegisterFileItem::editor()
+{
     if (!editor_)
     {
-        editor_ = new SingleRegisterFileEditor(registerFile_, component_, libHandler_, parameterFinder_, expressionFormatter_,
-            expressionParser_, registerFileValidator_);
+        editor_ = new SingleRegisterFileEditor(registerFile_, component_, libHandler_, parameterFinder_, 
+            expressionFormatter_, expressionParser_, registerFileValidator_);
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -159,7 +177,9 @@ ItemEditor* ComponentEditorRegisterFileItem::editor(){
     return editor_;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::visualizer()
+//-----------------------------------------------------------------------------
 ItemVisualizer* ComponentEditorRegisterFileItem::visualizer()
 {
     return visualizer_;
@@ -216,6 +236,9 @@ void ComponentEditorRegisterFileItem::updateGraphics()
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterFileItem::onGraphicsChanged()
+//-----------------------------------------------------------------------------
 void ComponentEditorRegisterFileItem::onGraphicsChanged()
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -225,7 +248,6 @@ void ComponentEditorRegisterFileItem::onGraphicsChanged()
     parent()->parent()->updateGraphics(); //Memory Map
     QApplication::restoreOverrideCursor();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorRegisterFileItem::removeGraphicsItem()
@@ -249,7 +271,6 @@ void ComponentEditorRegisterFileItem::removeGraphicsItem()
         registerFileDimension = NULL;
     }
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorRegisterFileItem::resizeToCurrentDimensionSize()
