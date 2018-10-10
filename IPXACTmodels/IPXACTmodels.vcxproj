@@ -307,6 +307,8 @@
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
     <ClCompile Include="Component\validators\PortTypeValidator.cpp" />
     <ClCompile Include="Component\validators\PortValidator.cpp" />
+    <ClCompile Include="Component\validators\RegisterBaseValidator.cpp" />
+    <ClCompile Include="Component\validators\RegisterFileValidator.cpp" />
     <ClCompile Include="Component\validators\RemapStateValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryMapBaseValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryMapValidator.cpp" />
@@ -550,6 +552,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
+    <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
+    <ClInclude Include="Component\validators\RegisterFileValidator.h" />
     <ClInclude Include="utilities\XmlUtils.h" />
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>

@@ -4477,6 +4477,48 @@
     <ClCompile Include="editors\BusDefinitionEditor\SystemGroupListEditor.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RegisterDataTableView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleRegisterFileEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\RegisterDataTableView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleRegisterFileEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_componenteditorregisterfileitem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorregisterfileitem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\registerfilemodel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\registerfiledelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\registerfileeditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_registerfiledelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_registerfileeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_registerfilemodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6117,6 +6159,24 @@
     <CustomBuild Include="editors\BusDefinitionEditor\SystemGroupListEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\RegisterDataTableView.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleRegisterFileEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditorregisterfileitem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\registerfiledelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\registerfileeditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\registerfilemodel.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6817,6 +6877,12 @@
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1001,6 +1001,12 @@
     <ClCompile Include="utilities\XmlUtils.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\RegisterFileValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\RegisterBaseValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1524,6 +1530,12 @@
     </ClInclude>
     <ClInclude Include="utilities\XmlUtils.h">
       <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\RegisterFileValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\RegisterBaseValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
