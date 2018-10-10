@@ -715,6 +715,12 @@ void MetaDesign::findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
 //-----------------------------------------------------------------------------
 void MetaDesign::removeUnconnectedInterfaceAssignments()
 {
+    QList<QSharedPointer<MetaPort> > adHocs;
+    for (auto adhocWire : *adHocWires_)
+    {
+        adHocs.append(adhocWire->hierPorts_);
+    }
+
     for (QSharedPointer<MetaInstance> mInstance : *instances_)
     {
         for (QSharedPointer<MetaInterface> mInterface : *mInstance->getInterfaces())
@@ -723,7 +729,10 @@ void MetaDesign::removeUnconnectedInterfaceAssignments()
             {
                 for (QSharedPointer<MetaPort> mPort : mInterface->ports_)
                 {
-                    mPort->upAssignments_.clear();
+                    if (adHocs.contains(mPort) == false)
+                    {
+                        mPort->upAssignments_.clear();
+                    }                        
                 }
             }
         }
@@ -734,8 +743,11 @@ void MetaDesign::removeUnconnectedInterfaceAssignments()
         if (mInterface->downInterconnection_.isNull())
         {
             for (QSharedPointer<MetaPort> mPort : mInterface->ports_)
-            {
-                mPort->downAssignments_.clear();
+            {                
+                if (adHocs.contains(mPort) == false)
+                {
+                    mPort->downAssignments_.clear();
+                }
             }
         }
     }
