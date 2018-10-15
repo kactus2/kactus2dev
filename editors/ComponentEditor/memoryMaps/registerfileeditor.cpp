@@ -15,7 +15,8 @@
 #include "registerfilemodel.h"
 #include "ExpressionProxyModel.h"
 #include "AddressBlockColumns.h"
-#include "RegisterDataTableView.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -24,6 +25,7 @@
 #include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/RegisterBase.h>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -31,14 +33,14 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterFileEditor::RegisterFileEditor()
 //-----------------------------------------------------------------------------
-RegisterFileEditor::RegisterFileEditor(QSharedPointer<RegisterFile> registerFile,
+RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > >  registerFile,
     QSharedPointer<Component> component, LibraryInterface *handler,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<RegisterFileValidator> registerFileValidator,
     QWidget *parent) :
     QGroupBox(tr("Register files summary"), parent),
-    view_(new RegisterDataTableView(this)),
+    view_(new EditableTableView(this)),
     model_(0)
 {
     view_->verticalHeader()->show();
@@ -104,10 +106,8 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<RegisterFile> registerFile
     connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)),
         Qt::UniqueConnection);
 
-    connect(view_, SIGNAL(addRegister(const QModelIndex &)), model_,
-        SLOT(onAddRegister(const QModelIndex &)), Qt::UniqueConnection);
-    connect(view_, SIGNAL(addRegisterFile(const QModelIndex &)), model_,
-        SLOT(onAddRegisterFile(const QModelIndex &)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(addItem(const QModelIndex &)), model_,
+        SLOT(onAddItem(const QModelIndex &)), Qt::UniqueConnection);
 
     connect(view_, SIGNAL(removeItem(const QModelIndex &)), model_,
         SLOT(onRemoveItem(const QModelIndex &)), Qt::UniqueConnection);
@@ -127,6 +127,9 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<RegisterFile> registerFile
         SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
     connect(view_, SIGNAL(pasteRows()), model_, SLOT(onPasteRows()),
         Qt::UniqueConnection);
+
+    connect(this, SIGNAL(addressUnitBitsChanged(int)),
+        model_, SLOT(addressUnitBitsChanged(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

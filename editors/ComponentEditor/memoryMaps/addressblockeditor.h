@@ -19,7 +19,7 @@
 #include <QGroupBox>
 
 class AddressBlockModel;
-class RegisterDataTableView;
+class EditableTableView;
 class ExpressionFormatter;
 class LibraryInterface;
 class ParameterFinder;
@@ -38,15 +38,15 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addressBlock            Pointer to the address block being edited.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance managing the library.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] registerFileValidator       Validator used for registers/registerFiles.
-	 *      @param [in] parent                  Pointer to the parent of this editor.
+	 *      @param [in] addressBlock            The address block being edited.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance managing the library.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] registerFileValidator   Validator used for registers/registerFiles.
+	 *      @param [in] parent                  The parent of this editor.
 	 */
-	AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
+	AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -55,7 +55,13 @@ public:
 		QWidget* parent = 0);
 
 	//! The destructor.
-	virtual ~AddressBlockEditor();
+	virtual ~AddressBlockEditor() = default;
+
+    //! No copying.
+    AddressBlockEditor(const AddressBlockEditor& other) = delete;
+
+    //! No assignment.
+    AddressBlockEditor& operator=(const AddressBlockEditor& other) = delete;
 
 	/*!
      *  Reload the information from the model to the editor.
@@ -125,16 +131,11 @@ signals:
 
 private:
 	
-	//! No copying.
-	AddressBlockEditor(const AddressBlockEditor& other);
-
-	//! No assignment.
-	AddressBlockEditor& operator=(const AddressBlockEditor& other);
 
 	//! The view to display the items.
-    RegisterDataTableView* view_;
+    EditableTableView* view_;
 
-	//! Pointer to the model that manages the details of address block.
+	//! The model that manages the details of address block.
 	AddressBlockModel* model_;
 };
 

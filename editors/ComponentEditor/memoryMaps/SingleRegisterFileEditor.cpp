@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/addressblockeditor.h>
 
 #include <QFormLayout>
 #include <QScrollArea>
@@ -34,8 +35,10 @@ SingleRegisterFileEditor::SingleRegisterFileEditor(
     QWidget* parent /* = 0 */) :
     ItemEditor(component, handler, parent),
     registerFile_(registerFile),
-    nameEditor_(registerFile, this, tr("Register File name and description")),
-    registerFileEditor_(new RegisterFileEditor(registerFile_, component, handler,
+    nameEditor_(registerFile, this, tr("Register file name and description")),
+    registersEditor_(new AddressBlockEditor(registerFile->getRegisterData(), component, handler,
+        parameterFinder, expressionFormatter, registerFileValidator, this)),
+    registerFileEditor_(new RegisterFileEditor(registerFile_->getRegisterData(), component, handler,
         parameterFinder, expressionFormatter, registerFileValidator, this)),
     offsetEditor_(new ExpressionEditor(parameterFinder, this)),
     rangeEditor_(new ExpressionEditor(parameterFinder, this)),
@@ -201,20 +204,26 @@ void SingleRegisterFileEditor::setupLayout()
     QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
     verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     verticalSplitter->addWidget(topOfPageWidget);
+    verticalSplitter->addWidget(registersEditor_);
     verticalSplitter->addWidget(registerFileEditor_);
-    verticalSplitter->setStretchFactor(1, 1);
+    verticalSplitter->setStretchFactor(0, 1);
+    verticalSplitter->setStretchFactor(1, 2);
+    verticalSplitter->setStretchFactor(2, 2);
 
-    QSplitterHandle* handle = verticalSplitter->handle(1);
-    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
-    handleLayout->setSpacing(0);
-    handleLayout->setMargin(0);
+    for (int i = 1; i < 3; ++i)
+    {
+        QSplitterHandle* handle = verticalSplitter->handle(i);
+        QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+        handleLayout->setSpacing(0);
+        handleLayout->setMargin(0);
 
-    QFrame* line = new QFrame(handle);
-    line->setLineWidth(2);
-    line->setMidLineWidth(2);
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-    handleLayout->addWidget(line);
+        QFrame* line = new QFrame(handle);
+        line->setLineWidth(2);
+        line->setMidLineWidth(2);
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        handleLayout->addWidget(line);
+    }
 
     verticalSplitter->setHandleWidth(10);
 
@@ -226,6 +235,13 @@ void SingleRegisterFileEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void SingleRegisterFileEditor::connectSignals()
 {
+    connect(registersEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+    connect(registersEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+    connect(registersEditor_, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(registersEditor_, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+
     connect(registerFileEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
     connect(registerFileEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
     connect(registerFileEditor_, SIGNAL(increaseReferences(QString const&)),
@@ -260,6 +276,7 @@ void SingleRegisterFileEditor::connectSignals()
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(registersEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(registerFileEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
@@ -267,6 +284,7 @@ void SingleRegisterFileEditor::connectSignals()
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(registersEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registerFileEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 }
 

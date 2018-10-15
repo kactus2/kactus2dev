@@ -1,6 +1,17 @@
+//-----------------------------------------------------------------------------
+// File: registerfilemodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Dan Chianucci
+// Date: 19.06.2018
+//
+// Description:
+// The model to manage the register files of a single address block or another register file.
+//-----------------------------------------------------------------------------
+
 #include "registerfilemodel.h"
 
-#include "AddressBlockColumns.h"
+#include "RegisterFileColumns.h"
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
@@ -15,40 +26,40 @@
 
 #include <common/KactusColors.h>
 
-
 #include <QRegularExpression>
 #include <QApplication>
 #include <QClipboard>
 #include <QMimeData>
 #include <QIcon>
+
 //-----------------------------------------------------------------------------
 // Function: RegisterFileModel::RegisterFileModel()
 //-----------------------------------------------------------------------------
-RegisterFileModel::RegisterFileModel(QSharedPointer<RegisterFile> registerFile,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<RegisterFileValidator> registerFileValidator,
+RegisterFileModel::RegisterFileModel(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData,
+    QSharedPointer<ExpressionParser> expressionParser, 
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<RegisterFileValidator> registerFileValidator,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-registerFile_(registerFile),
-items_(registerFile->getRegisterData()),
+registerData_(registerData),
+items_(),
 addressUnitBits_(0),
 parameterFinder_(parameterFinder),
 expressionFormatter_(expressionFormatter),
-registerFileValidator_(registerFileValidator),
-registerValidator_(registerFileValidator->getRegisterValidator())
+registerFileValidator_(registerFileValidator)
 {
-	Q_ASSERT(registerFile_);
+    for (auto item : *registerData_)
+    {
+        QSharedPointer<RegisterFile> registerFile = item.dynamicCast<RegisterFile>();
+        if (registerFile)
+        {
+            items_.append(registerFile);
+        }
+    }
 
     setExpressionParser(expressionParser);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileModel::~RegisterFileModel()
-//-----------------------------------------------------------------------------
-RegisterFileModel::~RegisterFileModel()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -59,8 +70,9 @@ int RegisterFileModel::rowCount(QModelIndex const& parent) const
 	if (parent.isValid())
     {
 		return 0;
-	}
-	return items_->size();
+	}    
+
+    return items_.size();    
 }
 
 //-----------------------------------------------------------------------------
@@ -72,7 +84,7 @@ int RegisterFileModel::columnCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-	return AddressBlockColumns::COLUMN_COUNT;
+	return RegisterFileColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -85,78 +97,44 @@ Qt::ItemFlags RegisterFileModel::flags(QModelIndex const& index) const
         return Qt::NoItemFlags;
     }
 
-    QSharedPointer<RegisterBase> regBase = items_->at(index.row());
-    if (index.column() == AddressBlockColumns::REGISTER_SIZE && !regBase.dynamicCast<Register>()){
-        return Qt::NoItemFlags;
-    }
-    else if (index.column() == AddressBlockColumns::VOLATILE && !regBase.dynamicCast<Register>()) {
-        return Qt::NoItemFlags;
-    }
-    else if (index.column() == AddressBlockColumns::REGISTER_ACCESS && !regBase.dynamicCast<Register>()){
-        return Qt::NoItemFlags;
-    }
-    else if (index.column() == AddressBlockColumns::REGISTERFILE_RANGE && !regBase.dynamicCast<RegisterFile>()){
-        return Qt::NoItemFlags;
-    }
-
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileModel::headerData()
 //-----------------------------------------------------------------------------
 QVariant RegisterFileModel::headerData( int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Vertical && role == Qt::DisplayRole) {
-        return items_->at(section)->name();
+    if (orientation == Qt::Vertical && role == Qt::DisplayRole)
+    {
+        return items_.at(section)->name();
     }
-    else if (orientation == Qt::Vertical && role == Qt::DecorationRole){
-        QSharedPointer<RegisterFile> regFile = items_->at(section).dynamicCast<RegisterFile>();
-        if(regFile){
-            return QIcon(":/icons/common/graphics/hierarchy.png");
-        }
-    }
-    else if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        if (section == AddressBlockColumns::NAME)
+
+    else if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+    {
+        if (section == RegisterFileColumns::NAME)
         {
-            return tr("Register\nname");
+            return tr("Register file\nname");
         }
-        else if (section == AddressBlockColumns::REGISTER_OFFSET)
+        else if (section == RegisterFileColumns::ADDRESS_OFFSET)
         {
             return tr("Offset\n[AUB]") + getExpressionSymbol();
         }
-        else if (section == AddressBlockColumns::REGISTERFILE_RANGE)
+        else if (section == RegisterFileColumns::RANGE)
         {
             return tr("Range\n[AUB]") + getExpressionSymbol();
         }
-        else if (section == AddressBlockColumns::REGISTER_SIZE)
-        {
-            return tr("Size\n[bits]") + getExpressionSymbol();
-        }
-        else if (section == AddressBlockColumns::REGISTER_DIMENSION)
+        else if (section == RegisterFileColumns::DIMENSION)
         {
             return tr("Dimension") + getExpressionSymbol();
         }
-        else if (section == AddressBlockColumns::DESCRIPTION)
+        else if (section == RegisterFileColumns::DESCRIPTION)
         {
             return tr("Description");
         }
-        else if (section == AddressBlockColumns::VOLATILE)
-        {
-            return tr("Volatile");
-        }
-        else if (section == AddressBlockColumns::REGISTER_ACCESS)
-        {
-            return tr("Access");
-        }
-        else if (section == AddressBlockColumns::IS_PRESENT)
+        else if (section == RegisterFileColumns::IS_PRESENT)
         {
             return tr("Is present") + getExpressionSymbol();
-        }
-        else
-        {
-            return QVariant();
         }
     }
 
@@ -168,7 +146,7 @@ QVariant RegisterFileModel::headerData( int section, Qt::Orientation orientation
 //-----------------------------------------------------------------------------
 QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= items_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
     {
         return QVariant();
     }
@@ -179,10 +157,10 @@ QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
         }
-        else if (index.column() == AddressBlockColumns::DESCRIPTION)
+        else if (index.column() == RegisterFileColumns::DESCRIPTION)
         {
             return valueForIndex(index).toString().replace(QRegularExpression("\n.*$",
-                                                                              QRegularExpression::DotMatchesEverythingOption), "...");
+                QRegularExpression::DotMatchesEverythingOption), "...");
         }
         else
         {
@@ -192,7 +170,7 @@ QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
 
     else if (role == Qt::EditRole)
     {
-        if (index.column() == AddressBlockColumns::DESCRIPTION)
+        if (index.column() == RegisterFileColumns::DESCRIPTION)
         {
             return valueForIndex(index);
         }
@@ -215,17 +193,7 @@ QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
     {
         if (validateIndex(index))
         {
-            QSharedPointer<Register> reg = items_->at(index.row()).dynamicCast<Register>();
-
-            if (index.column() != AddressBlockColumns::IS_PRESENT && reg &&
-                    (!reg->getIsPresent().isEmpty() && parseExpressionToDecimal(reg->getIsPresent()).toInt() != 1))
-            {
-                return KactusColors::DISABLED_TEXT;
-            }
-            else
-            {
-                return KactusColors::REGULAR_TEXT;
-            }
+            return KactusColors::REGULAR_TEXT;
         }
         else
         {
@@ -234,23 +202,19 @@ QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::BackgroundRole)
     {
-        if(flags(index) == Qt::NoItemFlags){
-          return KactusColors::DISABLED_FIELD;
-        }
-        else if (index.column() == AddressBlockColumns::NAME ||
-            index.column() == AddressBlockColumns::REGISTER_OFFSET ||
-            index.column() == AddressBlockColumns::REGISTERFILE_RANGE ||
-            index.column() == AddressBlockColumns::REGISTER_SIZE){
+        if (index.column() == RegisterFileColumns::NAME ||
+            index.column() == RegisterFileColumns::ADDRESS_OFFSET ||
+            index.column() == RegisterFileColumns::RANGE)
+        {
             return KactusColors::MANDATORY_FIELD;
         }
-        else{
+        else
+        {
             return KactusColors::REGULAR_FIELD;
         }
     }
-    else
-    {
-        return QVariant();
-    }
+
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -258,50 +222,34 @@ QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 QVariant RegisterFileModel::valueForIndex(QModelIndex const& index) const
 {
+    QSharedPointer<RegisterFile> const& regFile = items_.at(index.row());
 
-    const QSharedPointer<RegisterBase> regBase = items_->at(index.row());
-    if (index.column() == AddressBlockColumns::NAME){
-        return regBase->name();
+    if (index.column() == RegisterFileColumns::NAME)
+    {
+        return regFile->name();
     }
-    else if (index.column() == AddressBlockColumns::REGISTER_OFFSET){
-        return regBase->getAddressOffset();
+    else if (index.column() == RegisterFileColumns::ADDRESS_OFFSET)
+    {
+        return regFile->getAddressOffset();
     }
-    else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION){
-        return regBase->getDimension();
+    else if (index.column() == RegisterFileColumns::RANGE)
+    {
+        return regFile->getRange();
     }
-    else if (index.column() == AddressBlockColumns::DESCRIPTION){
-        return regBase->description();
+    else if (index.column() == RegisterFileColumns::DIMENSION)
+    {
+        return regFile->getDimension();
     }
-    else if (index.column() == AddressBlockColumns::IS_PRESENT){
-        return regBase->getIsPresent();
+    else if (index.column() == RegisterFileColumns::DESCRIPTION)
+    {
+        return regFile->description();
     }
-    else if (index.column() == AddressBlockColumns::REGISTER_SIZE){
-        const QSharedPointer<Register> reg = regBase.dynamicCast<Register>();
-        if(reg){
-            return reg->getSize();
-        }
-    }
-    else if (index.column() == AddressBlockColumns::VOLATILE) {
-        const QSharedPointer<Register> reg = regBase.dynamicCast<Register>();
-        if(reg){
-            return reg->getVolatile();
-        }
-    }
-    else if (index.column() == AddressBlockColumns::REGISTER_ACCESS){
-        const QSharedPointer<Register> reg = regBase.dynamicCast<Register>();
-        if(reg){
-            return AccessTypes::access2Str(reg->getAccess());
-        }
-    }
-    else if (index.column() == AddressBlockColumns::REGISTERFILE_RANGE){
-        const QSharedPointer<RegisterFile> regFile = regBase.dynamicCast<RegisterFile>();
-        if(regFile){
-            return regFile->getRange();
-        }
+    else if (index.column() == RegisterFileColumns::IS_PRESENT)
+    {
+        return regFile->getIsPresent();
     }
 
     return QVariant();
-
 }
 
 //-----------------------------------------------------------------------------
@@ -309,153 +257,102 @@ QVariant RegisterFileModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant RegisterFileModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    const QSharedPointer<RegisterBase> regBase = items_->at(index.row());
-    if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+    QSharedPointer<RegisterFile> const& regFile = items_.at(index.row());
+    if (index.column() == RegisterFileColumns::DIMENSION)
     {
-        return regBase->getDimension();
+        return regFile->getDimension();
     }
-    else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
+    else if (index.column() == RegisterFileColumns::ADDRESS_OFFSET)
     {
-        return regBase->getAddressOffset();
+        return regFile->getAddressOffset();
     }
-    else if (index.column() == AddressBlockColumns::IS_PRESENT)
+    else if (index.column() == RegisterFileColumns::IS_PRESENT)
     {
-        return regBase->getIsPresent();
+        return regFile->getIsPresent();
     }
-    else if(index.column() == AddressBlockColumns::REGISTER_SIZE){
-        const QSharedPointer<Register> reg = regBase.dynamicCast<Register>();
-        if (reg){
-            return reg->getSize();
-        }
+    else if(index.column() == RegisterFileColumns::RANGE)
+    {
+        return regFile->getRange();
     }
-    else if(index.column() == AddressBlockColumns::REGISTERFILE_RANGE){
-        const QSharedPointer<RegisterFile> regFile = regBase.dynamicCast<RegisterFile>();
-        if(regFile){
-            return regFile->getRange();
-        }
-    }
+  
     return data(index, Qt::DisplayRole);
 }
-
-
-
 
 //-----------------------------------------------------------------------------
 // Function: registerfilemodel::setData()
 //-----------------------------------------------------------------------------
 bool RegisterFileModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= items_->size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
     {
-		return false;
-	}
-
+        return false;
+    }
 
     if (role == Qt::EditRole)
     {
-        bool base_changed=false;
-        QSharedPointer<RegisterBase> regBase = items_->at(index.row());
-        if(regBase){
-            base_changed=true;
-            if (index.column() == AddressBlockColumns::NAME)
-            {
-                regBase->setName(value.toString());
-                emit headerDataChanged(Qt::Vertical, index.row(), index.row());
-            }
-            else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
-            {
-                if (!value.isValid())
-                {
-                    removeReferencesFromSingleExpression(regBase->getAddressOffset());
-                }
+        QSharedPointer<RegisterFile> const& regFile = items_.at(index.row());
 
-                regBase->setAddressOffset(value.toString());
-            }
-            else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+        bool changed = true;
+        if (index.column() == RegisterFileColumns::NAME)
+        {
+            regFile->setName(value.toString());
+            emit headerDataChanged(Qt::Vertical, index.row(), index.row());
+        }
+        else if (index.column() == RegisterFileColumns::ADDRESS_OFFSET)
+        {
+            if (!value.isValid())
             {
-                if (!value.isValid())
-                {
-                    removeReferencesFromSingleExpression(regBase->getDimension());
-                }
+                removeReferencesFromSingleExpression(regFile->getAddressOffset());
+            }
 
-                regBase->setDimension(value.toString());
-            }
-            else if (index.column() == AddressBlockColumns::DESCRIPTION)
+            regFile->setAddressOffset(value.toString());
+        }
+        else if (index.column() == RegisterFileColumns::DIMENSION)
+        {
+            if (!value.isValid())
             {
-                regBase->setDescription(value.toString());
+                removeReferencesFromSingleExpression(regFile->getDimension());
             }
-            else if (index.column() == AddressBlockColumns::IS_PRESENT)
-            {
-                if (!value.isValid())
-                {
-                    removeReferencesFromSingleExpression(regBase->getIsPresent());
-                }
 
-                regBase->setIsPresent(value.toString());
+            regFile->setDimension(value.toString());
+        }
+        else if (index.column() == RegisterFileColumns::DESCRIPTION)
+        {
+            regFile->setDescription(value.toString());
+        }
+        else if (index.column() == RegisterFileColumns::IS_PRESENT)
+        {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(regFile->getIsPresent());
             }
-            else{
-                base_changed=false;
-            }
+
+            regFile->setIsPresent(value.toString());
+        }
+        else
+        {
+            changed = false;
         }
 
-        bool reg_changed=false;
-        QSharedPointer<Register> reg = regBase.dynamicCast<Register>();
-        QSharedPointer<RegisterFile> regFile = regBase.dynamicCast<RegisterFile>();
-        if(reg){
-            reg_changed=true;
-            if (index.column() == AddressBlockColumns::REGISTER_SIZE)
+        if (index.column() == RegisterFileColumns::RANGE)
+        {
+            if (!value.isValid())
             {
-                if (!value.isValid())
-                {
-                    removeReferencesFromSingleExpression(reg->getSize());
-                }
+                removeReferencesFromSingleExpression(regFile->getRange());
+            }
 
-                reg->setSize(value.toString());
-            }
-            else if (index.column() == AddressBlockColumns::VOLATILE)
-            {
-                if (value.toString() == QLatin1String("true"))
-                {
-                    reg->setVolatile(true);
-                }
-                else if (value.toString() == QLatin1String("false"))
-                {
-                    reg->setVolatile(false);
-                }
-                else
-                {
-                    reg->clearVolatile();
-                }
-            }
-            else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
-            {
-                reg->setAccess(AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
-            }
-            else{
-                reg_changed=false;
-            }
-        }
-        else if(regFile){
-            reg_changed=true;
-            if (index.column() == AddressBlockColumns::REGISTERFILE_RANGE)
-            {
-                if (!value.isValid())
-                {
-                    removeReferencesFromSingleExpression(regFile->getRange());
-                }
-
-                regFile->setRange(value.toString());
-            }
+            regFile->setRange(value.toString());
+            changed = true;
         }
 
 
-        if (base_changed ||reg_changed){
-            if (index.column() == AddressBlockColumns::NAME ||
-                index.column() == AddressBlockColumns::REGISTER_OFFSET ||
-                index.column() == AddressBlockColumns::REGISTERFILE_RANGE ||
-                index.column() == AddressBlockColumns::REGISTER_SIZE ||
-                index.column() == AddressBlockColumns::REGISTER_DIMENSION ||
-                index.column() == AddressBlockColumns::IS_PRESENT)
+        if (changed)
+        {
+            if (index.column() == RegisterFileColumns::NAME ||
+                index.column() == RegisterFileColumns::ADDRESS_OFFSET ||
+                index.column() == RegisterFileColumns::RANGE ||
+                index.column() == RegisterFileColumns::DIMENSION ||
+                index.column() == RegisterFileColumns::IS_PRESENT)
             {
                 emit graphicsChanged();
             }
@@ -467,7 +364,17 @@ bool RegisterFileModel::setData(QModelIndex const& index, QVariant const& value,
     }
 
     return false;
+}
 
+//-----------------------------------------------------------------------------
+// Function: RegisterFileModel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList RegisterFileModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+    types << "text/xml/ipxact:registerFile";
+
+    return types;
 }
 
 //-----------------------------------------------------------------------------
@@ -475,58 +382,45 @@ bool RegisterFileModel::setData(QModelIndex const& index, QVariant const& value,
 //-----------------------------------------------------------------------------
 bool RegisterFileModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    return index.column() == AddressBlockColumns::REGISTER_DIMENSION ||
-           index.column() == AddressBlockColumns::REGISTER_SIZE ||
-           index.column() == AddressBlockColumns::REGISTERFILE_RANGE ||
-           index.column() == AddressBlockColumns::REGISTER_OFFSET ||
-           index.column() == AddressBlockColumns::IS_PRESENT;
+    return index.column() == RegisterFileColumns::DIMENSION||
+           index.column() == RegisterFileColumns::RANGE ||
+           index.column() == RegisterFileColumns::ADDRESS_OFFSET ||
+           index.column() == RegisterFileColumns::IS_PRESENT;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileModel::validateIndex()
 //-----------------------------------------------------------------------------
 bool RegisterFileModel::validateIndex(QModelIndex const& index) const
 {
+    QSharedPointer<RegisterFile> regFile = items_.at(index.row());
 
-
-    const QSharedPointer<RegisterBase> regBase = items_->at(index.row());
-    if (index.column() == AddressBlockColumns::NAME)
+    if (index.column() == RegisterFileColumns::NAME)
     {
         QStringList registerNames;
-        foreach (QSharedPointer<RegisterBase> registerItem, *items_)
+        foreach (QSharedPointer<RegisterFile> registerItem, items_)
         {
             registerNames.append(registerItem->name());
         }
 
-        return registerNames.count(regBase->name()) == 1 && registerFileValidator_->hasValidName(regBase);
+        return registerNames.count(regFile->name()) == 1 && registerFileValidator_->hasValidName(regFile);
     }
-    else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+    else if (index.column() == RegisterFileColumns::DIMENSION)
     {
-        return registerFileValidator_->hasValidDimension(regBase);
+        return registerFileValidator_->hasValidDimension(regFile);
     }
 
-    else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
+    else if (index.column() == RegisterFileColumns::ADDRESS_OFFSET)
     {
-        return registerFileValidator_->hasValidAddressOffset(regBase);
+        return registerFileValidator_->hasValidAddressOffset(regFile);
     }
 
-    else if (index.column() == AddressBlockColumns::IS_PRESENT)
+    else if (index.column() == RegisterFileColumns::IS_PRESENT)
     {
-        return registerFileValidator_->hasValidIsPresent(regBase);
+        return registerFileValidator_->hasValidIsPresent(regFile);
     }
 
-
-
-
-    const QSharedPointer<Register> reg = regBase.dynamicCast<Register>();
-    if (reg && index.column() == AddressBlockColumns::REGISTER_SIZE)
-    {
-        return registerValidator_->hasValidSize(reg);
-    }
-
-    const QSharedPointer<RegisterFile> regFile = regBase.dynamicCast<RegisterFile>();
-    if (regFile && index.column() == AddressBlockColumns::REGISTERFILE_RANGE)
+    if (regFile && index.column() == RegisterFileColumns::RANGE)
     {
         return registerFileValidator_->hasValidRange(regFile);
     }
@@ -538,131 +432,84 @@ bool RegisterFileModel::validateIndex(QModelIndex const& index) const
 // Function: RegisterFileModel::getAllReferencesToIdInItemOnRow()
 //-----------------------------------------------------------------------------
 int RegisterFileModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
-{
-
-    const QSharedPointer<RegisterBase> regBase = items_->at(row);
-    const QSharedPointer<Register> reg         = regBase.dynamicCast<Register>();
-    const QSharedPointer<RegisterFile> regFile = regBase.dynamicCast<RegisterFile>();
+{    
+    QSharedPointer<RegisterFile> const& regFile = items_.at(row);
 
     int count = 0;
-    if(regBase){
-      count+=regBase->getAddressOffset().count(valueID);
-      count+=regBase->getDimension().count(valueID);
-      count+=regBase->getIsPresent().count(valueID);
-    }
-    if (reg) {
-        count+=reg->getSize().count(valueID);
-    }
-    else if(regFile){
-      count += regFile->getRange().count(valueID);
+    count += regFile->getAddressOffset().count(valueID);
+    count += regFile->getDimension().count(valueID);
+    count += regFile->getIsPresent().count(valueID);
+    count += regFile->getRange().count(valueID);
 
-    }
     return count;
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileModel::onAddItem()
 //-----------------------------------------------------------------------------
-void RegisterFileModel::onAddItem(QSharedPointer<RegisterBase> regItem, QModelIndex const& index)
+void RegisterFileModel::onAddItem(QModelIndex const& index)
 {
-	int row = items_->size();
-
-	// if the index is valid then add the item to the correct position
-	if (index.isValid())
+    // Find last register/registerFile by address offset.
+    auto lastRegister = std::max_element(registerData_->cbegin(), registerData_->cend(),
+        [this](auto const& a, auto const& b)
     {
-		row = index.row();
-	}
+        return parseExpressionToDecimal(a->getAddressOffset()).toInt() < 
+            parseExpressionToDecimal(b->getAddressOffset()).toInt();
+    });
 
-	// the currently last register address // Old way
-    quint64 regAddress = 0;
+    quint64 lastRegAddress = 0;
+    quint64 lastRegDimension = 0;
+    quint64 lastRegRange = 0;
 
-    // check all register models
-    foreach (QSharedPointer<RegisterBase> regModel, *registerFile_->getRegisterData())
+    if (lastRegister != registerData_->cend())
     {
-        QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
+        lastRegAddress = parseExpressionToDecimal((*lastRegister)->getAddressOffset()).toInt();
+        lastRegDimension = parseExpressionToDecimal((*lastRegister)->getDimension()).toInt();
+
+        QSharedPointer<Register> reg = lastRegister->dynamicCast<Register>();
+        QSharedPointer<RegisterFile> regFile = lastRegister->dynamicCast<RegisterFile>();
         if (reg)
         {
-            if (regAddress < parseExpressionToDecimal(reg->getAddressOffset()).toUInt())
-            {
-                regAddress = parseExpressionToDecimal(reg->getAddressOffset()).toUInt();
-            }
+            lastRegRange = parseExpressionToDecimal(reg->getSize()).toInt() / qMax(addressUnitBits_, 1u);
         }
-
-        QSharedPointer<RegisterFile> regFile = regModel.dynamicCast<RegisterFile>();
-        if (regFile)
+        else if (regFile)
         {
-            if (regAddress < parseExpressionToDecimal(regFile->getAddressOffset()).toUInt())
-            {
-                regAddress = parseExpressionToDecimal(regFile->getAddressOffset()).toUInt();
-            }
+            lastRegRange = parseExpressionToDecimal(regFile->getRange()).toInt();
         }
     }
+   
+    qreal offsetIncrease = qMax(quint64(1), lastRegRange * qMax(quint64(1), lastRegDimension));
 
-    QStringList allRegisterOffsets = registerFile_->getAllRegisterOffsets();
+    // convert the address to hexadecimal form
+    quint64 itemAddress = lastRegAddress + offsetIncrease;
+	QString offset = QStringLiteral("'h") + QString::number(itemAddress, 16);
 
-    qreal lastRegDimension = 0;
-    qreal lastRegSize = 0;
-
-    for (int registerIndex = 0; registerIndex < allRegisterOffsets.size(); ++registerIndex)
+    // if the index is valid then add the item to the correct position
+    int row = items_.size();
+    if (index.isValid())
     {
-        QString calculatedExpression = parseExpressionToDecimal(allRegisterOffsets.at(registerIndex));
-        quint64 expressionToInt = calculatedExpression.toULongLong();
-
-        if (expressionToInt > regAddress || (registerIndex == allRegisterOffsets.size()-1 && regAddress == 0))
-        {
-            regAddress = expressionToInt;
-
-            QSharedPointer<RegisterBase> baseRegister = registerFile_->getRegisterData()->at(registerIndex);
-            QSharedPointer<Register> selectedRegister = baseRegister.dynamicCast<Register>();
-            if (selectedRegister)
-            {
-                lastRegDimension = parseExpressionToDecimal(selectedRegister->getDimension()).toInt();
-                lastRegSize = parseExpressionToDecimal(selectedRegister->getSize()).toInt();
-            }
-        }
+        row = index.row();
     }
 
-    qreal offsetIncrease = 0;
-    if (addressUnitBits_ != 0)
+    int dataIndex = registerData_->size();
+    if (row < items_.size() - 1)
     {
-        offsetIncrease = (lastRegSize / addressUnitBits_) * lastRegDimension;
+        dataIndex = registerData_->indexOf(items_.at(row + 1));
     }
-
-    regAddress = regAddress + offsetIncrease;
-
-	// convert the address to hexadecimal form
-	QString newRegAddressInHexaForm = QString::number(regAddress, 16);
-	newRegAddressInHexaForm.prepend("'h");
 
 	beginInsertRows(QModelIndex(), row, row);
-
-
-    regItem->setDimension(QStringLiteral("0"));
-    regItem->setAddressOffset(newRegAddressInHexaForm);
-    items_->insert(row, regItem);
+    QSharedPointer<RegisterFile> regItem(new RegisterFile());    
+    regItem->setAddressOffset(offset);
+    items_.insert(row, regItem);
+    registerData_->insert(dataIndex, regItem);
     endInsertRows();
 
 	// inform navigation tree that file set is added
-	emit itemAdded(row);
+	emit itemAdded(dataIndex);
+
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
-
-void RegisterFileModel::onAddRegister(QModelIndex const& index)
-{
-    QSharedPointer<Register> newRegister(new Register());
-    newRegister->setSize(QStringLiteral("32"));
-    onAddItem(newRegister, index);
-}
-
-void RegisterFileModel::onAddRegisterFile(QModelIndex const& index)
-{
-    QSharedPointer<RegisterFile> newRegFile(new RegisterFile());
-    onAddItem(newRegFile, index);
-}
-
-
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileModel::onRemoveItem()
@@ -670,7 +517,7 @@ void RegisterFileModel::onAddRegisterFile(QModelIndex const& index)
 void RegisterFileModel::onRemoveItem(QModelIndex const& index )
 {
 	// don't remove anything if index is invalid
-    if (!index.isValid() || index.row() < 0 || index.row() >= items_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
     {
 		return;
 	}
@@ -679,17 +526,20 @@ void RegisterFileModel::onRemoveItem(QModelIndex const& index )
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    QSharedPointer<RegisterBase> removedRegister = items_->at(index.row());
+    QSharedPointer<RegisterBase> removedRegister = items_.at(index.row());
     if (removedRegister)
     {
         decreaseReferencesWithRemovedRegister(removedRegister);
     }
 
-	items_->removeAt(index.row());
+    int itemRow = registerData_->indexOf(removedRegister);
+
+	items_.removeAt(index.row());
+    registerData_->removeAt(itemRow);
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
-	emit itemRemoved(index.row());
+	emit itemRemoved(itemRow);
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
@@ -702,13 +552,10 @@ void RegisterFileModel::decreaseReferencesWithRemovedRegister(QSharedPointer<Reg
 {
     QStringList expressionList;
 
-    QSharedPointer<Register> reg = removedRegister.dynamicCast<Register>();
     QSharedPointer<RegisterFile> regFile = removedRegister.dynamicCast<RegisterFile>();
-    if(reg){
-      RegisterExpressionsGatherer registerGatherer;
-       expressionList << registerGatherer.getExpressions(reg);
-    }
-    else if(regFile){
+    
+    if(regFile)
+    {
       RegisterFileExpressionsGatherer regFileGatherer;
       expressionList << regFileGatherer.getExpressions(regFile);
     }
@@ -726,36 +573,17 @@ void RegisterFileModel::decreaseReferencesWithRemovedRegister(QSharedPointer<Reg
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterFileModel::increaseReferencesInPastedField()
+// Function: RegisterFileModel::increaseReferencesInPastedRegisterFile()
 //-----------------------------------------------------------------------------
-void RegisterFileModel::increaseReferencesInPastedRegister(QSharedPointer<Register> pastedRegister,
-                                                           RegisterExpressionsGatherer& gatherer,
-                                                           ReferenceCalculator& referenceCalculator)
-{
-    QStringList registerExpressions = gatherer.getExpressions(pastedRegister);
-
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(registerExpressions);
-
-    QMapIterator<QString, int> refParameterIterator (referencedParameters);
-    while (refParameterIterator.hasNext())
-    {
-        refParameterIterator.next();
-        for (int i = 0; i < refParameterIterator.value(); ++i)
-        {
-            emit increaseReferences(refParameterIterator.key());
-        }
-    }
-}
-
 void RegisterFileModel::increaseReferencesInPastedRegisterFile(QSharedPointer<RegisterFile> pastedRegisterFile,
-                                                           RegisterFileExpressionsGatherer& gatherer,
-                                                           ReferenceCalculator& referenceCalculator)
+    RegisterFileExpressionsGatherer& gatherer,
+    ReferenceCalculator& referenceCalculator)
 {
     QStringList registerExpressions = gatherer.getExpressions(pastedRegisterFile);
 
     QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(registerExpressions);
 
-    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    QMapIterator<QString, int> refParameterIterator(referencedParameters);
     while (refParameterIterator.hasNext())
     {
         refParameterIterator.next();
@@ -765,7 +593,6 @@ void RegisterFileModel::increaseReferencesInPastedRegisterFile(QSharedPointer<Re
         }
     }
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileModel::addressUnitBitsChanged()
@@ -780,18 +607,17 @@ void RegisterFileModel::addressUnitBitsChanged(int newAddressUnitbits)
 //-----------------------------------------------------------------------------
 void RegisterFileModel::onCopyRows(QModelIndexList indexList)
 {
-    QList<QSharedPointer<RegisterBase> > copiedRegisters;
-    foreach (QModelIndex index, indexList)
+    QList<QSharedPointer<RegisterFile> > copiedRegisters;
+    for (QModelIndex index : indexList)
     {
-        QSharedPointer<RegisterBase> registerBase = items_->at(index.row());
-        copiedRegisters.append(registerBase);
+        copiedRegisters.append(items_.at(index.row()));
     }
 
     QVariant registerVariant;
     registerVariant.setValue(copiedRegisters);
 
     QMimeData* newMimeData = new QMimeData();
-    newMimeData->setData("text/xml/ipxact:register", QByteArray());
+    newMimeData->setData("text/xml/ipxact:registerFile", QByteArray());
     newMimeData->setImageData(registerVariant);
 
     QApplication::clipboard()->setMimeData(newMimeData);
@@ -807,47 +633,31 @@ void RegisterFileModel::onPasteRows()
     if (pasteData->hasImage())
     {
         QVariant pasteVariant = pasteData->imageData();
-        if (pasteVariant.canConvert<QList<QSharedPointer<RegisterBase> > >())
-        {
-            RegisterExpressionsGatherer gatherer;
-            RegisterFileExpressionsGatherer rfgatherer;
+        if (pasteVariant.canConvert<QList<QSharedPointer<RegisterFile> > >())
+        {            
+            RegisterFileExpressionsGatherer gatherer;
             ReferenceCalculator referenceCalculator(getParameterFinder());
 
-            QList<QSharedPointer<RegisterBase> > newRegsiters =
-                pasteVariant.value<QList<QSharedPointer<RegisterBase> > >();
+            QList<QSharedPointer<RegisterFile> > newRegisters =
+                pasteVariant.value<QList<QSharedPointer<RegisterFile> > >();
 
-            int rowBegin = items_->size();
-            int rowEnd = rowBegin + newRegsiters.size() - 1;
+            int rowBegin = items_.size();
+            int rowEnd = rowBegin + newRegisters.size() - 1;
 
             beginInsertRows(QModelIndex(), rowBegin, rowEnd);
 
-            foreach(QSharedPointer<RegisterBase> copiedRegister, newRegsiters)
-            {
-                QSharedPointer<Register> registerItem = copiedRegister.dynamicCast<Register>();
-                if (registerItem)
-                {
-                    QSharedPointer<Register> newRegister (new Register(*registerItem.data()));
-                    newRegister->setName(getUniqueName(newRegister->name(), getCurrentItemNames()));
+            for (QSharedPointer<RegisterFile> copiedRegister : newRegisters)
+            {                
 
-                    items_->append(newRegister);
+                    QSharedPointer<RegisterFile> newRegFile (new RegisterFile(*copiedRegister));
+                    newRegFile->setName(getUniqueName(newRegFile->name(), getAllNames()));
 
-                    increaseReferencesInPastedRegister(newRegister, gatherer, referenceCalculator);
+                    registerData_->append(newRegFile);
+                    items_.append(newRegFile);
 
-                    emit itemAdded(items_->size() - 1);
-                    continue;
-                }
-                QSharedPointer<RegisterFile> regFileItem = copiedRegister.dynamicCast<RegisterFile>();
-                if (regFileItem)
-                {
-                    QSharedPointer<RegisterFile> newRegFile (new RegisterFile(*regFileItem.data()));
-                    newRegFile->setName(getUniqueName(newRegFile->name(), getCurrentItemNames()));
+                    increaseReferencesInPastedRegisterFile(newRegFile, gatherer, referenceCalculator);
 
-                    items_->append(newRegFile);
-
-                    increaseReferencesInPastedRegisterFile(newRegFile, rfgatherer, referenceCalculator);
-
-                    emit itemAdded(items_->size() - 1);
-                }
+                    emit itemAdded(registerData_->size() - 1);                
             }
 
             endInsertRows();
@@ -858,28 +668,15 @@ void RegisterFileModel::onPasteRows()
 }
 
 //-----------------------------------------------------------------------------
-// Function: registerfilemodel::getCurrentItemNames()
+// Function: registerfilemodel::getAllNames()
 //-----------------------------------------------------------------------------
-QStringList RegisterFileModel::getCurrentItemNames()
+QStringList RegisterFileModel::getAllNames() const
 {
     QStringList names;
-    foreach (QSharedPointer<RegisterBase> registerItem, *items_)
+    for (QSharedPointer<RegisterFile> registerItem : items_)
     {
         names.append(registerItem->name());
     }
 
     return names;
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileModel::mimeTypes()
-//-----------------------------------------------------------------------------
-QStringList RegisterFileModel::mimeTypes() const
-{
-    QStringList types(QAbstractItemModel::mimeTypes());
-
-    types << "text/xml/ipxact:register";
-
-    return types;
 }

@@ -63,20 +63,19 @@ addressBlockValidator_(addressBlockValidator)
         QSharedPointer<RegisterFile> regfile = regModel.dynamicCast<RegisterFile>();
         if(regfile){
             QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(
-                        new ComponentEditorRegisterFileItem(regfile,
-                                                            model,
-                                                            libHandler,
-                                                            component,
-                                                            parameterFinder_,
-                                                            expressionFormatter_,
-                                                            referenceCounter_,
-                                                            expressionParser_,
-                                                            addressBlockValidator_->getRegisterFileValidator(),
-                                                            this));
+                new ComponentEditorRegisterFileItem(regfile,
+                    model,
+                    libHandler,
+                    component,
+                    parameterFinder_,
+                    expressionFormatter_,
+                    referenceCounter_,
+                    expressionParser_,
+                    addressBlockValidator_->getRegisterFileValidator(),
+                    this));
             childItems_.append(regFileItem);
-            continue;
         }
-	}
+    }
 	Q_ASSERT(addrBlock_);
 }
 
@@ -92,7 +91,7 @@ ComponentEditorAddrBlockItem::~ComponentEditorAddrBlockItem()
 //-----------------------------------------------------------------------------
 QString ComponentEditorAddrBlockItem::getTooltip() const
 {
-	return tr("Contains details of a single address block within a memory map.");
+	return tr("Contains details of a single address block.");
 }
 
 //-----------------------------------------------------------------------------
@@ -171,6 +170,7 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 		childItems_.insert(index, regItem);
         return;
 	}
+
     QSharedPointer<RegisterFile> regFile = regmodel.dynamicCast<RegisterFile>();
     if (regFile)
     {
@@ -189,9 +189,6 @@ void ComponentEditorAddrBlockItem::createChild( int index )
         childItems_.insert(index, regFileItem);
         return;
     }
-
-
-
 }
 
 //-----------------------------------------------------------------------------
@@ -249,19 +246,20 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 	
 	// update the visualizers for register items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
-    {
+    {        
         QSharedPointer<ComponentEditorRegisterItem> regItem = item.dynamicCast<ComponentEditorRegisterItem>();
-        if(regItem){
+        if(regItem)
+        {
           regItem->setVisualizer(visualizer_);
           continue;
         }
 
-        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem = item.dynamicCast<ComponentEditorRegisterFileItem>();
-        if(regFileItem){
+        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem =
+            item.dynamicCast<ComponentEditorRegisterFileItem>();
+        if(regFileItem)
+        {
           regFileItem->setVisualizer(visualizer_);
-          continue;
         }
-
 	}
 
 	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);

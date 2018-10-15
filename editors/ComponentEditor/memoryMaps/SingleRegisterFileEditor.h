@@ -19,6 +19,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 
+class AddressBlockEditor; 
 class LibraryInterface;
 class ParameterFinder;
 class ExpressionFormatter;
@@ -46,7 +47,7 @@ public:
     *     @param [in] registerFileValidator    Validator for register files.
     *     @param [in] parent                   The parent widget.
     */
-    SingleRegisterFileEditor(QSharedPointer<RegisterFile> selectedRegisterFile,
+    SingleRegisterFileEditor(QSharedPointer<RegisterFile> registerFile,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -118,7 +119,10 @@ private:
     //! The name editor.
     NameGroupEditor nameEditor_;
 
-    //! The editor for the registers fields.
+    //! The editor for registers.
+    AddressBlockEditor* registersEditor_;
+
+    //! The editor for the register files.
     RegisterFileEditor* registerFileEditor_;
 
     //! The editor for register file offset.

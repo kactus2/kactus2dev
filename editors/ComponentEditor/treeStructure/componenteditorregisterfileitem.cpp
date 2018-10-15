@@ -64,15 +64,14 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
         }
 
         QSharedPointer<RegisterFile> regfile = regModel.dynamicCast<RegisterFile>();
-        if(regfile){
-            QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regfile, model,
-                  libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
+        if(regfile)
+        {
+            QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(
+                regfile, model, libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
                   expressionParser_, registerFileValidator_, this));
             childItems_.append(regFileItem);
-            continue;
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +79,7 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
 //-----------------------------------------------------------------------------
 QString ComponentEditorRegisterFileItem::getTooltip() const
 {
-    return tr("Contains details of a single register file");
+    return tr("Contains details of a single register file.");
 }
 
 //-----------------------------------------------------------------------------
@@ -150,10 +149,6 @@ void ComponentEditorRegisterFileItem::createChild( int index )
         childItems_.insert(index, regFileItem);
         return;
     }
-
-
-
-
 }
 
 //-----------------------------------------------------------------------------
@@ -174,6 +169,7 @@ ItemEditor* ComponentEditorRegisterFileItem::editor()
 
         connectItemEditorToReferenceCounter();
     }
+
     return editor_;
 }
 
@@ -197,15 +193,17 @@ void ComponentEditorRegisterFileItem::setVisualizer( MemoryMapsVisualizer* visua
     foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
     {
         QSharedPointer<ComponentEditorRegisterItem> regItem = item.dynamicCast<ComponentEditorRegisterItem>();
-        if (regItem){
+        if (regItem)
+        {
           regItem->setVisualizer(visualizer_);
           continue;
         }
+
         QSharedPointer<ComponentEditorRegisterFileItem> regFileItem = item.dynamicCast<ComponentEditorRegisterFileItem>();
-        if (regFileItem){
+        if (regFileItem)
+        {
           regFileItem->setVisualizer(visualizer_);
         }
-
     }
 }
 

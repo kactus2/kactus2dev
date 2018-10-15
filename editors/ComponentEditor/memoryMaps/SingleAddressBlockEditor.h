@@ -31,7 +31,7 @@ class ParameterFinder;
 class UsageComboBox;
 class AccessComboBox;
 class BooleanComboBox;
-
+class RegisterFileEditor;
 class AddressBlockValidator;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single address block.
@@ -172,9 +172,6 @@ private:
     //! Editor for containing the name group information of the address block.
     NameGroupEditor nameEditor_;
 
-    //! Editor for containing the registers of the address block.
-    AddressBlockEditor* registersEditor_;
-
     //! Editor for selecting the usage of the address block.
     UsageComboBox* usageEditor_;
 
@@ -195,6 +192,12 @@ private:
 
     //! Editor for selecting the volatility of the address block.
     BooleanComboBox* volatileEditor_;
+
+    //! Editor for containing the registers of the address block.
+    AddressBlockEditor* registersEditor_;
+
+    //! Editor for containing the register files of the address block.
+    RegisterFileEditor* registerFilesEditor_;
 
     //! The current address block.
     QSharedPointer<AddressBlock> addressBlock_;

@@ -1,5 +1,16 @@
-#ifndef ADDRESSBLOCKMODEL_H
-#define ADDRESSBLOCKMODEL_H
+//-----------------------------------------------------------------------------
+// File: registerfilemodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Dan Chianucci
+// Date: 19.06.2018
+//
+// Description:
+// The model to manage the register files of a single address block or another register file.
+//-----------------------------------------------------------------------------
+
+#ifndef REGISTERFILEMODEL_H
+#define REGISTERFILEMODEL_H
 
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
@@ -21,7 +32,7 @@ class RegisterFileExpressionsGatherer;
 class ReferenceCalculator;
 
 //-----------------------------------------------------------------------------
-//! The model to manage the registers of a single address block.
+//! The model to manage the register files of a single address block or another register file.
 //-----------------------------------------------------------------------------
 class RegisterFileModel : public ReferencingTableModel, public ParameterizableTable
 {
@@ -32,14 +43,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] registerFile            Pointer to the address block being edited.
-	 *      @param [in] expressionParser        Pointer to the expression parser.
-   *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-   *      @param [in] registerValidator       Validator for registers.
-	 *      @param [in] parent                  Pointer to the owner of the model.
+	 *      @param [in] registerData            The register data containing the register files to edit.
+	 *      @param [in] expressionParser        The expression parser.
+     *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] registerValidator       Validator for registers.
+	 *      @param [in] parent                  The owner of the model.
 	 */
-	RegisterFileModel(QSharedPointer<RegisterFile> registerFile,
+	RegisterFileModel(QSharedPointer<QList<QSharedPointer<RegisterBase> > >  registerData,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -47,7 +58,13 @@ public:
 		QObject *parent);
 
 	//! The destructor.
-	virtual ~RegisterFileModel();
+	virtual ~RegisterFileModel() = default;
+
+    //! No copying.
+    RegisterFileModel(const RegisterFileModel& other) = delete;
+
+    //! No assignment.
+    RegisterFileModel& operator=(const RegisterFileModel& other) = delete;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -161,9 +178,7 @@ public slots:
 	 *
 	 *      @param [in] index   The index identifying the position for new item.
 	 */
-    virtual void onAddRegister(const QModelIndex& index);
-    virtual void onAddRegisterFile(const QModelIndex& index);
-
+    void onAddItem(QModelIndex const& index);
 
 	/*!
      *  Remove the item in the given index.
@@ -193,32 +208,25 @@ public slots:
 
 signals:
 
-	//! Emitted when the contents of the model change.
-	void contentChanged();
+    //! Emitted when the contents of the model change.
+    void contentChanged();
 
-  /*!
-   *  Informs of a need to redraw the visualizer.
-   */
-  void graphicsChanged();
+    /*!
+     *  Informs of a need to redraw the visualizer.
+     */
+    void graphicsChanged();
 
-  //! Prints an error message to the user.
-  void errorMessage(const QString& msg) const;
+    //! Prints an error message to the user.
+    void errorMessage(const QString& msg) const;
 
-	//! Emitted when a new register item is added to the given index.
-	void itemAdded(int index);
+    //! Emitted when a new register item is added to the given index.
+    void itemAdded(int index);
 
-	//! Emitted when a register item is removed from the given index.
-	void itemRemoved(int index);
+    //! Emitted when a register item is removed from the given index.
+    void itemRemoved(int index);
 
 private:
 
-	//! No copying.
-	RegisterFileModel(const RegisterFileModel& other);
-
-	//! No assignment.
-	RegisterFileModel& operator=(const RegisterFileModel& other);
-
-    void onAddItem(QSharedPointer<RegisterBase> regItem, QModelIndex const& index);
     /*!
      *  Get the value for the corresponding index.
      *
@@ -234,32 +242,31 @@ private:
     void decreaseReferencesWithRemovedRegister(QSharedPointer<RegisterBase> removedRegister);
 
     /*!
-     *  Get the names of the contained registers.
+     *  Get all the names of the registers and register files in register data.
      *
-     *      @return The names of the contained registers.
+     *      @return The names of the registers and register files.
      */
-    QStringList getCurrentItemNames();
+    QStringList getAllNames() const;
 
     /*!
      *  Increase the number of references made in the copied register.
      *
-     *      @param [in] pastedRegister          The copied register.
+     *      @param [in] pastedRegisterFile      The copied register file.
      *      @param [in] gatherer                Register expressions gatherer.
      *      @param [in] referenceCalculator     The reference calculator.
      */
-    void increaseReferencesInPastedRegister(QSharedPointer<Register> pastedRegister,
-        RegisterExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
     void increaseReferencesInPastedRegisterFile(QSharedPointer<RegisterFile> pastedRegisterFile,
         RegisterFileExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the address block being edited.
-	QSharedPointer<RegisterFile> registerFile_;
+    //! Contains all registers and register files.
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;
 
-	//! Contains the register items to display.
-    QSharedPointer<QList<QSharedPointer<RegisterBase> > > items_;
+	//! Contains the register file items to display in this model.
+    QList<QSharedPointer<RegisterFile> >  items_;
 
     //! The address unit bits of the memory map.
     unsigned int addressUnitBits_;
@@ -272,8 +279,7 @@ private:
 
     //! The validator used for registers.
     QSharedPointer<RegisterFileValidator> registerFileValidator_;
-		//! The validator used for registers.
-		QSharedPointer<RegisterValidator> registerValidator_;
+
 };
 
-#endif // ADDRESSBLOCKMODEL_H
+#endif // REGISTERFILEMODEL_H

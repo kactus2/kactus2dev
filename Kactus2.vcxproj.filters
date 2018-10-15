@@ -6884,6 +6884,9 @@
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterFileColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">

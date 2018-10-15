@@ -6,7 +6,7 @@
 // Date: 24.08.2012
 //
 // Description:
-// The model to manage the registers of a single address block.
+// The model to manage the registers of a single address block or register file.
 //-----------------------------------------------------------------------------
 
 #ifndef ADDRESSBLOCKMODEL_H
@@ -32,7 +32,7 @@ class RegisterFileExpressionsGatherer;
 class ReferenceCalculator;
 
 //-----------------------------------------------------------------------------
-//! The model to manage the registers of a single address block.
+//! The model to manage the registers of a single address block or register file.
 //-----------------------------------------------------------------------------
 class AddressBlockModel : public ReferencingTableModel, public ParameterizableTable
 {
@@ -42,15 +42,15 @@ public:
 
 	/*!
 	 *  The constructor.
-	 *
-	 *      @param [in] addressBlock            Pointer to the address block being edited.
-	 *      @param [in] expressionParser        Pointer to the expression parser.
-     *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *
+     *      @param [in] registerData            The register data containing the registers to edit.
+	 *      @param [in] expressionParser        The expression parser.
+     *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] registerValidator       Validator for registers.
-	 *      @param [in] parent                  Pointer to the owner of the model.
+	 *      @param [in] parent                  The owner of the model.
 	 */
-	AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
+	AddressBlockModel(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -58,7 +58,7 @@ public:
 		QObject *parent);
 
 	//! The destructor.
-	virtual ~AddressBlockModel();
+	virtual ~AddressBlockModel() = default;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -172,9 +172,7 @@ public slots:
 	 *
 	 *      @param [in] index   The index identifying the position for new item.
 	 */
-    virtual void onAddRegister(const QModelIndex& index);
-    virtual void onAddRegisterFile(const QModelIndex& index);
-
+    virtual void onAddItem(const QModelIndex& index);
 
 	/*!
      *  Remove the item in the given index.
@@ -242,14 +240,14 @@ private:
      *
      *      @param [in] removedRegister     The removed register.
      */
-    void decreaseReferencesWithRemovedRegister(QSharedPointer<RegisterBase> removedRegister);
+    void decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister);
 
     /*!
-     *  Get the names of the contained registers.
+     *  Get all the names of the contained registers and register files in register data.
      *
-     *      @return The names of the contained registers.
+     *      @return The names of the registers and register files.
      */
-    QStringList getCurrentItemNames();
+    QStringList getAllNames() const;
 
     /*!
      *  Increase the number of references made in the copied register.
@@ -260,17 +258,16 @@ private:
      */
     void increaseReferencesInPastedRegister(QSharedPointer<Register> pastedRegister,
         RegisterExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
-    void increaseReferencesInPastedRegisterFile(QSharedPointer<RegisterFile> pastedRegisterFile,
-        RegisterFileExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the address block being edited.
-	QSharedPointer<AddressBlock> addressBlock_;
+    //! Contains all registers and register files.
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;
 
-	//! Contains the register items to display.
-    QSharedPointer<QList<QSharedPointer<RegisterBase> > > items_;
+    //! Contains the register items to display.
+    QList<QSharedPointer<Register> > items_;
 
     //! The address unit bits of the memory map.
     unsigned int addressUnitBits_;
@@ -283,8 +280,9 @@ private:
 
     //! The validator used for registers.
     QSharedPointer<RegisterFileValidator> registerFileValidator_;
-		//! The validator used for registers.
-		QSharedPointer<RegisterValidator> registerValidator_;
+
+	//! The validator used for registers.
+	QSharedPointer<RegisterValidator> registerValidator_;
 };
 
 #endif // ADDRESSBLOCKMODEL_H

@@ -124,4 +124,6 @@ private:
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;
 };
 
+Q_DECLARE_METATYPE(QSharedPointer<RegisterFile>);
+
 #endif // REGISTERFILE_H

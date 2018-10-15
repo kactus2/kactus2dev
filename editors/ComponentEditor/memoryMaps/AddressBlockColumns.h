@@ -15,10 +15,10 @@
 namespace AddressBlockColumns
 {
     //! Defines the columns for the address block table.
-    enum Column {
+    enum Column
+    {
         NAME = 0,
         REGISTER_OFFSET,
-        REGISTERFILE_RANGE,
         REGISTER_SIZE,
         REGISTER_DIMENSION,
         VOLATILE,

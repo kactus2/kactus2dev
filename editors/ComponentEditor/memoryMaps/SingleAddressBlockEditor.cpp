@@ -11,6 +11,8 @@
 
 #include "SingleAddressBlockEditor.h"
 
+#include "registerfileeditor.h"
+
 #include <common/widgets/usageComboBox/usagecombobox.h>
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/booleanComboBox/booleancombobox.h>
@@ -24,6 +26,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 
 #include <QFormLayout>
 #include <QScrollArea>
@@ -39,8 +42,6 @@ SingleAddressBlockEditor::SingleAddressBlockEditor(QSharedPointer<AddressBlock> 
     QWidget* parent):
 ItemEditor(component, handler, parent),
     nameEditor_(addressBlock, this, tr("Address block name and description")),
-    registersEditor_(new AddressBlockEditor(addressBlock, component, handler, parameterFinder, expressionFormatter,
-    addressBlockValidator->getRegisterFileValidator(), this)),
     usageEditor_(),
     baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
     rangeEditor_(new ExpressionEditor(parameterFinder, this)),
@@ -48,6 +49,10 @@ ItemEditor(component, handler, parent),
     isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
     accessEditor_(),
     volatileEditor_(),
+    registersEditor_(new AddressBlockEditor(addressBlock->getRegisterData(), component, handler, 
+        parameterFinder, expressionFormatter, addressBlockValidator->getRegisterFileValidator(), this)),
+    registerFilesEditor_(new RegisterFileEditor(addressBlock->getRegisterData(), component, handler,
+        parameterFinder, expressionFormatter, addressBlockValidator->getRegisterFileValidator(), this)),
     addressBlock_(addressBlock),
     expressionParser_(expressionParser)
 {
@@ -284,19 +289,25 @@ void SingleAddressBlockEditor::setupLayout()
     verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     verticalSplitter->addWidget(topOfPageWidget);
     verticalSplitter->addWidget(registersEditor_);
-    verticalSplitter->setStretchFactor(1, 1);
+    verticalSplitter->addWidget(registerFilesEditor_);
+    verticalSplitter->setStretchFactor(0, 1);
+    verticalSplitter->setStretchFactor(1, 2);
+    verticalSplitter->setStretchFactor(2, 2);
 
-    QSplitterHandle* handle = verticalSplitter->handle(1);
-    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
-    handleLayout->setSpacing(0);
-    handleLayout->setMargin(0);
+    for (int i = 1; i <= 2; ++i)
+    {
+        QSplitterHandle* handle = verticalSplitter->handle(i);
+        QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+        handleLayout->setSpacing(0);
+        handleLayout->setMargin(0);
 
-    QFrame* line = new QFrame(handle);
-    line->setLineWidth(2);
-    line->setMidLineWidth(2);
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-    handleLayout->addWidget(line);
+        QFrame* line = new QFrame(handle);
+        line->setLineWidth(2);
+        line->setMidLineWidth(2);
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        handleLayout->addWidget(line);
+    }
 
     verticalSplitter->setHandleWidth(10);
 
@@ -313,6 +324,13 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(registersEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(registersEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(registerFilesEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+    connect(registerFilesEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+    connect(registerFilesEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(registerFilesEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(baseAddressEditor_, SIGNAL(increaseReference(QString)),
@@ -332,18 +350,20 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(isPresentEditor_, SIGNAL(decreaseReference(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SLOT(onBaseAddressChanged()), Qt::UniqueConnection);
+    connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SLOT(onBaseAddressChanged()), Qt::UniqueConnection);    
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SLOT(onRangeChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWidthChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(registersEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(registerFilesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registersEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(registerFilesEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
@@ -354,6 +374,8 @@ void SingleAddressBlockEditor::connectSignals() const
 
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         registersEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
+    connect(this, SIGNAL(addressUnitBitsChanged(int)),
+        registerFilesEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

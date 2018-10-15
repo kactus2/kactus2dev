@@ -75,7 +75,7 @@ ComponentEditorRegisterItem::~ComponentEditorRegisterItem()
 //-----------------------------------------------------------------------------
 QString ComponentEditorRegisterItem::getTooltip() const
 {
-	return tr("Contains details of a single register within an address block.");
+	return tr("Contains details of a single register.");
 }
 
 //-----------------------------------------------------------------------------

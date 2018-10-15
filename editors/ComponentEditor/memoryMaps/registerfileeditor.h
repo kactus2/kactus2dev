@@ -15,13 +15,13 @@
 #include <QSharedPointer>
 #include <QGroupBox>
 
-class RegisterFile;
+class RegisterBase;
 class Component;
 class LibraryInterface;
 class ParameterFinder;
 class ExpressionFormatter;
 class RegisterFileValidator;
-class RegisterDataTableView;
+class EditableTableView;
 class RegisterFileModel;
 
 //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ public:
      *     @param [in] registerFileValidator    Validator for register files.
      *     @param [in] parent                   The parent widget.
      */
-     RegisterFileEditor(QSharedPointer<RegisterFile> registerFile,
+     RegisterFileEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > >  registerFile,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -117,10 +117,12 @@ signals:
      */
     void childRemoved(int index);
 
+    void addressUnitBitsChanged(int);
+
 private:
 
     //! The view to display the items.
-    RegisterDataTableView* view_;
+    EditableTableView* view_;
 
     //! Pointer to the model that manages the details of address block.
     RegisterFileModel* model_;

@@ -29,12 +29,12 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockEditor::AddressBlockEditor()
 //-----------------------------------------------------------------------------
-AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
+AddressBlockEditor::AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData,
     QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<RegisterFileValidator> registerFileValidator, QWidget* parent):
 QGroupBox(tr("Registers summary"), parent),
-    view_(new RegisterDataTableView(this)),
+    view_(new EditableTableView(this)),
     model_(0)
 {
     view_->verticalHeader()->show();
@@ -44,8 +44,8 @@ QGroupBox(tr("Registers summary"), parent),
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new AddressBlockModel(addressBlock, expressionParser, parameterFinder, expressionFormatter,
-        registerFileValidator, this);
+    model_ = new AddressBlockModel(registerData, expressionParser, parameterFinder,
+        expressionFormatter, registerFileValidator, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -56,7 +56,6 @@ QGroupBox(tr("Registers summary"), parent),
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
 
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_OFFSET);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTERFILE_RANGE);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_SIZE);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_DIMENSION);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::IS_PRESENT);
@@ -84,7 +83,7 @@ QGroupBox(tr("Registers summary"), parent),
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);
-
+     
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         model_, SLOT(addressUnitBitsChanged(int)), Qt::UniqueConnection);
 
@@ -95,11 +94,9 @@ QGroupBox(tr("Registers summary"), parent),
 	connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
-    connect(view_, SIGNAL(addRegister(const QModelIndex&)),
-        model_, SLOT(onAddRegister(const QModelIndex&)), Qt::UniqueConnection);
-    connect(view_, SIGNAL(addRegisterFile(const QModelIndex&)),
-        model_, SLOT(onAddRegisterFile(const QModelIndex&)), Qt::UniqueConnection);
-
+    connect(view_, SIGNAL(addItem(const QModelIndex&)),
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+   
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
@@ -117,14 +114,6 @@ QGroupBox(tr("Registers summary"), parent),
     connect(view_, SIGNAL(copyRows(QModelIndexList)),
         model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
     connect(view_, SIGNAL(pasteRows()), model_, SLOT(onPasteRows()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockEditor::AddressBlockEditor()
-//-----------------------------------------------------------------------------
-AddressBlockEditor::~AddressBlockEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------
