@@ -4483,14 +4483,8 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_RegisterDataTableView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SingleRegisterFileEditor.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\RegisterDataTableView.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleRegisterFileEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
@@ -6158,9 +6152,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\SystemGroupListEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\memoryMaps\RegisterDataTableView.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleRegisterFileEditor.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>

@@ -423,7 +423,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.h \
     ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h \
-    ./editors/ComponentEditor/memoryMaps/RegisterDataTableView.h \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.h \
     ./editors/ComponentEditor/memoryMaps/registerfiledelegate.h \
     ./editors/ComponentEditor/memoryMaps/registerfileeditor.h \
@@ -1125,7 +1124,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.cpp \
-    ./editors/ComponentEditor/memoryMaps/RegisterDataTableView.cpp \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registereditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfiledelegate.cpp \
