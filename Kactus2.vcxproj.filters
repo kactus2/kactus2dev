@@ -512,12 +512,6 @@
     <Filter Include="Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis">
       <UniqueIdentifier>{494842c1-c5c6-4ef7-b456-d173c72d786d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps">
-      <UniqueIdentifier>{ad772e57-ad34-43d0-b8e3-4c52f9a91dad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer">
-      <UniqueIdentifier>{e2826d14-3a54-47cb-bdba-b3789841d570}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\treeStructure">
       <UniqueIdentifier>{bee9b152-6eb9-4b85-9016-63516b0c60c3}</UniqueIdentifier>
     </Filter>
@@ -713,9 +707,6 @@
     <Filter Include="Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators">
       <UniqueIdentifier>{f21aaa0e-dde2-4784-b98b-f98a327c86ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators">
-      <UniqueIdentifier>{0383a24a-2477-42e1-a186-544e70d7a570}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\ConfigurationTools">
       <UniqueIdentifier>{3f49035a-f56d-4986-a5fc-61b3c9feaa4a}</UniqueIdentifier>
     </Filter>
@@ -910,6 +901,15 @@
     </Filter>
     <Filter Include="Source Files\editors\SystemDesign\UndoCommands">
       <UniqueIdentifier>{87135939-f2a4-40bd-ab3e-9e28211d32d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps">
+      <UniqueIdentifier>{ad772e57-ad34-43d0-b8e3-4c52f9a91dad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer">
+      <UniqueIdentifier>{e2826d14-3a54-47cb-bdba-b3789841d570}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators">
+      <UniqueIdentifier>{0383a24a-2477-42e1-a186-544e70d7a570}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

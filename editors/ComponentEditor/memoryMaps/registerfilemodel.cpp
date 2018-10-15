@@ -193,7 +193,18 @@ QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
     {
         if (validateIndex(index))
         {
-            return KactusColors::REGULAR_TEXT;
+            QSharedPointer<RegisterFile> regFile = items_.at(index.row());
+
+            if (index.column() != RegisterFileColumns::IS_PRESENT &&
+                (!regFile->getIsPresent().isEmpty() && 
+                    parseExpressionToDecimal(regFile->getIsPresent()).toInt() != 1))
+            {
+                return KactusColors::DISABLED_TEXT;
+            }
+            else
+            {
+                return KactusColors::REGULAR_TEXT;
+            }            
         }
         else
         {
