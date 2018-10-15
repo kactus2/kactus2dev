@@ -70,6 +70,7 @@ QSharedPointer<RegisterFileValidator> AddressBlockValidator::getRegisterFileVali
 bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits)
     const
 {
+
     return  hasValidName(addressBlock) &&
             hasValidIsPresent(addressBlock) &&
             hasValidBaseAddress(addressBlock) &&
@@ -235,7 +236,11 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
                             return false;
                         }
 
-                        reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+
+                        if(targetRegister->getIsPresent().isEmpty() || expressionParser_->parseExpression(targetRegister->getIsPresent()).toInt())
+                        {
+                          reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+                        }
                     }
 
                     registerNames.append(targetRegister->name());
@@ -578,9 +583,12 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                     qint64 registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
                         toLongLong();
 
-                     qint64 registerEnd = registerBegin + registerSize - 1;
+                    qint64 registerEnd = registerBegin + registerSize - 1;
 
-                    reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+                    if(targetRegister->getIsPresent().isEmpty() || expressionParser_->parseExpression(targetRegister->getIsPresent()).toInt())
+                    {
+                      reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
+                    }
 
                     if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
                     {
@@ -614,5 +622,5 @@ qint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targ
 
     qint64 trueSize = dimensionlessSize * registerDimension;
 
-    return trueSize;
-}
+    return trueSize;}
+

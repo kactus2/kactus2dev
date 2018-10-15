@@ -144,13 +144,13 @@ bool MemoryMapBaseValidator::addressBlockWidthIsMultiplicationOfAUB(QString cons
 {
     bool aubToIntOk = true;
     bool widthToIntOk = true;
-    
+
     int addressUnitBitsInt = 8;
     if (!addressUnitBits.isEmpty())
     {
         addressUnitBitsInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubToIntOk);
     }
-    
+
     int addressBlockWidth = expressionParser_->parseExpression(addressBlock->getWidth()).toInt(&widthToIntOk);
 
     return aubToIntOk && widthToIntOk && addressUnitBitsInt != 0 && addressBlockWidth % addressUnitBitsInt == 0;
@@ -185,18 +185,23 @@ bool MemoryMapBaseValidator::addressBlockOverlaps(QSharedPointer<AddressBlock> a
 bool MemoryMapBaseValidator::twoAddressBlocksOverlap(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<AddressBlock> comparedBlock) const
 {
-    int blockBegin = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toInt();
-    int blockEnd = blockBegin + expressionParser_->parseExpression(addressBlock->getRange()).toInt() - 1;
+    int blockBegin    = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toInt();
+    int blockEnd      = blockBegin + expressionParser_->parseExpression(addressBlock->getRange()).toInt() - 1;
+    bool blockPresent = addressBlock->getIsPresent().isEmpty() || expressionParser_->parseExpression(addressBlock->getIsPresent()).toInt();
 
-    int compareBegin = expressionParser_->parseExpression(comparedBlock->getBaseAddress()).toInt();
-    int compareEnd = compareBegin + expressionParser_->parseExpression(comparedBlock->getRange()).toInt() - 1;
 
-    if (((blockBegin >= compareBegin && blockBegin <= compareEnd) ||
-        (blockEnd >= compareBegin && blockEnd <= compareEnd)) ||
-        ((compareBegin >= blockBegin && compareBegin <= blockEnd) ||
-        (compareEnd >= blockBegin && compareEnd <= blockEnd)))
-    {
-        return true;
+    int compareBegin    = expressionParser_->parseExpression(comparedBlock->getBaseAddress()).toInt();
+    int compareEnd      = compareBegin + expressionParser_->parseExpression(comparedBlock->getRange()).toInt() - 1;
+    bool comparedPresent = comparedBlock->getIsPresent().isEmpty() || expressionParser_->parseExpression(comparedBlock->getIsPresent()).toInt();
+
+    if (blockPresent && comparedPresent) {
+      if (((blockBegin >= compareBegin && blockBegin <= compareEnd) ||
+          (blockEnd >= compareBegin && blockEnd <= compareEnd)) ||
+          ((compareBegin >= blockBegin && compareBegin <= blockEnd) ||
+          (compareEnd >= blockBegin && compareEnd <= blockEnd)))
+      {
+          return true;
+      }
     }
 
     return false;

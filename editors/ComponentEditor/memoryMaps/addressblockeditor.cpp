@@ -15,11 +15,12 @@
 #include "addressblockmodel.h"
 #include "ExpressionProxyModel.h"
 #include "AddressBlockColumns.h"
-#include "RegisterDataTableView.h"
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <library/LibraryInterface.h>
 
