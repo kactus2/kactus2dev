@@ -31,7 +31,7 @@
 // Function: RegisterValidator::RegisterValidator()
 //-----------------------------------------------------------------------------
 RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expressionParser,
-                                     QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator> parameterValidator):
+    QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator> parameterValidator):
     RegisterBaseValidator(expressionParser,parameterValidator),
     fieldValidator_(fieldValidator)
 {
@@ -66,13 +66,13 @@ bool RegisterValidator::validate(QSharedPointer<Register> selectedRegister) cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterValidator::hasValidSize()
+//-----------------------------------------------------------------------------// Function: RegisterValidator::hasValidSize()
 //-----------------------------------------------------------------------------
 bool RegisterValidator::hasValidSize(QSharedPointer<Register> selectedRegister) const
 {
     bool changeOk = true;
     bool expressionValid = false;
- 
+
     QString solvedValue = expressionParser_->parseExpression(selectedRegister->getSize(), &expressionValid);
     quint64 sizeInt = solvedValue.toULongLong(&changeOk);
 
@@ -117,7 +117,11 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
                 return false;
             }
 
-            reservedArea.addArea(field->name(), rangeBegin, rangeEnd);
+
+            if(field->getIsPresent().isEmpty() || expressionParser_->parseExpression(field->getIsPresent()).toInt())
+            {
+              reservedArea.addArea(field->name(), rangeBegin, rangeEnd);
+            }
 
             if (!field->getTypeIdentifier().isEmpty() && fieldTypeIdentifiers.contains(field->getTypeIdentifier()))
             {
@@ -181,7 +185,7 @@ bool RegisterValidator::hasValidAlternateGroups(QSharedPointer<AlternateRegister
 {
     QRegularExpression whiteSpaceExpression;
     whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-        
+
     QStringList alternateGroups;
     bool alternateGroupsOk = false;
     foreach (QString group, *selectedRegister->getAlternateGroups())
@@ -236,7 +240,7 @@ bool RegisterValidator::fieldsHaveSimilarDefinitionGroups(QSharedPointer<Field> 
     {
         foreach (QSharedPointer<EnumeratedValue> comparedEnumeratedValue, *comparedField->getEnumeratedValues())
         {
-            if (enumeratedValue->name() == comparedEnumeratedValue->name() && 
+            if (enumeratedValue->name() == comparedEnumeratedValue->name() &&
                 enumeratedValue->displayName() == comparedEnumeratedValue->displayName() &&
                 enumeratedValue->description() == comparedEnumeratedValue->description() &&
                 enumeratedValue->getValue() == comparedEnumeratedValue->getValue() &&
@@ -292,7 +296,6 @@ void RegisterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Re
     findErrorsInDimension(errors, selectedRegister, context);
     findErrorsInAddressOffset(errors, selectedRegister, context);
     findErrorsInSize(errors, selectedRegister, context);
-
     findErrorsInFields(errors, selectedRegister, selectedRegister->getSize(), registerContext);
     findErrorsInAlternateRegisters(errors, selectedRegister);
     findErrorsInParameters(errors, selectedRegister, registerContext);
@@ -348,7 +351,10 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
                     arg(selectedRegister->name()));
             }
 
-            reservedArea.addArea(field->name(), rangeBegin, rangeEnd);
+            if(field->getIsPresent().isEmpty() || expressionParser_->parseExpression(field->getIsPresent()).toInt())
+            {
+              reservedArea.addArea(field->name(), rangeBegin, rangeEnd);
+            }
 
             if (!field->getTypeIdentifier().isEmpty() && fieldTypeIdentifiers.contains(field->getTypeIdentifier()))
             {
