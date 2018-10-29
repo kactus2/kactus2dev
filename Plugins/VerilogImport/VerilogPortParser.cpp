@@ -368,7 +368,7 @@ QString VerilogPortParser::replaceNameReferencesWithIds(QString const& expressio
 
         foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
         {
-            QRegularExpression macroUsage("`?\\b" + define->name() + "\\b");
+            QRegularExpression macroUsage("(`|\\b)" + define->name() + "\\b");
             if (macroUsage.match(result).hasMatch())
             {
                 result.replace(macroUsage, define->getValueId());
