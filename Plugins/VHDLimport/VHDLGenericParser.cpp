@@ -30,9 +30,12 @@ namespace
     const QRegularExpression GENERICS_END_EXP = QRegularExpression("[)]\\s*[;](?=(?:\\s*(" + VHDLSyntax::COMMENT +
         ")\\s*)*(END|BEGIN|PORT))*", QRegularExpression::CaseInsensitiveOption);   
 
+    const QString GENERIC_TYPE = "(\\w+)(?:\\s+range\\s+\\d+\\s+to\\s+\\d+)?";
+
     //! Generic declaration is <generic_names> : <type> [<default>] [pragma]; [description]
-    const QRegularExpression GENERIC_EXP = QRegularExpression("(" + VHDLSyntax::NAMES + ")\\s*[:]\\s*(\\w+)(?:\\s*"
-        + VHDLSyntax::DEFAULT + ")?" + "(?:\\s*" + VHDLSyntax::PRAGMA + ")?(?:" + VHDLSyntax::DECLARATION_END + ")", 
+    const QRegularExpression GENERIC_EXP = QRegularExpression(
+        "(" + VHDLSyntax::NAMES + ")\\s*[:]\\s*" + GENERIC_TYPE + "(?:\\s*" + VHDLSyntax::DEFAULT + ")?" +
+        "(?:\\s*" + VHDLSyntax::PRAGMA + ")?(?:" + VHDLSyntax::DECLARATION_END + ")", 
         QRegularExpression::CaseInsensitiveOption);
 }
 
@@ -151,7 +154,8 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
 
     QStringList genericNames = matchedDeclaration.captured(1).split(QRegularExpression("\\s*[,]\\s*"),
         QString::SkipEmptyParts);
-    QString type = matchedDeclaration.captured(2);
+    QString dataType = matchedDeclaration.captured(2);
+    QString type = findMatchingType(dataType);
     QString defaultValue = matchedDeclaration.captured(3);
 
     QString description = matchedDeclaration.captured(5).trimmed();
@@ -160,7 +164,7 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
         description = matchedDeclaration.captured(6).trimmed();
     }
 
-    foreach(QString const& name, genericNames)
+    for (QString const& name : genericNames)
     {   
         QSharedPointer<ModuleParameter> parameter = findModuleParameter(name.trimmed(), targetComponentInstantiation);
         if (parameter.isNull())
@@ -170,7 +174,8 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
         }
 
         parameter->setName(name.trimmed());
-        parameter->setDataType(type);
+        parameter->setDataType(dataType);
+        parameter->setType(type);
         parameter->setDescription(description);
         parameter->setValue(defaultValue);
         parameter->setUsageType("nontyped");
@@ -208,9 +213,10 @@ void VHDLGenericParser::replaceNamesReferencesWithIds(QSharedPointer<Component> 
         {
             targetParameter = QSharedPointer<Parameter>(new Parameter());
             targetParameter->setName(moduleParameter->name());
+            targetParameter->setType(moduleParameter->getType());
             targetComponent->getParameters()->append(targetParameter);
         }
-
+       
         targetParameter->setValue(moduleParameter->getValue());
         targetParameter->setDescription(moduleParameter->description());
         targetParameter->increaseUsageCount();
@@ -281,4 +287,22 @@ QString VHDLGenericParser::replaceNameWithId(QString const& expression, QRegular
     }
 
     return replaced;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::replaceNameWithId()
+//-----------------------------------------------------------------------------
+QString VHDLGenericParser::findMatchingType(QString const& dataType) const
+{    
+    QMap<QString, QString> conversionMap
+    {
+        { "integer", "int"},
+        { "natural", "int"},
+        { "positive", "int"},
+        { "real", "real"},
+        { "bit", "bit"},
+        { "string", "string"}
+    };
+
+    return conversionMap.value(dataType);
 }

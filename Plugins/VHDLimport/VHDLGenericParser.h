@@ -164,6 +164,7 @@ private:
     //! The highlighter to use.
     Highlighter* highlighter_;
     
+    QString findMatchingType(QString const& dataType) const;
 };
 
 #endif // VHDLGENERICPARSER_H

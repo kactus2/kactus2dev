@@ -78,6 +78,7 @@ void tst_VHDLGenericParser::testGenericIsParsed()
 {
     QFETCH(QString, fileContent);
     QFETCH(QString, expectedName);
+    QFETCH(QString, expectedDataType);
     QFETCH(QString, expectedType);
     QFETCH(QString, expectedDefaultValue);
     QFETCH(QString, expectedDescription);
@@ -92,11 +93,13 @@ void tst_VHDLGenericParser::testGenericIsParsed()
     QSharedPointer<Parameter> equivalentParameter = importComponent_->getParameters()->first();
 
     QCOMPARE(createdModelParamter->name(), expectedName);
-    QCOMPARE(createdModelParamter->getDataType(), expectedType);
+    QCOMPARE(createdModelParamter->getDataType(), expectedDataType);
+    QCOMPARE(createdModelParamter->getType(), expectedType);
     QCOMPARE(createdModelParamter->getValue(), equivalentParameter->getValueId());
     QCOMPARE(createdModelParamter->description(), expectedDescription);
 
     QCOMPARE(equivalentParameter->name(), expectedName);
+    QCOMPARE(equivalentParameter->getType(), expectedType);
     QCOMPARE(equivalentParameter->getValue(), expectedDefaultValue);
     QCOMPARE(equivalentParameter->description(), expectedDescription);
 }
@@ -108,6 +111,7 @@ void tst_VHDLGenericParser::testGenericIsParsed_data()
 {
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<QString>("expectedName");
+    QTest::addColumn<QString>("expectedDataType");
     QTest::addColumn<QString>("expectedType");
     QTest::addColumn<QString>("expectedDefaultValue");
     QTest::addColumn<QString>("expectedDescription");
@@ -118,13 +122,13 @@ void tst_VHDLGenericParser::testGenericIsParsed_data()
         "        freq : integer\n"
         "   );"
         "end test;"
-        << "freq" << "integer" << "" << "";
+        << "freq" << "integer" << "int" << "" << "";
 
     QTest::newRow("name, type and default value on a single line") << 
         "entity test is\n"
         "    generic (dataWidth_g : integer := 16);"
         "end test;"
-        << "dataWidth_g" << "integer" << "16" << "";
+        << "dataWidth_g" << "integer" << "int" << "16" << "";
 
     QTest::newRow("name type, default value and description") << 
         "entity test is\n"
@@ -132,7 +136,7 @@ void tst_VHDLGenericParser::testGenericIsParsed_data()
         "        outputFile : string := \"target.out\" -- Some file name\n"
         "   );"
         "end test;"
-        << "outputFile" << "string" << "\"target.out\"" << "Some file name";
+        << "outputFile" << "string" << "string" << "\"target.out\"" << "Some file name";
 
     QTest::newRow("name, type and default value on a separate lines") << 
         "entity test is\n"
@@ -143,7 +147,13 @@ void tst_VHDLGenericParser::testGenericIsParsed_data()
         ":= 500000 --Freq for core.\n"
         ");"
         "end test;"
-        << "freq" << "integer" << "500000" << "Freq for core.";
+        << "freq" << "integer" << "int" << "500000" << "Freq for core.";
+
+    QTest::newRow("Integer with defined range") <<
+        "entity test is\n"
+        "    generic (dataWidth_g : natural range 0 to 32 := 16);"
+        "end test;"
+        << "dataWidth_g" << "natural" << "int" << "16" << "";
 }
 
 //-----------------------------------------------------------------------------
