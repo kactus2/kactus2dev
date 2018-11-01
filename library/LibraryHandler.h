@@ -568,6 +568,15 @@ private:
     DocumentStatistics removeSelectedObjects(QVector<ObjectSelectionListItem*> const& removedItems);
 
     /*!
+     * Removes the given file from the file system.
+     *
+     *     @param [in] filePath  Path to the file to be removed.
+     *
+     *     @return True, if the file was successfully removed, otherwise false.
+     */
+     bool removeFile(QString const& filePath) const;
+
+    /*!
      *  Create the delete message.
      *
      *      @param [in] vlnvCount   The amount of deleted VLNV items.

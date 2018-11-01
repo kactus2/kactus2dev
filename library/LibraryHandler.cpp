@@ -692,11 +692,14 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
         return;
     }
 
-    fileWatch_.removePath(documentCache_.find(vlnv)->path);
+    QString path = documentCache_.find(vlnv)->path;
+    fileWatch_.removePath(path);
     documentCache_.remove(vlnv);
 
     treeModel_->onRemoveVLNV(vlnv);
     hierarchyModel_->onRemoveVLNV(vlnv);
+
+    removeFile(path);
 }
 
 //-----------------------------------------------------------------------------
@@ -1128,14 +1131,7 @@ LibraryHandler::DocumentStatistics LibraryHandler::removeSelectedObjects(
             if (fileInfo.exists())
             {
                 changedDirectories.append(fileInfo.absolutePath());
-
-                QFile file(removedItem->getPath());
-                if (!file.remove())
-                {
-                    messageChannel_->showError(tr("File %1 could not be removed from the file system.").arg(
-                        removedItem->getPath()));
-                }
-                else
+                if (removeFile(removedItem->getPath()))
                 {
                     removeStatistics.fileCount++;
                 }
@@ -1146,6 +1142,21 @@ LibraryHandler::DocumentStatistics LibraryHandler::removeSelectedObjects(
     loader_.clean(changedDirectories);
 
     return removeStatistics;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::removeFile()
+//-----------------------------------------------------------------------------
+bool LibraryHandler::removeFile(QString const& filePath) const
+{
+    QFile file(filePath);
+    if (file.remove() == false)
+    {
+        messageChannel_->showError(tr("File %1 could not be removed from the file system.").arg(filePath));
+        return false;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
