@@ -136,7 +136,7 @@ void tst_VHDLPortParser::testPortIsParsed_data()
         "end test;"
         << "enable" << DirectionTypes::IN << "" << "" << "std_logic" << "IEEE.std_logic_1164.all" << "'1'" << "";
 
-    QTest::newRow("name type, direction, default value and description") << 
+    QTest::newRow("name type, direction, default value and description") <<
         "entity test is\n"
         "   port (data : out std_logic_vector(31 downto 0) := (others => '0'); -- data from ip\n"
         "   clk : in std_logic \n"
@@ -189,6 +189,21 @@ void tst_VHDLPortParser::testPortIsParsed_data()
         "end test;"
         << "multiplicand" << DirectionTypes::IN << "" << "" << "signed" << "IEEE.numeric_std.all" << "" << "";
 
+    QTest::newRow("Expression in left vector bound") <<
+        "entity test is\n"
+        "   port (data : out std_logic_vector((18-8) downto 0)\n"
+        ");\n"
+        "end test;"
+        << "data" << DirectionTypes::OUT << "(18-8)" << "0" << "std_logic_vector" << "IEEE.std_logic_1164.all"
+        << "" << "";
+
+    QTest::newRow("Expression in right vector bound") <<
+        "entity test is\n"
+        "   port (data : out std_logic_vector(0 to (10 + 5))\n"
+        ");\n"
+        "end test;"
+        << "data" << DirectionTypes::OUT << "0" << "(10 + 5)" << "std_logic_vector" << "IEEE.std_logic_1164.all"
+        << "" << "";
 }
 
 //-----------------------------------------------------------------------------

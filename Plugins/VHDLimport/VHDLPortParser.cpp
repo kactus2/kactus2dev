@@ -27,21 +27,21 @@ namespace
     //! VHDL port direction.
     const QString DIRECTION = "in|out|inout|buffer|linkage";
 
-    //! VHDL port type definition is <typename>[(<left> downto <right>)].
-    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + VHDLSyntax::TERM +
-        ")\\s+\\w+\\s+(?:" + VHDLSyntax::TERM + ")\\s*[)])?";
+    //! VHDL vector port boundary.
+    const QString BOUNDARY = "[\\w\\d )(+*/-]+";
 
-    //! Vector bounds are defined as (<left> downto <right>).
-    const QRegularExpression VECTOR_BOUNDS("[(]\\s*(" + VHDLSyntax::TERM + ")\\s+\\w+\\s+" +
-        "(" + VHDLSyntax::TERM + ")\\s*[)]");
+    //! VHDL port type definition is <typename>[(<left> to/downto <right>)].
+    const QString PORT_TYPE = "(?:\\w+)"
+        "(?:\\s*[(]\\s*(?:" + BOUNDARY + ")\\s+(?:down)?to\\s+(?:" + BOUNDARY + ")\\s*[)])?";
 
     /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
      *  A pragma e.g. synthesis translate_off may be inserted in the declaration before the ending
      *  semicolon or string's end.
      */
-    const QRegularExpression PORT_EXP("(" + VHDLSyntax::NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
-                                     "(?:\\s*" + VHDLSyntax::DEFAULT + ")?(?:\\s*" + VHDLSyntax::PRAGMA + ")?"
-                                     "(?:" + VHDLSyntax::DECLARATION_END + ")", QRegularExpression::CaseInsensitiveOption);
+    const QRegularExpression PORT_EXP(
+        "(" + VHDLSyntax::NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
+        "(?:\\s*" + VHDLSyntax::DEFAULT + ")?(?:\\s*" + VHDLSyntax::PRAGMA + ")?"
+        "(?:" + VHDLSyntax::DECLARATION_END + ")", QRegularExpression::CaseInsensitiveOption);
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
     const QRegularExpression PORTS_BEGIN("(PORT)\\s*[(]", QRegularExpression::CaseInsensitiveOption);
@@ -50,7 +50,7 @@ namespace
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLPortParser::()
+// Function: VHDLPortParser::VHDLPortParser()
 //-----------------------------------------------------------------------------
 VHDLPortParser::VHDLPortParser(QObject* parent): QObject(parent), highlighter_(0)
 {
@@ -58,15 +58,7 @@ VHDLPortParser::VHDLPortParser(QObject* parent): QObject(parent), highlighter_(0
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLPortParser::()
-//-----------------------------------------------------------------------------
-VHDLPortParser::~VHDLPortParser()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLPortParser::parse()
+// Function: VHDLPortParser::import()
 //-----------------------------------------------------------------------------
 void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation> /*targetComponentInstantiation*/)
@@ -218,15 +210,13 @@ DirectionTypes::Direction VHDLPortParser::parsePortDirection(QString const& decl
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::parsePortType(QString const& declaration) const
 {
-    QString fullType = PORT_EXP.match(declaration).captured(3);
-
     QString typePattern = PORT_TYPE;
     typePattern.replace("(?:","(");
 
-    QRegExp typeExpression(typePattern, Qt::CaseInsensitive);
-    typeExpression.indexIn(fullType);
-    
-    return typeExpression.cap(1); 
+    QRegularExpression typeExpression(typePattern, QRegularExpression::CaseInsensitiveOption);    
+   
+    QString fullType = PORT_EXP.match(declaration).captured(3);
+    return typeExpression.match(fullType).captured(1);
 }
 
 //-----------------------------------------------------------------------------
@@ -284,24 +274,55 @@ QPair<QString, QString> VHDLPortParser::parsePortBounds(QString const& declarati
 {
     QString fullType = PORT_EXP.match(declaration).captured(3);
 
-    QString typePattern = PORT_TYPE;
-    typePattern.replace("(?:","(");
-    QRegularExpression typeExpression(typePattern, QRegularExpression::CaseInsensitiveOption);
-
-    QString vectorBounds = typeExpression.match(fullType).captured(2);
-
     QString leftValue = QString();
     QString rightValue = QString();
-    if (!vectorBounds.isEmpty() && vectorBounds.indexOf(VECTOR_BOUNDS) != -1)
-    {
-        QString leftEquation = VECTOR_BOUNDS.match(vectorBounds).captured(1);
-        QString rightEquation = VECTOR_BOUNDS.match(vectorBounds).captured(2);
 
-        leftValue = replaceNameReferencesWithIds(leftEquation, targetComponent);
-        rightValue = replaceNameReferencesWithIds(rightEquation, targetComponent);
-    }	
+    int firstParenthesis = fullType.indexOf(QLatin1Char('('));
+    if (firstParenthesis != -1)
+    {
+        int endParenthesis = findMatchingEndParenthesis(fullType, firstParenthesis);
+        QString vectorBounds = fullType.mid(firstParenthesis + 1, endParenthesis - firstParenthesis - 1);
+
+        if (!vectorBounds.isEmpty())
+        {
+            QRegularExpression splitter(QString("\\s+(down)?to\\s+"), QRegularExpression::CaseInsensitiveOption);
+            QRegularExpressionMatch splitMatch = splitter.match(vectorBounds);
+            QString leftEquation = vectorBounds.left(splitMatch.capturedStart());
+            QString rightEquation = vectorBounds.mid(splitMatch.capturedEnd());
+            
+            leftValue = replaceNameReferencesWithIds(leftEquation, targetComponent);
+            rightValue = replaceNameReferencesWithIds(rightEquation, targetComponent);
+        }
+    }
 
     return qMakePair(leftValue, rightValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLPortParser::findMatchingEndParenthesis()
+//-----------------------------------------------------------------------------
+int VHDLPortParser::findMatchingEndParenthesis(QString const& equation, int parenthesesStart) const
+{
+    QRegularExpression parenthesesExpression("[()]");
+
+    int position = parenthesesStart + 1;
+    int depth = 1;
+
+    while (depth > 0)
+    {
+        position = equation.indexOf(parenthesesExpression, position);
+        if (parenthesesExpression.match(equation.at(position)).captured() == "(")
+        {
+            depth++;
+        }
+        else
+        {
+            depth--;
+        }
+        position++;
+    }
+
+    return position - 1;
 }
 
 //-----------------------------------------------------------------------------

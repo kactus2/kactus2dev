@@ -39,10 +39,14 @@ public:
 	 *
 	 *      @param [in] parent   The parent object.	 
 	 */
-	VHDLPortParser(QObject* parent = 0);
+	explicit VHDLPortParser(QObject* parent = 0);
 
 	//! The destructor.
-	virtual ~VHDLPortParser();
+	virtual ~VHDLPortParser() = default;
+
+    // Disable copying.
+    VHDLPortParser(VHDLPortParser const& rhs) = delete;
+    VHDLPortParser& operator=(VHDLPortParser const& rhs) = delete;
 
     /*!
      *  Runs the port parsing for the given input and adds the parsed ports to the given component.
@@ -62,10 +66,6 @@ public:
     virtual void setHighlighter(Highlighter* highlighter);
 
 private:
-
-	// Disable copying.
-	VHDLPortParser(VHDLPortParser const& rhs);
-	VHDLPortParser& operator=(VHDLPortParser const& rhs);
 
     /*!
      *  Finds all port declarations from input.
@@ -179,6 +179,8 @@ private:
     QPair<QString, QString> parsePortBounds(QString const& declaration,
         QSharedPointer<Component> targetComponent) const;
    
+    int findMatchingEndParenthesis(QString const& equation, int parenthesesStart) const;
+
     /*!
      *  Creates a default type definition for the given type.
      *

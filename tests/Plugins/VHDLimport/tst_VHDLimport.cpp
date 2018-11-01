@@ -563,7 +563,8 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort()
 {
     QFETCH(QString, fileContent);
     QFETCH(int, expectedParameterCount);
-    QFETCH(int, expectedPortSize);
+    QFETCH(QString, expectedLeft);
+    QFETCH(QString, expectedRight);
 
     runParser(fileContent);
 
@@ -574,7 +575,19 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort()
     QCOMPARE(importComponent_->getModel()->getComponentInstantiations()->first()->getModuleParameters()->count(), 
         expectedParameterCount);
     QCOMPARE(importComponent_->getParameters()->count(), expectedParameterCount);
-    //QCOMPARE(createdPort->getPortSize(), expectedPortSize);
+
+
+    unsigned int i = 1;
+    for (auto parameter : *importComponent_->getParameters())
+    {
+        QString pattern("$" + QString::number(i));
+        expectedLeft.replace(pattern, parameter->getValueId());
+        expectedRight.replace(pattern, parameter->getValueId());
+        ++i;
+    }
+
+    QCOMPARE(createdPort->getLeftBound(), expectedLeft);
+    QCOMPARE(createdPort->getRightBound(), expectedRight);
 }
 
 //-----------------------------------------------------------------------------
@@ -584,7 +597,8 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
 {
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<int>("expectedParameterCount");
-    QTest::addColumn<int>("expectedPortSize");
+    QTest::addColumn<QString>("expectedLeft");
+    QTest::addColumn<QString>("expectedRight");
 
     QTest::newRow("Parametrized port width.") <<
         "entity test is\n"
@@ -595,7 +609,7 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
         "       data : out std_logic_vector(dataWidth_g downto 0)\n"
         "   );\n"
         "end test;"
-        << 1 << 32 ;
+        << 1 << "$1" << "0" ;
 
     QTest::newRow("Parametrized port width with subtraction.") <<
         "entity test is\n"
@@ -606,7 +620,7 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
         "       data : out std_logic_vector(dataWidth_g-1 downto 0)\n"
         "   );\n"
         "end test;"
-        << 1 << 16 ;
+        << 1 << "$1-1" << "0" ;
 
     QTest::newRow("Parametrized port width with equation of generics.") <<
         "entity test is\n"
@@ -618,7 +632,19 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
         "       data : out std_logic_vector(dataWidth_g+addrWidth_g-1 downto 0)\n"
         "   );\n"
         "end test;"
-        << 2 << 24 ;
+        << 2 << "$2+$1-1" << "0";
+
+    QTest::newRow("Parametrized port width with parentheses.") <<
+        "entity test is\n"
+        "   generic (\n"
+        "       addrWidth_g : integer := 8;\n"
+        "       dataWidth_g : integer := 16\n"
+        "   );\n"
+        "   port (\n"
+        "       data : out std_logic_vector((dataWidth_g/2)*addrWidth_g DOWNTO 0)\n"        
+        "   );\n"
+        "end test;"
+        << 2 << "($2/2)*$1" << "0";
 
     QTest::newRow("Parametrized port width with power of two.") <<
         "entity test is\n"
@@ -629,7 +655,7 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
         "       data : out std_logic_vector(max_g**2-1 downto 0)\n"
         "   );\n"
         "end test;"
-        << 1 << 64 ;
+        << 1 << "$1**2-1" << "0" ;
 }
 
 //-----------------------------------------------------------------------------
