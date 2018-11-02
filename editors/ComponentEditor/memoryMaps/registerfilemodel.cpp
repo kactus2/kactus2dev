@@ -462,7 +462,7 @@ void RegisterFileModel::onAddItem(QModelIndex const& index)
 {
     // Find last register/registerFile by address offset.
     auto lastRegister = std::max_element(registerData_->cbegin(), registerData_->cend(),
-        [this](auto const& a, auto const& b)
+        [this](QSharedPointer<RegisterBase> const& a, QSharedPointer<RegisterBase> const& b)
     {
         return parseExpressionToDecimal(a->getAddressOffset()).toInt() < 
             parseExpressionToDecimal(b->getAddressOffset()).toInt();

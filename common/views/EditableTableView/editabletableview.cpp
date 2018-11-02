@@ -525,7 +525,8 @@ void EditableTableView::onPasteAction()
 	int targetRow = posToPaste.row();
 	int startColumn = posToPaste.column();
     
-    QString pasteText = QApplication::clipboard()->text(QStringLiteral("plain"));
+    QString textType = QStringLiteral("plain");
+    QString pasteText = QApplication::clipboard()->text(textType);
 
 	// Split the string from clip board into rows.
 	QStringList rowsToAdd = pasteText.split("\n", QString::SkipEmptyParts);
