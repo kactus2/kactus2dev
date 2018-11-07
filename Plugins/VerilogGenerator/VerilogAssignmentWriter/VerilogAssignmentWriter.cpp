@@ -60,13 +60,19 @@ QString VerilogAssignmentWriter::assignmentForPort() const
         return QString();
     }
 
+    QString invert = QString();
+    if (portAssignment_->invert_)
+    {
+        invert = QStringLiteral("~");
+    }
+
     if (assignToPort)
     {
-        return physicalAssign +  QStringLiteral(" = ") + logicalAssign;
+        return physicalAssign +  QStringLiteral(" = ") + invert + logicalAssign;
     }
     else if (assignToWire)
     {
-        return logicalAssign + QStringLiteral(" = ") + physicalAssign;
+        return logicalAssign + QStringLiteral(" = ") + invert + physicalAssign;
     }
     else
     {
@@ -109,8 +115,8 @@ QString VerilogAssignmentWriter::createLogicalAssignment(bool assignToPort) cons
             logicalAssign.replace(QStringLiteral("<logicalRight>"), logicalBounds.second);
         }
 
-        logicalAssign.replace(QStringLiteral("<logicalWireName>"),
-            VerilogSyntax::legalizeName(portAssignment_->wire_->name_));
+        QString portName = VerilogSyntax::legalizeName(portAssignment_->wire_->name_);
+        logicalAssign.replace(QStringLiteral("<logicalWireName>"), portName);
         return logicalAssign;
     }
     else if (assignToPort)

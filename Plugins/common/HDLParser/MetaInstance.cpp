@@ -203,6 +203,7 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser const& parser)
             QSharedPointer<MetaPortAssignment> mUpPortAssignment(new MetaPortAssignment);
             mUpPortAssignment->logicalBounds_ = logicalBounds;
             mUpPortAssignment->physicalBounds_ = physicalBounds;
+            mUpPortAssignment->invert_ = pMap->getInvert().toBool();
 
             // The default value comes from the port abstraction.
             mUpPortAssignment->defaultValue_ = portAbstraction->getDefaultValue();

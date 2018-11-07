@@ -57,6 +57,9 @@ private slots:
     void testPortSlicedMasterToSlaveInterconnection();
     void testMasterToMultipleSlavesInterconnections();
 
+    void testLogicalInvertBetweenInstances();
+    void testLogicalInvertInHierarchicalConnection();
+
     void testAdhocConnectionBetweenComponentInstances();    
     void testPartSelectedAdhocConnectionBetweenComponentInstances();
     void testAdhocInOutConnectionBetweenComponentInstances();
@@ -628,6 +631,7 @@ void tst_VerilogWriterFactory::createPortAssignment(QSharedPointer<MetaPort> mPo
     mpa->physicalBounds_.first = physicalLeft;
     mpa->physicalBounds_.second = physicalRight;
     mpa->wire_ = wire;
+    mpa->invert_ = false;
 
     if (up)
     {
@@ -1078,6 +1082,135 @@ void tst_VerilogWriterFactory::testMasterToMultipleSlavesInterconnections()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testLogicalInvertBetweenInstances()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testLogicalInvertBetweenInstances()
+{
+    QSharedPointer<MetaInstance> senderInstance = addSender("sender");
+    QSharedPointer<MetaInstance> receiverInstance1 = addReceiver("receiver1");
+   
+    QSharedPointer<MetaInterface> senderIf = senderInstance->getInterfaces()->value("data_if");
+    QSharedPointer<MetaInterface> recvIf1 = receiverInstance1->getInterfaces()->value("data_if");
+
+    QSharedPointer<MetaInterconnection> enable_connection =
+        addInterconnectToDesign(senderIf, recvIf1, "enable_connection");
+
+    QSharedPointer<MetaWire> enableWire = addWireToDesign("sender_to_receiver_ENABLE", "0", "0", enable_connection);
+    QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA_LSB", "0", "0", enable_connection);
+
+    createPortAssignment(senderInstance->getPorts()->value("enable_out"), enableWire, true, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->getPorts()->value("data_out"), dataWire, true, "0", "0", "0", "0");
+    senderInstance->getPorts()->value("data_out")->upAssignments_.first()->invert_ = true;
+
+    createPortAssignment(receiverInstance1->getPorts()->value("enable_in"), enableWire, true, "0", "0", "0", "0");
+    receiverInstance1->getPorts()->value("enable_in")->upAssignments_.first()->invert_ = true;
+
+    createPortAssignment(receiverInstance1->getPorts()->value("data_in"), dataWire, true, "0", "0", "0", "0");
+
+    runGenerator(true);
+
+    verifyOutputContains("wire        sender_to_receiver_ENABLE;");
+    verifyOutputContains("wire        receiver1_enable_in;");
+    verifyOutputContains("wire        sender_enable_out;");
+
+    verifyOutputContains("wire        sender_to_receiver_DATA_LSB;");
+    verifyOutputContains("wire [7:0]  receiver1_data_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+
+    verifyOutputContains("assign receiver1_enable_in = ~sender_to_receiver_ENABLE;");
+    verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
+
+    verifyOutputContains("assign sender_to_receiver_DATA_LSB = ~sender_data_out[0];");
+    verifyOutputContains("assign receiver1_data_in[0] = sender_to_receiver_DATA_LSB;");
+
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (receiver1_data_in),\n"
+        "        .enable_in           (receiver1_enable_in)");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          (sender_enable_out)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testLogicalInvertInHierarchicalConnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testLogicalInvertInHierarchicalConnection()
+{
+    QSharedPointer<MetaInterface> topDataIf = addInterfaceToComponent("data_bus", topComponent_);
+
+    QSharedPointer<MetaPort> topEnable = addPort("enable_to_instance", 1, DirectionTypes::IN, topComponent_, topDataIf);
+    QSharedPointer<MetaPort> topFull = addPort("full_from_instance", 1, DirectionTypes::OUT, topComponent_, topDataIf);
+
+    VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
+    QSharedPointer<Component> comp = addTestComponentToLibrary(instanceVlnv);
+    QSharedPointer<MetaInstance> mInstance = addInstanceToDesign("instance1", comp);
+    addInterfacesToInstance(mInstance);
+
+    QSharedPointer<MetaInterface> instanceDataIf = mInstance->getInterfaces()->value("data_if");
+
+    QSharedPointer<MetaInterconnection> mI1 = addInterconnectToDesign(topDataIf, instanceDataIf, "data_connection");
+    mI1->hierIfs_.append(topDataIf);
+
+    QSharedPointer<MetaWire> gw2 = addWireToDesign("enable_wire", "0", "0", mI1);
+    gw2->hierPorts_.append(topEnable);
+    QSharedPointer<MetaWire> gw3 = addWireToDesign("full_wire", "0", "0", mI1);
+    gw3->hierPorts_.append(topFull);
+
+    createPortAssignment(mInstance->getPorts()->value("enable"), gw2, true, "0", "0", "0", "0");
+    mInstance->getPorts()->value("enable")->upAssignments_.first()->invert_ = true;
+
+    createPortAssignment(mInstance->getPorts()->value("full"), gw3, true, "0", "0", "0", "0");
+    mInstance->getPorts()->value("full")->upAssignments_.first()->invert_ = true;
+
+    createPortAssignment(topEnable, gw2, false, "0", "0", "0", "0");
+    createPortAssignment(topFull, gw3, false, "0", "0", "0", "0");
+
+    runGenerator(true);
+
+    verifyOutputContains(QString(
+        "module TestComponent(\n"
+        "    // Interface: data_bus\n"
+        "    input                               enable_to_instance,\n"
+        "    output                              full_from_instance\n"
+        ");\n"
+        "\n"
+        "    // data_connection wires:\n"
+        "    wire        enable_wire;\n"
+        "    wire        full_wire;\n"
+        "\n"
+        "    // instance1 port wires:\n"        
+        "    wire        instance1_enable;\n"
+        "    wire        instance1_full;\n"
+        "\n"
+        "    // Assignments for the ports of the encompassing component:\n"
+        "    assign enable_wire = enable_to_instance;\n"
+        "    assign full_from_instance = full_wire;\n"
+        "\n"
+        "    // instance1 assignments:\n"
+        "    assign instance1_enable = ~enable_wire;\n"
+        "    assign full_wire = ~instance1_full;\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
+        "    TestInstance instance1(\n"
+        "        // Interface: clk_if\n"
+        "        .clk                 (),\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (),\n"
+        "        .enable              (instance1_enable),\n"
+        "        .full                (instance1_full),\n"
+        "        // These ports are not in any interface\n"
+        "        .data_out            ());\n"
+        "\n"
+        "\n"
+        "endmodule"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::testAdhocConnectionBetweenComponentInstances()
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::testAdhocConnectionBetweenComponentInstances()
@@ -1265,11 +1398,13 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
     mpa1->defaultValue_ = "2";
     mpa1->physicalBounds_.first = "4";
     mpa1->physicalBounds_.second = "3";
+    mpa1->invert_ = false;
 
     QSharedPointer<MetaPortAssignment> mpa0(new MetaPortAssignment);
     mpa0->defaultValue_ = "7";
     mpa0->physicalBounds_.first = "2";
     mpa0->physicalBounds_.second = "0";
+    mpa0->invert_ = false;
 
     slicedPort->upAssignments_.insert("eka", mpa1);
     slicedPort->upAssignments_.insert("toka", mpa0);
@@ -1330,6 +1465,7 @@ void tst_VerilogWriterFactory::addDefaultPortAssignmentToPort(QSharedPointer<Met
     QSharedPointer<MetaPortAssignment> mpa(new MetaPortAssignment);
     mpa->defaultValue_ = tieOff;
     mpa->physicalBounds_ = port->vectorBounds_;
+    mpa->invert_ = false;
 
     if (up)
     {
@@ -1441,11 +1577,13 @@ void tst_VerilogWriterFactory::testHierarchicalAdHocTieOffValues()
     mpa1->defaultValue_ = "2";
     mpa1->physicalBounds_.first = "4";
     mpa1->physicalBounds_.second = "3";
+    mpa1->invert_ = false;
 
     QSharedPointer<MetaPortAssignment> mpa0(new MetaPortAssignment);
     mpa0->defaultValue_ = "7";
     mpa0->physicalBounds_.first = "2";
     mpa0->physicalBounds_.second = "0";
+    mpa0->invert_ = false;
 
     slicedPort->downAssignments_.insert("eka", mpa1);
     slicedPort->downAssignments_.insert("toka", mpa0);

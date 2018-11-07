@@ -606,6 +606,7 @@ void MetaDesign::parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
     // Associate the port assignments with the wire.
     assignment->wire_ = mWire;
     assignment->defaultValue_ = defaultValue;
+    assignment->invert_ = false;
 
     // Map the port assignment to the port using the name of the wire.
     if (isHierarchical)

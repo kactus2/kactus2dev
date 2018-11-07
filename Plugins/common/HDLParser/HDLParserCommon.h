@@ -70,6 +70,8 @@ struct MetaPortAssignment
     QSharedPointer<MetaWire> wire_;
     //! The assigned and parsed default value: Either a tie-off or the abstraction definition default.
     QString defaultValue_;
+
+    bool invert_;
 };
 
 struct MetaPort
