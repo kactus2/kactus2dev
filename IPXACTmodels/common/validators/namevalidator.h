@@ -17,12 +17,12 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 
 //-----------------------------------------------------------------------------
 //! NameValidator class.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT NameValidator : public QRegExpValidator
+class IPXACTMODELS_EXPORT NameValidator : public QRegularExpressionValidator
 {
 	Q_OBJECT
 

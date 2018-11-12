@@ -11,14 +11,14 @@
 
 #include "namevalidator.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: namevalidator::NameValidator()
 //-----------------------------------------------------------------------------
 NameValidator::NameValidator(QObject* parent):
-QRegExpValidator(parent)
+QRegularExpressionValidator(parent)
 {
-	QRegExp exp(QStringLiteral("^[a-zA-Z:_]+[a-zA-Z0-9:_.-]*$"), Qt::CaseSensitive, QRegExp::W3CXmlSchema11);
-	setRegExp(exp);
+    QRegularExpression nameExpression(QStringLiteral("^[a-zA-Z:_]+[a-zA-Z0-9:_.-]*$"));
+	setRegularExpression(nameExpression);
 }

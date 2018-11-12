@@ -590,10 +590,11 @@ bool ParameterValidator::valueIsGreaterThanMaximum(QSharedPointer<const Paramete
 QStringList ParameterValidator::splitArrayToList(QString const& arrayValue) const
 {
     QStringList subValues = arrayValue.split(QLatin1Char(','));
-    QRegularExpression startExpression (QLatin1String("^'?{"));
+    QRegularExpression startExpression (QStringLiteral("^'?{"));
+    QRegularExpression endExpression(QStringLiteral("}\\s*$"));
 
     subValues.first().remove(startExpression);
-    subValues.last().chop(1);
+    subValues.last().remove(endExpression);
 
     return subValues;
 }

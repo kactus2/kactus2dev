@@ -43,6 +43,12 @@ private slots:
     void testValueUsingChoice();
     void testValueUsingChoice_data();
 
+    void testValidityWithMinimumValue();
+    void testValidityWithMinimumValue_data();
+
+    void testValidityWithMaximumValue();
+    void testValidityWithMaximumValue_data();
+
 private:
         
     QSharedPointer<Parameter> createParameterWithName();
@@ -53,8 +59,6 @@ private:
 
     bool errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist) const;
 
-    void testValidityWithMinimumValueAndFormat(QString const& format);
-    void testValidityWithMaximumValueAndFormat(QString const& format);   
 
 };
 
@@ -307,6 +311,87 @@ void tst_ParameterValidator::testValueUsingChoice_data()
     QTest::newRow("Choice and value in enumeration is valid") << "choice1" << QStringList("1") << "1" << true;
     QTest::newRow("Choice and value in enumerations is valid") 
         << "choice1" << QString("0,1,2").split(',') << "1" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testValidityWithMinimumValue()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testValidityWithMinimumValue()
+{
+    QFETCH(QString, value);
+    QFETCH(QString, minimum);
+    QFETCH(bool, expectedValid);
+
+    QSharedPointer<Parameter> parameter = createParameterWithName();    
+    parameter->setValue(value);
+    parameter->setType(QStringLiteral("int"));
+    parameter->setMinimumValue(minimum);
+
+    QScopedPointer<ParameterValidator> validator(createValidator());
+    QVERIFY(validator->hasValidValue(parameter) == expectedValid);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testValidityWithMinimumValue_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testValidityWithMinimumValue_data()
+{
+    QTest::addColumn<QString>("value");
+    QTest::addColumn<QString>("minimum");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("Empty minimum is valid") << "1" << "" << true;
+    QTest::newRow("Value equal to minimum is valid") << "1" << "1" << true; 
+    QTest::newRow("Value greater than minimum is valid") << "2" << "1" << true;
+    
+    QTest::newRow("Value less than minimum is not valid") << "1" << "2" << false;
+    QTest::newRow("Value less than negative minimum is not valid") << "-2" << "-1" << false;
+
+    QTest::newRow("Empty minimum is valid for array") << "{1,1}" << "" << true;
+    QTest::newRow("Value greater than minimum is valid for array") << "{2,3}" << "1" << true;
+
+    QTest::newRow("Every value in array must be greater than minimum") << "{0,1,2}" << "1" << false;
+    QTest::newRow("Empty array is not valid") << "{}" << "1" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testValidityWithMaximumValue()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testValidityWithMaximumValue()
+{
+    QFETCH(QString, value);
+    QFETCH(QString, maximum);
+    QFETCH(bool, expectedValid);
+
+    QSharedPointer<Parameter> parameter = createParameterWithName();
+    parameter->setValue(value);
+    parameter->setType(QStringLiteral("int"));
+    parameter->setMaximumValue(maximum);
+
+    QScopedPointer<ParameterValidator> validator(createValidator());
+    QVERIFY(validator->hasValidValue(parameter) == expectedValid);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testValidityWithMaximumValue_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testValidityWithMaximumValue_data()
+{
+    QTest::addColumn<QString>("value");
+    QTest::addColumn<QString>("maximum");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("Empty maximum is valid") << "1" << "" << true;
+    QTest::newRow("Value equal to maximum is valid") << "1" << "1" << true;
+    QTest::newRow("Value less than maximum is valid") << "1" << "2" << true;
+
+    QTest::newRow("Value greater than maximum is not valid") << "2" << "1" << false;
+
+    QTest::newRow("Empty maximum is valid for array") << "{1,1}" << "" << true;
+    QTest::newRow("Value less than maximum is valid for array") << "{1,2}" << "3" << true;
+
+    QTest::newRow("Every value in array must be less than maximum") << "{0,1,2}" << "1" << false;
+    QTest::newRow("Empty array is not valid") << "{}" << "1" << false;
 }
 
 //-----------------------------------------------------------------------------
