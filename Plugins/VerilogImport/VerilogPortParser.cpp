@@ -52,12 +52,13 @@ namespace
 
     //! Verilog ports in both ANSI-C and Verilog-1995 style.
     const QRegularExpression PORT_EXP("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?(?:signed)?\\s*"
-        "(?:(" + VerilogSyntax::RANGE +")?\\s*(" + VerilogSyntax::RANGE + "))?\\s*"
+        "(?:(" + VerilogSyntax::RANGE +")\\s*(" + VerilogSyntax::RANGE + ")?)?\\s*"
         "(" + VerilogSyntax::NAMES + ")(?:" + PORT_DECLARATION_END + ")");
 
     //! Verilog ports in Verilog-1995 style.
-    const QRegularExpression PORT_1995("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?(" + VerilogSyntax::RANGE + ")?\\s*"
-        "(" + VerilogSyntax::NAMES + ")\\s*[;](?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?");
+    const QRegularExpression PORT_1995("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?"
+        "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")\\s*[;]"
+        "(?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?");
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +147,8 @@ bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
     QString commentsRemoved = input;
     commentsRemoved.remove(QRegularExpression(VerilogSyntax::COMMENT));
 
-    bool hasPortsAfterModuleDeclaration = (commentsRemoved.indexOf(PORT_1995, findStartOfPortList(commentsRemoved)) != -1);
+    bool hasPortsAfterModuleDeclaration = (commentsRemoved.indexOf(PORT_1995,
+        findStartOfPortList(commentsRemoved)) != -1);
     return hasPortsAfterModuleDeclaration;
 }
 
@@ -168,7 +170,8 @@ QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& in
     int startOfPortList = section.indexOf(QRegularExpression("[)]\\s*;"), findStartOfPortList(input)); 
     int endOfModule = section.indexOf(VerilogSyntax::MODULE_END, startOfPortList);
     
-    QRegularExpression lastPort(PORT_1995.pattern() + "(?!\\s*(" + VerilogSyntax::COMMENT + ")?\\s*" + PORT_1995.pattern() + ")");
+    QRegularExpression lastPort(PORT_1995.pattern() + "(?!\\s*(" + VerilogSyntax::COMMENT + ")?\\s*" + 
+        PORT_1995.pattern() + ")");
 
     int endOfPortList = qMin(lastPort.match(section, startOfPortList).capturedEnd(), endOfModule);
 
@@ -236,8 +239,10 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
     QString type = PORT_EXP.match(portDeclaration).captured(2);
     QString typeDefinition;
 
-    QPair<QString, QString> vectorBounds = parseVectorBounds(portDeclaration, targetComponent, targetComponentInstantiation);
-    QPair<QString, QString> arrayBounds = parseArrayBounds(portDeclaration, targetComponent, targetComponentInstantiation);
+    QPair<QString, QString> vectorBounds =
+        parseVectorBounds(portDeclaration, targetComponent, targetComponentInstantiation);
+    QPair<QString, QString> arrayBounds =
+        parseArrayBounds(portDeclaration, targetComponent, targetComponentInstantiation);
 
     QStringList portNames = parsePortNames(portDeclaration);
 
@@ -310,7 +315,7 @@ DirectionTypes::Direction VerilogPortParser::parseDirection(QString const& portD
 QPair<QString, QString> VerilogPortParser::parseArrayBounds(QString const& portDeclaration,
 	QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
-    QString vectorBounds = PORT_EXP.match(portDeclaration).captured(3);
+    QString vectorBounds = PORT_EXP.match(portDeclaration).captured(4);
 
     return parseLeftAndRight(vectorBounds, targetComponent, targetComponentInstantiation);
 }
@@ -353,7 +358,7 @@ QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& boun
 QPair<QString, QString> VerilogPortParser::parseVectorBounds(QString const& portDeclaration,
 	QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
-    QString vectorBounds = PORT_EXP.match(portDeclaration).captured(4);
+    QString vectorBounds = PORT_EXP.match(portDeclaration).captured(3);
 
     return parseLeftAndRight(vectorBounds, targetComponent, targetComponentInstantiation);
 }
@@ -366,19 +371,19 @@ QString VerilogPortParser::replaceNameReferencesWithIds(QString const& expressio
 {
     QString result = expression;
 
-        foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
+    for (QSharedPointer<Parameter> define : *targetComponent->getParameters())
+    {
+        QRegularExpression macroUsage("`?" + define->name() + "(?=\\b)");
+        if (macroUsage.match(result).hasMatch())
         {
-            QRegularExpression macroUsage("(`|\\b)" + define->name() + "\\b");
-            if (macroUsage.match(result).hasMatch())
-            {
-                result.replace(macroUsage, define->getValueId());
+            result.replace(macroUsage, define->getValueId());
 
-                for(int i = 0; i < expression.count(macroUsage); i++)
-                {
-                    define->increaseUsageCount();
-                }
+            for (int i = 0; i < expression.count(macroUsage); i++)
+            {
+                define->increaseUsageCount();
             }
         }
+    }
 
     return result;
 }
@@ -388,8 +393,7 @@ QString VerilogPortParser::replaceNameReferencesWithIds(QString const& expressio
 //-----------------------------------------------------------------------------
 QStringList VerilogPortParser::parsePortNames(QString const& portDeclaration) const
 {
-    QString names = PORT_EXP.match(portDeclaration).captured(5);
-    
+    QString names = PORT_EXP.match(portDeclaration).captured(5);    
     return names.split(QRegularExpression(QStringLiteral("\\s*[,]\\s*")), QString::SkipEmptyParts);
 }
 

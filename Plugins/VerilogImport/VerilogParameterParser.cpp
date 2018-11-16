@@ -27,8 +27,8 @@
 
 namespace
 {
-    const QRegularExpression TYPE_RULE("(\\w+)\\s+(?:(" + VerilogSyntax::RANGE + ")?\\s*(" + 
-        VerilogSyntax::RANGE + "))?\\s*" + VerilogSyntax::NAME_VALUE, QRegularExpression::CaseInsensitiveOption);
+    const QRegularExpression TYPE_RULE("(\\w+)\\s+(?:(" + VerilogSyntax::RANGE + ")\\s*(" + 
+        VerilogSyntax::RANGE + ")?)?\\s*" + VerilogSyntax::NAME_VALUE, QRegularExpression::CaseInsensitiveOption);
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
         }
         else
         {
-            existingParameter->setAttribute("imported", "");
+            existingParameter->setAttribute("imported", QString());
         }        
     }
 
@@ -236,8 +236,6 @@ QStringList VerilogParameterParser::findDeclarations(QString const& inspect, boo
     // List of detected parameter declarations.
     QStringList declarations;
 
-    // The initial current is zero, since it will immediately replaced with the first next.
-    int currentStart = 0;
     // The initial next is the first match, since it will become the first current.
     int nextStart = inspect.indexOf(declarationRule);
 
@@ -245,7 +243,7 @@ QStringList VerilogParameterParser::findDeclarations(QString const& inspect, boo
     while (nextStart != -1)  
     {
         // The next of the previous iteration is now the current.
-        currentStart = nextStart;
+        int currentStart = nextStart;
         // Find the location of the next parameter for this iteration.
         nextStart = inspect.indexOf(declarationRule, currentStart + 1);
 
@@ -312,7 +310,7 @@ QString VerilogParameterParser::parseType(QString const& input)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseBitWidthLeft(QString const& declaration)
 {
-    QString bitRange = TYPE_RULE.match(declaration).captured(3);
+    QString bitRange = TYPE_RULE.match(declaration).captured(2);
 
     QRegularExpressionMatch rangeMatch = VerilogSyntax::CAPTURING_RANGE.match(bitRange);
     QString left = rangeMatch.captured(1);
@@ -325,7 +323,7 @@ QString VerilogParameterParser::parseBitWidthLeft(QString const& declaration)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseBitWidthRight(QString const& declaration)
 {
-    QString bitRange = TYPE_RULE.match(declaration).captured(3);
+    QString bitRange = TYPE_RULE.match(declaration).captured(2);
 
     QRegularExpressionMatch rangeMatch = VerilogSyntax::CAPTURING_RANGE.match(bitRange);
     QString right = rangeMatch.captured(2);
@@ -338,7 +336,7 @@ QString VerilogParameterParser::parseBitWidthRight(QString const& declaration)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseArrayLeft(QString const& declaration)
 {
-    QString bitRange = TYPE_RULE.match(declaration).captured(2);
+    QString bitRange = TYPE_RULE.match(declaration).captured(3);
 
     return VerilogSyntax::CAPTURING_RANGE.match(bitRange).captured(1);
 }
@@ -348,7 +346,7 @@ QString VerilogParameterParser::parseArrayLeft(QString const& declaration)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseArrayRight(QString const& declaration)
 {
-    QString bitRange = TYPE_RULE.match(declaration).captured(2);
+    QString bitRange = TYPE_RULE.match(declaration).captured(3);
 
     return VerilogSyntax::CAPTURING_RANGE.match(bitRange).captured(2);
 }
@@ -465,9 +463,9 @@ QSharedPointer<Parameter> VerilogParameterParser::findParameter(QString const& n
 void VerilogParameterParser::replaceNameReferencesWithParameterIds(QSharedPointer<Parameter> parameter,
     QSharedPointer<Component> targetComponent) const
 {
-    foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
+    for (QSharedPointer<Parameter> define : *targetComponent->getParameters())
     {
-        QRegularExpression macroUsage("(`|\\b)" + define->name() + "\\b");
+        QRegularExpression macroUsage("`?" + define->name() + "(?=\\b)");
 
         QString parameterValue = replaceNameWithId(parameter->getValue(), macroUsage, define);
         parameter->setValue(parameterValue);

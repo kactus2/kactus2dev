@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: PortVerilogWriter.cpp
+// File: VerilogPortWriter.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Class for writing port declarations in Verilog.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT PortVerilogWriter : public Writer
+class VERILOGGENERATORPLUGIN_EXPORT VerilogPortWriter : public Writer
 {
 public:
     /*!
@@ -30,10 +30,10 @@ public:
      *
      *      @param [in] port                    The port to write to Verilog.
      */
-    PortVerilogWriter(QSharedPointer<MetaPort> port);
+    VerilogPortWriter(QSharedPointer<MetaPort> port);
 
     //! The destructor.
-    ~PortVerilogWriter();
+    virtual ~VerilogPortWriter() = default;
 
 	/*! Writes the Verilog port declaration into a text stream.
 	 *
@@ -44,10 +44,10 @@ public:
 private:
     
     //! No copying.
-    PortVerilogWriter(const PortVerilogWriter& other);
+    VerilogPortWriter(const VerilogPortWriter& other);
 
     //! No assignment.
-    PortVerilogWriter& operator=(const PortVerilogWriter& other);
+    VerilogPortWriter& operator=(const VerilogPortWriter& other);
 
     /*!
      *  Checks if the writer should write nothing.

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: PortVerilogWriter.cpp
+// File: VerilogPortWriter.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
@@ -9,29 +9,21 @@
 // Class for writing port declarations in Verilog.
 //-----------------------------------------------------------------------------
 
-#include "PortVerilogWriter.h"
+#include "VerilogPortWriter.h"
 #include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
-// Function: PortVerilogWriter::PortVerilogWriter()
+// Function: VerilogPortWriter::VerilogPortWriter()
 //-----------------------------------------------------------------------------
-PortVerilogWriter::PortVerilogWriter(QSharedPointer<MetaPort> port) : port_(port)
+VerilogPortWriter::VerilogPortWriter(QSharedPointer<MetaPort> port) : port_(port)
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortVerilogWriter::PortVerilogWriter()
+// Function: VerilogPortWriter::write()
 //-----------------------------------------------------------------------------
-PortVerilogWriter::~PortVerilogWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortVerilogWriter::write()
-//-----------------------------------------------------------------------------
-void PortVerilogWriter::write( QTextStream& outputStream ) const
+void VerilogPortWriter::write( QTextStream& outputStream ) const
 {
     if (!nothingToWrite())
     {
@@ -40,9 +32,9 @@ void PortVerilogWriter::write( QTextStream& outputStream ) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortVerilogWriter::nothingToWrite()
+// Function: VerilogPortWriter::nothingToWrite()
 //-----------------------------------------------------------------------------
-bool PortVerilogWriter::nothingToWrite() const
+bool VerilogPortWriter::nothingToWrite() const
 {
     return port_.isNull() || 
         port_->port_->getDirection() == DirectionTypes::DIRECTION_PHANTOM ||
@@ -50,9 +42,9 @@ bool PortVerilogWriter::nothingToWrite() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortVerilogWriter::createDeclaration()
+// Function: VerilogPortWriter::createDeclaration()
 //-----------------------------------------------------------------------------
-QString PortVerilogWriter::createDeclaration() const
+QString VerilogPortWriter::createDeclaration() const
 {
     QString portDeclaration("<direction> <type> <vectorBounds> <array> <name>");
 
@@ -66,38 +58,38 @@ QString PortVerilogWriter::createDeclaration() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortVerilogWriter::direction()
+// Function: VerilogPortWriter::direction()
 //-----------------------------------------------------------------------------
-QString PortVerilogWriter::direction() const
+QString VerilogPortWriter::direction() const
 {
     QString directionString;
 
     if (port_->port_->getDirection() == DirectionTypes::IN)
     {
-        directionString = "input";
+        directionString = QStringLiteral("input");
     }
     else if (port_->port_->getDirection() == DirectionTypes::OUT)    
     {
-        directionString = "output";
+        directionString = QStringLiteral("output");
     }
     else if (port_->port_->getDirection() == DirectionTypes::INOUT)   
     {
-        directionString = "inout";
+        directionString = QStringLiteral("inout");
     }
 
     return directionString;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortVerilogWriter::formatBounds()
+// Function: VerilogPortWriter::formatBounds()
 //-----------------------------------------------------------------------------
-QString PortVerilogWriter::formatBounds(QPair<QString, QString> const& bounds) const
+QString VerilogPortWriter::formatBounds(QPair<QString, QString> const& bounds) const
 {
     QString vectorDefinition = "[" + bounds.first + ":" + bounds.second + "]";
+    vectorDefinition.remove(QLatin1Char(' '));
 
-    vectorDefinition.remove(" ");
-
-    if (vectorDefinition == "[0:0]" || vectorDefinition == "[:]")
+    if (vectorDefinition.compare(QLatin1String("[0:0]")) == 0 || 
+        vectorDefinition.compare(QLatin1String("[:]")) == 0)
     {
         vectorDefinition.clear();
     }

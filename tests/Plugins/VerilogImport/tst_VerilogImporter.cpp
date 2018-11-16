@@ -658,7 +658,7 @@ void tst_VerilogImporter::testParameterInParameterArray()
         "module test #(\n"
         "   parameter arraySize = 4,\n"
         "   parameter arrayOffset = 0,\n"
-        "   parameter bit [arraySize-1:arrayOffset] [7:0] second = 0)\n"
+        "   parameter bit [7:0] [arraySize-1:arrayOffset] second = 0)\n"
         "();\n"
         "endmodule");
 
@@ -730,7 +730,7 @@ void tst_VerilogImporter::testMacroInParameterArray()
 
     runParser(
         "module test #(\n"
-        "   parameter bit [`SIZE:`OFFSET] [7:0] second = '{8'h0,8'h0,8'h0})\n"
+        "   parameter bit [7:0] [`SIZE:`OFFSET] second = '{8'h0,8'h0,8'h0})\n"
         "();\n"
         "endmodule");
 
@@ -766,7 +766,7 @@ void tst_VerilogImporter::testMacroInParameterBitWidth()
 
     runParser(
         "module test #(\n"
-        "   parameter bit [0:2] [`BIT_LEFT:`BIT_RIGHT] valueHolder = 8'h0\n"
+        "   parameter bit [`BIT_LEFT:`BIT_RIGHT] [0:2] valueHolder = 8'h0\n"
         "();\n"
         "endmodule");
 

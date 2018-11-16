@@ -51,12 +51,6 @@
     <Filter Include="Source Files\PortSorter">
       <UniqueIdentifier>{8fe05d15-34a6-4e4f-a33a-39a6f648bc28}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\PortVerilogWriter">
-      <UniqueIdentifier>{bab477dd-e7a5-42e9-9551-b5219b7a5de8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\PortVerilogWriter">
-      <UniqueIdentifier>{81b9b655-1dac-4e99-af2c-c32802b5e06c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\VerilogHeaderWriter">
       <UniqueIdentifier>{155d93fc-49dc-4ed9-b490-f4b10067aabc}</UniqueIdentifier>
     </Filter>
@@ -149,6 +143,12 @@
     <Filter Include="Header Files\editors\common">
       <UniqueIdentifier>{28c052a9-942b-40c9-b59c-75c4c47e84b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\VerilogPortWriter">
+      <UniqueIdentifier>{2fa57958-0fe9-4a5d-b9f8-63e08e24f590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VerilogPortWriter">
+      <UniqueIdentifier>{a49610ef-34fe-4963-9d88-8dbef3d997ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ComponentVerilogWriter\ComponentVerilogWriter.cpp">
@@ -156,9 +156,6 @@
     </ClCompile>
     <ClCompile Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.cpp">
       <Filter>Source Files\ModelParameterVerilogWriter</Filter>
-    </ClCompile>
-    <ClCompile Include="PortVerilogWriter\PortVerilogWriter.cpp">
-      <Filter>Source Files\PortVerilogWriter</Filter>
     </ClCompile>
     <ClCompile Include="VerilogHeaderWriter\VerilogHeaderWriter.cpp">
       <Filter>Source Files\VerilogHeaderWriter</Filter>
@@ -234,9 +231,6 @@
     </ClCompile>
     <ClCompile Include="VerilogAssignmentWriter\VerilogAssignmentWriter.cpp">
       <Filter>Source Files\VerilogAssignmentWriter</Filter>
-    </ClCompile>
-    <ClCompile Include="PortVerilogWriter\VerilogTopDefaultWriter.cpp">
-      <Filter>Source Files\PortVerilogWriter</Filter>
     </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
       <Filter>Source Files\GenerationControl</Filter>
@@ -316,6 +310,12 @@
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VerilogPortWriter\VerilogPortWriter.cpp">
+      <Filter>Source Files\VerilogPortWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogPortWriter\VerilogTopDefaultWriter.cpp">
+      <Filter>Source Files\VerilogPortWriter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Writer.h">
@@ -329,9 +329,6 @@
     </ClInclude>
     <ClInclude Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.h">
       <Filter>Header Files\ModelParameterVerilogWriter</Filter>
-    </ClInclude>
-    <ClInclude Include="PortVerilogWriter\PortVerilogWriter.h">
-      <Filter>Header Files\PortVerilogWriter</Filter>
     </ClInclude>
     <ClInclude Include="VerilogHeaderWriter\VerilogHeaderWriter.h">
       <Filter>Header Files\VerilogHeaderWriter</Filter>
@@ -384,9 +381,6 @@
     <ClInclude Include="VerilogAssignmentWriter\VerilogAssignmentWriter.h">
       <Filter>Header Files\VerilogAssignmentWriter</Filter>
     </ClInclude>
-    <ClInclude Include="PortVerilogWriter\VerilogTopDefaultWriter.h">
-      <Filter>Header Files\PortVerilogWriter</Filter>
-    </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\IWriterFactory.h">
       <Filter>Header Files\VerilogWriterFactory</Filter>
     </ClInclude>
@@ -434,6 +428,12 @@
     </ClInclude>
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogPortWriter\VerilogPortWriter.h">
+      <Filter>Header Files\VerilogPortWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogPortWriter\VerilogTopDefaultWriter.h">
+      <Filter>Header Files\VerilogPortWriter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

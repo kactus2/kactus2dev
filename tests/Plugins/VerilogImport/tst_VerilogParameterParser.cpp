@@ -841,7 +841,7 @@ void tst_VerilogParameterParser::twoDimensional()
 {
     QString input = "module shifter #(\n"
         "parameter bit          [7:0] shift_type      = '{3'b001}, //joku\n"
-        "parameter bit [count:0][1:0] mask            = '{2'b00},\n"
+        "parameter bit [1:0][count:0] mask            = '{2'b00},\n"
         ") ();\n"
         "endmodule";
 
@@ -868,8 +868,8 @@ void tst_VerilogParameterParser::twoDimensional()
 void tst_VerilogParameterParser::closerOnLine()
 {
     QString input = "module shifter #(\n"
-        "parameter bit [count:1][2:0] shift_type      = '{3'b001}, //joku\n"
-        "parameter bit [count:1][1:0] mask             = '{2'b00} ) //hopo\n"
+        "parameter bit [2:0][count:1] shift_type      = '{3'b001}, //joku\n"
+        "parameter bit [1:0][count:1] mask            = '{2'b00} ) //hopo\n"
         "();\n"
         "endmodule";
 
