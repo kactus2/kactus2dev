@@ -19,7 +19,7 @@
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
 #include <Plugins/VerilogGenerator/VerilogAssignmentWriter/VerilogAssignmentWriter.h>
-#include <Plugins/VerilogGenerator/PortVerilogWriter/VerilogTopDefaultWriter.h>
+#include <Plugins/VerilogGenerator/VerilogPortWriter/VerilogTopDefaultWriter.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 

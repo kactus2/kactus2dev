@@ -37,6 +37,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/kactusExtensions/ComInterconnection.h \
     ../../../IPXACTmodels/kactusExtensions/ComInterface.h \
     ../../../IPXACTmodels/kactusExtensions/ComProperty.h \
+    ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/Component/Component.h \
     ../../../IPXACTmodels/Component/ComponentGenerator.h \
     ../../../IPXACTmodels/Component/validators/ComponentGeneratorValidator.h \
@@ -146,9 +147,11 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../MockObjects/LibraryMock.h \
-    ../../../IPXACTmodels/common/CommonItemsReader.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
-    ../../../IPXACTmodels/common/NameGroupReader.h
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.h \
+    ../../../IPXACTmodels/Component/RegisterFile.h
 SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/validators/AbstractionTypeValidator.cpp \
@@ -184,6 +187,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/kactusExtensions/ComInterconnection.cpp \
     ../../../IPXACTmodels/kactusExtensions/ComInterface.cpp \
     ../../../IPXACTmodels/kactusExtensions/ComProperty.cpp \
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/Component/Component.cpp \
     ../../../IPXACTmodels/Component/ComponentGenerator.cpp \
     ../../../IPXACTmodels/Component/validators/ComponentGeneratorValidator.cpp \
@@ -246,10 +250,12 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/Design/MonitorInterface.cpp \
     ../../../IPXACTmodels/designConfiguration/MultipleAbstractorInstances.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/common/NameValuePair.cpp \
     ../../../IPXACTmodels/Component/OtherClockDriver.cpp \
     ../../../IPXACTmodels/Component/validators/OtherClockDriverValidator.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/validators/ParameterValidator.cpp \
     ../../../IPXACTmodels/common/PartSelect.cpp \
     ../../../IPXACTmodels/Component/Port.cpp \
@@ -293,6 +299,6 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_ComponentValidator.cpp \
-    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
-    ../../../IPXACTmodels/common/ParameterReader.cpp \
-    ../../../IPXACTmodels/common/NameGroupReader.cpp
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.cpp \
+    ../../../IPXACTmodels/Component/RegisterFile.cpp

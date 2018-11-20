@@ -229,13 +229,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.cpp" />
-    <ClCompile Include="PortVerilogWriter\PortVerilogWriter.cpp" />
-    <ClCompile Include="PortVerilogWriter\VerilogTopDefaultWriter.cpp" />
     <ClCompile Include="TextBodyWriter\TextBodyWriter.cpp" />
     <ClCompile Include="VerilogAssignmentWriter\VerilogAssignmentWriter.cpp" />
     <ClCompile Include="VerilogGeneratorPlugin.cpp" />
     <ClCompile Include="VerilogHeaderWriter\VerilogHeaderWriter.cpp" />
     <ClCompile Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.cpp" />
+    <ClCompile Include="VerilogPortWriter\VerilogPortWriter.cpp" />
+    <ClCompile Include="VerilogPortWriter\VerilogTopDefaultWriter.cpp" />
     <ClCompile Include="VerilogSourceHighlight.cpp" />
     <ClCompile Include="VerilogWireWriter\VerilogWireWriter.cpp" />
     <ClCompile Include="VerilogWriterFactory\VerilogDocument.cpp" />
@@ -335,8 +335,9 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DVERILOGGENERATORPLUGIN_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I.\..\.." "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtXml"</Command>
     </CustomBuild>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h" />
-    <ClInclude Include="PortVerilogWriter\VerilogTopDefaultWriter.h" />
     <ClInclude Include="VerilogAssignmentWriter\VerilogAssignmentWriter.h" />
+    <ClInclude Include="VerilogPortWriter\VerilogPortWriter.h" />
+    <ClInclude Include="VerilogPortWriter\VerilogTopDefaultWriter.h" />
     <ClInclude Include="VerilogSourceHighlight.h" />
     <ClInclude Include="VerilogWriterFactory\VerilogDocument.h" />
     <CustomBuild Include="VerilogWriterFactory\VerilogWriterFactory.h">
@@ -413,7 +414,6 @@
     <ClInclude Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.h" />
     <ClInclude Include="ComponentVerilogWriter\ComponentVerilogWriter.h" />
     <ClInclude Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.h" />
-    <ClInclude Include="PortVerilogWriter\PortVerilogWriter.h" />
     <CustomBuild Include="VerilogGeneratorPlugin.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing VerilogGeneratorPlugin.h...</Message>

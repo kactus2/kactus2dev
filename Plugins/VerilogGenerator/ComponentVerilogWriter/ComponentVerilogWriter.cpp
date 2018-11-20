@@ -12,7 +12,7 @@
 #include "ComponentVerilogWriter.h"
 
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
-#include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
+#include <Plugins/VerilogGenerator/VerilogPortWriter/VerilogPortWriter.h>
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
@@ -279,7 +279,7 @@ void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer
 {
     outputStream << indentation();
 
-    PortVerilogWriter writer(port);
+    VerilogPortWriter writer(port);
     writer.write(outputStream);
 
     if (!isLast)

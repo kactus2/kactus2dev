@@ -52,7 +52,7 @@ QString GenericVendorExtension::type() const
 //-----------------------------------------------------------------------------
 QDomNode GenericVendorExtension::node()
 {
-    return vendorExtension_;
+     return vendorExtension_;
 }
 
 //-----------------------------------------------------------------------------
