@@ -48,7 +48,7 @@ namespace
     //-----------------------------------------------------------------------------
     // Function: createApplication()
     //-----------------------------------------------------------------------------
-    QCoreApplication* createApplication(int argc, char* argv[])
+    QCoreApplication* createApplication(int &argc, char* argv[])
     {
         QCoreApplication* application = 0; 
         if (startGui(argc))
