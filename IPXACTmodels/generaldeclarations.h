@@ -1,4 +1,4 @@
-/* 
+/*
 *
 *  Created on: 27.7.2010
 *      Author: Antti Kamppi
@@ -130,7 +130,7 @@ namespace General
     IPXACTMODELS_EXPORT QString usage2Str(const General::Usage usage);
 
     /*! Equals to ipxact:modifiedWriteValue within ipxact:fieldData.
-    * 
+    *
     * ModifiedWrite describes the manipulation of data written to a field.
     */
     enum ModifiedWrite {
@@ -140,7 +140,7 @@ namespace General
         ZERO_TO_CLEAR,
         ZERO_TO_SET,
         ZERO_TO_TOGGLE,
-        CLEAR, 
+        CLEAR,
         SET,
         MODIFY,
         MODIFIED_WRITE_COUNT
@@ -164,7 +164,7 @@ namespace General
     *
     * If the string does not match any of the enum values then General::MODIFIED_WRITE_COUNT
     * is returned.
-    * 
+    *
     *      @param [in] str contains the string to be converted.
     *
     *      @return The enum value that matches the string.
@@ -180,7 +180,7 @@ namespace General
     IPXACTMODELS_EXPORT QString modifiedWrite2Str(const General::ModifiedWrite modWrite);
 
     /*! Equals the ipxact:readAction within ipxact:fieldData.
-    * 
+    *
     * ReadAction describes an action that happens to a field after a read operation.
     */
     enum ReadAction {
@@ -207,10 +207,10 @@ namespace General
     IPXACTMODELS_EXPORT QString readAction2Str(const General::ReadAction readAction);
 
     /*! Convert the string into matching enum ReadAction value.
-    * 
+    *
     * If the string does not match any of the defined enum values then
     * General::READ_ACTION_COUNT is returned.
-    * 
+    *
     *      @param [in] str Contains the string to be converted.
     *
     *      @return The enum value that matches the string.
@@ -218,7 +218,7 @@ namespace General
     IPXACTMODELS_EXPORT General::ReadAction str2ReadAction(const QString& str);
 
     /*! Equals the ipxact:testConstraint attribute within ipxact:fieldData.
-    * 
+    *
     * TestConstraint defines the constraint for the field during automated testing.
     */
     enum TestConstraint {
@@ -231,7 +231,7 @@ namespace General
 
     //! Contains the strings that match the enum TestConstraint values.
     const QString TEST_CONSTRAINT_STRINGS[TESTCONSTRAINT_COUNT+1] = {
-        QLatin1String("unConstrained"),
+        QLatin1String("unconstrained"),
         QLatin1String("restore"),
         QLatin1String("writeAsRead"),
         QLatin1String("readOnly"),
@@ -247,7 +247,7 @@ namespace General
     IPXACTMODELS_EXPORT QString testConstraint2Str(const General::TestConstraint testConstraint);
 
     /*! Convert the string into matching enum TestConstraint value.
-    * 
+    *
     * If the string does not match any of the defined enum values then
     * General::TESTCONSTRAINT_COUNT is returned.
     *
@@ -281,9 +281,9 @@ namespace General
          PortBounds();
 
         /*! The constructor
-        * 
+        *
         * Constructs a port with given name and both bounds set to 0.
-        * 
+        *
         *      @param [in] portName The name of the port.
         *
         */
