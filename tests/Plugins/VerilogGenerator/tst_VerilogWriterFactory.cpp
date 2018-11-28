@@ -72,6 +72,8 @@ private slots:
     void testDescriptionAndVLNVIsPrintedAboveInstance_data();
     void testInstanceParametersAreWritten();
 
+    void testAdhocConnectionToInterfacePorts();
+
     // Flat test cases:
     void testFlatComponent();
     void testFlatComponentWithTypedParameter();
@@ -1698,6 +1700,82 @@ void tst_VerilogWriterFactory::testInstanceParametersAreWritten()
         "    TestSender #(\n"
         "        .testParameter       (2))\n"
         "    sender(");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testAdhocConnectionToInterfacePorts()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testAdhocConnectionToInterfacePorts()
+{
+    //QSharedPointer<MetaInterface> topDataIf = addInterfaceToComponent("data_bus", topComponent_);
+
+    QSharedPointer<MetaPort> topData = addPort("data_to_instance", 8, DirectionTypes::IN, topComponent_);
+    QSharedPointer<MetaPort> topEnable = addPort("enable_to_instance", 1, DirectionTypes::IN, topComponent_);
+    QSharedPointer<MetaPort> topFull = addPort("full_from_instance", 1, DirectionTypes::OUT, topComponent_);
+
+    VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
+    QSharedPointer<Component> comp = addTestComponentToLibrary(instanceVlnv);
+    QSharedPointer<MetaInstance> mInstance = addInstanceToDesign("instance1", comp);
+
+    QSharedPointer<MetaInterface> dataIf = addInterfaceToComponent("data_bus", mInstance);
+    QSharedPointer<MetaPort> instanceData = addPort("data_in", 8, DirectionTypes::IN, mInstance, dataIf);
+    QSharedPointer<MetaPort> instanceEnable = addPort("enable_in", 1, DirectionTypes::IN, mInstance, dataIf);
+    QSharedPointer<MetaPort> instanceFull = addPort("full_out", 1, DirectionTypes::OUT, mInstance, dataIf);
+
+    QSharedPointer<MetaWire> gw1 = addWireToDesign("data_wire", "7", "0");
+    gw1->hierPorts_.append(topData);
+    QSharedPointer<MetaWire> gw2 = addWireToDesign("enable_wire", "0", "0");
+    gw2->hierPorts_.append(topEnable);
+    QSharedPointer<MetaWire> gw3 = addWireToDesign("full_wire", "0", "0");
+    gw3->hierPorts_.append(topFull);
+
+    createPortAssignment(mInstance->getPorts()->value("data_in"), gw1, true, "7", "0", "7", "0");
+    createPortAssignment(mInstance->getPorts()->value("enable_in"), gw2, true, "0", "0", "0", "0");
+    createPortAssignment(mInstance->getPorts()->value("full_out"), gw3, true, "0", "0", "0", "0");
+
+    createPortAssignment(topData, gw1, false, "7", "0", "7", "0");
+    createPortAssignment(topEnable, gw2, false, "0", "0", "0", "0");
+    createPortAssignment(topFull, gw3, false, "0", "0", "0", "0");
+
+    runGenerator(true);
+
+    verifyOutputContains(QString(
+        "module TestComponent(\n"
+        "    // These ports are not in any interface\n"
+        "    input                [7:0]          data_to_instance,\n"
+        "    input                               enable_to_instance,\n"
+        "    output                              full_from_instance\n"
+        ");\n"
+        "\n"
+        "    // Ad-hoc wires:\n"
+        "    wire [7:0] data_wire;\n"
+        "    wire       enable_wire;\n"
+        "    wire       full_wire;\n"
+        "\n"
+        "    // instance1 port wires:\n"
+        "    wire [7:0] instance1_data_in;\n"
+        "    wire       instance1_enable_in;\n"
+        "    wire       instance1_full_out;\n"
+        "\n"
+        "    // Assignments for the ports of the encompassing component:\n"
+        "    assign data_wire = data_to_instance;\n"
+        "    assign enable_wire = enable_to_instance;\n"
+        "    assign full_from_instance = full_wire;\n"
+        "\n"
+        "    // instance1 assignments:\n"
+        "    assign instance1_data_in = data_wire;\n"
+        "    assign instance1_enable_in = enable_wire;\n"
+        "    assign full_wire = instance1_full_out;\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
+        "    TestInstance instance1(\n"
+        "        // Interface: data_bus\n"        
+        "        .data_in             (instance1_data_in),\n"
+        "        .enable_in           (instance1_enable_in),\n"
+        "        .full_out            (instance1_full_out));\n"        
+        "\n"
+        "\n"
+        "endmodule"));
 }
 
 //-----------------------------------------------------------------------------

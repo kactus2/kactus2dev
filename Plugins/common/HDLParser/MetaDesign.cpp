@@ -716,39 +716,42 @@ void MetaDesign::findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
 //-----------------------------------------------------------------------------
 void MetaDesign::removeUnconnectedInterfaceAssignments()
 {
-    QList<QSharedPointer<MetaPort> > adHocs;
-    for (auto adhocWire : *adHocWires_)
-    {
-        adHocs.append(adhocWire->hierPorts_);
-    }
-
     for (QSharedPointer<MetaInstance> mInstance : *instances_)
     {
-        for (QSharedPointer<MetaInterface> mInterface : *mInstance->getInterfaces())
+        for (QSharedPointer<MetaPort> mPort : *mInstance->getPorts())
         {
-            if (mInterface->upInterconnection_.isNull())
+            bool connected = false;
+            for (QSharedPointer<MetaPortAssignment> assignment : mPort->upAssignments_)
             {
-                for (QSharedPointer<MetaPort> mPort : mInterface->ports_)
+                if (assignment->wire_ && assignment->wire_->refCount >= 2)
                 {
-                    if (adHocs.contains(mPort) == false)
-                    {
-                        mPort->upAssignments_.clear();
-                    }                        
+                    connected = true;
                 }
+            }
+
+            if (connected == false)
+            {
+                mPort->upAssignments_.clear();
             }
         }
     }
-    
+
     for (QSharedPointer<MetaInterface> mInterface : *topInstance_->getInterfaces())
     {
-        if (mInterface->downInterconnection_.isNull())
+        for (QSharedPointer<MetaPort> mPort : *topInstance_->getPorts())
         {
-            for (QSharedPointer<MetaPort> mPort : mInterface->ports_)
-            {                
-                if (adHocs.contains(mPort) == false)
+            bool connected = false;
+            for (QSharedPointer<MetaPortAssignment> assignment : mPort->downAssignments_)
+            {
+                if (assignment->wire_ && assignment->wire_->refCount >= 2)
                 {
-                    mPort->downAssignments_.clear();
+                    connected = true;
                 }
+            }
+
+            if (connected == false)
+            {
+                mPort->downAssignments_.clear();
             }
         }
     }

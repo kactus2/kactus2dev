@@ -192,7 +192,8 @@ void VerilogWriterFactory::initializeComponentWriters(QSharedPointer<VerilogDocu
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::initializeDesignWriters()
 //-----------------------------------------------------------------------------
-void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocument> document, QSharedPointer<MetaDesign> design)
+void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocument> document,
+    QSharedPointer<MetaDesign> design)
 {
     document->instanceWriters_.clear();
 

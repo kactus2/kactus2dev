@@ -61,7 +61,7 @@ QString VerilogAssignmentWriter::assignmentForPort() const
     }
 
     QString invert = QString();
-    if (portAssignment_->invert_)
+    if (portAssignment_->invert_ && !isHierarchicalPort_)
     {
         invert = QStringLiteral("~");
     }
