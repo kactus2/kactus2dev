@@ -116,6 +116,7 @@ bool FieldValidator::hasValidBitOffset(QSharedPointer<Field> field) const
 
 //-----------------------------------------------------------------------------
 // Function: FieldValidator::hasValidResetValue()
+//TODO Validate All Resets (Currently Only Validates the final reset)
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidResetValue(QSharedPointer<Field> field) const
 {
@@ -133,6 +134,7 @@ bool FieldValidator::hasValidResetValue(QSharedPointer<Field> field) const
 
 //-----------------------------------------------------------------------------
 // Function: FieldValidator::hasValidResetMask()
+//TODO Validate All Resets (Currently Only Validates the final reset)
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidResetMask(QSharedPointer<Field> field) const
 {
@@ -209,7 +211,7 @@ bool FieldValidator::hasValidBitWidth(QSharedPointer<Field> field) const
     {
         return true;
     }
-    
+
     return false;
 }
 
@@ -565,7 +567,7 @@ void FieldValidator::findErrorsInAccess(QVector<QString>& errors, QSharedPointer
 bool FieldValidator::isBitExpressionValid(QString const& expression) const
 {
     QString solvedValue = expressionParser_->parseExpression(expression);
-    
+
     QRegularExpression bitExpression(QStringLiteral("^([0-9]+|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$"));
     return bitExpression.match(expression).hasMatch() || bitExpression.match(solvedValue).hasMatch();
 }

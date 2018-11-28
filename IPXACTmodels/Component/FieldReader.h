@@ -20,6 +20,7 @@
 #include <QDomNode>
 
 class Field;
+struct FieldReset;
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT field element.
@@ -89,31 +90,31 @@ private:
      *      @param [in] fieldElement    XML description of the field.
      *      @param [in] newField        The new field item.
      */
-    void parseReset(QDomElement const& fieldElement, QSharedPointer<Field> newField) const;
+    void parseResets(QDomElement const& fieldElement, QSharedPointer<Field> newField) const;
 
     /*!
      *  Reads the reset type reference.
      *
      *      @param [in] resetElement    XML description of the reset.
-     *      @param [in] newField        The new field item.
+     *      @param [in] fldReset        The Reset Structure to parse into.
      */
-    void parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<Field> newField) const;
+    void parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const;
 
     /*!
      *  Reads the reset value.
      *
      *      @param [in] resetElement    XML description of the reset.
-     *      @param [in] newField        The new field item.
+     *      @param [in] fldReset        The Reset Structure to parse into.
      */
-    void parseResetValue(QDomElement const& resetElement, QSharedPointer<Field> newField) const;
+    void parseResetValue(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const;
 
     /*!
      *  Reads the reset mask.
      *
      *      @param [in] resetElement    XML description of the reset.
-     *      @param [in] newField        The new field item.
+     *      @param [in] fldReset        The Reset Structure to parse into.
      */
-    void parseResetMask(QDomElement const& resetElement, QSharedPointer<Field> newField) const;
+    void parseResetMask(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const;
 
     /*!
      *  Reads the type identifier.

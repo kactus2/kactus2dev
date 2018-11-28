@@ -24,9 +24,7 @@ Extendable(),
 id_(),
 isPresent_(),
 bitOffset_(),
-resetTypeReference_(),
-resetValue_(),
-resetMask_(),
+resets_(new QList<QSharedPointer<FieldReset> >()),
 typeIdentifier_(),
 bitWidth_(),
 volatile_(),
@@ -54,9 +52,7 @@ Extendable(other),
 id_(other.id_),
 isPresent_(other.isPresent_),
 bitOffset_(other.bitOffset_),
-resetTypeReference_(other.resetTypeReference_),
-resetValue_(other.resetValue_),
-resetMask_(other.resetMask_),
+resets_(new QList<QSharedPointer<FieldReset> >()),
 typeIdentifier_(other.typeIdentifier_),
 bitWidth_(other.bitWidth_),
 volatile_(other.volatile_),
@@ -75,6 +71,7 @@ parameters_(new QList<QSharedPointer<Parameter> > ())
     copyEnumeratedValues(other);
     copyParameters(other);
     copyWriteValueConstraint(other);
+    copyResets(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,9 +86,6 @@ Field& Field::operator=( const Field& other )
         id_ = other.id_;
         isPresent_ = other.isPresent_;
         bitOffset_ = other.bitOffset_;
-        resetTypeReference_ = other.resetTypeReference_;
-        resetValue_ = other.resetValue_;
-        resetMask_ = other.resetMask_;
         typeIdentifier_ = other.typeIdentifier_;
         bitWidth_ = other.bitWidth_;
         volatile_ = other.volatile_;
@@ -110,6 +104,8 @@ Field& Field::operator=( const Field& other )
         copyWriteValueConstraint(other);
         parameters_->clear();
         copyParameters(other);
+        resets_->clear();
+        copyResets(other);
     }
 
     return *this;
@@ -120,6 +116,7 @@ Field& Field::operator=( const Field& other )
 //-----------------------------------------------------------------------------
 Field::~Field()
 {
+    resets_.clear();
     enumeratedValues_.clear();
     parameters_.clear();
     writeValueConstraint_.clear();
@@ -173,28 +170,53 @@ void Field::setBitOffset(QString const& newBitOffset)
     bitOffset_ = newBitOffset;
 }
 
+
+
+
 //-----------------------------------------------------------------------------
 // Function: Field::getResetTypeReference()
 //-----------------------------------------------------------------------------
 QString Field::getResetTypeReference() const
 {
-    return resetTypeReference_;
+  if(resets_->isEmpty()){
+    return QStringLiteral("");
+  }else{
+    return resets_->last()->resetTypeReference_;
+  }
 }
+//-----------------------------------------------------------------------------
+// Function: field::getResetValue()
+//-----------------------------------------------------------------------------
+QString Field::getResetValue() const
+{
+  if(resets_->isEmpty()){
+    return QStringLiteral("");
+  }else{
+    return resets_->last()->resetValue_;
+  }
+}
+//-----------------------------------------------------------------------------
+// Function: field::getResetMask()
+//-----------------------------------------------------------------------------
+QString Field::getResetMask() const
+{
+  if(resets_->isEmpty()){
+    return QStringLiteral("");
+  }else{
+    return resets_->last()->resetMask_;
+  }
+}
+
 
 //-----------------------------------------------------------------------------
 // Function: Field::setResetTypeReference()
 //-----------------------------------------------------------------------------
 void Field::setResetTypeReference(QString const& newResetTypeReference)
 {
-    resetTypeReference_ = newResetTypeReference;
-}
-
-//-----------------------------------------------------------------------------
-// Function: field::getResetValue()
-//-----------------------------------------------------------------------------
-QString Field::getResetValue() const
-{
-    return resetValue_;
+  if(resets_->isEmpty()){
+    resets_->append(QSharedPointer<FieldReset>(new FieldReset()));
+  }
+  resets_->last()->resetTypeReference_ = newResetTypeReference;
 }
 
 //-----------------------------------------------------------------------------
@@ -202,15 +224,10 @@ QString Field::getResetValue() const
 //-----------------------------------------------------------------------------
 void Field::setResetValue(QString const& newResetValue)
 {
-    resetValue_ = newResetValue;
-}
-
-//-----------------------------------------------------------------------------
-// Function: field::getResetMask()
-//-----------------------------------------------------------------------------
-QString Field::getResetMask() const
-{
-    return resetMask_;
+  if(resets_->isEmpty()){
+    resets_->append(QSharedPointer<FieldReset>(new FieldReset()));
+  }
+  resets_->last()->resetValue_ = newResetValue;
 }
 
 //-----------------------------------------------------------------------------
@@ -218,8 +235,30 @@ QString Field::getResetMask() const
 //-----------------------------------------------------------------------------
 void Field::setResetMask(QString const& newResetMask)
 {
-    resetMask_ = newResetMask;
+  if(resets_->isEmpty()){
+    resets_->append(QSharedPointer<FieldReset>(new FieldReset()));
+  }
+  resets_->last()->resetMask_ = newResetMask;
 }
+
+//-----------------------------------------------------------------------------
+// Function: Field::getResets()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<FieldReset> > > Field::getResets() const
+{
+    return resets_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setResets()
+//-----------------------------------------------------------------------------
+void Field::setResets(QSharedPointer<QList<QSharedPointer<FieldReset> > > newResets)
+{
+    resets_->clear();
+    resets_ = newResets;
+}
+
+
 
 //-----------------------------------------------------------------------------
 // Function: Field::getTypeIdentifier()
@@ -503,4 +542,19 @@ void Field::copyWriteValueConstraint(const Field& other)
         writeValueConstraint_ =
             QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(*other.writeValueConstraint_.data()));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::copyWriteValueConstraint()
+//-----------------------------------------------------------------------------
+void Field::copyResets(const Field& other)
+{
+  foreach (QSharedPointer<FieldReset> other_reset, *other.resets_)
+  {
+      if (other_reset)
+      {
+          QSharedPointer<FieldReset> copy = QSharedPointer<FieldReset>(new FieldReset(*other_reset.data()));
+          resets_->append(copy);
+      }
+  }
 }
