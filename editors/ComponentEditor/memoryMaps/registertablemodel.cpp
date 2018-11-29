@@ -536,11 +536,17 @@ bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterColumns::RESETVALUE_COLUMN)
     {
-        return fieldValidator_->hasValidResetValue(field);
+        if (field->getResets()->isEmpty() == false)
+        {
+            return fieldValidator_->hasValidResetValue(field->getResets()->last());
+        }        
     }
     else if (index.column() == RegisterColumns::RESETMASK_COLUMN)
     {
-        return fieldValidator_->hasValidResetMask(field);
+        if (field->getResets()->isEmpty() == false)
+        {
+            return fieldValidator_->hasValidResetMask(field->getResets()->last());
+        }
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {

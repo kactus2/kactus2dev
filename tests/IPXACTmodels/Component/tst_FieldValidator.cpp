@@ -237,14 +237,14 @@ void tst_FieldValidator::testResetsAreValid()
     QSharedPointer<ParameterValidator> parameterValidator (
         new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
-    QCOMPARE(validator.hasValidResetValue(testField), resetValueIsValid);
+    QCOMPARE(validator.hasValidResetValue(testField->getResets()->first()), resetValueIsValid);
 
     if (!resetValueIsValid)
     {
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testField, "test");
 
-        QString expectedError = QObject::tr("Invalid reset value set for field %1 within %2").
+        QString expectedError = QObject::tr("Invalid reset value set within field %1 in %2").
             arg(testField->name()).arg("test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -252,13 +252,13 @@ void tst_FieldValidator::testResetsAreValid()
         }
     }
 
-    QCOMPARE(validator.hasValidResetMask(testField), resetMaskIsValid);
+    QCOMPARE(validator.hasValidResetMask(testField->getResets()->first()), resetMaskIsValid);
     if (!resetMaskIsValid)
     {
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testField, "test");
 
-        QString expectedError = QObject::tr("Invalid reset mask set for field %1 within %2").
+        QString expectedError = QObject::tr("Invalid reset mask set within field %1 in %2").
             arg(testField->name()).arg("test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {

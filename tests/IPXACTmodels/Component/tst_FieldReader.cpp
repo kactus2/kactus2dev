@@ -30,7 +30,7 @@ private slots:
     void readSimpleField();
     void readFieldID();
     void readIsPresent();
-    void readReset();
+    void readResets();
 
     void readTypeIdentifier();
     void readVolatile();
@@ -138,9 +138,9 @@ void tst_FieldReader::readIsPresent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_FieldReader::readReset()
+// Function: tst_FieldReader::readResets()
 //-----------------------------------------------------------------------------
-void tst_FieldReader::readReset()
+void tst_FieldReader::readResets()
 {
     QString documentContent(
         "<ipxact:field>"
@@ -173,8 +173,12 @@ void tst_FieldReader::readReset()
             "<ipxact:name>testField</ipxact:name>"
             "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
             "<ipxact:resets>"
-                "<ipxact:reset>"
+                "<ipxact:reset resetTypeRef=\"referencedReset\">"
                     "<ipxact:value>8'b0110_1101</ipxact:value>"
+                    "<ipxact:mask>8'b1100_0011</ipxact:mask>"
+                "</ipxact:reset>"
+                "<ipxact:reset>"
+                    "<ipxact:value>8'b0110_0000</ipxact:value>"
                 "</ipxact:reset>"
             "</ipxact:resets>"
             "<ipxact:bitWidth>Gate</ipxact:bitWidth>"
@@ -185,8 +189,11 @@ void tst_FieldReader::readReset()
     fieldNode = document.firstChildElement("ipxact:field");
     testField = fieldReader.createFieldFrom(fieldNode);
 
+    QCOMPARE(testField->getResets()->count(), 2);
+
+    // Access to reset attributes from field point to the last reset.
     QCOMPARE(testField->getResetTypeReference(), QString(""));
-    QCOMPARE(testField->getResetValue(), QString("8'b0110_1101"));
+    QCOMPARE(testField->getResetValue(), QString("8'b0110_0000"));
     QCOMPARE(testField->getResetMask(), QString(""));
 }
 

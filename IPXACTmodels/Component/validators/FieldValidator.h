@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/Component/Field.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -89,20 +91,20 @@ public:
     /*!
      *  Check if the field has a valid reset value.
      *
-     *      @param [in] field   The selected field.
+     *      @param [in] fieldReset   The selected field reset.
      *
      *      @return True, if the reset value is valid, otherwise false.
      */
-    bool hasValidResetValue(QSharedPointer<Field> field) const;
+    bool hasValidResetValue(QSharedPointer<FieldReset> fieldReset) const;
 
     /*!
      *  Check if the field has a valid reset mask.
      *
-     *      @param [in] field   The selected field.
+     *      @param [in] field   The selected field reset.
      *
      *      @return True, if the reset mask is valid, otherwise false.
      */
-    bool hasValidResetMask(QSharedPointer<Field> field) const;
+    bool hasValidResetMask(QSharedPointer<FieldReset> fieldReset) const;
 
     /*!
      *  Check if the field has a valid write value constraint.
@@ -204,19 +206,21 @@ private:
      *  Find errors within field reset value.
      *
      *      @param [in] errors      List of found errors.
-     *      @param [in] field       The selected field.
+     *      @param [in] fieldReset  The selected field reset.
      *      @param [in] context     Context to help locate the error.
      */
-    void findErrorsInResetValue(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
+    void findErrorsInResetValue(QVector<QString>& errors, QSharedPointer<FieldReset> fieldReset,
+        QString const& context) const;
 
     /*!
      *  Find errors within field reset mask.
      *
      *      @param [in] errors      List of found errors.
-     *      @param [in] field       The selected field.
+     *      @param [in] fieldReset  The selected field reset.
      *      @param [in] context     Context to help locate the error.
      */
-    void findErrorsInResetMask(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
+    void findErrorsInResetMask(QVector<QString>& errors, QSharedPointer<FieldReset> fieldReset,
+        QString const& context) const;
 
     /*!
      *  Find errors within field write value constraint.
@@ -270,6 +274,15 @@ private:
      *      @param [in] context     Context to help locate the error.
      */
     void findErrorsInAccess(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
+
+    /*!
+     *  Check if the resets within the field are valid.
+     *
+     *     @param [in] field  The field whose resets to check
+     *
+     *     @return True, if all resets are valid, otherwise false.
+     */
+     bool hasValidResets(QSharedPointer<Field> field) const;
 
     /*!
      *  Check if the contained bit expression is valid.

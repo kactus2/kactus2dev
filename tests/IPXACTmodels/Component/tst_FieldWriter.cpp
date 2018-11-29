@@ -36,7 +36,7 @@ private slots:
     void writeSimpleField();
     void writeFieldID();
     void writeIsPresent();
-    void writeReset();
+    void writeResets();
     
     void writeTypeIdentifier();
     void writeVolatile();
@@ -186,22 +186,28 @@ void tst_FieldWriter::writeIsPresent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_FieldWriter::writeReset()
+// Function: tst_FieldWriter::writeResets()
 //-----------------------------------------------------------------------------
-void tst_FieldWriter::writeReset()
+void tst_FieldWriter::writeResets()
 {
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    testField_->setResetTypeReference("referencedReset");
-    testField_->setResetValue("8'b0110_1101");
-    testField_->setResetMask("8'b1100_0011");
+    QSharedPointer<FieldReset> firstReset(new FieldReset({ "HARD", "8'b0000_0000", "8'b1111_1111" }));
+    QSharedPointer<FieldReset> lastReset(new FieldReset({ "referencedReset", "8'b0110_1101", "8'b1100_0011" }));
+
+    testField_->getResets()->append(firstReset);
+    testField_->getResets()->append(lastReset);
 
     QString expectedOutput(
         "<ipxact:field>"
             "<ipxact:name>testField</ipxact:name>"
             "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
             "<ipxact:resets>"
+                "<ipxact:reset resetTypeRef=\"HARD\">"
+                    "<ipxact:value>8'b0000_0000</ipxact:value>"
+                    "<ipxact:mask>8'b1111_1111</ipxact:mask>"
+                "</ipxact:reset>"
                 "<ipxact:reset resetTypeRef=\"referencedReset\">"
                     "<ipxact:value>8'b0110_1101</ipxact:value>"
                     "<ipxact:mask>8'b1100_0011</ipxact:mask>"

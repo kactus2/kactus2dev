@@ -34,13 +34,13 @@ class WriteValueConstraint;
 struct FieldReset {
 	//! Identifies the type of the reset being defined.
 	QString resetTypeReference_;
+
 	//! Contains the actual reset value.
 	QString resetValue_;
+
 	//! Defines which bits of the register field have a known reset value.
 	QString resetMask_;
 };
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -67,9 +67,6 @@ public:
 
 	//! The destructor.
 	virtual ~Field();
-
-
-
 
 	/*!
 	*  Get the id of the field.

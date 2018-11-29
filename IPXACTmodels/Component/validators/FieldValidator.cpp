@@ -58,7 +58,7 @@ QSharedPointer<EnumeratedValueValidator> FieldValidator::getEnumeratedValueValid
 bool FieldValidator::validate(QSharedPointer<Field> field) const
 {
     return hasValidName(field) && hasValidIsPresent(field) && hasValidBitOffset(field) &&
-        hasValidResetValue(field) && hasValidResetMask(field) && hasValidWriteValueConstraint(field) &&
+        hasValidResets(field) && hasValidWriteValueConstraint(field) &&
         hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
         hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field);
 }
@@ -116,15 +116,14 @@ bool FieldValidator::hasValidBitOffset(QSharedPointer<Field> field) const
 
 //-----------------------------------------------------------------------------
 // Function: FieldValidator::hasValidResetValue()
-//TODO Validate All Resets (Currently Only Validates the final reset)
 //-----------------------------------------------------------------------------
-bool FieldValidator::hasValidResetValue(QSharedPointer<Field> field) const
+bool FieldValidator::hasValidResetValue(QSharedPointer<FieldReset> fieldReset) const
 {
-    if (!field->getResetValue().isEmpty())
+    if (fieldReset->resetValue_.isEmpty() == false)
     {
-        return isBitExpressionValid(field->getResetValue());
+        return isBitExpressionValid(fieldReset->resetValue_);
     }
-    else if (field->getResetValue().isEmpty() && !field->getResetMask().isEmpty())
+    else if (fieldReset->resetValue_.isEmpty() && fieldReset->resetMask_.isEmpty() == false)
     {
         return false;
     }
@@ -134,17 +133,16 @@ bool FieldValidator::hasValidResetValue(QSharedPointer<Field> field) const
 
 //-----------------------------------------------------------------------------
 // Function: FieldValidator::hasValidResetMask()
-//TODO Validate All Resets (Currently Only Validates the final reset)
 //-----------------------------------------------------------------------------
-bool FieldValidator::hasValidResetMask(QSharedPointer<Field> field) const
+bool FieldValidator::hasValidResetMask(QSharedPointer<FieldReset> fieldReset) const
 {
-    if (field->getResetMask().isEmpty())
+    if (fieldReset->resetMask_.isEmpty())
     {
         return true;
     }
     else
     {
-        return isBitExpressionValid(field->getResetMask());
+        return isBitExpressionValid(fieldReset->resetMask_);
     }
 }
 
@@ -313,8 +311,14 @@ void FieldValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Field
     findErrorsInName(errors, field, context);
     findErrorsInIsPresent(errors, field, context);
     findErrorsInBitOffset(errors, field, context);
-    findErrorsInResetValue(errors, field, context);
-    findErrorsInResetMask(errors, field, context);
+
+    QString resetContext = QStringLiteral("field %1 in %2").arg(field->name(), context);
+    for (auto fieldReset : *field->getResets())
+    {
+        findErrorsInResetValue(errors, fieldReset, resetContext);
+        findErrorsInResetMask(errors, fieldReset, resetContext);
+    }
+
     findErrorsInWriteValueConstraint(errors, field, context);
     findErrorsInReserved(errors, field, context);
     findErrorsInBitWidth(errors, field, context);
@@ -364,25 +368,24 @@ void FieldValidator::findErrorsInBitOffset(QVector<QString>& errors, QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: FieldValidator::findErrorsInResetValue()
 //-----------------------------------------------------------------------------
-void FieldValidator::findErrorsInResetValue(QVector<QString>& errors, QSharedPointer<Field> field,
+void FieldValidator::findErrorsInResetValue(QVector<QString>& errors, QSharedPointer<FieldReset> fieldReset,
     QString const& context) const
 {
-    if (!hasValidResetValue(field))
+    if (!hasValidResetValue(fieldReset))
     {
-        errors.append(QObject::tr("Invalid reset value set for field %1 within %2").arg(field->name()).
-            arg(context));
+        errors.append(QObject::tr("Invalid reset value set within %1").arg(context));
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldValidator::findErrorsInResetMask()
 //-----------------------------------------------------------------------------
-void FieldValidator::findErrorsInResetMask(QVector<QString>& errors, QSharedPointer<Field> field,
+void FieldValidator::findErrorsInResetMask(QVector<QString>& errors, QSharedPointer<FieldReset> fieldReset,
     QString const& context) const
 {
-    if (!hasValidResetMask(field))
+    if (!hasValidResetMask(fieldReset))
     {
-        errors.append(QObject::tr("Invalid reset mask set for field %1 within %2").arg(field->name()).arg(context));
+        errors.append(QObject::tr("Invalid reset mask set within %1").arg(context));
     }
 }
 
@@ -562,6 +565,22 @@ void FieldValidator::findErrorsInAccess(QVector<QString>& errors, QSharedPointer
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldValidator::hasValidResets()
+//-----------------------------------------------------------------------------
+bool FieldValidator::hasValidResets(QSharedPointer<Field> field) const
+{
+    for (auto fieldReset : *field->getResets())
+    {
+        if (hasValidResetValue(fieldReset) == false || hasValidResetMask(fieldReset) == false)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldValidator::validateBitExpression()
 //-----------------------------------------------------------------------------
 bool FieldValidator::isBitExpressionValid(QString const& expression) const
@@ -571,3 +590,4 @@ bool FieldValidator::isBitExpressionValid(QString const& expression) const
     QRegularExpression bitExpression(QStringLiteral("^([0-9]+|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$"));
     return bitExpression.match(expression).hasMatch() || bitExpression.match(solvedValue).hasMatch();
 }
+
