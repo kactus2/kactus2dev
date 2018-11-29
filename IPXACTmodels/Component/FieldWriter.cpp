@@ -47,7 +47,7 @@ void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> fie
 
     writer.writeTextElement(QStringLiteral("ipxact:bitOffset"), field->getBitOffset());
 
-    writeReset(writer, field);
+    writeResets(writer, field);
 
     writeTypeIdentifier(writer, field);
 
@@ -97,32 +97,37 @@ void FieldWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Field>
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeReset()
+// Function: FieldWriter::writeResets()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeReset(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::writeResets(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
 {
-    if (!field->getResetTypeReference().isEmpty() || !field->getResetValue().isEmpty() ||
-        !field->getResetMask().isEmpty())
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:resets"));
 
-        writer.writeStartElement(QStringLiteral("ipxact:reset"));
+    if(!field->getResets()->isEmpty()) {
+      writer.writeStartElement(QStringLiteral("ipxact:resets"));
 
-        if (!field->getResetTypeReference().isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("resetTypeRef"), field->getResetTypeReference());
-        }
+      foreach (QSharedPointer<FieldReset> reset, *(field->getResets()))
+      {
+          if (reset)
+          {
+            writer.writeStartElement(QStringLiteral("ipxact:reset"));
 
-        writer.writeTextElement(QStringLiteral("ipxact:value"), field->getResetValue());
+            if (!reset->resetTypeReference_.isEmpty())
+            {
+                writer.writeAttribute(QStringLiteral("resetTypeRef"), reset->resetTypeReference_);
+            }
 
-        if (!field->getResetMask().isEmpty())
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:mask"), field->getResetMask());
-        }
+            writer.writeTextElement(QStringLiteral("ipxact:value"), reset->resetValue_);
 
-        writer.writeEndElement(); // ipxact:reset
+            if (!reset->resetMask_.isEmpty())
+            {
+                writer.writeTextElement(QStringLiteral("ipxact:mask"), reset->resetMask_);
+            }
 
-        writer.writeEndElement(); // ipxact:resets
+            writer.writeEndElement(); // ipxact:reset
+          }
+      }
+
+      writer.writeEndElement(); // ipxact:resets
     }
 }
 

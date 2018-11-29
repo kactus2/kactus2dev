@@ -50,7 +50,7 @@ QSharedPointer<Field> FieldReader::createFieldFrom(QDomNode const& fieldNode) co
 
     parseBitOffset(fieldElement, newField);
 
-    parseReset(fieldElement, newField);
+    parseResets(fieldElement, newField);
 
     parseTypeIdentifier(fieldElement, newField);
 
@@ -123,9 +123,9 @@ void FieldReader::parseBitOffset(QDomElement const& fieldElement, QSharedPointer
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldReader::parseReset()
+// Function: FieldReader::parseResets()
 //-----------------------------------------------------------------------------
-void FieldReader::parseReset(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
+void FieldReader::parseResets(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
     QDomElement resetsElement = fieldElement.firstChildElement(QStringLiteral("ipxact:resets"));
     if (!resetsElement.isNull())
@@ -134,12 +134,15 @@ void FieldReader::parseReset(QDomElement const& fieldElement, QSharedPointer<Fie
         for (int resetIndex = 0; resetIndex < resetNodeList.count(); ++resetIndex)
         {
             QDomElement resetElement = resetNodeList.at(resetIndex).toElement();
-            
-            parseResetTypeRef(resetElement, newField);
 
-            parseResetValue(resetElement, newField);
+            QSharedPointer<FieldReset> fldReset = QSharedPointer<FieldReset>(new FieldReset());
 
-            parseResetMask(resetElement, newField);
+            parseResetTypeRef(resetElement, fldReset);
+            parseResetValue(resetElement, fldReset);
+            parseResetMask(resetElement, fldReset);
+
+            newField->getResets()->append(fldReset);
+
         }
     }
 }
@@ -147,35 +150,36 @@ void FieldReader::parseReset(QDomElement const& fieldElement, QSharedPointer<Fie
 //-----------------------------------------------------------------------------
 // Function: FieldReader::parseResetTypeRef()
 //-----------------------------------------------------------------------------
-void FieldReader::parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<Field> newField) const
+void FieldReader::parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const
 {
-    if (resetElement.hasAttribute(QStringLiteral("resetTypeRef")))
-    {
-        newField->setResetTypeReference(resetElement.attribute(QStringLiteral("resetTypeRef")));
-    }
+  if (resetElement.hasAttribute(QStringLiteral("resetTypeRef")))
+  {
+      fldReset->resetTypeReference_ = resetElement.attribute(QStringLiteral("resetTypeRef"));
+  }
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldReader::parseResetValue()
 //-----------------------------------------------------------------------------
-void FieldReader::parseResetValue(QDomElement const& resetElement, QSharedPointer<Field> newField) const
+void FieldReader::parseResetValue(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const
 {
-    QString resetValue = resetElement.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
-    newField->setResetValue(resetValue);
+  QString resetValue = resetElement.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
+  fldReset->resetValue_=resetValue;
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldReader::parseResetMask()
 //-----------------------------------------------------------------------------
-void FieldReader::parseResetMask(QDomElement const& resetElement, QSharedPointer<Field> newField) const
+void FieldReader::parseResetMask(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const
 {
-    QDomElement resetMaskElement = resetElement.firstChildElement(QStringLiteral("ipxact:mask"));
-    if (!resetMaskElement.isNull())
-    {
-        QString resetMask = resetMaskElement.firstChild().nodeValue();
-        newField->setResetMask(resetMask);
-    }
+  QDomElement resetMaskElement = resetElement.firstChildElement(QStringLiteral("ipxact:mask"));
+  if (!resetMaskElement.isNull())
+  {
+      QString resetMask = resetMaskElement.firstChild().nodeValue();
+      fldReset->resetMask_=resetMask;
+  }
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: FieldReader::parseTypeIdentifier()
@@ -247,7 +251,7 @@ void FieldReader::parseEnumeratedValues(QDomElement const& fieldElement, QShared
         for (int enumerationIndex = 0; enumerationIndex < enumeratedValueNodes.count(); ++enumerationIndex)
         {
             QDomNode enumerationNode = enumeratedValueNodes.at(enumerationIndex);
-            
+
             QSharedPointer<EnumeratedValue> enumeration =
                 enumerationReader.createEnumeratedValueFrom(enumerationNode);
 

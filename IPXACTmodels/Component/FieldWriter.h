@@ -74,7 +74,7 @@ private:
      *      @param [in] writer  Used XML writer.
      *      @param [in] field   The selected field item.
      */
-    void writeReset(QXmlStreamWriter& writer, QSharedPointer<Field> field) const;
+    void writeResets(QXmlStreamWriter& writer, QSharedPointer<Field> field) const;
 
     /*!
      *  Write the type identifier.
