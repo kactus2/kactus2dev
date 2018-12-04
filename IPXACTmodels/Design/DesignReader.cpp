@@ -21,6 +21,8 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
+#include <IPXACTmodels/utilities/XmlUtils.h>
+
 //-----------------------------------------------------------------------------
 // Function: DesignReader::DesignReader()
 //-----------------------------------------------------------------------------
@@ -793,9 +795,43 @@ void DesignReader::parseNotes(QDomElement const& extensionNode, QSharedPointer<D
     QDomNodeList notesExtensions = extensionNode.elementsByTagName(QStringLiteral("kactus2:note"));
 
     int notesCount = notesExtensions.count();
-    for (int i = 0; i < notesCount; i++)
+    for (int noteIndex = 0; noteIndex < notesCount; ++noteIndex)
     {
-        QSharedPointer<GenericVendorExtension> note(new GenericVendorExtension(notesExtensions.at(i)));
+        QSharedPointer<Kactus2Group> note(new Kactus2Group(QStringLiteral("kactus2:note")));
+        
+        int childCount = notesExtensions.at(noteIndex).childNodes().count();
+        for (int childIndex = 0; childIndex < childCount; ++childIndex)
+        {
+            QDomNode childNode = notesExtensions.at(noteIndex).childNodes().at(childIndex);
+
+            if (childNode.nodeName().compare(QLatin1String("kactus2:position")) == 0)
+            {                
+                QPointF point = XmlUtils::parsePoint(childNode);
+                QSharedPointer<Kactus2Position> positionExtension(new Kactus2Position(point));
+                note->addToGroup(positionExtension);
+            }
+            else if (childNode.nodeName().compare(QLatin1String("kactus2:associations")) == 0)
+            {
+                QSharedPointer<Kactus2Group> associations(new Kactus2Group("kactus2:associations"));
+
+                int associationCount = childNode.childNodes().count();
+                for (int associationIndex = 0; associationIndex < associationCount; ++associationIndex)
+                {
+                    QPointF position = XmlUtils::parsePoint(childNode.childNodes().at(associationIndex));
+                    QSharedPointer<Kactus2Position> positionExtension(new Kactus2Position(position));
+                    associations->addToGroup(positionExtension);
+                }
+
+                note->addToGroup(associations);
+            }
+            else
+            {
+                QSharedPointer<Kactus2Value> valueExtension(new Kactus2Value(childNode.nodeName(), 
+                    childNode.firstChild().nodeValue()));
+                note->addToGroup(valueExtension);
+            }        
+        }
+
         design->getVendorExtensions()->append(note);
     }
 }

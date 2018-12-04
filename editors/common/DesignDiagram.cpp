@@ -623,16 +623,14 @@ void DesignDiagram::loadStickyNotes()
     {
         if (extension->type() == "kactus2:note")
         {
-            QSharedPointer<GenericVendorExtension> noteExtension = extension.dynamicCast<GenericVendorExtension>();
+            QSharedPointer<Kactus2Group> noteExtension = extension.dynamicCast<Kactus2Group>();
             StickyNote* note = createStickyNote();
-            note->parseValuesFrom(noteExtension->node());
+            note->setVendorExtension(noteExtension);
 
             QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
             cmd->redo();
                 
             loadNoteAssociations(note);          
-
-            design_->getVendorExtensions()->removeAll(extension); //<! extension is replaced by one created by Sticky Note.
         }
     }
 }

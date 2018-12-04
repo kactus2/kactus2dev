@@ -51,7 +51,13 @@ public:
     explicit StickyNote(QGraphicsItem* parent = 0);
 
     //! The destructor.
-    virtual ~StickyNote();
+    virtual ~StickyNote() = default;
+
+    //! Disable copying.
+    StickyNote(StickyNote const& rhs) = delete;
+
+    //! Disable assignment.
+    StickyNote& operator=(StickyNote const& rhs) = delete;
 
     /*!
      *  Begins the editing of the note.
@@ -95,11 +101,12 @@ public:
     QSharedPointer<Kactus2Group> getAssociationExtensions() const;
 
     /*!
-     *  Parses the values for position, content, associations and timestamp from a DOM node.
+     *  Set the vendor extension for the sticky note to use for storing the data. 
+     *  Existing values for position, content, associations and timestamp will be read to the note .
      *
-     *      @param [in] node   The DOM node to parse.
+     *      @param [in] extension   The vendor extension to set.
      */
-    void parseValuesFrom(QDomNode const &node);
+    void setVendorExtension(QSharedPointer<Kactus2Group> extension);
 
     /*!
      *  Sets the note text.
@@ -160,13 +167,7 @@ private slots:
 
 private:
 
-    //! Disable copying.
-    StickyNote(StickyNote const& rhs);    
-
-    //! Disable assignment.
-    StickyNote& operator=(StickyNote const& rhs);
-
-     //!Initializes the item flags.     
+     //! Initializes the item flags.     
     void setItemOptions();
 
     //! Creates the glued edge at the top of the note.
@@ -177,9 +178,6 @@ private:
 
     //! Creates a button for initiating an association.
     void createAssociationButton();
-
-    //! Initializes the vendor extensions for the note.
-    void initializeExtensions(); 
 
     /*!
      *  Checks if clicking a given position hits the association button.

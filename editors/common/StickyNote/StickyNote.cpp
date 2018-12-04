@@ -44,16 +44,19 @@ StickyNote::StickyNote(QGraphicsItem* parent):
     QGraphicsItemGroup(parent),
     Associable(),
     oldPos_(),
-    extension_(),
-    positionExtension_(),
-    contentExtension_(),
-    associationExtensions_(),
-    timestampExtension_(),
+    extension_(new Kactus2Group(QStringLiteral("kactus2:note"))),
+    positionExtension_(new Kactus2Position(QPointF())),
+    contentExtension_(new Kactus2Value(QStringLiteral("kactus2:content"), QString())),
+    associationExtensions_(new Kactus2Group(QStringLiteral("kactus2:associations"))),
+    timestampExtension_(new Kactus2Value(QStringLiteral("kactus2:timestamp"), QString())),
     textArea_(0),
     timeLabel_(0),
     associationButton_(0)
 {
-    initializeExtensions();
+    extension_->addToGroup(positionExtension_);
+    extension_->addToGroup(contentExtension_);
+    extension_->addToGroup(associationExtensions_);    
+    extension_->addToGroup(timestampExtension_);
 
     setItemOptions();
     createGluedEdge();
@@ -63,14 +66,6 @@ StickyNote::StickyNote(QGraphicsItem* parent):
     setTimestamp(getFormattedTimestamp());    
 
     connect(textArea_, SIGNAL(contentChanged()), this, SLOT(onTextEdited()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignLabel::~DesignLabel()
-//-----------------------------------------------------------------------------
-StickyNote::~StickyNote()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -177,44 +172,53 @@ QSharedPointer<Kactus2Group> StickyNote::getAssociationExtensions() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: StickyNote::parseValuesFrom()
+// Function: StickyNote::setVendorExtension()
 //-----------------------------------------------------------------------------
-void StickyNote::parseValuesFrom(QDomNode const &node)
+void StickyNote::setVendorExtension(QSharedPointer<Kactus2Group> extension)
 {
-    int childCount = node.childNodes().count();
-    for (int i = 0; i < childCount; ++i)
+    extension_ = extension;
+
+    if (extension->getByType(QStringLiteral("kactus2:position")).isEmpty() == false)
     {
-        QDomNode childNode = node.childNodes().at(i);
+        positionExtension_ =
+            extension->getByType(QStringLiteral("kactus2:position")).first().dynamicCast<Kactus2Position>();
+        setPos(positionExtension_->position());
+    }
+    else
+    {
+        extension_->addToGroup(positionExtension_);
+    }
+    
+    if (extension->getByType(QStringLiteral("kactus2:content")).isEmpty() == false)
+    {
+        contentExtension_ =
+            extension->getByType(QStringLiteral("kactus2:content")).first().dynamicCast<Kactus2Value>();
+        setText(contentExtension_->value());
+    }
+    else
+    {
+        extension_->addToGroup(contentExtension_);
+    }
 
-        if (childNode.nodeName() == positionExtension_->type())
-        {
-            QPointF position = XmlUtils::parsePoint(childNode);
-            positionExtension_->setPosition(position);
-            setPos(position);
-        }
-        else if (childNode.nodeName() == contentExtension_->type())
-        {
-            QString content = childNode.childNodes().at(0).nodeValue();
-            setText(content);
-        }
-        else if (childNode.nodeName() == associationExtensions_->type())
-        {            
-            int associationCount = childNode.childNodes().count();
-            for(int j = 0; j < associationCount; j++)
-            {
-                QDomNode assocationNode = childNode.childNodes().at(j);
+    if (extension->getByType(QStringLiteral("kactus2:associations")).isEmpty() == false)
+    {
+        associationExtensions_ =
+            extension->getByType(QStringLiteral("kactus2:associations")).first().dynamicCast<Kactus2Group>();
+     }
+    else
+    {
+        extension_->addToGroup(associationExtensions_);
+    }
 
-                QPointF position = XmlUtils::parsePoint(assocationNode);
-                QSharedPointer<Kactus2Position> associationEnd(new Kactus2Position(position));
-
-                associationExtensions_->addToGroup(associationEnd);
-            }
-        }
-        else if (childNode.nodeName() == timestampExtension_->type())
-        {
-            QString timestamp = childNode.childNodes().at(0).nodeValue();
-            setTimestamp(timestamp);
-        }
+    if (extension->getByType(QStringLiteral("kactus2:timestamp")).isEmpty() == false)
+    {
+        timestampExtension_ =
+            extension->getByType(QStringLiteral("kactus2:timestamp")).first().dynamicCast<Kactus2Value>();
+        setTimestamp(timestampExtension_->value());
+    }
+    else
+    {
+        extension_->addToGroup(timestampExtension_);
     }
 }
 
@@ -307,26 +311,6 @@ void StickyNote::createAssociationButton()
     associationButton_->setToolTip(QObject::tr("Click to add a new association to a component."));
     associationButton_->setPos(DEFAULT_WIDTH - associationButton_->boundingRect().width(), 0);
     associationButton_->setZValue(1.0);
-}
-
-//-----------------------------------------------------------------------------
-// Function: StickyNote::initializeExtensions()
-//-----------------------------------------------------------------------------
-void StickyNote::initializeExtensions()
-{
-    extension_ = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:note"));
-
-    positionExtension_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
-    extension_->addToGroup(positionExtension_);
-
-    contentExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:content", ""));
-    extension_->addToGroup(contentExtension_);
-
-    associationExtensions_ = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:associations"));
-    extension_->addToGroup(associationExtensions_);
-
-    timestampExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:timestamp", ""));
-    extension_->addToGroup(timestampExtension_);
 }
 
 //-----------------------------------------------------------------------------
