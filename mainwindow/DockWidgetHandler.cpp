@@ -25,6 +25,7 @@
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
+#include <editors/ComponentEditor/ComponentEditor.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
@@ -36,6 +37,8 @@
 #include <editors/common/ConfigurationEditor/configurationeditor.h>
 #include <editors/common/InterfaceEditor/interfaceeditor.h>
 #include <editors/common/ConnectionEditor/connectioneditor.h>
+#include <editors/common/VendorExtensionEditor/VendorExtensionsEditor.h>
+
 #include <editors/HWDesign/AdHocItem.h>
 #include <editors/HWDesign/HWDesignWidget.h>
 #include <editors/HWDesign/HWDesignDiagram.h>
@@ -52,47 +55,41 @@
 // Function: DockWidgetHandler::DockWidgetHandler()
 //-----------------------------------------------------------------------------
 DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, QMainWindow* parent):
-libraryHandler_(library),
-libraryDock_(0),
-libraryWidget_(0),
-previewBox_(0),
-previewDock_(0),
-console_(0),
-consoleDock_(0),
-contextHelpBrowser_(0),
-contextHelpDock_(0),
-designParameterReferenceCounter_(0),
-designParametersEditor_(0),
-designParameterDock_(0),
-designParameterTree_(0),
-designParameterFinder_(new ListParameterFinder()),
-designAndInstancesParameterFinder_(new MultipleParameterFinder()),
-instanceEditor_(0),
-instanceDock_(0),
-adHocVisibilityEditor_(0),
-adHocVisibilityDock_(0),
-adhocEditor_(0),
-adhocDock_(0),
-configurationEditor_(0),
-configurationDock_(0),
-systemDetailsEditor_(0),
-systemDetailsDock_(0),
-interfaceEditor_(0),
-interfaceDock_(0),
-connectionEditor_(0),
-connectionDock_(0),
-helpWnd_(0),
-visibilities_(),
-mainWindow_(parent),
-messageChannel_(messageChannel)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::~DockWidgetHandler()
-//-----------------------------------------------------------------------------
-DockWidgetHandler::~DockWidgetHandler()
+    libraryHandler_(library),
+    libraryDock_(0),
+    libraryWidget_(0),
+    previewBox_(0),
+    previewDock_(0),
+    console_(0),
+    consoleDock_(0),
+    contextHelpBrowser_(0),
+    contextHelpDock_(0),
+    designParameterReferenceCounter_(0),
+    designParametersEditor_(0),
+    designParameterDock_(0),
+    designParameterTree_(0),
+    designParameterFinder_(new ListParameterFinder()),
+    designAndInstancesParameterFinder_(new MultipleParameterFinder()),
+    instanceEditor_(0),
+    instanceDock_(0),
+    adHocVisibilityEditor_(0),
+    adHocVisibilityDock_(0),
+    adhocEditor_(0),
+    adhocDock_(0),
+    configurationEditor_(0),
+    configurationDock_(0),
+    systemDetailsEditor_(0),
+    systemDetailsDock_(0),
+    interfaceEditor_(0),
+    interfaceDock_(0),
+    connectionEditor_(0),
+    connectionDock_(0),
+    extensionDock_(0),
+    extensionEditor_(0),
+    helpWnd_(0),
+    visibilities_(),
+    mainWindow_(parent),
+    messageChannel_(messageChannel)
 {
 
 }
@@ -122,6 +119,7 @@ void DockWidgetHandler::setupDockWidgets()
     setupSystemDetailsEditor();
     setupInterfaceEditor();
     setupConnectionEditor();
+    setupVendorExtensionEditor();
 }
 
 //-----------------------------------------------------------------------------
@@ -411,6 +409,21 @@ void DockWidgetHandler::setupConnectionEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::setupVendorExtensionEditor()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::setupVendorExtensionEditor()
+{
+    extensionDock_ = new QDockWidget(tr("Vendor Extensions"), mainWindow_);
+    extensionDock_->setObjectName(tr("Vendor Extension Editor"));
+    extensionDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    extensionDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+    extensionEditor_ = new VendorExtensionsEditor(connectionDock_);
+    extensionDock_->setWidget(extensionEditor_);
+    mainWindow_->addDockWidget(Qt::RightDockWidgetArea, extensionDock_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::loadVisiblities()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::loadVisiblities(QSettings& settings)
@@ -462,6 +475,10 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
     const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
     visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
     previewDock_->toggleViewAction()->setChecked(previewVisible);
+
+    const bool extensionsVisible = settings.value("VendorExtensionVisibility", false).toBool();
+    visibilities_.insert(TabDocument::VENDOREXTENSIONWINDOW, extensionsVisible);
+    extensionDock_->toggleViewAction()->setChecked(extensionsVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -517,6 +534,7 @@ void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu) const
     visibilityMenu.addAction(libraryDock_->toggleViewAction());
     visibilityMenu.addAction(interfaceDock_->toggleViewAction());
     visibilityMenu.addAction(consoleDock_->toggleViewAction());
+    visibilityMenu.addAction(extensionDock_->toggleViewAction());
 }
 
 //-----------------------------------------------------------------------------
@@ -671,6 +689,7 @@ void DockWidgetHandler::updateWindows(int const& tabCount, QWidget* currentTabWi
     updateWindowAndControlVisibility(
         tabCount, currentTabWidget, TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::ADHOC_WINDOW, adhocDock_);
+    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::VENDOREXTENSIONWINDOW, extensionDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -725,7 +744,18 @@ unsigned int DockWidgetHandler::defaultWindows()
 // Function: DockWidgetHandler::documentChanged()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::documentChanged(TabDocument* doc)
-{
+{    
+    ComponentEditor* componentEditor = dynamic_cast<ComponentEditor*>(doc);
+    if (componentEditor)
+    {
+        extensionEditor_->setContext(doc);
+        extensionEditor_->setVendorExtensions(componentEditor->getComponent()->getVendorExtensions());
+    }
+    else
+    {
+        extensionEditor_->clear();
+    }
+    
     DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
     // set the configuration manager to edit the active design
     if (designwidget)
@@ -836,6 +866,8 @@ void DockWidgetHandler::connectVisibilityControls()
         this, SLOT(onAdHocVisibilityAction(bool)), Qt::UniqueConnection);
     connect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onAdHocEditorAction(bool)), Qt::UniqueConnection);
+    connect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        this, SLOT(onVendorExtensionVisibilityAction(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -859,6 +891,8 @@ void DockWidgetHandler::disconnectVisibilityControls()
     disconnect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onAdHocVisibilityAction(bool)));
     disconnect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
+    disconnect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        this, SLOT(onVendorExtensionVisibilityAction(bool)));
 }
 
 //-----------------------------------------------------------------------------
@@ -915,6 +949,14 @@ void DockWidgetHandler::onSystemDetailsAction( bool show )
 void DockWidgetHandler::onConnectionAction( bool show )
 {
     emit adjustVisibilityInWindow(TabDocument::CONNECTIONWINDOW, show);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::onVendorExtensionVisibilityAction()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::onVendorExtensionVisibilityAction(bool show)
+{
+    emit adjustVisibilityInWindow(TabDocument::VENDOREXTENSIONWINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -997,6 +1039,7 @@ void DockWidgetHandler::changeProtection(TabDocument* doc, bool locked)
     }
     else
     {
+        extensionEditor_->setLocked(locked);
         configurationEditor_->setLocked(true);
         systemDetailsEditor_->setLocked(true);
     }
@@ -1024,8 +1067,8 @@ QSharedPointer<ListParameterFinder> DockWidgetHandler::getDesignParameterFinder(
 void DockWidgetHandler::refreshDesignDocument(QWidget* currentTabWidget)
 {
     TabDocument* doc = static_cast<TabDocument*>(currentTabWidget);
+   
     DesignWidget* designWidget = dynamic_cast<DesignWidget*>(doc);
-
     if (designWidget)
     {
         QSharedPointer<Document> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
@@ -1086,6 +1129,7 @@ void DockWidgetHandler::createVisibilityAndFilterSettings(QSettings& settings) c
     settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
     settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
     settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
+    settings.setValue("VendorExtensionVisibility", visibilities_.value(TabDocument::VENDOREXTENSIONWINDOW));
 
     // Save filters.
     settings.beginGroup("LibraryFilters");

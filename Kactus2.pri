@@ -410,53 +410,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
-    ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
-    ./editors/ComponentEditor/memoryMaps/EnumeratedValueColumns.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
-    ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
-    ./editors/ComponentEditor/memoryMaps/RegisterFileColumns.h \
-    ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h \
-    ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
-    ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h \
-    ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h \
-    ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.h \
-    ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h \
-    ./editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.h \
-    ./editors/ComponentEditor/memoryMaps/registerfiledelegate.h \
-    ./editors/ComponentEditor/memoryMaps/registerfileeditor.h \
-    ./editors/ComponentEditor/memoryMaps/registerfilemodel.h \
-    ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
-    ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
-    ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
-    ./editors/ComponentEditor/memoryMaps/memorymapsdelegate.h \
-    ./editors/ComponentEditor/memoryMaps/memorymapseditor.h \
-    ./editors/ComponentEditor/memoryMaps/memorymapsmodel.h \
-    ./editors/ComponentEditor/memoryMaps/registerdelegate.h \
-    ./editors/ComponentEditor/memoryMaps/registereditor.h \
-    ./editors/ComponentEditor/memoryMaps/registertablemodel.h \
-    ./editors/ComponentEditor/memoryMaps/addressblockdelegate.h \
-    ./editors/ComponentEditor/memoryMaps/addressblockeditor.h \
-    ./editors/ComponentEditor/memoryMaps/addressblockmodel.h \
-    ./editors/ComponentEditor/memoryMaps/enumeratedvaluedelegate.h \
-    ./editors/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
-    ./editors/ComponentEditor/memoryMaps/fieldeditor.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
@@ -576,6 +529,53 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesModel.h \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesDelegate.h \
     ./editors/ComponentEditor/indirectInterfaces/SingleIndirectInterfaceEditor.h \
+    ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
+    ./editors/ComponentEditor/memoryMaps/EnumeratedValueColumns.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
+    ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
+    ./editors/ComponentEditor/memoryMaps/RegisterFileColumns.h \
+    ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h \
+    ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
+    ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h \
+    ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h \
+    ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.h \
+    ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h \
+    ./editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.h \
+    ./editors/ComponentEditor/memoryMaps/registerfiledelegate.h \
+    ./editors/ComponentEditor/memoryMaps/registerfileeditor.h \
+    ./editors/ComponentEditor/memoryMaps/registerfilemodel.h \
+    ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
+    ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
+    ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
+    ./editors/ComponentEditor/memoryMaps/memorymapsdelegate.h \
+    ./editors/ComponentEditor/memoryMaps/memorymapseditor.h \
+    ./editors/ComponentEditor/memoryMaps/memorymapsmodel.h \
+    ./editors/ComponentEditor/memoryMaps/registerdelegate.h \
+    ./editors/ComponentEditor/memoryMaps/registereditor.h \
+    ./editors/ComponentEditor/memoryMaps/registertablemodel.h \
+    ./editors/ComponentEditor/memoryMaps/addressblockdelegate.h \
+    ./editors/ComponentEditor/memoryMaps/addressblockeditor.h \
+    ./editors/ComponentEditor/memoryMaps/addressblockmodel.h \
+    ./editors/ComponentEditor/memoryMaps/enumeratedvaluedelegate.h \
+    ./editors/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
+    ./editors/ComponentEditor/memoryMaps/fieldeditor.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
     ./editors/CSourceEditor/CSourceHighlight.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -777,7 +777,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionColumns.h \
+    ./resource5.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsModel.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1452,5 +1456,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.cpp
 RESOURCES += kactus.qrc

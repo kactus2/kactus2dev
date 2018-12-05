@@ -911,6 +911,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators">
       <UniqueIdentifier>{0383a24a-2477-42e1-a186-544e70d7a570}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\VendorExtensionEditor">
+      <UniqueIdentifier>{d618ac6f-9995-49ff-aab7-7afac04ece0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\VendorExtensionEditor">
+      <UniqueIdentifier>{5b82831b-a7a3-4563-9043-c059b8dc5130}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4513,6 +4519,18 @@
     <ClCompile Include="GeneratedFiles\moc_registerfilemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionsModel.cpp">
+      <Filter>Source Files\editors\VendorExtensionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionsEditor.cpp">
+      <Filter>Source Files\editors\VendorExtensionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VendorExtensionsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VendorExtensionsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6168,6 +6186,12 @@
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\registerfilemodel.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsEditor.h">
+      <Filter>Header Files\editors\VendorExtensionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsModel.h">
+      <Filter>Header Files\editors\VendorExtensionEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6878,6 +6902,12 @@
     <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterFileColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
+    <ClInclude Include="resource5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\VendorExtensionEditor\VendorExtensionColumns.h">
+      <Filter>Header Files\editors\VendorExtensionEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -6886,5 +6916,11 @@
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Kactus21.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
 </Project>

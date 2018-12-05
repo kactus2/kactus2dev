@@ -85,6 +85,8 @@ validator_(expressionParser_, libHandler_),
 parameterReferenceTree_(new ComponentParameterReferenceTree(component_, expressionFormatter_, referenceCounter_)),
 parameterReferenceWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_, this))
 {
+    supportedWindows_ |= TabDocument::VENDOREXTENSIONWINDOW;
+
     // these can be used when debugging to identify the objects
 	setObjectName(tr("ComponentEditor"));
 	navigationSplitter_.setObjectName(tr("NavigationSplitter"));
@@ -770,4 +772,9 @@ void ComponentEditor::openItemEditor(QVector<QString> itemIdentifierChain)
         onExpand(itemIndex);
         onItemActivated(itemIndex);
     }
+}
+
+QSharedPointer<Component> ComponentEditor::getComponent() const
+{
+    return component_;
 }

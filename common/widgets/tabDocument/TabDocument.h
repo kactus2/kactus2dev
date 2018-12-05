@@ -31,6 +31,7 @@ class TabDocument : public QWidget
     Q_OBJECT
 
 public:
+    
     //-----------------------------------------------------------------------------
     //! DocSupportFlags enumeration.
     //-----------------------------------------------------------------------------
@@ -57,7 +58,8 @@ public:
         CONTEXT_HELP_WINDOW     = 0x200,
         ADDRESS_WINDOW          = 0x400,
         ADHOC_WINDOW            = 0x800,
-        DESIGNPARAMETERSWINDOW  = 0x1000
+        DESIGNPARAMETERSWINDOW  = 0x1000,
+        VENDOREXTENSIONWINDOW   = 0x2000
 	};
 
     /*!

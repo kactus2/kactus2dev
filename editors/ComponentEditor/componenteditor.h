@@ -107,6 +107,8 @@ public:
      */
     void openItemEditor(QVector<QString> itemIdentifierChain);
 
+    QSharedPointer<Component> getComponent() const;
+
 public slots:
 
     /*!

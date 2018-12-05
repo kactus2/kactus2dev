@@ -39,6 +39,7 @@ class ConnectionEndpoint;
 class GraphicsConnection;
 class Design;
 class MessageMediator;
+class VendorExtensionsEditor;
 
 #include <QSharedPointer>
 #include <QDockWidget>
@@ -66,7 +67,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~DockWidgetHandler();
+    virtual ~DockWidgetHandler() = default;
 
     /*!
      *  Setup the dock widgets.
@@ -332,6 +333,13 @@ private slots:
     void onConnectionAction(bool show);
 
     /*!
+    *  Handles the action for the visibility of the vendor extension editor dock widget.
+    *
+    *      @param [in] show    Value for the visibility of the vendor extension editor dock widget.
+    */
+    void onVendorExtensionVisibilityAction(bool show);
+
+    /*!
      *  Handles the action for the visibility of the interface editor dock widget.
      *
      *      @param [in] show    Value for the visibility of the interface editor dock widget.
@@ -430,6 +438,11 @@ private:
      *  Setup the connection editor dock widget.
      */
     void setupConnectionEditor();
+
+    /*!
+    *  Setup the vendor extension editor dock widget.
+    */
+    void setupVendorExtensionEditor();
 
     /*!
      *  Check if the selected window type is supported by the currently active tab widget.
@@ -558,6 +571,12 @@ private:
 
     //! The dock widget that contains the connection editor.
     QDockWidget* connectionDock_;
+
+    //! The dock widget that contains the vendor extension editor.
+    QDockWidget* extensionDock_;
+
+    //! The editor for vendor extensions.
+    VendorExtensionsEditor* extensionEditor_;
 
     //! The help window.
     HelpWindow* helpWnd_;
