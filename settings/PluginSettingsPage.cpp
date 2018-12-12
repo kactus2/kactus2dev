@@ -213,10 +213,12 @@ QTreeWidgetItem* PluginSettingsPage::createPluginItem(IPlugin* plugin)
 
     // Retrieve the settings widget and load the current settings.
     QWidget* settingsWidget = plugin->getSettingsWidget();
-    if (settingsWidget != nullptr)
+    if (settingsWidget == nullptr)
     {
-        settingsStack_.addWidget(settingsWidget);
+        settingsWidget = new QWidget(this);
     }    
+
+    settingsStack_.addWidget(settingsWidget);
 
     infoStack_.addWidget(new PluginInfoWidget(plugin));
 
