@@ -25,7 +25,7 @@
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
-#include <editors/ComponentEditor/ComponentEditor.h>
+#include <editors/ComponentEditor/componenteditor.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>

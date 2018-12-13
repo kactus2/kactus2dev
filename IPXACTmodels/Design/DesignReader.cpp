@@ -812,7 +812,7 @@ void DesignReader::parseNotes(QDomElement const& extensionNode, QSharedPointer<D
             }
             else if (childNode.nodeName().compare(QLatin1String("kactus2:associations")) == 0)
             {
-                QSharedPointer<Kactus2Group> associations(new Kactus2Group("kactus2:associations"));
+                QSharedPointer<Kactus2Group> associations(new Kactus2Group(QStringLiteral("kactus2:associations")));
 
                 int associationCount = childNode.childNodes().count();
                 for (int associationIndex = 0; associationIndex < associationCount; ++associationIndex)
