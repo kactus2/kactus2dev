@@ -1348,9 +1348,6 @@
     <ClInclude Include="common\VendorExtension.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="common\GenericVendorExtension.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="common\VLNV.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -1764,5 +1761,11 @@
     <CustomBuild Include="common\validators\NMTokenValidator.h">
       <Filter>Header Files\common\validators</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\GenericVendorExtension.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

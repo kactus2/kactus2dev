@@ -746,17 +746,23 @@ unsigned int DockWidgetHandler::defaultWindows()
 void DockWidgetHandler::documentChanged(TabDocument* doc)
 {    
     ComponentEditor* componentEditor = dynamic_cast<ComponentEditor*>(doc);
+    DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
+
     if (componentEditor)
     {
         extensionEditor_->setContext(doc);
         extensionEditor_->setVendorExtensions(componentEditor->getComponent()->getVendorExtensions());
     }
+    else if(designwidget)
+    {
+        extensionEditor_->setContext(doc);
+        extensionEditor_->setVendorExtensions(designwidget->getDiagram()->getDesign()->getVendorExtensions());
+    }
     else
     {
         extensionEditor_->clear();
     }
-    
-    DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
+
     // set the configuration manager to edit the active design
     if (designwidget)
     {
@@ -1024,6 +1030,8 @@ void DockWidgetHandler::setWindowVisibility(TabDocument::SupportedWindows window
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::changeProtection(TabDocument* doc, bool locked)
 {
+    extensionEditor_->setLocked(locked);
+
     DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
     if (designwidget)
     {
@@ -1038,8 +1046,7 @@ void DockWidgetHandler::changeProtection(TabDocument* doc, bool locked)
         }
     }
     else
-    {
-        extensionEditor_->setLocked(locked);
+    {        
         configurationEditor_->setLocked(true);
         systemDetailsEditor_->setLocked(true);
     }

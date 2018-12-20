@@ -139,13 +139,6 @@ public slots:
 	 */
 	void clear();
 
-	/*!
-	 *  Handles item removal.
-	 *
-     *      @param [in] index   The index to remove the item from.     
-	 */
-    void onRemoveItem(QModelIndex const& index);
-
     /*!
      *  Handles the addition of new item.
      *
@@ -154,22 +147,11 @@ public slots:
     void onAddItem(QModelIndex const& index);
 
     /*!
-     *  Check if the given index is valid.
-     *
-     *      @param [in] index   The index to be checked.
-     *
-     *      @return True, if the given index is valid, false otherwise.
-     */
-    bool isIndexValid(QModelIndex const& index) const;
-
-    /*!
-     * Check if the index content can be edited by the user.
-     *
-     *     @param [in] index  The index to check.
-     *
-     *     @return True, if the index content is editable, otherwise false.
-     */
-     bool indexIsEditable(QModelIndex const& index) const;
+    *  Handles item removal.
+    *
+    *      @param [in] index   The index to remove the item from.
+    */
+    void onRemoveItem(QModelIndex const& index);
 
 signals:
 
@@ -179,7 +161,25 @@ signals:
 	void contentChanged();
 
 private:
-    
+
+    /*!
+    *  Check if the given index is valid.
+    *
+    *      @param [in] index   The index to be checked.
+    *
+    *      @return True, if the given index is valid, false otherwise.
+    */
+    bool isIndexValid(QModelIndex const& index) const;
+
+    /*!
+    * Check if the index content can be edited by the user.
+    *
+    *     @param [in] index  The index to check.
+    *
+    *     @return True, if the index content is editable, otherwise false.
+    */
+    bool indexIsEditable(QModelIndex const& index) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -226,19 +226,6 @@ bool VendorExtensionsModel::indexIsEditable(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VendorExtensionsModel::onRemoveItem()
-//-----------------------------------------------------------------------------
-void VendorExtensionsModel::onRemoveItem(QModelIndex const& index)
-{    
-    if (indexIsEditable(index))
-    {
-        beginRemoveRows(QModelIndex(), index.row(), index.row());
-        vendorExtensions_->removeAt(index.row());
-        endRemoveRows();
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: VendorExtensionsModel::onAddItem()
 //-----------------------------------------------------------------------------
 void VendorExtensionsModel::onAddItem(QModelIndex const& index)
@@ -262,6 +249,21 @@ void VendorExtensionsModel::onAddItem(QModelIndex const& index)
     endInsertRows();
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VendorExtensionsModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void VendorExtensionsModel::onRemoveItem(QModelIndex const& index)
+{
+    if (indexIsEditable(index))
+    {
+        beginRemoveRows(QModelIndex(), index.row(), index.row());
+        vendorExtensions_->removeAt(index.row());
+        endRemoveRows();
+
+        emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------

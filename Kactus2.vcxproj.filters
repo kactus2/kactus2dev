@@ -6917,10 +6917,4 @@
       <Filter>Source Files\wizards\common</Filter>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Kactus21.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon1.ico" />
-  </ItemGroup>
 </Project>

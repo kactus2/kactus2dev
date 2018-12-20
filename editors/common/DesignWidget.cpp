@@ -46,6 +46,8 @@ viewName_(),
 editProvider_(new GenericEditProvider(EDIT_HISTORY_SIZE)),
 diagram_(0)
 {
+    supportedWindows_ |= TabDocument::VENDOREXTENSIONWINDOW;
+
     view_->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     view_->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     view_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
