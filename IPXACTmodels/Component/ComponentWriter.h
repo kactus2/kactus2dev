@@ -172,6 +172,14 @@ private:
     void writeOtherClockDrivers(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
 
     /*!
+     *  Write the reset types.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] component   The component being written.
+     */
+    void writeResetTypes(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
+
+    /*!
      *  Write the other component extensions.
      *
      *      @param [in] writer      The used XML writer.

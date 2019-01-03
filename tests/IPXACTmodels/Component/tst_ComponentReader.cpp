@@ -28,6 +28,7 @@
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
+#include <IPXACTmodels/Component/ResetType.h>
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
@@ -69,6 +70,7 @@ private slots:
     void readFileSets();
     void readCPUs();
     void readOtherClockDrivers();
+    void readResetTypes();
 
     void readParameters();
     void readAssertions();
@@ -853,6 +855,65 @@ void tst_ComponentReader::readOtherClockDrivers()
     QCOMPARE(clockDriver->getClockPulseOffset()->getValue(), QString("Laser"));
     QCOMPARE(clockDriver->getClockPulseValue(), QString("KingOsrik"));
     QCOMPARE(clockDriver->getClockPulseDuration()->getValue(), QString("eternity"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readResetTypes()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readResetTypes()
+{
+    ComponentReader componentReader;
+
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+        "</ipxact:component>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+    QCOMPARE(testComponent->getResetTypes()->size(), 0);
+
+    documentContent = 
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<ipxact:resetTypes>"
+                "<ipxact:resetType>"
+                    "<ipxact:name>SOFT</ipxact:name>"
+                    "<ipxact:displayName>Soft Reset</ipxact:displayName>"
+                "</ipxact:resetType>"
+            "</ipxact:resetTypes>"
+        "</ipxact:component>"
+    ;
+
+    document.setContent(documentContent);
+
+    testComponent = componentReader.createComponentFrom(document);
+    QCOMPARE(testComponent->getResetTypes()->size(), 1);
+
+    QSharedPointer<ResetType> testReset = testComponent->getResetTypes()->first();
+    QCOMPARE(testReset->name(), QString("SOFT"));
+    QCOMPARE(testReset->displayName(), QString("Soft Reset"));
 }
 
 //-----------------------------------------------------------------------------

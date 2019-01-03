@@ -199,6 +199,14 @@ private:
     void parseOtherClockDrivers(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
 
     /*!
+     *  Reads the reset types.
+     *
+     *      @param [in] componentNode   XML description of the component.
+     *      @param [in] newComponent    The new component.
+     */
+    void parseResetTypes(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
+
+    /*!
      *  Reads the component extensions.
      *
      *      @param [in] componentNode   XML description of the component.

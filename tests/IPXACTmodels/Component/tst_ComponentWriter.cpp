@@ -31,6 +31,7 @@
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
+#include <IPXACTmodels/Component/ResetType.h>
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
@@ -79,6 +80,7 @@ private slots:
     void writeFileSets();
     void writeCPUs();
     void writeOtherClockDrivers();
+    void writeResetTypes();
 
     void writeParameters();
     void writeAssertions();
@@ -899,6 +901,52 @@ void tst_ComponentWriter::writeOtherClockDrivers()
             "\t</ipxact:otherClockDrivers>\n"
         "</ipxact:component>\n"
         );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeResetTypes()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeResetTypes()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<ResetType> testResetType(new ResetType());
+    testResetType->setName(QLatin1String("SOFT"));
+    testResetType->setDisplayName(QLatin1String("Soft Reset"));
+    testResetType->setDescription(QLatin1String("Reset the software"));
+
+    testComponent_->getResetTypes()->append(testResetType);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:resetTypes>\n"
+                "\t\t<ipxact:resetType>\n"
+                    "\t\t\t<ipxact:name>SOFT</ipxact:name>\n"
+                    "\t\t\t<ipxact:displayName>Soft Reset</ipxact:displayName>\n"
+                    "\t\t\t<ipxact:description>Reset the software</ipxact:description>\n"
+                "\t\t</ipxact:resetType>\n"
+            "\t</ipxact:resetTypes>\n"
+        "</ipxact:component>\n"
+    );
 
     ComponentWriter componentWriter;
     componentWriter.writeComponent(xmlStreamWriter, testComponent_);

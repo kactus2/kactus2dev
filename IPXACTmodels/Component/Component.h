@@ -43,6 +43,7 @@ class OtherClockDriver;
 class Port;
 class RemapState;
 class View;
+class ResetType;
 
 // Kactus2 extension classes.
 
@@ -386,6 +387,20 @@ public:
 	 *      @param [in] newOtherClockDrivers    A list containing the other clock drivers to be set.
 	 */
     void setOtherClockDrivers(QSharedPointer<QList<QSharedPointer<OtherClockDriver> > > newOtherClockDrivers);
+
+    /*!
+     *  Get this component's reset types.
+     *
+     *      @return A list containing the reset types.
+     */
+    QSharedPointer<QList<QSharedPointer<ResetType> > > getResetTypes() const;
+
+    /*!
+     *  Set reset types for this component.
+     *
+     *      @param [in] newResetTypes   A list containing the new reset types.
+     */
+    void setResetTypes(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
 
     /*!
      *  Returns the list of SW properties.
@@ -941,6 +956,13 @@ private:
      */
     void copyOtherClockDrivers(const Component& other) const;
     
+    /*!
+     *  Copy reset types.
+     *
+     *      @param [in] other   The component being copied.
+     */
+    void copyResetTypes(const Component& other) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -980,6 +1002,9 @@ private:
     
 	//! Contains the otherClockDrivers.
 	QSharedPointer<QList<QSharedPointer<OtherClockDriver> > > otherClockDrivers_;
+
+    //! Contains the reset types.
+    QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes_;
 
     //! Contains the pending file dependencies.
     QList<QSharedPointer<FileDependency> > pendingFileDependencies_;

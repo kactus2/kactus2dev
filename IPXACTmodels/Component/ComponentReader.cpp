@@ -28,6 +28,7 @@
 #include <IPXACTmodels/Component/OtherClockDriverReader.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/IndirectInterfaceReader.h>
+#include <IPXACTmodels/Component/ResetType.h>
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
@@ -92,6 +93,8 @@ QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument cons
     parseCPUs(componentNode, newComponent);
 
     parseOtherClockDrivers(componentNode, newComponent);
+
+    parseResetTypes(componentNode, newComponent);
 
     parseDescription(componentNode, newComponent);
 
@@ -497,6 +500,33 @@ void ComponentReader::parseOtherClockDrivers(QDomNode const& componentNode,
                 otherClockReader.createOtherClockDriverFrom(clockNode);
 
             newComponent->getOtherClockDrivers()->append(newClockDriver);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentReader::parseResetTypes()
+//-----------------------------------------------------------------------------
+void ComponentReader::parseResetTypes(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
+{
+    QDomElement resetTypesElement = componentNode.firstChildElement(QLatin1String("ipxact:resetTypes"));
+
+    if (!resetTypesElement.isNull())
+    {
+        QDomNodeList resetTypeList = resetTypesElement.childNodes();
+        NameGroupReader nameReader;
+
+        for (int i = 0; i < resetTypeList.size(); ++i)
+        {
+            QDomNode resetTypeNode = resetTypeList.at(i);
+
+            QSharedPointer<ResetType> newResetType(new ResetType());
+
+            nameReader.parseNameGroup(resetTypeNode, newResetType);
+
+            parseVendorExtensions(resetTypeNode, newResetType);
+
+            newComponent->getResetTypes()->append(newResetType);
         }
     }
 }
