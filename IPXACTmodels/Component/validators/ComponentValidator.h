@@ -19,6 +19,7 @@
 #include <QVector>
 
 class Component;
+class ResetType;
 
 class BusInterfaceValidator;
 class IndirectInterfaceValidator;
@@ -221,6 +222,26 @@ public:
     bool hasValidOtherClockDrivers(QSharedPointer<Component> component);
 
     /*!
+     *  Check if the reset types of the selected component are valid.
+     *
+     *      @param [in] component   The selected component.
+     *
+     *      @return True, if the reset types are valid, otherwise false.
+     */
+    bool hasValidResetTypes(QSharedPointer<Component> component);
+
+    /*!
+     *  Check if a single reset type is valid.
+     *
+     *      @param [in] resetType   The selected reset type.
+     *      @param [in] resetTypes  The reset types of the containing component.
+     *
+     *      @return True, if the reset type is valid, otherwise false.
+     */
+    bool singleResetTypeIsValid(QSharedPointer<ResetType> resetType,
+        QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes) const;
+
+    /*!
      *  Check if the contained parameters are valid.
      *
      *      @param [in] component   The selected component.
@@ -417,6 +438,16 @@ private:
      *      @param [in] context     Context to help locate the error.
      */
     void findErrorsInOtherClockDrivers(QVector<QString>& errors, QSharedPointer<Component> component,
+        QString const& context) const;
+
+    /*!
+     *  Find errors in reset types.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] component   The selected component.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInResetTypes(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
 
     /*!
