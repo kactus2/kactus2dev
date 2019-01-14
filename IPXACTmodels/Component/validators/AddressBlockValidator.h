@@ -20,6 +20,7 @@
 class ExpressionParser;
 class AddressBlock;
 class Register;
+class ResetType;
 
 class RegisterValidator;
 class RegisterFileValidator;
@@ -46,6 +47,13 @@ public:
 	//! The destructor.
 	~AddressBlockValidator();
     
+    /*!
+     *  Change the containing component.
+     *
+     *      @param [in] newResetTypes   The reset types of the selected component.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
+
     /*!
      *  Get the used register validator.
      *

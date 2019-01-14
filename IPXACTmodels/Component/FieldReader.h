@@ -20,7 +20,7 @@
 #include <QDomNode>
 
 class Field;
-struct FieldReset;
+class FieldReset;
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT field element.
@@ -98,7 +98,7 @@ private:
      *      @param [in] resetElement    XML description of the reset.
      *      @param [in] fldReset        The Reset Structure to parse into.
      */
-    void parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const;
+    void parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<FieldReset> fieldReset) const;
 
     /*!
      *  Reads the reset value.
@@ -106,7 +106,7 @@ private:
      *      @param [in] resetElement    XML description of the reset.
      *      @param [in] fldReset        The Reset Structure to parse into.
      */
-    void parseResetValue(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const;
+    void parseResetValue(QDomElement const& resetElement, QSharedPointer<FieldReset> fieldReset) const;
 
     /*!
      *  Reads the reset mask.
@@ -114,7 +114,7 @@ private:
      *      @param [in] resetElement    XML description of the reset.
      *      @param [in] fldReset        The Reset Structure to parse into.
      */
-    void parseResetMask(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const;
+    void parseResetMask(QDomElement const& resetElement, QSharedPointer<FieldReset> fieldReset) const;
 
     /*!
      *  Reads the type identifier.

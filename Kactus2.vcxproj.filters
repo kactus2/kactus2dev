@@ -4561,6 +4561,24 @@
     <ClCompile Include="GeneratedFiles\moc_ResetTypesEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ResetsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\ResetsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ResetsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\ResetsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ResetsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\ResetsDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6234,6 +6252,15 @@
     <CustomBuild Include="editors\ComponentEditor\resetTypes\ResetTypesDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\resetTypes</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\ResetsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\ResetsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\ResetsDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6952,6 +6979,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\resetTypes\ResetTypeColumns.h">
       <Filter>Header Files\editors\ComponentEditor\resetTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\ResetColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

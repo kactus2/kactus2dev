@@ -202,4 +202,6 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
         new MemoryMapValidator(expressionParser_, addressBlockValidator, component_->getRemapStates()));
 
     memoryMapValidator_ = memoryMapValidator;
+
+    memoryMapValidator_->componentChange(component_->getRemapStates(), component_->getResetTypes());
 }

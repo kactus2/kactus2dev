@@ -14,12 +14,13 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
+#include <IPXACTmodels/Component/FieldReset.h>
+#include <IPXACTmodels/Component/ResetType.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
-
-#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <QRegularExpression>
 
@@ -31,7 +32,8 @@ FieldValidator::FieldValidator(QSharedPointer<ExpressionParser> expressionParser
     QSharedPointer<ParameterValidator> parameterValidator):
 expressionParser_(expressionParser),
 enumeratedValueValidator_(enumeratedValueValidator),
-parameterValidator_(parameterValidator)
+parameterValidator_(parameterValidator),
+availableResetTypes_()
 {
 
 }
@@ -42,6 +44,14 @@ parameterValidator_(parameterValidator)
 FieldValidator::~FieldValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::componentChange()
+//-----------------------------------------------------------------------------
+void FieldValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType>>> newResetTypes)
+{
+    availableResetTypes_ = newResetTypes;
 }
 
 //-----------------------------------------------------------------------------
@@ -115,15 +125,40 @@ bool FieldValidator::hasValidBitOffset(QSharedPointer<Field> field) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldValidator::hasValidResetTypeReference()
+//-----------------------------------------------------------------------------
+bool FieldValidator::hasValidResetTypeReference(QSharedPointer<FieldReset> fieldReset) const
+{
+    if (fieldReset->getResetTypeReference().isEmpty())
+    {
+        return true;
+    }
+
+    else if (availableResetTypes_)
+    {
+        for (auto resetType : *availableResetTypes_)
+        {
+            if (resetType->name() == fieldReset->getResetTypeReference())
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldValidator::hasValidResetValue()
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidResetValue(QSharedPointer<FieldReset> fieldReset) const
 {
-    if (fieldReset->resetValue_.isEmpty() == false)
+    if (fieldReset->getResetValue().isEmpty() == false)
     {
-        return isBitExpressionValid(fieldReset->resetValue_);
+        return isBitExpressionValid(fieldReset->getResetValue());
     }
-    else if (fieldReset->resetValue_.isEmpty() && fieldReset->resetMask_.isEmpty() == false)
+    else if (fieldReset->getResetValue().isEmpty() &&
+        (!fieldReset->getResetTypeReference().isEmpty() || !fieldReset->getResetMask().isEmpty()))
     {
         return false;
     }
@@ -136,13 +171,13 @@ bool FieldValidator::hasValidResetValue(QSharedPointer<FieldReset> fieldReset) c
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidResetMask(QSharedPointer<FieldReset> fieldReset) const
 {
-    if (fieldReset->resetMask_.isEmpty())
+    if (fieldReset->getResetMask().isEmpty())
     {
         return true;
     }
     else
     {
-        return isBitExpressionValid(fieldReset->resetMask_);
+        return isBitExpressionValid(fieldReset->getResetMask());
     }
 }
 
@@ -311,14 +346,7 @@ void FieldValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Field
     findErrorsInName(errors, field, context);
     findErrorsInIsPresent(errors, field, context);
     findErrorsInBitOffset(errors, field, context);
-
-    QString resetContext = QStringLiteral("field %1 in %2").arg(field->name(), context);
-    for (auto fieldReset : *field->getResets())
-    {
-        findErrorsInResetValue(errors, fieldReset, resetContext);
-        findErrorsInResetMask(errors, fieldReset, resetContext);
-    }
-
+    findErrorsInResets(errors, field, context);
     findErrorsInWriteValueConstraint(errors, field, context);
     findErrorsInReserved(errors, field, context);
     findErrorsInBitWidth(errors, field, context);
@@ -362,6 +390,41 @@ void FieldValidator::findErrorsInBitOffset(QVector<QString>& errors, QSharedPoin
     if (!hasValidBitOffset(field))
     {
         errors.append(QObject::tr("Invalid bit offset set for field %1 within %2").arg(field->name()).arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::findErrorsInResets()
+//-----------------------------------------------------------------------------
+void FieldValidator::findErrorsInResets(QVector<QString>& errors, QSharedPointer<Field> field,
+    QString const& context) const
+{
+    QString resetContext = QStringLiteral("field %1 in %2").arg(field->name(), context);
+
+    if (!hasValidResetsTypeReferences(field))
+    {
+        errors.append(QObject::tr("Multiple references to default reset type in %1.").arg(resetContext));
+    }
+
+    for (auto fieldReset : *field->getResets())
+    {
+        findErrorsInResetTypeReference(errors, fieldReset, resetContext);
+        findErrorsInResetValue(errors, fieldReset, resetContext);
+        findErrorsInResetMask(errors, fieldReset, resetContext);
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::findErrorsInResetTypeReference()
+//-----------------------------------------------------------------------------
+void FieldValidator::findErrorsInResetTypeReference(QVector<QString>& errors,
+    QSharedPointer<FieldReset> fieldReset, QString const& context) const
+{
+    if (!hasValidResetTypeReference(fieldReset))
+    {
+        errors.append(QObject::tr("Reset type '%1' referenced in %2 does not exist.")
+            .arg(fieldReset->getResetTypeReference()).arg(context));
     }
 }
 
@@ -569,11 +632,40 @@ void FieldValidator::findErrorsInAccess(QVector<QString>& errors, QSharedPointer
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidResets(QSharedPointer<Field> field) const
 {
+    if (!hasValidResetsTypeReferences(field))
+    {
+        return false;
+    }
+
     for (auto fieldReset : *field->getResets())
     {
-        if (hasValidResetValue(fieldReset) == false || hasValidResetMask(fieldReset) == false)
+        if (!hasValidResetValue(fieldReset) || !hasValidResetMask(fieldReset) ||
+            !hasValidResetTypeReference(fieldReset))
         {
             return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::hasValidResetsTypeReferences()
+//-----------------------------------------------------------------------------
+bool FieldValidator::hasValidResetsTypeReferences(QSharedPointer<Field> field) const
+{
+    for (int i = 0; i < field->getResets()->size(); ++i)
+    {
+        QSharedPointer<FieldReset> fieldReset = field->getResets()->at(i);
+        if (fieldReset->getResetTypeReference().isEmpty())
+        {
+            for (int j = i + 1; j < field->getResets()->size(); ++j)
+            {
+                if (field->getResets()->at(j)->getResetTypeReference().isEmpty())
+                {
+                    return false;
+                }
+            }
         }
     }
 

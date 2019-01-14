@@ -21,6 +21,7 @@ class ExpressionParser;
 class MemoryMapBase;
 class AddressBlock;
 class AddressBlockValidator;
+class ResetType;
 //-----------------------------------------------------------------------------
 //! Validator for the base ipxact:memoryMap.
 //-----------------------------------------------------------------------------
@@ -40,6 +41,13 @@ public:
 	//! The destructor.
 	virtual ~MemoryMapBaseValidator();
     
+    /*!
+     *  Change the containing component.
+     *
+     *      @param [in] newResetTypes   Reset types of the selected component.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
+
     /*!
      *  Get the validator used for address blocks.
      *

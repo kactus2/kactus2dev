@@ -786,7 +786,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesModel.h \
     ./editors/ComponentEditor/resetTypes/ResetTypeColumns.h \
-    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.h
+    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsEditor.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsModel.h \
+    ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsDelegate.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1467,5 +1471,8 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/treeStructure/ResetTypesItem.cpp \
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.cpp \
     ./editors/ComponentEditor/resetTypes/ResetTypesModel.cpp \
-    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.cpp
+    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsModel.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsDelegate.cpp
 RESOURCES += kactus.qrc

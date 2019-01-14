@@ -21,9 +21,11 @@
 
 class ExpressionParser;
 class Field;
-
+class FieldReset;
+class ResetType;
 class ParameterValidator;
 class EnumeratedValueValidator;
+
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Field.
 //-----------------------------------------------------------------------------
@@ -42,8 +44,17 @@ public:
         QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator,
         QSharedPointer<ParameterValidator> parameterValidator);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	~FieldValidator();
+
+    /*!
+     *  Change the containing component.
+     *
+     *      @param [in] newResetTypes   Reset types of the selected component.
+     */
+    void componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
 
     /*!
      *  Get the validator used for enumerated values.
@@ -87,6 +98,33 @@ public:
      *      @return True, if the bit offset is valid, otherwise false.
      */
     bool hasValidBitOffset(QSharedPointer<Field> field) const;
+
+    /*!
+     *  Check if the resets within the field are valid.
+     *
+     *     @param [in] field  The field whose resets to check
+     *
+     *     @return True, if all resets are valid, otherwise false.
+     */
+    bool hasValidResets(QSharedPointer<Field> field) const;
+
+    /*!
+    *  Check if the reset type references within a field are valid.
+    *
+    *     @param [in] field     The selected field.
+    *
+    *     @return True, if all reset type references are valid, otherwise false.
+    */
+    bool hasValidResetsTypeReferences(QSharedPointer<Field> field) const;
+
+    /*!
+     *  Check if the selected reset type reference is valid.
+     *
+     *     @param [in] fieldReset   Reset containing the selected reset type reference.
+     *
+     *     @return True, if the reset type reference is valid.
+     */
+    bool hasValidResetTypeReference(QSharedPointer<FieldReset> fieldReset) const;
 
     /*!
      *  Check if the field has a valid reset value.
@@ -203,6 +241,25 @@ private:
     void findErrorsInBitOffset(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
 
     /*!
+     *  Find errors within resets.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] field       The selected field.
+     *      @param [in] context     Context to help locate the errors.
+     */
+    void findErrorsInResets(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
+
+    /*!
+     *  Find errors within reset type reference.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] fieldReset  The selected reset.
+     *      @param [in] context     Context to help locate the errors.
+     */
+    void findErrorsInResetTypeReference(QVector<QString>& errors, QSharedPointer<FieldReset> fieldReset,
+        QString const& context) const;
+
+    /*!
      *  Find errors within field reset value.
      *
      *      @param [in] errors      List of found errors.
@@ -276,15 +333,6 @@ private:
     void findErrorsInAccess(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
 
     /*!
-     *  Check if the resets within the field are valid.
-     *
-     *     @param [in] field  The field whose resets to check
-     *
-     *     @return True, if all resets are valid, otherwise false.
-     */
-     bool hasValidResets(QSharedPointer<Field> field) const;
-
-    /*!
      *  Check if the contained bit expression is valid.
      *
      *      @param [in] expression  The expression to check.
@@ -305,6 +353,9 @@ private:
 
     //! The used parameter validator.
     QSharedPointer<ParameterValidator> parameterValidator_;
+
+    //! The reset types of the containing component.
+    QSharedPointer<QList<QSharedPointer<ResetType> > > availableResetTypes_;
 };
 
 #endif // FIELDVALIDATOR_H

@@ -54,7 +54,7 @@ registerValidator_(registerValidator)
         {
 			QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 				reg, field, model, libHandler, component, parameterFinder, referenceCounter, expressionParser_,
-                registerValidator_->getFieldValidator(), this));
+                expressionFormatter, registerValidator_->getFieldValidator(), this));
 			childItems_.append(fieldItem);
 
             connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -123,7 +123,8 @@ void ComponentEditorRegisterItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 		reg_, reg_->getFields()->at(index), model_, libHandler_, component_, parameterFinder_, 
-        referenceCounter_, expressionParser_, registerValidator_->getFieldValidator(), this));
+        referenceCounter_, expressionParser_, expressionFormatter_, registerValidator_->getFieldValidator(),
+        this));
 	fieldItem->setLocked(locked_);
 	
 	if (visualizer_)

@@ -208,11 +208,18 @@ signals:
 
 private:
 	
-	//! No copying.
+	//! No copying. No assignment.
 	RegisterTableModel(const RegisterTableModel& other);
-
-	//! No assignment.
 	RegisterTableModel& operator=(const RegisterTableModel& other);
+
+    /*!
+     *  Create a tooltip for field resets.
+     *
+     *      @param [in] index   The index of selected field.
+     *
+     *      @return Tooltip for the resets of the selected field.
+     */
+    QVariant toolTipValueForResets(QModelIndex const& index) const;
 
     /*!
      *  Gets the value for the given index.

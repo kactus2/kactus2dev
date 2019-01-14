@@ -654,11 +654,11 @@ void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QT
             stream << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << currentField->getVolatile().toString()  << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentField->getAccess()) << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+/*            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
                 currentField->getResetValue()) << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
                 currentField->getResetMask()) << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << currentField->description() << "</td>" << endl;
+*/            stream << "\t\t\t\t\t<td>" << currentField->description() << "</td>" << endl;
             stream << "\t\t\t\t</tr>" << endl;
         }
 

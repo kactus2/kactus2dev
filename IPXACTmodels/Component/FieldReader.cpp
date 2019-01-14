@@ -150,33 +150,33 @@ void FieldReader::parseResets(QDomElement const& fieldElement, QSharedPointer<Fi
 //-----------------------------------------------------------------------------
 // Function: FieldReader::parseResetTypeRef()
 //-----------------------------------------------------------------------------
-void FieldReader::parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const
+void FieldReader::parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<FieldReset> fieldReset) const
 {
   if (resetElement.hasAttribute(QStringLiteral("resetTypeRef")))
   {
-      fldReset->resetTypeReference_ = resetElement.attribute(QStringLiteral("resetTypeRef"));
+      fieldReset->setResetTypeReference(resetElement.attribute(QStringLiteral("resetTypeRef")));
   }
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldReader::parseResetValue()
 //-----------------------------------------------------------------------------
-void FieldReader::parseResetValue(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const
+void FieldReader::parseResetValue(QDomElement const& resetElement, QSharedPointer<FieldReset> fieldReset) const
 {
   QString resetValue = resetElement.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
-  fldReset->resetValue_=resetValue;
+  fieldReset->setResetValue(resetValue);
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldReader::parseResetMask()
 //-----------------------------------------------------------------------------
-void FieldReader::parseResetMask(QDomElement const& resetElement, QSharedPointer<FieldReset> fldReset) const
+void FieldReader::parseResetMask(QDomElement const& resetElement, QSharedPointer<FieldReset> fieldReset) const
 {
   QDomElement resetMaskElement = resetElement.firstChildElement(QStringLiteral("ipxact:mask"));
   if (!resetMaskElement.isNull())
   {
       QString resetMask = resetMaskElement.firstChild().nodeValue();
-      fldReset->resetMask_=resetMask;
+      fieldReset->setResetMask(resetMask);
   }
 }
 

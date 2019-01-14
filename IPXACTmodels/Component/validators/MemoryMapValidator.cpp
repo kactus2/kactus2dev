@@ -40,9 +40,12 @@ MemoryMapValidator::~MemoryMapValidator()
 //-----------------------------------------------------------------------------
 // Function: MemoryMapValidator::componentChange()
 //-----------------------------------------------------------------------------
-void MemoryMapValidator::componentChange(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates)
+void MemoryMapValidator::componentChange(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
+    QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes)
 {
     availableRemapStates_ = newRemapStates;
+
+    MemoryMapBaseValidator::componentChange(newResetTypes);
 }
 
 //-----------------------------------------------------------------------------

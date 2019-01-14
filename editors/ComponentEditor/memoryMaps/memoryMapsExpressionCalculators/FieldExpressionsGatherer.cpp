@@ -11,6 +11,8 @@
 
 #include "FieldExpressionsGatherer.h"
 
+#include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/FieldReset.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 
 //-----------------------------------------------------------------------------
@@ -39,8 +41,15 @@ QStringList FieldExpressionsGatherer::getExpressions(QSharedPointer<Field> field
     expressionList.append(field->getBitOffset());
     expressionList.append(field->getBitWidth());
     expressionList.append(field->getIsPresent());
-    expressionList.append(field->getResetValue());
-    expressionList.append(field->getResetMask());
+
+    if (field->getResets())
+    {
+        for (auto fieldReset : *field->getResets())
+        {
+            expressionList.append(fieldReset->getResetValue());
+            expressionList.append(fieldReset->getResetMask());
+        }
+    }
 
     if (field->getWriteConstraint())
     {

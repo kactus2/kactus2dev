@@ -47,6 +47,14 @@ RegisterValidator::~RegisterValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: RegisterValidator::componentChange()
+//-----------------------------------------------------------------------------
+void RegisterValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes)
+{
+    fieldValidator_->componentChange(newResetTypes);
+}
+
+//-----------------------------------------------------------------------------
 // Function: RegisterValidator::getFieldValidator()
 //-----------------------------------------------------------------------------
 QSharedPointer<FieldValidator> RegisterValidator::getFieldValidator() const

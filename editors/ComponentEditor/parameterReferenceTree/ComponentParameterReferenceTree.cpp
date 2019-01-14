@@ -816,6 +816,7 @@ void ComponentParameterReferenceTree::createItemsForField(QSharedPointer<Field> 
     {
         createItem("Is Present", targetField->getIsPresent(), parent);
     }
+    /*
     if (targetField->getResetValue().contains(targetID))
     {
         createItem("Reset value", targetField->getResetValue(), parent);
@@ -824,6 +825,7 @@ void ComponentParameterReferenceTree::createItemsForField(QSharedPointer<Field> 
     {
         createItem("Reset mask", targetField->getResetMask(), parent);
     }
+    */
     if (targetField->getWriteConstraint())
     {
         if (targetField->getWriteConstraint()->getMinimum().contains(targetID))

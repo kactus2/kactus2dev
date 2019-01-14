@@ -1244,7 +1244,7 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         parameterValidator_->componentChange(newComponent->getChoices());
         channelValidator_->componentChange(newComponent->getBusInterfaces());
         remapStateValidator_->componentChange(newComponent->getPorts());
-        memoryMapValidator_->componentChange(newComponent->getRemapStates());
+        memoryMapValidator_->componentChange(newComponent->getRemapStates(), newComponent->getResetTypes());
         viewValidator_->componentChange(newComponent->getModel());
         instantiationsValidator_->componentChange(newComponent->getFileSets());
         portValidator_->componentChange(newComponent->getViews());

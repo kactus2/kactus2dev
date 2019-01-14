@@ -9,15 +9,17 @@
 // Unit test for class FieldValidator.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/Component/validators/FieldValidator.h>
-#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
+#include <IPXACTmodels/Component/ResetType.h>
+#include <IPXACTmodels/Component/FieldReset.h>
 
-#include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
@@ -43,6 +45,12 @@ private slots:
 
     void testResetsAreValid();
     void testResetsAreValid_data();
+
+    void testResetTypeRefIsValid();
+    void testResetTypeRefIsValid_data();
+
+    void testMultipleResetTypeRefIsValid();
+    void testMultipleResetTypeRefIsValid_data();
 
     void testWriteValueConstraintIsValid();
     void testWriteValueConstraintIsValid_data();
@@ -229,8 +237,11 @@ void tst_FieldValidator::testResetsAreValid()
     QFETCH(bool, resetMaskIsValid);
 
     QSharedPointer<Field> testField (new Field());
-    testField->setResetValue(resetValue);
-    testField->setResetMask(resetMask);
+    
+    QSharedPointer<FieldReset> testReset(new FieldReset());
+    testReset->setResetValue(resetValue);
+    testReset->setResetMask(resetMask);
+    testField->getResets()->append(testReset);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
@@ -285,6 +296,165 @@ void tst_FieldValidator::testResetsAreValid_data()
     QTest::newRow("Reset mask without a reset value is invalid") << "" << "2'b10" << false << true;
     QTest::newRow("Reset value 14 and mask 2'h2 is valid") << "14" << "2'h2" << true << true;
     QTest::newRow("White space is invalid for reset value and mask") << "  " << "   " << false << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testResetTypeRefIsValid()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testResetTypeRefIsValid()
+{
+    QFETCH(QString, resetTypeReference);
+    QFETCH(bool, buildResetType);
+    QFETCH(bool, createResetValue);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<Field> testField(new Field());
+    testField->setName("TestField");
+
+    QSharedPointer<FieldReset> testReset(new FieldReset());
+    testReset->setResetTypeReference(resetTypeReference);
+
+    if (createResetValue)
+    {
+        testReset->setResetValue("1");
+    }
+
+    testField->getResets()->append(testReset);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
+
+    if (buildResetType)
+    {
+        QSharedPointer<ResetType> testReset(new ResetType());
+        testReset->setName(resetTypeReference);
+
+        QSharedPointer<QList<QSharedPointer<ResetType> > > componentResets(new QList<QSharedPointer<ResetType> >());
+        componentResets->append(testReset);
+        validator.componentChange(componentResets);
+    }
+
+    bool resetValueIsValid = validator.hasValidResetValue(testField->getResets()->first());
+    bool resetTypeReferenceIsValid = validator.hasValidResetTypeReference(testField->getResets()->first());
+    QCOMPARE(resetValueIsValid && resetTypeReferenceIsValid, isValid);
+
+    if (!isValid)
+    {
+        QVector<QString> foundErrors;
+        validator.findErrorsIn(foundErrors, testField, "test");
+
+        QString expectedError = QObject::tr("Invalid reset value set within field %1 in %2").
+            arg(testField->name()).arg("test");
+
+        if (!buildResetType)
+        {
+            expectedError = QObject::tr("Reset type '%1' referenced in field %2 in test does not exist.")
+                .arg(resetTypeReference).arg(testField->name());
+        }
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testResetTypeRefIsValid_data()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testResetTypeRefIsValid_data()
+{
+    QTest::addColumn<QString>("resetTypeReference");
+    QTest::addColumn<bool>("buildResetType");
+    QTest::addColumn<bool>("createResetValue");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Empty reset type reference is valid") << "" << false << true << true;
+    QTest::newRow("Referencing an existing reset type is valid") << "SOFT" << true << true << true;
+    QTest::newRow("Referencing a non-existing reset type is not valid") << "WRONG" << false << true << false;
+    QTest::newRow("Reset type without reset value is not valid") << "SOFT" << true << false << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testMultipleResetTypeRefIsValid()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testMultipleResetTypeRefIsValid()
+{
+    QFETCH(QString, firstResetReference);
+    QFETCH(QString, secondResetReference);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<Field> testField(new Field());
+    testField->setName("field");
+
+    QSharedPointer<FieldReset> firstReset(new FieldReset());
+    firstReset->setResetTypeReference(firstResetReference);
+    firstReset->setResetValue("1");
+
+    QSharedPointer<FieldReset> secondReset(new FieldReset());
+    secondReset->setResetTypeReference(secondResetReference);
+    secondReset->setResetValue("0");
+
+    testField->getResets()->append(firstReset);
+    testField->getResets()->append(secondReset);
+
+    QSharedPointer<QList<QSharedPointer<ResetType> > > availableResetTypes(
+        new QList<QSharedPointer<ResetType> >());
+    if (!firstResetReference.isEmpty())
+    {
+        QSharedPointer<ResetType> firstResetType(new ResetType());
+        firstResetType->setName(firstResetReference);
+        availableResetTypes->append(firstResetType);
+    }
+    if (!secondResetReference.isEmpty() && firstResetReference != secondResetReference)
+    {
+        QSharedPointer<ResetType> secondResetType(new ResetType());
+        secondResetType->setName(secondResetReference);
+        availableResetTypes->append(secondResetType);
+    }
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
+    
+    validator.componentChange(availableResetTypes);
+
+    QCOMPARE(validator.hasValidResets(testField), isValid);
+    if (!isValid)
+    {
+        QString context = "test";
+
+        QVector<QString> foundErrors;
+        validator.findErrorsIn(foundErrors, testField, context);
+
+        QString expectedError = QObject::tr("Multiple references to default reset type in field %1 in %2.")
+            .arg(testField->name()).arg(context);
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testMultipleResetTypeRefIsValid_data()
+{
+    QTest::addColumn<QString>("firstResetReference");
+    QTest::addColumn<QString>("secondResetReference");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Separate reset type references are valid") << "SOFT_1" << "SOFT_2" << true;
+    QTest::newRow("Same reset type references are valid") << "SOFT" << "SOFT" << true;
+    QTest::newRow("Single empty reset type reference is valid") << "" << "SOFT" << true;
+    QTest::newRow("Multiple empty reset type references is not valid") << "" << "" << false;
 }
 
 //-----------------------------------------------------------------------------
