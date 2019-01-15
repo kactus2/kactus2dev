@@ -816,16 +816,11 @@ void ComponentParameterReferenceTree::createItemsForField(QSharedPointer<Field> 
     {
         createItem("Is Present", targetField->getIsPresent(), parent);
     }
-    /*
-    if (targetField->getResetValue().contains(targetID))
+    if (referenceCounter_->countReferencesInFieldResets(targetID, targetField->getResets()) > 0)
     {
-        createItem("Reset value", targetField->getResetValue(), parent);
+        createItemsForFieldResets(targetID, targetField->getResets(), parent);
     }
-    if (targetField->getResetMask().contains(targetID))
-    {
-        createItem("Reset mask", targetField->getResetMask(), parent);
-    }
-    */
+
     if (targetField->getWriteConstraint())
     {
         if (targetField->getWriteConstraint()->getMinimum().contains(targetID))
@@ -835,6 +830,39 @@ void ComponentParameterReferenceTree::createItemsForField(QSharedPointer<Field> 
         if (targetField->getWriteConstraint()->getMaximum().contains(targetID))
         {
             createItem("Write constraint maximum", targetField->getWriteConstraint()->getMaximum(), parent);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createItemsForFieldResets()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createItemsForFieldResets(QString const& targetID,
+    QSharedPointer<QList<QSharedPointer<FieldReset>>> fieldResets, QTreeWidgetItem* fieldItem)
+{
+    QTreeWidgetItem* resetsItem = createMiddleItem("Resets", fieldItem);
+    colourItemGrey(resetsItem);
+
+    for (auto singleReset : *fieldResets)
+    {
+        if (referenceCounter_->countReferencesInSingleFieldReset(targetID, singleReset) > 0)
+        {
+            QString resetType = singleReset->getResetTypeReference();
+            if (resetType.isEmpty())
+            {
+                resetType = QLatin1String("HARD");
+            }
+
+            QTreeWidgetItem* singleResetItem = createMiddleItem(resetType, resetsItem);
+
+            if (singleReset->getResetValue().contains(targetID))
+            {
+                createItem("Reset value", singleReset->getResetValue(), singleResetItem);
+            }
+            if (singleReset->getResetMask().contains(targetID))
+            {
+                createItem("Reset mask", singleReset->getResetMask(), singleResetItem);
+            }
         }
     }
 }

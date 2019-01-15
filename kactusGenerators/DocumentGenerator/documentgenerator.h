@@ -201,6 +201,13 @@ private:
 	void writeSubHeader(const int headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
 
     /*!
+     *  Get the information for the reset values of the selected field.
+     *
+     *      @param [in] field   The selected field.
+     */
+    QString getFieldResetInfo(QSharedPointer<Field> field) const;
+
+    /*!
      *  Write the port table for the selected ports.
      *
      *      @param [in] stream  The stream to write into.

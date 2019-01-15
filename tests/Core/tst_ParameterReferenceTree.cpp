@@ -32,6 +32,7 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/FieldReset.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
@@ -126,6 +127,8 @@ private:
 
     QSharedPointer<Field> createTestField(QString const& name, QString const& offset, QString const& width,
         QString const& presenceExpression);
+
+    QSharedPointer<FieldReset> createTestFieldReset(QString const& resetValue, QString const& resetMask);
 
     QSharedPointer<AddressSpace> createTestAddressSpace(QString const& name);
 
@@ -1547,8 +1550,9 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsElevenRows()
 
     QSharedPointer<Field> refField = createTestField("fieldRef", "searched", "nothing", "searched");
     refField->setWriteConstraint(refWriteConstraint);
-    refField->setResetMask("searched");
-    refField->setResetValue("searched");
+
+    QSharedPointer<FieldReset> testReset = createTestFieldReset("searched", "searched");
+    refField->getResets()->append(testReset);
 
     QSharedPointer <Register> refRegister = createTestRegister("refRegister", "test", "test");
     refRegister->getFields()->append(refField);
@@ -1622,7 +1626,7 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsElevenRows()
     QTreeWidgetItem* fieldItem = fieldListItem->child(0);
     QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_NAME), refField->name());
     QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString());
-    QCOMPARE(fieldItem->childCount(), 6);
+    QCOMPARE(fieldItem->childCount(), 5);
 
     QTreeWidgetItem* offsetItem = fieldItem->child(0);
     QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_NAME), QStringLiteral("Offset"));
@@ -1636,26 +1640,34 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsElevenRows()
         expressionFormatter->formatReferringExpression(refField->getIsPresent()));
     QCOMPARE(isPresentItem->childCount(), 0);
 
-    QTreeWidgetItem* resetValueItem = fieldItem->child(2);
-    QCOMPARE(resetValueItem->text(ParameterReferenceTree::ITEM_NAME), QStringLiteral("Reset value"));
-    QCOMPARE(resetValueItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(refField->getResetValue()));
-    QCOMPARE(resetValueItem->childCount(), 0);
+    QTreeWidgetItem* resetsItem = fieldItem->child(2);
+    QCOMPARE(resetsItem->text(ParameterReferenceTree::ITEM_NAME), QStringLiteral("Resets"));
+    QCOMPARE(resetsItem->childCount(), 1);
 
-    QTreeWidgetItem* resetMaskItem = fieldItem->child(3);
-    QCOMPARE(resetMaskItem->text(ParameterReferenceTree::ITEM_NAME), QStringLiteral("Reset mask"));
-    QCOMPARE(resetMaskItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(refField->getResetMask()));
-    QCOMPARE(resetMaskItem->childCount(), 0);
+    QTreeWidgetItem* hardResetItem = resetsItem->child(0);
+    QCOMPARE(hardResetItem->text(ParameterReferenceTree::ITEM_NAME), QLatin1String("HARD"));
+    QCOMPARE(hardResetItem->childCount(), 2);
 
-    QTreeWidgetItem* constraintMinItem = fieldItem->child(4);
+    QTreeWidgetItem* hardResetValue = hardResetItem->child(0);
+    QCOMPARE(hardResetValue->text(ParameterReferenceTree::ITEM_NAME), QLatin1String("Reset value"));
+    QCOMPARE(hardResetValue->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(testReset->getResetValue()));
+    QCOMPARE(hardResetValue->childCount(), 0);
+
+    QTreeWidgetItem* hardResetMask = hardResetItem->child(1);
+    QCOMPARE(hardResetMask->text(ParameterReferenceTree::ITEM_NAME), QLatin1String("Reset mask"));
+    QCOMPARE(hardResetMask->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(testReset->getResetMask()));
+    QCOMPARE(hardResetMask->childCount(), 0);
+
+    QTreeWidgetItem* constraintMinItem = fieldItem->child(3);
     QCOMPARE(constraintMinItem->text(ParameterReferenceTree::ITEM_NAME),
         QStringLiteral("Write constraint minimum"));
     QCOMPARE(constraintMinItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(refField->getWriteConstraint()->getMinimum()));
     QCOMPARE(constraintMinItem->childCount(), 0);
 
-    QTreeWidgetItem* constraintMaxItem = fieldItem->child(5);
+    QTreeWidgetItem* constraintMaxItem = fieldItem->child(4);
     QCOMPARE(constraintMaxItem->text(ParameterReferenceTree::ITEM_NAME),
         QStringLiteral("Write constraint maximum"));
     QCOMPARE(constraintMaxItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
@@ -1944,6 +1956,10 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QSharedPointer<Field> refField = createTestField("fieldRef", "", "searched", "");
     refField->setWriteConstraint(constraintRef);
 
+    QSharedPointer<FieldReset> testReset = createTestFieldReset("1", "searched");
+    testReset->setResetTypeReference("SOFT");
+    refField->getResets()->append(testReset);
+
     // Register: One reference, in offset
     QSharedPointer<Register> registerRef = createTestRegister("registerRef", "searched", "test");
     registerRef->getFields()->append(refField);
@@ -2152,7 +2168,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QTreeWidgetItem* fieldItem = fieldListItem->child(0);
     QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_NAME), refField->name());
     QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString());
-    QCOMPARE(fieldItem->childCount(), 2);
+    QCOMPARE(fieldItem->childCount(), 3);
 
     QTreeWidgetItem* widthItem = fieldItem->child(0);
     QCOMPARE(widthItem->text(ParameterReferenceTree::ITEM_NAME), QStringLiteral("Width"));
@@ -2160,7 +2176,23 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(refField->getBitWidth()));
     QCOMPARE(widthItem->childCount(), 0);
 
-    QTreeWidgetItem* maxConstraintItem = fieldItem->child(1);
+    QTreeWidgetItem* resetsItem = fieldItem->child(1);
+    QCOMPARE(resetsItem->text(ParameterReferenceTree::ITEM_NAME), QStringLiteral("Resets"));
+    QCOMPARE(resetsItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString());
+    QCOMPARE(resetsItem->childCount(), 1);
+
+    QTreeWidgetItem* softResetItem = resetsItem->child(0);
+    QCOMPARE(softResetItem->text(ParameterReferenceTree::ITEM_NAME), QStringLiteral("SOFT"));
+    QCOMPARE(softResetItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString());
+    QCOMPARE(softResetItem->childCount(), 1);
+    
+    QTreeWidgetItem* softResetMaskItem = softResetItem->child(0);
+    QCOMPARE(softResetMaskItem->text(ParameterReferenceTree::ITEM_NAME), QStringLiteral("Reset mask"));
+    QCOMPARE(softResetMaskItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(testReset->getResetMask()));
+    QCOMPARE(softResetMaskItem->childCount(), 0);
+
+    QTreeWidgetItem* maxConstraintItem = fieldItem->child(2);
     QCOMPARE(maxConstraintItem->text(ParameterReferenceTree::ITEM_NAME),
         QStringLiteral("Write constraint maximum"));
     QCOMPARE(maxConstraintItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
@@ -2468,6 +2500,19 @@ QSharedPointer<Field> tst_ParameterReferenceTree::createTestField(QString const&
     fieldRef->setIsPresent(presenceExpression);
 
     return fieldRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::createTestFieldReset()
+//-----------------------------------------------------------------------------
+QSharedPointer<FieldReset> tst_ParameterReferenceTree::createTestFieldReset(QString const& resetValue,
+    QString const& resetMask)
+{
+    QSharedPointer<FieldReset> testReset(new FieldReset());
+    testReset->setResetValue(resetValue);
+    testReset->setResetMask(resetMask);
+
+    return testReset;
 }
 
 //-----------------------------------------------------------------------------

@@ -36,6 +36,7 @@ class AddressBlock;
 class RegisterBase;
 class Register;
 class Field;
+class FieldReset;
 class BusInterface;
 class MirroredSlaveInterface;
 class MasterInterface;
@@ -271,6 +272,16 @@ private:
      *      @param [in] parent          The parent of the new item.
      */
     void createItemsForField(QSharedPointer<Field> targetField, QTreeWidgetItem* parent);
+
+    /*!
+     *  Create tree items for field resets that is referencing the selected parameter.
+     *
+     *      @param [in] targetID        ID of the selected parameter.
+     *      @param [in] fieldResets     Reset values of the selected field.
+     *      @param [in] fieldItem       The parent field item for the reset items.
+     */
+    void createItemsForFieldResets(QString const& targetID,
+        QSharedPointer<QList<QSharedPointer<FieldReset> > > fieldResets, QTreeWidgetItem* fieldItem);
 
     //-----------------------------------------------------------------------------
     // Data.

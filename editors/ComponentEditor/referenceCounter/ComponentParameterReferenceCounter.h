@@ -26,6 +26,7 @@ class MemoryMapBase;
 class AddressBlock;
 class Register;
 class Field;
+class FieldReset;
 class WriteValueConstraint;
 class Segment;
 class ComponentInstantiation;
@@ -234,6 +235,27 @@ public:
      *      @return The amount of references made to the selected parameter in the selected field.
      */
     int countReferencesInSingleField(QString const& parameterID, QSharedPointer<Field> registerField) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the resets of the selected field.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] resets          Reset values of the selected field.
+     *
+     *      @return The amount of references made to the selected parameter in the resets of the selected field.
+     */
+    int countReferencesInFieldResets(QString const& parameterID,
+        QSharedPointer<QList<QSharedPointer<FieldReset> > >  resets) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected field reset.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] fieldReset      The selected field reset.
+     *
+     *      @return The amount of references made to the selected parameter in the selected field reset.
+     */
+    int countReferencesInSingleFieldReset(QString const& parameterID, QSharedPointer<FieldReset> fieldReset) const;
 
     /*!
      *  Count the references made to the selected parameter in the contained address spaces.

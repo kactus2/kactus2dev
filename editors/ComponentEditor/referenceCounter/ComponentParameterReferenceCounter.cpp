@@ -317,14 +317,38 @@ int ComponentParameterReferenceCounter::countReferencesInSingleField(QString con
     referenceCount += countReferencesInExpression(parameterID, registerField->getBitOffset());
     referenceCount += countReferencesInExpression(parameterID, registerField->getBitWidth());
     referenceCount += countReferencesInExpression(parameterID, registerField->getIsPresent());
+    referenceCount += countReferencesInFieldResets(parameterID, registerField->getResets());
+    referenceCount += countReferencesInWriteConstraint(parameterID, registerField->getWriteConstraint());
 
-    for (auto fieldReset : *registerField->getResets())
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInFieldResets()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInFieldResets(QString const& parameterID,
+    QSharedPointer<QList<QSharedPointer<FieldReset> > > resets) const
+{
+    int referenceCount = 0;
+
+    for (auto fieldReset : *resets)
     {
-        referenceCount += countReferencesInExpression(parameterID, fieldReset->getResetValue());
-        referenceCount += countReferencesInExpression(parameterID, fieldReset->getResetMask());
+        referenceCount += countReferencesInSingleFieldReset(parameterID, fieldReset);
     }
 
-    referenceCount += countReferencesInWriteConstraint(parameterID, registerField->getWriteConstraint());
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSingleFieldReset()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSingleFieldReset(QString const& parameterID,
+    QSharedPointer<FieldReset> fieldReset) const
+{
+    int referenceCount = 0;
+
+    referenceCount += countReferencesInExpression(parameterID, fieldReset->getResetValue());
+    referenceCount += countReferencesInExpression(parameterID, fieldReset->getResetMask());
 
     return referenceCount;
 }

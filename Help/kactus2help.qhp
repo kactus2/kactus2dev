@@ -88,6 +88,7 @@
           </section>
           <section title="CPUs" ref="componenteditor/cpus.html" />
           <section title="Other clock drivers" ref="componenteditor/otherclockdrivers.html" />
+          <section title="Reset types" ref="componenteditor/resetTypes.html"/>
           <section title="COM interfaces" ref="componenteditor/cominterfaces.html">
             <section title="COM interface" ref="componenteditor/cominterface.html" />
           </section>

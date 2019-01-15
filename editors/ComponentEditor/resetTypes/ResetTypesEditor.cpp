@@ -83,5 +83,5 @@ void ResetTypesEditor::refresh()
 void ResetTypesEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-//	emit helpUrlRequested("componenteditor/cpus.html");
+	emit helpUrlRequested("componenteditor/resetTypes.html");
 }

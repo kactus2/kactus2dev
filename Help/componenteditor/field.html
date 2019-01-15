@@ -40,18 +40,6 @@
         0.
     </p>
     <p>
-        <b>Reset value</b> is optional and defines the actual reset value on reset. Reset
-        value uses SystemVerilog syntax for binary values. The number of bits must be equal
-        to the <i>field</i> size.
-    </p>
-    <p>
-        <b>Reset mask</b> is optional and defines the bits that have a known reset value.
-        Bit value of 1 means that the corresponding bit has a known reset value whereas
-        0 means that the value is unknown. Reset mask uses SystemVerilog syntax for binary
-        values e.g. 'b1011, 4'b1011, and 4'b10_11 are all valid values. The number of bits
-        must be equal to the <i>field</i> size.
-    </p>
-    <p>
         <b>Field ID</b> is optional identifier for the <i>field</i>. Fields can be referenced
         in <i>indirect interfaces</i> using this identifier.
     </p>
@@ -143,6 +131,21 @@
         </ul>
     </p>
 
+	<h3>Resets</h3>
+	<p>
+		<i>Resets</i> describe the reset values of the <i>field</i>. Each reset has the following subelements:
+		<ul>
+			<li><b>Reset type reference</b>. Identifies the defined reset. This should correspond to a
+				user-defined reset type element. Default value is HARD, and only one reset can be defined as that.</li>
+			<li><b>Reset value</b> is mandatory and defines the actual reset value on reset. Reset value uses
+				SystemVerilog syntax for binary values. The number of bits must be equal to the <i>field</i> size.</li>
+			<li><b>Reset mask</b> is optional and defines the bits that have a known reset value. Bit
+				value of 1 means that the corresponding bit has a known reset value whereas 0 means that
+				the value is unknown. Reset mask uses SystemVerilog syntax for binary values e.g. 'b1011,
+				4'b1011, and 4'b10_11 are all valid values. The number of bits must be equal to the <i>field</i> size.</li>
+		</ul>
+	</p>
+	
     <h3>Enumerations table</h3>
     <p>
         The enumerated values table enables the defining of bit patterns that can be identified

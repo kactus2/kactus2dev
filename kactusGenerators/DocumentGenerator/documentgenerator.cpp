@@ -623,7 +623,7 @@ void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QT
 
         QStringList fieldHeaders;
         fieldHeaders << "Field name" << "Offset [bits]" << "Width [bits]" << "Volatile" << "Access" <<
-            "Reset value" << "Reset mask" << "Description";
+            "Resets" << "Description";
         QString title = "List of fields contained within register " + currentRegister->name() + ".";
         writeTableElement(fieldHeaders, title, stream, "\t\t\t");
 
@@ -654,16 +654,44 @@ void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QT
             stream << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << currentField->getVolatile().toString()  << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentField->getAccess()) << "</td>" << endl;
-/*            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                currentField->getResetValue()) << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                currentField->getResetMask()) << "</td>" << endl;
-*/            stream << "\t\t\t\t\t<td>" << currentField->description() << "</td>" << endl;
+
+            QString resetInfo = getFieldResetInfo(currentField);
+            stream << "\t\t\t\t\t<td>" << resetInfo << "</td>" << endl;
+
+            stream << "\t\t\t\t\t<td>" << currentField->description() << "</td>" << endl;
             stream << "\t\t\t\t</tr>" << endl;
         }
 
         stream << "\t\t\t</table>" << endl;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::getFieldResetInfo()
+//-----------------------------------------------------------------------------
+QString DocumentGenerator::getFieldResetInfo(QSharedPointer<Field> field) const
+{
+    QString resetInfo = "";
+
+    for (auto singleRest : *field->getResets())
+    {
+        if (singleRest != field->getResets()->first())
+        {
+            resetInfo.append("<br>");
+        }
+
+        QString resetTypeReference = singleRest->getResetTypeReference();
+        if (resetTypeReference.isEmpty())
+        {
+            resetTypeReference = QLatin1String("HARD");
+        }
+
+        QString resetValue = expressionFormatter_->formatReferringExpression(singleRest->getResetValue());
+
+        resetInfo.append(resetTypeReference + " : " + resetValue);
+    }
+
+    return resetInfo;
 }
 
 //-----------------------------------------------------------------------------

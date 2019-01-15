@@ -110,7 +110,7 @@ private:
 	 */
 	QStringList changeNameSeparators(QStringList checkBoxNames);
 
-	 	/*!
+    /*!
 	 *  Set the hardware table.
 	 *
 	 *      @param [in] table               The table.

@@ -79,19 +79,9 @@
       <b>Width</b> is a mandatory value to specify how many bits are included in the <i>field</i>.
    </p>
    <p>
-	  <b>Reset value</b> is optional and defines the actual reset value on reset. Reset value uses 
-	  SystemVerilog syntax for binary values. The number of bits must be equal to the <i>field</i> size.
-   </p>
-   <p>
-      <b>Reset mask</b> is optional and defines the bits that have a known reset value. 
-      Bit value of 1 means that the corresponding bit has a known reset value whereas 0 
-	  means that the value is unknown. 
-      Reset mask uses SystemVerilog syntax for binary values e.g. 'b1011, 4'b1011, and 4'b10_11 
-      are all valid values. The number of bits must be equal to the <i>field</i> size.
-			
-      <b>Volatile</b> is optional and indicates that there is no guarantee that 
-	  two consecutive read operations will return the same value, as the <i>field</i> may change
-	  its value without write operations i.e. as a result of an interrupt.
+		<b>Resets</b> defines the reset values of the field. The reset values must be edited in the field editor.
+		If a field only has one reset value, it is displayed here. If a field contains multiple reset values, they
+		are displayed with a [multiple] tag. A tooltip provides basic information on the resets, displaying the reset type and value.
    </p>
    <p>
       <b>Access</b> is optional and specifies the accessibility of the <i>field</i>. The possible values are:
