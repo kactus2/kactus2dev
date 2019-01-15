@@ -9,12 +9,12 @@
 // Unit test for class FieldReader.
 //-----------------------------------------------------------------------------
 
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/Component/FieldReader.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
-
-#include <IPXACTmodels/common/VendorExtension.h>
+#include <IPXACTmodels/Component/FieldReset.h>
 
 #include <QtTest>
 
@@ -164,9 +164,12 @@ void tst_FieldReader::readResets()
     FieldReader fieldReader;
     QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
 
-    QCOMPARE(testField->getResetTypeReference(), QString("referencedReset"));
-    QCOMPARE(testField->getResetValue(), QString("8'b0110_1101"));
-    QCOMPARE(testField->getResetMask(), QString("8'b1100_0011"));
+    QCOMPARE(testField->getResets()->count(), 1);
+
+    QSharedPointer<FieldReset> testReset = testField->getResets()->first();
+    QCOMPARE(testReset->getResetTypeReference(), QString("referencedReset"));
+    QCOMPARE(testReset->getResetValue(), QString("8'b0110_1101"));
+    QCOMPARE(testReset->getResetMask(), QString("8'b1100_0011"));
 
     documentContent =
         "<ipxact:field>"
@@ -191,10 +194,16 @@ void tst_FieldReader::readResets()
 
     QCOMPARE(testField->getResets()->count(), 2);
 
-    // Access to reset attributes from field point to the last reset.
-    QCOMPARE(testField->getResetTypeReference(), QString(""));
-    QCOMPARE(testField->getResetValue(), QString("8'b0110_0000"));
-    QCOMPARE(testField->getResetMask(), QString(""));
+    QSharedPointer<FieldReset> firstReset = testField->getResets()->first();
+    QSharedPointer<FieldReset> lastReset = testField->getResets()->last();
+
+    QCOMPARE(firstReset->getResetTypeReference(), QString("referencedReset"));
+    QCOMPARE(firstReset->getResetValue(), QString("8'b0110_1101"));
+    QCOMPARE(firstReset->getResetMask(), QString("8'b1100_0011"));
+
+    QCOMPARE(lastReset->getResetTypeReference(), QString(""));
+    QCOMPARE(lastReset->getResetValue(), QString("8'b0110_0000"));
+    QCOMPARE(lastReset->getResetMask(), QString(""));
 }
 
 //-----------------------------------------------------------------------------

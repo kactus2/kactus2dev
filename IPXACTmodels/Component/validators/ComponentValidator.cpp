@@ -29,6 +29,8 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
+#include <IPXACTmodels/Component/ResetType.h>
+
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
 
@@ -166,7 +168,7 @@ bool ComponentValidator::validate(QSharedPointer<Component> component)
         hasValidDesignInstantiations(component) && hasValidDesignConfigurationInstantiations(component) &&
         hasValidPorts(component) && hasValidComponentGenerators(component) && hasValidChoices(component) &&
         hasValidFileSets(component) && hasValidCPUs(component) && hasValidOtherClockDrivers(component) &&
-        hasValidParameters(component) && hasValidAssertions(component);
+        hasValidResetTypes(component) && hasValidParameters(component) && hasValidAssertions(component);
 }
 
 //-----------------------------------------------------------------------------
@@ -597,6 +599,48 @@ bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> com
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidResetTypes()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidResetTypes(QSharedPointer<Component> component)
+{
+    if (!component->getResetTypes()->isEmpty())
+    {
+        foreach(QSharedPointer<ResetType> resetType, *component->getResetTypes())
+        {
+            if (!singleResetTypeIsValid(resetType, component->getResetTypes()))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::singleResetTypeIsValid()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::singleResetTypeIsValid(QSharedPointer<ResetType> resetType,
+    QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes) const
+{
+    QString currentName = resetType->name();
+    if (currentName.isEmpty() || currentName.toUpper().compare(QLatin1String("HARD")) == 0)
+    {
+        return false;
+    }
+
+    foreach(QSharedPointer<ResetType> comparisonReset, *resetTypes)
+    {
+        if (resetType != comparisonReset && currentName == comparisonReset->name())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidParameters()
 //-----------------------------------------------------------------------------
 bool ComponentValidator::hasValidParameters(QSharedPointer<Component> component)
@@ -673,6 +717,7 @@ void ComponentValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<C
     findErrorsInFileSets(errors, component, context);
     findErrorsInCPUs(errors, component, context);
     findErrorsInOtherClockDrivers(errors, component, context);
+    findErrorsInResetTypes(errors, component, context);
     findErrorsInParameters(errors, component, context);
     findErrorsInAssertions(errors, component, context);
 }
@@ -1099,6 +1144,43 @@ void ComponentValidator::findErrorsInOtherClockDrivers(QVector<QString>& errors,
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInResetTypes()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInResetTypes(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    if (!component->getResetTypes()->isEmpty())
+    {
+        QVector<QString> resetTypeNames;
+        QVector<QString> duplicateNames;
+        foreach(QSharedPointer<ResetType> resetType, *component->getResetTypes())
+        {
+            if (resetType->name().isEmpty())
+            {
+                errors.append(QObject::tr("Invalid name '%1' set for reset type within %2")
+                    .arg(resetType->name()).arg(context));
+            }
+
+            if (resetType->name().toUpper().compare("HARD") == 0)
+            {
+                errors.append(QObject::tr
+                ("Invalid name '%1' set for reset type within %2, HARD is reserved for the default reset type.")
+                    .arg(resetType->name()).arg(context));
+            }
+
+            if (resetTypeNames.contains(resetType->name()) && !duplicateNames.contains(resetType->name()))
+            {
+                errors.append(QObject::tr("Reset type name '%1' within %2 is not unique.")
+                    .arg(resetType->name()).arg(context));
+                duplicateNames.append(resetType->name());
+            }
+
+            resetTypeNames.append(resetType->name());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentValidator::findErrorsInParameters()
 //-----------------------------------------------------------------------------
 void ComponentValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPointer<Component> component,
@@ -1162,7 +1244,7 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         parameterValidator_->componentChange(newComponent->getChoices());
         channelValidator_->componentChange(newComponent->getBusInterfaces());
         remapStateValidator_->componentChange(newComponent->getPorts());
-        memoryMapValidator_->componentChange(newComponent->getRemapStates());
+        memoryMapValidator_->componentChange(newComponent->getRemapStates(), newComponent->getResetTypes());
         viewValidator_->componentChange(newComponent->getModel());
         instantiationsValidator_->componentChange(newComponent->getFileSets());
         portValidator_->componentChange(newComponent->getViews());

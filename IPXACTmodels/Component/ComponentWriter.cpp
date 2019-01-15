@@ -27,6 +27,7 @@
 #include "FileSetWriter.h"
 #include "CPUWriter.h"
 #include "OtherClockDriverWriter.h"
+#include "ResetType.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
@@ -86,6 +87,8 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
     writeCPUs(writer, component);
 
     writeOtherClockDrivers(writer, component);
+
+    writeResetTypes(writer, component);
 
     writeDescription(writer, component);
 
@@ -406,6 +409,31 @@ void ComponentWriter::writeOtherClockDrivers(QXmlStreamWriter& writer, QSharedPo
         }
 
         writer.writeEndElement(); // ipxact:otherClockDrivers
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWriter::writeResetTypes()
+//-----------------------------------------------------------------------------
+void ComponentWriter::writeResetTypes(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
+{
+    if (component->getResetTypes() && !component->getResetTypes()->isEmpty())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:resetTypes"));
+
+        NameGroupWriter nameGroupWriter;
+
+        foreach(QSharedPointer<ResetType> resetType, *component->getResetTypes())
+        {
+            writer.writeStartElement(QStringLiteral("ipxact:resetType"));
+
+            nameGroupWriter.writeNameGroup(writer, resetType);
+            writeVendorExtensions(writer, resetType);
+
+            writer.writeEndElement(); // ipxact:resetType
+        }
+
+        writer.writeEndElement(); // ipxact:resetTypes
     }
 }
 

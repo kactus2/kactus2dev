@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+    ./resource5.h \
     ./VersionHelper.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
@@ -774,14 +775,22 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/SystemDesign/UndoCommands/ReplaceSystemComponentCommand.h \
     ./editors/SystemDesign/UndoCommands/SystemComponentAddCommand.h \
     ./editors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionColumns.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsModel.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/common/VendorExtensionEditor/VendorExtensionColumns.h \
-    ./resource5.h \
-    ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.h \
-    ./editors/common/VendorExtensionEditor/VendorExtensionsModel.h
+    ./editors/ComponentEditor/treeStructure/ResetTypesItem.h \
+    ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
+    ./editors/ComponentEditor/resetTypes/ResetTypesModel.h \
+    ./editors/ComponentEditor/resetTypes/ResetTypeColumns.h \
+    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsEditor.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsModel.h \
+    ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsDelegate.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1454,9 +1463,16 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.cpp \
     ./editors/SystemDesign/UndoCommands/SystemDeleteCommands.cpp \
     ./editors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.cpp \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
-    ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.cpp
+    ./editors/ComponentEditor/treeStructure/ResetTypesItem.cpp \
+    ./editors/ComponentEditor/resetTypes/ResetTypesEditor.cpp \
+    ./editors/ComponentEditor/resetTypes/ResetTypesModel.cpp \
+    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsModel.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsDelegate.cpp
 RESOURCES += kactus.qrc

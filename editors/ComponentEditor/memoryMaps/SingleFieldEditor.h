@@ -18,6 +18,7 @@
 
 #include <QSharedPointer>
 
+class ResetsEditor;
 class FieldEditor;
 class ExpressionEditor;
 class BooleanComboBox;
@@ -27,6 +28,8 @@ class ReadActionComboBox;
 class TestConstraintComboBox;
 class ParameterFinder;
 class ExpressionParser;
+class ExpressionFormatter;
+
 class Field;
 class Component;
 class FieldValidator;
@@ -50,16 +53,14 @@ public:
 	 *      @param [in] handler             The instance managing the library.
      *      @param [in] parameterFinder     The instance for finding parameter references.
      *      @param [in] expressionParser    The expression parser to use.
+     *      @param [in] formatter           Expression formatter.
      *      @param [in] fieldValidator      The used field validator.
 	 *      @param [in] parent              The parent of this editor.
 	 */
-	SingleFieldEditor(QSharedPointer<Field> field,
-        QSharedPointer<Component> component,
-        LibraryInterface* handler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<FieldValidator> fieldValidator,
-        QWidget* parent = 0);
+	SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
+        LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
+        QSharedPointer<FieldValidator> fieldValidator, QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -139,7 +140,6 @@ private slots:
      */
     void onIsPresentEdited();
 
-
     /*!
      *  Sets the edited reserved value for the field.
      */
@@ -171,26 +171,10 @@ private slots:
      */
     void onWriteConstraintMaximumEdited();
 
-    /*!
-     *  Sets the edited reset value for the field.
-     *
-     *      @param [in] newResetValue   The new reset value.
-     */
-    void onResetValueEdited();
-
-    /*!
-     *  Sets the edited reset mask for the field.
-     *
-     *      @param [in] newResetMask    The new reset mask.
-     */
-    void onResetMaskEdited();
-
 private:
 	
-	//! No copying
+	//! No copying. No assignment.
     SingleFieldEditor(const SingleFieldEditor& other);
-
-	//! No assignment
     SingleFieldEditor& operator=(const SingleFieldEditor& other);
 
     /*!
@@ -232,6 +216,9 @@ private:
 
     //! The name group editor.
     NameGroupEditor nameEditor_;
+
+    //! The resets editor.
+    ResetsEditor* resetsEditor_;
 
     //! The enumerations editor.
     FieldEditor* enumerationsEditor_;
@@ -280,12 +267,6 @@ private:
 
     //! The write constraint maximum value editor.
     ExpressionEditor* writeConstraintMaxLimit_;
-
-    //! Editor for the reset value of a field.
-    ExpressionEditor* resetValueEditor_;
-
-    //! Editor for the reset mask of a field.
-    ExpressionEditor* resetMaskEditor_;
 
     //! The field being edited.
     QSharedPointer<Field> field_;

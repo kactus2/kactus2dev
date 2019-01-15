@@ -58,6 +58,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
+#include <IPXACTmodels/Component/ResetType.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
@@ -129,6 +130,9 @@ private slots:
 
     void testHasValidOtherClockDrivers();
     void testHasValidOtherClockDrivers_data();
+
+    void testHasValidResetTypes();
+    void testHasValidResetTypes_data();
 
     void testHasValidParameters();
     void testHasValidParameters_data();
@@ -1399,6 +1403,74 @@ void tst_ComponentValidator::testHasValidOtherClockDrivers_data()
     QTest::newRow("Other clock driver without name is not valid") << "" << true << false << false;
     QTest::newRow("Other clock driver without clock units is not valid") << "Time" << false << false << false;
     QTest::newRow("Other clock drivers with the same name is not valid") << "Time" << true << true << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentValidator::testHasValidResetTypes()
+//-----------------------------------------------------------------------------
+void tst_ComponentValidator::testHasValidResetTypes()
+{
+    QFETCH(QString, name);
+    QFETCH(QString, name2);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<ResetType> testReset(new ResetType());
+    testReset->setName(name);
+
+    QSharedPointer<Component> testComponent(new Component(
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+    testComponent->getResetTypes()->append(testReset);
+
+    if (!name2.isEmpty())
+    {
+        QSharedPointer<ResetType> testReset2(new ResetType());
+        testReset2->setName(name2);
+        testComponent->getResetTypes()->append(testReset2);
+    }
+
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
+    QCOMPARE(validator->hasValidResetTypes(testComponent), isValid);
+
+    if (!isValid)
+    {
+        QVector<QString> foundErrors;
+        validator->findErrorsIn(foundErrors, testComponent);
+
+        QString expectedError = QObject::tr("Invalid name '%1' set for reset type within component %2")
+            .arg(name).arg(testComponent->getVlnv().toString());
+
+        if (name.toUpper() == QLatin1String("HARD"))
+        {
+            expectedError.append(", HARD is reserved for the default reset type.");
+        }
+
+        if (!name2.isEmpty())
+        {
+            expectedError = QObject::tr("Reset type name '%1' within component %2 is not unique.")
+                .arg(name).arg(testComponent->getVlnv().toString());
+        }
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found.");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentValidator::testHasValidResetTypes_data()
+//-----------------------------------------------------------------------------
+void tst_ComponentValidator::testHasValidResetTypes_data()
+{
+    QTest::addColumn<QString>("name");
+    QTest::addColumn<QString>("name2");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Reset type with name is valid") << "SOFT" << "" << true;
+    QTest::newRow("Reset type without name is not valid") << "" << "" << false;
+    QTest::newRow("Reset type with name HARD is not valid") << "HARD" << "" << false;
+    QTest::newRow("Unique names is valid") << "SOFT" << "TEST" << true;
+    QTest::newRow("Non-unique names is not valid") << "SOFT" << "SOFT" << false;
 }
 
 //-----------------------------------------------------------------------------

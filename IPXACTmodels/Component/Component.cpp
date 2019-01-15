@@ -28,6 +28,7 @@
 #include "Cpu.h"
 #include "OtherClockDriver.h"
 #include "IndirectInterface.h"
+#include "ResetType.h"
 
 #include "File.h"
 
@@ -59,7 +60,8 @@ choices_(new QList<QSharedPointer<Choice> >()),
 fileSets_(new QList<QSharedPointer<FileSet> > ()),
 cpus_(new QList<QSharedPointer<Cpu> > ()),
 otherClockDrivers_(new QList<QSharedPointer<OtherClockDriver> > ()),
-pendingFileDependencies_()
+pendingFileDependencies_(),
+resetTypes_(new QList<QSharedPointer<ResetType> > ())
 {
 
 }
@@ -81,7 +83,8 @@ choices_(new QList<QSharedPointer<Choice> >()),
 fileSets_(new QList<QSharedPointer<FileSet> > ()),
 cpus_(new QList<QSharedPointer<Cpu> > ()),
 otherClockDrivers_(new QList<QSharedPointer<OtherClockDriver> > ()),
-pendingFileDependencies_()
+pendingFileDependencies_(),
+resetTypes_(new QList<QSharedPointer<ResetType> > ())
 {
 
 }
@@ -103,7 +106,8 @@ choices_(new QList<QSharedPointer<Choice> >()),
 fileSets_(new QList<QSharedPointer<FileSet> > ()),
 cpus_(new QList<QSharedPointer<Cpu> > ()),
 otherClockDrivers_(new QList<QSharedPointer<OtherClockDriver> > ()),
-pendingFileDependencies_(other.pendingFileDependencies_)
+pendingFileDependencies_(other.pendingFileDependencies_),
+resetTypes_(new QList<QSharedPointer<ResetType> > ())
 {
     copyBusInterfaces(other);
     copyIndirectInterfaces(other);
@@ -117,6 +121,7 @@ pendingFileDependencies_(other.pendingFileDependencies_)
     copyFileSets(other);
     copyCpus(other);
     copyOtherClockDrivers(other);
+    copyResetTypes(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +148,8 @@ Component& Component::operator=( const Component& other)
         fileSets_->clear();
         cpus_->clear();
         otherClockDrivers_->clear();
-        
+        resetTypes_->clear();
+
         copyBusInterfaces(other);
         copyIndirectInterfaces(other);
         copyChannels(other);
@@ -156,6 +162,7 @@ Component& Component::operator=( const Component& other)
         copyFileSets(other);
         copyCpus(other);
         copyOtherClockDrivers(other);
+        copyResetTypes(other);
     }
 
     return *this;
@@ -178,6 +185,7 @@ Component::~Component()
     fileSets_.clear();
     cpus_.clear();
     otherClockDrivers_.clear();
+    resetTypes_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -559,6 +567,22 @@ void Component::setOtherClockDrivers(
 {
     otherClockDrivers_->clear();
     otherClockDrivers_ = newOtherClockDrivers;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::getResetTypes()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ResetType> > > Component::getResetTypes() const
+{
+    return resetTypes_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::setResetTypes()
+//-----------------------------------------------------------------------------
+void Component::setResetTypes(QSharedPointer<QList<QSharedPointer<ResetType>>> newResetTypes)
+{
+    resetTypes_ = newResetTypes;
 }
 
 //-----------------------------------------------------------------------------
@@ -1739,6 +1763,21 @@ void Component::copyOtherClockDrivers(const Component& other) const
             QSharedPointer<OtherClockDriver> copy =
                 QSharedPointer<OtherClockDriver>(new OtherClockDriver(*driver.data()));
             otherClockDrivers_->append(copy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::copyResetTypes()
+//-----------------------------------------------------------------------------
+void Component::copyResetTypes(const Component& other) const
+{
+    foreach(QSharedPointer<ResetType> resetType, *other.resetTypes_)
+    {
+        if (resetType)
+        {
+            QSharedPointer<ResetType> copy = QSharedPointer<ResetType>(new ResetType(*resetType.data()));
+            resetTypes_->append(copy);
         }
     }
 }

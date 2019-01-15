@@ -24,6 +24,7 @@ class MemoryMap;
 class MemoryRemap;
 class RemapState;
 class AddressBlockValidator;
+
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:memoryMap.
 //-----------------------------------------------------------------------------
@@ -46,11 +47,13 @@ public:
 	virtual ~MemoryMapValidator();
     
     /*!
-     *  Change the availavle remap states.
+     *  Change the containing component.
      *
-     *      @param [in] newRemapStates  The new remap states.
+     *      @param [in] newRemapStates  Remap states of the selected component.
+     *      @param [in] newResetTypes   Reset types of the selected component.
      */
-    void componentChange(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates);
+    void componentChange(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
+        QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
 
     /*!
      *  Validates the given memory map.

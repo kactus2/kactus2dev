@@ -79,7 +79,7 @@ int RegisterTableModel::columnCount( const QModelIndex& parent /*= QModelIndex()
 //-----------------------------------------------------------------------------
 Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const 
 {
-	if (!index.isValid()) 
+	if (!index.isValid() || index.column() == RegisterColumns::RESETS_COLUMN)
     {
 		return Qt::NoItemFlags;
 	}
@@ -88,6 +88,7 @@ Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const
     {
         return Qt::NoItemFlags;
 	}
+
 	return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
 }
 
@@ -122,15 +123,9 @@ QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientatio
             QString bitWidth = tr("Width \n[bits]") + getExpressionSymbol();
             return bitWidth;
         }
-        else if (section == RegisterColumns::RESETVALUE_COLUMN)
+        else if (section == RegisterColumns::RESETS_COLUMN)
         {
-            QString resetValueHeader = tr("Reset value") + getExpressionSymbol();
-            return resetValueHeader;
-        }
-        else if (section == RegisterColumns:: RESETMASK_COLUMN)
-        {
-            QString resetMaskHeader = tr("Reset mask") + getExpressionSymbol();
-            return resetMaskHeader;
+            return tr("Resets");
         }
         else if (section == RegisterColumns::VOLATILE_COLUMN)
         {
@@ -214,7 +209,11 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
     else if (role == Qt::ToolTipRole)
     {
-        if (isValidExpressionColumn(index))
+        if (index.column() == RegisterColumns::RESETS_COLUMN)
+        {
+            return toolTipValueForResets(index);
+        }
+        else if (isValidExpressionColumn(index))
         {
             return formattedValueFor(valueForIndex(index).toString());
         }
@@ -251,6 +250,10 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
         {
             return KactusColors::MANDATORY_FIELD;
         }
+        else if (index.column() == RegisterColumns::RESETS_COLUMN)
+        {
+            return KactusColors::DISABLED_FIELD;
+        }
         else
         {
             return KactusColors::REGULAR_FIELD;
@@ -260,6 +263,42 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
     {
 		return QVariant();
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::toolTipValueForResets()
+//-----------------------------------------------------------------------------
+QVariant RegisterTableModel::toolTipValueForResets(QModelIndex const& index) const
+{
+    QSharedPointer<QList<QSharedPointer<FieldReset> > > resets = fields_->at(index.row())->getResets();
+    if (resets && !resets->isEmpty())
+    {
+        QString tooltip = "<html><head/><body><p>";
+        for (int i = 0; i < resets->size(); ++i)
+        {
+            if (i > 0)
+            {
+                tooltip.append("<br>");
+            }
+
+            QSharedPointer<FieldReset> fieldReset = resets->at(i);
+            QString resetReference = fieldReset->getResetTypeReference();
+            if (resetReference.isEmpty())
+            {
+                resetReference = "HARD";
+            }
+
+            QString resetValue = formattedValueFor(fieldReset->getResetValue());
+
+            tooltip.append(resetReference + " : " + resetValue);
+        }
+
+        tooltip.append("</p></body></html>");
+
+        return tooltip;
+    }
+
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -285,15 +324,17 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
         QString bitWidth = fields_->at(index.row())->getBitWidth();
         return bitWidth;
     }
-    else if (index.column() == RegisterColumns::RESETVALUE_COLUMN)
+    else if (index.column() == RegisterColumns::RESETS_COLUMN)
     {
-        QString resetValue = fields_->at(index.row())->getResetValue();
-        return resetValue;
-    }
-    else if (index.column() == RegisterColumns::RESETMASK_COLUMN)
-    {
-        QString resetMask = fields_->at(index.row())->getResetMask();
-        return resetMask;
+        QSharedPointer<QList<QSharedPointer<FieldReset> > > indexedResets = fields_->at(index.row())->getResets();
+        if (indexedResets->count() == 1)
+        {
+            return indexedResets->first()->getResetValue();
+        }
+        else
+        {
+            return tr("[multiple]");
+        }
     }
     else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
     {
@@ -373,24 +414,6 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
             fields_->at(index.row())->setBitWidth(value.toString());
 
             emit graphicsChanged();
-        }
-        else if (index.column() == RegisterColumns::RESETVALUE_COLUMN)
-        {
-            if (!value.isValid())
-            {
-                removeReferencesFromSingleExpression(fields_->at(index.row())->getResetValue());
-            }
-
-            fields_->at(index.row())->setResetValue(value.toString());
-        }
-        else if (index.column() == RegisterColumns::RESETMASK_COLUMN)
-        {
-            if (!value.isValid())
-            {
-                removeReferencesFromSingleExpression(fields_->at(index.row())->getResetMask());
-            }
-
-            fields_->at(index.row())->setResetMask(value.toString());
         }
         else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
         {
@@ -474,9 +497,7 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
 bool RegisterTableModel::isValidExpressionColumn(QModelIndex const& index) const
 {
     if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN ||
-        index.column() == RegisterColumns::IS_PRESENT_COLUMN ||
-        index.column() == RegisterColumns::RESETVALUE_COLUMN ||
-        index.column() == RegisterColumns::RESETMASK_COLUMN)
+        index.column() == RegisterColumns::IS_PRESENT_COLUMN || index.column() == RegisterColumns::RESETS_COLUMN)
     {
         return true;
     }
@@ -503,14 +524,6 @@ QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index)
     {
         return fields_->at(index.row())->getIsPresent();
     }
-    else if (index.column() == RegisterColumns::RESETVALUE_COLUMN)
-    {
-        return fields_->at(index.row())->getResetValue();
-    }
-    else if (index.column() == RegisterColumns::RESETMASK_COLUMN)
-    {
-        return fields_->at(index.row())->getResetMask();
-    }
 
     return data(index, Qt::DisplayRole);
 }
@@ -534,19 +547,9 @@ bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
     {
         return fieldValidator_->hasValidBitWidth(field);
     }
-    else if (index.column() == RegisterColumns::RESETVALUE_COLUMN)
+    else if (index.column() == RegisterColumns::RESETS_COLUMN)
     {
-        if (field->getResets()->isEmpty() == false)
-        {
-            return fieldValidator_->hasValidResetValue(field->getResets()->last());
-        }        
-    }
-    else if (index.column() == RegisterColumns::RESETMASK_COLUMN)
-    {
-        if (field->getResets()->isEmpty() == false)
-        {
-            return fieldValidator_->hasValidResetMask(field->getResets()->last());
-        }
+        return fieldValidator_->hasValidResets(field);
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
@@ -569,11 +572,17 @@ int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString 
     int referencesInBitWidth = fields_->at(row)->getBitWidth().count(valueID);
     int referencesInIsPresent = fields_->at(row)->getIsPresent().count(valueID);
 
-    int referencesInResetValue = fields_->at(row)->getResetValue().count(valueID);
-    int referencesInResetMask = fields_->at(row)->getResetMask().count(valueID);
+    int referencesInResetValues = 0;
+    int referencesInResetMasks = 0;
+
+    for (auto resetField : *fields_->at(row)->getResets())
+    {
+        referencesInResetValues += resetField->getResetValue().count(valueID);
+        referencesInResetMasks += resetField->getResetMask().count(valueID);
+    }
 
     int totalReferences = referencesInBitOffset + referencesInBitWidth + referencesInIsPresent +
-        referencesInResetValue + referencesInResetMask;
+        referencesInResetValues + referencesInResetMasks;
 
     return totalReferences;
 }

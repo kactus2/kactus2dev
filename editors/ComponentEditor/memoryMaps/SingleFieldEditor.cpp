@@ -15,13 +15,14 @@
 
 #include <editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h>
 #include <editors/ComponentEditor/memoryMaps/fieldeditor.h>
+#include <editors/ComponentEditor/memoryMaps/ResetsEditor.h>
+
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-
-#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/booleanComboBox/booleancombobox.h>
@@ -32,6 +33,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
+#include <IPXACTmodels/Component/ResetType.h>
 
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
@@ -40,16 +42,19 @@
 #include <QFormLayout>
 #include <QScrollArea>
 #include <QSplitter>
+#include <QGridLayout>
 
 //-----------------------------------------------------------------------------
 // Function: SingleFieldEditor::SingleFieldEditor()
 //-----------------------------------------------------------------------------
 SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
     LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
-    QWidget* parent /* = 0 */):
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
+    QSharedPointer<FieldValidator> fieldValidator, QWidget* parent):
 ItemEditor(component, handler, parent),
 nameEditor_(field, this, tr("Field name and description")),
+resetsEditor_(new ResetsEditor(field->getResets(), component->getResetTypes(), fieldValidator, expressionParser,
+    parameterFinder, formatter, this)),
 enumerationsEditor_(new FieldEditor(field->getEnumeratedValues(), fieldValidator->getEnumeratedValueValidator(),
                     component, handler, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
@@ -67,8 +72,6 @@ expressionParser_(expressionParser),
 writeConstraintEditor_(new QComboBox(this)),
 writeConstraintMinLimit_(new ExpressionEditor(parameterFinder, this)),
 writeConstraintMaxLimit_(new ExpressionEditor(parameterFinder, this)),
-resetValueEditor_(new ExpressionEditor(parameterFinder, this)),
-resetMaskEditor_(new ExpressionEditor(parameterFinder, this)),
 field_(field),
 fieldValidator_(fieldValidator)
 {
@@ -76,8 +79,6 @@ fieldValidator_(fieldValidator)
     widthEditor_->setFixedHeight(20);
     isPresentEditor_->setFixedHeight(20);
     reservedEditor_->setFixedHeight(20);
-    resetValueEditor_->setFixedHeight(20);
-    resetMaskEditor_->setFixedHeight(20);
     writeConstraintMinLimit_->setFixedHeight(20);
     writeConstraintMaxLimit_->setFixedHeight(20);
 
@@ -115,11 +116,8 @@ fieldValidator_(fieldValidator)
     reservedEditor_->setAppendingCompleter(reservedCompleter);
     writeConstraintMinLimit_->setAppendingCompleter(writeValueMinCompleter);
     writeConstraintMaxLimit_->setAppendingCompleter(writeValueMaxCompleter);
-    resetValueEditor_->setAppendingCompleter(resetValueCompleter);
-    resetMaskEditor_->setAppendingCompleter(resetMaskCompleter);
 
     writeConstraintEditor_->setEditable(false);
-
     writeConstraintEditor_->addItem(tr("Write as read"));
     writeConstraintEditor_->addItem(tr("Use enumerated values"));
     writeConstraintEditor_->addItem(tr("Set minimum and maximum limits"));
@@ -156,6 +154,7 @@ SingleFieldEditor::~SingleFieldEditor()
 void SingleFieldEditor::refresh()
 {
     nameEditor_.refresh();
+    resetsEditor_->refresh();
     enumerationsEditor_->refresh();
 
     changeExpressionEditorSignalBlockStatus(true);
@@ -183,11 +182,7 @@ void SingleFieldEditor::refresh()
         writeConstraintMaxLimit_->setToolTip(formattedValueFor(field_->getWriteConstraint()->getMaximum()));
     }
 
-    resetValueEditor_->setExpression(field_->getResetValue());
-    resetValueEditor_->setToolTip(formattedValueFor(field_->getResetValue()));
-
-    resetMaskEditor_->setExpression(field_->getResetMask());
-    resetMaskEditor_->setToolTip(formattedValueFor(field_->getResetMask()));
+    fieldValidator_->componentChange(component()->getResetTypes());
 
     changeExpressionEditorSignalBlockStatus(false);
 
@@ -224,8 +219,6 @@ void SingleFieldEditor::changeExpressionEditorSignalBlockStatus(bool blockStatus
     reservedEditor_->blockSignals(blockStatus);
     writeConstraintMinLimit_->blockSignals(blockStatus);
     writeConstraintMaxLimit_->blockSignals(blockStatus);
-    resetValueEditor_->blockSignals(blockStatus);
-    resetMaskEditor_->blockSignals(blockStatus);
 }
 
 //-----------------------------------------------------------------------------
@@ -458,36 +451,6 @@ void SingleFieldEditor::onWriteConstraintMaximumEdited()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleFieldEditor::onResetValueEdited()
-//-----------------------------------------------------------------------------
-void SingleFieldEditor::onResetValueEdited()
-{
-    resetValueEditor_->finishEditingCurrentWord();
-    QString newResetValue = resetValueEditor_->getExpression();
-
-    if (newResetValue.isEmpty())
-    {
-        resetMaskEditor_->clear();
-        field_->setResetMask(QStringLiteral(""));
-    }
-
-    field_->setResetValue(newResetValue);
-    resetValueEditor_->setToolTip(formattedValueFor(newResetValue));
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleFieldEditor::onResetMaskEdited()
-//-----------------------------------------------------------------------------
-void SingleFieldEditor::onResetMaskEdited()
-{
-    resetMaskEditor_->finishEditingCurrentWord();
-    QString newResetMask = resetMaskEditor_->getExpression();
-
-    field_->setResetMask(newResetMask);
-    resetMaskEditor_->setToolTip(formattedValueFor(newResetMask));
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleFieldEditor::connectSignals()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::connectSignals()
@@ -516,13 +479,9 @@ void SingleFieldEditor::connectSignals()
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(writeConstraintMaxLimit_, SIGNAL(decreaseReference(QString const&)),
         this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(resetValueEditor_, SIGNAL(increaseReference(QString const&)),
+    connect(resetsEditor_, SIGNAL(increaseReferences(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(resetValueEditor_, SIGNAL(decreaseReference(QString const&)),
-        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(increaseReference(QString const&)),
-        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(decreaseReference(QString const&)),
+    connect(resetsEditor_, SIGNAL(decreaseReferences(QString const&)),
         this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SLOT(onOffsetEdited()), Qt::UniqueConnection);
@@ -532,10 +491,9 @@ void SingleFieldEditor::connectSignals()
     connect(fieldIdEditor_, SIGNAL(editingFinished()), this, SLOT(onFieldIdChanged()), Qt::UniqueConnection);
     connect(writeConstraintMinLimit_, SIGNAL(editingFinished()), this, SLOT(onWriteConstraintMinimumEdited()), Qt::UniqueConnection);
     connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()), this, SLOT(onWriteConstraintMaximumEdited()), Qt::UniqueConnection);
-    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SLOT(onResetValueEdited()), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SLOT(onResetMaskEdited()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(resetsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(enumerationsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -545,8 +503,6 @@ void SingleFieldEditor::connectSignals()
 
     connect(writeConstraintMinLimit_, SIGNAL(editingFinished()),this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()),this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
@@ -574,8 +530,6 @@ void SingleFieldEditor::setupLayout()
     fieldDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
     fieldDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
     fieldDefinitionLayout->addRow(tr("Reserved, f(x):"), reservedEditor_);
-    fieldDefinitionLayout->addRow(tr("Reset value, f(x):"), resetValueEditor_);
-    fieldDefinitionLayout->addRow(tr("Reset mask, f(x):"), resetMaskEditor_);
     fieldDefinitionLayout->addRow(tr("Field ID:"), fieldIdEditor_);
 
     QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
@@ -615,18 +569,11 @@ void SingleFieldEditor::setupLayout()
     fieldConstraintLayout->addRow(tr("Write constraint minimum, f(x):"), writeConstraintMinLimit_);
     fieldConstraintLayout->addRow(tr("Write constraint maximum, f(x):"), writeConstraintMaxLimit_);
 
-
-
-
-    QVBoxLayout* topRightOfPageLayout = new QVBoxLayout();
-    topRightOfPageLayout->addWidget(fieldDefinitionGroup,0, Qt::AlignTop);
-    topRightOfPageLayout->addWidget(fieldConstraintGroup);
-
-
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0);
-    topOfPageLayout->addLayout(topRightOfPageLayout, 0);
-
+    QGridLayout* topOfPageLayout = new QGridLayout();
+    topOfPageLayout->addWidget(&nameEditor_, 0, 0);
+    topOfPageLayout->addWidget(fieldConstraintGroup, 0, 1);
+    topOfPageLayout->addWidget(fieldDefinitionGroup, 1, 0);
+    topOfPageLayout->addWidget(resetsEditor_, 1, 1);
 
     QWidget* topOfPageWidget = new QWidget();
     topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

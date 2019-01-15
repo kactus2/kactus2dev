@@ -50,6 +50,14 @@ AddressBlockValidator::~AddressBlockValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::componentChange()
+//-----------------------------------------------------------------------------
+void AddressBlockValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType>>> newResetTypes)
+{
+    registerValidator_->componentChange(newResetTypes);
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::getRegisterValidator()
 //-----------------------------------------------------------------------------
 QSharedPointer<RegisterValidator> AddressBlockValidator::getRegisterValidator() const

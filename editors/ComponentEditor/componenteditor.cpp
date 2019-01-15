@@ -26,6 +26,7 @@
 #include <editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorcpusitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorotherclocksitem.h>
+#include <editors/ComponentEditor/treeStructure/ResetTypesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorcominterfacesitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorapiinterfacesitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h>
@@ -642,6 +643,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
         root->addChildItem(QSharedPointer<ComponentEditorOtherClocksItem>(
             new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, expressionParser_, root)));
+
+        root->addChildItem(QSharedPointer<ResetTypesItem>(
+            new ResetTypesItem(&navigationModel_, libHandler_, component, validator_, root)));
     }
     else if (component->getImplementation() == KactusAttribute::SW)
     {

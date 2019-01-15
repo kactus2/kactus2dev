@@ -10,12 +10,13 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/Component/FieldWriter.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
-#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/Component/FieldReset.h>
 
 #include <QtTest>
 
@@ -37,7 +38,7 @@ private slots:
     void writeFieldID();
     void writeIsPresent();
     void writeResets();
-    
+
     void writeTypeIdentifier();
     void writeVolatile();
     void writeAccess();
@@ -193,8 +194,14 @@ void tst_FieldWriter::writeResets()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<FieldReset> firstReset(new FieldReset({ "HARD", "8'b0000_0000", "8'b1111_1111" }));
-    QSharedPointer<FieldReset> lastReset(new FieldReset({ "referencedReset", "8'b0110_1101", "8'b1100_0011" }));
+    QSharedPointer<FieldReset> firstReset(new FieldReset());
+    firstReset->setResetTypeReference("HARD");
+    firstReset->setResetValue("8'b0000_0000");
+    firstReset->setResetMask("8'b1111_1111");
+    QSharedPointer<FieldReset> lastReset(new FieldReset());
+    lastReset->setResetTypeReference("referencedReset");
+    lastReset->setResetValue("8'b0110_1101");
+    lastReset->setResetMask("8'b1100_0011");
 
     testField_->getResets()->append(firstReset);
     testField_->getResets()->append(lastReset);

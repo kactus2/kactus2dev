@@ -33,7 +33,7 @@ public:
      *
      *      @param [in] parent   Owner of this validator.
      */
-    explicit NameValidator(QObject* parent);
+    explicit NameValidator(QObject* parent = 0);
 
     //! No copying
     NameValidator(const NameValidator& other) = delete;

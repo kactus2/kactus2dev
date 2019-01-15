@@ -242,6 +242,7 @@
     <ClCompile Include="Component\EnumeratedValueWriter.cpp" />
     <ClCompile Include="Component\Field.cpp" />
     <ClCompile Include="Component\FieldReader.cpp" />
+    <ClCompile Include="Component\FieldReset.cpp" />
     <ClCompile Include="Component\FieldWriter.cpp" />
     <ClCompile Include="Component\File.cpp" />
     <ClCompile Include="Component\FileReader.cpp" />
@@ -552,6 +553,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
+    <ClInclude Include="Component\FieldReset.h" />
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
     <ClInclude Include="Component\validators\RegisterFileValidator.h" />
     <ClInclude Include="utilities\XmlUtils.h" />

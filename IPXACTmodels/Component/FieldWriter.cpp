@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/Component/EnumeratedValueWriter.h>
+#include <IPXACTmodels/Component/FieldReset.h>
 
 //-----------------------------------------------------------------------------
 // Function: FieldWriter::FieldWriter()
@@ -101,33 +102,34 @@ void FieldWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Field>
 //-----------------------------------------------------------------------------
 void FieldWriter::writeResets(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
 {
-
-    if(!field->getResets()->isEmpty()) {
-      writer.writeStartElement(QStringLiteral("ipxact:resets"));
-
-      foreach (QSharedPointer<FieldReset> reset, *(field->getResets()))
-      {
-          if (reset)
-          {
-            writer.writeStartElement(QStringLiteral("ipxact:reset"));
-
-            if (!reset->resetTypeReference_.isEmpty())
+    if(field->getResets() && !field->getResets()->isEmpty())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:resets"));
+        
+        foreach (QSharedPointer<FieldReset> reset, *(field->getResets()))
+        {
+            if (reset && (!reset->getResetTypeReference().isEmpty() || !reset->getResetValue().isEmpty() ||
+                !reset->getResetMask().isEmpty()))
             {
-                writer.writeAttribute(QStringLiteral("resetTypeRef"), reset->resetTypeReference_);
+                writer.writeStartElement(QStringLiteral("ipxact:reset"));
+                
+                if (!reset->getResetTypeReference().isEmpty())
+                {
+                    writer.writeAttribute(QStringLiteral("resetTypeRef"), reset->getResetTypeReference());
+                }
+              
+                writer.writeTextElement(QStringLiteral("ipxact:value"), reset->getResetValue());
+              
+                if (!reset->getResetMask().isEmpty())
+                {
+                    writer.writeTextElement(QStringLiteral("ipxact:mask"), reset->getResetMask());
+                }
+              
+                writer.writeEndElement(); // ipxact:reset
             }
+        }
 
-            writer.writeTextElement(QStringLiteral("ipxact:value"), reset->resetValue_);
-
-            if (!reset->resetMask_.isEmpty())
-            {
-                writer.writeTextElement(QStringLiteral("ipxact:mask"), reset->resetMask_);
-            }
-
-            writer.writeEndElement(); // ipxact:reset
-          }
-      }
-
-      writer.writeEndElement(); // ipxact:resets
+        writer.writeEndElement(); // ipxact:resets
     }
 }
 

@@ -317,8 +317,13 @@ int ComponentParameterReferenceCounter::countReferencesInSingleField(QString con
     referenceCount += countReferencesInExpression(parameterID, registerField->getBitOffset());
     referenceCount += countReferencesInExpression(parameterID, registerField->getBitWidth());
     referenceCount += countReferencesInExpression(parameterID, registerField->getIsPresent());
-    referenceCount += countReferencesInExpression(parameterID, registerField->getResetValue());
-    referenceCount += countReferencesInExpression(parameterID, registerField->getResetMask());
+
+    for (auto fieldReset : *registerField->getResets())
+    {
+        referenceCount += countReferencesInExpression(parameterID, fieldReset->getResetValue());
+        referenceCount += countReferencesInExpression(parameterID, fieldReset->getResetMask());
+    }
+
     referenceCount += countReferencesInWriteConstraint(parameterID, registerField->getWriteConstraint());
 
     return referenceCount;
