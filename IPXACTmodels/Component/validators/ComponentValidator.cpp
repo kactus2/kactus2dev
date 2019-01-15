@@ -1161,7 +1161,7 @@ void ComponentValidator::findErrorsInResetTypes(QVector<QString>& errors, QShare
                     .arg(resetType->name()).arg(context));
             }
 
-            if (resetType->name().toUpper().compare("HARD") == 0)
+            if (resetType->name().compare(QLatin1String("HARD"), Qt::CaseInsensitive) == 0)
             {
                 errors.append(QObject::tr
                 ("Invalid name '%1' set for reset type within %2, HARD is reserved for the default reset type.")
