@@ -762,7 +762,7 @@ void EditableTableView::onCSVImport(const QString& filePath)
 	while (!stream.atEnd())
     {
 		QString line = stream.readLine();
-        while (line.count(QLatin1Char(';')) < columnCount - 1 && !stream.atEnd())
+        while (line.count(QLatin1Char(';')) < columnCount && !stream.atEnd())
         {
             line.append(QStringLiteral("\n"));
             line.append(stream.readLine());
