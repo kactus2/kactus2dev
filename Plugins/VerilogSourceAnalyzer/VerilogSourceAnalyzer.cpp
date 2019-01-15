@@ -102,7 +102,7 @@ QList<IPlugin::ExternalProgramRequirement> VerilogSourceAnalyzer::getProgramRequ
 QStringList VerilogSourceAnalyzer::getSupportedFileTypes() const
 {
     QStringList fileTypes;
-    fileTypes << "verilogSource" << "verilogSource-95" << "verilogSource-2001";
+    fileTypes << "verilogSource" << "verilogSource-95" << "verilogSource-2001" << "systemVerilogSource";
     return fileTypes;
 }
 
