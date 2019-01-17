@@ -15,11 +15,13 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QWidget>
+#include <QLabel>
 
 class EditableTableView;
 class VendorExtensionsModel;
 class VendorExtension;
 class TabDocument;
+class Extendable;
 
 //-----------------------------------------------------------------------------
 //! Editor to display/edit vendor extensions.
@@ -46,13 +48,6 @@ public:
     //! No assignment.
     VendorExtensionsEditor& operator=(const VendorExtensionsEditor& other) = delete;
 
-	/*!
-     *  Set the vendor extensions for the editor.
-	 *
-	 *      @param [in] extensions  The vendor extensions to edit.
-	 */
-    void setVendorExtensions(QSharedPointer<QList<QSharedPointer<VendorExtension> >  > extensions);
-
     /*!
      * Locks/Unlocks the editor.
      *
@@ -77,7 +72,14 @@ public slots:
 	//! Clear the editor so no extensions are shown
     void clear();
 
-	
+    /*!
+     *  Change the vendor extensions of the vendor extensions editor.
+     *
+     *      @param [in] containingID    ID for the vendor extensions editor.
+     *      @param [in] extensionItem   The item containing the selected vendor extensions.
+     */
+    void changeVendorExtensions(QString const& containingID, QSharedPointer<Extendable> extensionItem);
+
 private:
 
     //-----------------------------------------------------------------------------
@@ -90,6 +92,8 @@ private:
     //! The model for the vendor extensions.
     VendorExtensionsModel* extensionsModel_;
 
+    //! Holds the ID for the editor.
+    QLabel* summaryLable_;
 };
 
 #endif // VENDOREXTENSIONSEDITOR_H

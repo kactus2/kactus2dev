@@ -413,7 +413,7 @@ void DockWidgetHandler::setupConnectionEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupVendorExtensionEditor()
 {
-    extensionDock_ = new QDockWidget(tr("Vendor Extensions"), mainWindow_);
+    extensionDock_ = new QDockWidget(tr("Vendor Extensions (experimental)"), mainWindow_);
     extensionDock_->setObjectName(tr("Vendor Extension Editor"));
     extensionDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     extensionDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
@@ -748,15 +748,31 @@ void DockWidgetHandler::documentChanged(TabDocument* doc)
     ComponentEditor* componentEditor = dynamic_cast<ComponentEditor*>(doc);
     DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
 
+    disconnect(extensionEditor_, SLOT(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)));
+
+    if (doc)
+    {
+        connect(doc, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+            extensionEditor_, SLOT(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)));
+    }
+
     if (componentEditor)
     {
         extensionEditor_->setContext(doc);
-        extensionEditor_->setVendorExtensions(componentEditor->getComponent()->getVendorExtensions());
+
+        QSharedPointer<Component> editedComponent = componentEditor->getComponent();
+        QString extensionsID = QLatin1String("Component: ") + editedComponent->getVlnv().toString();
+
+        extensionEditor_->changeVendorExtensions(extensionsID, editedComponent);
     }
     else if(designwidget)
     {
         extensionEditor_->setContext(doc);
-        extensionEditor_->setVendorExtensions(designwidget->getDiagram()->getDesign()->getVendorExtensions());
+
+        QSharedPointer<Design> editedDesign = designwidget->getDiagram()->getDesign();
+        QString extensionsID = QLatin1String("Design: ") + editedDesign->getVlnv().toString();
+
+        extensionEditor_->changeVendorExtensions(extensionsID, editedDesign);
     }
     else
     {

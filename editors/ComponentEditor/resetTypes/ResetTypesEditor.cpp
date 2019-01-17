@@ -46,10 +46,6 @@ model_(component, validator, this)
     view_.setSortingEnabled(true);
     view_.sortByColumn(0, Qt::AscendingOrder);
 
-    const QString compPath = handler->getDirectoryPath(component->getVlnv());
-    QString defPath = QString("%1/cpusListing.csv").arg(compPath);
-    view_.setDefaultImportExportPath(defPath);
-    view_.setAllowImportExport(true);
     view_.setItemsDraggable(false);
     view_.setItemDelegate(new ResetTypesDelegate(this));
 

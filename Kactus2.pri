@@ -425,6 +425,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h \
     ./editors/ComponentEditor/treeStructure/ParameterizableItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorregisterfileitem.h \
+    ./editors/ComponentEditor/treeStructure/ResetTypesItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
@@ -536,6 +537,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterFileColumns.h \
+    ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
     ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
@@ -547,6 +549,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/registerfiledelegate.h \
     ./editors/ComponentEditor/memoryMaps/registerfileeditor.h \
     ./editors/ComponentEditor/memoryMaps/registerfilemodel.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsEditor.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsModel.h \
+    ./editors/ComponentEditor/memoryMaps/ResetsDelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
@@ -577,6 +582,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
+    ./editors/ComponentEditor/resetTypes/ResetTypeColumns.h \
+    ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
+    ./editors/ComponentEditor/resetTypes/ResetTypesModel.h \
+    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.h \
     ./editors/CSourceEditor/CSourceHighlight.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -778,19 +787,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/VendorExtensionEditor/VendorExtensionColumns.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsDelegate.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/treeStructure/ResetTypesItem.h \
-    ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
-    ./editors/ComponentEditor/resetTypes/ResetTypesModel.h \
-    ./editors/ComponentEditor/resetTypes/ResetTypeColumns.h \
-    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.h \
-    ./editors/ComponentEditor/memoryMaps/ResetsEditor.h \
-    ./editors/ComponentEditor/memoryMaps/ResetsModel.h \
-    ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
-    ./editors/ComponentEditor/memoryMaps/ResetsDelegate.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1143,6 +1144,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfileeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfilemodel.cpp \
     ./editors/ComponentEditor/memoryMaps/registertablemodel.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsDelegate.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/ResetsModel.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleFieldEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.cpp \
@@ -1209,6 +1213,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/treeStructure/MemoryRemapItem.cpp \
     ./editors/ComponentEditor/treeStructure/ParameterizableItem.cpp \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.cpp \
+    ./editors/ComponentEditor/treeStructure/ResetTypesItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.cpp \
@@ -1279,6 +1284,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesEditor.cpp \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesModel.cpp \
     ./editors/ComponentEditor/indirectInterfaces/SingleIndirectInterfaceEditor.cpp \
+    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.cpp \
+    ./editors/ComponentEditor/resetTypes/ResetTypesEditor.cpp \
+    ./editors/ComponentEditor/resetTypes/ResetTypesModel.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlight.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
@@ -1463,16 +1471,10 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.cpp \
     ./editors/SystemDesign/UndoCommands/SystemDeleteCommands.cpp \
     ./editors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsDelegate.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/treeStructure/ResetTypesItem.cpp \
-    ./editors/ComponentEditor/resetTypes/ResetTypesEditor.cpp \
-    ./editors/ComponentEditor/resetTypes/ResetTypesModel.cpp \
-    ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.cpp \
-    ./editors/ComponentEditor/memoryMaps/ResetsEditor.cpp \
-    ./editors/ComponentEditor/memoryMaps/ResetsModel.cpp \
-    ./editors/ComponentEditor/memoryMaps/ResetsDelegate.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
 RESOURCES += kactus.qrc

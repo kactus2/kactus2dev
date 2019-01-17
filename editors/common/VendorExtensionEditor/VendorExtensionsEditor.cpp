@@ -16,6 +16,10 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/tabDocument/TabDocument.h>
 
+#include <editors/common/VendorExtensionEditor/VendorExtensionsDelegate.h>
+
+#include <IPXACTmodels/common/Extendable.h>
+
 #include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 #include <QVBoxLayout>
@@ -26,14 +30,16 @@
 VendorExtensionsEditor::VendorExtensionsEditor(QWidget *parent) :
     QWidget(parent),
     extensionsView_(new EditableTableView(this)),
-    extensionsModel_(new VendorExtensionsModel(this))    
+    extensionsModel_(new VendorExtensionsModel(this)),
+    summaryLable_(new QLabel())
 {
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(summaryLable_, 0, Qt::AlignCenter);
     layout->addWidget(extensionsView_);
 
-    extensionsView_->setItemDelegate(new QStyledItemDelegate(this));
+    extensionsView_->setItemDelegate(new VendorExtensionsDelegate(this));
     extensionsView_->setModel(extensionsModel_);
 
     connect(extensionsView_, SIGNAL(addItem(QModelIndex const&)), 
@@ -44,19 +50,6 @@ VendorExtensionsEditor::VendorExtensionsEditor(QWidget *parent) :
     connect(extensionsModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	setDisabled(true);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VendorExtensionsEditor::setVendorExtensions()
-//-----------------------------------------------------------------------------
-void VendorExtensionsEditor::setVendorExtensions(
-    QSharedPointer<QList<QSharedPointer<VendorExtension> > > extensions)
-{
-    parentWidget()->raise();
-
-    extensionsModel_->setVendorExtensions(extensions);
-
-	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
 //-----------------------------------------------------------------------------
@@ -88,4 +81,20 @@ void VendorExtensionsEditor::clear()
     extensionsModel_->clear();
 
     parentWidget()->setMaximumHeight(20);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: VendorExtensionsEditor::changeVendorExtensions()
+//-----------------------------------------------------------------------------
+void VendorExtensionsEditor::changeVendorExtensions(QString const& containingID,
+    QSharedPointer<Extendable> extensionItem)
+{
+    parentWidget()->raise();
+
+    summaryLable_->setText(containingID);
+    summaryLable_->setAlignment(Qt::AlignCenter);
+
+    extensionsModel_->setVendorExtensions(extensionItem->getVendorExtensions());
+
+    parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }

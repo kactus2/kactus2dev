@@ -610,6 +610,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
         root->addChildItem(portsItem);
         connect(portsItem.data(), SIGNAL(createInterface()), root, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
 
+        connect(portsItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+            this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
+
         QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem (new ComponentEditorBusInterfacesItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
             expressionParser_, root, parentWidget()));

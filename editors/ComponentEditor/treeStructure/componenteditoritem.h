@@ -29,6 +29,7 @@ class ItemVisualizer;
 class ItemEditor;
 class Component;
 class VLNV;
+class Extendable;
 
 //-----------------------------------------------------------------------------
 //! ComponentEditorItem is one item in the navigation tree in component editor.
@@ -368,12 +369,25 @@ signals:
      */
     void openReferenceTree(QString const& id, QString const& parameterName) const;
 
+    /*!
+     *  Change the vendor extensions of the vendor extensions editor.
+     *
+     *      @param [in] containingID    ID for the vendor extensions editor.
+     *      @param [in] extensionItem   The item containing the selected vendor extensions.
+     */
+    void changeVendorExtensions(QString const& containingID, QSharedPointer<Extendable> extensionItem);
+
 protected:
 
     /*!
      *  Connects this component editor items item editor to its reference counter.
      */
     virtual void connectItemEditorToReferenceCounter();
+
+    /*!
+     *  Connects this component editor items item editor to the vendor extensions editor.
+     */
+    virtual void connectItemEditorToVendorExtensionsEditor();
 
     //! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;

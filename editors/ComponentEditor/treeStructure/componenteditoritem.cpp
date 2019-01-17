@@ -461,3 +461,12 @@ void ComponentEditorItem::connectItemEditorToReferenceCounter()
     connect(editor_, SIGNAL(decreaseReferences(QString)),
         referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 }
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::connectItemEditorToVendorExtensionsEditor()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::connectItemEditorToVendorExtensionsEditor()
+{
+    connect(editor_, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
+}

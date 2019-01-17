@@ -94,6 +94,7 @@ ItemEditor* ComponentEditorPortsItem::editor()
             this, SIGNAL(createInterface()), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
+        connectItemEditorToVendorExtensionsEditor();
 	}
 	return editor_;
 }

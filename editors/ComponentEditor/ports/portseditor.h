@@ -112,6 +112,13 @@ private slots:
      */
     virtual void onCreateInterface(QStringList const& selectedPorts);
 
+    /*!
+     *  Change the vendor extensions of the vendor extensions editor.
+     *
+     *      @param [in] itemIndex   Index of the selected port.
+     */
+    void changeExtensionsEditorItem(QModelIndex const& itemIndex);
+
 private:
 
 	//! No copying

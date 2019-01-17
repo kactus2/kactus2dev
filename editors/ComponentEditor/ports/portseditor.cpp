@@ -114,6 +114,11 @@ delegate_()
 
     connect(delegate_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
+    connect(view_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
+        this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(portExtensionDataChanged(QModelIndex const&)),
+        this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
+
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
 
@@ -309,4 +314,27 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
     {
         component_->getBusInterfaces()->removeAll(busIf);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portseditor::changeExtensionsEditorItem()
+//-----------------------------------------------------------------------------
+void PortsEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
+{
+    QSharedPointer<Extendable> extensionItem;
+    QString extensionID;
+
+    if (!itemIndex.isValid())
+    {
+        extensionItem = component_;
+        extensionID = QLatin1String("Component: ") + component_->getVlnv().toString();
+    }
+    else
+    {
+        QSharedPointer<Port> selectedPort = model_->getPortAtIndex(itemIndex);
+        extensionItem = selectedPort;
+        extensionID = QLatin1String("Port: ") + selectedPort->name();
+    }
+
+    emit changeVendorExtensions(extensionID, extensionItem);
 }

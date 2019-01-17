@@ -119,3 +119,27 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
 
     event->accept();
 }
+
+//-----------------------------------------------------------------------------
+// Function: PortsView::mousePressEvent()
+//-----------------------------------------------------------------------------
+void PortsView::mousePressEvent(QMouseEvent* event)
+{
+    EditableTableView::mousePressEvent(event);
+
+    QModelIndex currentIndex = indexAt(pressedPoint_);
+    if (!currentIndex.isValid())
+    {
+        emit(changeExtensionsEditorItem(currentIndex));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsView::currentChanged()
+//-----------------------------------------------------------------------------
+void PortsView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+{
+    emit(changeExtensionsEditorItem(current));
+
+    EditableTableView::currentChanged(current, previous);
+}

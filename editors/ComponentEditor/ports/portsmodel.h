@@ -136,6 +136,15 @@ public:
      */
     void setModelAndLockCurrentPorts(QSharedPointer<Model> model);
 
+    /*!
+     *  Get the port at the selected index.
+     *
+     *      @param [in] index   The index of the selected port.
+     *
+     *      @return Port at the selected index.
+     */
+    QSharedPointer<Port> getPortAtIndex(QModelIndex const& index) const;
+
 protected:
 
     /*!
@@ -227,6 +236,13 @@ signals:
      *  Prints a notification to user.
      */
 	void noticeMessage(const QString& msg) const;
+
+    /*!
+     *  Change the vendor extensions editor data.
+     *
+     *      @param [in] index   Index of the selected port.
+     */
+    void portExtensionDataChanged(QModelIndex const& index);
 
 private:
 	

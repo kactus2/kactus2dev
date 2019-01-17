@@ -16,6 +16,7 @@
 
 class LibraryInterface;
 class Component;
+class Extendable;
 
 //-----------------------------------------------------------------------------
 //! ItemEditor is a base class for editors in Component Editor module..
@@ -122,6 +123,14 @@ signals:
      *      @param [in] id      Id of the parameter, whose references are being increased.
      */
     void decreaseReferences(QString id);
+
+    /*!
+     *  Change the vendor extensions of the vendor extensions editor.
+     *
+     *      @param [in] containingID    ID for the vendor extensions editor.
+     *      @param [in] extensionItem   The item containing the selected vendor extensions.
+     */
+    void changeVendorExtensions(QString const& containingID, QSharedPointer<Extendable> extensionItem);
 
 protected:
 

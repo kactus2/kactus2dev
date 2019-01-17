@@ -189,6 +189,7 @@ void EditableTableView::mousePressEvent(QMouseEvent* event)
 {
 	pressedPoint_ = event->pos();
 
+    /*
 	// if user clicked area that has no item
 	QModelIndex pressedIndex = indexAt(pressedPoint_);
 	if (!pressedIndex.isValid())
@@ -196,6 +197,7 @@ void EditableTableView::mousePressEvent(QMouseEvent* event)
 		setCurrentIndex(pressedIndex);
 	}
 
+    */
 	QTableView::mousePressEvent(event);
 }
 

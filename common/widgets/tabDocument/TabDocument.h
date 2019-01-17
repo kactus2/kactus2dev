@@ -23,6 +23,8 @@
 #include <QSettings>
 #include <QMap>
 
+class Extendable;
+
 //-----------------------------------------------------------------------------
 //! TabDocument class.
 //-----------------------------------------------------------------------------
@@ -78,10 +80,11 @@ public:
      */
     virtual ~TabDocument();
 
-	/*! \brief Get the VLNV that can be used to identify the document.
+	/*!
+     *  Get the VLNV that can be used to identify the document.
 	 *
-	 * \return The VLNV that identifies the document.
-	*/
+	 *  return The VLNV that identifies the document.
+     */
 	virtual VLNV getIdentifyingVLNV() const = 0;
 
     /*!
@@ -175,16 +178,18 @@ public:
      */
     bool isModified() const;
 
-	/*! \brief Ask the user if file should be saved or not
+	/*!
+     *  Ask the user if file should be saved or not
 	 *
-	 * \return bool True if user wants to save a file.
-	*/
+	 *      return True if user wants to save a file.
+     */
 	bool askSaveFile() const;
 
-	/*! \brief Get the vlnv of the current component
+	/*!
+     *  Get the vlnv of the current component
 	 *
-	 * \return Base class returns invalid vlnv.
-	*/
+	 *      return Base class returns invalid vlnv.
+     */
 	virtual VLNV getDocumentVLNV() const;
 
     /*!
@@ -224,10 +229,11 @@ public:
      */
     virtual QSharedPointer<IEditProvider> getEditProvider() const;
 
-	/*! \brief Get the bit fields that define which windows are supported by this tab.
+	/*!
+     *  Get the bit fields that define which windows are supported by this tab.
 	 *
-	 * \return unsigned int which contains the bit fields specifying supported windows.
-	*/
+	 *      return unsigned int which contains the bit fields specifying supported windows.
+     */
 	virtual unsigned int getSupportedWindows() const;
 
     /*!
@@ -241,6 +247,7 @@ public:
     QMap<QString, bool> const& getVisibilityControls() const;
 
 public slots:
+
     /*!
      *  Validates the document against the IP-XACT standard.
      *
@@ -318,6 +325,14 @@ signals:
 
 	//! \brief Emitted when a system design should be opened in an editor.
 	void openSystemDesign(const VLNV& componentVLNV, const QString& viewName);
+
+    /*!
+     *  Change the vendor extensions of the vendor extensions editor.
+     *
+     *      @param [in] containingID    ID for the vendor extensions editor.
+     *      @param [in] extensionItem   The item containing the selected vendor extensions.
+     */
+    void changeVendorExtensions(QString const& containingID, QSharedPointer<Extendable> extensionItem);
 
 protected:
     /*!

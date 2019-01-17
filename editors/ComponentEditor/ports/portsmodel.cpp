@@ -293,6 +293,7 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         {
             port->setName(value.toString());
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
+            emit portExtensionDataChanged(index);
         }
         else if (index.column() == PortColumns::DIRECTION)
         {
@@ -406,6 +407,8 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         {
             QString tagGroup = value.toString();
             port->setPortTags(tagGroup);
+
+            emit portExtensionDataChanged(index);
         }
         else if (index.column() == PortColumns::ADHOC_VISIBILITY)
         {
@@ -988,4 +991,12 @@ bool PortsModel::hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) cons
     right.toInt(&rightNumber);
 
     return leftNumber || rightNumber;
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::getPortAtIndex()
+//-----------------------------------------------------------------------------
+QSharedPointer<Port> PortsModel::getPortAtIndex(QModelIndex const& index) const
+{
+    return portOnRow(index.row());
 }

@@ -43,6 +43,13 @@ signals:
     //! Emitted when new bus interface is selected from the context menu.
     void createExistingBus(QStringList const& portNames);
 
+    /*!
+     *  Change the vendor extensions of the vendor extensions editor.
+     *
+     *      @param [in] itemIndex   Index of the selected port.
+     */
+    void changeExtensionsEditorItem(QModelIndex const& itemIndex);
+
 private slots:
 
     //! Handler for new bus definition and interface creation.     
@@ -55,6 +62,19 @@ protected:
 
     //! Handler for context menu events.
     virtual void contextMenuEvent(QContextMenuEvent* event);
+
+    /*!
+     *  Handler for mouse press events.
+     */
+    virtual void mousePressEvent(QMouseEvent* event);
+
+    /*!
+     *  Handler for index change events.
+     *
+     *      @param [in] current     The current index.
+     *      @param [in] previous    The previous index.
+     */
+    virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
 
 private:
 

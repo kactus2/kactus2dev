@@ -91,7 +91,7 @@ QVariant VendorExtensionsModel::data(QModelIndex const& index, int role) const
             return KactusColors::DISABLED_TEXT;
         }
     }
-	else if (role == Qt::DisplayRole) 
+    else if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
     {
         QSharedPointer<VendorExtension> extension = vendorExtensions_->at(index.row());
         QSharedPointer<GenericVendorExtension> genericExtension = extension.dynamicCast<GenericVendorExtension>();
