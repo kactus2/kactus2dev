@@ -6,7 +6,7 @@
 // Date: 25.09.2014
 //
 // Description:
-// Parser for Verilog paramaters.
+// Parser for Verilog parameters.
 //-----------------------------------------------------------------------------
 
 #ifndef VERILOGPARAMETERPARSER_H
@@ -24,7 +24,7 @@
 class Component;
 
 //-----------------------------------------------------------------------------
-//! Parser for Verilog ports.
+//! Parser for Verilog parameters.
 //-----------------------------------------------------------------------------
 class VerilogParameterParser : public HighlightSource
 {
@@ -36,11 +36,16 @@ public:
     //! The destructor.
     virtual ~VerilogParameterParser();
 
+    // Disable copying.
+    VerilogParameterParser(VerilogParameterParser const& rhs) = delete;
+    VerilogParameterParser& operator=(VerilogParameterParser const& rhs) = delete;
+
     /*!
      *  Runs the port parsing for the given input and adds the parsed ports to the given component.
      *
-     *      @param [in] input               The input text to parse.
-     *      @param [in] targetComponent     The component to add all the imported ports to.
+     *      @param [in] input                           The input text to parse.
+     *      @param [in] targetComponent                 The component to add all the imported parameters to.
+     *      @param [in] targetComponentInstantiation    The instantiation to add all the imported parameters to.
      */
     virtual void import(QString const& input, QSharedPointer<Component> targetComponent,
 		QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
@@ -53,23 +58,14 @@ public:
     virtual void setHighlighter(Highlighter* highlighter);
 
     /*!
-     *  Finds parameter declarations formated in ANSI-style.
+     *  Finds parameter declarations in the given input.
      *
      *      @param [in] input   The input text to parse.
      *
-     *      @return   The resulting list of declarations.
+     *      @return   The resulting list of parameter declarations.
      */
-    QStringList findANSIDeclarations(QString const& input);
-
-    /*!
-     *  Finds parameter declarations formated in the old style.
-     *
-     *      @param [in] input   The input text to parse.
-     *
-     *      @return   The resulting list of declarations.
-     */
-    QStringList findOldDeclarations(QString const& input);
-
+    QStringList findDeclarations(QString const& input);
+   
     /*!
      *  Parses parameters out of declaration.
      *
@@ -81,19 +77,25 @@ public:
 
 private:
 
-    // Disable copying.
-    VerilogParameterParser(VerilogParameterParser const& rhs);
-    VerilogParameterParser& operator=(VerilogParameterParser const& rhs);
+    /*!
+     * Find the section in the input containing the parameter declarations.
+     *
+     *     @param [in] input  The input text to search.
+     *
+     *     @return The section of the text containing parameter declarations.
+     */
+     QString findParameterSection(QString const &input);
 
     /*!
-     *  Finds parameter declarations from the inspected string with provided rule.
+     *  Finds parameter declarations from the given string.
      *
-     *      @param [in] inspect           The input text containing the declarations.
-     *      @param [in] findTerminator    If true, finds a declaration ending by semicolon if needed.
+     *      @param [in] inspect           The input text containing the declarations.     
      *
      *      @return   The resulting list of declarations.
      */
-    QStringList findDeclarations(QString const& inspect, bool findTerminator);
+    QStringList findParameterDeclarations(QString const& inspect);
+
+    int findMatchingEndParenthesis(QString const& equation, int parenthesesStart) const;
 
     /*!
      *  Create an IP-XACT type for the parameter according to the given data type.
@@ -172,18 +174,9 @@ private:
       *
       *      @param [in] targetComponent   The component whose model parameter values to replace.
       */
-     void replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent,
+     void replaceNamesReferencesWithIds(QList<QSharedPointer<ModuleParameter> > parsedParameters,
+         QSharedPointer<Component> targetComponent,
          QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
-
-     /*!
-      *  Finds an existing parameter within a component.
-      *
-      *      @param [in] name       The name of the parameter to find.
-      *      @param [in] component  The component to search for the parameter.
-      *
-      *      @return The found parameter.
-      */
-     QSharedPointer<Parameter> findParameter(QString const& name, QSharedPointer<Component> component) const;
 
      /*!
       *  Replaces macro uses in parameter with corresponding id references.

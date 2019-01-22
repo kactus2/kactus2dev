@@ -767,7 +767,7 @@ void tst_VerilogImporter::testMacroInParameterBitWidth()
     runParser(
         "module test #(\n"
         "   parameter bit [0:2] [`BIT_LEFT:`BIT_RIGHT] valueHolder = 8'h0\n"
-        "();\n"
+        ") ();\n"
         "endmodule");
 
 	QSharedPointer<ComponentInstantiation> importComponentInstantiation =

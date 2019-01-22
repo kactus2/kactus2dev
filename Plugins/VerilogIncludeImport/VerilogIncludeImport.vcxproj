@@ -151,9 +151,12 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_WIDGETS_LIB -DVERILOGINCLUDEIMPORT_LIB -DQT_GUI_LIB -DQT_XML_LIB -D_WINDLL  "-I.\..\.." "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml"</Command>
     </CustomBuild>
     <ClInclude Include="..\PluginSystem\ImportPlugin\ImportColors.h" />
+    <ClInclude Include="..\VerilogImport\VerilogParameterParser.h" />
     <ClInclude Include="verilogincludeimport_global.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\VerilogImport\VerilogParameterParser.cpp" />
+    <ClCompile Include="..\VerilogImport\VerilogSyntax.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_VerilogIncludeImport.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

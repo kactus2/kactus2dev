@@ -159,6 +159,7 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\NullParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="..\common\HDLmath.h" />
     <ClInclude Include="VerilogParameterParser.h" />
     <ClInclude Include="VerilogPortParser.h" />

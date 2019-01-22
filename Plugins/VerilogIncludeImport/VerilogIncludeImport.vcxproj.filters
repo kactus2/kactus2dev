@@ -41,6 +41,9 @@
     <ClInclude Include="..\PluginSystem\ImportPlugin\ImportColors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\VerilogImport\VerilogParameterParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VerilogIncludeImport.h">
@@ -55,6 +58,12 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="VerilogIncludeImport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\VerilogImport\VerilogParameterParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\VerilogImport\VerilogSyntax.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

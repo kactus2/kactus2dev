@@ -15,13 +15,15 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/Model.h>
+
+#include <IPXACTmodels/utilities/Search.h>
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
+#include <QList>
 #include <QString>
 #include <QRegularExpression>
 
@@ -58,95 +60,116 @@ void VerilogParameterParser::setHighlighter(Highlighter* highlighter)
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::import(QString const& input, QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
-{
-    // Find parameter declarations. Try both formats, as we cannot know which one is used.
-    QStringList declarations;
-    declarations.append(findANSIDeclarations(input));
-    declarations.append(findOldDeclarations(input));
+{    
+    QStringList declarations = findDeclarations(input);
 
     QList<QSharedPointer<ModuleParameter> > parsedParameters;
-    foreach (QString const& declaration, declarations)
+    for (QString const& declaration : declarations)
     {
         parsedParameters.append(parseParameters(declaration));
     }
 
-    copyIdsFromOldModelParameters(parsedParameters, targetComponentInstantiation);
-
-    foreach (QSharedPointer<ModuleParameter> existingParameter, *targetComponentInstantiation->getModuleParameters())
+    if (targetComponentInstantiation.isNull() == false)
     {
-        if (existingParameter->getAttribute("imported").isEmpty())
+        copyIdsFromOldModelParameters(parsedParameters, targetComponentInstantiation);
+
+        for (QSharedPointer<ModuleParameter> existingParameter :
+            *targetComponentInstantiation->getModuleParameters())
         {
-            targetComponentInstantiation->getModuleParameters()->removeAll(existingParameter);
+            if (existingParameter->getAttribute("imported").isEmpty())
+            {
+                targetComponentInstantiation->getModuleParameters()->removeAll(existingParameter);
+            }
+            else
+            {
+                existingParameter->setAttribute("imported", "");
+            }
+        }
+
+        targetComponentInstantiation->getModuleParameters()->append(parsedParameters);
+    }
+
+    replaceNamesReferencesWithIds(parsedParameters, targetComponent, targetComponentInstantiation);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::findDeclarations()
+//-----------------------------------------------------------------------------
+QStringList VerilogParameterParser::findDeclarations(QString const& input)
+{    
+    return findParameterDeclarations(findParameterSection(input));
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::findParameterSection()
+//-----------------------------------------------------------------------------
+QString VerilogParameterParser::findParameterSection(QString const &input)
+{
+    QString inspect = VerilogSyntax::cullStrayComments(input);
+
+    // Priority on parameters declared in ANSI-style at module header.
+    // Otherwise, search the whole input.
+    QRegularExpression parameterStart(QStringLiteral("#\\s*[(]"));
+    QRegularExpressionMatch match = parameterStart.match(inspect);
+
+    int beginIndex = match.capturedEnd();
+    int endIndex = -1;
+    if (beginIndex != -1)
+    {
+        endIndex = findMatchingEndParenthesis(inspect, beginIndex - 1);
+    }
+
+    int length = input.length();
+    if (beginIndex == -1)
+    {
+        ++length;
+    }
+    else if (endIndex != -1)
+    {
+        length = endIndex - beginIndex;
+    }
+
+    return inspect.mid(beginIndex, length);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::findMatchingEndParenthesis()
+//-----------------------------------------------------------------------------
+int VerilogParameterParser::findMatchingEndParenthesis(QString const& equation, int parenthesesStart) const
+{
+    QRegularExpression parenthesesExpression("[()]");
+    QRegularExpression commentExpression(VerilogSyntax::COMMENT);
+
+    int position = parenthesesStart + 1;
+    QRegularExpressionMatch commentMatch = commentExpression.match(equation, position);
+
+    int depth = 1;
+    while (depth > 0)
+    {
+        position = equation.indexOf(parenthesesExpression, position);
+
+        // Skip commented sections.
+        if (commentMatch.hasMatch() && position > commentMatch.capturedStart())
+        {
+            position = commentMatch.capturedEnd();
+            commentMatch = commentExpression.match(equation, position);
+            continue;
+        }
+
+        if (parenthesesExpression.match(equation.at(position)).captured() == "(")
+        {
+            depth++;
         }
         else
         {
-            existingParameter->setAttribute("imported", "");
-        }        
+            depth--;
+        }
+        position++;
     }
 
-    targetComponentInstantiation->getModuleParameters()->append(parsedParameters);
-
-    replaceNamesReferencesWithIds(targetComponent, targetComponentInstantiation);
+    return position - 1;
 }
 
-//-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::findANSIDeclarations()
-//-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findANSIDeclarations(QString const& input)
-{
-    // Find the module declaration first.
-    QPair<int,int> declarationPosition = VerilogSyntax::findModuleDeclaration(input);
-
-    // If cannot find, return empty list.
-    if (declarationPosition.first == -1 || declarationPosition.second == -1)
-    {
-        return QStringList();
-    }
-
-    // In the ANSI style parameter declarations the parameters are contained WITHIN the module header
-    // and thus only the module header is inspected in the parsing.
-    QString inspect = input.mid(declarationPosition.first, declarationPosition.second);
-
-    // Cull the stray comments to avoid distractions to parsing.
-    inspect = VerilogSyntax::cullStrayComments(inspect);
-
-    // We shall further crop until the start of the ports.
-    QRegularExpression portsBegin("([)](\\s*|(\\s*" + VerilogSyntax::COMMENT + "\\s*))[(])", 
-        QRegularExpression::CaseInsensitiveOption);
-
-    QRegularExpression beginEnd("([)])");
-
-    int loc = inspect.lastIndexOf(portsBegin);
-
-    if ( loc != -1 )
-    {
-        // If encountered, rip off the port declarations.
-        QRegularExpression portsProper("([(].*[)])", QRegularExpression::DotMatchesEverythingOption);
-        loc = inspect.indexOf(portsProper,loc);
-        inspect = inspect.left(loc);
-        loc = inspect.lastIndexOf(beginEnd);
-
-        inspect = inspect.left(loc);
-    }
-
-    return findDeclarations(inspect, false);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::findOldDeclarations()
-//-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findOldDeclarations(QString const& input)
-{
-    // In the OLD style parameter declarations the parameters are between module header and footer.
-    int startIndex = VerilogSyntax::MODULE_BEGIN.match(input).capturedEnd();
-    int length = input.indexOf(VerilogSyntax::MODULE_END) - startIndex;
-
-    // And that is why the inspected the region between the header and footer are included to the parsing.
-    QString inspect = input.mid(startIndex, length);
-    inspect = VerilogSyntax::cullStrayComments(inspect);
-
-    return findDeclarations(inspect, true);
-}
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::parseParameters()
@@ -216,77 +239,46 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
 QString VerilogParameterParser::createTypeFromDataType(QString const& dataType)
 {
     QRegularExpression knownTypes(QStringLiteral("bit|byte|shortint|int|longint|shortreal|real|string"));
-
-    if (knownTypes.match(dataType).hasMatch())
-    {
-        return dataType;
-    }
-
-    return QString();
+    return knownTypes.match(dataType).captured();
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findDeclarations()
 //-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findDeclarations(QString const& inspect, bool findTerminator)
+QStringList VerilogParameterParser::findParameterDeclarations(QString const& inspect)
 {
-    // Rule used to detect parameter declarations.
-    QRegularExpression declarationRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
-
     // List of detected parameter declarations.
     QStringList declarations;
 
-    // The initial current is zero, since it will immediately replaced with the first next.
-    int currentStart = 0;
-    // The initial next is the first match, since it will become the first current.
-    int nextStart = inspect.indexOf(declarationRule);
+    // Rule used to detect parameter declarations.
+    QRegularExpression declarationRule("\\bparameter\\s+.*(?:"
+        "(;[ \\t]*" + VerilogSyntax::COMMENT + ")|"
+        "(;|$)|"
+        "(,([ \\t]*" + VerilogSyntax::COMMENT +")?(?=\\s*\\bparameter\\b)))",
+        QRegularExpression::CaseInsensitiveOption | QRegularExpression::InvertedGreedinessOption |
+        QRegularExpression::DotMatchesEverythingOption);
 
-    // Repeat the parsing until no more matches are found.
-    while (nextStart != -1)  
-    {
-        // The next of the previous iteration is now the current.
-        currentStart = nextStart;
-        // Find the location of the next parameter for this iteration.
-        nextStart = inspect.indexOf(declarationRule, currentStart + 1);
+    QRegularExpression commentBegin(QStringLiteral("//"));
+    QRegularExpression lineBegin(QStringLiteral("^|\\r?\\n"));
 
-        // Must find where the declaration ends: By default, its the next declaration.
-        int splitLocation = nextStart;
+    QRegularExpressionMatchIterator iter = declarationRule.globalMatch(inspect);
+    while (iter.hasNext())
+    {        
+        QRegularExpressionMatch match = iter.next();
+        QString declaration = match.captured();
+        int declarationBegin = match.capturedStart();
 
-        if (splitLocation < 0 && findTerminator)
+        // Check keyword parameter is not inside a comment.
+        if (inspect.lastIndexOf(lineBegin, declarationBegin) > inspect.lastIndexOf(commentBegin, declarationBegin))
         {
-            // If next declaration is not found, find the next terminator.
-            splitLocation = inspect.indexOf(";", currentStart + 1);
+            if (highlighter_)
+            {
+                highlighter_->applyFontColor(declaration, Qt::black); 
+                highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);                
+            }
 
-            // Then take the rest of the line, so that we get the comments as well.
-            splitLocation = inspect.indexOf("\n", splitLocation);
+            declarations.append(declaration);
         }
-
-        QString declaration;
-
-        if (splitLocation >= 0)
-        {
-            // Everything between current and split location are the declaration.
-            int length = splitLocation - currentStart;
-
-            declaration = inspect.mid(currentStart, length);
-        }
-        else
-        {
-            // No split location found means that take the rest of the sting.
-            declaration = inspect.mid(currentStart);
-        }
-
-        // Also remove extra white space.
-        declaration = declaration.trimmed();
-
-        // Highlight the selection if applicable.
-        if (highlighter_)
-        {
-            highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);
-        }
-
-		// Append the part to the list.
-        declarations.append(declaration);
     }
 
     return declarations;
@@ -299,7 +291,7 @@ QString VerilogParameterParser::parseType(QString const& input)
 {
     // The type is assumed to be the first word in the declaration.
     QString type = TYPE_RULE.match(input).captured(1);
-    if (type == "parameter")
+    if (type == QLatin1String("parameter"))
     {
         type.clear();
     }
@@ -390,9 +382,9 @@ QString VerilogParameterParser::parseDescription(QString const& input)
 void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<ModuleParameter> > parsedParameters,
     QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    foreach (QSharedPointer<ModuleParameter> parameter, parsedParameters)
+    for (QSharedPointer<ModuleParameter> parameter : parsedParameters)
     {
-		foreach (QSharedPointer<ModuleParameter> existingParameter,
+		for (QSharedPointer<ModuleParameter> existingParameter :
             *targetComponentInstantiation->getModuleParameters())
 		{
 			if (existingParameter->name().compare(parameter->name()) == 0)
@@ -407,12 +399,16 @@ void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::replaceReferenceNamesWithIds()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::replaceNamesReferencesWithIds(QSharedPointer<Component> targetComponent,
+void VerilogParameterParser::replaceNamesReferencesWithIds(
+    QList<QSharedPointer<ModuleParameter> > parsedParameters,
+    QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    foreach (QSharedPointer<ModuleParameter> moduleParameter, *targetComponentInstantiation->getModuleParameters())
+    for (QSharedPointer<ModuleParameter> moduleParameter : parsedParameters)
     {
-        QSharedPointer<Parameter> targetParameter = findParameter(moduleParameter->name(), targetComponent);
+        QSharedPointer<Parameter> targetParameter = 
+            Search::findByName(moduleParameter->name(), *targetComponent->getParameters()); 
+
         if (targetParameter.isNull())
         {
             targetParameter = QSharedPointer<Parameter>(new Parameter());
@@ -421,6 +417,7 @@ void VerilogParameterParser::replaceNamesReferencesWithIds(QSharedPointer<Compon
         }
         
         targetParameter->setValue(moduleParameter->getValue());
+        targetParameter->setType(moduleParameter->getType());
         targetParameter->setArrayLeft(moduleParameter->getArrayLeft());
         targetParameter->setArrayRight(moduleParameter->getArrayRight());
         targetParameter->setVectorLeft(moduleParameter->getVectorLeft());
@@ -431,32 +428,18 @@ void VerilogParameterParser::replaceNamesReferencesWithIds(QSharedPointer<Compon
         moduleParameter->setValue(targetParameter->getValueId());
     }
     
-    foreach (QSharedPointer<Parameter> parameter, *targetComponent->getParameters())
+    for (QSharedPointer<Parameter> parameter : *targetComponent->getParameters())
     {
         replaceNameReferencesWithParameterIds(parameter, targetComponent);
     }
 
-    foreach (QSharedPointer<ModuleParameter> parameter, *targetComponentInstantiation->getModuleParameters())
+    if (targetComponentInstantiation.isNull() == false)
     {
-        replaceNameReferencesWithParameterIds(parameter, targetComponent);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::findParameter()
-//-----------------------------------------------------------------------------
-QSharedPointer<Parameter> VerilogParameterParser::findParameter(QString const& name, 
-    QSharedPointer<Component> component) const
-{
-    foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
-    {
-        if (parameter->name().compare(name) == 0)
+        foreach(QSharedPointer<ModuleParameter> parameter, *targetComponentInstantiation->getModuleParameters())
         {
-            return parameter;
+            replaceNameReferencesWithParameterIds(parameter, targetComponent);
         }
     }
-
-    return QSharedPointer<Parameter>();
 }
 
 //-----------------------------------------------------------------------------

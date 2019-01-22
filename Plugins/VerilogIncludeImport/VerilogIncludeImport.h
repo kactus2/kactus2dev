@@ -19,6 +19,8 @@
 #include <Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
+#include <Plugins/VerilogImport/VerilogParameterParser.h>
+
 #include <QSharedPointer>
 #include <QObject>
 
@@ -148,6 +150,9 @@ private:
      */
     QSharedPointer<Parameter> findParameterByName(QSharedPointer<Component> targetComponent, 
         QString const& name) const;
+
+    //! Parser for verilog parameters.
+    VerilogParameterParser parameterParser_;
 
     //! The highlighter to use.
     Highlighter* highlighter_;

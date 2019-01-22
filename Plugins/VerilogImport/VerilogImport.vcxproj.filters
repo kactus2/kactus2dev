@@ -93,6 +93,9 @@
     <ClInclude Include="..\..\common\NameGenerationPolicy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VerilogImporter.h">

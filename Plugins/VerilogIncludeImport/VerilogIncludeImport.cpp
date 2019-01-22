@@ -28,7 +28,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::VerilogIncludeImport()
 //-----------------------------------------------------------------------------
-VerilogIncludeImport::VerilogIncludeImport() : QObject(0), highlighter_(0)
+VerilogIncludeImport::VerilogIncludeImport() : QObject(0), parameterParser_(), highlighter_(0)
 {
 
 }
@@ -54,7 +54,7 @@ QString VerilogIncludeImport::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogIncludeImport::getVersion() const
 {
-    return "1.0";
+    return "1.1";
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ QString VerilogIncludeImport::getVersion() const
 //-----------------------------------------------------------------------------
 QString VerilogIncludeImport::getDescription() const
 {
-    return "Import defines from a verilog include file.";
+    return "Import defines and parameters from a verilog include file.";
 }
 
 //-----------------------------------------------------------------------------
@@ -128,22 +128,22 @@ QString VerilogIncludeImport::getCompatibilityWarnings() const
 //-----------------------------------------------------------------------------
 void VerilogIncludeImport::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
-    QString nonCommentedInput = input;
-    nonCommentedInput.remove(VerilogSyntax::MULTILINE_COMMENT);
-    nonCommentedInput.remove(VerilogSyntax::COMMENTLINE);
+    QString nonCommentedInput = VerilogSyntax::cullStrayComments(input);
 
     int position = 0;
-    QRegularExpressionMatch match = DEFINE.match(nonCommentedInput, position);
-    while (match.hasMatch())
+    QRegularExpressionMatch defineMatch = DEFINE.match(nonCommentedInput, position);
+    while (defineMatch.hasMatch())
     {
-        QString definition = match.captured();
+        QString definition = defineMatch.captured();
 
         highlightDefinition(definition);
         createParameterFromDefinition(definition, targetComponent);
 
-        position = match.capturedStart() + match.capturedLength();
-        match = DEFINE.match(nonCommentedInput, position);
+        position = defineMatch.capturedStart() + defineMatch.capturedLength();
+        defineMatch = DEFINE.match(nonCommentedInput, position);
     }
+
+    parameterParser_.import(input, targetComponent, nullptr);    
 }
 
 //-----------------------------------------------------------------------------
@@ -152,6 +152,7 @@ void VerilogIncludeImport::import(QString const& input, QSharedPointer<Component
 void VerilogIncludeImport::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ = highlighter;
+    parameterParser_.setHighlighter(highlighter);
 }
 
 //-----------------------------------------------------------------------------
@@ -188,7 +189,7 @@ void VerilogIncludeImport::createParameterFromDefinition(QString const& definiti
 
     if (value.isEmpty())
     {
-        value = "1";
+        value = QStringLiteral("1");
     }
 
     parameter->setValue(value);

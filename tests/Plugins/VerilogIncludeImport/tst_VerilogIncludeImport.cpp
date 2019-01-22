@@ -44,6 +44,13 @@ private slots:
     
     void testDefinitionWithArgumentsIsNotParsed();
     void testDefinitionWithArgumentsIsNotParsed_data();
+
+    void testParameterIsParsed();
+    void testParameterIsParsed_data();
+
+    void testMultipleParameters();
+    void testMultipleParameters_data();
+
     void testDefineIsHighlighted();
     void testDefineIsHighlighted_data();
 
@@ -122,6 +129,7 @@ void tst_VerilogIncludeImport::testNothingIsParsedFromMalformedInput_data()
 
     QTest::newRow("Empty input") << "";
     QTest::newRow("Commented out definition") << "//`define ZERO 0\n";
+    QTest::newRow("IFDEF is not a definition") << "//`ifdef ENABLE\n";
 }
 
 //-----------------------------------------------------------------------------
@@ -165,6 +173,9 @@ void tst_VerilogIncludeImport::testDefineIsParsed_data()
     QTest::newRow("Value with trailing comment") <<  
         "`define COMMENTED 1 // Define description is given in comments.\n" 
         << "COMMENTED" << "1" << "Define description is given in comments.";
+    QTest::newRow("Only define, but no value") <<
+        "`define ENABLE_FEATURE            // Enables feature X.\n"
+        << "ENABLE_FEATURE" << "1" << "Enables feature X.";
 }
 
 //-----------------------------------------------------------------------------
@@ -236,6 +247,111 @@ void tst_VerilogIncludeImport::testDefinitionWithArgumentsIsNotParsed_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterIsParsed()
+//-----------------------------------------------------------------------------
+void tst_VerilogIncludeImport::testParameterIsParsed()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expectedName);
+    QFETCH(QString, expectedType);
+    QFETCH(QString, expectedValue);
+    QFETCH(QString, expectedDescription);
+
+    runParser(input);
+
+    QCOMPARE(importComponent_->getParameters()->count(), 1);
+
+    QSharedPointer<Parameter> createdParameter = importComponent_->getParameters()->first();
+    QCOMPARE(createdParameter->name(), expectedName);
+    QCOMPARE(createdParameter->getValue(), expectedValue);
+    QCOMPARE(createdParameter->description(), expectedDescription);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterIsParsed_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogIncludeImport::testParameterIsParsed_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedName");
+    QTest::addColumn<QString>("expectedType");
+    QTest::addColumn<QString>("expectedValue");
+    QTest::addColumn<QString>("expectedDescription");
+
+    QTest::newRow("Name and value") << "parameter basic_parameter = 1;\n" << "basic_parameter" << "" << "1" << "";
+    QTest::newRow("Name, type and value") << "parameter bit logic_one = '1;\n" << "logic_one" << "bit" << "'1" << "";
+
+    QTest::newRow("Name, type, value and description") <<
+        "parameter bit logic_one = '1; // Logical one.\n" << "logic_one" << "bit" << "'1" << "Logical one.";
+
+    QTest::newRow("Name and value, followed by ifdef section") << 
+        "parameter bit logic_one = '1;\n" 
+        "`ifdef FEATURE_EN // Comment for ifdef."
+        "`endif // FEATURE_EN"
+        << "logic_one" << "bit" << "'1" << "";
+
+    QTest::newRow("Function in value") <<
+        "parameter          VECT_WIDTH = $clog2(VECT_COUNT + 1);\n"
+        << "VECT_WIDTH" << "" << "$clog2(VECT_COUNT + 1)" << "";
+
+    QTest::newRow("Bit array type") <<
+        "parameter bit [VECT_COUNT-1:0] VECT_WIDTH =           'hFFFF0000;\n"
+        << "VECT_WIDTH" << "bit" << "'hFFFF0000" << "";
+
+    QTest::newRow("Complex value in vector") <<
+        "parameter bit [`B_LEN-1:0]  VECT_RST_VAL    =\n"
+        "                              BASE_BITS'(BASE_COUNT >> RESET_VALUE_BITS);"
+        << "VECT_RST_VAL" << "bit" << "BASE_BITS'(BASE_COUNT >> RESET_VALUE_BITS)" << "";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogIncludeImport::testMultipleParameters()
+//-----------------------------------------------------------------------------
+void tst_VerilogIncludeImport::testMultipleParameters()
+{
+    QFETCH(QString, input);
+    QFETCH(int, parameterCount);
+
+    runParser(input);
+
+    QCOMPARE(importComponent_->getParameters()->count(), parameterCount);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogIncludeImport::testMultipleParameters_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogIncludeImport::testMultipleParameters_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<int>("parameterCount");
+
+    QTest::newRow("Parameters on separate lines") <<
+        "parameter bit logic_one = '1;\n"
+        "parameter bit logic_zero = '0;\n"
+        << 2;
+
+    QTest::newRow("Parameter in comments on the same line") <<
+        "parameter bit logic_one = '1; // parameter bit logic_zero = '0; \n"
+        << 1;
+
+    QTest::newRow("Definitions and single-line comments mixed") <<
+        "parameter bit logic_one = '1;\n"
+        "// parameter bit logic_comment = '1;\n"
+        "parameter bit logic_zero = '0;\n"
+        << 2;
+
+    QTest::newRow("Parameters within ifdefs are imported") <<
+        "parameter data_width = 32;\n"
+        "parameter address_width = '8;\n"
+        "`ifdef DEBUG_EN\n"
+        "parameter bit logic_one = '1;\n"
+        "parameter bit logic_zero = '0;\n"
+        "`endif // DEBUG_EN"
+        << 4;
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogImporter::testDefineIsHighlighted()
 //-----------------------------------------------------------------------------
 void tst_VerilogIncludeImport::testDefineIsHighlighted()
@@ -245,7 +361,7 @@ void tst_VerilogIncludeImport::testDefineIsHighlighted()
 
     runParser(input);
 
-    QVERIFY2(importComponent_->getParameters()->count() != 0, "No model parameters parsed from input.");
+    QVERIFY2(importComponent_->getParameters()->count() != 0, "No parameters parsed from input.");
 
     int begin = input.indexOf(defineDeclaration);
 
