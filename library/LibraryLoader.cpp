@@ -172,7 +172,7 @@ void LibraryLoader::clearDirectoryStructure(QString const& dirPath, QStringList 
 //-----------------------------------------------------------------------------
 bool LibraryLoader::containsPath(QString const& path, QStringList const& pathsToSearch) const
 {
-    foreach (QString const& searchPath, pathsToSearch)
+    for (QString const& searchPath : pathsToSearch)
     {
         // As long as the path is not the same as search path but still contains the search path,
         // it is a parent directory of the path.

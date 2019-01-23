@@ -76,7 +76,7 @@ public:
 	HierarchyItem(LibraryInterface* handler, QObject* parent);
 
     //! The destructor
-    virtual ~HierarchyItem();
+    virtual ~HierarchyItem() = default;
 
 	/*! Create a child for the HierarchyItem that represents the given VLNV.
 	 * 
@@ -431,6 +431,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The VLNV this item represents.
+    VLNV vlnv_;
 
 	//! The component that this hierarhcyItem represents.
 	QSharedPointer<Component const> component_;

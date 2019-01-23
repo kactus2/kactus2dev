@@ -18,7 +18,6 @@
 
 #include <common/KactusColors.h>
 
-#include <QMap>
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
@@ -47,13 +46,9 @@ void HierarchyModel::onResetModel()
     QVector<VLNV> absDefs;
 
     // add all items to this model
-    foreach (VLNV const& itemVlnv, handler_->getAllVLNVs())
+    for (VLNV const& itemVlnv : handler_->getAllVLNVs())
     {
-        VLNV::IPXactType documentType = handler_->getDocumentType(itemVlnv);
-        if (documentType == VLNV::ABSTRACTIONDEFINITION)
-        {
-            absDefs.append(itemVlnv);
-        }
+        VLNV::IPXactType documentType = itemVlnv.getType();
 
         //! Add supported item types only. Designs and configurations will be created by their top-components.
         if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION ||
@@ -61,6 +56,11 @@ void HierarchyModel::onResetModel()
             documentType == VLNV::APIDEFINITION || documentType == VLNV::COMDEFINITION)
         {
             rootItem_->createChild(itemVlnv);
+
+            if (documentType == VLNV::ABSTRACTIONDEFINITION)
+            {
+                absDefs.append(itemVlnv);
+            }
         }
     }
 
@@ -70,7 +70,7 @@ void HierarchyModel::onResetModel()
     	QSharedPointer<AbstractionDefinition const> absDef = 
             handler_->getModelReadOnly(absDefVlnv).staticCast<AbstractionDefinition const>();
 
-        foreach (HierarchyItem* busDefItem, rootItem_->findItems(absDef->getBusType()))
+        for (HierarchyItem* busDefItem : rootItem_->findItems(absDef->getBusType()))
         {
     		busDefItem->createChild(absDefVlnv);
         }
@@ -196,7 +196,7 @@ QModelIndexList HierarchyModel::findIndexes(VLNV const& vlnv)
 {
     QModelIndexList list;
 
-    foreach (HierarchyItem* item, rootItem_->findItems(vlnv))
+    for (HierarchyItem* item : rootItem_->findItems(vlnv))
     {
     	list.append(index(item));
     }
@@ -711,7 +711,7 @@ int HierarchyModel::referenceCount(VLNV const& vlnv) const
 void HierarchyModel::onDocumentUpdated(VLNV const& vlnv)
 {
     bool isValid = handler_->isValid(vlnv);
-    foreach (HierarchyItem* updatedItem, rootItem_->findItems(vlnv))
+    for (HierarchyItem* updatedItem : rootItem_->findItems(vlnv))
     {
         updatedItem->setValidity(isValid);
     }

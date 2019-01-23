@@ -27,7 +27,7 @@ public:
 private:
 
     LibraryHandler* createLibraryHandler();
-
+    
     void setupTestLibrary();
 
     MessagePasser messageChannel_;
@@ -43,11 +43,34 @@ private slots:
     void testLibraryGetModel();
 
     void testDocumentsInLocationAreRead();
+
+
 };
 
 tst_LibraryHandler::tst_LibraryHandler()
 {
 
+}
+
+void tst_LibraryHandler::initTestcase()
+{
+    qInstallMessageHandler(noMessageOutput);
+}
+
+void tst_LibraryHandler::setupTestLibrary()
+{
+    QCoreApplication::setOrganizationDomain(QStringLiteral("tut.fi"));
+    QCoreApplication::setOrganizationName(QStringLiteral("TUT"));
+    QCoreApplication::setApplicationName(QStringLiteral("Kactus2_tests"));
+
+    QSettings settings;
+    settings.setPath(QSettings::IniFormat, QSettings::UserScope, "tests.ini");
+    settings.setValue("Library/ActiveLocations", QStringList("D:/Data/kactus_test_libraries/ipxactexamplelib"));
+}
+
+LibraryHandler* tst_LibraryHandler::createLibraryHandler()
+{
+    return new LibraryHandler(0, &messageChannel_, this);
 }
 
 void tst_LibraryHandler::testLibraryDoesNotContainItem()
@@ -119,26 +142,8 @@ void tst_LibraryHandler::testDocumentsInLocationAreRead()
     QVERIFY(library->getAllVLNVs().count() != 0);
 }
 
-LibraryHandler* tst_LibraryHandler::createLibraryHandler()
-{
-    return new LibraryHandler(0, &messageChannel_, 0);
-}
 
-void tst_LibraryHandler::setupTestLibrary()
-{
-    QCoreApplication::setOrganizationDomain(QStringLiteral("tut.fi"));
-    QCoreApplication::setOrganizationName(QStringLiteral("TUT"));
-    QCoreApplication::setApplicationName(QStringLiteral("Kactus2_tests"));
 
-    QSettings settings;
-    settings.setPath(QSettings::IniFormat, QSettings::UserScope, "tests.ini");
-    settings.setValue("Library/ActiveLocations", QStringList("C:/dev/k2lib/ipxactexamplelib"));
-}
-
-void tst_LibraryHandler::initTestcase()
-{
-    qInstallMessageHandler(noMessageOutput);
-}
 
 
 QTEST_APPLESS_MAIN(tst_LibraryHandler)

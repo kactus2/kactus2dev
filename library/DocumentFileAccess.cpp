@@ -61,6 +61,8 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
 {
     // Create file handle and use it to read the IP-XACT document into memory.
     QFile file(path);
+    file.open(QIODevice::ReadOnly);
+
     QDomDocument doc;
     if (!doc.setContent(&file))
     {

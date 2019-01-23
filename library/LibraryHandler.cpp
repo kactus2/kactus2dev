@@ -77,21 +77,21 @@ QObject(parent),
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> LibraryHandler::getModel(VLNV const& vlnv)
 {
-    // if object has already been previously parsed
-    if (documentCache_.contains(vlnv))
+    auto info = documentCache_.find(vlnv);
+    if (info == documentCache_.end())
     {
-        auto info = documentCache_.find(vlnv);
-        if (info->document.isNull())
-        {
-            info->document = fileAccess_.readDocument(info->path);
-        }
-
-        QSharedPointer<Document> copy = info->document->clone();
-        return copy;
+        showNotFoundError(vlnv);
+        return QSharedPointer<Document>();
     }
 
-    showNotFoundError(vlnv);
-    return QSharedPointer<Document>();
+    // If object has not already been parsed, read it from the disk.
+    if (info->document.isNull())
+    {
+        info->document = fileAccess_.readDocument(info->path);
+    }
+
+    QSharedPointer<Document> copy = info->document->clone();
+    return copy;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,18 +99,18 @@ QSharedPointer<Document> LibraryHandler::getModel(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 QSharedPointer<Document const> LibraryHandler::getModelReadOnly(VLNV const& vlnv)
 {
-    if (documentCache_.contains(vlnv))
+    auto info = documentCache_.find(vlnv);
+    if (info == documentCache_.end())
     {
-        auto info = documentCache_.find(vlnv);
-        if (info->document.isNull())
-        {
-            info->document = fileAccess_.readDocument(info->path);
-        }
-
-        return info->document;
+        return QSharedPointer<Document const>();
     }
-    
-    return QSharedPointer<Document const>();
+
+    if (info->document.isNull())
+    {
+        info->document = fileAccess_.readDocument(info->path);
+    }
+
+    return info->document;
 }
 
 //-----------------------------------------------------------------------------
@@ -260,7 +260,7 @@ LibraryItem const* LibraryHandler::getTreeRoot() const
 //-----------------------------------------------------------------------------
 VLNV::IPXactType LibraryHandler::getDocumentType(VLNV const& vlnv)
 {
-    QMap<VLNV, DocumentInfo>::const_iterator it = documentCache_.constFind(vlnv);
+    auto it = documentCache_.constFind(vlnv);
     if (it == documentCache_.constEnd())
     {
         return VLNV::INVALID;
@@ -391,11 +391,14 @@ void LibraryHandler::onCheckLibraryIntegrity()
 
     for (auto it = documentCache_.begin(); it != documentCache_.end(); ++it)
     {
-        QSharedPointer<Document> model = fileAccess_.readDocument(it->path);
-
         // TODO: Add model to cache only, if it is already previously cached.
         // Current hierarchy model forces all models to be loaded, but this should be changed.
-        it->document = model;
+        QSharedPointer<Document> model = it->document;
+        if (model.isNull())
+        {
+            model = fileAccess_.readDocument(it->path);
+            it->document = model;
+        }           
 
         it->isValid = validateDocument(model, it->path);
         if (it->isValid == false)
@@ -1064,8 +1067,7 @@ void LibraryHandler::loadAvailableVLNVs()
 
     // Read all items before validation.
     // Validation will check for VLNVs in the library, so they must be available before validation.
-    QVector<LibraryLoader::LoadTarget> vlnvPaths = loader_.parseLibrary();
-    for (auto const& target: vlnvPaths)
+    for (auto const& target: loader_.parseLibrary())
     {
         if (contains(target.vlnv))
         {
@@ -1365,14 +1367,7 @@ QString LibraryHandler::createExportMessage(DocumentStatistics const& exportStat
 //-----------------------------------------------------------------------------
 bool LibraryHandler::validateDocument(QSharedPointer<Document> document, QString const& documentPath)
 {
-    if (document.isNull())
-    {
-        return false;
-    }
-
-    Q_ASSERT(!documentPath.isEmpty());
-
-    if (QFileInfo(documentPath).exists() == false)
+    if (document.isNull() || QFileInfo(documentPath).exists() == false)
     {
         return false;
     }
@@ -1485,14 +1480,12 @@ bool LibraryHandler::validateDependentFiles(QSharedPointer<Document> document, Q
         int pos = 0;
         if (urlTester_.validate(filePath, pos) != QValidator::Acceptable)
         {
-            QString absolutePath = filePath;
-
             if (QFileInfo(filePath).isRelative())
             {
-                absolutePath = General::getAbsolutePath(documentPath, filePath);
+                filePath = General::getAbsolutePath(documentPath, filePath);
             }
 
-            if (QFileInfo(absolutePath).exists() == false)
+            if (QFileInfo(filePath).exists() == false)
             {
                 return false;
             }

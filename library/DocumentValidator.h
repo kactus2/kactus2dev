@@ -16,6 +16,10 @@
 #include <QString>
 #include <QVector>
 
+
+#include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
+#include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
+#include <IPXACTmodels/Catalog/validators/CatalogValidator.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 #include <IPXACTmodels/Design/validator/DesignValidator.h>
 #include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
@@ -40,7 +44,7 @@ public:
     DocumentValidator(LibraryInterface* library);
 
     //! The destructor.
-    ~DocumentValidator();
+    ~DocumentValidator() = default;
 
     bool validate(QSharedPointer<Document> document);
 
@@ -110,6 +114,15 @@ private:
 
      //! The parameter finder used in the component validator.
      QSharedPointer<ComponentParameterFinder> componentValidatorFinder_;
+
+     //! The used abstraction definition validator.
+     AbstractionDefinitionValidator abstractionValidator_;
+
+     //! The used bus definition validator.
+     BusDefinitionValidator busValidator_;
+
+     //! The used catalog validator.
+     CatalogValidator catalogValidator_;
 
      //! The used component validator.
      ComponentValidator componentValidator_;

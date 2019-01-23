@@ -399,7 +399,7 @@ bool Model::hasPorts() const
 //-----------------------------------------------------------------------------
 bool Model::hasHierView() const
 {
-    foreach (QSharedPointer<View> view, *views_)
+    for (QSharedPointer<View> view : *views_)
     {
         if (view->isHierarchical())
         {
@@ -461,13 +461,10 @@ bool Model::hasContents() const
 //-----------------------------------------------------------------------------
 void Model::copyViews(Model const& other) const
 {
-    foreach (QSharedPointer<View> view, *other.views_)
+    for (QSharedPointer<View> view : *other.views_)
     {
-        if (view)
-        {
-            QSharedPointer<View> copy = QSharedPointer<View>(new View(*view.data()));
-            views_->append(copy);
-        }
+        QSharedPointer<View> copy = QSharedPointer<View>(new View(*view.data()));
+        views_->append(copy);
     }
 }
 
@@ -476,14 +473,11 @@ void Model::copyViews(Model const& other) const
 //-----------------------------------------------------------------------------
 void Model::copyComponentInstantiations(Model const& other) const
 {
-    foreach (QSharedPointer<ComponentInstantiation> instantiation, *other.componentInstantiations_)
+    for (QSharedPointer<ComponentInstantiation> instantiation : *other.componentInstantiations_)
     {
-        if (instantiation)
-        {
-            QSharedPointer<ComponentInstantiation> copy =
-                QSharedPointer<ComponentInstantiation>(new ComponentInstantiation(*instantiation.data()));
-            componentInstantiations_->append(copy);
-        }
+        QSharedPointer<ComponentInstantiation> copy =
+            QSharedPointer<ComponentInstantiation>(new ComponentInstantiation(*instantiation.data()));
+        componentInstantiations_->append(copy);
     }
 }
 
@@ -492,13 +486,10 @@ void Model::copyComponentInstantiations(Model const& other) const
 //-----------------------------------------------------------------------------
 void Model::copyDesignInstantiations(Model const& other) const
 {
-    foreach (QSharedPointer<DesignInstantiation> instantiation, *other.designInstantiations_)
+    for (QSharedPointer<DesignInstantiation> instantiation : *other.designInstantiations_)
     {
-        if (instantiation)
-        {
-            QSharedPointer<DesignInstantiation> copy(new DesignInstantiation(*instantiation));
-            designInstantiations_->append(copy);
-        }
+        QSharedPointer<DesignInstantiation> copy(new DesignInstantiation(*instantiation));
+        designInstantiations_->append(copy);
     }
 }
 
@@ -507,15 +498,12 @@ void Model::copyDesignInstantiations(Model const& other) const
 //-----------------------------------------------------------------------------
 void Model::copyDesignConfigurationInstantiations(const Model& other) const
 {
-    foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+    for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
         *other.designConfigurationInstantiations_)
     {
-        if (instantiation)
-        {
-            QSharedPointer<DesignConfigurationInstantiation> copy(new DesignConfigurationInstantiation(
-                *instantiation));
-            designConfigurationInstantiations_->append(copy);
-        }
+        QSharedPointer<DesignConfigurationInstantiation> copy(new DesignConfigurationInstantiation(
+            *instantiation));
+        designConfigurationInstantiations_->append(copy);
     }
 }
 
@@ -524,12 +512,9 @@ void Model::copyDesignConfigurationInstantiations(const Model& other) const
 //-----------------------------------------------------------------------------
 void Model::copyPorts(Model const& other) const
 {
-    foreach (QSharedPointer<Port> port, *other.ports_)
+    for (QSharedPointer<Port> port : *other.ports_)
     {
-        if (port)
-        {
-            QSharedPointer<Port> copy = QSharedPointer<Port>(new Port(*port));
-            ports_->append(copy);
-        }
+        QSharedPointer<Port> copy = QSharedPointer<Port>(new Port(*port));
+        ports_->append(copy);
     }
 }
