@@ -2752,9 +2752,6 @@
     <ClInclude Include="generaldeclarations.h" />
     <ClInclude Include="ipxactmodels_global.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1771,7 +1771,4 @@
       <Filter>Header Files\common</Filter>
     </CustomBuild>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-  </ItemGroup>
 </Project>
