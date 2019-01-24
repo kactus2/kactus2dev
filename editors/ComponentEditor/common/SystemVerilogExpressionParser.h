@@ -110,7 +110,7 @@ protected:
     *
     *      @param [in] oper  The operator whose precedence to get.
     *
-    *      @return The precedenve value where bigger value has higher precedence.
+    *      @return The precedence value where bigger value has higher precedence.
     */
     unsigned int operatorPrecedence(QString oper) const;
 
@@ -138,7 +138,7 @@ private:
      *
      *      @return The solved result.
      */
-    QString solveRPN(QStringList const& rpn, bool* validExpression) const;
+    QString solveRPN(QStringList rpn, bool* validExpression) const;
 
     /*!
      *  Checks if the given expression is a string.
