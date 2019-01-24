@@ -90,9 +90,6 @@ void FileSetReader::parseFiles(QDomElement const& fileSetElement, QSharedPointer
             newFileSet->getFiles()->append(newFile);
         }
     }
-
-	// Sort the files in the file set.
-	newFileSet->sortFiles();
 }
 
 //-----------------------------------------------------------------------------
