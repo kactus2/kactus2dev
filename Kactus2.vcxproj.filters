@@ -923,6 +923,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\resetTypes">
       <UniqueIdentifier>{0f12853c-c767-42a8-b933-8619ad2c25e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\common\ComponentItemAutoConnector">
+      <UniqueIdentifier>{b19bcb03-5261-4a26-bc2b-0a5a52a78cc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\ComponentItemAutoConnector">
+      <UniqueIdentifier>{8029a13a-32fe-4c57-8ddb-679bc640eb95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4585,6 +4591,21 @@
     <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionsDelegate.cpp">
       <Filter>Source Files\editors\VendorExtensionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\ComponentItemAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentItemAutoConnector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\PortList.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\ConnectedPortsTable.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConnectedPortsTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6270,6 +6291,12 @@
     <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsDelegate.h">
       <Filter>Header Files\editors\VendorExtensionEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\ComponentItemAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\ConnectedPortsTable.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6991,6 +7018,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\ResetColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\PortList.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -97,6 +97,11 @@ public slots:
      */
     virtual void onOpenDesignAction(QAction* selectedAction);
 
+    /*!
+     *  Called when the auto connected is selected from the context menu.
+     */
+    virtual void onOpenAutoConnector();
+
 protected:
 
     /*!
@@ -181,6 +186,13 @@ protected:
      *      @return True, if action should be enabled, otherwise false.
      */
     virtual bool openDesignEnabled() const;
+
+    /*!
+     *  Checks if the auto connector action is enabled.
+     *
+     *      @return True, if the action is enabled, otherwise false.
+     */
+    virtual bool autoConnectorEnabled() const;
 
     /*!
      *  Checks if the given item is a hierarchical component.
@@ -520,8 +532,27 @@ private:
      */
     void highlightPotentialEndpointUnderCursor(QPointF const& cursorPosition);
 
-    //! Removes highlight from the current connection end point.
+    /*!
+     *  Removes highlight from the current connection end point.
+     */
     void disableCurrentHighlight();
+
+    /*!
+     *  Setup the text for the auto connector action.
+     *
+     *      @param [in] componentItem   The target of the connection.
+     */
+    void setupAutoconnectText(ComponentItem* componentItem);
+
+    /*!
+     *  Get the connection end point for the selected port contained within the selected component item.
+     *
+     *      @param [in] selectedPort    The selected port.
+     *      @param [in] item            The containing component item.
+     *
+     *      @return The end point item for the selected port.
+     */
+    ConnectionEndpoint* getEndPointForPortInItem(QSharedPointer<Port> selectedPort, ComponentItem* item) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -566,9 +597,14 @@ private:
     //! Context menu sub-menu for opening a component design.
     QMenu openDesignMenu_;
 
+    //! Context menu action for automatically connecting connection end points of two selected components.
+    QAction openAutoConnector_;
+
     //! Cursor position where the user right-presses to open the context menu.
     QPoint clickedPosition_;
 
+    //! The component item that was selected as the origin point of the context menu event.
+    ComponentItem* contextMenuItem_;
 };
 
 #endif // COMPONENTDESIGNDIAGRAM_H

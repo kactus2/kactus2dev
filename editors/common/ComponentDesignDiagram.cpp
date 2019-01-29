@@ -21,8 +21,13 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
+#include <editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h>
+#include <editors/common/ComponentItemAutoConnector/ConnectedPortsTable.h>
 #include <editors/common/DiagramUtil.h>
 #include <editors/common/DesignWidget.h>
+
+//! This should be moved to HWDesignDiagram.
+#include <editors/HWDesign/AdHocConnectionItem.h>
 
 #include <library/LibraryHandler.h>
 
@@ -52,6 +57,7 @@ ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPoin
     openComponentAction_(tr("Open Component"), this),
     deleteAction_(tr("Delete"), this),
     openDesignMenu_(tr("Open Design")),
+    openAutoConnector_(tr("Connect to ..."), this),
     clickedPosition_()
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
@@ -223,6 +229,72 @@ void ComponentDesignDiagram::onOpenDesignAction(QAction* selectedAction)
             openDesignForComponent(component, viewName);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::onOpenAutoConnector()
+//-----------------------------------------------------------------------------
+void ComponentDesignDiagram::onOpenAutoConnector()
+{
+    QGraphicsItem* secondItem = selectedItems().first();
+    if (secondItem == contextMenuItem_)
+    {
+        secondItem = selectedItems().last();
+    }
+
+    ComponentItem* secondComponentItem = dynamic_cast<ComponentItem*>(secondItem);
+
+    ComponentItemAutoConnector autoConnecter(contextMenuItem_, secondComponentItem);
+    if (autoConnecter.exec() == QDialog::Accepted)
+    {
+        QVector<QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> > autoConnections =
+            autoConnecter.getConnectedPorts();
+
+        if (!autoConnections.isEmpty())
+        {
+            for (auto portConnection : autoConnections)
+            {
+                QSharedPointer<Port> startPort = portConnection.first.port_;
+                ComponentItem* startItem = portConnection.first.containingItem_;
+
+                QSharedPointer<Port> endPort = portConnection.second.port_;
+                ComponentItem* endItem = portConnection.second.containingItem_;
+
+                ConnectionEndpoint* startPointItem = getEndPointForPortInItem(startPort, startItem);
+                ConnectionEndpoint* endPointItem = getEndPointForPortInItem(endPort, endItem);
+
+                if (startPointItem && endPointItem)
+                {
+                    GraphicsConnection* newConnection = createConnection(startPointItem, endPointItem);
+
+                    AdHocConnectionItem* adhocItem = dynamic_cast<AdHocConnectionItem*>(newConnection);
+                    addItem(adhocItem);
+
+                    getDesign()->getAdHocConnections()->append(adhocItem->getAdHocConnection());
+                    getDesign()->addRoute(adhocItem->getRouteExtension());
+                }
+            }
+
+            emit contentChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::getEndPointForPortInItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* ComponentDesignDiagram::getEndPointForPortInItem(QSharedPointer<Port> selectedPort,
+    ComponentItem* item) const
+{
+    for (auto endpoint : item->getEndpoints())
+    {
+        if (endpoint->isAdHoc() && endpoint->getPort() == selectedPort)
+        {
+            return endpoint;
+        }
+    }
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -408,13 +480,19 @@ QMenu* ComponentDesignDiagram::createContextMenu(QPointF const& pos)
         menu->addAction(&openComponentAction_);
         menu->addMenu(&openDesignMenu_);
         menu->addSeparator();
+        menu->addAction(&openAutoConnector_);
+        menu->addSeparator();
         menu->addAction(&copyAction_);
         menu->addAction(&pasteAction_);
         menu->addAction(&deleteAction_);
 
+        openAutoConnector_.setText("Connect to ...");
+
         ComponentItem* compItem = dynamic_cast<ComponentItem*>(item);
+        contextMenuItem_ = compItem;
         if (compItem)
         {
+            setupAutoconnectText(compItem);
             updateOpenDesignMenuFor(compItem);
         }
     }
@@ -444,6 +522,37 @@ void ComponentDesignDiagram::updateOpenDesignMenuFor(ComponentItem* compItem)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::setupAutoconnectText()
+//-----------------------------------------------------------------------------
+void ComponentDesignDiagram::setupAutoconnectText(ComponentItem* componentItem)
+{
+    if (openAutoConnector_.isEnabled())
+    {
+        ComponentItem* connectionTarget;
+        if (selectedItems().first() == componentItem)
+        {
+            connectionTarget = dynamic_cast<ComponentItem*>(selectedItems().last());
+        }
+        else
+        {
+            connectionTarget = dynamic_cast<ComponentItem*>(selectedItems().first());
+        }
+
+        QString actionText = openAutoConnector_.text();
+
+        QString targetName = connectionTarget->displayName();
+        if (targetName.isEmpty())
+        {
+            targetName = connectionTarget->name();
+        }
+
+        actionText.replace("...", targetName);
+
+        openAutoConnector_.setText(actionText);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::prepareContextMenuActions()
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::prepareContextMenuActions()
@@ -453,7 +562,7 @@ void ComponentDesignDiagram::prepareContextMenuActions()
 
     openDesignMenu_.clear();    
     openDesignMenu_.setEnabled(openDesignEnabled());
-
+    openAutoConnector_.setEnabled(autoConnectorEnabled());
     copyAction_.setEnabled(copyActionEnabled());
     pasteAction_.setEnabled(pasteActionEnabled());
     deleteAction_.setEnabled(deleteActionEnabled());
@@ -481,6 +590,15 @@ bool ComponentDesignDiagram::addToLibraryActionEnabled() const
 bool ComponentDesignDiagram::openDesignEnabled() const
 {
     return singleSelection() && !draftSelected() && isHierarchicalComponent(selectedItems().first());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::autoConnectorEnabled()
+//-----------------------------------------------------------------------------
+bool ComponentDesignDiagram::autoConnectorEnabled() const
+{
+    return !isProtected() && selectedItems().count() == 2 && selectedItems().first()->type() == componentType() &&
+        selectedItems().last()->type() == componentType();
 }
 
 //-----------------------------------------------------------------------------
@@ -612,6 +730,8 @@ void ComponentDesignDiagram::setupActions()
 
     connect(&openDesignMenu_, SIGNAL(triggered(QAction*)),
         this, SLOT(onOpenDesignAction(QAction*)), Qt::UniqueConnection);
+
+    connect(&openAutoConnector_, SIGNAL(triggered()), this, SLOT(onOpenAutoConnector()), Qt::AutoConnection);
 }
 
 //-----------------------------------------------------------------------------
