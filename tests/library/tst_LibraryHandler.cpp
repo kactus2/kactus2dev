@@ -65,7 +65,7 @@ void tst_LibraryHandler::setupTestLibrary()
 
     QSettings settings;
     settings.setPath(QSettings::IniFormat, QSettings::UserScope, "tests.ini");
-    settings.setValue("Library/ActiveLocations", QStringList("D:/Data/kactus_test_libraries/ipxactexamplelib"));
+    settings.setValue("Library/ActiveLocations", QStringList("D:/Data/kactus_test_libraries/"));
 }
 
 LibraryHandler* tst_LibraryHandler::createLibraryHandler()
@@ -77,7 +77,7 @@ void tst_LibraryHandler::testLibraryDoesNotContainItem()
 {
     QScopedPointer<LibraryHandler> library(createLibraryHandler());
 
-    setupTestLibrary();
+    //setupTestLibrary();
 
     VLNV nonExistingItem(VLNV::COMPONENT, QStringLiteral("tut.fi:testLibrary:noItem:0"));
 
@@ -94,7 +94,7 @@ void tst_LibraryHandler::testLibraryContainsItem()
 {
     QScopedPointer<LibraryHandler> library(createLibraryHandler());
 
-    setupTestLibrary();
+    //setupTestLibrary();
     library->searchForIPXactFiles();
 
     VLNV validItem(VLNV::COMPONENT, QStringLiteral("tut.fi:cpu.logic:alu:1.0"));
@@ -112,7 +112,7 @@ void tst_LibraryHandler::testLibraryGetModel()
 {
     QScopedPointer<LibraryHandler> library(createLibraryHandler());
 
-    setupTestLibrary();
+    //setupTestLibrary();
     library->searchForIPXactFiles();
 
     VLNV validItem(VLNV::COMPONENT, QStringLiteral("tut.fi:cpu.logic:alu:1.0"));
@@ -139,11 +139,8 @@ void tst_LibraryHandler::testDocumentsInLocationAreRead()
         library->searchForIPXactFiles();
     }
 
-    QVERIFY(library->getAllVLNVs().count() != 0);
+    QVERIFY(library->getAllVLNVs().count() == 1338);
 }
-
-
-
 
 
 QTEST_APPLESS_MAIN(tst_LibraryHandler)

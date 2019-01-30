@@ -16,11 +16,12 @@
 
 #include <common/ui/MessageMediator.h>
 
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <QObject>
 
-class LibraryLoader : public QObject
+class LibraryLoader 
 {
-	Q_OBJECT
 public:
 
 	/*! The constructor.
@@ -28,7 +29,7 @@ public:
 	*      @param [in] messageChannel	The message channel for notifications.
 	*      @param [in] parent			The parent object.	
 	*/
-    explicit LibraryLoader(MessageMediator* messageChannel, QObject* parent = nullptr);
+    explicit LibraryLoader(MessageMediator* messageChannel);
 
 	//! The destructor.
      ~LibraryLoader() = default;
@@ -47,7 +48,7 @@ public:
 	*
 	*      @param [in] changedDirectories	Changed directories (e.g. after a remove).
 	*/
-    void clean(QStringList changedDirectories);
+    void clean(QStringList const& changedDirectories) const;
 
 	/*! Searches for IP-XACT files and returns any found targets.
 	*
@@ -56,20 +57,6 @@ public:
     QVector<LoadTarget> parseLibrary();
 
 private:
-
-	/*! Searches through a single directory for IP-XACT files.
-	*
-	*      @param [in]		directoryPath	The directory path to search.
-	*      @param [in/out]	vlnvPaths		The already found targets where any new IP-XACT files will be added.
-	*/
-    void parseDirectory(QString const& directoryPath, QVector<LoadTarget>& vlnvPaths);
-
-    /*! Searches through a single file for IP-XACT files.
-	*
-	*      @param [in]		filePath	The file path to search.
-	*      @param [in/out]	vlnvPaths	The already found targets where any new IP-XACT files will be added.
-	*/
-    void parseFile(QString const& filePath, QVector<LoadTarget>& vlnvPaths);
 
     /*! Finds the VLNV in the given file.
     *
@@ -85,7 +72,7 @@ private:
      *      @param [in] libraryLocations Contains the base library locations user has defined.
      *
     */
-    void clearDirectoryStructure(QString const& dirPath, QStringList const& libraryLocations);
+    void clearDirectoryStructure(QString const& dirPath, QStringList const& libraryLocations) const;
 
     /*! Check if the path contains one of the given paths.
      *
@@ -102,5 +89,6 @@ private:
     DocumentFileAccess fileAccess_;
 };
 
+Q_DECLARE_TYPEINFO(LibraryLoader::LoadTarget, Q_MOVABLE_TYPE);
 
 #endif // LIBRARYLOADER_H

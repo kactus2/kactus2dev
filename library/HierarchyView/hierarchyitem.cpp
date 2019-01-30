@@ -30,13 +30,7 @@ HierarchyItem::HierarchyItem(LibraryInterface* handler, HierarchyItem* parent,
     VLNV const& vlnv, KactusAttribute::Implementation implementation, QString const& viewName):
 QObject(parent),
     vlnv_(vlnv),
-    component_(),
-    busDef_(),
-    absDef_(),
-    comDef_(),
-    apiDef_(),
-    design_(),
-    catalog_(),
+    component_(),    
     library_(handler),
     childItems_(),
     parentItem_(parent),
@@ -99,12 +93,6 @@ HierarchyItem::HierarchyItem(LibraryInterface* handler, QObject* parent ):
 QObject(parent),
     vlnv_(),
     component_(),
-    busDef_(),
-    absDef_(),
-    comDef_(),
-    apiDef_(),
-    design_(),
-    catalog_(),
     library_(handler),
     childItems_(),
     parentItem_(NULL),
@@ -222,7 +210,7 @@ bool HierarchyItem::contains(VLNV const& vlnv) const
         return true;
     }
 
-	for (HierarchyItem* item : childItems_)
+	for (HierarchyItem const* item : childItems_)
     {
 		if (item->contains(vlnv))
         {
@@ -274,7 +262,7 @@ int HierarchyItem::referenceCount(VLNV const& vlnv) const
 	int count = 0;
 
 	// add the reference count of all child items.
-	for (HierarchyItem* item : childItems_)
+	for (HierarchyItem const* item : childItems_)
     {		
 		// if item itself matches the vlnv and this item is not the root.
 		// root must be excluded because it has all items as it's children so 
@@ -297,7 +285,7 @@ int HierarchyItem::referenceCount(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 int HierarchyItem::getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const
 {
-	for (HierarchyItem* item : childItems_)
+	for (HierarchyItem const* item : childItems_)
     {	
 		// if item itself matches the vlnv and this item is not the root.
 		// root must be excluded because it has all items as it's children so 
@@ -368,7 +356,7 @@ QVector<HierarchyItem*> HierarchyItem::findItems(const VLNV& vlnv)
 
 	for (HierarchyItem* item : childItems_)
     {
-		items += item->findItems(vlnv);
+		items.append(item->findItems(vlnv));
 	}
 
 	return items;
@@ -465,7 +453,7 @@ QVector<VLNV> HierarchyItem::getVLNVs() const
 	// If this is not root item.
 	if (parentItem_)
     {
-		list.append(getVLNV());
+		list.append(vlnv_);
 		list += parentItem_->getVLNVs();
 	}
 
@@ -518,13 +506,13 @@ HierarchyItem::ObjectType HierarchyItem::type() const
 //-----------------------------------------------------------------------------
 // Function: HierarchyItem::getChildren()
 //-----------------------------------------------------------------------------
-void HierarchyItem::getChildren(QList<VLNV>& childList, VLNV const& owner)
+void HierarchyItem::getChildren(QList<VLNV>& childList, VLNV const& owner) const
 {
 	// make sure this is called only for root item
 	Q_ASSERT_X(!component_, "HierarchyItem::getChildren", "Function was called for non-root item");
 
 	// search each child item
-	for (HierarchyItem* item : childItems_)
+	for (HierarchyItem const* item : childItems_)
     {
 		// if child matches the owner
 		if (item->getVLNV() == owner)
@@ -539,10 +527,10 @@ void HierarchyItem::getChildren(QList<VLNV>& childList, VLNV const& owner)
 //-----------------------------------------------------------------------------
 // Function: HierarchyItem::getChildItems()
 //-----------------------------------------------------------------------------
-void HierarchyItem::getChildItems(QList<VLNV>& itemList)
+void HierarchyItem::getChildItems(QList<VLNV>& itemList) const
 {
 	// go through each child item
-	for (HierarchyItem* item : childItems_)
+	for (HierarchyItem const* item : childItems_)
     {
 		// if child's vlnv is not yet on the list
 		if (!itemList.contains(item->getVLNV()))
@@ -622,12 +610,12 @@ void HierarchyItem::parseComponent(VLNV const& vlnv)
 void HierarchyItem::parseCatalog(VLNV const& vlnv)
 {
     type_ = HierarchyItem::CATALOG;
-    catalog_ = library_->getModelReadOnly<Catalog>(vlnv);
-    Q_ASSERT(catalog_);
+    QSharedPointer<Catalog const> catalog = library_->getModelReadOnly<Catalog>(vlnv);
+    Q_ASSERT(catalog);
 
     isValid_ = library_->isValid(vlnv);
 
-    for (QSharedPointer<IpxactFile> catalogFile : *catalog_->getCatalogs())
+    for (QSharedPointer<IpxactFile> catalogFile : *catalog->getCatalogs())
     {
         if (!hasParent(catalogFile->getVlnv())) //<! Avoid cyclic instantiations.
         {
@@ -635,17 +623,17 @@ void HierarchyItem::parseCatalog(VLNV const& vlnv)
         }       
     }
 
-    for (QSharedPointer<IpxactFile> busFile : *catalog_->getBusDefinitions())
+    for (QSharedPointer<IpxactFile> const& busFile : *catalog->getBusDefinitions())
     {
         createChild(busFile->getVlnv());   
     }
 
-    for (QSharedPointer<IpxactFile> abstractionFile : *catalog_->getAbstractionDefinitions())
+    for (QSharedPointer<IpxactFile> const& abstractionFile : *catalog->getAbstractionDefinitions())
     {
         createChild(abstractionFile->getVlnv()); 
     }
 
-    for (QSharedPointer<IpxactFile> componentFile : *catalog_->getComponents())
+    for (QSharedPointer<IpxactFile> const& componentFile : *catalog->getComponents())
     {
         createChild(componentFile->getVlnv());
     }
@@ -734,9 +722,7 @@ void HierarchyItem::createChildItemForDesign(VLNV const& designVLNV, QString con
 //-----------------------------------------------------------------------------
 void HierarchyItem::parseBusDefinition(VLNV const& vlnv)
 {
-    type_ = HierarchyItem::BUSDEFINITION;
-    busDef_ = library_->getModelReadOnly<BusDefinition>(vlnv);
-
+    type_ = HierarchyItem::BUSDEFINITION;    
     isValid_ = library_->isValid(vlnv);
 }
 
@@ -746,8 +732,6 @@ void HierarchyItem::parseBusDefinition(VLNV const& vlnv)
 void HierarchyItem::parseAbsDefinition(VLNV const& vlnv)
 {
     type_ = HierarchyItem::ABSDEFINITION;
-    absDef_ = library_->getModelReadOnly<AbstractionDefinition>(vlnv);
-
     isValid_ = library_->isValid(vlnv);
 }
 
@@ -757,8 +741,6 @@ void HierarchyItem::parseAbsDefinition(VLNV const& vlnv)
 void HierarchyItem::parseComDefinition(VLNV const& vlnv)
 {
     type_ = HierarchyItem::COMDEFINITION;
-    comDef_ = library_->getModelReadOnly<ComDefinition>(vlnv);
-
     isValid_ = library_->isValid(vlnv);
 }
 
@@ -767,9 +749,7 @@ void HierarchyItem::parseComDefinition(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void HierarchyItem::parseApiDefinition(VLNV const& vlnv)
 {
-    type_ = HierarchyItem::APIDEFINITION;
-    apiDef_ = library_->getModelReadOnly<ApiDefinition>(vlnv);
-
+    type_ = HierarchyItem::APIDEFINITION;    
     isValid_ = library_->isValid(vlnv);
 }
 
@@ -782,7 +762,7 @@ void HierarchyItem::parseDesign(VLNV const& vlnv, KactusAttribute::Implementatio
     instanceCount_.clear();
 
     viewName_ = viewName;
-    design_ = library_->getModelReadOnly<Design>(vlnv);
+    QSharedPointer<Design const> design = library_->getModelReadOnly<Design>(vlnv);
     isValid_ = library_->isValid(vlnv);
 
     if (implementation == KactusAttribute::HW)
@@ -803,7 +783,7 @@ void HierarchyItem::parseDesign(VLNV const& vlnv, KactusAttribute::Implementatio
     }
 
     // Take all valid components referenced by the design.
-    const QVector<VLNV> componentReferences = getValidComponentsInDesign();
+    const QVector<VLNV> componentReferences = getValidComponentsInDesign(design);
 
     for (VLNV const& componentVLNV : componentReferences)
     {
@@ -826,11 +806,11 @@ void HierarchyItem::parseDesign(VLNV const& vlnv, KactusAttribute::Implementatio
 //-----------------------------------------------------------------------------
 // Function: HierarchyItem::getValidComponentsInDesign()
 //-----------------------------------------------------------------------------
-QVector<VLNV> HierarchyItem::getValidComponentsInDesign()
+QVector<VLNV> HierarchyItem::getValidComponentsInDesign(QSharedPointer<Design const> design)
 {
     QVector<VLNV> componentReferences;
 
-    for (QSharedPointer<ComponentInstance> instance : *design_->getComponentInstances())
+    for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
     {
         if (!instance->isDraft())
         {
@@ -862,7 +842,7 @@ bool HierarchyItem::isValidComponentInstanceVLNV(VLNV const& componentVLNV)
         return false;
     }
 
-    else if (getVLNV() == componentVLNV || hasParent(componentVLNV))
+    else if (vlnv_ == componentVLNV || hasParent(componentVLNV))
     {
         emit errorMessage(tr("Cyclic instantiation for vlnv %1 was found").arg(componentVLNV.toString()));
         return false;

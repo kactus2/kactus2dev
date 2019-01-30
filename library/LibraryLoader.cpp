@@ -17,12 +17,10 @@
 #include <QSettings>
 #include <QXmlStreamReader>
 
-#include <QDebug>
-
 //-----------------------------------------------------------------------------
 // Function: LibraryLoader::LibraryLoader()
 //-----------------------------------------------------------------------------
-LibraryLoader::LibraryLoader(MessageMediator* messageChannel, QObject* parent) : QObject(parent),
+LibraryLoader::LibraryLoader(MessageMediator* messageChannel) : 
     messageChannel_(messageChannel),
     fileAccess_(messageChannel)
 {
@@ -35,12 +33,24 @@ LibraryLoader::LibraryLoader(MessageMediator* messageChannel, QObject* parent) :
 QVector<LibraryLoader::LoadTarget> LibraryLoader::parseLibrary()
 {
     QVector<LoadTarget> vlnvPaths;
+    QStringList xmlFilter(QLatin1String("*.xml"));
 
-    QStringList locations = QSettings().value("Library/ActiveLocations", QStringList()).toStringList();
-
+    QStringList locations = QSettings().value(QStringLiteral("Library/ActiveLocations")).toStringList();    
     for (QString const& location : locations)
-    {
-        parseDirectory(location, vlnvPaths);
+    {        
+        QDirIterator fileIterator(location, xmlFilter, QDir::Files,
+            QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+
+        while (fileIterator.hasNext())
+        {
+            QString filePath(fileIterator.next());
+
+            VLNV vlnv = getDocumentVLNV(filePath);
+            if (vlnv.isValid())
+            {
+                vlnvPaths.append(LoadTarget(vlnv, filePath));
+            }
+        }
     }
 
     return vlnvPaths;
@@ -49,44 +59,13 @@ QVector<LibraryLoader::LoadTarget> LibraryLoader::parseLibrary()
 //-----------------------------------------------------------------------------
 // Function: LibraryLoader::clean()
 //-----------------------------------------------------------------------------
-void LibraryLoader::clean(QStringList changedDirectories)
+void LibraryLoader::clean(QStringList const& changedDirectories) const
 {
-    QStringList libraryLocations = QSettings().value("Library/Locations", QStringList()).toStringList();
+    QStringList libraryLocations = QSettings().value(QStringLiteral("Library/Locations")).toStringList();
 
-    changedDirectories.removeDuplicates();
     for (QString const& changedDirectory : changedDirectories)
     {
         clearDirectoryStructure(changedDirectory, libraryLocations);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryLoader::parseDirectory()
-//-----------------------------------------------------------------------------
-void LibraryLoader::parseDirectory(QString const& directoryPath, QVector<LoadTarget>& vlnvPaths)
-{
-    QStringList xmlFilter(QLatin1String("*.xml"));
-
-    QDirIterator it(directoryPath, xmlFilter, QDir::Files, 
-        QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
-
-    while (it.hasNext())
-    {
-        QString filePath(it.next());
-        parseFile(filePath, vlnvPaths);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryLoader::parseFile()
-//-----------------------------------------------------------------------------
-void LibraryLoader::parseFile(QString const& filePath, QVector<LoadTarget>& vlnvPaths)
-{
-    VLNV vlnv = getDocumentVLNV(filePath);
-
-    if (vlnv.isValid())
-    {
-        vlnvPaths.append(LoadTarget(vlnv, filePath));
     }
 }
 
@@ -131,7 +110,7 @@ VLNV LibraryLoader::getDocumentVLNV(QString const& path)
 
     documentReader.readNextStartElement();
     QString version = documentReader.readElementText();
-
+    
     documentFile.close();
 
     return VLNV(type, vendor, library, name, version);
@@ -140,7 +119,7 @@ VLNV LibraryLoader::getDocumentVLNV(QString const& path)
 //-----------------------------------------------------------------------------
 // Function: LibraryLoader::clearDirectoryStructure()
 //-----------------------------------------------------------------------------
-void LibraryLoader::clearDirectoryStructure(QString const& dirPath, QStringList const& libraryLocations)
+void LibraryLoader::clearDirectoryStructure(QString const& dirPath, QStringList const& libraryLocations) const
 {
     QDir dir(dirPath);
 

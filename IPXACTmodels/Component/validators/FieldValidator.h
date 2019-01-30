@@ -47,7 +47,7 @@ public:
 	/*!
      *  The destructor.
      */
-	~FieldValidator();
+	~FieldValidator() = default;
 
     /*!
      *  Change the containing component.

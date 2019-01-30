@@ -12,8 +12,28 @@
 #include "VLNV.h"
 
 #include <QString>
+#include <QStringBuilder>
 #include <QStringList>
 #include <QObject>
+#include <QMap>
+
+namespace
+{
+    const static QMap<QString, VLNV::IPXactType> types =
+    {
+        { QStringLiteral("ipxact:abstractionDefinition"), VLNV::ABSTRACTIONDEFINITION },
+        { QStringLiteral("ipxact:abstractor"), VLNV::ABSTRACTOR },
+        { QStringLiteral("ipxact:busDefinition"), VLNV::BUSDEFINITION },
+        { QStringLiteral("ipxact:catalog"), VLNV::CATALOG },
+        { QStringLiteral("ipxact:component"), VLNV::COMPONENT },
+        { QStringLiteral("ipxact:design"), VLNV::DESIGN },
+        { QStringLiteral("ipxact:designConfiguration"), VLNV::DESIGNCONFIGURATION },
+        { QStringLiteral("ipxact:generatorChain"), VLNV::GENERATORCHAIN },
+        { QStringLiteral("kactus2:comDefinition"), VLNV::COMDEFINITION },
+        { QStringLiteral("kactus2:apiDefinition"), VLNV::APIDEFINITION },
+        { QStringLiteral("invalid"), VLNV::INVALID }
+    };
+}
 
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
@@ -25,13 +45,13 @@ VLNV::VLNV(): vendor_(), library_(), name_(), version_(), type_(VLNV::INVALID)
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
-VLNV::VLNV(QString const& type, 
-    QString const& vendor, QString const& library, QString const& name, QString const& version):
-vendor_(vendor.simplified()), 
-library_(library.simplified()), 
-name_(name.simplified()),
-version_(version.simplified()),
-type_(INVALID)
+VLNV::VLNV(QString const& type,
+    QString const& vendor, QString const& library, QString const& name, QString const& version) :
+    vendor_(vendor),
+    library_(library),
+    name_(name),
+    version_(version),
+    type_(INVALID)
 {
 	type_ = string2Type(type);
 }
@@ -40,12 +60,12 @@ type_(INVALID)
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
 VLNV::VLNV(IPXactType const& type,
-    QString const& vendor, QString const& library, QString const& name, QString const& version): 
-vendor_(vendor.simplified()),
-library_(library.simplified()), 
-name_(name.simplified()), 
-version_(version.simplified()), 
-type_(type)
+    QString const& vendor, QString const& library, QString const& name, QString const& version) :
+    vendor_(vendor),
+    library_(library),
+    name_(name),
+    version_(version),
+    type_(type)
 {
 }
 
@@ -67,18 +87,6 @@ vendor_(),
         name_ = vlnvFields.at(2);
         version_ = vlnvFields.at(3);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VLNV::VLNV()
-//-----------------------------------------------------------------------------
-VLNV::VLNV(const VLNV &other): 
-vendor_(other.vendor_.simplified()), 
-    library_(other.library_.simplified()),
-    name_(other.name_.simplified()), 
-    version_(other.version_.simplified()),
-    type_(other.type_)
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -194,14 +202,9 @@ void VLNV::clear()
 //-----------------------------------------------------------------------------
 bool VLNV::isValid() const 
 {
-    // if type is invalid then automatically return false
-    if (type_ == VLNV::INVALID)
-    {
-        return false;
-    }
-
     // If one of the identification fields is empty then this is invalid.
-    return !vendor_.isEmpty() && !library_.isEmpty() && !name_.isEmpty() && !version_.isEmpty();
+    return type_ != VLNV::INVALID && 
+        !vendor_.isEmpty() && !library_.isEmpty() && !name_.isEmpty() && !version_.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -249,7 +252,7 @@ bool VLNV::isValid(QVector<QString>& errors, QString const& parentIdentifier) co
 //-----------------------------------------------------------------------------
 QString VLNV::toString(QString const& separator) const
 {
-    return vendor_ + separator + library_ + separator + name_ + separator + version_;
+    return vendor_ % separator % library_ % separator % name_ % separator % version_;
 }
 
 //-----------------------------------------------------------------------------
@@ -257,19 +260,19 @@ QString VLNV::toString(QString const& separator) const
 //-----------------------------------------------------------------------------
 bool VLNV::operator<(const VLNV &other) const
 {
-    int vendorResult = vendor_.compare(other.vendor_, Qt::CaseInsensitive);
+    int vendorResult = vendor_.compare(other.vendor_);
 
 	if (vendorResult == 0)
     {
-        int libraryResult = library_.compare(other.library_, Qt::CaseInsensitive);
+        int libraryResult = library_.compare(other.library_);
 		
         if (libraryResult == 0)
         {
-            int nameResult = name_.compare(other.name_, Qt::CaseInsensitive);
+            int nameResult = name_.compare(other.name_);
 
 			if (nameResult == 0)
             {
-				return version_.compare(other.version_, Qt::CaseInsensitive) < 0;
+				return version_.compare(other.version_) < 0;
 			}
 			else
             {
@@ -292,27 +295,27 @@ bool VLNV::operator<(const VLNV &other) const
 //-----------------------------------------------------------------------------
 bool VLNV::operator>(const VLNV &other) const
 {
-	if (vendor_.compare(other.vendor_, Qt::CaseInsensitive) == 0)
+	if (vendor_.compare(other.vendor_) == 0)
     {
-		if (library_.compare(other.library_, Qt::CaseInsensitive) == 0)
+		if (library_.compare(other.library_) == 0)
         {
-			if (name_.compare(other.name_, Qt::CaseInsensitive) == 0)
+			if (name_.compare(other.name_) == 0)
             {
-				return version_.compare(other.version_, Qt::CaseInsensitive) > 0;
+				return version_.compare(other.version_) > 0;
 			}
 			else
             {
-				return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
+				return name_.compare(other.name_) > 0;
 			}
 		}
 		else 
         {
-			return library_.compare(other.library_, Qt::CaseInsensitive) > 0;
+			return library_.compare(other.library_) > 0;
 		}
 	}
 	else
     {
-		return vendor_.compare(other.vendor_, Qt::CaseInsensitive) > 0;
+		return vendor_.compare(other.vendor_) > 0;
 	}
 }
 
@@ -321,10 +324,10 @@ bool VLNV::operator>(const VLNV &other) const
 //-----------------------------------------------------------------------------
 bool VLNV::operator==(VLNV const& other) const
 {
-	return (vendor_.compare(other.vendor_, Qt::CaseInsensitive) == 0) &&
-		(library_.compare(other.library_, Qt::CaseInsensitive) == 0) &&
-		(name_.compare(other.name_, Qt::CaseInsensitive) == 0) &&
-		(version_.compare(other.version_, Qt::CaseInsensitive) == 0);
+	return vendor_ == other.vendor_ &&
+		library_ == other.library_ &&
+		name_ == other.name_ &&
+		version_ == other.version_;
 }
 
 //-----------------------------------------------------------------------------
@@ -343,51 +346,7 @@ bool VLNV::operator!=(VLNV const& other) const
 //-----------------------------------------------------------------------------
 VLNV::IPXactType VLNV::string2Type(QString const& type)
 {
-	if (type.compare(QLatin1String("ipxact:abstractionDefinition"), Qt::CaseInsensitive) == 0)
-    {
-		return ABSTRACTIONDEFINITION;
-	}
-    else if (type.compare(QLatin1String("ipxact:abstractor"), Qt::CaseInsensitive) == 0)
-    {
-        return ABSTRACTOR;
-    }
-	else if (type.compare(QLatin1String("ipxact:busDefinition"), Qt::CaseInsensitive) == 0)
-    {
-		return BUSDEFINITION;
-	}
-    else if (type.compare(QLatin1String("ipxact:catalog"), Qt::CaseInsensitive) == 0) 
-    {
-        return CATALOG;
-    }
-	else if (type.compare(QLatin1String("ipxact:component"), Qt::CaseInsensitive) == 0) 
-    {
-		return COMPONENT;
-	}
-	else if (type.compare(QLatin1String("ipxact:design"), Qt::CaseInsensitive) == 0)
-    {
-		return DESIGN;
-	}
-	else if (type.compare(QLatin1String("ipxact:designConfiguration"), Qt::CaseInsensitive) == 0)
-    {
-		return DESIGNCONFIGURATION;
-	}
-	else if (type.compare(QLatin1String("ipxact:generatorChain"), Qt::CaseInsensitive) == 0)
-    {
-		return GENERATORCHAIN;
-	}
-    else if (type.compare(QLatin1String("kactus2:comDefinition"), Qt::CaseInsensitive) == 0)
-    {
-        return COMDEFINITION;
-    }
-    else if (type.compare(QLatin1String("kactus2:apiDefinition"), Qt::CaseInsensitive) == 0)
-    {
-        return APIDEFINITION;
-    }
-	// if the string was unrecognizable
-	else
-    {
-		return INVALID;
-	}
+    return types.value(type, INVALID);	
 }
 
 //-----------------------------------------------------------------------------
@@ -395,48 +354,5 @@ VLNV::IPXactType VLNV::string2Type(QString const& type)
 //-----------------------------------------------------------------------------
 QString VLNV::IPXactType2String(IPXactType const& type)
 {
-	if (type == BUSDEFINITION)
-    {
-        return QStringLiteral("ipxact:busDefinition");
-    }
-    else if (type == COMPONENT)
-    {
-        return QStringLiteral("ipxact:component");
-    }
-    else if (type == CATALOG)
-    {
-        return QStringLiteral("ipxact:catalog");
-    }
-    else if (type == DESIGN)
-    {
-        return QStringLiteral("ipxact:design");
-    }
-    else if (type == GENERATORCHAIN)
-    {
-        return QStringLiteral("ipxact:generatorChain");
-    }
-    else if (type == ABSTRACTOR)
-    {
-        return QStringLiteral("ipxact:abstractor");
-    }
-    else if (type == DESIGNCONFIGURATION)
-    {
-        return QStringLiteral("ipxact:designConfiguration");
-    }
-    else if (type == ABSTRACTIONDEFINITION)
-    {
-        return QStringLiteral("ipxact:abstractionDefinition");
-    }
-    else if (type == COMDEFINITION)
-    {
-        return QStringLiteral("kactus2:comDefinition");
-    }
-    else if (type == APIDEFINITION)
-    {
-        return QStringLiteral("kactus2:apiDefinition");
-    }
-    else
-    {
-        return QStringLiteral("invalid");
-	}
+    return types.key(type, QStringLiteral("invalid"));	
 }

@@ -176,9 +176,8 @@ bool ParameterValidator::isArrayValidForType(QString const& arrayExpression, QSt
 
     if (arrayValuesAreSameSize(subValues, type))
     {
-        foreach (QString innerValue, subValues)
+        for (QString const& innerValue : subValues)
         {
-            innerValue.remove(QLatin1Char(' '));
             if (!hasValidValueForType(innerValue, type))
             {
                 return false;
@@ -269,7 +268,7 @@ bool ParameterValidator::hasValidValueForChoice(QSharedPointer<const Parameter> 
         valueArray.first().remove(QLatin1Char('{'));
         valueArray.last().remove(QLatin1Char('}'));
 
-        foreach (QString const& parameterValue, valueArray)
+        for (QString const& parameterValue : valueArray)
         {
             if (!referencedChoice->hasEnumeration(parameterValue))
             {
@@ -544,7 +543,7 @@ bool ParameterValidator::valueIsLessThanMinimum(QSharedPointer<const Parameter> 
     {
         QStringList subValues = splitArrayToList(solvedValue);
 
-        foreach (QString const& innerValue, subValues)
+        for (QString const& innerValue : subValues)
         {
             if (shouldCompareValueAndBoundary(minimum, type) && valueOf(innerValue, type) < valueOf(minimum, type))
             {
@@ -570,7 +569,7 @@ bool ParameterValidator::valueIsGreaterThanMaximum(QSharedPointer<const Paramete
     {
         QStringList subValues = splitArrayToList(solvedValue);
 
-        foreach (QString const& innerValue, subValues)
+        for (QString const& innerValue : subValues)
         {
             if (shouldCompareValueAndBoundary(maximum, type) && valueOf(innerValue, type) > valueOf(maximum, type))
             {
@@ -653,7 +652,7 @@ QSharedPointer<Choice> ParameterValidator::findChoiceByName(QString const& choic
 {
     if (availableChoices_)
     {
-        foreach (QSharedPointer<Choice> choice, *availableChoices_)
+        for (QSharedPointer<Choice> const& choice : *availableChoices_)
         {
             if (choice->name() == choiceName)
             {

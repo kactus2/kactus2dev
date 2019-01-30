@@ -1010,6 +1010,9 @@
     <ClCompile Include="Component\FieldReset.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
+    <ClCompile Include="utilities\ComponentSearch.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1539,6 +1542,12 @@
     </ClInclude>
     <ClInclude Include="Component\FieldReset.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities\Search.h">
+      <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities\ComponentSearch.h">
+      <Filter>Header Files\utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

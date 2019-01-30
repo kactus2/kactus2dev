@@ -21,29 +21,6 @@ reservedArea_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryReserve::~MemoryReserve()
-//-----------------------------------------------------------------------------
-MemoryReserve::~MemoryReserve()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryReserve::MemoryArea::operator=()
-//-----------------------------------------------------------------------------
-MemoryReserve::MemoryArea& MemoryReserve::MemoryArea::operator=(const MemoryReserve::MemoryArea& other)
-{
-    if (&other != this)
-    {
-        id_ = other.id_;
-        begin_ = other.begin_;
-        end_ = other.end_;
-    }
-
-    return *this;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryReserve::MemoryArea::operator<()
 //-----------------------------------------------------------------------------
 bool MemoryReserve::MemoryArea::operator<(const MemoryReserve::MemoryArea& other) const
@@ -75,11 +52,11 @@ bool MemoryReserve::hasOverlap()
 
         for (int areaIndex = 0; areaIndex < reservedArea_.size(); ++areaIndex)
         {
-            MemoryArea area = reservedArea_.at(areaIndex);
+            MemoryArea const& area = reservedArea_.at(areaIndex);
 
             for (int nextIndex = areaIndex+1; nextIndex < reservedArea_.size(); ++nextIndex)
             {
-                MemoryArea nextArea = reservedArea_.at(nextIndex);
+                MemoryArea const& nextArea = reservedArea_.at(nextIndex);
 
                 if (nextArea.begin_ > area.end_)
                 {
@@ -107,11 +84,11 @@ bool MemoryReserve::hasIdDependantOverlap()
 
         for (int areaIndex = 0; areaIndex < reservedArea_.size(); ++areaIndex)
         {
-            MemoryArea area = reservedArea_.at(areaIndex);
+            MemoryArea const& area = reservedArea_.at(areaIndex);
 
             for (int nextIndex = areaIndex + 1; nextIndex < reservedArea_.size(); ++nextIndex)
             {
-                MemoryArea nextArea = reservedArea_.at(nextIndex);
+                MemoryArea const& nextArea = reservedArea_.at(nextIndex);
 
                 if (area.id_ == nextArea.id_)
                 {
@@ -175,11 +152,11 @@ void MemoryReserve::findErrorsInIdDependantOverlap(QVector<QString>& errors, QSt
 
         for (int i = 0; i < reservedArea_.size(); ++i)
         {
-            MemoryArea area = reservedArea_.at(i);
+            MemoryArea const& area = reservedArea_.at(i);
 
             for (int j = i+1; j < reservedArea_.size(); ++j)
             {
-                MemoryArea nextArea = reservedArea_.at(j);
+                MemoryArea const& nextArea = reservedArea_.at(j);
 
                 if (area.id_ == nextArea.id_)
                 {

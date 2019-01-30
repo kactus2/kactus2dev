@@ -39,14 +39,6 @@ availableResetTypes_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldValidator::~FieldValidator()
-//-----------------------------------------------------------------------------
-FieldValidator::~FieldValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: FieldValidator::componentChange()
 //-----------------------------------------------------------------------------
 void FieldValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType>>> newResetTypes)
@@ -267,7 +259,7 @@ bool FieldValidator::hasValidEnumeratedValues(QSharedPointer<Field> field) const
         }
 
         bool enumerationWriteUsage = false;
-        foreach (QSharedPointer<EnumeratedValue> enumeratedValue, *field->getEnumeratedValues())
+        for (QSharedPointer<EnumeratedValue> const& enumeratedValue : *field->getEnumeratedValues())
         {
             if (!enumerationWriteUsage && constraintUsesEnums &&
                 (enumeratedValue->getUsage() == EnumeratedValue::WRITE ||
@@ -305,7 +297,7 @@ bool FieldValidator::hasValidParameters(QSharedPointer<Field> field) const
     {
         QStringList parameterNames;
 
-        foreach (QSharedPointer<Parameter> parameter, *field->getParameters())
+        for (QSharedPointer<Parameter> const& parameter : *field->getParameters())
         {
             if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
@@ -544,7 +536,7 @@ void FieldValidator::findErrorsInEnumeratedValues(QVector<QString>& errors, QSha
 
         bool writeEnumerationWasFound = false;
         QStringList enumeratedValueNames;
-        foreach (QSharedPointer<EnumeratedValue> enumeratedValue, *field->getEnumeratedValues())
+        for (QSharedPointer<EnumeratedValue> const& enumeratedValue : *field->getEnumeratedValues())
         {
             enumeratedValueValidator_->findErrorsIn(errors, enumeratedValue, context);
 
@@ -585,8 +577,7 @@ void FieldValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPoi
         QString context = QStringLiteral("field ") + field->name();
 
         QStringList parameterNames;
-
-        foreach (QSharedPointer<Parameter> parameter, *field->getParameters())
+        for (QSharedPointer<Parameter> const& parameter : *field->getParameters())
         {
             parameterValidator_->findErrorsIn(errors, parameter, context);
 

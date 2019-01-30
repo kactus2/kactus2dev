@@ -142,7 +142,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                         openHWDesignMenu_->clear();
                         openMemoryDesignMenu_->clear();
                         
-                        foreach(QString const& viewName, hierarchicalViewNames)
+                        for (QString const& viewName : hierarchicalViewNames)
                         {
                             openHWDesignMenu_->addAction(new QAction(viewName, openHWDesignMenu_));
                             openMemoryDesignMenu_->addAction(new QAction(viewName, openMemoryDesignMenu_));
@@ -179,7 +179,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                     }
                 }
 
-                foreach(QSharedPointer<View> view, *component->getViews())
+                for (QSharedPointer<View> view : *component->getViews())
                 {
                     VLNV reference = component->getModel()->getHierRef(view->name());
 

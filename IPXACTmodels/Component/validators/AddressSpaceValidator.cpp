@@ -37,14 +37,6 @@ parameterValidator_(parameterValidator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceValidator::~AddressSpaceValidator()
-//-----------------------------------------------------------------------------
-AddressSpaceValidator::~AddressSpaceValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressSpaceValidator::getLocalMemoryMapValidator()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryMapBaseValidator> AddressSpaceValidator::getLocalMemoryMapValidator()
@@ -150,7 +142,7 @@ bool AddressSpaceValidator::hasValidSegments(QSharedPointer<AddressSpace> addres
 
         qint64 addressSpaceRange = expressionParser_->parseExpression(addressSpace->getRange()).toLongLong();
 
-        foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
+        for (QSharedPointer<Segment> segment : *addressSpace->getSegments())
         {
             qint64 segmentBegin = expressionParser_->parseExpression(segment->getAddressOffset()).toLongLong();
             qint64 segmentRange = expressionParser_->parseExpression(segment->getRange()).toLongLong();
@@ -258,7 +250,7 @@ bool AddressSpaceValidator::hasValidParameters(QSharedPointer<AddressSpace> addr
     if (!addressSpace->getParameters()->isEmpty())
     {
         QStringList parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *addressSpace->getParameters())
+        for (QSharedPointer<Parameter> const& parameter : *addressSpace->getParameters())
         {
             if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
@@ -357,7 +349,7 @@ void AddressSpaceValidator::findErrorsInSegments(QVector<QString>& errors,
         MemoryReserve reservedArea;
         QStringList segmentNames;
         QStringList foundNames;
-        foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
+        for (QSharedPointer<Segment> const& segment : *addressSpace->getSegments())
         {
             if (segmentNames.contains(segment->name()) && !foundNames.contains(segment->name()))
             {
@@ -448,7 +440,7 @@ void AddressSpaceValidator::findErrorsInParameters(QVector<QString>& errors,
     if (!addressSpace->getParameters()->isEmpty())
     {
         QStringList parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *addressSpace->getParameters())
+        for (QSharedPointer<Parameter> const& parameter : *addressSpace->getParameters())
         {
             if (parameterNames.contains(parameter->name()))
             {

@@ -35,7 +35,7 @@ public:
     EnumeratedValueValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	~EnumeratedValueValidator();
+	~EnumeratedValueValidator() = default;
     
     /*!
      *  Validates the given enumerated value.

@@ -174,7 +174,7 @@ bool BusInterfaceValidator::hasValidBusType(QSharedPointer<BusInterface> busInte
 bool BusInterfaceValidator::hasValidAbstractionTypes(QSharedPointer<BusInterface> busInterface) const
 {
     QSharedPointer<QList<QSharedPointer<AbstractionType> > > busAbstractions = busInterface->getAbstractionTypes();
-    for (QSharedPointer<AbstractionType> abstraction : *busAbstractions)
+    for (QSharedPointer<AbstractionType> const& abstraction : *busAbstractions)
     {
         if (!abstractionValidator_->validate(abstraction, busAbstractions, busInterface))
         {
@@ -239,8 +239,7 @@ bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<MasterInterfa
             {
                 bool changeOk = true;
                 bool expressionValid = false;
-                quint64 baseAddress =
-                    expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toULongLong(&changeOk);
+                expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toULongLong(&changeOk);
 
                 return (master->getBaseAddress().isEmpty() || (changeOk && expressionValid)) &&
                     hasValidIsPresent(master->getIsPresent()) &&

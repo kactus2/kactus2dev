@@ -14,6 +14,7 @@
 
 #include <QRegularExpression>
 #include <QMap>
+#include <QStringBuilder>
 #include <QStringList>
 #include <QVector>
 
@@ -23,9 +24,9 @@
 
 namespace
 {
-    const QRegularExpression PRIMARY_LITERAL(SystemVerilogSyntax::REAL_NUMBER + "|" +
-        SystemVerilogSyntax::INTEGRAL_NUMBER + "|" +
-        SystemVerilogSyntax::BOOLEAN_VALUE + "|" +
+    const QRegularExpression PRIMARY_LITERAL(SystemVerilogSyntax::REAL_NUMBER % "|" %
+        SystemVerilogSyntax::INTEGRAL_NUMBER % "|" %
+        SystemVerilogSyntax::BOOLEAN_VALUE % "|" %
         SystemVerilogSyntax::STRING_LITERAL);
 
     const QRegularExpression BINARY_OPERATOR("\\*\\*|[*/%]|[+-]|<<|>>|<=?|>=?|!==?|===?|[&|]{1,2}|[\\^]|[$]pow");
@@ -41,7 +42,7 @@ namespace
     const QString OPEN_ARRAY_STRING("{");
     const QString CLOSE_ARRAY_STRING("}");
 
-    const QRegularExpression ANY_OPERATOR(BINARY_OPERATOR.pattern() + "|" + UNARY_OPERATOR.pattern());
+    const QRegularExpression ANY_OPERATOR(BINARY_OPERATOR.pattern() % "|" % UNARY_OPERATOR.pattern());
 }
 
 //-----------------------------------------------------------------------------
@@ -206,7 +207,7 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
         }
         else
         {
-            QRegularExpression separator(ANY_OPERATOR.pattern() + QStringLiteral("|[(){}]"));
+            QRegularExpression separator(ANY_OPERATOR.pattern() % QStringLiteral("|[(){}]"));
             QString unknown = expression.mid(index, separator.match(expression, index).capturedStart() - index);
             
             output.append(unknown.trimmed());
@@ -278,7 +279,7 @@ QString SystemVerilogExpressionParser::solveRPN(QVector<QString> rpn, bool* vali
                 break;
             }
 
-            QString arrayItem(resultStack.takeLast() + items.join(QLatin1Char(',')) + token);
+            QString arrayItem(resultStack.takeLast() % items.join(QLatin1Char(',')) % token);
             resultStack.append(arrayItem);
         }
         else if (token.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0)
@@ -331,8 +332,8 @@ bool SystemVerilogExpressionParser::isStringLiteral(QString const& expression) c
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isLiteral(QString const& expression) const
 {
-    static QRegularExpression literalExpression("^\\s*(" + SystemVerilogSyntax::INTEGRAL_NUMBER + "|" +
-        SystemVerilogSyntax::REAL_NUMBER + ")\\s*$");
+    static QRegularExpression literalExpression("^\\s*(" % SystemVerilogSyntax::INTEGRAL_NUMBER % "|" %
+        SystemVerilogSyntax::REAL_NUMBER % ")\\s*$");
 
     return literalExpression.match(expression).hasMatch();
 }

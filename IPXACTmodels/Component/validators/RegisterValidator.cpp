@@ -39,14 +39,6 @@ RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expression
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterValidator::~RegisterValidator()
-//-----------------------------------------------------------------------------
-RegisterValidator::~RegisterValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterValidator::componentChange()
 //-----------------------------------------------------------------------------
 void RegisterValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes)
@@ -166,7 +158,7 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
 bool RegisterValidator::hasValidAlternateRegisters(QSharedPointer<Register> selectedRegister) const
 {
     QStringList alternateRegisterNames;
-    foreach (QSharedPointer<AlternateRegister> alternateRegister, *selectedRegister->getAlternateRegisters())
+    for (QSharedPointer<AlternateRegister> alternateRegister : *selectedRegister->getAlternateRegisters())
     {
         if (alternateRegisterNames.contains(alternateRegister->name()) ||
             !hasValidName(alternateRegister) ||
@@ -196,7 +188,7 @@ bool RegisterValidator::hasValidAlternateGroups(QSharedPointer<AlternateRegister
 
     QStringList alternateGroups;
     bool alternateGroupsOk = false;
-    foreach (QString group, *selectedRegister->getAlternateGroups())
+    for (QString const& group : *selectedRegister->getAlternateGroups())
     {
         if (group.isEmpty() || whiteSpaceExpression.match(group).hasMatch() || alternateGroups.contains(group))
         {
@@ -211,7 +203,6 @@ bool RegisterValidator::hasValidAlternateGroups(QSharedPointer<AlternateRegister
 
     return alternateGroupsOk;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterValidator::fieldHasValidAccess()
@@ -244,9 +235,9 @@ bool RegisterValidator::fieldsHaveSimilarDefinitionGroups(QSharedPointer<Field> 
     QSharedPointer<Field> comparedField) const
 {
     int foundComparisons = 0;
-    foreach (QSharedPointer<EnumeratedValue> enumeratedValue, *field->getEnumeratedValues())
+    for (QSharedPointer<EnumeratedValue> enumeratedValue : *field->getEnumeratedValues())
     {
-        foreach (QSharedPointer<EnumeratedValue> comparedEnumeratedValue, *comparedField->getEnumeratedValues())
+        for (QSharedPointer<EnumeratedValue> comparedEnumeratedValue : *comparedField->getEnumeratedValues())
         {
             if (enumeratedValue->name() == comparedEnumeratedValue->name() &&
                 enumeratedValue->displayName() == comparedEnumeratedValue->displayName() &&
@@ -409,7 +400,7 @@ void RegisterValidator::findErrorsInAlternateRegisters(QVector<QString>& errors,
 {
     QString context = QStringLiteral("register ") + selectedRegister->name();
     QStringList alternateGroupNames;
-    foreach (QSharedPointer<AlternateRegister> alternateRegister, *selectedRegister->getAlternateRegisters())
+    for (QSharedPointer<AlternateRegister> alternateRegister : *selectedRegister->getAlternateRegisters())
     {
         if (alternateGroupNames.contains(alternateRegister->name()))
         {

@@ -38,7 +38,7 @@ public:
         QSharedPointer<QList<QSharedPointer<Port> > > ports);
 
 	//! The destructor.
-	~RemapStateValidator();
+	~RemapStateValidator() = default;
     
     /*!
      *  Change the available ports.

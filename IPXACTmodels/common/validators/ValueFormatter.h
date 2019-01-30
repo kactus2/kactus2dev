@@ -24,7 +24,7 @@ public:
 	ValueFormatter();
 
 	//! The destructor.
-	~ValueFormatter();
+	virtual ~ValueFormatter() = default;
 
     /*!
      *  Formats the given value.

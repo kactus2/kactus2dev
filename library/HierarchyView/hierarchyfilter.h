@@ -37,7 +37,13 @@ public:
 	HierarchyFilter(QObject *parent);
 	
 	//! The destructor
-	virtual ~HierarchyFilter();
+	virtual ~HierarchyFilter() = default;
+
+    //! No copying
+    HierarchyFilter(const HierarchyFilter& other) = delete;
+
+    //! No assignment
+    HierarchyFilter& operator=(const HierarchyFilter& other) = delete;
 
 protected:
 
@@ -48,14 +54,8 @@ protected:
 	 *
 	 *      @return bool True if object should be displayed.
 	*/
-	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const;
+	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const override final;
 
-private:
-	//! No copying
-	HierarchyFilter(const HierarchyFilter& other);
-
-	//! No assignment
-	HierarchyFilter& operator=(const HierarchyFilter& other);
 };
 
 #endif // HIERARCHYFILTER_H

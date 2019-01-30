@@ -37,8 +37,8 @@ public:
 		//! The range of the logical port.
 		QSharedPointer<Range> range_;
 
-		//! The default constructor.
-		LogicalPort(QString const& name = QString()): name_(name) {}
+		//! The constructor.
+		LogicalPort(QString const& name = QString()): name_(name), range_(0) {}
 	};
 
 	//! The physical port of the port map.
@@ -50,8 +50,8 @@ public:
 		//! The selected physical port mapping.
 		QSharedPointer<PartSelect> partSelect_;
 
-		//! The default constructor.
-		PhysicalPort(QString const& name = QString()): name_(name) {}
+		//! The constructor.
+		PhysicalPort(QString const& name = QString()): name_(name), partSelect_(0) {}
 	};
 
     //! Default constructor
@@ -61,7 +61,7 @@ public:
 	PortMap(PortMap const& other);
 
     //! The destructor.
-    ~PortMap();
+    ~PortMap() = default;
 
 	/*! The assignment operator
 	 *

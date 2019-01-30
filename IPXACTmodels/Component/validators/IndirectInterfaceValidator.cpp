@@ -41,14 +41,6 @@ component_(component), expressionParser_(parser),
 }
 
 //-----------------------------------------------------------------------------
-// Function: IndirectInterfaceValidator::~IndirectInterfaceValidator()
-//-----------------------------------------------------------------------------
-IndirectInterfaceValidator::~IndirectInterfaceValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: IndirectInterfaceValidator::componentChange()
 //-----------------------------------------------------------------------------
 void IndirectInterfaceValidator::componentChange(QSharedPointer<Component> component)
@@ -114,7 +106,7 @@ bool IndirectInterfaceValidator::hasValidMemoryMapReference(QSharedPointer<Indir
         return true;
     }
 
-    foreach (QSharedPointer<MemoryMap> map, *component_->getMemoryMaps())
+    for (QSharedPointer<MemoryMap> const& map : *component_->getMemoryMaps())
     {
         if (map->name().compare(indirectInterface->getMemoryMapRef()) == 0)
         {
@@ -130,9 +122,9 @@ bool IndirectInterfaceValidator::hasValidMemoryMapReference(QSharedPointer<Indir
 bool IndirectInterfaceValidator::hasValidTransparentBridges(QSharedPointer<IndirectInterface> indirectInterface) const
 {
     int foundInterfaces = 0;
-    foreach (QSharedPointer<TransparentBridge> bridge, *indirectInterface->getTransparentBridges())
+    for (QSharedPointer<TransparentBridge> const& bridge : *indirectInterface->getTransparentBridges())
     {
-        foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+        for (QSharedPointer<BusInterface> const& busInterface : *component_->getBusInterfaces())
         {
             if (busInterface->name().compare(bridge->getMasterRef()) == 0 &&
                 busInterface->getInterfaceMode() == General::MASTER)
@@ -185,7 +177,7 @@ bool IndirectInterfaceValidator::hasValidEndianness(QSharedPointer<IndirectInter
 bool IndirectInterfaceValidator::hasValidParameters(QSharedPointer<IndirectInterface> indirectInterface) const
 {
     QStringList parameterNames;
-    foreach (QSharedPointer<Parameter> parameter, *indirectInterface->getParameters())
+    for (QSharedPointer<Parameter> const& parameter : *indirectInterface->getParameters())
     {
         if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
         {
@@ -220,19 +212,19 @@ void IndirectInterfaceValidator::findErrorsIn(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 QSharedPointer<Field> IndirectInterfaceValidator::findField(QString const& fieldReference) const
 {
-    foreach (QSharedPointer<MemoryMap> map, *component_->getMemoryMaps())
+    for (QSharedPointer<MemoryMap> const& map : *component_->getMemoryMaps())
     {
-        foreach (QSharedPointer<MemoryBlockBase> block, *map->getMemoryBlocks())
+        for (QSharedPointer<MemoryBlockBase> const& block : *map->getMemoryBlocks())
         {
             QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+                for (QSharedPointer<RegisterBase> const& registerBase : *addressBlock->getRegisterData())
                 {
                     QSharedPointer<Register> reg = registerBase.dynamicCast<Register>();
                     if (reg)
                     {
-                        foreach (QSharedPointer<Field> field, *reg->getFields())
+                        for (QSharedPointer<Field> const& field : *reg->getFields())
                         {
                             if (field->getId().compare(fieldReference) == 0)
                             {
@@ -270,21 +262,21 @@ bool IndirectInterfaceValidator::isValidFieldReference(QString const& fieldRefer
 bool IndirectInterfaceValidator::memoryMapContainsField(QString const& memoryMapName,
     QString const& fieldReference) const
 {
-    foreach (QSharedPointer<MemoryMap> map, *component_->getMemoryMaps())
+    for (QSharedPointer<MemoryMap> const& map : *component_->getMemoryMaps())
     {
         if (map->name().compare(memoryMapName) == 0)
         {
-            foreach (QSharedPointer<MemoryBlockBase> block, *map->getMemoryBlocks())
+            for (QSharedPointer<MemoryBlockBase> const& block : *map->getMemoryBlocks())
             {
                 QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
                 if (addressBlock)
                 {
-                    foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+                    for (QSharedPointer<RegisterBase> const& registerBase : *addressBlock->getRegisterData())
                     {
                         QSharedPointer<Register> reg = registerBase.dynamicCast<Register>();
                         if (reg)
                         {
-                            foreach (QSharedPointer<Field> field, *reg->getFields())
+                            for (QSharedPointer<Field> const& field : *reg->getFields())
                             {
                                 if (field->getId().compare(fieldReference) == 0)
                                 {
@@ -434,10 +426,10 @@ void IndirectInterfaceValidator::findErrorsInMemoryMap(QVector<QString>& errors,
 void IndirectInterfaceValidator::findErrorsInTransparentBridges(QVector<QString>& errors,
     QSharedPointer<IndirectInterface> indirectInterface, QString const& context) const
 {
-    foreach (QSharedPointer<TransparentBridge> bridge, *indirectInterface->getTransparentBridges())
+    for (QSharedPointer<TransparentBridge> const& bridge : *indirectInterface->getTransparentBridges())
     {
         bool foundInterface = false;
-        foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+        for (QSharedPointer<BusInterface> const& busInterface : *component_->getBusInterfaces())
         {
             if (busInterface->name().compare(bridge->getMasterRef()) == 0)
             {
@@ -495,7 +487,7 @@ void IndirectInterfaceValidator::findErrorsInParameters(QVector<QString>& errors
     QSharedPointer<IndirectInterface> indirectInterface, QString const& context) const
 {
     QVector<QString> parameterNames;
-    foreach (QSharedPointer<Parameter> parameter, *indirectInterface->getParameters())
+    for (QSharedPointer<Parameter> const& parameter : *indirectInterface->getParameters())
     {
         if (parameterNames.contains(parameter->name()))
         {

@@ -38,7 +38,7 @@ public:
         QSharedPointer<QList<QSharedPointer<BusInterface> > > componentBusInterfaces);
 
 	//! The destructor.
-	virtual ~ChannelValidator();
+	~ChannelValidator() = default;
     
     /*!
      *  Change the available bus interfaces.

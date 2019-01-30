@@ -32,10 +32,10 @@ public:
 	 *  The constructor.
 	 *
 	 */
-    TimingConstraintValidator();
+    TimingConstraintValidator() = default;
 
 	//! The destructor.
-	~TimingConstraintValidator();
+	~TimingConstraintValidator() = default;
 
     /*!
      *  Validates the given TimingConstraint.
@@ -45,7 +45,7 @@ public:
      *
      *      @return True, if the TimingConstraint is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<TimingConstraint> timingConstraint,
+    bool validate(QSharedPointer<TimingConstraint> timingConstraint,
 		QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
 
     /*!

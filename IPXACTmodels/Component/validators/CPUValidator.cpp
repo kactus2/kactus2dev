@@ -35,14 +35,6 @@ parameterValidator_(parameterValidator),
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUValidator::~CPUValidator()
-//-----------------------------------------------------------------------------
-CPUValidator::~CPUValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: CPUValidator::componentChange()
 //-----------------------------------------------------------------------------
 void CPUValidator::componentChange(QSharedPointer<QList<QSharedPointer<AddressSpace> > > newAddressSpaces)
@@ -73,7 +65,7 @@ bool CPUValidator::validate(QSharedPointer<Cpu> cpu) const
     }
 
 
-	foreach (QSharedPointer<Parameter> currentPara, *cpu->getParameters())
+	for (QSharedPointer<Parameter> const& currentPara : *cpu->getParameters())
 	{
 		if (!parameterValidator_->hasValidValue(currentPara))
 		{
@@ -94,7 +86,7 @@ bool CPUValidator::hasValidAddressSpaceReferences(QSharedPointer<Cpu> cpu) const
         return false;
     }
 
-    foreach (QSharedPointer<Cpu::AddressSpaceRef> currentRef, *cpu->getAddressSpaceReferences())
+    for (QSharedPointer<Cpu::AddressSpaceRef> currentRef : *cpu->getAddressSpaceReferences())
     {
         if (!isValidAddressSpaceReference(currentRef->getAddressSpaceRef()))
         {
@@ -137,7 +129,7 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cp
             .arg(cpu->name()).arg(context));
 	}
 
-	foreach (QSharedPointer<Cpu::AddressSpaceRef> currentRef, *cpu->getAddressSpaceReferences())
+	for (QSharedPointer<Cpu::AddressSpaceRef> const& currentRef : *cpu->getAddressSpaceReferences())
 	{
         if (!isValidAddressSpaceReference(currentRef->getAddressSpaceRef()))
         {
@@ -157,7 +149,7 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cp
 	}
 
     QString cpuContext = QObject::tr("cpu %1").arg(cpu->name());
-	foreach (QSharedPointer<Parameter> currentPara, *cpu->getParameters())
+	for (QSharedPointer<Parameter> const& currentPara : *cpu->getParameters())
 	{
 		parameterValidator_->findErrorsIn(errors, currentPara, cpuContext);
 	}
@@ -185,7 +177,7 @@ bool CPUValidator::isValidAddressSpaceReference(QString const& reference) const
 {
     if (!reference.isEmpty() && addressSpaces_)
     {
-        foreach (QSharedPointer<AddressSpace> addressSpace, *addressSpaces_)
+        for (QSharedPointer<AddressSpace> const& addressSpace : *addressSpaces_)
         {
             if (addressSpace->name() == reference)
             {

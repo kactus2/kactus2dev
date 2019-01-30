@@ -28,14 +28,6 @@ LibraryFilter(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeFilter::~LibraryTreeFilter()
-//-----------------------------------------------------------------------------
-LibraryTreeFilter::~LibraryTreeFilter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryTreeFilter::filterAcceptsRow()
 //-----------------------------------------------------------------------------
 bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
@@ -61,57 +53,51 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
 
     for (VLNV const& vlnv : list)
     {
-        //if (handler_->contains(vlnv))
-       // {
-            QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
-            VLNV::IPXactType documentType = handler_->getDocumentType(vlnv);
+        QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
+        VLNV::IPXactType documentType = handler_->getDocumentType(vlnv);
 
-            if (documentType == VLNV::COMPONENT)
+        if (documentType == VLNV::COMPONENT)
+        {
+            if (type().components_)
             {
-                if (type().components_)
-                {
-                    QSharedPointer<Component const> component = document.staticCast<Component const>();
+                QSharedPointer<Component const> component = document.staticCast<Component const>();
 
-                    if (checkImplementation(component) && checkHierarchy(component) && checkFirmness(component))
-                    {
-                        return true;
-                    }
-                }
+                return checkImplementation(component) && checkHierarchy(component) && checkFirmness(component);                
             }
+        }
 
-            else if (documentType == VLNV::CATALOG)
-            {
-                return type().catalogs_;                
-            }
+        else if (documentType == VLNV::CATALOG)
+        {
+            return type().catalogs_;
+        }
 
-            else if (documentType == VLNV::ABSTRACTIONDEFINITION)
-            {
-                return type().buses_ && implementation().hw_;
-            }
+        else if (documentType == VLNV::ABSTRACTIONDEFINITION)
+        {
+            return type().buses_ && implementation().hw_;
+        }
 
-            else if (documentType == VLNV::BUSDEFINITION)
-            {
-                return type().buses_ && implementation().hw_;
-            }
+        else if (documentType == VLNV::BUSDEFINITION)
+        {
+            return type().buses_ && implementation().hw_;
+        }
 
-            else if (documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION)
-            {
-                return type().apis_;
-            }
+        else if (documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION)
+        {
+            return type().apis_;
+        }
 
-            else if (documentType == VLNV::DESIGN)
-            {
-                QSharedPointer<Design> design = handler_->getDesign(vlnv);
+        else if (documentType == VLNV::DESIGN)
+        {
+            QSharedPointer<Design> design = handler_->getDesign(vlnv);
 
-                return type().advanced_ || (type().components_ && implementation().sw_ &&
-                    design->getImplementation() == KactusAttribute::SW);
-            }
+            return type().advanced_ || (type().components_ && implementation().sw_ &&
+                design->getImplementation() == KactusAttribute::SW);
+        }
 
-            else // if type is one of the advanced
-            {
-                return type().advanced_;
-            }
-      //  }
+        else // if type is one of the advanced
+        {
+            return type().advanced_;
+        }
     }
 
     return false;

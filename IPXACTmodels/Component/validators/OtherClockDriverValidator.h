@@ -36,7 +36,7 @@ public:
     OtherClockDriverValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	~OtherClockDriverValidator();
+	~OtherClockDriverValidator() = default;
     
     /*!
      *  Validates the given other clock driver.

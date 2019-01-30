@@ -11,6 +11,8 @@
 
 #include "DocumentFileAccess.h"
 
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/Catalog/Catalog.h>
@@ -41,6 +43,8 @@
 #include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
 
+#include <common/ui/MessageMediator.h>
+
 #include <QObject>
 #include <QDomElement>
 #include <QXmlStreamWriter>
@@ -67,12 +71,12 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     if (!doc.setContent(&file))
     {
         file.close();
-        //emit errorMessage(tr("The document %1 in file %2 could not be opened.").arg(toCreate.toString(), path));
+        messageChannel_->showError(QObject::tr("Could not open file %1 for reading.").arg(path));        
         return QSharedPointer<Document>();
     }
     file.close();
 
-    VLNV::IPXactType toCreate = getDocumentVLNV(doc);
+    VLNV::IPXactType toCreate = VLNV::string2Type(doc.documentElement().nodeName());
 
     // Create correct type of object.
     if (toCreate == VLNV::ABSTRACTIONDEFINITION)
@@ -202,12 +206,4 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
 
     targetFile.close();
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentFileAccess::getDocumentVLNV()
-//-----------------------------------------------------------------------------
-VLNV::IPXactType DocumentFileAccess::getDocumentVLNV(QDomDocument const& doc)
-{
-    return VLNV::string2Type(doc.documentElement().nodeName());
 }

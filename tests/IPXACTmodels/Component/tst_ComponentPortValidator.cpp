@@ -299,7 +299,7 @@ void tst_ComponentPortValidator::protocolFail()
 	QVector<QString> errorList;
     validator.findErrorsIn(errorList, port, "test");
 
-	QCOMPARE( errorList.size(), 3 );
+	QCOMPARE( errorList.size(), 2 );
     QVERIFY( !validator.validate(port) );
 }
 

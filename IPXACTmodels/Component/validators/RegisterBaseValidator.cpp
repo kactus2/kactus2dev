@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "RegisterBaseValidator.h"
+
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
@@ -26,15 +27,6 @@ parameterValidator_(parameterValidator)
 {
 
 }
-
-//-----------------------------------------------------------------------------
-// Function: RegisterBaseValidator::~RegisterBaseValidator()
-//-----------------------------------------------------------------------------
-RegisterBaseValidator::~RegisterBaseValidator()
-{
-
-}
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterBaseValidator::validate()
@@ -128,7 +120,7 @@ bool RegisterBaseValidator::hasValidParameters(QSharedPointer<RegisterBase> sele
     if (!selectedRegisterBase->getParameters()->isEmpty())
     {
         QStringList parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *selectedRegisterBase->getParameters())
+        for (QSharedPointer<Parameter> parameter : *selectedRegisterBase->getParameters())
         {
             if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
@@ -143,7 +135,6 @@ bool RegisterBaseValidator::hasValidParameters(QSharedPointer<RegisterBase> sele
 
     return true;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterBaseValidator::findErrorsIn()
@@ -198,8 +189,8 @@ void RegisterBaseValidator::findErrorsInDimension(QVector<QString>& errors,
 {
     if (!hasValidDimension(selectedRegisterBase))
     {
-        errors.append(QObject::tr("Invalid dimension set for register %1 within %2").arg(selectedRegisterBase->name()).
-            arg(context));
+        errors.append(QObject::tr("Invalid dimension set for register %1 within %2").arg(
+            selectedRegisterBase->name(), context));
     }
 }
 
@@ -213,7 +204,7 @@ void RegisterBaseValidator::findErrorsInAddressOffset(QVector<QString>& errors,
     if (!hasValidAddressOffset(selectedRegisterBase))
     {
         errors.append(QObject::tr("Invalid address offset set for register %1 within %2")
-            .arg(selectedRegisterBase->name()).arg(context));
+            .arg(selectedRegisterBase->name(), context));
     }
 }
 
@@ -227,7 +218,7 @@ void RegisterBaseValidator::findErrorsInParameters(QVector<QString>&errors,
     if (!selectedRegisterBase->getParameters()->isEmpty())
     {
         QStringList parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *selectedRegisterBase->getParameters())
+        for (QSharedPointer<Parameter> parameter : *selectedRegisterBase->getParameters())
         {
             if (parameterNames.contains(parameter->name()))
             {

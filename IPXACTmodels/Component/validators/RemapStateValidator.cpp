@@ -31,14 +31,6 @@ availablePorts_(ports)
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStateValidator::~RemapStateValidator()
-//-----------------------------------------------------------------------------
-RemapStateValidator::~RemapStateValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: RemapStateValidator::componentChange()
 //-----------------------------------------------------------------------------
 void RemapStateValidator::componentChange(QSharedPointer<QList<QSharedPointer<Port> > > newPorts)
@@ -76,7 +68,7 @@ bool RemapStateValidator::hasValidName(QSharedPointer<RemapState> remapState) co
 //-----------------------------------------------------------------------------
 bool RemapStateValidator::hasValidRemapPorts(QSharedPointer<RemapState> remapState) const
 {
-    foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
+    for (QSharedPointer<RemapPort> remapPort : *remapState->getRemapPorts())
     {
         if (!remapPortHasValidPortReference(remapPort) ||
             !remapPortHasValidValue(remapPort))
@@ -93,7 +85,7 @@ bool RemapStateValidator::hasValidRemapPorts(QSharedPointer<RemapState> remapSta
 //-----------------------------------------------------------------------------
 bool RemapStateValidator::remapPortHasValidPortReference(QSharedPointer<RemapPort> remapPort) const
 {
-    foreach (QSharedPointer<Port> port, *availablePorts_)
+    for (QSharedPointer<Port> port : *availablePorts_)
     {
         if (remapPort->getPortNameRef() == port->name())
         {
@@ -172,7 +164,7 @@ void RemapStateValidator::findErrorsInName(QVector<QString>& errors, QSharedPoin
 void RemapStateValidator::findErrorsInRemapPorts(QVector<QString>& errors, QSharedPointer<RemapState> remapState,
     QString const& context) const
 {
-    foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
+    for (QSharedPointer<RemapPort> remapPort : *remapState->getRemapPorts())
     {
         findErrorsInRemapPortPortReference(errors, remapPort, context);
 
@@ -190,7 +182,7 @@ void RemapStateValidator::findErrorsInRemapPorts(QVector<QString>& errors, QShar
 void RemapStateValidator::findErrorsInRemapPortPortReference(QVector<QString>& errors,
     QSharedPointer<RemapPort> remapPort, QString const& context) const
 {
-    foreach (QSharedPointer<Port> port, *availablePorts_)
+    for (QSharedPointer<Port> port : *availablePorts_)
     {
         if (remapPort->getPortNameRef() == port->name())
         {

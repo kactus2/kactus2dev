@@ -30,6 +30,10 @@ public:
 	//! The destructor.
     virtual ~SystemVerilogExpressionParser() = default;
 
+    // Disable copying.
+    SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs) = delete;
+    SystemVerilogExpressionParser& operator=(SystemVerilogExpressionParser const& rhs) = delete;
+
     /*!
      *  Parses an expression to decimal number.
      *
@@ -115,10 +119,6 @@ protected:
     unsigned int operatorPrecedence(QString oper) const;
 
 private:
-
-	// Disable copying.
-	SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs);
-	SystemVerilogExpressionParser& operator=(SystemVerilogExpressionParser const& rhs);
 
     /*!
      *  Converts the given expression to Reverse Polish Notation (RPN) format.

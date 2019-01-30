@@ -35,7 +35,7 @@ public:
     AssertionValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-    virtual ~AssertionValidator();
+    ~AssertionValidator() = default;
     
     /*!
      *  Validates the given assertion.
@@ -44,7 +44,7 @@ public:
      *
      *      @return True, if the assertion is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<Assertion> assertion) const;
+    bool validate(QSharedPointer<Assertion> assertion) const;
 
     /*!
      *  Check if the name is valid.
@@ -71,7 +71,7 @@ public:
      *      @param [in] assertion   The selected assertion.
      *      @param [in] context     Context to help locate the error.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Assertion> assertion,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<Assertion> assertion,
         QString const& context) const;
 
 private:

@@ -137,6 +137,7 @@ HEADERS += ./generaldeclarations.h \
     ./Design/validator/ComponentInstanceValidator.h \
     ./Design/validator/DesignValidator.h \
     ./Design/validator/InterconnectionValidator.h \
+    ./Component/FieldReset.h \
     ./Component/AddressBlock.h \
     ./Component/AddressSpace.h \
     ./Component/AlternateRegister.h \
@@ -257,7 +258,8 @@ HEADERS += ./generaldeclarations.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
     ./utilities/XmlUtils.h \
-    ./Component/FieldReset.h
+    ./utilities/Search.h \
+    ./utilities/ComponentSearch.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -420,6 +422,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/EnumeratedValueWriter.cpp \
     ./Component/Field.cpp \
     ./Component/FieldReader.cpp \
+    ./Component/FieldReset.cpp \
     ./Component/FieldWriter.cpp \
     ./Component/File.cpp \
     ./Component/FileReader.cpp \
@@ -505,4 +508,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/IpxactFile.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
     ./utilities/XmlUtils.cpp \
-    ./Component/FieldReset.cpp
+    ./utilities/ComponentSearch.cpp

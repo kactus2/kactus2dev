@@ -91,17 +91,7 @@ bool ComponentInstanceValidator::hasValidIsPresent(QSharedPointer<ComponentInsta
 //-----------------------------------------------------------------------------
 bool ComponentInstanceValidator::hasValidComponentReference(QSharedPointer<ComponentInstance> instance) const
 {
-    if (instance->getComponentRef() && instance->getComponentRef()->isValid())
-    {
-        QSharedPointer<Component> referencedComponent =
-            libraryHandler_->getModel(*instance->getComponentRef().data()).dynamicCast<Component>();
-        if (referencedComponent)
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return instance->getComponentRef() && libraryHandler_->contains(*instance->getComponentRef());
 }
 
 //-----------------------------------------------------------------------------
@@ -149,7 +139,7 @@ void ComponentInstanceValidator::findErrorsInComponentReference(QVector<QString>
 {
     if (!instance->getComponentRef()->isEmpty())
     {
-        if (!libraryHandler_->contains(*instance->getComponentRef().data()))
+        if (!libraryHandler_->contains(*instance->getComponentRef()))
         {
             errors.append(QObject::tr("Component reference %1 in component instance %2 within %3 was not found "
                 "in the library")

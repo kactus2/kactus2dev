@@ -33,14 +33,6 @@ expressionParser_(expressionParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogValidator::~SystemVerilogValidator()
-//-----------------------------------------------------------------------------
-FileSetValidator::~FileSetValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileSetValidator::validate()
 //-----------------------------------------------------------------------------
 bool FileSetValidator::validate(QSharedPointer<FileSet> fileSet) const
@@ -50,7 +42,7 @@ bool FileSetValidator::validate(QSharedPointer<FileSet> fileSet) const
 		return false;
 	}
 
-	foreach (QSharedPointer<FileBuilder> currentFileBuilder, *fileSet->getDefaultFileBuilders())
+	for (QSharedPointer<FileBuilder> const& currentFileBuilder : *fileSet->getDefaultFileBuilders())
 	{
 		if (!hasValidName(currentFileBuilder->getFileType()) ||
             !fileBuilderHasValidReplaceDefaultFlags(currentFileBuilder))
@@ -59,7 +51,7 @@ bool FileSetValidator::validate(QSharedPointer<FileSet> fileSet) const
 		}
 	}
 
-	foreach(QSharedPointer<File> file, *fileSet->getFiles())
+	for (QSharedPointer<File> const& file : *fileSet->getFiles())
 	{
 		if (!fileValidator_->validate(file))
 		{
@@ -102,7 +94,7 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
             .arg(fileSet->name()).arg(context));
 	}
 
-	foreach (QSharedPointer<FileBuilder> currentFileBuilder, *fileSet->getDefaultFileBuilders())
+	for (QSharedPointer<FileBuilder> const& currentFileBuilder : *fileSet->getDefaultFileBuilders())
 	{
 		if (!hasValidName(currentFileBuilder->getFileType()))
 		{
@@ -119,7 +111,7 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
 	}
 
     QString filesetContext = QObject::tr("file set %1").arg(fileSet->name());
-	foreach(QSharedPointer<File> file, *fileSet->getFiles())
+	for (QSharedPointer<File> const& file : *fileSet->getFiles())
 	{
 		fileValidator_->findErrorsIn(errors, file, filesetContext);
 	}

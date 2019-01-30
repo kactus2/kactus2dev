@@ -46,13 +46,6 @@ QSortFilterProxyModel(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryFilter::~LibraryFilter()
-//-----------------------------------------------------------------------------
-LibraryFilter::~LibraryFilter()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryFilter::onVendorChanged()
 //-----------------------------------------------------------------------------
 void LibraryFilter::onVendorChanged(QString const& vendorText)

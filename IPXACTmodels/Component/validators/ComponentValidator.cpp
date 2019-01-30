@@ -147,14 +147,6 @@ assertionValidator_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentValidator::~ComponentValidator()
-//-----------------------------------------------------------------------------
-ComponentValidator::~ComponentValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: OtherClockDriverValidator::validate()
 //-----------------------------------------------------------------------------
 bool ComponentValidator::validate(QSharedPointer<Component> component)

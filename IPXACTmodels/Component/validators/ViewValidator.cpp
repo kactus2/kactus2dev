@@ -29,14 +29,6 @@ model_(model)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewValidator::~ViewValidator()
-//-----------------------------------------------------------------------------
-ViewValidator::~ViewValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ViewValidator::componentChange()
 //-----------------------------------------------------------------------------
 void ViewValidator::componentChange(QSharedPointer<Model> newModel)
@@ -94,7 +86,7 @@ bool ViewValidator::hasValidIsPresent(QSharedPointer<View> view) const
 //-----------------------------------------------------------------------------
 bool ViewValidator::hasValidEnvironmentIdentifiers(QSharedPointer<View> view) const
 {
-    foreach( QSharedPointer<View::EnvironmentIdentifier> envId, *view->getEnvIdentifiers() )
+    for ( QSharedPointer<View::EnvironmentIdentifier> const& envId : *view->getEnvIdentifiers() )
     {
         if ( !isValidEnvId( envId ) )
         {
@@ -107,24 +99,24 @@ bool ViewValidator::hasValidEnvironmentIdentifiers(QSharedPointer<View> view) co
 //-----------------------------------------------------------------------------
 // Function: ViewValidator::isValidEnvId()
 //-----------------------------------------------------------------------------
-bool ViewValidator::isValidEnvId(QSharedPointer<View::EnvironmentIdentifier> envId) const
+bool ViewValidator::isValidEnvId(QSharedPointer<View::EnvironmentIdentifier> const& envId) const
 {
     QRegularExpression envIdExpression;
 	envIdExpression.setPattern(QStringLiteral("[A-Za-z0-9_+\\*\\.]*"));
-	QRegularExpressionMatch envIdMatchLanguage = envIdExpression.match(envId->language);
-	QRegularExpressionMatch envIdMatchTool = envIdExpression.match(envId->tool);
-	QRegularExpressionMatch envIdMatchVendor = envIdExpression.match(envId->vendorSpecific);
 
-    if ( !envId->language.isEmpty() && !envIdMatchLanguage.hasMatch() )
+	QRegularExpressionMatch envIdMatchLanguage = envIdExpression.match(envId->language);
+    if (!envId->language.isEmpty() && !envIdMatchLanguage.hasMatch())
     {
         return false;
-	}
+    }
+    
+    QRegularExpressionMatch envIdMatchTool = envIdExpression.match(envId->tool);
+    if (!envId->tool.isEmpty() && !envIdMatchTool.hasMatch())
+    {
+        return false;
+    }
 
-	if ( !envId->tool.isEmpty() && !envIdMatchTool.hasMatch() )
-	{
-		return false;
-	}
-
+    QRegularExpressionMatch envIdMatchVendor = envIdExpression.match(envId->vendorSpecific);
 	if ( !envId->vendorSpecific.isEmpty() && !envIdMatchVendor.hasMatch() )
 	{
 		return false;
@@ -191,7 +183,7 @@ void ViewValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<View> 
             .arg(view->getIsPresent()).arg(view->name()));
 	}
 
-	foreach( QSharedPointer<View::EnvironmentIdentifier> envId, *view->getEnvIdentifiers() )
+	for ( QSharedPointer<View::EnvironmentIdentifier> const& envId : *view->getEnvIdentifiers() )
 	{
 		if ( !isValidEnvId( envId ) )
 		{

@@ -56,7 +56,7 @@ QObject(parent),
     parentWidget_(parentWidget),
     messageChannel_(messageChannel),
     fileAccess_(messageChannel),
-    loader_(messageChannel, this),
+    loader_(messageChannel),
     documentCache_(),
     urlTester_(Utils::URL_VALIDITY_REG_EXP, this),
     validator_(this),
@@ -892,7 +892,7 @@ void LibraryHandler::onCloseIntegrityReport()
 void LibraryHandler::onFileChanged(QString const& path)
 {
     auto changedDocument = std::find_if(documentCache_.cbegin(), documentCache_.cend(),
-        [path] (const DocumentInfo& s) { return s.path.compare(path) == 0; } );
+        [path] (const DocumentInfo& item) { return item.path.compare(path) == 0; } );
 
     if (changedDocument != documentCache_.cend() && changedDocument.key().isValid())
     {
@@ -1144,6 +1144,7 @@ LibraryHandler::DocumentStatistics LibraryHandler::removeSelectedObjects(
         }
     }
 
+    changedDirectories.removeDuplicates();
     loader_.clean(changedDirectories);
 
     return removeStatistics;

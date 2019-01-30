@@ -18,6 +18,7 @@
 
 #include <common/KactusColors.h>
 
+#include <QStringBuilder>
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
@@ -282,16 +283,16 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
     {
         VLNV vlnv = item->getVLNV();
 
-        QString text = "<b>Vendor:</b> " + vlnv.getVendor() + "<br>" +
-                       "<b>Library:</b> " + vlnv.getLibrary() + "<br>" +
-                       "<b>Name:</b> " + vlnv.getName() + "<br>" +
-                       "<b>Version:</b> " + vlnv.getVersion() + "<br>";
+        QString text = "<b>Vendor:</b> " % vlnv.getVendor() % "<br>" %
+                       "<b>Library:</b> " % vlnv.getLibrary() % "<br>" %
+                       "<b>Name:</b> " % vlnv.getName() % "<br>" %
+                       "<b>Version:</b> " % vlnv.getVersion() % "<br>";
 
         QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
 
         if (document != 0 && !document->getDescription().isEmpty())
         {
-            text += "<br><b>Description:</b><br>" + document->getDescription();
+            text += "<br><b>Description:</b><br>" % document->getDescription();
         }
 
         text += QString("<br><b>File Path:</b><br>%1").arg(handler_->getPath(vlnv));
@@ -303,58 +304,58 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
         {
             if (item->getImplementation() == KactusAttribute::SYSTEM)
             {
-                return QIcon(":/icons/common/graphics/system-component.png");
+                return QIcon(QStringLiteral(":/icons/common/graphics/system-component.png"));
             }
             else if (item->getImplementation() == KactusAttribute::SW)
             {
                 if (item->isHierarchical())
                 {
-                    return QIcon(":/icons/common/graphics/hier-sw-component.png");
+                    return QIcon(QStringLiteral(":/icons/common/graphics/hier-sw-component.png"));
                 }
                 else
                 {
-                    return QIcon(":/icons/common/graphics/sw-component48x48.png");
+                    return QIcon(QStringLiteral(":/icons/common/graphics/sw-component48x48.png"));
                 }
             }
             else
             {
                 if (item->isHierarchical()) 
                 {
-                    return QIcon(":/icons/common/graphics/hier-hw-component.png");
+                    return QIcon(QStringLiteral(":/icons/common/graphics/hier-hw-component.png"));
                 }
                 else
                 {
-                    return QIcon(":/icons/common/graphics/hw-component.png");
+                    return QIcon(QStringLiteral(":/icons/common/graphics/hw-component.png"));
                 }		
             }
         }
         else if (item->type() == HierarchyItem::CATALOG)
         {
-            return QIcon(":/icons/common/graphics/catalog.png");
+            return QIcon(QStringLiteral(":/icons/common/graphics/catalog.png"));
         }
         else if (item->type() == HierarchyItem::COMDEFINITION)
         {
-            return QIcon(":/icons/common/graphics/new-com_definition.png");
+            return QIcon(QStringLiteral(":/icons/common/graphics/new-com_definition.png"));
         }
         else if (item->type() == HierarchyItem::APIDEFINITION)
         {
-            return QIcon(":/icons/common/graphics/new-api_definition.png");
+            return QIcon(QStringLiteral(":/icons/common/graphics/new-api_definition.png"));
         }
     	else if (item->type() == HierarchyItem::HW_DESIGN)
         {
-    		return QIcon(":/icons/common/graphics/hw-design.png");
+    		return QIcon(QStringLiteral(":/icons/common/graphics/hw-design.png"));
     	}
     	else if (item->type() == HierarchyItem::SW_DESIGN || item->type() == HierarchyItem::SYS_DESIGN)
         {
-            return QIcon(":/icons/common/graphics/sw-design48x48.png");
+            return QIcon(QStringLiteral(":/icons/common/graphics/sw-design48x48.png"));
     	}
         else if (item->type() == HierarchyItem::ABSDEFINITION)
         {
-            return QIcon(":/icons/common/graphics/abs-def.png");
+            return QIcon(QStringLiteral(":/icons/common/graphics/abs-def.png"));
         }
         else
         {
-            return QIcon(":/icons/common/graphics/bus-def.png");
+            return QIcon(QStringLiteral(":/icons/common/graphics/bus-def.png"));
         }
     }
 

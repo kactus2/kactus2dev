@@ -34,7 +34,7 @@ bool TransactionalTypes::isIpXactKindType(QString const& kindType)
 {
     for (unsigned int i = 0; i < TransactionalTypes::KIND_TYPE_COUNT; ++i)
     {
-        if (QString(TransactionalTypes::KIND_TYPES[i]) == kindType)
+        if (TransactionalTypes::KIND_TYPES[i] == kindType)
         {
             return true;
         }

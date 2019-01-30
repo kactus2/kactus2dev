@@ -49,7 +49,7 @@ public:
         QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
-    virtual ~RegisterValidator();
+    virtual ~RegisterValidator() = default;
     
     /*!
      *  Change the containing component.

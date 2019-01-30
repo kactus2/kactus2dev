@@ -35,8 +35,12 @@ public:
     ChoiceValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	virtual ~ChoiceValidator();
-    
+	~ChoiceValidator() = default;
+
+    // Disable copying.
+    ChoiceValidator(ChoiceValidator const& rhs) = delete;
+    ChoiceValidator& operator=(ChoiceValidator const& rhs) = delete;
+
     /*!
      *  Validates the given choice.
      *
@@ -44,7 +48,7 @@ public:
      *
      *      @return True, if the choice is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<Choice> choice) const;
+    bool validate(QSharedPointer<Choice> choice) const;
 
     /*!
      *  Check if the name is valid.
@@ -71,14 +75,9 @@ public:
      *      @param [in] choice      The selected choice.
      *      @param [in] context     Context to help locate the error.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Choice> choice, QString const& context)
-        const;
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<Choice> choice, QString const& context) const;
 
 private:
-
-	// Disable copying.
-	ChoiceValidator(ChoiceValidator const& rhs);
-	ChoiceValidator& operator=(ChoiceValidator const& rhs);
 
     /*!
      *  Find errors within name.

@@ -43,7 +43,11 @@ public:
                       QSharedPointer<ParameterValidator> parameterValidator);
 
     //! The destructor.
-    ~RegisterBaseValidator();
+    virtual ~RegisterBaseValidator() = default;
+
+    // Disable copying.
+    RegisterBaseValidator(RegisterBaseValidator const& rhs) = delete;
+    RegisterBaseValidator& operator=(RegisterBaseValidator const& rhs) = delete;
 
     QSharedPointer<FieldValidator> getFieldValidator() const;
 
@@ -92,7 +96,6 @@ public:
      */
     bool hasValidAddressOffset(QSharedPointer<RegisterBase> selectedRegisterBase) const;
 
-
     /*!
      *  Check if the register contains valid parameters.
      *
@@ -109,14 +112,9 @@ public:
      *      @param [in] selectedRegisterBase    The selected register.
      *      @param [in] context             Context to help locate the error.
      */
-    void findErrorsIn(QVector<QString>& errors, QSharedPointer<RegisterBase> selectedRegisterBase, QString const& context)
-        const;
+    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<RegisterBase> selectedRegisterBase, 
+        QString const& context) const;
 
-private:
-
-    // Disable copying.
-    RegisterBaseValidator(RegisterBaseValidator const& rhs);
-    RegisterBaseValidator& operator=(RegisterBaseValidator const& rhs);
 
 protected:
     /*!

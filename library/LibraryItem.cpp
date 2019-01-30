@@ -74,10 +74,6 @@ QObject(parent),
 //-----------------------------------------------------------------------------
 LibraryItem::~LibraryItem()
 {
-	for (int i = 0; i < childItems_.size(); ++i)
-    {
-		delete childItems_.at(i);
-	}
 	childItems_.clear();
 }
 
@@ -192,7 +188,7 @@ QVector<VLNV> LibraryItem::getVLNVs() const
 	}
 	else 
     {
-		for (LibraryItem* child : childItems_)
+		for (LibraryItem const* child : childItems_)
         {
 			vlnvList += child->getVLNVs();
 		}
@@ -208,10 +204,10 @@ void LibraryItem::removeChild(LibraryItem* childItem )
 {
 	Q_ASSERT_X(childItem, "LibraryItem::removeChild()",	"Null LibraryItem-pointer");
 
-	if (childItems_.contains(childItem))
-    {
-		int index = childItems_.indexOf(childItem);
+    int index = childItems_.indexOf(childItem);
 
+	if (index != -1)
+    {
 		delete childItems_.value(index);
 		childItems_.removeAt(index);
 	}
@@ -357,7 +353,7 @@ QVector<LibraryItem*> LibraryItem::getLibraries() const
     QVector<LibraryItem*> list;
     if (level_ == Level::ROOT)
     {
-        for (LibraryItem* item : childItems_)
+        for (LibraryItem const* item : childItems_)
         {
             list += item->getLibraries();
         }
@@ -384,7 +380,7 @@ QVector<LibraryItem*> LibraryItem::getNames() const
 
     if (level_ == Level::ROOT || level_ == Level::VENDOR)
     {
-        for (LibraryItem* item : childItems_)
+        for (LibraryItem const* item : childItems_)
         {
             list += item->getNames();
         }
@@ -408,7 +404,7 @@ QVector<LibraryItem*> LibraryItem::getVersions() const
     }
 
 	QVector<LibraryItem*> list;
-    for (LibraryItem* item : childItems_)
+    for (LibraryItem const* item : childItems_)
     {
         list += item->getNames();
     }

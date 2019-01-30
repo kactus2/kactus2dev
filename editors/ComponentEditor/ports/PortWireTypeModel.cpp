@@ -518,9 +518,8 @@ bool PortWireTypeModel::validateIndex(QModelIndex const& index, QSharedPointer<W
             return typeValidator_->validate(typeDefinition, wireTypeDefinitions_);
         }
         else
-        {
-            QString* viewReference = &(*typeDefinition->getViewRefs())[index.row()];
-            return typeValidator_->hasValidView(viewReference, wireTypeDefinitions_);
+        {            
+            return typeValidator_->hasValidView(typeDefinition->getViewRefs()->at(index.row()), wireTypeDefinitions_);
         }
     }
 

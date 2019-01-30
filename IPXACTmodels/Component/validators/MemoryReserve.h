@@ -31,7 +31,11 @@ public:
     MemoryReserve();
 
     //! The destructor.
-    ~MemoryReserve();
+    ~MemoryReserve() = default;
+
+    // Disable copying.
+    MemoryReserve(MemoryReserve const& rhs) = delete;
+    MemoryReserve& operator=(MemoryReserve const& rhs) = delete;
 
     /*!
      *  Reserve an area.
@@ -77,10 +81,7 @@ public:
 
 private:
 
-	// Disable copying.
-	MemoryReserve(MemoryReserve const& rhs);
-	MemoryReserve& operator=(MemoryReserve const& rhs);
-
+	
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -104,7 +105,7 @@ private:
          *
          *      @return The newly assigned memory area.
          */
-        MemoryArea& operator=(const MemoryArea& other);
+        MemoryArea& operator=(const MemoryArea& other) = default;
         
         /*!
          *  Check if a memory area has lower start point than another memory area.

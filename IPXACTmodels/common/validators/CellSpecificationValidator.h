@@ -33,7 +33,7 @@ public:
     CellSpecificationValidator();
 
 	//! The destructor.
-	~CellSpecificationValidator();
+	~CellSpecificationValidator() = default;
 
     /*!
      *  Validates the given CellSpecification.
@@ -42,7 +42,7 @@ public:
      *
      *      @return True, if the CellSpecification is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<CellSpecification> cellSpecification) const;
+    bool validate(QSharedPointer<CellSpecification> cellSpecification) const;
 
     /*!
      *  Finds possible errors in a CellSpecification and creates a list of them.
@@ -51,7 +51,7 @@ public:
      *      @param [in] CellSpecification   The CellSpecification whose errors to find.
      *      @param [in] context             Context to help locate the errors.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<CellSpecification> cellSpecification,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<CellSpecification> cellSpecification,
 		QString const& context) const;
 
 private:

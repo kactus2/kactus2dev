@@ -42,7 +42,7 @@ public:
     LibraryFilter(QObject *parent = 0);
 
 	//! The destructor
-    virtual ~LibraryFilter();
+    virtual ~LibraryFilter() = default;
 
 public slots:
 

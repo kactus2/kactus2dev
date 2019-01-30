@@ -26,29 +26,6 @@ protocolType_(),
 }
 
 //-----------------------------------------------------------------------------
-// Function: Protocol::Protocol()
-//-----------------------------------------------------------------------------
-Protocol::Protocol(Protocol const& other) : 
-Extendable(other),
-    protocolType_(other.protocolType_),
-    customProtocolType_(other.customProtocolType_),
-    payloadName_(other.payloadName_),
-    payloadType_(other.payloadType_),
-    payloadExtension_(other.payloadExtension_),
-    mandatoryPayloadExtension_(other.mandatoryPayloadExtension_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Protocol::~Protocol()
-//-----------------------------------------------------------------------------
-Protocol::~Protocol()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: Protocol::setType()
 //-----------------------------------------------------------------------------
 void Protocol::setProtocolType(QString const& type)
