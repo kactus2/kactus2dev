@@ -24,6 +24,7 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/BusInterfaceReader.h \
     ../../../IPXACTmodels/Component/CPUReader.h \
     ../../../IPXACTmodels/Component/ChannelReader.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/common/ClockUnit.h \
     ../../../IPXACTmodels/kactusExtensions/ComInterface.h \
     ../../../IPXACTmodels/kactusExtensions/ComProperty.h \
@@ -102,7 +103,6 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/View.h \
     ../../../IPXACTmodels/Component/Wire.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
-    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/Component/channel.h \
     ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/Component/cpu.h \
@@ -114,7 +114,8 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/common/ProtocolReader.h \
     ../../../IPXACTmodels/Component/RemapStateReader.h \
-    ../../../IPXACTmodels/Component/ViewReader.h
+    ../../../IPXACTmodels/Component/ViewReader.h \
+    ../../../IPXACTmodels/Component/FieldReset.h
 SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/AddressBlock.cpp \
@@ -219,9 +220,10 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/Wire.cpp \
     ../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/Component/channel.cpp \
     ../../../IPXACTmodels/Component/choice.cpp \
     ../../../IPXACTmodels/Component/cpu.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_ComponentReader.cpp
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
+    ./tst_ComponentReader.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp

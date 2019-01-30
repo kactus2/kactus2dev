@@ -128,7 +128,7 @@ private:
      *
      *      @return The conversion result.
      */
-    QStringList convertToRPN(QString const& expression) const;
+    QVector<QString> convertToRPN(QString const& expression) const;
 
     /*!
      *  Solves the given RPN expression.
@@ -138,7 +138,7 @@ private:
      *
      *      @return The solved result.
      */
-    QString solveRPN(QStringList rpn, bool* validExpression) const;
+    QString solveRPN(QVector<QString> rpn, bool* validExpression) const;
 
     /*!
      *  Checks if the given expression is a string.

@@ -250,7 +250,7 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == HierarchyModel::OBJECT_COLUMN)
         {
-            VLNV vlnv = item->getVLNV();
+            VLNV const& vlnv = item->getVLNV();
             if (vlnv.isValid())
             {
                 return vlnv.toString();

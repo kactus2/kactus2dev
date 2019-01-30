@@ -12,9 +12,12 @@
 #include "LibraryLoader.h"
 
 #include <QDir>
+#include <QDirIterator>
 #include <QFileInfo>
 #include <QSettings>
 #include <QXmlStreamReader>
+
+#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryLoader::LibraryLoader()
@@ -62,21 +65,15 @@ void LibraryLoader::clean(QStringList changedDirectories)
 //-----------------------------------------------------------------------------
 void LibraryLoader::parseDirectory(QString const& directoryPath, QVector<LoadTarget>& vlnvPaths)
 {
-    QDir directoryHandler(directoryPath);
-    directoryHandler.setNameFilters(QStringList(QLatin1String("*.xml")));
+    QStringList xmlFilter(QLatin1String("*.xml"));
 
-    // Get list of files and folders.
-    for (QFileInfo const& entryInfo :
-        directoryHandler.entryInfoList(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files | QDir::Readable))
+    QDirIterator it(directoryPath, xmlFilter, QDir::Files, 
+        QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+
+    while (it.hasNext())
     {
-        if (entryInfo.isFile())
-        {
-            parseFile(entryInfo.absoluteFilePath(), vlnvPaths);
-        }
-        else if (entryInfo.isDir())
-        {
-            parseDirectory(entryInfo.absoluteFilePath(), vlnvPaths);
-        }
+        QString filePath(it.next());
+        parseFile(filePath, vlnvPaths);
     }
 }
 
@@ -87,12 +84,10 @@ void LibraryLoader::parseFile(QString const& filePath, QVector<LoadTarget>& vlnv
 {
     VLNV vlnv = getDocumentVLNV(filePath);
 
-    if (vlnv.isValid() == false)
+    if (vlnv.isValid())
     {
-        return;
+        vlnvPaths.append(LoadTarget(vlnv, filePath));
     }
-
-    vlnvPaths.append(LoadTarget(vlnv, filePath));
 }
 
 //-----------------------------------------------------------------------------
@@ -139,7 +134,7 @@ VLNV LibraryLoader::getDocumentVLNV(QString const& path)
 
     documentFile.close();
 
-    return VLNV(VLNV::string2Type(type), vendor, library, name, version);
+    return VLNV(type, vendor, library, name, version);
 }
 
 //-----------------------------------------------------------------------------

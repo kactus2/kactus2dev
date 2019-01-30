@@ -27,25 +27,21 @@ class LibraryItem;
 class VLNVDataNode
 {
 public:
-    // Valid level values.
-    enum
-    {
-        LEVEL_ROOT = 0, //!< Reserved for the tree root node.
-        LEVEL_VENDOR,   //!< Node represents a Vendor field.
-        LEVEL_LIBRARY,  //!< Node represents a Library field.
-        LEVEL_NAME,     //!< Node represents a Name field.
-        LEVEL_VERSION   //!< Node represents a Version field.
-    };
+
 
     /*!
      *  Constructor.
      */
-    VLNVDataNode(QString const& name = QString(), unsigned int level = LEVEL_ROOT);
+    VLNVDataNode(QString const& name = QString());
 
     /*!
      *  Destructor.
      */
-    virtual ~VLNVDataNode();
+    virtual ~VLNVDataNode() = default;
+    
+    // Disable copying.
+    VLNVDataNode(VLNVDataNode const& rhs) = delete;
+    VLNVDataNode& operator=(VLNVDataNode const& rhs) = delete;
 
     /*!
      *  Returns the name of the node.
@@ -53,33 +49,29 @@ public:
     QString const& name() const;
 
     /*!
-     *  Returns the VLNV of the node (valid only if the node level is LEVEL_VERSION).
+     *  Returns the VLNV of the node (valid only if the node level is version).
      */
     VLNV const& getVLNV() const;
 
     /*!
-     *  Returns the node level.
-     */
-    unsigned int getLevel() const;
-
-    /*!
      *  Returns the child with the given name or null if not found.
      *
      *      @param [in] name The name of the child to search for.
      */
-    VLNVDataNode* findChild(QString const& name);
-
-    /*!
-     *  Returns the child with the given name or null if not found.
-     *
-     *      @param [in] name The name of the child to search for.
-     */
-    VLNVDataNode const* findChild(QString const& name) const;
+    VLNVDataNode* findChild(QString const& name) const;
 
     /*!
      *  Returns the node's children.
      */
     QList< QSharedPointer<VLNVDataNode> > const& getChildren() const;
+
+    
+    /*!
+     * Get the number of children the node has.
+     *
+     *     @return The number of children.
+     */
+     int getChildCount() const;
 
     /*!
      *  Sets the VLNV for the node.
@@ -111,19 +103,9 @@ public:
     
 
 private:
-    // Disable copying.
-    VLNVDataNode(VLNVDataNode const& rhs);
-    VLNVDataNode& operator=(VLNVDataNode const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
 
     //! The node name.
     QString name_;
-
-    //! The node level.
-    unsigned int level_;
 
     //! The object VLNV (only valid at the leaf nodes).
     VLNV vlnv_;
@@ -146,7 +128,11 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~VLNVDataTree();
+    virtual ~VLNVDataTree() = default;
+    
+    // Disable copying.
+    VLNVDataTree(VLNVDataTree const& rhs) = delete;
+    VLNVDataTree& operator=(VLNVDataTree const& rhs) = delete;
 
     /*! 
      *  Updates the tree based on the filters and the given library interface.
@@ -193,9 +179,6 @@ public:
     void addExtensionFilter(QString const& extension);
 
 private:
-    // Disable copying.
-    VLNVDataTree(VLNVDataTree const& rhs);
-    VLNVDataTree& operator=(VLNVDataTree const& rhs);
 
     /*!
      *  Parses the library subtree indicated by the given library item and adds matching names

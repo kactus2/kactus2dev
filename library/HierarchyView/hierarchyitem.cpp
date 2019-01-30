@@ -97,6 +97,7 @@ QObject(parent),
 //-----------------------------------------------------------------------------
 HierarchyItem::HierarchyItem(LibraryInterface* handler, QObject* parent ):
 QObject(parent),
+    vlnv_(),
     component_(),
     busDef_(),
     absDef_(),
@@ -140,7 +141,7 @@ HierarchyItem* HierarchyItem::parent() const
 //-----------------------------------------------------------------------------
 // Function: HierarchyItem::getVLNV()
 //-----------------------------------------------------------------------------
-VLNV HierarchyItem::getVLNV() const
+VLNV const& HierarchyItem::getVLNV() const
 {
     return vlnv_;
 }
@@ -240,9 +241,9 @@ void HierarchyItem::cleanUp()
 	// make sure this is called only for root item
 	Q_ASSERT_X(!component_, "HierarchyItem::cleanUp", "Function was called for non-root item");
 
-	for (auto item = childItems_.begin(); item != childItems_.end() - 1; ++item)
+	for (auto item = childItems_.begin(); item != childItems_.end(); ++item)
     {
-		VLNV vlnv = (*item)->getVLNV();
+		VLNV const& vlnv = (*item)->getVLNV();
 
         // Check every pair exactly once: Children before item are already checked.
 		for (auto item2 = item + 1 ; item2 != childItems_.end(); ++item2)
@@ -321,7 +322,7 @@ int HierarchyItem::getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const
 //-----------------------------------------------------------------------------
 int HierarchyItem::removeItems(VLNV const& vlnv)
 {
-	QList<HierarchyItem*> childrenToRemove;
+    QVector<HierarchyItem*> childrenToRemove;
 
 	for (HierarchyItem* item : childItems_)
     {
@@ -360,7 +361,7 @@ QVector<HierarchyItem*> HierarchyItem::findItems(const VLNV& vlnv)
 {
 	QVector<HierarchyItem*> items;
 
-	if (getVLNV() == vlnv)
+	if (vlnv_ == vlnv)
     {
 		items.append(this);
     }

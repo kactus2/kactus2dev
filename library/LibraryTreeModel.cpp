@@ -497,7 +497,7 @@ void LibraryTreeModel::onResetModel()
     }
 
     // get the items to be displayed from the data source
-    foreach (VLNV const& item, handler_->getAllVLNVs())
+    for (VLNV const& item : handler_->getAllVLNVs())
     {
         VLNV::IPXactType documentType = item.getType();
         if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION ||
@@ -505,7 +505,7 @@ void LibraryTreeModel::onResetModel()
             documentType == VLNV::DESIGN || documentType == VLNV::DESIGNCONFIGURATION ||
             documentType == VLNV::APIDEFINITION || documentType == VLNV::COMDEFINITION)
         {
-            rootItem_->createChild(item, LibraryItem::ROOT);
+            rootItem_->createChild(item, LibraryItem::Level::ROOT);
         }
     }
 
@@ -809,7 +809,7 @@ void LibraryTreeModel::onShowErrors(QModelIndex const& index)
 bool LibraryTreeModel::validate(LibraryItem* item)
 {
     bool isValid = false;
-    if (item->getLevel() == LibraryItem::VERSION)
+    if (item->getLevel() == LibraryItem::Level::VERSION)
     {
         isValid = handler_->isValid(item->getVLNV());
     }

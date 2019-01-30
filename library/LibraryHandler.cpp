@@ -47,6 +47,7 @@
 #include <QString>
 #include <QStringList>
 
+
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::LibraryHandler()
 //-----------------------------------------------------------------------------
@@ -305,12 +306,6 @@ int LibraryHandler::getChildren(QList<VLNV>& list, VLNV const& vlnvToSearch) con
 //-----------------------------------------------------------------------------
 VLNV LibraryHandler::getDesignVLNV(VLNV const& hierarchyRef)
 {
-    if (contains(hierarchyRef) == false)
-    {
-        showNotFoundError(hierarchyRef);
-        return VLNV();
-    }
-
     if (getDocumentType(hierarchyRef) == VLNV::DESIGNCONFIGURATION)
     {
         QSharedPointer<const DesignConfiguration> desConf = 
@@ -326,12 +321,15 @@ VLNV LibraryHandler::getDesignVLNV(VLNV const& hierarchyRef)
         designVLNV.setType(VLNV::DESIGN);
         return designVLNV;
     }
-
     else if (getDocumentType(hierarchyRef) == VLNV::DESIGN)
     {
         return hierarchyRef;
     }
-
+    else if (contains(hierarchyRef) == false)
+    {
+        showNotFoundError(hierarchyRef);
+        return VLNV();
+    }
     else
     {
         emit errorMessage(tr("VLNV: %1 was not valid hierarchical reference.").arg(hierarchyRef.toString()));
@@ -344,14 +342,13 @@ VLNV LibraryHandler::getDesignVLNV(VLNV const& hierarchyRef)
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> LibraryHandler::getDesign(VLNV const& hierarchyRef)
 {
-    if (contains(hierarchyRef) == false)
+    VLNV designVlnv = getDesignVLNV(hierarchyRef);
+    if (designVlnv.isValid() == false)
     {
         showNotFoundError(hierarchyRef);
         return QSharedPointer<Design>();
-    }
+    }   
 
-    VLNV designVlnv = getDesignVLNV(hierarchyRef);
-    
     return getModel(designVlnv).staticCast<Design>();
 }
 
@@ -360,7 +357,13 @@ QSharedPointer<Design> LibraryHandler::getDesign(VLNV const& hierarchyRef)
 //-----------------------------------------------------------------------------
 bool LibraryHandler::isValid(VLNV const& vlnv)
 {    
-    return documentCache_.value(vlnv).isValid;
+    auto it = documentCache_.constFind(vlnv);
+    if (it != documentCache_.cend())
+    {
+        return documentCache_.value(vlnv).isValid;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -888,10 +891,10 @@ void LibraryHandler::onCloseIntegrityReport()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onFileChanged(QString const& path)
 {
-    auto changedDocument = std::find_if(documentCache_.begin(), documentCache_.end(),
+    auto changedDocument = std::find_if(documentCache_.cbegin(), documentCache_.cend(),
         [path] (const DocumentInfo& s) { return s.path.compare(path) == 0; } );
 
-    if (changedDocument != documentCache_.end() && changedDocument.key().isValid())
+    if (changedDocument != documentCache_.cend() && changedDocument.key().isValid())
     {
         emit updatedVLNV(changedDocument.key());
     }
@@ -1066,7 +1069,7 @@ void LibraryHandler::loadAvailableVLNVs()
     messageChannel_->showStatusMessage(tr("Scanning library. Please wait..."));
 
     // Read all items before validation.
-    // Validation will check for VLNVs in the library, so they must be available before validation.
+    // Validation will check for VLNVs in the library, so they must be available before validation.    
     for (auto const& target: loader_.parseLibrary())
     {
         if (contains(target.vlnv))

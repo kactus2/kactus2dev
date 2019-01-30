@@ -301,7 +301,7 @@ bool LibraryFilter::checkHierarchy(QSharedPointer<Component const> component) co
 //-----------------------------------------------------------------------------
 bool LibraryFilter::checkVLNVs(QVector<VLNV> const& list) const
 {
-    foreach (VLNV const& vlnv, list)
+    for (VLNV const& vlnv : list)
     {
         int pos = 0;
 

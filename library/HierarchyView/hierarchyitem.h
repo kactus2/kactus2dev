@@ -97,7 +97,7 @@ public:
 	 *
 	 *      @return VLNV of the component this item represents.
 	*/
-	VLNV getVLNV() const;
+	VLNV const& getVLNV() const;
 
 	/*! Get pointer to the child item with given index.
 	 * 
@@ -460,7 +460,7 @@ private:
 	LibraryInterface* library_;
 
 	//! List of children of this item.
-	QList<HierarchyItem*> childItems_;
+	QVector<HierarchyItem*> childItems_;
 
 	//! The parent of this item.
 	HierarchyItem* parentItem_;

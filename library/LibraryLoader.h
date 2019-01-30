@@ -64,7 +64,7 @@ private:
 	*/
     void parseDirectory(QString const& directoryPath, QVector<LoadTarget>& vlnvPaths);
 
-	/*! Searches through a single file for IP-XACT files.
+    /*! Searches through a single file for IP-XACT files.
 	*
 	*      @param [in]		filePath	The file path to search.
 	*      @param [in/out]	vlnvPaths	The already found targets where any new IP-XACT files will be added.
@@ -101,5 +101,6 @@ private:
     //! Utilities for file access.
     DocumentFileAccess fileAccess_;
 };
+
 
 #endif // LIBRARYLOADER_H

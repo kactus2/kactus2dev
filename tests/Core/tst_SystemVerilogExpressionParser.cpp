@@ -908,7 +908,7 @@ void tst_SystemVerilogExpressionParser::testBitwiseOperations_data()
     QTest::addColumn<QString>("expectedResult");
     QTest::addColumn<bool>("expectedValid");
 
-    QTest::newRow("Negation") << "~4'b001" << "6" << true;
+    QTest::newRow("Negation") << "~4'b0001" << "-2" << true;
 
 }
 
@@ -941,6 +941,7 @@ void tst_SystemVerilogExpressionParser::testParserPerformance_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<int>("expectedResult");
 
+    QTest::newRow("Constant value") << "'hFF" << 255;
     QTest::newRow("Basic operations") << "12*12 + 8/2 -8" << 140;
     QTest::newRow("clog2 operations") << "$clog2(256) - $clog2(8)" << 5;
     QTest::newRow("Nested clog2 operations") << "$clog2($clog2(256))" << 3;

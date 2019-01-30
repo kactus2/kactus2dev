@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 LibraryItem::LibraryItem(QObject* parent): QObject(parent),
     name_(tr("root")), 
-    level_(LibraryItem::ROOT),
+    level_(Level::ROOT),
     childItems_(),
     parentItem_(0),
     vlnv_(),
@@ -43,19 +43,19 @@ QObject(parent),
     valid_(true)
 {
 	// Choose name for the item in the tree.
-	if (level == VENDOR)
+	if (level == Level::VENDOR)
     {
 		name_ = vlnv.getVendor();
     }
-    else if (level == LIBRARY)
+    else if (level == Level::LIBRARY)
     {
 		name_ = vlnv.getLibrary();
     }
-	else if (level == NAME)
+	else if (level == Level::NAME)
     {
 		name_ = vlnv.getName();
     }
-	else if (level == VERSION)
+	else if (level == Level::VERSION)
     {
 		name_ = vlnv.getVersion();
 		vlnv_ = vlnv;
@@ -94,7 +94,7 @@ void LibraryItem::createChild(VLNV const& vlnv, Level level)
     }
 
 	// no child with same name was found so create a new child
-	LibraryItem* newItem = new LibraryItem(vlnv, static_cast<Level>(static_cast<int>(level) +1), this);
+	LibraryItem* newItem = new LibraryItem(vlnv, static_cast<Level>(static_cast<int>(level) + 1), this);
 	childItems_.push_back(newItem);
 	
 	return;
@@ -192,7 +192,7 @@ QVector<VLNV> LibraryItem::getVLNVs() const
 	}
 	else 
     {
-		foreach (LibraryItem* child, childItems_)
+		for (LibraryItem* child : childItems_)
         {
 			vlnvList += child->getVLNVs();
 		}
@@ -245,7 +245,7 @@ LibraryItem* LibraryItem::findHighestUnique(LibraryItem* childItem)
 //-----------------------------------------------------------------------------
 LibraryItem* LibraryItem::findHighestUnique(VLNV const& vlnv)
 {
-    if (level_ == VERSION)
+    if (level_ == Level::VERSION)
     {
         return parentItem_->findHighestUnique(this);
     }
@@ -265,7 +265,7 @@ LibraryItem* LibraryItem::findHighestUnique(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 LibraryItem* LibraryItem::findItem(VLNV const& vlnv)
 {
-    if (level_ == VERSION)
+    if (level_ == Level::VERSION)
     {
         if (vlnv_ == vlnv)
         {
@@ -292,31 +292,31 @@ LibraryItem* LibraryItem::findItem(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryItem::setVlnv(VLNV& vlnv)
 {
-    if (level_ == ROOT)
+    if (level_ == Level::ROOT)
     {
         return;
     }
-    else if (level_ == VENDOR)
+    
+    
+    if (level_ == Level::VENDOR)
     {
-        vlnv.setVendor(name_);
-        parentItem_->setVlnv(vlnv);
+        vlnv.setVendor(name_);        
     }
-    else if (level_ == LibraryItem::LIBRARY)
+    else if (level_ == Level::LIBRARY)
     {
-        vlnv.setLibrary(name_);
-        parentItem_->setVlnv(vlnv);
+        vlnv.setLibrary(name_);        
     }
-    else if (level_ == LibraryItem::NAME)
+    else if (level_ == Level::NAME)
     {
-        vlnv.setName(name_);
-        parentItem_->setVlnv(vlnv);
+        vlnv.setName(name_);        
     }
-    else if (level_ == LibraryItem::VERSION) 
+    else if (level_ == Level::VERSION) 
     {
         vlnv.setVersion(name_);
-        vlnv.setType(vlnv_.getType());
-        parentItem_->setVlnv(vlnv);
+        vlnv.setType(vlnv_.getType());    
     }
+
+    parentItem_->setVlnv(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -333,7 +333,7 @@ void LibraryItem::clear()
 //-----------------------------------------------------------------------------
 QVector<LibraryItem*> LibraryItem::getVendors() const
 {
-    if (level_ == LibraryItem::ROOT)
+    if (level_ == Level::ROOT)
     {
         return childItems_;
     }
@@ -349,15 +349,15 @@ QVector<LibraryItem*> LibraryItem::getVendors() const
 //-----------------------------------------------------------------------------
 QVector<LibraryItem*> LibraryItem::getLibraries() const
 {
-    if (level_ == LibraryItem::VENDOR)
+    if (level_ == Level::VENDOR)
     {
         return childItems_;
     }
 
     QVector<LibraryItem*> list;
-    if (level_ == LibraryItem::ROOT)
+    if (level_ == Level::ROOT)
     {
-        foreach (LibraryItem* item, childItems_)
+        for (LibraryItem* item : childItems_)
         {
             list += item->getLibraries();
         }
@@ -375,16 +375,16 @@ QVector<LibraryItem*> LibraryItem::getLibraries() const
 //-----------------------------------------------------------------------------
 QVector<LibraryItem*> LibraryItem::getNames() const
 {
-    if (level_ == LibraryItem::LIBRARY)
+    if (level_ == Level::LIBRARY)
     {
         return childItems_;
     }
 
     QVector<LibraryItem*> list;
 
-    if (level_ == ROOT || level_ == VENDOR)
+    if (level_ == Level::ROOT || level_ == Level::VENDOR)
     {
-        foreach (LibraryItem* item, childItems_)
+        for (LibraryItem* item : childItems_)
         {
             list += item->getNames();
         }
@@ -402,13 +402,13 @@ QVector<LibraryItem*> LibraryItem::getNames() const
 //-----------------------------------------------------------------------------
 QVector<LibraryItem*> LibraryItem::getVersions() const
 {
-    if (level_ == NAME)
+    if (level_ == Level::NAME)
     {
         return childItems_;
     }
 
 	QVector<LibraryItem*> list;
-    foreach (LibraryItem* item, childItems_)
+    for (LibraryItem* item : childItems_)
     {
         list += item->getNames();
     }
@@ -438,24 +438,24 @@ LibraryItem* LibraryItem::findChildForLevel(Level level, VLNV const& vlnv)
 {
     QString childNameToMatch;
 
-    if (level == ROOT)
+    if (level == Level::ROOT)
     {
         childNameToMatch = vlnv.getVendor();
     }
-    else if (level == VENDOR)
+    else if (level == Level::VENDOR)
     {
         childNameToMatch = vlnv.getLibrary();
     }
-    else if (level == LIBRARY)
+    else if (level == Level::LIBRARY)
     {
         childNameToMatch = vlnv.getName();
     }
-    else if (level == NAME)
+    else if (level == Level::NAME)
     {
         childNameToMatch = vlnv.getVersion();
     }	
 
-    foreach (LibraryItem* child, childItems_)
+    for (LibraryItem* child : childItems_)
     {
         if (child->name() == childNameToMatch)
         {
