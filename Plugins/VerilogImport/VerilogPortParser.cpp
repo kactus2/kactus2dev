@@ -51,12 +51,13 @@ namespace
         "(?:" + LAST_PORT +")");
 
     //! Verilog ports in both ANSI-C and Verilog-1995 style.
-    const QRegularExpression PORT_EXP("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?(?:signed)?\\s*"
-        "(?:(" + VerilogSyntax::RANGE +")?\\s*(" + VerilogSyntax::RANGE + "))?\\s*"
+    const QRegularExpression PORT_EXP("(" + PORT_DIRECTION + ")\\s+(?:wire\\s+)?(?:(" + PORT_TYPE + ")\\s+)?"
+        "(?:signed)?\\s*(?:(" + VerilogSyntax::RANGE +")?\\s*(" + VerilogSyntax::RANGE + "))?\\s*"
         "(" + VerilogSyntax::NAMES + ")(?:" + PORT_DECLARATION_END + ")");
 
     //! Verilog ports in Verilog-1995 style.
-    const QRegularExpression PORT_1995("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?(" + VerilogSyntax::RANGE + ")?\\s*"
+    const QRegularExpression PORT_1995("(" + PORT_DIRECTION + ")\\s+"
+        "(?:(" + PORT_TYPE + ")\\s+)?(" + VerilogSyntax::RANGE + ")?\\s*"
         "(" + VerilogSyntax::NAMES + ")\\s*[;](?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?");
 }
 
@@ -234,6 +235,11 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
     DirectionTypes::Direction direction = parseDirection(portDeclaration);
 
     QString type = PORT_EXP.match(portDeclaration).captured(2);
+    if (type.compare(QLatin1String("signed")) == 0)
+    {
+        type.clear();
+    }
+
     QString typeDefinition;
 
     QPair<QString, QString> vectorBounds = parseVectorBounds(portDeclaration, targetComponent, targetComponentInstantiation);

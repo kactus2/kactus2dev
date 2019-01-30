@@ -249,7 +249,7 @@ void tst_VerilogPortParser::testVerilog2001PortIsParsed_data()
         "    output wire signed [2:0] data // 2's complement data.\n"
         ");\n"
         "endmodule"
-        << "data" << "wire" <<  DirectionTypes::OUT << "2" << "0" << "2's complement data.";
+        << "data" << "" <<  DirectionTypes::OUT << "2" << "0" << "2's complement data.";
 
     QTest::newRow("Additional whitespaces in port declaration") <<
         "module test (output \n"
@@ -267,6 +267,13 @@ void tst_VerilogPortParser::testVerilog2001PortIsParsed_data()
         ");\n"
         "endmodule"
         << "clk" << "" <<  DirectionTypes::IN << "" << "" << "";
+
+    QTest::newRow("Port type with keyword wire.") <<
+        "module test (\n"
+        "    output wire logic [2:0] cs\n"
+        ");\n"
+        "endmodule"
+        << "cs" << "logic" << DirectionTypes::OUT << "2" << "0" << "";
 
 }
 
@@ -336,7 +343,7 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
     "    input wire rst_n; // Active low reset.\n"
     "\n"
     "endmodule"
-    << "rst_n" << "wire" <<  DirectionTypes::IN << "" << "" << "Active low reset.";
+    << "rst_n" << "" <<  DirectionTypes::IN << "" << "" << "Active low reset.";
 
     QTest::newRow("Additional whitespaces in port declaration") <<
     "module test (cs);output \n"
