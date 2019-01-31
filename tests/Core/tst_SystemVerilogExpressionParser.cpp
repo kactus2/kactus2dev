@@ -908,8 +908,9 @@ void tst_SystemVerilogExpressionParser::testBitwiseOperations_data()
     QTest::addColumn<QString>("expectedResult");
     QTest::addColumn<bool>("expectedValid");
 
-    QTest::newRow("Negation") << "~4'b001" << "6" << true;
-
+    QTest::newRow("Negation") << "~4'b001" << "-2" << true;
+    QTest::newRow("Shift left") << "4'b0010 << 2" << "8" << true;
+    QTest::newRow("Shift right") << "4'b1000 >> 3" << "1" << true;
 }
 
 //-----------------------------------------------------------------------------

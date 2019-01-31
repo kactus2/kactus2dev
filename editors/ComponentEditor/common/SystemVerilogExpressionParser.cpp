@@ -416,7 +416,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
                 return QStringLiteral("x");
             }
 
-          result = leftTerm.toLongLong() << rightTerm.toLongLong();
+          result = leftTerm.toLongLong() >> rightTerm.toLongLong();
         }
 
         else if ((operation.compare(QLatin1String(">")) == 0 && leftOperand > rightOperand) ||
