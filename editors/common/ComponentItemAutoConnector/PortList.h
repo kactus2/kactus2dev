@@ -14,6 +14,7 @@
 
 #include <QListWidget>
 #include <QSharedPointer>
+#include <QObject>
 
 class Component;
 class ComponentItem;

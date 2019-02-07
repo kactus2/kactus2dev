@@ -670,9 +670,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/StickyNote/StickyNote.h \
     ./editors/common/StickyNote/StickyNoteAddCommand.h \
     ./editors/common/StickyNote/StickyNoteRemoveCommand.h \
-    ./editors/common/ComponentItemAutoConnector/PortList.h \
     ./editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h \
     ./editors/common/ComponentItemAutoConnector/ConnectedPortsTable.h \
+    ./editors/common/ComponentItemAutoConnector/PortList.h \
+    ./editors/common/ComponentItemAutoConnector/ConnectedPortsDelegate.h \
     ./editors/HWDesign/AdHocEnabled.h \
     ./editors/HWDesign/HWAddCommands.h \
     ./editors/HWDesign/HWMoveCommands.h \
@@ -1363,6 +1364,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/StickyNote/StickyNoteMoveCommand.cpp \
     ./editors/common/StickyNote/StickyNoteRemoveCommand.cpp \
     ./editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/ConnectedPortsDelegate.cpp \
     ./editors/common/ComponentItemAutoConnector/ConnectedPortsTable.cpp \
     ./editors/common/ComponentItemAutoConnector/PortList.cpp \
     ./editors/HWDesign/AdHocConnectionItem.cpp \

@@ -112,6 +112,13 @@ private slots:
      */
     void onRemoveRow();
 
+    /*!
+     *  Handles changes in the selected item.
+     *
+     *      @param [in] item    The selected item.
+     */
+    void onItemChanged(QTableWidgetItem* item);
+
 private:
     // No copying. No assignments.
     ConnectedPortsTable(ConnectedPortsTable const& rhs);
@@ -128,8 +135,10 @@ private:
 
     /*!
      *  Create the automatic connections between two component items.
+     *
+     *      @return List of connected ports.
      */
-    void findInitialConnections();
+    QVector<QPair<QSharedPointer<Port>, QSharedPointer<Port> > > findInitialConnections();
 
     /*!
      *  Get a list of connectible ports for the selected port.
@@ -142,17 +151,31 @@ private:
 
     /*!
      *  Create the table items for the connected ports.
+     *
+     *      @param [in] connectedPorts  List of the connected ports.
      */
-    void createPortTableItems();
+    void createPortTableItems(QVector<QPair<QSharedPointer<Port>, QSharedPointer<Port> > > connectedPorts);
 
     /*!
      *  Get the path of the icon for the selected port.
      *
-     *      @param[in] portDirection    Direction of the selected port.
+     *      @param [in] portDirection    Direction of the selected port.
      *
      *      @return Path to the icon of the selected port.
      */
     QString getIconPath(DirectionTypes::Direction portDirection);
+
+    /*!
+     *  Get the port and the item containing it.
+     *
+     *      @param [in] row             Row of the item containing the selected port.
+     *      @param [in] column          Column of the item containing the selected port.
+     *      @param [in] containingItem  Item containing the port..
+     *
+     *      @return Path to the icon of the selected port.
+     */
+    ConnectedPortsTable::ConnectedPort getPortAndContainingItemForIndex(int row, int column,
+        ComponentItem* containingItem) const;
 
     /*!
      *  Get the port of the containing item using the port name.
@@ -176,9 +199,6 @@ private:
 
     //! Source component item for the drag & drop event.
     ComponentItem* dragSourceComponentItem_;
-
-    //! List of the port pairings.
-    QVector<QPair<ConnectedPort, ConnectedPort> > portConnections_;
 
     //! Action for removing rows.
     QAction* removeRowAction_;

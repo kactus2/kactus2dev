@@ -89,7 +89,8 @@ void PortList::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         QMimeData* newMimeData = new QMimeData();
-        newMimeData->setText(currentItem()->text());
+        QListWidgetItem* selectedItem = currentItem();
+        newMimeData->setText(selectedItem->text());
 
         QRect itemRectangle =  fontMetrics().boundingRect(currentItem()->text());
         itemRectangle.setWidth(itemRectangle.width() + 30);

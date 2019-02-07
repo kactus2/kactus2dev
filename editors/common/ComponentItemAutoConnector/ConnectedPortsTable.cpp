@@ -32,7 +32,6 @@ QTableWidget(parent),
 firstItem_(firstItem),
 secondItem_(secondItem),
 dragSourceComponentItem_(),
-portConnections_(),
 removeRowAction_(new QAction(tr("Remove row"), this))
 {
     setDragDropMode(QAbstractItemView::DropOnly);
@@ -46,6 +45,10 @@ removeRowAction_(new QAction(tr("Remove row"), this))
     QStringList horizontalHeaders = { firstHeader, secondHeader };
 
     setHorizontalHeaderLabels(horizontalHeaders);
+
+    connect(this, SIGNAL(itemChanged(QTableWidgetItem*)),
+        this, SLOT(onItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
+
     connectAutomatically();
 
     connect(removeRowAction_, SIGNAL(triggered()), this, SLOT(onRemoveRow()), Qt::UniqueConnection);
@@ -67,15 +70,42 @@ QVector<QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::Connected
 {
     QVector<QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> > fullConnections;
 
-    for (auto connection : portConnections_)
+    for (int i = 0; i < rowCount(); ++i)
     {
-        if (connection.first.port_ && connection.second.port_)
+        ConnectedPortsTable::ConnectedPort firstPortCombo = getPortAndContainingItemForIndex(i, 0, firstItem_);
+        ConnectedPortsTable::ConnectedPort secondPortCombo = getPortAndContainingItemForIndex(i, 1, secondItem_);
+
+        if (firstPortCombo.port_ && secondPortCombo.port_)
         {
-            fullConnections.append(connection);
+            QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> portConnection;
+            portConnection.first = firstPortCombo;
+            portConnection.second = secondPortCombo;
+
+            fullConnections.append(portConnection);
         }
     }
 
     return fullConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectedPortsTable::getPortAndContainingItemForIndex()
+//-----------------------------------------------------------------------------
+ConnectedPortsTable::ConnectedPort ConnectedPortsTable::getPortAndContainingItemForIndex(int row, int column,
+    ComponentItem* containingItem) const
+{
+    ConnectedPortsTable::ConnectedPort portItem;
+
+    QTableWidgetItem* tableItem = item(row, column);
+    if (!tableItem->text().isEmpty())
+    {
+        QSharedPointer<Port> connectedPort = getPortByName(tableItem->text(), containingItem);
+
+        portItem.port_ = connectedPort;
+        portItem.containingItem_ = containingItem;
+    }
+
+    return portItem;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,7 +114,6 @@ QVector<QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::Connected
 void ConnectedPortsTable::clearConnectedPorts()
 {
     setRowCount(0);
-    portConnections_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,8 +122,7 @@ void ConnectedPortsTable::clearConnectedPorts()
 void ConnectedPortsTable::connectAutomatically()
 {
     clearConnectedPorts();
-    findInitialConnections();
-    createPortTableItems();
+    createPortTableItems(findInitialConnections());
 }
 
 //-----------------------------------------------------------------------------
@@ -115,8 +143,10 @@ QString ConnectedPortsTable::getItemName(ComponentItem* componentItem) const
 //-----------------------------------------------------------------------------
 // Function: ConnectedPortsTable::findInitialConnections()
 //-----------------------------------------------------------------------------
-void ConnectedPortsTable::findInitialConnections()
+QVector<QPair<QSharedPointer<Port>, QSharedPointer<Port> > > ConnectedPortsTable::findInitialConnections()
 {
+    QVector<QPair<QSharedPointer<Port>, QSharedPointer<Port> > > portConnections;
+
     const double JAROWINKLERTRESHOLD = 0.75;
 
     QSharedPointer<QList<QSharedPointer<Port> > > firstPorts = firstItem_->componentModel()->getPorts();
@@ -142,23 +172,16 @@ void ConnectedPortsTable::findInitialConnections()
             QSharedPointer<Port> matchingPort = possibleConnections.last();
             if (matchingPort)
             {
-                QPair<ConnectedPort, ConnectedPort> portCombination;
+                QPair<QSharedPointer<Port>, QSharedPointer<Port> > portCombination;
+                portCombination.first = currentPort;
+                portCombination.second = matchingPort;
 
-                ConnectedPort firstPortItem;
-                firstPortItem.port_ = currentPort;
-                firstPortItem.containingItem_ = firstItem_;
-
-                ConnectedPort secondPortItem;
-                secondPortItem.port_ = matchingPort;
-                secondPortItem.containingItem_ = secondItem_;
-
-                portCombination.first = firstPortItem;
-                portCombination.second = secondPortItem;
-
-                portConnections_.append(portCombination);
+                portConnections.append(portCombination);
             }
         }
     }
+
+    return portConnections;
 }
 
 //-----------------------------------------------------------------------------
@@ -208,19 +231,18 @@ QVector<QSharedPointer<Port> > ConnectedPortsTable::getConnectablePorts(Directio
 //-----------------------------------------------------------------------------
 // Function: ConnectedPortsTable::createPortTableItems()
 //-----------------------------------------------------------------------------
-void ConnectedPortsTable::createPortTableItems()
+void ConnectedPortsTable::createPortTableItems(
+    QVector<QPair<QSharedPointer<Port>, QSharedPointer<Port>>> connectedPorts)
 {
-    setRowCount(portConnections_.size());
+    setRowCount(connectedPorts.size());
 
-    for (int i = 0; i < portConnections_.size(); ++i)
+    for (int i = 0; i < connectedPorts.size(); ++i)
     {
-        QSharedPointer<Port> firstPort = portConnections_.at(i).first.port_;
-        QString firstIconPath = getIconPath(firstPort->getDirection());
-        QSharedPointer<Port> secondPort = portConnections_.at(i).second.port_;
-        QString secondIconPath = getIconPath(secondPort->getDirection());
+        QSharedPointer<Port> firstPort = connectedPorts.at(i).first;
+        QSharedPointer<Port> secondPort = connectedPorts.at(i).second;
 
-        QTableWidgetItem* firstItem = new QTableWidgetItem(QIcon(firstIconPath), firstPort->name());
-        QTableWidgetItem* secondItem = new QTableWidgetItem(QIcon(secondIconPath), secondPort->name());
+        QTableWidgetItem* firstItem = new QTableWidgetItem(firstPort->name());
+        QTableWidgetItem* secondItem = new QTableWidgetItem(secondPort->name());
 
         setItem(i, 0, firstItem);
         setItem(i, 1, secondItem);
@@ -275,8 +297,6 @@ void ConnectedPortsTable::contextMenuEvent(QContextMenuEvent *event)
 //-----------------------------------------------------------------------------
 void ConnectedPortsTable::onRemoveRow()
 {
-    portConnections_.remove(currentIndex().row());
-
     removeRow(currentIndex().row());
 }
 
@@ -318,57 +338,23 @@ bool ConnectedPortsTable::dropMimeData(int row, int column, const QMimeData *dat
 
         QTableWidgetItem* itemOnRow;
 
-        if (row < portConnections_.size())
+        if (row < rowCount())
         {
             itemOnRow = item(row, newColumn);
             if (!itemOnRow)
             {
                 itemOnRow = new QTableWidgetItem();
-                setItem(row, newColumn, itemOnRow);
             }
-
-            QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> connectionAtRow =
-                portConnections_.at(row);
-
-            ConnectedPortsTable::ConnectedPort newPairing;
-            newPairing.port_ = draggedPort;
-            newPairing.containingItem_ = dragSourceComponentItem_;
-            if (dragSourceComponentItem_ == firstItem_)
-            {
-                connectionAtRow.first = newPairing;
-            }
-            else
-            {
-                connectionAtRow.second = newPairing;
-            }
-
-            portConnections_.replace(row, connectionAtRow);
         }
         else
         {
             setRowCount(rowCount() + 1);
 
             itemOnRow = new QTableWidgetItem();
-            setItem(row, newColumn, itemOnRow);
-
-            QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> newConnection;
-            if (dragSourceComponentItem_ == firstItem_)
-            {
-                newConnection.first.port_ = draggedPort;
-                newConnection.first.containingItem_ = firstItem_;
-            }
-            else
-            {
-                newConnection.second.port_ = draggedPort;
-                newConnection.second.containingItem_ = secondItem_;
-            }
-
-            portConnections_.append(newConnection);
         }
 
-        itemOnRow->setIcon(QIcon(getIconPath(draggedPort->getDirection())));
+        setItem(row, newColumn, itemOnRow);
         itemOnRow->setText(portName);
-
     }
 
     dragSourceComponentItem_ = nullptr;
@@ -402,4 +388,34 @@ QStringList ConnectedPortsTable::mimeTypes() const
     types << "text/plain";
 
     return types;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectedPortsTable::onItemChanged()
+//-----------------------------------------------------------------------------
+void ConnectedPortsTable::onItemChanged(QTableWidgetItem* item)
+{
+    blockSignals(true);
+
+    QString portName = item->text();
+    if (!portName.isEmpty())
+    {
+        int itemColumn = item->column();
+        ComponentItem* containingComponentItem = firstItem_;
+        if (itemColumn == 1)
+        {
+            containingComponentItem = secondItem_;
+        }
+
+        QSharedPointer<Port> selectedPort = containingComponentItem->componentModel()->getPort(portName);
+
+        item->setIcon(QIcon(getIconPath(selectedPort->getDirection())));
+
+    }
+    else
+    {
+        item->setIcon(QIcon());
+    }
+
+    blockSignals(false);
 }

@@ -14,6 +14,7 @@
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <editors/common/ComponentItemAutoConnector/PortList.h>
+#include <editors/common/ComponentItemAutoConnector/ConnectedPortsDelegate.h>
 
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
@@ -35,6 +36,10 @@ portsTable_()
     setMinimumWidth(1000);
     setMinimumHeight(600);
     
+    portsTable_ = new ConnectedPortsTable(firstItem_, secondItem_, this);
+    portsTable_->setItemDelegate(
+        new ConnectedPortsDelegate(firstItem_->componentModel(), secondItem_->componentModel(), this));
+
     setupLayout();
 }
 
@@ -89,8 +94,6 @@ void ComponentItemAutoConnector::setupLayout()
 
     QGroupBox* secondComponentGroup(new QGroupBox(getComponentItemName(secondItem_), this));
     secondComponentGroup->setLayout(secondComponentLayout);
-
-    portsTable_ = new ConnectedPortsTable(firstItem_, secondItem_, this);
 
     connect(autoConnectButton_, SIGNAL(released()),
         portsTable_, SLOT(connectAutomatically()), Qt::UniqueConnection);

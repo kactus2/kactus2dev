@@ -4606,6 +4606,12 @@
     <ClCompile Include="GeneratedFiles\moc_ConnectedPortsTable.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\ConnectedPortsDelegate.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConnectedPortsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PortList.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -6301,6 +6307,9 @@
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\common\ComponentItemAutoConnector\PortList.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\ConnectedPortsDelegate.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </CustomBuild>
   </ItemGroup>
