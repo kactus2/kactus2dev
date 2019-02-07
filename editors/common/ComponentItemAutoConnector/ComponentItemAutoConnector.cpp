@@ -26,6 +26,7 @@
 ComponentItemAutoConnector::ComponentItemAutoConnector(ComponentItem* firstItem, ComponentItem* secondItem,
     QWidget* parent):
 QDialog(parent),
+autoConnectButton_(new QPushButton(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this)),
 clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clear"), this)),
 firstItem_(firstItem),
 secondItem_(secondItem),
@@ -66,13 +67,14 @@ void ComponentItemAutoConnector::setupLayout()
     connect(cancelButton, SIGNAL(released()), this, SLOT(reject()), Qt::UniqueConnection);
 
     QDialogButtonBox* buttonBox (new QDialogButtonBox(Qt::Horizontal));
+    buttonBox->addButton(autoConnectButton_, QDialogButtonBox::ActionRole);
     buttonBox->addButton(clearButton_, QDialogButtonBox::ActionRole);
     buttonBox->addButton(okButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
 
     setWindowTitle("Auto connect (experimental)");
 
-    PortList* firstComponentPortList(new PortList(firstItem_->componentModel(), this));
+    PortList* firstComponentPortList(new PortList(firstItem_, this));
 
     QVBoxLayout* firstComponentLayout(new QVBoxLayout());
     firstComponentLayout->addWidget(firstComponentPortList);
@@ -80,8 +82,8 @@ void ComponentItemAutoConnector::setupLayout()
     QGroupBox* firstComponentGroup(new QGroupBox(getComponentItemName(firstItem_), this));
     firstComponentGroup->setLayout(firstComponentLayout);
 
-    PortList* secondComponentPortList(new PortList(secondItem_->componentModel(), this));
-    
+    PortList* secondComponentPortList(new PortList(secondItem_, this));
+
     QVBoxLayout* secondComponentLayout(new QVBoxLayout());
     secondComponentLayout->addWidget(secondComponentPortList);
 
@@ -89,6 +91,9 @@ void ComponentItemAutoConnector::setupLayout()
     secondComponentGroup->setLayout(secondComponentLayout);
 
     portsTable_ = new ConnectedPortsTable(firstItem_, secondItem_, this);
+
+    connect(autoConnectButton_, SIGNAL(released()),
+        portsTable_, SLOT(connectAutomatically()), Qt::UniqueConnection);
     connect(clearButton_, SIGNAL(released()), portsTable_, SLOT(clearConnectedPorts()), Qt::UniqueConnection);
 
     QVBoxLayout* connectedPortsLayout(new QVBoxLayout());

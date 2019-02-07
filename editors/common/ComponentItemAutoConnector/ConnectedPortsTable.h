@@ -60,12 +60,57 @@ public:
     QVector<QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> > getConnectedPorts()
         const;
 
+    /*!
+     *  Get the available mime types.
+     *
+     *      @return List of the available mime types.
+     */
+    virtual QStringList mimeTypes() const;
+
+protected:
+
+    /*!
+     *  Handles the context menu.
+     *
+     *      @param [in] event   The context menu event.
+     */
+    virtual void contextMenuEvent(QContextMenuEvent *event);
+
+    /*!
+     *  Handles the mime data drop.
+     *
+     *      @param [in] row     Row to drop the mime data to.
+     *      @param [in] column  Column to drop the mime data to.
+     *      @param [in] data    The mime data.
+     *      @param [in] action  The drop action.
+     */
+    virtual bool dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action);
+
+    /*!
+     *  Handles the drop events.
+     *
+     *      @param [in] event   The drop event.
+     */
+    virtual void dropEvent(QDropEvent *event);
+
 public slots:
 
     /*!
      *  Clear the list of connected ports.
      */
     void clearConnectedPorts();
+
+    /*!
+     *  Connect the items of the selected instances automatically.
+     */
+    void connectAutomatically();
+
+private slots:
+
+    /*!
+     *  Handles the row removal.
+     */
+    void onRemoveRow();
 
 private:
     // No copying. No assignments.
@@ -83,11 +128,8 @@ private:
 
     /*!
      *  Create the automatic connections between two component items.
-     *
-     *      @param [in] firstItem   The first component item.
-     *      @param [in] secondItem  The second component item.
      */
-    void findInitialConnections(ComponentItem* firstItem, ComponentItem* secondItem);
+    void findInitialConnections();
 
     /*!
      *  Get a list of connectible ports for the selected port.
@@ -112,12 +154,34 @@ private:
      */
     QString getIconPath(DirectionTypes::Direction portDirection);
 
+    /*!
+     *  Get the port of the containing item using the port name.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] containingItem  Component item containing the selected port.
+     *
+     *      @return The port with the selected port name.
+     */
+    QSharedPointer<Port> getPortByName(QString const& portName, ComponentItem* containingItem) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The first component item.
+    ComponentItem* firstItem_;
+
+    //! The second component item.
+    ComponentItem* secondItem_;
+
+    //! Source component item for the drag & drop event.
+    ComponentItem* dragSourceComponentItem_;
+
     //! List of the port pairings.
     QVector<QPair<ConnectedPort, ConnectedPort> > portConnections_;
+
+    //! Action for removing rows.
+    QAction* removeRowAction_;
 };
 
 #endif // CONNECTEDPORTSTABLE_H

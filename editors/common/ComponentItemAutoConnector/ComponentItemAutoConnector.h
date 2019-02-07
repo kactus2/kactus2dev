@@ -82,6 +82,9 @@ private:
     //! The second component item.
     ComponentItem* secondItem_;
 
+    //! Button for connecting the ports automatically.
+    QPushButton* autoConnectButton_;
+
     //! The button for clearing the connected ports table.
     QPushButton* clearButton_;
 
