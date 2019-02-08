@@ -28,6 +28,8 @@
 
 //! This should be moved to HWDesignDiagram.
 #include <editors/HWDesign/AdHocConnectionItem.h>
+#include <editors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
+#include <editors/HWDesign/HWComponentItem.h>
 
 #include <library/LibraryHandler.h>
 
@@ -291,6 +293,26 @@ ConnectionEndpoint* ComponentDesignDiagram::getEndPointForPortInItem(QSharedPoin
         if (endpoint->isAdHoc() && endpoint->getPort() == selectedPort)
         {
             return endpoint;
+        }
+    }
+
+    HWComponentItem* hwItem = dynamic_cast<HWComponentItem*>(item);
+    if (hwItem)
+    {
+        for (auto port : *item->componentModel()->getPorts())
+        {
+            if (port == selectedPort)
+            {
+                new AdHocVisibilityChangeCommand(hwItem, selectedPort->name(), true);
+
+                for (auto endpoint : item->getEndpoints())
+                {
+                    if (endpoint->isAdHoc() && endpoint->getPort() == selectedPort)
+                    {
+                        return endpoint;
+                    }
+                }
+            }
         }
     }
 
