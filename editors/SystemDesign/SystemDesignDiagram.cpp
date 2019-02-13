@@ -2913,3 +2913,19 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::getEndPointForItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SystemDesignDiagram::getEndPointForItem(AutoConnectorItem*)
+{
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createConnectionBetweenEndPoints()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::createConnectionBetweenEndPoints(ConnectionEndpoint*, ConnectionEndpoint*)
+{
+
+}

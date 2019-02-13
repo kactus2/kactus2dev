@@ -13,13 +13,13 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 
-#include <editors/common/ComponentItemAutoConnector/PortList.h>
-#include <editors/common/ComponentItemAutoConnector/ConnectedPortsDelegate.h>
+#include <editors/common/ComponentItemAutoConnector/AutoConnector.h>
+#include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
+#include <editors/common/ComponentItemAutoConnector/PortListFiller.h>
+#include <editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h>
 
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
-#include <QLabel>
-#include <QGroupBox>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentItemAutoConnector::ComponentItemAutoConnector()
@@ -27,18 +27,18 @@
 ComponentItemAutoConnector::ComponentItemAutoConnector(ComponentItem* firstItem, ComponentItem* secondItem,
     QWidget* parent):
 QDialog(parent),
+firstItemName_(firstItem->name()),
+secondItemName_(secondItem->name()),
 autoConnectButton_(new QPushButton(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this)),
 clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clear"), this)),
-firstItem_(firstItem),
-secondItem_(secondItem),
-portsTable_()
+portConnector_(new AutoConnector(
+    firstItem, secondItem, new PortListFiller(), new PortTableAutoConnector(), tr("ports"), this)),
+tabs_(this)
 {
     setMinimumWidth(1000);
     setMinimumHeight(600);
-    
-    portsTable_ = new ConnectedPortsTable(firstItem_, secondItem_, this);
-    portsTable_->setItemDelegate(
-        new ConnectedPortsDelegate(firstItem_->componentModel(), secondItem_->componentModel(), this));
+
+    tabs_.addTab(portConnector_, QString(tr("Ports")));
 
     setupLayout();
 }
@@ -52,12 +52,28 @@ ComponentItemAutoConnector::~ComponentItemAutoConnector()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentItemAutoConnector::getConnectedPorts()
+// Function: ComponentItemAutoConnector::getConnectedItems()
 //-----------------------------------------------------------------------------
-QVector<QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> >
-    ComponentItemAutoConnector::getConnectedPorts() const
+QVector<QPair<AutoConnectorItem*, AutoConnectorItem* > > ComponentItemAutoConnector::getConnectedItems() const
 {
-    return portsTable_->getConnectedPorts();
+    QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > fullConnections;
+
+    QVector<QPair<QString, QString> > portConnections = portConnector_->getConnectedItems();
+    for (auto connection : portConnections)
+    {
+        AutoConnectorItem* firstItem(
+            new AutoConnectorItem(connection.first, firstItemName_, AutoConnectorItem::PORT));
+        AutoConnectorItem* secondItem(
+            new AutoConnectorItem(connection.second, secondItemName_, AutoConnectorItem::PORT));
+
+        QPair<AutoConnectorItem*, AutoConnectorItem*> newConnection;
+        newConnection.first = firstItem;
+        newConnection.second = secondItem;
+
+        fullConnections.append(newConnection);
+    }
+
+    return fullConnections;
 }
 
 //-----------------------------------------------------------------------------
@@ -79,54 +95,40 @@ void ComponentItemAutoConnector::setupLayout()
 
     setWindowTitle("Auto connect (experimental)");
 
-    PortList* firstComponentPortList(new PortList(firstItem_, this));
-
-    QVBoxLayout* firstComponentLayout(new QVBoxLayout());
-    firstComponentLayout->addWidget(firstComponentPortList);
-
-    QGroupBox* firstComponentGroup(new QGroupBox(getComponentItemName(firstItem_), this));
-    firstComponentGroup->setLayout(firstComponentLayout);
-
-    PortList* secondComponentPortList(new PortList(secondItem_, this));
-
-    QVBoxLayout* secondComponentLayout(new QVBoxLayout());
-    secondComponentLayout->addWidget(secondComponentPortList);
-
-    QGroupBox* secondComponentGroup(new QGroupBox(getComponentItemName(secondItem_), this));
-    secondComponentGroup->setLayout(secondComponentLayout);
-
-    connect(autoConnectButton_, SIGNAL(released()),
-        portsTable_, SLOT(connectAutomatically()), Qt::UniqueConnection);
-    connect(clearButton_, SIGNAL(released()), portsTable_, SLOT(clearConnectedPorts()), Qt::UniqueConnection);
-
-    QVBoxLayout* connectedPortsLayout(new QVBoxLayout());
-    connectedPortsLayout->addWidget(portsTable_);
-
-    QGroupBox* connectedPortsGroup(new QGroupBox(tr("Connected ports")));
-    connectedPortsGroup->setAlignment(Qt::AlignHCenter);
-    connectedPortsGroup->setLayout(connectedPortsLayout);
-
-    QHBoxLayout* portsLayout(new QHBoxLayout());
-    portsLayout->addWidget(firstComponentGroup);
-    portsLayout->addWidget(connectedPortsGroup, 2);
-    portsLayout->addWidget(secondComponentGroup);
+    connect(autoConnectButton_, SIGNAL(released()), this, SLOT(connectCurrentItems()), Qt::UniqueConnection);
+    connect(clearButton_, SIGNAL(released()), this, SLOT(clearCurrentConnections()), Qt::UniqueConnection);
 
     QVBoxLayout* mainLayout (new QVBoxLayout(this));
-    mainLayout->addLayout(portsLayout, 1);
+    mainLayout->addWidget(&tabs_, 1);
     mainLayout->addWidget(buttonBox);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentItemAutoConnector::getComponentItemName()
+// Function: ComponentItemAutoConnector::connectCurrentItems()
 //-----------------------------------------------------------------------------
-QString ComponentItemAutoConnector::getComponentItemName(ComponentItem* componentItem) const
+void ComponentItemAutoConnector::connectCurrentItems()
 {
-    if (!componentItem->displayName().isEmpty())
+    if (tabs_.currentWidget() == portConnector_)
     {
-        return componentItem->displayName();
+        portConnector_->connectAutomatically();
     }
     else
     {
-        return componentItem->name();
+
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItemAutoConnector::clearCurrentConnections()
+//-----------------------------------------------------------------------------
+void ComponentItemAutoConnector::clearCurrentConnections()
+{
+    if (tabs_.currentWidget() == portConnector_)
+    {
+        portConnector_->clearConnectedItems();
+    }
+    else
+    {
+
     }
 }

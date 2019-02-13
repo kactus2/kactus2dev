@@ -603,6 +603,23 @@ private:
      */
     virtual QStringList getUsedInstanceNames() const;
 
+    /*!
+     *  Get the connection end point for the selected auto connector item.
+     *
+     *      @param [in] connectorItem   The selected auto connector item.
+     *
+     *      @return The end point item for the selected auto connector item.
+     */
+    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem);
+
+    /*!
+     *  Create connection between the selected end points.
+     *
+     *      @param [in] startPoint  Start point for the connection.
+     *      @param [in] endPoint    End point for the connection.
+     */
+    virtual void createConnectionBetweenEndPoints(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

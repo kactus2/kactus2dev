@@ -48,6 +48,7 @@
 #include <editors/common/DesignDiagramResolver.h>
 #include <editors/common/StickyNote/StickyNote.h>
 #include <editors/common/Association/Association.h>
+#include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
 
 #include <editors/HWDesign/AdHocItem.h>
 #include <editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h>
@@ -57,6 +58,7 @@
 #include <editors/HWDesign/undoCommands/ReplaceComponentCommand.h>
 #include <editors/HWDesign/undoCommands/HWComponentAddCommand.h>
 #include <editors/HWDesign/undoCommands/HWColumnAddCommand.h>
+#include <editors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
 
 #include <library/LibraryHandler.h>
 
@@ -2913,4 +2915,58 @@ QStringList HWDesignDiagram::getTopLevelInterfaceNames() const
     }
 
     return existingNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::getEndPointForItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* HWDesignDiagram::getEndPointForItem(AutoConnectorItem* connectorItem)
+{
+    if (connectorItem->getItemType() == AutoConnectorItem::PORT)
+    {
+        HWComponentItem* containingItem = getComponentItem(connectorItem->getContainingItem());
+
+        QString portName = connectorItem->getName();
+
+        for (auto endpoint : containingItem->getEndpoints())
+        {
+            if (endpoint->isAdHoc() && endpoint->getPort()->name() == portName)
+            {
+                return endpoint;
+            }
+        }
+
+        for (auto port : *containingItem->componentModel()->getPorts())
+        {
+            if (port->name() == portName)
+            {
+                new AdHocVisibilityChangeCommand(containingItem, portName, true);
+
+                for (auto endpoint : containingItem->getEndpoints())
+                {
+                    if (endpoint->isAdHoc() && endpoint->getPort()->name() == portName)
+                    {
+                        return endpoint;
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createConnectionBetweenEndPoints()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::createConnectionBetweenEndPoints(ConnectionEndpoint* startPoint,
+    ConnectionEndpoint* endPoint)
+{
+    GraphicsConnection* newConnection = createConnection(startPoint, endPoint);
+
+    AdHocConnectionItem* adhocItem = dynamic_cast<AdHocConnectionItem*>(newConnection);
+    addItem(adhocItem);
+
+    getDesign()->getAdHocConnections()->append(adhocItem->getAdHocConnection());
+    getDesign()->addRoute(adhocItem->getRouteExtension());
 }

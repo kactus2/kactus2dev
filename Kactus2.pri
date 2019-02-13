@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+    ./editors/common/ComponentItemAutoConnector/TableAutoConnector.h \
     ./resource5.h \
     ./VersionHelper.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
@@ -671,9 +672,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/StickyNote/StickyNoteAddCommand.h \
     ./editors/common/StickyNote/StickyNoteRemoveCommand.h \
     ./editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h \
-    ./editors/common/ComponentItemAutoConnector/ConnectedPortsTable.h \
-    ./editors/common/ComponentItemAutoConnector/PortList.h \
-    ./editors/common/ComponentItemAutoConnector/ConnectedPortsDelegate.h \
     ./editors/HWDesign/AdHocEnabled.h \
     ./editors/HWDesign/HWAddCommands.h \
     ./editors/HWDesign/HWMoveCommands.h \
@@ -795,7 +793,15 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.h \
+    ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/ListFiller.h \
+    ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorItem.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorList.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnector.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1364,9 +1370,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/StickyNote/StickyNoteMoveCommand.cpp \
     ./editors/common/StickyNote/StickyNoteRemoveCommand.cpp \
     ./editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.cpp \
-    ./editors/common/ComponentItemAutoConnector/ConnectedPortsDelegate.cpp \
-    ./editors/common/ComponentItemAutoConnector/ConnectedPortsTable.cpp \
-    ./editors/common/ComponentItemAutoConnector/PortList.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.cpp \
     ./editors/HWDesign/AdHocConnectionItem.cpp \
     ./editors/HWDesign/AdHocEnabled.cpp \
     ./editors/HWDesign/AdHocInterfaceItem.cpp \
@@ -1484,5 +1488,12 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/TableAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/PortListFiller.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorItem.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorList.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnector.cpp
 RESOURCES += kactus.qrc

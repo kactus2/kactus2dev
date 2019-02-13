@@ -12,13 +12,14 @@
 #ifndef COMPONENTITEMAUTOCONNECTOR_H
 #define COMPONENTITEMAUTOCONNECTOR_H
 
-#include <editors/common/ComponentItemAutoConnector/ConnectedPortsTable.h>
-
 #include <QDialog>
 #include <QObject>
 #include <QPushButton>
+#include <QTabWidget>
 
 class ComponentItem;
+class AutoConnector;
+class AutoConnectorItem;
 
 //-----------------------------------------------------------------------------
 //! Automatically connects the ports and bus interfaces of two component items.
@@ -44,52 +45,56 @@ public:
     ~ComponentItemAutoConnector();
 
     /*!
-     *  Get the list of connected ports.
+     *  Get the list of connected items.
      *
-     *      @return A list of port pairs.
+     *      @return A list of item pairs.
      */
-    QVector<QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> > getConnectedPorts()
-        const;
+    QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > getConnectedItems() const;
+
+    // No copying. No assignments.
+    ComponentItemAutoConnector(ComponentItemAutoConnector const& rhs) = delete;
+    ComponentItemAutoConnector& operator=(ComponentItemAutoConnector const& rhs) = delete;
 
 private slots:
 
+    /*!
+     *  Clear the connected items from the currently selected table.
+     */
+    void clearCurrentConnections();
+
+    /*!
+     *  Connect the items of the currently selected table automatically.
+     */
+    void connectCurrentItems();
+
 private:
-    // No copying. No assignments.
-    ComponentItemAutoConnector(ComponentItemAutoConnector const& rhs);
-    ComponentItemAutoConnector& operator=(ComponentItemAutoConnector const& rhs);
 
     /*!
      *  Setup the layout.
      */
     void setupLayout();
 
-    /*!
-     *  Get the name of the selected component item.
-     *
-     *      @param [in] componentItem   The selected component item.
-     *
-     *      @return The name of the selected component item.
-     */
-    QString getComponentItemName(ComponentItem* componentItem) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The first component item.
-    ComponentItem* firstItem_;
+    //! Name of the first component item.
+    QString firstItemName_;
 
-    //! The second component item.
-    ComponentItem* secondItem_;
+    //! Name of the second component item.
+    QString secondItemName_;
 
-    //! Button for connecting the ports automatically.
+    //! Button for connecting items automatically.
     QPushButton* autoConnectButton_;
 
-    //! The button for clearing the connected ports table.
+    //! Button for clearing the connected items table.
     QPushButton* clearButton_;
 
-    //! Table for the connected ports.
-    ConnectedPortsTable* portsTable_;
+    //! Connection editor for ports.
+    AutoConnector* portConnector_;
+
+    //! Holds the different editors.
+    QTabWidget tabs_;
 };
 
 //-----------------------------------------------------------------------------

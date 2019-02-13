@@ -4597,23 +4597,35 @@
     <ClCompile Include="GeneratedFiles\moc_ComponentItemAutoConnector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\ComponentItemAutoConnector\PortList.cpp">
-      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\ComponentItemAutoConnector\ConnectedPortsTable.cpp">
-      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ConnectedPortsTable.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AutoConnectorConnectionTable.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\ComponentItemAutoConnector\ConnectedPortsDelegate.cpp">
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionTable.cpp">
       <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ConnectedPortsDelegate.cpp">
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorItem.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AutoConnector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortList.cpp">
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\PortListFiller.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionDelegate.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AutoConnectorConnectionDelegate.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\PortTableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\TableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6303,13 +6315,16 @@
     <CustomBuild Include="editors\common\ComponentItemAutoConnector\ComponentItemAutoConnector.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\ComponentItemAutoConnector\ConnectedPortsTable.h">
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionTable.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\ComponentItemAutoConnector\PortList.h">
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnectorItem.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\ComponentItemAutoConnector\ConnectedPortsDelegate.h">
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionDelegate.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -7033,6 +7048,18 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\ResetColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\PortListFiller.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\ListFiller.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\PortTableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\TableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

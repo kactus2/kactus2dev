@@ -21,15 +21,10 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
-#include <editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h>
-#include <editors/common/ComponentItemAutoConnector/ConnectedPortsTable.h>
 #include <editors/common/DiagramUtil.h>
 #include <editors/common/DesignWidget.h>
-
-//! This should be moved to HWDesignDiagram.
-#include <editors/HWDesign/AdHocConnectionItem.h>
-#include <editors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
-#include <editors/HWDesign/HWComponentItem.h>
+#include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
+#include <editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h>
 
 #include <library/LibraryHandler.h>
 
@@ -246,77 +241,28 @@ void ComponentDesignDiagram::onOpenAutoConnector()
 
     ComponentItem* secondComponentItem = dynamic_cast<ComponentItem*>(secondItem);
 
-    ComponentItemAutoConnector autoConnecter(contextMenuItem_, secondComponentItem);
-    if (autoConnecter.exec() == QDialog::Accepted)
+    ComponentItemAutoConnector autoConnector(contextMenuItem_, secondComponentItem);
+    if (autoConnector.exec() == QDialog::Accepted)
     {
-        QVector<QPair<ConnectedPortsTable::ConnectedPort, ConnectedPortsTable::ConnectedPort> > autoConnections =
-            autoConnecter.getConnectedPorts();
+        QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > autoConnections =
+            autoConnector.getConnectedItems();
 
         if (!autoConnections.isEmpty())
         {
-            for (auto portConnection : autoConnections)
+            for (auto connectionItem : autoConnections)
             {
-                QSharedPointer<Port> startPort = portConnection.first.port_;
-                ComponentItem* startItem = portConnection.first.containingItem_;
-
-                QSharedPointer<Port> endPort = portConnection.second.port_;
-                ComponentItem* endItem = portConnection.second.containingItem_;
-
-                ConnectionEndpoint* startPointItem = getEndPointForPortInItem(startPort, startItem);
-                ConnectionEndpoint* endPointItem = getEndPointForPortInItem(endPort, endItem);
+                ConnectionEndpoint* startPointItem = getEndPointForItem(connectionItem.first);
+                ConnectionEndpoint* endPointItem = getEndPointForItem(connectionItem.second);
 
                 if (startPointItem && endPointItem)
                 {
-                    GraphicsConnection* newConnection = createConnection(startPointItem, endPointItem);
-
-                    AdHocConnectionItem* adhocItem = dynamic_cast<AdHocConnectionItem*>(newConnection);
-                    addItem(adhocItem);
-
-                    getDesign()->getAdHocConnections()->append(adhocItem->getAdHocConnection());
-                    getDesign()->addRoute(adhocItem->getRouteExtension());
+                    createConnectionBetweenEndPoints(startPointItem, endPointItem);
                 }
             }
 
             emit contentChanged();
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentDesignDiagram::getEndPointForPortInItem()
-//-----------------------------------------------------------------------------
-ConnectionEndpoint* ComponentDesignDiagram::getEndPointForPortInItem(QSharedPointer<Port> selectedPort,
-    ComponentItem* item) const
-{
-    for (auto endpoint : item->getEndpoints())
-    {
-        if (endpoint->isAdHoc() && endpoint->getPort() == selectedPort)
-        {
-            return endpoint;
-        }
-    }
-
-    HWComponentItem* hwItem = dynamic_cast<HWComponentItem*>(item);
-    if (hwItem)
-    {
-        for (auto port : *item->componentModel()->getPorts())
-        {
-            if (port == selectedPort)
-            {
-                new AdHocVisibilityChangeCommand(hwItem, selectedPort->name(), true);
-
-                for (auto endpoint : item->getEndpoints())
-                {
-                    if (endpoint->isAdHoc() && endpoint->getPort() == selectedPort)
-                    {
-                        return endpoint;
-                    }
-                }
-            }
-        }
-    }
-
-    return 0;
 }
 
 //-----------------------------------------------------------------------------

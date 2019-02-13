@@ -25,6 +25,7 @@ class GraphicsColumn;
 class GraphicsConnection;
 class LibraryInterface;
 class IEditProvider;
+class AutoConnectorItem;
 
 //-----------------------------------------------------------------------------
 // ComponentDesignDiagram is a base class for component designs.
@@ -545,14 +546,22 @@ private:
     void setupAutoconnectText(ComponentItem* componentItem);
 
     /*!
-     *  Get the connection end point for the selected port contained within the selected component item.
+     *  Get the connection end point for the selected auto connector item.
      *
-     *      @param [in] selectedPort    The selected port.
-     *      @param [in] item            The containing component item.
+     *      @param [in] connectorItem   The selected auto connector item.
      *
-     *      @return The end point item for the selected port.
+     *      @return The end point item for the selected auto connector item.
      */
-    ConnectionEndpoint* getEndPointForPortInItem(QSharedPointer<Port> selectedPort, ComponentItem* item) const;
+    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem) = 0;
+
+    /*!
+     *  Create connection between the selected end points.
+     *
+     *      @param [in] startPoint  Start point for the connection.
+     *      @param [in] endPoint    End point for the connection.
+     */
+    virtual void createConnectionBetweenEndPoints(ConnectionEndpoint* startPoint,
+        ConnectionEndpoint* endPoint) = 0;
 
     //-----------------------------------------------------------------------------
     // Data.
