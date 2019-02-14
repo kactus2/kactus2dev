@@ -116,8 +116,9 @@ void SingleAddressBlockEditor::refresh()
     registersEditor_->refresh();
 
     General::Usage usage = addressBlock_->getUsage();
-    registersEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() ||
-        (usage != General::RESERVED && usage != General::MEMORY));
+    registersEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || (usage != General::RESERVED));
+    registerFilesEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || (usage != General::RESERVED));
+
     usageEditor_->setCurrentValue(usage);
 
     changeExpressionEditorSignalBlockStatus(true);
@@ -200,8 +201,8 @@ void SingleAddressBlockEditor::onUsageSelected(QString const& newUsage)
     General::Usage usage = General::str2Usage(newUsage, General::USAGE_COUNT);
 
     addressBlock_->setUsage(usage);
-    registersEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || 
-        (usage != General::RESERVED && usage != General::MEMORY));
+    registersEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || (usage != General::RESERVED));
+    registerFilesEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || (usage != General::RESERVED));
 
     emit contentChanged();
 }

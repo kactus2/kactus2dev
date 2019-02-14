@@ -47,10 +47,10 @@
     </p>
     <ul>
         <li><b>Memory</b> The <i>address block</i> is ROM, RAM or write-only memory as defined
-            by <b>access</b> and shall not contain registers.</li>
+            by <b>access</b>. Registers and register files within will be considered virtual.</li>
         <li><b>Register</b> The <i>address block</i> range may contain registers.</li>
         <li><b>Reserved</b> The <i>address block</i> is reserved for other usage and shall not
-            contain registers. </li>
+            contain registers or register files. </li>
     </ul>
     <p>
         <b>Access</b> is optional and specifies the accessability of the address block.
@@ -128,6 +128,42 @@
         but it must evaluate to 1 or 0.</p>
     <p>
         <b>Description</b> is an optional field for textual description of the <i>register</i>.
+    </p>
+	
+	<h3>Register files table</h3>
+    <p>
+        The register files table enables the user to define <i>register files</i> for the 
+		<i>address block</i> where each row represents a single register file.
+		Register files are used to group together <i>registers</i>.
+    </p>
+
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>register file</i>.</p>
+    <p>
+        <b>Offset</b> is mandatory and specifies the location of the <i>register file</i> from
+        the start of the containing <i>address block</i> expressed as number of addressing
+        units. Offset can be given as a SystemVerilog expression.
+    </p>
+    <p>
+	   <b>Range</b> is mandatory and specifies the size of the <i>register file</i> in address 
+	   unit bits.       
+    </p>
+    <p>
+        <b>Dimension</b> is optional and assigns an array dimension to the <i>register file</i>.
+        The <i>register file</i> will be repeated in the <i>address block</i> as many times as
+        indicated by the dimension value. By default, the dimension is presumed to be 0.
+        Dimension 0 means that the <i>register file</i> is not an array and will appear exactly
+        once.
+    </p>
+	
+	<p>
+        <b>Is present</b> is optional and allows enabling/disabling of a <i>register file</i>
+        presence in an <i>address block</i>. Value 1 indicates that the <i>register file</i>
+        is present in the <i>address block</i> whereas value 0 marks the register to be
+        treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+        but it must evaluate to 1 or 0.</p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>register file</i>.
     </p>
 </body>
 </html>
