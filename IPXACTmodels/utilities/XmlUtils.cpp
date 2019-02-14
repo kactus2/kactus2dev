@@ -51,11 +51,32 @@ namespace XmlUtils
     void writeAttributes(QXmlStreamWriter& writer, const QMap<QString, QString>& attributes)
     {
         // go through all attributes in the map
-        for (QMap<QString, QString>::const_iterator i = attributes.begin(); i != attributes.end(); ++i)
+        for (QMap<QString, QString>::const_iterator i = attributes.constBegin(); i != attributes.constEnd(); ++i)
         {        
             writer.writeAttribute(i.key(), i.value());
+        }        
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: writeNonEmptyElement()
+    //-----------------------------------------------------------------------------
+    void writeNonEmptyAttribute(QXmlStreamWriter& writer, QString const& attributeName, QString const& value)
+    {
+        if (value.isEmpty() == false)
+        {
+            writer.writeAttribute(attributeName, value);
         }
-        return;
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: writeNonEmptyElement()
+    //-----------------------------------------------------------------------------
+    void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, QString const& value)
+    {
+        if (value.isEmpty() == false)
+        {
+            writer.writeTextElement(elementName, value);
+        }
     }
 
     //-----------------------------------------------------------------------------

@@ -65,6 +65,10 @@ namespace XmlUtils
      */
     void writeAttributes(QXmlStreamWriter& writer, const QMap<QString, QString>& attributes);
 
+    void writeNonEmptyAttribute(QXmlStreamWriter& writer, QString const& attributeName, QString const& value);
+
+    void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, QString const& value);
+
     IPXACTMODELS_EXPORT QPointF parsePoint(QDomNode const& node);
 
     /*!

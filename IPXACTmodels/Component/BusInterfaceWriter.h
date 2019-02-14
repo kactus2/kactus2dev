@@ -35,7 +35,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~BusInterfaceWriter();
+    virtual ~BusInterfaceWriter() = default;
 	
     /*!
      *  Write a businterface to an XML file.
@@ -143,11 +143,9 @@ private:
 	 *  Write the master interface of businterface.
 	 *
      *      @param [in] writer				The used xml writer.
-	 *      @param [in] businterface		The businterface master to be written.		
-	 *      @param [in] mirrored			True, if mirrored interface, else false.
+	 *      @param [in] businterface		The businterface master to be written.			 
 	 */
-	void writeMasterInterface(QXmlStreamWriter& writer, QSharedPointer<MasterInterface> masterInterface,
-		bool mirrored) const;
+	void writeMasterInterface(QXmlStreamWriter& writer, QSharedPointer<MasterInterface> masterInterface) const;
 	
 	/*!
 	 *  Write the slave interface of businterface.
