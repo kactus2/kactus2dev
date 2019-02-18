@@ -21,6 +21,7 @@
 #include <editors/common/diagramgrid.h>
 #include <editors/common/NamelabelWidth.h>
 #include <editors/common/GraphicsItemLabel.h>
+#include <editors/common/BusInterfaceCompatibility.h>
 
 #include <library/LibraryInterface.h>
 
@@ -102,7 +103,9 @@ bool BusPortItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint)
         }
 
         // Otherwise make sure that the bus and abstraction definitions are of the same type.
-        else if (otherInterface->getBusType() == getBusInterface()->getBusType())
+        QSharedPointer<const BusDefinition> busDefinition =
+            library_->getModelReadOnly(getBusInterface()->getBusType()).dynamicCast<const BusDefinition>();
+        if (BusInterfaceUtilities::hasMatchingBusDefinitions(busDefinition, otherInterface->getBusType(), library_))
         {
             QList<General::InterfaceMode> compatibleModes = getOpposingModes(getBusInterface());
             compatibleModes.append(General::SYSTEM);

@@ -15,35 +15,6 @@
 #include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
-// Function: PortTableAutoConnector::PortTableAutoConnector()
-//-----------------------------------------------------------------------------
-PortTableAutoConnector::PortTableAutoConnector():
-TableAutoConnector()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortTableAutoConnector::~PortTableAutoConnector()
-//-----------------------------------------------------------------------------
-PortTableAutoConnector::~PortTableAutoConnector()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortTableAutoConnector::constructTableDetails()
-//-----------------------------------------------------------------------------
-void PortTableAutoConnector::constructTableDetails(QTableWidget* selectedTable, QString const& firstItemName,
-    QString const& secondItemName) const
-{
-    QString firstHeader = QObject::tr("Port from\n") + firstItemName;
-    QString secondHeader = QObject::tr("Port from\n") + secondItemName;
-    QStringList horizontalHeaders = { firstHeader, secondHeader };
-    selectedTable->setHorizontalHeaderLabels(horizontalHeaders);
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortTableAutoConnector::findPossibleCombinations()
 //-----------------------------------------------------------------------------
 QVector<QPair<QString, QVector<QString> > > PortTableAutoConnector::findPossibleCombinations(

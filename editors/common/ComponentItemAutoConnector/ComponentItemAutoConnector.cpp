@@ -11,10 +11,14 @@
 
 #include "ComponentItemAutoConnector.h"
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <editors/common/ComponentItemAutoConnector/AutoConnector.h>
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
+#include <editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.h>
+#include <editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.h>
 #include <editors/common/ComponentItemAutoConnector/PortListFiller.h>
 #include <editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h>
 
@@ -25,22 +29,38 @@
 // Function: ComponentItemAutoConnector::ComponentItemAutoConnector()
 //-----------------------------------------------------------------------------
 ComponentItemAutoConnector::ComponentItemAutoConnector(ComponentItem* firstItem, ComponentItem* secondItem,
-    QWidget* parent):
+    LibraryInterface* library, QWidget* parent):
 QDialog(parent),
 firstItemName_(firstItem->name()),
 secondItemName_(secondItem->name()),
 autoConnectButton_(new QPushButton(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this)),
 clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clear"), this)),
+busInterfaceConnector_(new AutoConnector(firstItem, secondItem, new BusInterfaceListFiller(),
+    new BusInterfaceTableAutoConnector(library), tr("bus interfaces"), this)),
 portConnector_(new AutoConnector(
     firstItem, secondItem, new PortListFiller(), new PortTableAutoConnector(), tr("ports"), this)),
 tabs_(this)
 {
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     setMinimumWidth(1000);
     setMinimumHeight(600);
 
+    tabs_.addTab(busInterfaceConnector_, QString(tr("Bus interfaces")));
     tabs_.addTab(portConnector_, QString(tr("Ports")));
 
     setupLayout();
+
+    QSharedPointer<Component> firstComponent = firstItem->componentModel();
+    QSharedPointer<Component> secondComponent = secondItem->componentModel();
+
+    if (firstComponent->getBusInterfaces()->isEmpty() && secondComponent->getBusInterfaces()->isEmpty() &&
+        (!firstComponent->getPorts()->isEmpty() || !secondComponent->getPorts()->isEmpty()))
+    {
+        tabs_.setCurrentWidget(portConnector_);
+    }
+
+    connectCurrentItems();
 }
 
 //-----------------------------------------------------------------------------
@@ -58,22 +78,34 @@ QVector<QPair<AutoConnectorItem*, AutoConnectorItem* > > ComponentItemAutoConnec
 {
     QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > fullConnections;
 
-    QVector<QPair<QString, QString> > portConnections = portConnector_->getConnectedItems();
-    for (auto connection : portConnections)
+    fullConnections.append(createItemPairs(busInterfaceConnector_, AutoConnectorItem::BUS_INTERFACE));
+    fullConnections.append(createItemPairs(portConnector_, AutoConnectorItem::PORT));
+
+    return fullConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItemAutoConnector::createItemPairs()
+//-----------------------------------------------------------------------------
+QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > ComponentItemAutoConnector::createItemPairs(
+    AutoConnector* connector, AutoConnectorItem::ItemType itemType) const
+{
+    QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > connectorItemPairs;
+
+    QVector<QPair<QString, QString> > connectionPairs = connector->getConnectedItems();
+    for (auto const& connection : connectionPairs)
     {
-        AutoConnectorItem* firstItem(
-            new AutoConnectorItem(connection.first, firstItemName_, AutoConnectorItem::PORT));
-        AutoConnectorItem* secondItem(
-            new AutoConnectorItem(connection.second, secondItemName_, AutoConnectorItem::PORT));
+        AutoConnectorItem* firstItem(new AutoConnectorItem(connection.first, firstItemName_, itemType));
+        AutoConnectorItem* secondItem(new AutoConnectorItem(connection.second, secondItemName_, itemType));
 
         QPair<AutoConnectorItem*, AutoConnectorItem*> newConnection;
         newConnection.first = firstItem;
         newConnection.second = secondItem;
 
-        fullConnections.append(newConnection);
+        connectorItemPairs.append(newConnection);
     }
 
-    return fullConnections;
+    return connectorItemPairs;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +146,7 @@ void ComponentItemAutoConnector::connectCurrentItems()
     }
     else
     {
-
+        busInterfaceConnector_->connectAutomatically();
     }
 }
 
@@ -129,6 +161,6 @@ void ComponentItemAutoConnector::clearCurrentConnections()
     }
     else
     {
-
+        busInterfaceConnector_->clearConnectedItems();
     }
 }

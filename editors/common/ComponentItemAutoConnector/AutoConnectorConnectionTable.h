@@ -29,9 +29,12 @@ public:
      *
      *      @param [in] firstList   The first item list to be connected.
      *      @param [in] secondList  The second item list to be connected.
+     *      @param [in] firstName   Name of the first item.
+     *      @param [in] secondName  Name of the second item.
      *      @param [in] parent      The parent item.
      */
-    AutoConnectorConnectionTable(QListWidget* firstList, QListWidget* secondList, QWidget* parent = 0);
+    AutoConnectorConnectionTable(QListWidget* firstList, QListWidget* secondList, QString const& firstItemName,
+        QString const& secondItemName, QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -82,6 +85,11 @@ private slots:
      */
     void onRemoveRow();
 
+    /*!
+     *  Handles the row addition.
+     */
+    void onAddRow();
+
 private:
 
     //-----------------------------------------------------------------------------
@@ -99,6 +107,9 @@ private:
 
     //! Action for removing rows.
     QAction* removeRowAction_;
+
+    //! Action for adding rows.
+    QAction* addRowAction_;
 };
 
 #endif // AUTOCONNECTORCONNECTIONTABLE_H

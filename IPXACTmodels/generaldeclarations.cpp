@@ -243,6 +243,64 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getCompatibleInterfaceModeList()
+//-----------------------------------------------------------------------------
+QVector<General::InterfaceMode> General::getCompatibleInterfaceModesForActiveInterface(General::InterfaceMode mode)
+{
+    QVector<General::InterfaceMode> compatibleModes;
+
+    if (mode == General::MASTER)
+    {
+        //! Master -> slave / mirrored master
+        compatibleModes = { General::SLAVE, General::MIRROREDMASTER, General::MONITOR };
+    }
+    else if (mode == General::MIRROREDMASTER)
+    {
+        //! Mirrored Master -> Master
+        compatibleModes = { General::MASTER, General::MONITOR };
+    }
+    else if (mode == General::SLAVE)
+    {
+        //! Slave -> master / mirrored slave
+        compatibleModes = { General::MASTER, General::MIRROREDSLAVE, General::MONITOR };
+    }
+    else if (mode == General::MIRROREDSLAVE)
+    {
+        //! Mirrored slave -> slave
+        compatibleModes = { General::SLAVE, General::MONITOR };
+    }
+    else if (mode == General::SYSTEM)
+    {
+        //! System -> Mirrored system
+        compatibleModes = { General::MIRROREDSYSTEM, General::MONITOR };
+    }
+    else if (mode == General::MIRROREDSYSTEM)
+    {
+        //! Mirrored System -> System
+        compatibleModes = { General::SYSTEM, General::MONITOR };
+    }
+    else if (mode == General::MONITOR)
+    {
+        //! Monitor Mode -> Mode
+        //!     if Mode == System || MirroredSystem
+        //!         -> System groups match
+        compatibleModes = { General::MASTER, General::MIRROREDMASTER, General::SLAVE, General::MIRROREDSLAVE,
+            General::SYSTEM, General::MIRROREDSYSTEM };
+    }
+
+    return compatibleModes;
+}
+
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getCompatibleInterfaceModeForHierarchicalInterface()
+//-----------------------------------------------------------------------------
+General::InterfaceMode General::getCompatibleInterfaceModeForHierarchicalInterface(General::InterfaceMode mode)
+{
+    //! Hierarchical Interface -> Same Mode
+    return mode;
+}
+
 QString General::getRelativePath(QString from, QString to)  
 {
     if (from.isEmpty() || to.isEmpty())

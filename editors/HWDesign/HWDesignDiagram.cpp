@@ -2922,33 +2922,42 @@ QStringList HWDesignDiagram::getTopLevelInterfaceNames() const
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* HWDesignDiagram::getEndPointForItem(AutoConnectorItem* connectorItem)
 {
+    HWComponentItem* containingItem = getComponentItem(connectorItem->getContainingItem());
+    QString itemName = connectorItem->getName();
+
     if (connectorItem->getItemType() == AutoConnectorItem::PORT)
     {
-        HWComponentItem* containingItem = getComponentItem(connectorItem->getContainingItem());
-
-        QString portName = connectorItem->getName();
-
-        for (auto endpoint : containingItem->getEndpoints())
+        for (auto const& endpoint : containingItem->getEndpoints())
         {
-            if (endpoint->isAdHoc() && endpoint->getPort()->name() == portName)
+            if (endpoint->isAdHoc() && endpoint->name() == itemName)
             {
                 return endpoint;
             }
         }
 
-        for (auto port : *containingItem->componentModel()->getPorts())
+        for (auto const& port : *containingItem->componentModel()->getPorts())
         {
-            if (port->name() == portName)
+            if (port->name() == itemName)
             {
-                new AdHocVisibilityChangeCommand(containingItem, portName, true);
+                new AdHocVisibilityChangeCommand(containingItem, itemName, true);
 
-                for (auto endpoint : containingItem->getEndpoints())
+                for (auto const& endpoint : containingItem->getEndpoints())
                 {
-                    if (endpoint->isAdHoc() && endpoint->getPort()->name() == portName)
+                    if (endpoint->isAdHoc() && endpoint->getPort()->name() == itemName)
                     {
                         return endpoint;
                     }
                 }
+            }
+        }
+    }
+    else if (connectorItem->getItemType() == AutoConnectorItem::BUS_INTERFACE)
+    {
+        for (auto const& endPoint : containingItem->getEndpoints())
+        {
+            if (endPoint->isBus() && endPoint->name() == itemName)
+            {
+                return endPoint;
             }
         }
     }
@@ -2962,11 +2971,32 @@ ConnectionEndpoint* HWDesignDiagram::getEndPointForItem(AutoConnectorItem* conne
 void HWDesignDiagram::createConnectionBetweenEndPoints(ConnectionEndpoint* startPoint,
     ConnectionEndpoint* endPoint)
 {
-    GraphicsConnection* newConnection = createConnection(startPoint, endPoint);
+    if (startPoint->isAdHoc() || startPoint->isBus())
+    {
+        GraphicsConnection* newConnection = createConnection(startPoint, endPoint);
 
-    AdHocConnectionItem* adhocItem = dynamic_cast<AdHocConnectionItem*>(newConnection);
-    addItem(adhocItem);
+        startPoint->onConnect(endPoint);
+        startPoint->onConnect(endPoint);
 
-    getDesign()->getAdHocConnections()->append(adhocItem->getAdHocConnection());
-    getDesign()->addRoute(adhocItem->getRouteExtension());
+        startPoint->addConnection(newConnection);
+        endPoint->addConnection(newConnection);
+
+        if (startPoint->isAdHoc() && endPoint->isAdHoc())
+        {
+            AdHocConnectionItem* adhocItem = dynamic_cast<AdHocConnectionItem*>(newConnection);
+            addItem(adhocItem);
+
+            getDesign()->getAdHocConnections()->append(adhocItem->getAdHocConnection());
+            getDesign()->addRoute(adhocItem->getRouteExtension());
+        }
+        else if (startPoint->isBus() && endPoint->isBus())
+        {
+            HWConnection* hwConnectionItem = dynamic_cast<HWConnection*>(newConnection);
+
+            addItem(hwConnectionItem);
+
+            getDesign()->getInterconnections()->append(hwConnectionItem->getInterconnection());
+            getDesign()->addRoute(hwConnectionItem->getRouteExtension());
+        }
+    }
 }

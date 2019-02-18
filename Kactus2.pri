@@ -800,7 +800,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorItem.h \
-    ./editors/common/ComponentItemAutoConnector/AutoConnectorList.h \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnector.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
@@ -1494,6 +1494,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/ComponentItemAutoConnector/PortListFiller.cpp \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.cpp \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorItem.cpp \
-    ./editors/common/ComponentItemAutoConnector/AutoConnectorList.cpp \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.cpp \
     ./editors/common/ComponentItemAutoConnector/AutoConnector.cpp
 RESOURCES += kactus.qrc

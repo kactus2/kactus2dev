@@ -80,9 +80,8 @@ void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondI
     firstComponentGroup->setLayout(firstComponentLayout);
     secondComponentGroup->setLayout(secondComponentLayout);
 
-    connectorTable_ = new AutoConnectorConnectionTable(firstItemList, secondItemList, this);
-    tableInitializer_->constructTableDetails(connectorTable_, firstItemName, secondItemName);
-    connectAutomatically();
+    connectorTable_ =
+        new AutoConnectorConnectionTable(firstItemList, secondItemList, firstItemName, secondItemName, this);
     connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(firstItemList, secondItemList, this));
 
     QVBoxLayout* connectedPortsLayout(new QVBoxLayout());

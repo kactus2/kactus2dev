@@ -16,8 +16,6 @@
 
 #include <editors/common/ComponentItemAutoConnector/ListFiller.h>
 
-#include <QListWidget>
-
 class Component;
 
 //-----------------------------------------------------------------------------

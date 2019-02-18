@@ -34,16 +34,6 @@ public:
     virtual ~TableAutoConnector() = default;
 
     /*!
-     *  Construct the headers for the selected table.
-     *
-     *      @param [in] selectedTable   The selected table.
-     *      @param [in] firstItemName   Name of the first connected component item.
-     *      @param [in] secondItemName  Name of the second connected component item.
-     */
-    virtual void constructTableDetails(QTableWidget* selectedTable, QString const& firstItemName,
-        QString const& secondItemName) const = 0;
-
-    /*!
      *  Connect the items from the selected components.
      *
      *      @param [in] selectedTable       The selected connection table.

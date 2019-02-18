@@ -9,8 +9,8 @@
 // Automatically connects ports of two components.
 //-----------------------------------------------------------------------------
 
-#ifndef PORTTABLEAUOTCONNECTOR_H
-#define PORTTABLEAUOTCONNECTOR_H
+#ifndef PORTTABLEAUTOCONNECTOR_H
+#define PORTTABLEAUTOCONNECTOR_H
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 
@@ -29,22 +29,12 @@ public:
     /*!
      *  The constructor.
      */
-    PortTableAutoConnector();
+    PortTableAutoConnector() = default;
 
     /*!
      *  Destructor.
      */
-    ~PortTableAutoConnector();
-
-    /*!
-     *  Construct the headers for the selected table.
-     *
-     *      @param [in] selectedTable   The selected table.
-     *      @param [in] firstItemName   Name of the first connected component item.
-     *      @param [in] secondItemName  Name of the second connected component item.
-     */
-    virtual void constructTableDetails(QTableWidget* selectedTable, QString const& firstItemName,
-        QString const& secondItemName) const;
+    ~PortTableAutoConnector() = default;
 
     // No copying. No assignments.
     PortTableAutoConnector(PortTableAutoConnector const& rhs) = delete;
@@ -82,7 +72,7 @@ private:
      *      @param [in] protDirection       Direction of the selected port.
      *      @param [in] secondItemPorts     List of the ports contained within the second component.
      *
-     *      @return List of connectable port names.
+     *      @return List of connectible port names.
      */
     QVector<QString> getConnectablePortNames(DirectionTypes::Direction portDirection,
         QSharedPointer<QList<QSharedPointer<Port> > > secondItemPorts) const;
@@ -99,4 +89,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // PORTTABLEAUOTCONNECTOR_H
+#endif // PORTTABLEAUTOCONNECTOR_H

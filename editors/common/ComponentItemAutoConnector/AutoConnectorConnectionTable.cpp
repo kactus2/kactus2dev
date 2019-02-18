@@ -20,20 +20,30 @@
 // Function: AutoConnectorConnectionTable::AutoConnectorConnectionTable()
 //-----------------------------------------------------------------------------
 AutoConnectorConnectionTable::AutoConnectorConnectionTable(QListWidget* firstList, QListWidget* secondList,
-    QWidget* parent):
+    QString const& firstItemName, QString const& secondItemName, QWidget* parent):
 QTableWidget(parent),
 firstItemList_(firstList),
 secondItemList_(secondList),
 dragSourceList_(),
-removeRowAction_(new QAction(tr("Remove row"), this))
+removeRowAction_(new QAction(tr("Remove row"), this)),
+addRowAction_(new QAction(tr("Add row"), this))
 {
     setDragDropMode(QAbstractItemView::DropOnly);
+
+    verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    verticalHeader()->setDefaultSectionSize(22);
 
     setColumnCount(2);
     verticalHeader()->hide();
     horizontalHeader()->setStretchLastSection(true);
 
+    QString firstHeader = firstItemName;
+    QString secondHeader = secondItemName;
+    QStringList horizontalHeaders = { firstHeader, secondHeader };
+    setHorizontalHeaderLabels(horizontalHeaders);
+
     connect(removeRowAction_, SIGNAL(triggered()), this, SLOT(onRemoveRow()), Qt::UniqueConnection);
+    connect(addRowAction_, SIGNAL(triggered()), this, SLOT(onAddRow()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,14 +85,23 @@ void AutoConnectorConnectionTable::contextMenuEvent(QContextMenuEvent *event)
 {
     QModelIndex index = indexAt(event->pos());
 
+    QMenu menu(this);
+    menu.addAction(addRowAction_);
+
     if (index.isValid())
     {
-        QMenu menu(this);
-
         menu.addAction(removeRowAction_);
-
-        menu.exec(event->globalPos());
     }
+
+    menu.exec(event->globalPos());
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorConnectionTable::onAddRow()
+//-----------------------------------------------------------------------------
+void AutoConnectorConnectionTable::onAddRow()
+{
+    setRowCount(rowCount() + 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +109,14 @@ void AutoConnectorConnectionTable::contextMenuEvent(QContextMenuEvent *event)
 //-----------------------------------------------------------------------------
 void AutoConnectorConnectionTable::onRemoveRow()
 {
-    removeRow(currentIndex().row());
+    QModelIndexList indexList = selectedIndexes();
+
+    QModelIndexList indexlist = selectedIndexes();
+    qSort(indexlist.begin(), indexlist.end(), qGreater<QModelIndex>());
+    foreach(QModelIndex index, indexlist)
+    {
+        removeRow(index.row());
+    }
 }
 
 //-----------------------------------------------------------------------------
