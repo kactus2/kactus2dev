@@ -9,7 +9,7 @@
 // Diagram interface graphics item.
 //-----------------------------------------------------------------------------
 
-#include "BusInterfaceItem.h"
+#include "HierarchicalBusInterfaceItem.h"
 
 #include "HWMoveCommands.h"
 #include "HWDesignDiagram.h"
@@ -34,9 +34,9 @@
 #include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::BusInterfaceItem()
+// Function: HierarchicalBusInterfaceItem::HierarchicalBusInterfaceItem()
 //-----------------------------------------------------------------------------
-BusInterfaceItem::BusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
+HierarchicalBusInterfaceItem::HierarchicalBusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
     QSharedPointer<InterfaceGraphicsData> dataGroup, QGraphicsItem *parent):
 BusInterfaceEndPoint(busIf, component, parent),
 dataGroup_(dataGroup),
@@ -68,25 +68,25 @@ oldColumn_(0)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::~BusInterfaceItem()
+// Function: HierarchicalBusInterfaceItem::~HierarchicalBusInterfaceItem()
 //-----------------------------------------------------------------------------
-BusInterfaceItem::~BusInterfaceItem()
+HierarchicalBusInterfaceItem::~HierarchicalBusInterfaceItem()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::updateName()
+// Function: HierarchicalBusInterfaceItem::updateName()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::updateName(QString const&, QString const& newName)
+void HierarchicalBusInterfaceItem::updateName(QString const&, QString const& newName)
 {
     dataGroup_->setName(newName);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::createMoveCommandForClashedItem()
+// Function: HierarchicalBusInterfaceItem::createMoveCommandForClashedItem()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
+void HierarchicalBusInterfaceItem::createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
     DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand)
 {
     if (endPoint && endPoint->isHierarchical() && endPoint->pos() != endPointPosition)
@@ -100,9 +100,9 @@ void BusInterfaceItem::createMoveCommandForClashedItem(ConnectionEndpoint* endPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::canConnectToInterface()
+// Function: HierarchicalBusInterfaceItem::canConnectToInterface()
 //-----------------------------------------------------------------------------
-bool BusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const
+bool HierarchicalBusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const
 {
     QSharedPointer<BusInterface> otherInterface = otherEndPoint->getBusInterface();
 
@@ -113,17 +113,17 @@ bool BusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* otherEndP
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::isHierarchical()
+// Function: HierarchicalBusInterfaceItem::isHierarchical()
 //-----------------------------------------------------------------------------
-bool BusInterfaceItem::isHierarchical() const
+bool HierarchicalBusInterfaceItem::isHierarchical() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::setDirection()
+// Function: HierarchicalBusInterfaceItem::setDirection()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::setDirection(QVector2D const& dir)
+void HierarchicalBusInterfaceItem::setDirection(QVector2D const& dir)
 {
     HWConnectionEndpoint::setDirection(dir);
 
@@ -133,9 +133,9 @@ void BusInterfaceItem::setDirection(QVector2D const& dir)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::setLabelPosition()
+// Function: HierarchicalBusInterfaceItem::setLabelPosition()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::setLabelPosition()
+void HierarchicalBusInterfaceItem::setLabelPosition()
 {
     qreal nameWidth = getNameLabel()->boundingRect().width();
     qreal nameHeight = getNameLabel()->boundingRect().height();
@@ -153,17 +153,17 @@ void BusInterfaceItem::setLabelPosition()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::getDataExtension()
+// Function: HierarchicalBusInterfaceItem::getDataExtension()
 //-----------------------------------------------------------------------------
-QSharedPointer<VendorExtension> BusInterfaceItem::getDataExtension() const
+QSharedPointer<VendorExtension> HierarchicalBusInterfaceItem::getDataExtension() const
 {
     return dataGroup_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::itemChange()
+// Function: HierarchicalBusInterfaceItem::itemChange()
 //-----------------------------------------------------------------------------
-QVariant BusInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& value)
+QVariant HierarchicalBusInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& value)
 {
     if (change == ItemPositionChange)
     {
@@ -189,9 +189,9 @@ QVariant BusInterfaceItem::itemChange(GraphicsItemChange change, QVariant const&
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::mousePressEvent()
+// Function: HierarchicalBusInterfaceItem::mousePressEvent()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void HierarchicalBusInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     HWConnectionEndpoint::mousePressEvent(event);
     setZValue(1001.0);
@@ -206,9 +206,9 @@ void BusInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::moveItemByMouse()
+// Function: HierarchicalBusInterfaceItem::moveItemByMouse()
 //-----------------------------------------------------------------------------
-void BusInterfaceItem::moveItemByMouse()
+void HierarchicalBusInterfaceItem::moveItemByMouse()
 {
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
@@ -220,9 +220,9 @@ void BusInterfaceItem::moveItemByMouse()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::createMouseMoveCommand()
+// Function: HierarchicalBusInterfaceItem::createMouseMoveCommand()
 //-----------------------------------------------------------------------------
-QSharedPointer<QUndoCommand> BusInterfaceItem::createMouseMoveCommand(DesignDiagram* diagram)
+QSharedPointer<QUndoCommand> HierarchicalBusInterfaceItem::createMouseMoveCommand(DesignDiagram* diagram)
 {
     if (!oldColumn_)
     {
@@ -249,9 +249,9 @@ QSharedPointer<QUndoCommand> BusInterfaceItem::createMouseMoveCommand(DesignDiag
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceItem::getCurrentPosition()
+// Function: HierarchicalBusInterfaceItem::getCurrentPosition()
 //-----------------------------------------------------------------------------
-QPointF BusInterfaceItem::getCurrentPosition() const
+QPointF HierarchicalBusInterfaceItem::getCurrentPosition() const
 {
     return scenePos();
 }

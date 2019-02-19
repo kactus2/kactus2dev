@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocInterfaceItem.h
+// File: ActivePortItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,46 +9,43 @@
 // Diagram graphics item for ad-hoc ports.
 //-----------------------------------------------------------------------------
 
-#ifndef ADHOCINTERFACEITEM_H
-#define ADHOCINTERFACEITEM_H
+#ifndef ACTIVEPORTITEM_H
+#define ACTIVEPORTITEM_H
 
 #include <QSharedPointer>
 #include <QVector2D>
-#include <QPolygonF>
-
-#include <editors/HWDesign/AdHocItem.h>
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-class GraphicsColumn;
-class Kactus2Placeholder;
+#include <editors/HWDesign/AdHocItem.h>
+
+#include <QPolygonF>
+
+class HWComponentItem;
 class Port;
 
 //-----------------------------------------------------------------------------
-//! AdHocInterfaceItem class.
+//! ActivePortItem class.
 //-----------------------------------------------------------------------------
-class AdHocInterfaceItem : public AdHocItem
+class ActivePortItem : public AdHocItem
 {
     Q_OBJECT
 
 public:
-    enum { Type = GFX_TYPE_DIAGRAM_ADHOC_INTERFACE };
+    enum { Type = GFX_TYPE_DIAGRAM_ADHOC_PORT };
 
     /*!
      *  The constructor.
      *
-     *      @param [in] component   The component containing the ad hoc port.
-     *      @param [in] port        The selected port.
-     *      @param [in] dataGroup   The visibility data group of the item.
-     *      @param [in] parent      The owner of this item.
+     *      @param [in] port    The selected port.
+     *      @param [in] parent  The owner of this item.
      */
-    AdHocInterfaceItem(QSharedPointer<Component> component, QSharedPointer<Port> port,
-        QSharedPointer<Kactus2Placeholder> dataGroup, QGraphicsItem* parent = 0);
+    ActivePortItem(QSharedPointer<Port> port, HWComponentItem* parent);
 
 	/*!
      *  The destructor.
      */
-	virtual ~AdHocInterfaceItem();
+	virtual ~ActivePortItem();
 
 	/*!
 	 *  Get the type of this graphics item.
@@ -61,41 +58,50 @@ public:
     // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
-    /*! 
-     *  Returns true if the port represents a hierarchical connection.
-     */
-    virtual bool isHierarchical() const;
-
-    /*!
-     *  Set the direction for this ad hoc interface item.
-     *
-     *      @param [in] dir     The new item direction.
-     */
-    void setDirection(QVector2D const& dir);
-
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
      */
     virtual bool isDirectionFixed() const;
 
+    /*!
+     *  Returns true if a connection is valid between the two endpoints.
+     *
+     *      @param [in] other The other endpoint.
+     *
+     *      @remarks Does not take existing connections into account but simply
+     *               validates whether a connection between the endpoints would be valid
+     *               in a general case.
+     */
+    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
+
+    /*!
+     *  Check if the port is hierarchical.
+     *
+     *      @return False, port items are always instance items and thus non-hierarchical.
+     */
+    virtual bool isHierarchical() const;
+
 	/*!
 	 *  Set the position of the name label.
 	 */
 	virtual void setLabelPosition();
-    
-    /*!
-     *  Get the visibility data group of the item.
-     *
-     *      @return The visibility data group of the item.
-     */
-    QSharedPointer<Kactus2Placeholder> getDataGroup() const;
 
-    /*!
-     *  Set a new visibility and position data group.
-     *
-     *      @param [in] newDataGroup    The new visibility and position data group.
-     */
-    void setDataGroup(QSharedPointer<Kactus2Placeholder> newDataGroup);
+	/*!
+	 *  Check the direction of the port and change it if necessary.
+	 */
+	void checkDirection();
+
+	/*!
+	 *  Gives the length of the text in the name label.
+	 */
+	qreal getNameLength();
+	
+	/*!
+	 *  Shortens the name label to better fit in the component.
+	 *
+	 *      @param [in] width   The width of the shortened name.
+	 */
+    void shortenNameLabel(qreal width);
 
 protected:
 
@@ -105,7 +111,7 @@ protected:
      *      @param [in] change  The change.
      *      @param [in] value   The new value.
      */
-    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
+    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
     /*!
      *  Event for mouse button release.
@@ -137,19 +143,13 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The visibility data group of the item.
-    QSharedPointer<Kactus2Placeholder> dataGroup_;
-
-    //! The old column from where the mouse drag event began.
-    GraphicsColumn* oldColumn_;
-
-    //! The old positions of the other interfaces before mouse move.
-    QMap<QGraphicsItem*, QPointF> oldInterfacePositions_;
-
     //! The position of the port before mouse move.
     QPointF oldPos_;
+
+    //! The old positions of the other component ports before mouse move.
+    QMap<ConnectionEndpoint*, QPointF> oldPortPositions_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // ADHOCINTERFACEITEM_H
+#endif // ACTIVEPORTITEM_H

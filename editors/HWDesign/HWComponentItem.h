@@ -22,8 +22,8 @@
 #include <QSharedPointer>
 
 class AdHocVisibilityEditor;
-class AdHocPortItem;
-class BusPortItem;
+class ActivePortItem;
+class ActiveBusInterfaceItem;
 class ComponentInstance;
 class HWConnectionEndpoint;
 class HWColumn;
@@ -100,7 +100,7 @@ public:
      *
      *      @return The newly created port.
      */
-    BusPortItem* addPort(QPointF const& pos);
+    ActiveBusInterfaceItem* addPort(QPointF const& pos);
 
     /*!
      *  Adds an already created bus interface to the component.
@@ -119,12 +119,12 @@ public:
     /*! Get the BusPortItem that corresponds to the given bus interface name
      *
      */
-    BusPortItem* getBusPort(QString const& name) const;
+    ActiveBusInterfaceItem* getBusPort(QString const& name) const;
 
     /*
      *  Returns the ad-hoc port with the given name, or null if not found.
      */
-    AdHocPortItem* getAdHocPort(QString const& portName) const;
+    ActivePortItem* getAdHocPort(QString const& portName) const;
 
 
     /*! Called when a port is being moved.

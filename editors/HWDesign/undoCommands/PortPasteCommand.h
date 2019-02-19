@@ -14,7 +14,7 @@
 
 class Component;
 class HWComponentItem;
-class BusPortItem;
+class ActiveBusInterfaceItem;
 class DesignDiagram;
 
 //-----------------------------------------------------------------------------
@@ -33,7 +33,7 @@ public:
      *      @param [in] diagram         Diagram containing the scene of the port.
      *      @param [in] parent          The parent command.
      */
-    PortPasteCommand(HWComponentItem* destComponent, BusPortItem* port, DesignDiagram* diagram,
+    PortPasteCommand(HWComponentItem* destComponent, ActiveBusInterfaceItem* port, DesignDiagram* diagram,
         QUndoCommand* parent = 0);
 
     /*!
@@ -64,7 +64,7 @@ private:
     HWComponentItem* component_;
 
     //! The diagram port.
-    BusPortItem* port_;
+    ActiveBusInterfaceItem* port_;
 
 	//! Boolean flag for indicating if the port should be deleted in the destructor.
     bool del_;

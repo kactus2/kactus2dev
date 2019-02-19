@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusInterfaceCompatibility.h
+// File: BusInterfaceUtilities.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -9,14 +9,14 @@
 // Utilities for bus interface mode compatibilities.
 //-----------------------------------------------------------------------------
 
-#include "BusInterfaceCompatibility.h"
+#include "BusInterfaceUtilities.h"
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceCompatibility::hasMatchingBusDefinitions()
+// Function: BusInterfaceUtilities::hasMatchingBusDefinitions()
 //-----------------------------------------------------------------------------
 bool BusInterfaceUtilities::hasMatchingBusDefinitions(QSharedPointer<const BusDefinition> firstDefinition,
     VLNV const& secondDefinitionVLNV, LibraryInterface* library)

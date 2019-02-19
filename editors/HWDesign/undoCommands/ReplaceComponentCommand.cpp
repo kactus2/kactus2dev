@@ -24,9 +24,9 @@
 #include <editors/HWDesign/HWMoveCommands.h>
 #include <editors/HWDesign/AdHocConnectionItem.h>
 #include <editors/HWDesign/HWConnection.h>
-#include <editors/HWDesign/BusPortItem.h>
-#include <editors/HWDesign/AdHocPortItem.h>
-#include <editors/HWDesign/AdHocInterfaceItem.h>
+#include <editors/HWDesign/ActiveBusInterfaceItem.h>
+#include <editors/HWDesign/ActivePortItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
 #include <editors/HWDesign/HWComponentItem.h>
 
 #include <editors/HWDesign/undoCommands/HWComponentAddCommand.h>
@@ -78,11 +78,11 @@ void ReplaceComponentCommand::changeConnections(HWComponentItem* oldComponentIte
         {
             HWConnectionEndpoint* newEndpoint = 0;
 
-            if (oldEndpoint->type() == BusPortItem::Type)
+            if (oldEndpoint->type() == ActiveBusInterfaceItem::Type)
             {
                 newEndpoint = newComponentItem->getBusPort(oldEndpoint->name());
             }
-            else if (oldEndpoint->type() == AdHocPortItem::Type)
+            else if (oldEndpoint->type() == ActivePortItem::Type)
             {
                 newEndpoint = newComponentItem->getAdHocPort(oldEndpoint->name());
             }

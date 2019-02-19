@@ -9,6 +9,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./editors/common/ComponentItemAutoConnector/TableAutoConnector.h \
+    ./editors/common/BusInterfaceUtilities.h \
     ./resource5.h \
     ./VersionHelper.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
@@ -678,14 +679,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/HWDesign/InterfaceGraphics.h \
     ./editors/HWDesign/PortmapDialog.h \
     ./editors/HWDesign/AdHocConnectionItem.h \
-    ./editors/HWDesign/AdHocInterfaceItem.h \
     ./editors/HWDesign/AdHocItem.h \
-    ./editors/HWDesign/AdHocPortItem.h \
     ./editors/HWDesign/SelectItemTypeDialog.h \
     ./editors/HWDesign/BusInterfaceDialog.h \
     ./editors/HWDesign/BusInterfaceEndPoint.h \
-    ./editors/HWDesign/BusInterfaceItem.h \
-    ./editors/HWDesign/BusPortItem.h \
     ./editors/HWDesign/HWChangeCommands.h \
     ./editors/HWDesign/HWComponentItem.h \
     ./editors/HWDesign/HWConnection.h \
@@ -794,12 +791,17 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/HWDesign/HierarchicalPortItem.h \
+    ./editors/HWDesign/ActivePortItem.h \
+    ./editors/HWDesign/HierarchicalBusInterfaceItem.h \
+    ./editors/HWDesign/ActiveBusInterfaceItem.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.h \
     ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h \
     ./editors/common/ComponentItemAutoConnector/ListFiller.h \
     ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorItem.h \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.h \
     ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnector.h
 SOURCES += ./VersionHelper.cpp \
@@ -1373,13 +1375,13 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.cpp \
     ./editors/HWDesign/AdHocConnectionItem.cpp \
     ./editors/HWDesign/AdHocEnabled.cpp \
-    ./editors/HWDesign/AdHocInterfaceItem.cpp \
+    ./editors/HWDesign/HierarchicalPortItem.cpp \
     ./editors/HWDesign/AdHocItem.cpp \
-    ./editors/HWDesign/AdHocPortItem.cpp \
+    ./editors/HWDesign/ActivePortItem.cpp \
     ./editors/HWDesign/BusInterfaceDialog.cpp \
     ./editors/HWDesign/BusInterfaceEndPoint.cpp \
-    ./editors/HWDesign/BusInterfaceItem.cpp \
-    ./editors/HWDesign/BusPortItem.cpp \
+    ./editors/HWDesign/HierarchicalBusInterfaceItem.cpp \
+    ./editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ./editors/HWDesign/HWAddCommands.cpp \
     ./editors/HWDesign/HWChangeCommands.cpp \
     ./editors/HWDesign/HWComponentItem.cpp \
@@ -1490,10 +1492,12 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
     ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/TableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/PortListFiller.cpp \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.cpp \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorItem.cpp \
     ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.cpp \
-    ./editors/common/ComponentItemAutoConnector/AutoConnector.cpp
+    ./editors/common/ComponentItemAutoConnector/AutoConnector.cpp \
+    ./editors/common/BusInterfaceUtilities.cpp
 RESOURCES += kactus.qrc

@@ -11,11 +11,7 @@
 
 #include "HWDesignDiagram.h"
 
-#include "AdHocPortItem.h"
-#include "AdHocInterfaceItem.h"
 #include "BusInterfaceDialog.h"
-#include "BusInterfaceItem.h"
-#include "BusPortItem.h"
 #include "HWComponentItem.h"
 #include "HWConnection.h"
 #include "AdHocConnectionItem.h"
@@ -50,6 +46,10 @@
 #include <editors/common/Association/Association.h>
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
 
+#include <editors/HWDesign/HierarchicalBusInterfaceItem.h>
+#include <editors/HWDesign/ActiveBusInterfaceItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
+#include <editors/HWDesign/ActivePortItem.h>
 #include <editors/HWDesign/AdHocItem.h>
 #include <editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h>
 #include <editors/HWDesign/undoCommands/ComponentDeleteCommand.h>
@@ -164,7 +164,8 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         QSharedPointer<InterfaceGraphicsData> dataGroup =
             findOrCreateInterfaceExtensionGroup(design, busIf->name());
 
-        BusInterfaceItem* topInterface = new BusInterfaceItem(getEditedComponent(), busIf, dataGroup);
+        HierarchicalBusInterfaceItem* topInterface =
+            new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup);
 
         GraphicsColumn* targetColumn = getLayout()->findColumnAt(topInterface->scenePos());
         if (targetColumn && targetColumn->isItemAllowed(topInterface))
@@ -242,7 +243,7 @@ void HWDesignDiagram::updateHierComponent()
     foreach (QGraphicsItem *item, items())
     {
         // Check if the item is a diagram interface and its bus interface is defined.
-        BusInterfaceItem* diagIf = dynamic_cast<BusInterfaceItem*>(item);
+        HierarchicalBusInterfaceItem* diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item);
         if (diagIf != 0 && diagIf->getBusInterface() != 0 && !diagIf->isInvalid())
         {
 			busIfs.append(diagIf->getBusInterface());
@@ -295,12 +296,12 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
         QSharedPointer<Kactus2Placeholder> adhocData(new Kactus2Placeholder("kactus2:adHocVisible"));
         adhocGroup->addToGroup(adhocData);
 
-        AdHocInterfaceItem* adHocIf;
+        HierarchicalPortItem* adHocIf;
 
         QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(portName);
         if (adhocPort)
         {
-            adHocIf = new AdHocInterfaceItem(getEditedComponent(), adhocPort, adhocData, 0);
+            adHocIf = new HierarchicalPortItem(getEditedComponent(), adhocPort, adhocData, 0);
         }
         else
         {
@@ -343,8 +344,8 @@ HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(QString const& portNa
 {
     foreach (QGraphicsItem* item, items())
     {
-        if (item->type() == AdHocInterfaceItem::Type && 
-            static_cast<AdHocInterfaceItem*>(item)->name().compare(portName) == 0)
+        if (item->type() == HierarchicalPortItem::Type &&
+            static_cast<HierarchicalPortItem*>(item)->name().compare(portName) == 0)
         {
             return static_cast<HWConnectionEndpoint*>(item);
         }
@@ -363,7 +364,7 @@ void HWDesignDiagram::onCopyAction()
         QList<QGraphicsItem*> items = selectedItems();
         int type = getCommonItemType(items);
 
-        if (type == BusInterfaceItem::Type || type == BusPortItem::Type)
+        if (type == HierarchicalBusInterfaceItem::Type || type == ActiveBusInterfaceItem::Type)
         {
             BusInterfaceCollectionCopyData collection;
             copyInterfaces(items, collection);
@@ -1035,10 +1036,10 @@ bool HWDesignDiagram::selectedItemIsCorrectType() const
 {
     int type = selectedItems().first()->type();
 
-    return type == componentType() || type == BusInterfaceItem::Type || type == BusPortItem::Type ||
-        type == HWConnection::Type || type == AdHocConnectionItem::Type || type == HWColumn::Type ||
-        type == AdHocInterfaceItem::Type || type == AdHocPortItem::Type || type == StickyNote::Type ||
-        type == Association::Type;
+    return type == componentType() || type == HierarchicalBusInterfaceItem::Type ||
+        type == ActiveBusInterfaceItem::Type || type == HWConnection::Type || type == AdHocConnectionItem::Type ||
+        type == HWColumn::Type || type == HierarchicalPortItem::Type || type == ActivePortItem::Type ||
+        type == StickyNote::Type || type == Association::Type;
 }
 
 //-----------------------------------------------------------------------------
@@ -1067,7 +1068,7 @@ bool HWDesignDiagram::copyActionEnabled() const
 
     int itemType = getCommonItemType(selectedItems());
     return (!isProtected() && 
-        (itemType == BusPortItem::Type || itemType == BusInterfaceItem::Type || 
+        (itemType == ActiveBusInterfaceItem::Type || itemType == HierarchicalBusInterfaceItem::Type ||
          itemType == HWComponentItem::Type || itemType == HWColumn::Type));  
 }
 
@@ -1197,30 +1198,30 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
             emit helpUrlRequested("hwdesign/hwinstance.html");
         }
         // Check if the selected item was a port.
-        else if (newSelection->type() == BusPortItem::Type)
+        else if (newSelection->type() == ActiveBusInterfaceItem::Type)
         {
-            BusPortItem* port = qgraphicsitem_cast<BusPortItem*>(newSelection);
+            ActiveBusInterfaceItem* port = qgraphicsitem_cast<ActiveBusInterfaceItem*>(newSelection);
             emit interfaceSelected(port);
             emit helpUrlRequested("hwdesign/busport.html");
         }
         // Check if the selected item was an interface.
-        else if (newSelection->type() == BusInterfaceItem::Type)
+        else if (newSelection->type() == HierarchicalBusInterfaceItem::Type)
         {
-            BusInterfaceItem* interface = qgraphicsitem_cast<BusInterfaceItem*>(newSelection);
+            HierarchicalBusInterfaceItem* interface = qgraphicsitem_cast<HierarchicalBusInterfaceItem*>(newSelection);
             emit interfaceSelected(interface);
             emit helpUrlRequested("hwdesign/busport.html");
         }
         // Check if the selected item was an ad-hoc port.
-        else if (newSelection->type() == AdHocPortItem::Type)
+        else if (newSelection->type() == ActivePortItem::Type)
         {
-            AdHocPortItem* adHocPort = static_cast<AdHocPortItem*>(newSelection);
+            ActivePortItem* adHocPort = static_cast<ActivePortItem*>(newSelection);
             emit interfaceSelected(adHocPort);
             emit helpUrlRequested("hwdesign/adhocport.html");
         }
         // Check if the selected item was an ad-hoc interface.
-        else if (newSelection->type() == AdHocInterfaceItem::Type)
+        else if (newSelection->type() == HierarchicalPortItem::Type)
         {
-            AdHocInterfaceItem* adHocIf = static_cast<AdHocInterfaceItem*>(newSelection);
+            HierarchicalPortItem* adHocIf = static_cast<HierarchicalPortItem*>(newSelection);
             emit interfaceSelected(adHocIf);
             emit helpUrlRequested("hwdesign/adhocport.html");
         }
@@ -1720,19 +1721,20 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     dataGroup->setPosition(newPosition);
     getDesign()->getVendorExtensions()->append(dataGroup);
 
-    BusInterfaceItem* newItem = new BusInterfaceItem(getEditedComponent(), busif, dataGroup);
+    HierarchicalBusInterfaceItem* newItem =
+        new HierarchicalBusInterfaceItem(getEditedComponent(), busif, dataGroup);
     newItem->setPos(newPosition);
 
     // Save the positions of the other diagram interfaces.
-    QMap<BusInterfaceItem*, QPointF> oldPositions;
+    QMap<HierarchicalBusInterfaceItem*, QPointF> oldPositions;
 
     if (column->getContentType() == ColumnTypes::IO)
     {
         foreach (QGraphicsItem* item, column->childItems())
         {
-            if (item->type() == BusInterfaceItem::Type)
+            if (item->type() == HierarchicalBusInterfaceItem::Type)
             {
-                BusInterfaceItem* interface = static_cast<BusInterfaceItem*>(item);
+                HierarchicalBusInterfaceItem* interface = static_cast<HierarchicalBusInterfaceItem*>(item);
                 oldPositions.insert(interface, interface->scenePos());
             }
         }
@@ -1744,7 +1746,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     // Determine if the other interfaces changed their position and create undo commands for them.
     if (column->getContentType() == ColumnTypes::IO)
     {
-        for (QMap<BusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin(); cur != oldPositions.end(); 
+        for (QMap<HierarchicalBusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin(); cur != oldPositions.end();
             ++cur)
         {
             if (cur.key()->scenePos() != cur.value())
@@ -1865,14 +1867,14 @@ void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponen
     // The component is unpackaged if it has an invalid vlnv.
     if (!targetComponent->componentModel()->getVlnv().isValid())
     {
-        QMap<BusPortItem*, QPointF> oldPositions;
+        QMap<ActiveBusInterfaceItem*, QPointF> oldPositions;
 
         // Save old port positions.
         foreach (QGraphicsItem* item, targetComponent->childItems())
         {
-            if (item->type() == BusPortItem::Type)
+            if (item->type() == ActiveBusInterfaceItem::Type)
             {
-                BusPortItem* port = static_cast<BusPortItem*>(item);
+                ActiveBusInterfaceItem* port = static_cast<ActiveBusInterfaceItem*>(item);
                 oldPositions.insert(port, port->pos());
             }
         }
@@ -1881,7 +1883,7 @@ void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponen
         cmd->redo();
 
         // Create child undo commands for the ports with changed position.
-        for (QMap<BusPortItem*, QPointF>::iterator current = oldPositions.begin(); 
+        for (QMap<ActiveBusInterfaceItem*, QPointF>::iterator current = oldPositions.begin();
             current != oldPositions.end(); ++current)
         {
             if (current.key()->pos() != current.value())
@@ -2148,13 +2150,14 @@ ConnectionEndpoint* HWDesignDiagram::findOrCreateMissingInterface(HWComponentIte
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createMissingBusInterface()
 //-----------------------------------------------------------------------------
-BusPortItem* HWDesignDiagram::createMissingBusInterface(QString const& interfaceName,
+ActiveBusInterfaceItem* HWDesignDiagram::createMissingBusInterface(QString const& interfaceName,
     HWComponentItem* containingComponent, QSharedPointer<Design> design)
 {
     QSharedPointer<BusInterface> busIf(new BusInterface());
     busIf->setName(interfaceName);
 
-    BusPortItem* missingInterface = new BusPortItem(busIf, getLibraryInterface(), containingComponent);
+    ActiveBusInterfaceItem* missingInterface =
+        new ActiveBusInterfaceItem(busIf, getLibraryInterface(), containingComponent);
     missingInterface->setTemporary(true);
     containingComponent->addPort(missingInterface);
 
@@ -2256,10 +2259,10 @@ ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString c
         // Find the corresponding diagram interface.
         foreach (QGraphicsItem* item, items())
         {
-            if (item->type() == BusInterfaceItem::Type &&
-                qgraphicsitem_cast<BusInterfaceItem*>(item)->getBusInterface() == busIf)
+            if (item->type() == HierarchicalBusInterfaceItem::Type &&
+                qgraphicsitem_cast<HierarchicalBusInterfaceItem*>(item)->getBusInterface() == busIf)
             {
-                return qgraphicsitem_cast<BusInterfaceItem*>(item);
+                return qgraphicsitem_cast<HierarchicalBusInterfaceItem*>(item);
             }
         }
     }
@@ -2274,7 +2277,8 @@ ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString c
         QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busIf->name()));
         getDesign()->getVendorExtensions()->append(dataGroup);
 
-        ConnectionEndpoint* hierarchicalInterface = new BusInterfaceItem(getEditedComponent(), busIf, dataGroup, 0);
+        ConnectionEndpoint* hierarchicalInterface =
+            new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, 0);
         hierarchicalInterface->setTemporary(true);
         hierarchicalInterface->updateInterface();
 
@@ -2307,11 +2311,11 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 
         QSharedPointer<Port> adHocPort = getEditedComponent()->getPort(portName);
 
-        AdHocInterfaceItem* adHocIf;
+        HierarchicalPortItem* adHocIf;
 
         if (adHocPort)
         {
-            adHocIf = new AdHocInterfaceItem(getEditedComponent(), adHocPort, adHocExtension, 0);
+            adHocIf = new HierarchicalPortItem(getEditedComponent(), adHocPort, adHocExtension, 0);
             visiblePortNames.append(portName);
         }
         else
@@ -2340,8 +2344,8 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 
             adhocGroup->addToGroup(positionPlaceHolder);
 
-            AdHocInterfaceItem* adhocInterface
-                (new AdHocInterfaceItem(getEditedComponent(), adhocPort, positionPlaceHolder, 0));
+            HierarchicalPortItem* adhocInterface
+                (new HierarchicalPortItem(getEditedComponent(), adhocPort, positionPlaceHolder, 0));
 
             getLayout()->addItem(adhocInterface);
         }
@@ -2351,13 +2355,13 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createMissingHierarchicalAdHocPort()
 //-----------------------------------------------------------------------------
-AdHocInterfaceItem* HWDesignDiagram::createMissingHierarchicalAdHocPort(QString const& portName,
+HierarchicalPortItem* HWDesignDiagram::createMissingHierarchicalAdHocPort(QString const& portName,
     QSharedPointer<Kactus2Placeholder> adHocExtension, QGraphicsItem* parentItem)
 {
     QSharedPointer<Port> missingPort (new Port(portName));
 
-    AdHocInterfaceItem* missingInterface =
-        new AdHocInterfaceItem(getEditedComponent(), missingPort, adHocExtension, parentItem);
+    HierarchicalPortItem* missingInterface =
+        new HierarchicalPortItem(getEditedComponent(), missingPort, adHocExtension, parentItem);
 
     return missingInterface;
 }
@@ -2426,9 +2430,9 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::findAdhocPort()
 //-----------------------------------------------------------------------------
-AdHocPortItem* HWDesignDiagram::findAdhocPort(QSharedPointer<PortReference> primaryPort)
+ActivePortItem* HWDesignDiagram::findAdhocPort(QSharedPointer<PortReference> primaryPort)
 {
-    AdHocPortItem* portItem(0);
+    ActivePortItem* portItem(0);
 
     HWComponentItem* componentItem = getComponentItem(primaryPort->getComponentRef());
     if (componentItem == 0)
@@ -2449,7 +2453,7 @@ AdHocPortItem* HWDesignDiagram::findAdhocPort(QSharedPointer<PortReference> prim
             }
             else
             {
-                portItem = new AdHocPortItem(physicalPort, componentItem);
+                portItem = new ActivePortItem(physicalPort, componentItem);
                 componentItem->addPort(portItem);
                 componentItem->setPortAdHocVisible(primaryPort->getPortRef(), true);
             }
@@ -2564,9 +2568,9 @@ void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusInte
     // Create instance copies.
     foreach (QGraphicsItem* item, items)
     {
-        if (item->type() == BusInterfaceItem::Type || item->type() == BusPortItem::Type)
+        if (item->type() == HierarchicalBusInterfaceItem::Type || item->type() == ActiveBusInterfaceItem::Type)
         {
-            BusInterfaceItem* busPort = static_cast<BusInterfaceItem*>(item);
+            HierarchicalBusInterfaceItem* busPort = static_cast<HierarchicalBusInterfaceItem*>(item);
 
             collection.instances.append(BusInterfaceCopyData());
             BusInterfaceCopyData& instance = collection.instances.back();
@@ -2575,7 +2579,7 @@ void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusInte
             instance.busInterface = busPort->getBusInterface();
             instance.containingItem = busPort->encompassingComp();
             instance.position = busPort->pos();
-            instance.topLevelIf = item->type() == BusInterfaceItem::Type;
+            instance.topLevelIf = item->type() == HierarchicalBusInterfaceItem::Type;
         }
     }
 }
@@ -2627,7 +2631,8 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 
         interfaceCopy->setName(uniqueBusName);
 
-        BusPortItem* interfaceItem = new BusPortItem(interfaceCopy, getLibraryInterface(), component);     
+        ActiveBusInterfaceItem* interfaceItem =
+            new ActiveBusInterfaceItem(interfaceCopy, getLibraryInterface(), component);
         interfaceItem->setPos(snapPointToGrid(component->mapFromScene(contextMenuPosition())));
         
         // Lock the interface type for non-draft interfaces.
@@ -2694,8 +2699,8 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
 
             QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(copyBusIf->name()));
 
-            BusInterfaceItem* pastedItem = new BusInterfaceItem(getEditedComponent(), copyBusIf, 
-                dataGroup, targetColumn);
+            HierarchicalBusInterfaceItem* pastedItem =
+                new HierarchicalBusInterfaceItem(getEditedComponent(), copyBusIf, dataGroup, targetColumn);
 
             BusInterfacePasteCommand* pasteCmd = new BusInterfacePasteCommand(getEditedComponent(), pastedItem,
                 targetColumn, this, cmd);    
@@ -2713,12 +2718,12 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
             }
 
             // Store the positions of other interfaces.
-            QMap<BusInterfaceItem*, QPointF> oldPositions;
+            QMap<HierarchicalBusInterfaceItem*, QPointF> oldPositions;
             foreach (QGraphicsItem* item, targetColumn->childItems())
             {
-                if (item->type() == BusInterfaceItem::Type)
+                if (item->type() == HierarchicalBusInterfaceItem::Type)
                 {
-                    BusInterfaceItem* interface = static_cast<BusInterfaceItem*>(item);
+                    HierarchicalBusInterfaceItem* interface = static_cast<HierarchicalBusInterfaceItem*>(item);
                     oldPositions.insert(interface, interface->scenePos());
                 }
             }
@@ -2727,7 +2732,7 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
             pasteCmd->redo();
 
             // Determine if the other interfaces changed their position and create undo commands for them.
-            QMap<BusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin();
+            QMap<HierarchicalBusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin();
 
             while (cur != oldPositions.end())
             {
@@ -2781,12 +2786,12 @@ AdHocItem* HWDesignDiagram::createAdhocItem(QString const& portName)
     QSharedPointer<Kactus2Placeholder> adhocData(new Kactus2Placeholder("kactus2:adHocVisible"));
     adhocGroup->addToGroup(adhocData);
 
-    AdHocInterfaceItem* adHocIf;
+    HierarchicalPortItem* adHocIf;
 
     QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(portName);
     if (adhocPort)
     {
-        adHocIf = new AdHocInterfaceItem(getEditedComponent(), adhocPort, adhocData, 0);
+        adHocIf = new HierarchicalPortItem(getEditedComponent(), adhocPort, adhocData, 0);
     }
     else
     {
@@ -2801,7 +2806,7 @@ AdHocItem* HWDesignDiagram::createAdhocItem(QString const& portName)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::showAdhocPort(AdHocItem* portItem)
 {
-    AdHocInterfaceItem* interfaceItem = dynamic_cast<AdHocInterfaceItem*>(portItem);
+    HierarchicalPortItem* interfaceItem = dynamic_cast<HierarchicalPortItem*>(portItem);
     if (interfaceItem)
     {
         QPointF interfacePosition = interfaceItem->scenePos();
@@ -2857,7 +2862,7 @@ void HWDesignDiagram::hideAdhocPort(AdHocItem* portItem)
     QSharedPointer<VendorExtension> adhocExtension = getDesign()->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
 
-    AdHocInterfaceItem* interfaceItem = dynamic_cast<AdHocInterfaceItem*>(portItem);
+    HierarchicalPortItem* interfaceItem = dynamic_cast<HierarchicalPortItem*>(portItem);
     if (adhocGroup && interfaceItem && interfaceItem->parentItem())
     {
         static_cast<GraphicsColumn*>(interfaceItem->parentItem())->removeItem(interfaceItem);
@@ -2907,9 +2912,9 @@ QStringList HWDesignDiagram::getTopLevelInterfaceNames() const
     QStringList existingNames;
     foreach (QGraphicsItem* item, items())
     {
-        if (item->type() == BusInterfaceItem::Type)
+        if (item->type() == HierarchicalBusInterfaceItem::Type)
         {
-            BusInterfaceItem* interface = static_cast<BusInterfaceItem*>(item);
+            HierarchicalBusInterfaceItem* interface = static_cast<HierarchicalBusInterfaceItem*>(item);
             existingNames.append(interface->name());
         }
     }

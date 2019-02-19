@@ -28,10 +28,10 @@
 
 class AbstractionDefinition;
 class AdHocConnection;
-class AdHocInterfaceItem;
-class AdHocPortItem;
-class BusPortItem;
-class BusInterfaceItem;
+class HierarchicalPortItem;
+class ActivePortItem;
+class ActiveBusInterfaceItem;
+class HierarchicalBusInterfaceItem;
 class Component;
 class ComponentInstance;
 class ComponentItem;
@@ -656,7 +656,7 @@ private:
      *
      *      @return A port item for a missing port.
      */
-    BusPortItem* createMissingBusInterface(QString const& interfaceName, HWComponentItem* containingComponent, 
+    ActiveBusInterfaceItem* createMissingBusInterface(QString const& interfaceName, HWComponentItem* containingComponent,
         QSharedPointer<Design> design);
 
     /*!
@@ -714,7 +714,7 @@ private:
      *
      *      @return The interface item for the missing interface.
      */
-    AdHocInterfaceItem* createMissingHierarchicalAdHocPort(QString const& portName,
+    HierarchicalPortItem* createMissingHierarchicalAdHocPort(QString const& portName,
         QSharedPointer<Kactus2Placeholder> adHocExtension, QGraphicsItem* parentItem = (QGraphicsItem*)0);
 
     /*!
@@ -731,7 +731,7 @@ private:
      *
      *      @return The port item or 0 if port cannot be found.
      */
-    AdHocPortItem* findAdhocPort(QSharedPointer<PortReference> portReference);
+    ActivePortItem* findAdhocPort(QSharedPointer<PortReference> portReference);
 
     /*!
      *  Create a symbol for an ad hoc tie off value.

@@ -12,15 +12,15 @@
 #include "HWAddCommands.h"
 
 #include "HWConnection.h"
-#include "BusPortItem.h"
 #include "HWComponentItem.h"
-#include "BusInterfaceItem.h"
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <editors/common/DesignDiagram.h>
+#include <editors/HWDesign/HierarchicalBusInterfaceItem.h>
+#include <editors/HWDesign/ActiveBusInterfaceItem.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
@@ -173,15 +173,15 @@ void ConnectionAddCommand::redo()
 // Function: BusInterfacePasteCommand()
 //-----------------------------------------------------------------------------
 BusInterfacePasteCommand::BusInterfacePasteCommand(
-    QSharedPointer<Component> destComponent, BusInterfaceItem* interfaceItem, GraphicsColumn* column,
+    QSharedPointer<Component> destComponent, HierarchicalBusInterfaceItem* interfaceItem, GraphicsColumn* column,
     DesignDiagram* diagram, QUndoCommand* parent) :
 QUndoCommand(parent),
-    destComponent_(destComponent),
-    busInterface_(interfaceItem->getBusInterface()), 
-    interfaceItem_(interfaceItem),
-    column_(column),
-    diagram_(diagram),
-    del_(false)
+destComponent_(destComponent),
+busInterface_(interfaceItem->getBusInterface()), 
+interfaceItem_(interfaceItem),
+column_(column),
+diagram_(diagram),
+del_(false)
 {
   
 }

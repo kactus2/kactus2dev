@@ -11,8 +11,6 @@
 
 #include "HWDesignWidget.h"
 
-#include "BusPortItem.h"
-#include "BusInterfaceItem.h"
 #include "HWDesignDiagram.h"
 #include "HWComponentItem.h"
 #include "HWConnection.h"
@@ -25,8 +23,10 @@
 #include <editors/common/StickyNote/StickyNote.h>
 #include <editors/common/Association/AssociationRemoveCommand.h>
 
-#include <editors/HWDesign/AdHocInterfaceItem.h>
-#include <editors/HWDesign/AdHocPortItem.h>
+#include <editors/HWDesign/HierarchicalBusInterfaceItem.h>
+#include <editors/HWDesign/ActiveBusInterfaceItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
+#include <editors/HWDesign/ActivePortItem.h>
 #include <editors/HWDesign/HWComponentItem.h>
 
 #include <editors/HWDesign/undoCommands/ColumnDeleteCommand.h>
@@ -406,11 +406,11 @@ void HWDesignWidget::onDeleteSelectedItems()
     {
         deleteSelectedComponentItems(selectedItems);
     }
-    else if (type == BusInterfaceItem::Type)
+    else if (type == HierarchicalBusInterfaceItem::Type)
     {
         deleteSelectedBusInterfaceItems(selectedItems);
     }
-    else if (type == BusPortItem::Type)
+    else if (type == ActiveBusInterfaceItem::Type)
     {
         deleteSelectedBusPortItems(selectedItems);
     }
@@ -426,11 +426,11 @@ void HWDesignWidget::onDeleteSelectedItems()
     {
         deleteSelectedHWColumns(selectedItems);
     }
-    else if (type == AdHocInterfaceItem::Type)
+    else if (type == HierarchicalPortItem::Type)
     {
         deleteSelectedAdhocInterfaces(selectedItems);
     }
-    else if (type == AdHocPortItem::Type)
+    else if (type == ActivePortItem::Type)
     {
         deleteSelectedAdHocPorts(selectedItems);
     }
@@ -490,7 +490,7 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
 
     foreach (QGraphicsItem* selected, selectedItems)
     {
-        BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
+        HierarchicalBusInterfaceItem* diagIf = static_cast<HierarchicalBusInterfaceItem*>(selected);
 
         foreach (QString portName, diagIf->getBusInterface()->getAllMappedPhysicalPorts())
         {
@@ -527,7 +527,7 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
 
     foreach (QGraphicsItem* selected, selectedItems)
     {
-        BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
+        HierarchicalBusInterfaceItem* diagIf = static_cast<HierarchicalBusInterfaceItem*>(selected);
 
         InterfaceDeleteCommand* childCmd =
             new InterfaceDeleteCommand(getDiagram(), diagIf, removePorts, cmd.data());
@@ -549,7 +549,7 @@ void HWDesignWidget::deleteSelectedBusPortItems(QList<QGraphicsItem*> selectedIt
 
     foreach (QGraphicsItem* selected, selectedItems)
     {
-        BusPortItem* port = static_cast<BusPortItem*>(selected);
+        ActiveBusInterfaceItem* port = static_cast<ActiveBusInterfaceItem*>(selected);
 
         // Ports can be removed only if they are temporary.
         if (port->isTemporary())
@@ -586,14 +586,14 @@ void HWDesignWidget::deleteSelectedHWConnectionItems(QList<QGraphicsItem*> selec
         {
             QUndoCommand* childCmd = 0;
 
-            if (endpoint1->type() == BusPortItem::Type)
+            if (endpoint1->type() == ActiveBusInterfaceItem::Type)
             {
                 childCmd = new PortDeleteCommand(getDiagram(), endpoint1, cmd.data());
             }
             else
             {
                 childCmd = new InterfaceDeleteCommand(
-                    getDiagram(), static_cast<BusInterfaceItem*>(endpoint1), false, cmd.data());
+                    getDiagram(), static_cast<HierarchicalBusInterfaceItem*>(endpoint1), false, cmd.data());
             }
 
             childCmd->redo();
@@ -603,14 +603,14 @@ void HWDesignWidget::deleteSelectedHWConnectionItems(QList<QGraphicsItem*> selec
         {
             QUndoCommand* childCmd = 0;
 
-            if (endpoint2->type() == BusPortItem::Type)
+            if (endpoint2->type() == ActiveBusInterfaceItem::Type)
             {
                 childCmd = new PortDeleteCommand(getDiagram(), endpoint2, cmd.data());
             }
             else
             {
                 childCmd = new InterfaceDeleteCommand(
-                    getDiagram(), static_cast<BusInterfaceItem*>(endpoint2), false, cmd.data());
+                    getDiagram(), static_cast<HierarchicalBusInterfaceItem*>(endpoint2), false, cmd.data());
             }
 
             childCmd->redo();
@@ -683,11 +683,11 @@ void HWDesignWidget::deleteSelectedHWColumns(QList<QGraphicsItem*> selectedItems
 //-----------------------------------------------------------------------------
 void HWDesignWidget::deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selectedItems)
 {
-    QList<AdHocInterfaceItem*> adhocDeleteList;
+    QList<HierarchicalPortItem*> adhocDeleteList;
 
     foreach (QGraphicsItem* selected, selectedItems)
     {
-        AdHocInterfaceItem* adhocItem = static_cast<AdHocInterfaceItem*>(selected);
+        HierarchicalPortItem* adhocItem = static_cast<HierarchicalPortItem*>(selected);
         if (adhocItem && !adhocItem->adhocPortIsValid())
         {
             adhocDeleteList.append(adhocItem);
@@ -699,7 +699,7 @@ void HWDesignWidget::deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selecte
         getDiagram()->clearSelection();
 
         QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
-        foreach (AdHocInterfaceItem* interfaceItem, adhocDeleteList)
+        foreach (HierarchicalPortItem* interfaceItem, adhocDeleteList)
         {
             new AdHocVisibilityChangeCommand(getDiagram(), interfaceItem->name(), false, parentCommand.data());
         }
@@ -715,10 +715,10 @@ void HWDesignWidget::deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selecte
 //-----------------------------------------------------------------------------
 void HWDesignWidget::deleteSelectedAdHocPorts(QList<QGraphicsItem*> selectedItems)
 {
-    QList<AdHocPortItem*> adhocDeleteList;
+    QList<ActivePortItem*> adhocDeleteList;
     foreach (QGraphicsItem* selected, selectedItems)
     {
-        AdHocPortItem* adHocItem = static_cast<AdHocPortItem*>(selected);
+        ActivePortItem* adHocItem = static_cast<ActivePortItem*>(selected);
         if (adHocItem && !adHocItem->adhocPortIsValid())
         {
             adhocDeleteList.append(adHocItem);
@@ -733,7 +733,7 @@ void HWDesignWidget::deleteSelectedAdHocPorts(QList<QGraphicsItem*> selectedItem
             getDiagram()->clearSelection();
 
             QSharedPointer<QUndoCommand> parentCommand (new QUndoCommand());
-            foreach (AdHocPortItem* portItem, adhocDeleteList)
+            foreach (ActivePortItem* portItem, adhocDeleteList)
             {
                 new AdHocVisibilityChangeCommand(containingItem, portItem->name(), false, parentCommand.data());
             }

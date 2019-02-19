@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocInterfaceItem.cpp
+// File: HierarchicalPortItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,7 +9,7 @@
 // Diagram graphics item for ad-hoc ports.
 //-----------------------------------------------------------------------------
 
-#include "AdHocInterfaceItem.h"
+#include "HierarchicalPortItem.h"
 
 #include <common/IEditProvider.h>
 #include <common/graphicsItems/GraphicsConnection.h>
@@ -27,10 +27,10 @@
 #include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::AdHocInterfaceItem()
+// Function: HierarchicalPortItem::HierarchicalPortItem()
 //-----------------------------------------------------------------------------
-AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component, QSharedPointer<Port> port,
-                                       QSharedPointer<Kactus2Placeholder> dataGroup, QGraphicsItem* parent):
+HierarchicalPortItem::HierarchicalPortItem(QSharedPointer<Component> component, QSharedPointer<Port> port,
+    QSharedPointer<Kactus2Placeholder> dataGroup, QGraphicsItem* parent):
 AdHocItem(port, component, parent, QVector2D(1.0f, 0.0f)),
 dataGroup_(dataGroup),
 oldColumn_(0),
@@ -56,25 +56,25 @@ oldPos_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::~AdHocInterfaceItem()
+// Function: HierarchicalPortItem::~HierarchicalPortItem()
 //-----------------------------------------------------------------------------
-AdHocInterfaceItem::~AdHocInterfaceItem()
+HierarchicalPortItem::~HierarchicalPortItem()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::isHierarchical()
+// Function: HierarchicalPortItem::isHierarchical()
 //-----------------------------------------------------------------------------
-bool AdHocInterfaceItem::isHierarchical() const
+bool HierarchicalPortItem::isHierarchical() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::setDirection()
+// Function: HierarchicalPortItem::setDirection()
 //-----------------------------------------------------------------------------
-void AdHocInterfaceItem::setDirection(QVector2D const& dir)
+void HierarchicalPortItem::setDirection(QVector2D const& dir)
 {
     HWConnectionEndpoint::setDirection(dir);
     setLabelPosition();
@@ -82,17 +82,17 @@ void AdHocInterfaceItem::setDirection(QVector2D const& dir)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::isDirectionFixed()
+// Function: HierarchicalPortItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool AdHocInterfaceItem::isDirectionFixed() const
+bool HierarchicalPortItem::isDirectionFixed() const
 {
     return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::setLabelPosition()
+// Function: HierarchicalPortItem::setLabelPosition()
 //-----------------------------------------------------------------------------
-void AdHocInterfaceItem::setLabelPosition()
+void HierarchicalPortItem::setLabelPosition()
 {
     qreal nameWidth = getNameLabel()->boundingRect().width();
     qreal nameHeight = getNameLabel()->boundingRect().height();
@@ -110,9 +110,9 @@ void AdHocInterfaceItem::setLabelPosition()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::itemChange()
+// Function: HierarchicalPortItem::itemChange()
 //-----------------------------------------------------------------------------
-QVariant AdHocInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& value)
+QVariant HierarchicalPortItem::itemChange(GraphicsItemChange change, QVariant const& value)
 {
     if (change == ItemPositionChange)
     {
@@ -141,9 +141,9 @@ QVariant AdHocInterfaceItem::itemChange(GraphicsItemChange change, QVariant cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::saveOldPortPositions()
+// Function: HierarchicalPortItem::saveOldPortPositions()
 //-----------------------------------------------------------------------------
-void AdHocInterfaceItem::saveOldPortPositions()
+void HierarchicalPortItem::saveOldPortPositions()
 {
     setZValue(1001.0);
 
@@ -153,7 +153,7 @@ void AdHocInterfaceItem::saveOldPortPositions()
 
     foreach (QGraphicsItem* item, scene()->items()) //column->childItems())
     {
-        if (item->type() == GFX_TYPE_DIAGRAM_INTERFACE || item->type() == AdHocInterfaceItem::Type)
+        if (item->type() == GFX_TYPE_DIAGRAM_INTERFACE || item->type() == HierarchicalPortItem::Type)
         {
             oldInterfacePositions_.insert(item, item->scenePos());
         }
@@ -161,9 +161,9 @@ void AdHocInterfaceItem::saveOldPortPositions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::moveItemByMouse()
+// Function: HierarchicalPortItem::moveItemByMouse()
 //-----------------------------------------------------------------------------
-void AdHocInterfaceItem::moveItemByMouse()
+void HierarchicalPortItem::moveItemByMouse()
 {
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
@@ -173,9 +173,9 @@ void AdHocInterfaceItem::moveItemByMouse()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::mouseReleaseEvent()
+// Function: HierarchicalPortItem::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void HierarchicalPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     HWConnectionEndpoint::mouseReleaseEvent(event);
     setZValue(0.0);
@@ -233,25 +233,25 @@ void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::getDataGroup()
+// Function: HierarchicalPortItem::getDataGroup()
 //-----------------------------------------------------------------------------
-QSharedPointer<Kactus2Placeholder> AdHocInterfaceItem::getDataGroup() const
+QSharedPointer<Kactus2Placeholder> HierarchicalPortItem::getDataGroup() const
 {
     return dataGroup_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::setDataGroup()
+// Function: HierarchicalPortItem::setDataGroup()
 //-----------------------------------------------------------------------------
-void AdHocInterfaceItem::setDataGroup(QSharedPointer<Kactus2Placeholder> newDataGroup)
+void HierarchicalPortItem::setDataGroup(QSharedPointer<Kactus2Placeholder> newDataGroup)
 {
     dataGroup_ = newDataGroup;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocInterfaceItem::labelShouldBeDrawnLeft()
+// Function: HierarchicalPortItem::labelShouldBeDrawnLeft()
 //-----------------------------------------------------------------------------
-bool AdHocInterfaceItem::labelShouldBeDrawnLeft() const
+bool HierarchicalPortItem::labelShouldBeDrawnLeft() const
 {
     return getDirection().x() < 0;
 }

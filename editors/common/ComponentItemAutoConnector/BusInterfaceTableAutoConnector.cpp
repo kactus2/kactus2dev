@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
-#include <editors/common/BusInterfaceCompatibility.h>
+#include <editors/common/BusInterfaceUtilities.h>
 
 #include <library/LibraryInterface.h>
 

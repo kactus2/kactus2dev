@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocPortItem.cpp
+// File: ActivePortItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,7 +9,7 @@
 // Diagram graphics item for ad-hoc ports.
 //-----------------------------------------------------------------------------
 
-#include "AdHocPortItem.h"
+#include "ActivePortItem.h"
 
 #include "HWMoveCommands.h"
 
@@ -32,9 +32,9 @@
 #include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::AdHocPortItem()
+// Function: ActivePortItem::ActivePortItem()
 //-----------------------------------------------------------------------------
-AdHocPortItem::AdHocPortItem(QSharedPointer<Port> port, HWComponentItem* parent):
+ActivePortItem::ActivePortItem(QSharedPointer<Port> port, HWComponentItem* parent):
 AdHocItem(port, parent->componentModel(), parent),
 oldPos_(),
 oldPortPositions_()
@@ -45,25 +45,25 @@ oldPortPositions_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::~AdHocPortItem()
+// Function: ActivePortItem::~ActivePortItem()
 //-----------------------------------------------------------------------------
-AdHocPortItem::~AdHocPortItem()
+ActivePortItem::~ActivePortItem()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::isHierarchical()
+// Function: ActivePortItem::isHierarchical()
 //-----------------------------------------------------------------------------
-bool AdHocPortItem::isHierarchical() const
+bool ActivePortItem::isHierarchical() const
 {
     return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::isConnectionValid()
+// Function: ActivePortItem::isConnectionValid()
 //-----------------------------------------------------------------------------
-bool AdHocPortItem::isConnectionValid(ConnectionEndpoint const* other) const
+bool ActivePortItem::isConnectionValid(ConnectionEndpoint const* other) const
 {
     if (!AdHocItem::isConnectionValid(other))
     {
@@ -89,9 +89,9 @@ bool AdHocPortItem::isConnectionValid(ConnectionEndpoint const* other) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::itemChange()
+// Function: ActivePortItem::itemChange()
 //-----------------------------------------------------------------------------
-QVariant AdHocPortItem::itemChange(GraphicsItemChange change, QVariant const& value)
+QVariant ActivePortItem::itemChange(GraphicsItemChange change, QVariant const& value)
 {
     if (change == ItemPositionChange)
     {
@@ -139,25 +139,25 @@ QVariant AdHocPortItem::itemChange(GraphicsItemChange change, QVariant const& va
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::isDirectionFixed()
+// Function: ActivePortItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool AdHocPortItem::isDirectionFixed() const
+bool ActivePortItem::isDirectionFixed() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::moveItemByMouse()
+// Function: ActivePortItem::moveItemByMouse()
 //-----------------------------------------------------------------------------
-void AdHocPortItem::moveItemByMouse()
+void ActivePortItem::moveItemByMouse()
 {
     encompassingComp()->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::saveOldPortPositions()
+// Function: ActivePortItem::saveOldPortPositions()
 //-----------------------------------------------------------------------------
-void AdHocPortItem::saveOldPortPositions()
+void ActivePortItem::saveOldPortPositions()
 {
     oldPos_ = pos();
 
@@ -173,9 +173,9 @@ void AdHocPortItem::saveOldPortPositions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::mouseReleaseEvent()
+// Function: ActivePortItem::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void AdHocPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void ActivePortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     HWConnectionEndpoint::mouseReleaseEvent(event);
 
@@ -238,9 +238,9 @@ void AdHocPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::setLabelPosition()
+// Function: ActivePortItem::setLabelPosition()
 //-----------------------------------------------------------------------------
-void AdHocPortItem::setLabelPosition()
+void ActivePortItem::setLabelPosition()
 {
     qreal nameWidth = getNameLabel()->boundingRect().width();
     qreal nameHeight = getNameLabel()->boundingRect().height();
@@ -258,9 +258,9 @@ void AdHocPortItem::setLabelPosition()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::checkDirection()
+// Function: ActivePortItem::checkDirection()
 //-----------------------------------------------------------------------------
-void AdHocPortItem::checkDirection()
+void ActivePortItem::checkDirection()
 {
 	// Check if the port is directed to the left.
 	if (pos().x() < 0)
@@ -275,9 +275,9 @@ void AdHocPortItem::checkDirection()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::getNameLength()
+// Function: ActivePortItem::getNameLength()
 //-----------------------------------------------------------------------------
-qreal AdHocPortItem::getNameLength()
+qreal ActivePortItem::getNameLength()
 {
     QFont font = getNameLabel()->font();
 
@@ -285,9 +285,9 @@ qreal AdHocPortItem::getNameLength()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::shortenNameLabel()
+// Function: ActivePortItem::shortenNameLabel()
 //-----------------------------------------------------------------------------
-void AdHocPortItem::shortenNameLabel( qreal width )
+void ActivePortItem::shortenNameLabel( qreal width )
 {
     QFont font = getNameLabel()->font();
 	QString nameLabelText = NamelabelWidth::setNameLabel(name(), font, width);
@@ -296,9 +296,9 @@ void AdHocPortItem::shortenNameLabel( qreal width )
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocPortItem::tieOffLabelShouldBeDrawnLeft()
+// Function: ActivePortItem::tieOffLabelShouldBeDrawnLeft()
 //-----------------------------------------------------------------------------
-bool AdHocPortItem::labelShouldBeDrawnLeft() const
+bool ActivePortItem::labelShouldBeDrawnLeft() const
 {
     return pos().x() < 0;
 }

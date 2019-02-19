@@ -24,8 +24,8 @@
 #include <QString>
 #include <QObject>
 
-class BusPortItem;
-class BusInterfaceItem;
+class ActiveBusInterfaceItem;
+class HierarchicalBusInterfaceItem;
 class BusInterface;
 class Component;
 class ComponentItem;
@@ -87,7 +87,7 @@ private:
     QPointF pos_;
 
     //! The diagram port.
-    BusPortItem* port_;
+    ActiveBusInterfaceItem* port_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;
@@ -168,8 +168,7 @@ public:
      *      @param [in] diagram        The target design diagram.
      *      @param [in] parent         The parent command.
      */
-    BusInterfacePasteCommand(QSharedPointer<Component> destComponent,
-        BusInterfaceItem* interfaceItem,
+    BusInterfacePasteCommand(QSharedPointer<Component> destComponent, HierarchicalBusInterfaceItem* interfaceItem,
         GraphicsColumn* column, DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
@@ -206,7 +205,7 @@ private:
     QPointF pos_;
 
     //! The interface item.
-    BusInterfaceItem* interfaceItem_;
+    HierarchicalBusInterfaceItem* interfaceItem_;
 
     //! The target column.
     GraphicsColumn* column_;

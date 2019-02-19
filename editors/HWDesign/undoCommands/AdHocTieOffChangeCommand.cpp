@@ -13,8 +13,8 @@
 
 #include <editors/HWDesign/HWComponentItem.h>
 #include <editors/HWDesign/AdHocItem.h>
-#include <editors/HWDesign/AdHocPortItem.h>
-#include <editors/HWDesign/AdHocInterfaceItem.h>
+#include <editors/HWDesign/ActivePortItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
 #include <editors/HWDesign/HWDesignDiagram.h>
 
 #include <IPXACTmodels/Design/AdHocConnection.h>
@@ -115,7 +115,7 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
 
             if (componentItem)
             {
-                AdHocPortItem* portItem = componentItem->getAdHocPort(internalReference->getPortRef());
+                ActivePortItem* portItem = componentItem->getAdHocPort(internalReference->getPortRef());
 
                 if (portItem)
                 {

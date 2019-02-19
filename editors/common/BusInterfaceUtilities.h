@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusInterfaceCompatibility.h
+// File: BusInterfaceUtilities.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho

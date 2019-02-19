@@ -30,9 +30,9 @@
 class ActiveViewModel;
 class AdHocEnabled;
 class AdHocConnectionItem;
-class AdHocPortItem;
-class BusInterfaceItem;
-class BusPortItem;
+class ActivePortItem;
+class HierarchicalBusInterfaceItem;
+class ActiveBusInterfaceItem;
 class ComponentItem;
 class ConfigurableElementValue;
 class ConnectionEndpoint;

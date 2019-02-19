@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusPortItem.cpp
+// File: ActiveBusInterfaceItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: 
@@ -9,7 +9,7 @@
 // HWConnection represents graphically an IP-XACT bus interface in a component instance.
 //-----------------------------------------------------------------------------
 
-#include "BusPortItem.h"
+#include "ActiveBusInterfaceItem.h"
 
 #include "HWComponentItem.h"
 #include "HWMoveCommands.h"
@@ -21,7 +21,7 @@
 #include <editors/common/diagramgrid.h>
 #include <editors/common/NamelabelWidth.h>
 #include <editors/common/GraphicsItemLabel.h>
-#include <editors/common/BusInterfaceCompatibility.h>
+#include <editors/common/BusInterfaceUtilities.h>
 
 #include <library/LibraryInterface.h>
 
@@ -35,28 +35,29 @@
 #include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::BusPortItem()
+// Function: ActiveBusInterfaceItem::ActiveBusInterfaceItem()
 //-----------------------------------------------------------------------------
-BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library, HWComponentItem* parent):
+ActiveBusInterfaceItem::ActiveBusInterfaceItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library,
+    HWComponentItem* parent):
 BusInterfaceEndPoint(busIf, parent->componentModel(), parent),
 library_(library)
 {
-    Q_ASSERT_X(busIf, "BusPortItem constructor", "Null BusInterface pointer given as parameter");
+    Q_ASSERT_X(busIf, "ActiveBusInterfaceItem constructor", "Null BusInterface pointer given as parameter");
 
     updateInterface();
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::~BusPortItem()
+// Function: ActiveBusInterfaceItem::~ActiveBusInterfaceItem()
 //-----------------------------------------------------------------------------
-BusPortItem::~BusPortItem()
+ActiveBusInterfaceItem::~ActiveBusInterfaceItem()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::updateName()
+// Function: ActiveBusInterfaceItem::updateName()
 //-----------------------------------------------------------------------------
-void BusPortItem::updateName(QString const& previousName, QString const& newName)
+void ActiveBusInterfaceItem::updateName(QString const& previousName, QString const& newName)
 {
     if (previousName.compare(newName) != 0)
     {
@@ -66,9 +67,9 @@ void BusPortItem::updateName(QString const& previousName, QString const& newName
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::createMoveCommandForClashedItem()
+// Function: ActiveBusInterfaceItem::createMoveCommandForClashedItem()
 //-----------------------------------------------------------------------------
-void BusPortItem::createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
+void ActiveBusInterfaceItem::createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
     DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand)
 {
     if (endPoint)
@@ -82,9 +83,9 @@ void BusPortItem::createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::canConnectToInterface()
+// Function: ActiveBusInterfaceItem::canConnectToInterface()
 //-----------------------------------------------------------------------------
-bool BusPortItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const
+bool ActiveBusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const
 {
     QSharedPointer<BusInterface> otherInterface = otherEndPoint->getBusInterface();
     if (otherInterface)
@@ -123,32 +124,32 @@ bool BusPortItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint)
 //-----------------------------------------------------------------------------
 // Function: isHierarchical()
 //-----------------------------------------------------------------------------
-bool BusPortItem::isHierarchical() const
+bool ActiveBusInterfaceItem::isHierarchical() const
 {
     return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::setTemporary()
+// Function: ActiveBusInterfaceItem::setTemporary()
 //-----------------------------------------------------------------------------
-void BusPortItem::setTemporary(bool temp)
+void ActiveBusInterfaceItem::setTemporary(bool temp)
 {
     setTypeLocked(!temp);
     HWConnectionEndpoint::setTemporary(temp);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::isDirectionFixed()
+// Function: ActiveBusInterfaceItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool BusPortItem::isDirectionFixed() const
+bool ActiveBusInterfaceItem::isDirectionFixed() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::setLabelPosition()
+// Function: ActiveBusInterfaceItem::setLabelPosition()
 //-----------------------------------------------------------------------------
-void BusPortItem::setLabelPosition()
+void ActiveBusInterfaceItem::setLabelPosition()
 {
     qreal nameWidth = getNameLabel()->boundingRect().width();
     qreal nameHeight = getNameLabel()->boundingRect().height();
@@ -165,9 +166,9 @@ void BusPortItem::setLabelPosition()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::checkDirection()
+// Function: ActiveBusInterfaceItem::checkDirection()
 //-----------------------------------------------------------------------------
-void BusPortItem::checkDirection()
+void ActiveBusInterfaceItem::checkDirection()
 {
     // Check if the port is directed to the left
     if (pos().x() < 0)
@@ -181,18 +182,18 @@ void BusPortItem::checkDirection()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::getNameLength()
+// Function: ActiveBusInterfaceItem::getNameLength()
 //-----------------------------------------------------------------------------
-qreal BusPortItem::getNameLength()
+qreal ActiveBusInterfaceItem::getNameLength()
 {
     QFont font = getNameLabel()->font();
     return NamelabelWidth::getTextLength(name(), font);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::shortenNameLabel()
+// Function: ActiveBusInterfaceItem::shortenNameLabel()
 //-----------------------------------------------------------------------------
-void BusPortItem::shortenNameLabel(qreal width)
+void ActiveBusInterfaceItem::shortenNameLabel(qreal width)
 {
     QString nameLabelText = NamelabelWidth::setNameLabel(name(), getNameLabel()->font(), width);
     getNameLabel()->setText(nameLabelText);
@@ -201,9 +202,9 @@ void BusPortItem::shortenNameLabel(qreal width)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::itemChange()
+// Function: ActiveBusInterfaceItem::itemChange()
 //-----------------------------------------------------------------------------
-QVariant BusPortItem::itemChange(GraphicsItemChange change, QVariant const& value)
+QVariant ActiveBusInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& value)
 {
     if (change == ItemPositionChange)
     {
@@ -246,9 +247,9 @@ QVariant BusPortItem::itemChange(GraphicsItemChange change, QVariant const& valu
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::mousePressEvent()
+// Function: ActiveBusInterfaceItem::mousePressEvent()
 //-----------------------------------------------------------------------------
-void BusPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void ActiveBusInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     HWConnectionEndpoint::mousePressEvent(event);  
 
@@ -264,17 +265,17 @@ void BusPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::moveItemByMouse()
+// Function: ActiveBusInterfaceItem::moveItemByMouse()
 //-----------------------------------------------------------------------------
-void BusPortItem::moveItemByMouse()
+void ActiveBusInterfaceItem::moveItemByMouse()
 {
     encompassingComp()->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::createMouseMoveCommand()
+// Function: ActiveBusInterfaceItem::createMouseMoveCommand()
 //-----------------------------------------------------------------------------
-QSharedPointer<QUndoCommand> BusPortItem::createMouseMoveCommand(DesignDiagram* diagram)
+QSharedPointer<QUndoCommand> ActiveBusInterfaceItem::createMouseMoveCommand(DesignDiagram* diagram)
 {
     QSharedPointer<QUndoCommand> moveUndoCommand;
 
@@ -292,9 +293,9 @@ QSharedPointer<QUndoCommand> BusPortItem::createMouseMoveCommand(DesignDiagram* 
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::getOpposingModes()
+// Function: ActiveBusInterfaceItem::getOpposingModes()
 //-----------------------------------------------------------------------------
-QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusInterface> busIf) const
+QList<General::InterfaceMode> ActiveBusInterfaceItem::getOpposingModes(QSharedPointer<BusInterface> busIf) const
 {
     QList<General::InterfaceMode> possibleModes;
 
@@ -330,9 +331,9 @@ QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusIn
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortItem::getCurrentPosition()
+// Function: ActiveBusInterfaceItem::getCurrentPosition()
 //-----------------------------------------------------------------------------
-QPointF BusPortItem::getCurrentPosition() const
+QPointF ActiveBusInterfaceItem::getCurrentPosition() const
 {
     return pos();
 }
