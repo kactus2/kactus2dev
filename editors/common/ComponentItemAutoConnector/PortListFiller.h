@@ -36,12 +36,13 @@ public:
     ~PortListFiller();
 
     /*!
-     *  Populate the selected list widget with ports from the selected component.
+     *  Populate the selected model with ports from the selected component.
      *
-     *      @param [in] selectedList            The target list widget.
+     *      @param [in] selectedList            The selected item model.
      *      @param [in] containingComponent     The selected component.
      */
-    void initializeList(QListWidget* selectedList, QSharedPointer<Component> containingComponent) const;
+    virtual void initializeList(QStandardItemModel* selectedList, QSharedPointer<Component> containingComponent)
+        const;
 
     // No copying. No assignments.
     PortListFiller(PortListFiller const& rhs) = delete;

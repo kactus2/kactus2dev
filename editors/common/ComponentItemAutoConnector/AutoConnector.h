@@ -20,6 +20,7 @@ class ComponentItem;
 class AutoConnectorConnectionTable;
 class ListFiller;
 class TableAutoConnector;
+class AutoConnectorListFilter;
 
 //-----------------------------------------------------------------------------
 //! Automatically connects items of two component items.
@@ -69,6 +70,13 @@ public:
     AutoConnector(AutoConnector const& rhs) = delete;
     AutoConnector& operator=(AutoConnector const& rhs) = delete;
 
+public slots:
+
+    /*!
+     *  Invalidate the list filters.
+     */
+    void invalidateListFilters();
+
 private:
 
     /*!
@@ -100,6 +108,12 @@ private:
 
     //! The second component.
     QSharedPointer<Component> secondComponent_;
+
+    //! List filter for the first list.
+    AutoConnectorListFilter* firstListFilter_;
+
+    //! List filter for the second list.
+    AutoConnectorListFilter* secondListFilter_;
 
     //! Table containing the item connections.
     AutoConnectorConnectionTable* connectorTable_;

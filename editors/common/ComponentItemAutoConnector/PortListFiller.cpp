@@ -34,13 +34,14 @@ PortListFiller::~PortListFiller()
 //-----------------------------------------------------------------------------
 // Function: PortListFiller::initializeList()
 //-----------------------------------------------------------------------------
-void PortListFiller::initializeList(QListWidget* selectedList, QSharedPointer<Component> containingComponent) const
+void PortListFiller::initializeList(QStandardItemModel* selectedList,
+    QSharedPointer<Component> containingComponent) const
 {
     for (auto port : *containingComponent->getPorts())
     {
         QString iconPath = getIconPath(port->getDirection());
 
-        new QListWidgetItem(QIcon(iconPath), port->name(), selectedList);
+        selectedList->appendRow(new QStandardItem(QIcon(iconPath), port->name()));
     }
 }
 

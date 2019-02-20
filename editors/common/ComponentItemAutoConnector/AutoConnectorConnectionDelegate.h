@@ -13,7 +13,7 @@
 #define AUTOCONNECTORCONNECTIONDELEGATE_H
 
 #include <QStyledItemDelegate>
-#include <QListWidget>
+#include <QListView>
 #include <QComboBox>
 
 //-----------------------------------------------------------------------------
@@ -28,11 +28,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] firstList   The first item list.
-     *      @param [in] secondList  The second item list.
+     *      @param [in] firstList   View of the first item list.
+     *      @param [in] secondList  View of the second item list.
 	 *      @param [in] parent      The parent of the object.
 	 */
-    AutoConnectorConnectionDelegate(QListWidget* firstList, QListWidget* secondList, QObject* parent = 0);
+    AutoConnectorConnectionDelegate(QListView* firstList, QListView* secondList, QObject* parent = 0);
 
 	/*!
      *  The destructor.
@@ -82,17 +82,17 @@ private:
      *
      *      @return Combobox for component ports.
      */
-    QComboBox* createItemSelector(QListWidget* itemList, QWidget* parent) const;
+    QComboBox* createItemSelector(QListView* itemList, QWidget* parent) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The first item list.
-    QListWidget* firstList_;
+    //! View of the first item list.
+    QListView* firstList_;
 
-    //! The second item list.
-    QListWidget* secondList_;
+    //! View of the second item list.
+    QListView* secondList_;
 };
 
 #endif // AUTOCONNECTORCONNECTIONDELEGATE_H

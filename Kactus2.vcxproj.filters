@@ -4636,6 +4636,12 @@
     <ClCompile Include="GeneratedFiles\moc_ActivePortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AutoConnectorListFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorListFilter.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6336,6 +6342,12 @@
     <CustomBuild Include="editors\HWDesign\ActivePortItem.h">
       <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnectorListFilter.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\PortListFiller.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7057,9 +7069,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\ResetColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\common\ComponentItemAutoConnector\PortListFiller.h">
-      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClInclude>
     <ClInclude Include="editors\common\ComponentItemAutoConnector\ListFiller.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>

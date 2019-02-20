@@ -17,10 +17,13 @@
 #include <editors/common/ComponentItemAutoConnector/TableAutoConnector.h>
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.h>
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.h>
+#include <editors/common/ComponentItemAutoConnector/AutoConnectorListFilter.h>
 
 #include <QVBoxLayout>
 #include <QGroupBox>
-#include <QListWidget>
+#include <QCheckBox>
+#include <QListView>
+#include <QStandardItemModel>
 
 //-----------------------------------------------------------------------------
 // Function: AutoConnector::AutoConnector()
@@ -30,6 +33,8 @@ AutoConnector::AutoConnector(ComponentItem* firstItem, ComponentItem* secondItem
 QWidget(parent),
 firstComponent_(firstItem->componentModel()),
 secondComponent_(secondItem->componentModel()),
+firstListFilter_(),
+secondListFilter_(),
 connectorTable_(),
 tableInitializer_(tableInitializer)
 {
@@ -58,19 +63,26 @@ QVector<QPair<QString, QString> > AutoConnector::getConnectedItems() const
 void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondItem, ListFiller* listFiller,
     QString const& itemName)
 {
-    QListWidget* secondItemList(new QListWidget(this));
-    QListWidget* firstItemList(new QListWidget(this));
-    listFiller->initializeList(firstItemList, firstComponent_);
-    listFiller->initializeList(secondItemList, secondComponent_);
+    QListView* firstItemList(new QListView(this));
+    QListView* secondItemList(new QListView(this));
+
     firstItemList->setDragEnabled(true);
     firstItemList->setDragDropMode(QAbstractItemView::DragOnly);
     secondItemList->setDragEnabled(true);
     secondItemList->setDragDropMode(QAbstractItemView::DragOnly);
 
+    QCheckBox* firstHideBox(new QCheckBox(tr("Hide connected"), this));
+    QCheckBox* secondHideBox(new QCheckBox(tr("Hide connected"), this));
+
+    firstHideBox->setChecked(true);
+    secondHideBox->setChecked(true);
+
     QVBoxLayout* firstComponentLayout(new QVBoxLayout());
     QVBoxLayout* secondComponentLayout(new QVBoxLayout());
-    firstComponentLayout->addWidget(firstItemList);
-    secondComponentLayout->addWidget(secondItemList);
+    firstComponentLayout->addWidget(firstItemList, 1);
+    firstComponentLayout->addWidget(firstHideBox);
+    secondComponentLayout->addWidget(secondItemList, 1);
+    secondComponentLayout->addWidget(secondHideBox);
 
     QString firstItemName = getComponentItemName(firstItem);
     QString secondItemName = getComponentItemName(secondItem);
@@ -84,17 +96,44 @@ void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondI
         new AutoConnectorConnectionTable(firstItemList, secondItemList, firstItemName, secondItemName, this);
     connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(firstItemList, secondItemList, this));
 
-    QVBoxLayout* connectedPortsLayout(new QVBoxLayout());
-    connectedPortsLayout->addWidget(connectorTable_);
+    connect(connectorTable_->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&, const QVector<int> &)),
+        this, SLOT(invalidateListFilters()), Qt::UniqueConnection);
+    connect(connectorTable_->model(), SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
+        this, SLOT(invalidateListFilters()), Qt::UniqueConnection);
 
-    QGroupBox* connectedPortsGroup(new QGroupBox(tr("Connected ") + itemName));
-    connectedPortsGroup->setAlignment(Qt::AlignHCenter);
-    connectedPortsGroup->setLayout(connectedPortsLayout);
+    QVBoxLayout* connectedItemsLayout(new QVBoxLayout());
+    connectedItemsLayout->addWidget(connectorTable_);
 
-    QHBoxLayout* portsLayout(new QHBoxLayout(this));
-    portsLayout->addWidget(firstComponentGroup);
-    portsLayout->addWidget(connectedPortsGroup, 2);
-    portsLayout->addWidget(secondComponentGroup);
+    QGroupBox* connectedItemsGroup(new QGroupBox(tr("Connected ") + itemName));
+    connectedItemsGroup->setAlignment(Qt::AlignHCenter);
+    connectedItemsGroup->setLayout(connectedItemsLayout);
+
+    QHBoxLayout* mainLayout(new QHBoxLayout(this));
+    mainLayout->addWidget(firstComponentGroup);
+    mainLayout->addWidget(connectedItemsGroup, 2);
+    mainLayout->addWidget(secondComponentGroup);
+
+    QStandardItemModel* firstListModel(new QStandardItemModel(this));
+    QStandardItemModel* secondListModel(new QStandardItemModel(this));
+
+    listFiller->initializeList(firstListModel, firstComponent_);
+    listFiller->initializeList(secondListModel, secondComponent_);
+
+    firstListFilter_ = new AutoConnectorListFilter(connectorTable_, 0, firstHideBox);
+    firstListFilter_->setSourceModel(firstListModel);
+    firstItemList->setModel(firstListFilter_);
+    secondListFilter_ = new AutoConnectorListFilter(connectorTable_, 1, secondHideBox);
+    secondListFilter_->setSourceModel(secondListModel);
+    secondItemList->setModel(secondListFilter_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnector::invalidateListFilters()
+//-----------------------------------------------------------------------------
+void AutoConnector::invalidateListFilters()
+{
+    firstListFilter_->invalidate();
+    secondListFilter_->invalidate();
 }
 
 //-----------------------------------------------------------------------------

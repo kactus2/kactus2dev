@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: AutoConnectorConnectionTable::AutoConnectorConnectionTable()
 //-----------------------------------------------------------------------------
-AutoConnectorConnectionTable::AutoConnectorConnectionTable(QListWidget* firstList, QListWidget* secondList,
+AutoConnectorConnectionTable::AutoConnectorConnectionTable(QListView* firstList, QListView* secondList,
     QString const& firstItemName, QString const& secondItemName, QWidget* parent):
 QTableWidget(parent),
 firstItemList_(firstList),
@@ -36,6 +36,7 @@ addRowAction_(new QAction(tr("Add row"), this))
     setColumnCount(2);
     verticalHeader()->hide();
     horizontalHeader()->setStretchLastSection(true);
+    horizontalHeader()->setDefaultSectionSize(185);
 
     QString firstHeader = firstItemName;
     QString secondHeader = secondItemName;
@@ -124,7 +125,7 @@ void AutoConnectorConnectionTable::onRemoveRow()
 //-----------------------------------------------------------------------------
 void AutoConnectorConnectionTable::dropEvent(QDropEvent *event)
 {
-    dragSourceList_ = qobject_cast<QListWidget*>(event->source());
+    dragSourceList_ = qobject_cast<QListView*>(event->source());
 
     QTableWidget::dropEvent(event);
 }

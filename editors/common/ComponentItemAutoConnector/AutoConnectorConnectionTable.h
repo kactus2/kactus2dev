@@ -13,7 +13,7 @@
 #define AUTOCONNECTORCONNECTIONTABLE_H
 
 #include <QTableWidget>
-#include <QListWidget>
+#include <QListView>
 
 //-----------------------------------------------------------------------------
 //! Table for connected items of two components.
@@ -27,13 +27,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] firstList   The first item list to be connected.
-     *      @param [in] secondList  The second item list to be connected.
+     *      @param [in] firstList   View of the first item list to be connected.
+     *      @param [in] secondList  View of the second item list to be connected.
      *      @param [in] firstName   Name of the first item.
      *      @param [in] secondName  Name of the second item.
      *      @param [in] parent      The parent item.
      */
-    AutoConnectorConnectionTable(QListWidget* firstList, QListWidget* secondList, QString const& firstItemName,
+    AutoConnectorConnectionTable(QListView* firstList, QListView* secondList, QString const& firstItemName,
         QString const& secondItemName, QWidget* parent = 0);
 
     /*!
@@ -96,14 +96,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The first item list.
-    QListWidget* firstItemList_;
+    //! View of the first item list.
+    QListView* firstItemList_;
 
-    //! The second item list.
-    QListWidget* secondItemList_;
+    //! View of the second item list.
+    QListView* secondItemList_;
 
-    //! Source item list for the drag & drop event.
-    QListWidget* dragSourceList_;
+    //! Source view for the drag & drop event.
+    QListView* dragSourceList_;
 
     //! Action for removing rows.
     QAction* removeRowAction_;

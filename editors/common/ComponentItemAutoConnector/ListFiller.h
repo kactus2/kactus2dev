@@ -12,7 +12,7 @@
 #ifndef LISTFILLER_H
 #define LISTFILLER_H
 
-#include <QListWidget>
+#include <QStandardItemModel>
 
 class Component;
 
@@ -37,7 +37,14 @@ public:
      */
     virtual ~ListFiller() = default;
 
-    virtual void initializeList(QListWidget* selectedList, QSharedPointer<Component> containingComponent) const = 0;
+    /*!
+     *  Populate the selected model with items from the selected component.
+     *
+     *      @param [in] selectedList            The selected item model.
+     *      @param [in] containingComponent     The selected component.
+     */
+    virtual void initializeList(QStandardItemModel* selectedList, QSharedPointer<Component> containingComponent)
+        const = 0;
 
     // No copying. No assignments.
     ListFiller(ListFiller const& rhs) = delete;

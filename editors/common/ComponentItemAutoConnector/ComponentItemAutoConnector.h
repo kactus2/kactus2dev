@@ -89,6 +89,16 @@ private:
     QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > createItemPairs(AutoConnector* connector,
         AutoConnectorItem::ItemType itemType) const;
 
+    /*!
+     *  Create the intro widget.
+     *
+     *      @param [in] introName   Header for the intro.
+     *      @param [in] introText   Text body for the intro.
+     *
+     *      @return The intro widget.
+     */
+    QWidget* setupIntroWidget(QString const& introName, QString const& introText) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

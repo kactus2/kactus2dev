@@ -241,7 +241,8 @@ void ComponentDesignDiagram::onOpenAutoConnector()
 
     ComponentItem* secondComponentItem = dynamic_cast<ComponentItem*>(secondItem);
 
-    ComponentItemAutoConnector autoConnector(contextMenuItem_, secondComponentItem, getLibraryInterface());
+    ComponentItemAutoConnector autoConnector(
+        contextMenuItem_, secondComponentItem, getLibraryInterface(), getParent());
     if (autoConnector.exec() == QDialog::Accepted)
     {
         QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > autoConnections =

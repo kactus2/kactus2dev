@@ -24,6 +24,7 @@
 
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include <QLabel>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentItemAutoConnector::ComponentItemAutoConnector()
@@ -113,6 +114,11 @@ QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > ComponentItemAutoConnect
 //-----------------------------------------------------------------------------
 void ComponentItemAutoConnector::setupLayout()
 {
+    QString introLabel = tr("Auto connector");
+    QString introText = tr("Connect bus interfaces and ports from two component instances automatically.") +
+        tr(" Bus interfaces create interconnections and ports create ad-hoc connections.");
+    QWidget* introWidget = setupIntroWidget(introLabel, introText);
+
     QPushButton* okButton(new QPushButton(tr("Ok"), this));
     connect(okButton, SIGNAL(released()), this, SLOT(accept()), Qt::UniqueConnection);
 
@@ -125,12 +131,13 @@ void ComponentItemAutoConnector::setupLayout()
     buttonBox->addButton(okButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
 
-    setWindowTitle("Auto connect (experimental)");
+    setWindowTitle("Auto connect");
 
     connect(autoConnectButton_, SIGNAL(released()), this, SLOT(connectCurrentItems()), Qt::UniqueConnection);
     connect(clearButton_, SIGNAL(released()), this, SLOT(clearCurrentConnections()), Qt::UniqueConnection);
 
     QVBoxLayout* mainLayout (new QVBoxLayout(this));
+    mainLayout->addWidget(introWidget, 0, Qt::AlignTop);
     mainLayout->addWidget(&tabs_, 1);
     mainLayout->addWidget(buttonBox);
 }
@@ -163,4 +170,33 @@ void ComponentItemAutoConnector::clearCurrentConnections()
     {
         busInterfaceConnector_->clearConnectedItems();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItemAutoConnector::setupIntroWidget()
+//-----------------------------------------------------------------------------
+QWidget* ComponentItemAutoConnector::setupIntroWidget(QString const& introName, QString const& introText) const
+{
+    QLabel* introLabel = new QLabel(introName);
+    QLabel* introTextLabel = new QLabel(introText);
+    QFont introFont = introLabel->font();
+    introFont.setBold(true);
+    introLabel->setFont(introFont);
+
+    QLabel* iconLabel = new QLabel();
+    iconLabel->setPixmap(QPixmap(QString(":/icons/common/graphics/connect.png")));
+
+    QVBoxLayout* introTextLayout = new QVBoxLayout();
+    introTextLayout->addWidget(introLabel);
+    introTextLayout->addWidget(introTextLabel);
+
+    QHBoxLayout* mainIntroLayout = new QHBoxLayout();
+    mainIntroLayout->addLayout(introTextLayout, 1);
+    mainIntroLayout->addWidget(iconLabel);
+
+    QWidget* introWidget = new QWidget();
+    introWidget->setStyleSheet("background-color: white");
+    introWidget->setLayout(mainIntroLayout);
+
+    return introWidget;
 }

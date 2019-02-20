@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: AutoConnectorConnectionDelegate::AutoConnectorConnectionDelegate()
 //-----------------------------------------------------------------------------
-AutoConnectorConnectionDelegate::AutoConnectorConnectionDelegate(QListWidget* firstList, QListWidget* secondList,
+AutoConnectorConnectionDelegate::AutoConnectorConnectionDelegate(QListView* firstList, QListView* secondList,
     QObject* parent):
 QStyledItemDelegate(parent),
 firstList_(firstList),
@@ -54,15 +54,18 @@ QWidget* AutoConnectorConnectionDelegate::createEditor(QWidget* parent, QStyleOp
 //-----------------------------------------------------------------------------
 // Function: AutoConnectorConnectionDelegate::createItemSelector()
 //-----------------------------------------------------------------------------
-QComboBox* AutoConnectorConnectionDelegate::createItemSelector(QListWidget* itemList, QWidget* parent) const
+QComboBox* AutoConnectorConnectionDelegate::createItemSelector(QListView* itemList, QWidget* parent) const
 {
     QComboBox* combo = new QComboBox(parent);
     combo->addItem(QString("<none>"));
 
-    for (int i = 0; i < itemList->count(); ++i)
+    for (int i = 0; i < itemList->model()->rowCount(); ++i)
     {
-        QListWidgetItem* itemOnRow = itemList->item(i);
-        combo->addItem(itemOnRow->icon(), itemOnRow->text());
+        QModelIndex itemIndex = itemList->model()->index(i, 0);
+        QString itemName = itemIndex.data(Qt::DisplayRole).toString();
+        QIcon itemIcon = itemIndex.data(Qt::DecorationRole).value<QIcon>();
+
+        combo->addItem(itemIcon, itemName);
     }
 
     return combo;
@@ -79,7 +82,17 @@ void AutoConnectorConnectionDelegate::setEditorData(QWidget* editor, QModelIndex
         QComboBox* portCombo = qobject_cast<QComboBox*>(editor);
 
         int comboIndex = portCombo->findText(itemName);
-        portCombo->setCurrentIndex(comboIndex);
+        if (comboIndex < 0 && !itemName.isEmpty())
+        {
+            QIcon itemIcon = index.data(Qt::DecorationRole).value<QIcon>();
+
+            portCombo->addItem(itemIcon, itemName);
+            portCombo->setCurrentIndex(portCombo->findText(itemName));
+        }
+        else
+        {
+            portCombo->setCurrentIndex(comboIndex);
+        }
     }
     else
     {

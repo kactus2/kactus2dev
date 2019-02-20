@@ -17,11 +17,14 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceListFiller::initializeList()
 //-----------------------------------------------------------------------------
-void BusInterfaceListFiller::initializeList(QListWidget* selectedList,
+void BusInterfaceListFiller::initializeList(QStandardItemModel* selectedList,
     QSharedPointer<Component> containingComponent) const
 {
     for (auto busInterface : *containingComponent->getBusInterfaces())
     {
-        new QListWidgetItem(busInterface->name(), selectedList);
+        if (busInterface->getInterfaceMode() != General::MONITOR)
+        {
+            selectedList->appendRow(new QStandardItem(busInterface->name()));
+        }
     }
 }

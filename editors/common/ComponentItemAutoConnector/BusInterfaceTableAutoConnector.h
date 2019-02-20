@@ -72,13 +72,12 @@ private:
     /*!
      *  Check if the selected bus interface can be connected to the selected mode.
      *
-     *      @param [in] busMode             The selected bus interface mode.
      *      @param [in] comparisonBus       The bus interface being compared to.
      *      @param [in] comparibleModes     List of connectible bus interface modes.
      *
      *      @return True, if the selected bus interface can be connected to the selected mode, false otherwise.
      */
-    bool interfacesAreCompatible(General::InterfaceMode busMode, QSharedPointer<BusInterface> comparisonBus,
+    bool interfacesAreCompatible(QSharedPointer<BusInterface> comparisonBus,
         QVector<General::InterfaceMode> compatibleModes) const;
 
     //-----------------------------------------------------------------------------

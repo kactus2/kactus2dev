@@ -51,15 +51,18 @@ QVector<QPair<QString, QVector<QString> > > BusInterfaceTableAutoConnector::find
 
     for (auto const& currentBus : *firstInterfaces)
     {
-        QVector<QString> connectibleBuses = getConnectableBusInterfaceNames(currentBus, secondInterface);
-
-        if (!connectibleBuses.isEmpty())
+        if (currentBus->getInterfaceMode() != General::MONITOR)
         {
-            QPair<QString, QVector<QString> > newCombinationPair;
-            newCombinationPair.first = currentBus->name();
-            newCombinationPair.second = connectibleBuses;
+            QVector<QString> connectibleBuses = getConnectableBusInterfaceNames(currentBus, secondInterface);
 
-            possibleCombinations.append(newCombinationPair);
+            if (!connectibleBuses.isEmpty())
+            {
+                QPair<QString, QVector<QString> > newCombinationPair;
+                newCombinationPair.first = currentBus->name();
+                newCombinationPair.second = connectibleBuses;
+
+                possibleCombinations.append(newCombinationPair);
+            }
         }
     }
 
@@ -96,7 +99,7 @@ QVector<QString> BusInterfaceTableAutoConnector::getConnectableBusInterfaceNames
 
             for (auto comparisonBus : *secondItemBusInterfaces)
             {
-                if (interfacesAreCompatible(busMode, comparisonBus, compatibleInterfaces) &&
+                if (interfacesAreCompatible(comparisonBus, compatibleInterfaces) &&
                     BusInterfaceUtilities::hasMatchingBusDefinitions(
                         busType, comparisonBus->getBusType(), library_))
                 {
@@ -113,14 +116,14 @@ QVector<QString> BusInterfaceTableAutoConnector::getConnectableBusInterfaceNames
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceTableAutoConnector::interfacesAreCompatible()
 //-----------------------------------------------------------------------------
-bool BusInterfaceTableAutoConnector::interfacesAreCompatible(General::InterfaceMode busMode,
-    QSharedPointer<BusInterface> comparisonBus, QVector<General::InterfaceMode> compatibleModes) const
+bool BusInterfaceTableAutoConnector::interfacesAreCompatible(QSharedPointer<BusInterface> comparisonBus,
+    QVector<General::InterfaceMode> compatibleModes) const
 {
     General::InterfaceMode comparisonMode = comparisonBus->getInterfaceMode();
     if (comparisonMode == General::MONITOR)
     {
-        return comparisonBus->getMonitor()->interfaceMode_ == busMode;
+        return false;
     }
 
-    return compatibleModes.contains(comparisonBus->getInterfaceMode());
+    return compatibleModes.contains(comparisonMode);
 }

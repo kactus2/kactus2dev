@@ -18,6 +18,8 @@ ObjectRemoveDialog::ObjectRemoveDialog(QWidget *parent, Qt::WindowFlags f):
 ObjectSelectionDialog(tr("Delete"), QStringLiteral(":icons/common/graphics/delete.png"),
     QStringLiteral(":icons/common/graphics/cross.png"), tr("Select items to delete"), parent, f)
 {
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     setupLayout();
 }
 
