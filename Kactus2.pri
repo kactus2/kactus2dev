@@ -674,7 +674,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.h \
     ./editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.h \
     ./editors/common/ComponentItemAutoConnector/ListFiller.h \
-    ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
     ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h \
     ./editors/common/ComponentItemAutoConnector/TableAutoConnector.h \
     ./editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h \
@@ -683,6 +682,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/ComponentItemAutoConnector/AutoConnector.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorListFilter.h \
+    ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
     ./editors/HWDesign/AdHocEnabled.h \
     ./editors/HWDesign/HWAddCommands.h \
     ./editors/HWDesign/HWMoveCommands.h \

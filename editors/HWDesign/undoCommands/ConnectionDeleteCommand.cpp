@@ -22,7 +22,6 @@
 #include <editors/common/DesignDiagram.h>
 
 #include <editors/HWDesign/HWConnection.h>
-#include <editors/HWDesign/BusInterfaceItem.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
