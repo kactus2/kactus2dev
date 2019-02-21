@@ -45,6 +45,19 @@ public:
     BusInterfaceTableAutoConnector(BusInterfaceTableAutoConnector const& rhs) = delete;
     BusInterfaceTableAutoConnector& operator=(BusInterfaceTableAutoConnector const& rhs) = delete;
 
+protected:
+
+    /*!
+     *  Create a table item.
+     *
+     *      @param [in] itemName                Name for the table item.
+     *      @param [in] containingComponent     Component containing the selected item.
+     *
+     *      @return The new table item.
+     */
+    virtual QTableWidgetItem* createTableWidgetItem(QString const& itemName,
+        QSharedPointer<Component> containingComponent) const;
+
 private:
 
     /*!
@@ -79,6 +92,15 @@ private:
      */
     bool interfacesAreCompatible(QSharedPointer<BusInterface> comparisonBus,
         QVector<General::InterfaceMode> compatibleModes) const;
+
+    /*!
+     *  Get the path for the icon of the bus interface mode.
+     *
+     *      @param [in] busMode     The selected bus interface mode.
+     *
+     *      @return Path for the bus interface mode icon.
+     */
+    QString getIconPath(General::InterfaceMode busMode) const;
 
     //-----------------------------------------------------------------------------
     // Data.

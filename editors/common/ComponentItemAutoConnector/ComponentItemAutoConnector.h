@@ -62,14 +62,19 @@ public:
 private slots:
 
     /*!
+     *  Connect the selected items from the item lists.
+     */
+    void connectSelectedItems();
+
+    /*!
      *  Clear the connected items from the currently selected table.
      */
-    void clearCurrentConnections();
+    void clearConnections();
 
     /*!
      *  Connect the items of the currently selected table automatically.
      */
-    void connectCurrentItems();
+    void autoConnectItems();
 
 private:
 
@@ -108,6 +113,9 @@ private:
 
     //! Name of the second component item.
     QString secondItemName_;
+
+    //! Button for connecting two items.
+    QPushButton* connectButton_;
 
     //! Button for connecting items automatically.
     QPushButton* autoConnectButton_;

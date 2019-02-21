@@ -14,6 +14,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QListView>
 
 class Component;
 class ComponentItem;
@@ -55,6 +56,11 @@ public:
      *      @return A list of connected item pairs.
      */
     QVector<QPair<QString, QString> > getConnectedItems() const;
+
+    /*!
+     *  Connect the selected items from the item lists.
+     */
+    void connectSelectedItems();
 
     /*!
      *  Automatically connect the items.
@@ -114,6 +120,12 @@ private:
 
     //! List filter for the second list.
     AutoConnectorListFilter* secondListFilter_;
+
+    //! View of the first item list.
+    QListView* firstItemList_;
+
+    //! View of the second item list.
+    QListView* secondItemList_;
 
     //! Table containing the item connections.
     AutoConnectorConnectionTable* connectorTable_;

@@ -22,9 +22,49 @@ void BusInterfaceListFiller::initializeList(QStandardItemModel* selectedList,
 {
     for (auto busInterface : *containingComponent->getBusInterfaces())
     {
-        if (busInterface->getInterfaceMode() != General::MONITOR)
+        General::InterfaceMode busMode = busInterface->getInterfaceMode();
+        if (busMode != General::MONITOR)
         {
-            selectedList->appendRow(new QStandardItem(busInterface->name()));
+            QIcon modeIcon(getIconPath(busMode));
+            selectedList->appendRow(new QStandardItem(modeIcon, busInterface->name()));
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceListFiller::getIconPath()
+//-----------------------------------------------------------------------------
+QString BusInterfaceListFiller::getIconPath(General::InterfaceMode interfaceMode) const
+{
+    QString iconPath("");
+    if (interfaceMode == General::MASTER)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMaster.png";
+    }
+    else if (interfaceMode == General::MIRROREDMASTER)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredMaster.png";
+    }
+    else if (interfaceMode == General::SLAVE)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceSlave.png";
+    }
+    else if (interfaceMode == General::MIRROREDSLAVE)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredSlave.png";
+    }
+    else if (interfaceMode == General::SYSTEM)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceSystem.png";
+    }
+    else if (interfaceMode == General::MIRROREDSYSTEM)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredSystem.png";
+    }
+    else if (interfaceMode == General::MONITOR)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMonitor.png";
+    }
+
+    return iconPath;
 }

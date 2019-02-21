@@ -34,7 +34,8 @@ ComponentItemAutoConnector::ComponentItemAutoConnector(ComponentItem* firstItem,
 QDialog(parent),
 firstItemName_(firstItem->name()),
 secondItemName_(secondItem->name()),
-autoConnectButton_(new QPushButton(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this)),
+connectButton_(new QPushButton(QIcon(":/icons/common/graphics/connect.png"), "Connect", this)),
+autoConnectButton_(new QPushButton(QIcon(":/icons/common/graphics/configuration.png"), "Auto connect all", this)),
 clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clear"), this)),
 busInterfaceConnector_(new AutoConnector(firstItem, secondItem, new BusInterfaceListFiller(),
     new BusInterfaceTableAutoConnector(library), tr("bus interfaces"), this)),
@@ -44,8 +45,8 @@ tabs_(this)
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    setMinimumWidth(1000);
-    setMinimumHeight(600);
+    setMinimumWidth(1200);
+    setMinimumHeight(720);
 
     tabs_.addTab(busInterfaceConnector_, QString(tr("Bus interfaces")));
     tabs_.addTab(portConnector_, QString(tr("Ports")));
@@ -61,7 +62,7 @@ tabs_(this)
         tabs_.setCurrentWidget(portConnector_);
     }
 
-    connectCurrentItems();
+    autoConnectItems();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,33 +120,53 @@ void ComponentItemAutoConnector::setupLayout()
         tr(" Bus interfaces create interconnections and ports create ad-hoc connections.");
     QWidget* introWidget = setupIntroWidget(introLabel, introText);
 
-    QPushButton* okButton(new QPushButton(tr("Ok"), this));
+    QPushButton* okButton(new QPushButton(tr("Finish"), this));
     connect(okButton, SIGNAL(released()), this, SLOT(accept()), Qt::UniqueConnection);
 
     QPushButton* cancelButton (new QPushButton(tr("Cancel"), this));
     connect(cancelButton, SIGNAL(released()), this, SLOT(reject()), Qt::UniqueConnection);
 
+    QDialogButtonBox* connectionButtons(new QDialogButtonBox(Qt::Horizontal));
+    connectionButtons->addButton(connectButton_, QDialogButtonBox::ActionRole);
+    connectionButtons->addButton(autoConnectButton_, QDialogButtonBox::ActionRole);
+    connectionButtons->addButton(clearButton_, QDialogButtonBox::ActionRole);
+
     QDialogButtonBox* buttonBox (new QDialogButtonBox(Qt::Horizontal));
-    buttonBox->addButton(autoConnectButton_, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(clearButton_, QDialogButtonBox::ActionRole);
     buttonBox->addButton(okButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
 
     setWindowTitle("Auto connect");
 
-    connect(autoConnectButton_, SIGNAL(released()), this, SLOT(connectCurrentItems()), Qt::UniqueConnection);
-    connect(clearButton_, SIGNAL(released()), this, SLOT(clearCurrentConnections()), Qt::UniqueConnection);
+    connect(connectButton_, SIGNAL(released()), this, SLOT(connectSelectedItems()), Qt::UniqueConnection);
+    connect(autoConnectButton_, SIGNAL(released()), this, SLOT(autoConnectItems()), Qt::UniqueConnection);
+    connect(clearButton_, SIGNAL(released()), this, SLOT(clearConnections()), Qt::UniqueConnection);
 
     QVBoxLayout* mainLayout (new QVBoxLayout(this));
     mainLayout->addWidget(introWidget, 0, Qt::AlignTop);
     mainLayout->addWidget(&tabs_, 1);
+    mainLayout->addWidget(connectionButtons);
     mainLayout->addWidget(buttonBox);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentItemAutoConnector::connectCurrentItems()
+// Function: ComponentItemAutoConnector::connectSelectedItems()
 //-----------------------------------------------------------------------------
-void ComponentItemAutoConnector::connectCurrentItems()
+void ComponentItemAutoConnector::connectSelectedItems()
+{
+    if (tabs_.currentWidget() == portConnector_)
+    {
+        portConnector_->connectSelectedItems();
+    }
+    else
+    {
+        busInterfaceConnector_->connectSelectedItems();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItemAutoConnector::autoConnectItems()
+//-----------------------------------------------------------------------------
+void ComponentItemAutoConnector::autoConnectItems()
 {
     if (tabs_.currentWidget() == portConnector_)
     {
@@ -158,9 +179,9 @@ void ComponentItemAutoConnector::connectCurrentItems()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentItemAutoConnector::clearCurrentConnections()
+// Function: ComponentItemAutoConnector::clearConnections()
 //-----------------------------------------------------------------------------
-void ComponentItemAutoConnector::clearCurrentConnections()
+void ComponentItemAutoConnector::clearConnections()
 {
     if (tabs_.currentWidget() == portConnector_)
     {
@@ -184,7 +205,7 @@ QWidget* ComponentItemAutoConnector::setupIntroWidget(QString const& introName, 
     introLabel->setFont(introFont);
 
     QLabel* iconLabel = new QLabel();
-    iconLabel->setPixmap(QPixmap(QString(":/icons/common/graphics/connect.png")));
+    iconLabel->setPixmap(QPixmap(QString(":/icons/common/graphics/autoConnect.png")));
 
     QVBoxLayout* introTextLayout = new QVBoxLayout();
     introTextLayout->addWidget(introLabel);

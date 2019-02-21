@@ -127,3 +127,56 @@ bool BusInterfaceTableAutoConnector::interfacesAreCompatible(QSharedPointer<BusI
 
     return compatibleModes.contains(comparisonMode);
 }
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceTableAutoConnector::createTableWidgetItem()
+//-----------------------------------------------------------------------------
+QTableWidgetItem* BusInterfaceTableAutoConnector::createTableWidgetItem(QString const& itemName,
+    QSharedPointer<Component> containingComponent) const
+{
+    QTableWidgetItem* newTableItem = TableAutoConnector::createTableWidgetItem(itemName, containingComponent);
+
+    QSharedPointer<BusInterface> itemBus = containingComponent->getBusInterface(itemName);
+    QIcon busItemIcon(getIconPath(itemBus->getInterfaceMode()));
+
+    newTableItem->setIcon(busItemIcon);
+    return newTableItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceTableAutoConnector::getIconPath()
+//-----------------------------------------------------------------------------
+QString BusInterfaceTableAutoConnector::getIconPath(General::InterfaceMode busMode) const
+{
+    QString iconPath("");
+    if (busMode == General::MASTER)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMaster.png";
+    }
+    else if (busMode == General::MIRROREDMASTER)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredMaster.png";
+    }
+    else if (busMode == General::SLAVE)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceSlave.png";
+    }
+    else if (busMode == General::MIRROREDSLAVE)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredSlave.png";
+    }
+    else if (busMode == General::SYSTEM)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceSystem.png";
+    }
+    else if (busMode == General::MIRROREDSYSTEM)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredSystem.png";
+    }
+    else if (busMode == General::MONITOR)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMonitor.png";
+    }
+
+    return iconPath;
+}

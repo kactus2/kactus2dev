@@ -14,6 +14,8 @@
 
 #include <editors/common/ComponentItemAutoConnector/ListFiller.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 class Component;
 
 //-----------------------------------------------------------------------------
@@ -45,6 +47,15 @@ public:
     // No copying. No assignments.
     BusInterfaceListFiller(BusInterfaceListFiller const& rhs) = delete;
     BusInterfaceListFiller& operator=(BusInterfaceListFiller const& rhs) = delete;
+
+private:
+
+    /*!
+     *  Get the path for the icon used by the bus interface list item.
+     *
+     *      @param [in] interfaceMode   Mode of the bus interface item.
+     */
+    QString getIconPath(General::InterfaceMode interfaceMode) const;
 };
 
 //-----------------------------------------------------------------------------

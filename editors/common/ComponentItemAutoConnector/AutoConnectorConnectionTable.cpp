@@ -35,8 +35,8 @@ addRowAction_(new QAction(tr("Add row"), this))
 
     setColumnCount(2);
     verticalHeader()->hide();
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     horizontalHeader()->setStretchLastSection(true);
-    horizontalHeader()->setDefaultSectionSize(185);
 
     QString firstHeader = firstItemName;
     QString secondHeader = secondItemName;

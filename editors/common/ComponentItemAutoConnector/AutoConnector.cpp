@@ -22,7 +22,6 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QCheckBox>
-#include <QListView>
 #include <QStandardItemModel>
 
 //-----------------------------------------------------------------------------
@@ -35,6 +34,8 @@ firstComponent_(firstItem->componentModel()),
 secondComponent_(secondItem->componentModel()),
 firstListFilter_(),
 secondListFilter_(),
+firstItemList_(),
+secondItemList_(),
 connectorTable_(),
 tableInitializer_(tableInitializer)
 {
@@ -63,13 +64,13 @@ QVector<QPair<QString, QString> > AutoConnector::getConnectedItems() const
 void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondItem, ListFiller* listFiller,
     QString const& itemName)
 {
-    QListView* firstItemList(new QListView(this));
-    QListView* secondItemList(new QListView(this));
+    firstItemList_ = new QListView(this);
+    secondItemList_ = new QListView(this);
 
-    firstItemList->setDragEnabled(true);
-    firstItemList->setDragDropMode(QAbstractItemView::DragOnly);
-    secondItemList->setDragEnabled(true);
-    secondItemList->setDragDropMode(QAbstractItemView::DragOnly);
+    firstItemList_->setDragEnabled(true);
+    firstItemList_->setDragDropMode(QAbstractItemView::DragOnly);
+    secondItemList_->setDragEnabled(true);
+    secondItemList_->setDragDropMode(QAbstractItemView::DragOnly);
 
     QCheckBox* firstHideBox(new QCheckBox(tr("Hide connected"), this));
     QCheckBox* secondHideBox(new QCheckBox(tr("Hide connected"), this));
@@ -79,9 +80,9 @@ void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondI
 
     QVBoxLayout* firstComponentLayout(new QVBoxLayout());
     QVBoxLayout* secondComponentLayout(new QVBoxLayout());
-    firstComponentLayout->addWidget(firstItemList, 1);
+    firstComponentLayout->addWidget(firstItemList_, 1);
     firstComponentLayout->addWidget(firstHideBox);
-    secondComponentLayout->addWidget(secondItemList, 1);
+    secondComponentLayout->addWidget(secondItemList_, 1);
     secondComponentLayout->addWidget(secondHideBox);
 
     QString firstItemName = getComponentItemName(firstItem);
@@ -93,8 +94,8 @@ void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondI
     secondComponentGroup->setLayout(secondComponentLayout);
 
     connectorTable_ =
-        new AutoConnectorConnectionTable(firstItemList, secondItemList, firstItemName, secondItemName, this);
-    connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(firstItemList, secondItemList, this));
+        new AutoConnectorConnectionTable(firstItemList_, secondItemList_, firstItemName, secondItemName, this);
+    connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(firstItemList_, secondItemList_, this));
 
     connect(connectorTable_->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&, const QVector<int> &)),
         this, SLOT(invalidateListFilters()), Qt::UniqueConnection);
@@ -121,10 +122,10 @@ void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondI
 
     firstListFilter_ = new AutoConnectorListFilter(connectorTable_, 0, firstHideBox);
     firstListFilter_->setSourceModel(firstListModel);
-    firstItemList->setModel(firstListFilter_);
+    firstItemList_->setModel(firstListFilter_);
     secondListFilter_ = new AutoConnectorListFilter(connectorTable_, 1, secondHideBox);
     secondListFilter_->setSourceModel(secondListModel);
-    secondItemList->setModel(secondListFilter_);
+    secondItemList_->setModel(secondListFilter_);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,6 +150,14 @@ QString AutoConnector::getComponentItemName(ComponentItem* componentItem) const
     {
         return componentItem->name();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnector::connectSelectedItems()
+//-----------------------------------------------------------------------------
+void AutoConnector::connectSelectedItems()
+{
+    tableInitializer_->connectSelectedFromLists(firstItemList_, secondItemList_, connectorTable_);
 }
 
 //-----------------------------------------------------------------------------
