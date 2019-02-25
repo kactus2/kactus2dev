@@ -22,6 +22,7 @@
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <QStringBuilder>
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
@@ -74,9 +75,9 @@ void ConfigurableElementsModel::setParameters(QString const& containingItemName,
 
     configurableElements_.clear();
 
-    if (parameters && !parameters->isEmpty())
+    if (parameters)
     {
-        foreach (QSharedPointer<Parameter> parameterPointer, *parameters)
+        for (QSharedPointer<Parameter> parameterPointer : *parameters)
         {
             QString configuratedValue = parameterPointer->getValue();
             QString evaluatedDefaultValue = evaluateValue(ConfigurableElementsColumns::DEFAULT_VALUE,
@@ -87,6 +88,8 @@ void ConfigurableElementsModel::setParameters(QString const& containingItemName,
             configurableElements_.append(newElement);
         }
     }
+    
+    validator_->componentChange(choices);
 
     restoreStoredConfigurableElements();
 
@@ -208,7 +211,7 @@ QVariant ConfigurableElementsModel::headerData(int section, Qt::Orientation orie
         }
         else if (section == ConfigurableElementsColumns::VALUE)
         {
-            QString valueHeader = tr("Value") + getExpressionSymbol();
+            QString valueHeader = tr("Value") % getExpressionSymbol();
             return valueHeader;
         }
         else if (section == ConfigurableElementsColumns::DEFAULT_VALUE)
@@ -246,28 +249,21 @@ bool ConfigurableElementsModel::setData(QModelIndex const& index, QVariant const
         return false;
     }
     
-    if (role == Qt::EditRole) 
+    if (role == Qt::EditRole && index.column() == ConfigurableElementsColumns::VALUE)
     {
         QSharedPointer<EditorConfigurableElement> element = configurableElements_.at(index.row());
 
-        if (index.column() == ConfigurableElementsColumns::VALUE)
+        // Return default value or set new value.
+        if (!value.isValid() || value.toString().isEmpty() ||
+            value.toString() == element->getReferencedParameter()->getValue())
         {
-            if (!value.isValid() || value.toString().isEmpty() ||
-                value.toString() == element->getReferencedParameter()->getValue())
-            {
-                element->setConfiguratedValue(element->getReferencedParameter()->getValue());
-            }
+            element->setConfiguratedValue(element->getReferencedParameter()->getValue());
+        }
+        else
+        {
+            element->setConfiguratedValue(value.toString());
+        }
 
-            else
-            {
-                element->setConfiguratedValue(value.toString());
-            }
-        }
-        else if (index.column() != ConfigurableElementsColumns::NAME &&
-            index.column() != ConfigurableElementsColumns::DEFAULT_VALUE)
-        {
-            return false;
-        }
         emit dataChanged(index, index);
         emit contentChanged();
         return true;
@@ -381,7 +377,7 @@ QString ConfigurableElementsModel::evaluateValue(int column, QString const& choi
     {
         QSharedPointer<Choice> choice = findChoice(choiceName);
 
-        if (value.contains('{') && value.contains('}'))
+        if (value.contains(QLatin1Char('{')) && value.contains(QLatin1Char('}')))
         {
             return matchArrayValuesToSelectedChoice(choice, value);
         }
@@ -415,7 +411,7 @@ QString ConfigurableElementsModel::formattedValueFor(QString const& expression) 
     }
     else
     {
-        return "n/a";
+        return QStringLiteral("n/a");
     }
 }
 
@@ -424,7 +420,7 @@ QString ConfigurableElementsModel::formattedValueFor(QString const& expression) 
 //-----------------------------------------------------------------------------
 QSharedPointer<Choice> ConfigurableElementsModel::findChoice(QString const& choiceName) const
 {
-    foreach (QSharedPointer<Choice> choice, *choices_)
+    for (auto const& choice : *choices_)
     {
         if (choice->name().compare(choiceName) == 0)
         {
@@ -447,7 +443,7 @@ QString ConfigurableElementsModel::matchArrayValuesToSelectedChoice(QSharedPoint
 
     QStringList resultingArray;
 
-    foreach (QString value, parameterArray)
+    for (QString const& value : parameterArray)
     {
         resultingArray.append(findDisplayValueForEnumeration(choice, value));
     }
@@ -466,7 +462,7 @@ QString ConfigurableElementsModel::findDisplayValueForEnumeration(QSharedPointer
     QString const& enumerationValue) const
 {
     QString value = parseExpressionToDecimal(enumerationValue);
-    foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+    for (auto const& enumeration : *choice->enumerations())
     {
         if (enumeration->getValue().compare(value) == 0 && !enumeration->getText().isEmpty())
         {
@@ -529,12 +525,12 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
             QSharedPointer<Choice> choice = findChoice(element->getReferencedParameter()->getChoiceRef());
             tooltip.append("<br>Possible values are:");
 
-            foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+            for (auto const& enumeration : *choice->enumerations())
             {
-                tooltip.append("<br>" + enumeration->getValue());
+                tooltip.append("<br>" % enumeration->getValue());
                 if (!enumeration->getText().isEmpty())
                 {
-                    tooltip.append(" (" + enumeration->getText() + ")");
+                    tooltip.append(" (" % enumeration->getText() % ")");
                 }
             }
         }
@@ -545,13 +541,23 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
     else if (index.column() == ConfigurableElementsColumns::VALUE)
     {
         QString context = containingItemName_;
+        QString defaultValue = element->getReferencedParameter()->getValue();
 
         QVector<QString> errorList;
+
+        // Swap the parameter value and validate as if the value was the configurable value.
+        element->getReferencedParameter()->setValue(element->getConfiguratedValue());
         validator_->findErrorsIn(errorList, element->getReferencedParameter(), context);
+        element->getReferencedParameter()->setValue(defaultValue);
 
         if (!errorList.isEmpty())
         {
             return QStringList(errorList.toList()).join("\n");
+        }
+        else
+        {
+            return configurableElementExpressionFormatter_->
+                formatReferringExpression(expressionOrValueForIndex(index).toString());
         }
     }
     else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
@@ -559,8 +565,7 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
         return defaultValueFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
     }
 
-    return configurableElementExpressionFormatter_->
-        formatReferringExpression(expressionOrValueForIndex(index).toString());
+    return QString();    
 }
 
 //-----------------------------------------------------------------------------
@@ -581,7 +586,13 @@ bool ConfigurableElementsModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == ConfigurableElementsColumns::VALUE)
     {
-        return validator_->hasValidValue(element->getReferencedParameter());
+        QString defaultValue = element->getReferencedParameter()->getValue();
+
+        element->getReferencedParameter()->setValue(element->getConfiguratedValue());
+        bool valid = validator_->hasValidValue(element->getReferencedParameter());
+        element->getReferencedParameter()->setValue(defaultValue);
+        
+        return valid;
     }
 
     return true;
@@ -615,8 +626,8 @@ void ConfigurableElementsModel::onAddItem(QString const& elementID, QString cons
 {
     QSharedPointer<Parameter> unknownParameter = createUnknownParameter(elementID);
 
-    QSharedPointer<EditorConfigurableElement> unknownElement
-        (new EditorConfigurableElement(unknownParameter, QString(), elementValue));
+    QSharedPointer<EditorConfigurableElement> unknownElement(new EditorConfigurableElement(
+        unknownParameter, QString(), elementValue));
 
     beginInsertRows(QModelIndex(), elementRow, elementRow);
 
@@ -638,7 +649,7 @@ void ConfigurableElementsModel::restoreStoredConfigurableElements()
 {
     if (itemConfigurableElementValues_)
     {
-        foreach (QSharedPointer<ConfigurableElementValue> element, *itemConfigurableElementValues_)
+        for (QSharedPointer<ConfigurableElementValue> element : *itemConfigurableElementValues_)
         {
             QSharedPointer<EditorConfigurableElement> storedElement = getStoredConfigurableElement(
                 element->getReferenceId());
@@ -656,7 +667,7 @@ void ConfigurableElementsModel::restoreStoredConfigurableElements()
 QSharedPointer<EditorConfigurableElement> ConfigurableElementsModel::getStoredConfigurableElement(
     QString const& elementID)
 {
-    foreach (QSharedPointer<EditorConfigurableElement> element, configurableElements_)
+    for (auto const& element : configurableElements_)
     {
         if (element->getReferencedParameter() && element->getReferencedParameter()->getValueId() == elementID)
         {

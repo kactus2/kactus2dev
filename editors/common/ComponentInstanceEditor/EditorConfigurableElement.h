@@ -37,7 +37,11 @@ public:
 	/*!
 	 *  The destructor.
 	 */
-    virtual ~EditorConfigurableElement();
+    ~EditorConfigurableElement() = default;
+
+    //! No copying. No assignment.
+    EditorConfigurableElement(const EditorConfigurableElement& other) = delete;
+    EditorConfigurableElement& operator=(const EditorConfigurableElement& other) = delete;
 
     /*!
      *  Get the referenced parameter.
@@ -82,10 +86,6 @@ public:
     void setConfiguratedValue(QString const& newConfiguratedValue);
 
 private:
-	
-    //! No copying. No assignment.
-	EditorConfigurableElement(const EditorConfigurableElement& other);
-	EditorConfigurableElement& operator=(const EditorConfigurableElement& other);
 
     //-----------------------------------------------------------------------------
     // Data.

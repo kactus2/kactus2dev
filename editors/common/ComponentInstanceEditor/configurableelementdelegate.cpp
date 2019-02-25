@@ -198,7 +198,7 @@ void ConfigurableElementDelegate::onCreateRemoveElementCommands(QModelIndexList 
     {
         QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
 
-        foreach (QModelIndex index, indexes)
+        for (QModelIndex const& index : indexes)
         {
             int indexRowCount = index.model()->rowCount(index);
             if (index.parent().isValid() || (!index.parent().isValid() && indexRowCount == 0))
@@ -306,7 +306,7 @@ void ConfigurableElementDelegate::onCreateMultipleElementRemoveCommands(QModelIn
 
     QSharedPointer<QUndoCommand> mainRemoveCommand(new QUndoCommand());
 
-    foreach (QModelIndex index, indexes)
+    for (QModelIndex const& index : indexes)
     {
         if (index.isValid() && !index.parent().isValid())
         {
@@ -380,7 +380,7 @@ void ConfigurableElementDelegate::addCommandToStackAndRedo(QSharedPointer<QUndoC
 void ConfigurableElementDelegate::increaseReferencesInNewValue(QString const& newValue)
 {
     QStringList allParameterIDs = getParameterFinder()->getAllParameterIds();
-    foreach (QString valueID, allParameterIDs)
+    for (QString const& valueID : allParameterIDs)
     {
         int referencesToId = newValue.count(valueID);
         for (int i =  0; i < referencesToId; ++i)
@@ -396,7 +396,7 @@ void ConfigurableElementDelegate::increaseReferencesInNewValue(QString const& ne
 void ConfigurableElementDelegate::decreaseReferencesInOldValue(QString const& oldValue)
 {
     QStringList allParameterIDs = getParameterFinder()->getAllParameterIds();
-    foreach (QString valueID, allParameterIDs)
+    for (QString const& valueID : allParameterIDs)
     {
         int referencesToId = oldValue.count(valueID);
         for (int i =  0; i < referencesToId; ++i)

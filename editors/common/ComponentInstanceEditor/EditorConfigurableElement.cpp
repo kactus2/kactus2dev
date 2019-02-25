@@ -26,14 +26,6 @@ configuratedValue_(configuratedValue)
 }
 
 //-----------------------------------------------------------------------------
-// Function: EditorConfigurableElement::~EditorConfigurableElement()
-//-----------------------------------------------------------------------------
-EditorConfigurableElement::~EditorConfigurableElement()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: EditorConfigurableElement::getReferencedParameter()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> EditorConfigurableElement::getReferencedParameter() const
