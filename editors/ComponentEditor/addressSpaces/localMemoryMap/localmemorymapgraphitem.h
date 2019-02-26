@@ -38,28 +38,28 @@ public:
         QSharedPointer<MemoryMapBase> localMemoryMap,
         QSharedPointer<ExpressionParser> expressionParser,
         QGraphicsItem* parent = 0);
-    
+
     //! The destructor.
-    virtual ~LocalMemoryMapGraphItem();
+    virtual ~LocalMemoryMapGraphItem() = default;
+
+    //! No copying.
+    LocalMemoryMapGraphItem(const LocalMemoryMapGraphItem& other) = delete;
+
+    //! No assignment.
+    LocalMemoryMapGraphItem& operator=(const LocalMemoryMapGraphItem& other) = delete;
 
     //! Refresh the item and sub-items.
-    virtual void refresh();
+    virtual void refresh() override final;
 
     /*!
      *  Get number of bits the addressable unit contains.
      *
      *      @return The size of least addressable unit.
      */
-    virtual unsigned int getAddressUnitSize() const;
+    virtual unsigned int getAddressUnitSize() const override final;
 
 private:
     
-    //! No copying.
-    LocalMemoryMapGraphItem(const LocalMemoryMapGraphItem& other);
-
-    //! No assignment.
-    LocalMemoryMapGraphItem& operator=(const LocalMemoryMapGraphItem& other);
-
     //! The address space containing the local memory map.
     QSharedPointer<AddressSpace> addrSpace_;
 };

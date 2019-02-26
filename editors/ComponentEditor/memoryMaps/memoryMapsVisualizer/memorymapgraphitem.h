@@ -44,41 +44,47 @@ public:
         QGraphicsItem* parent = 0);
 
 	//! The destructor.
-	virtual ~MemoryMapGraphItem();
+	virtual ~MemoryMapGraphItem() = default;
+
+    //! No copying.
+    MemoryMapGraphItem(const MemoryMapGraphItem& other) = delete;
+
+    //! No assignment.
+    MemoryMapGraphItem& operator=(const MemoryMapGraphItem& other) = delete;
 
     //! Refresh the item and re-layout the sub-items.
-	virtual void refresh();
+	virtual void refresh() override;
         
     //! Updates the labels and tooltip for the item.
-    virtual void updateDisplay();
+    virtual void updateDisplay() override final;
 
 	/*!
      *  Get the offset of the item. 
 	 *
 	 *      @return int The offset of the item from the parent item's base address.
 	 */
-	virtual quint64 getOffset() const;
+	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
 	 *      @return The last address.
 	 */
-	virtual quint64 getLastAddress() const;
+	virtual quint64 getLastAddress() const override final;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
 	 */
-	virtual int getBitWidth() const;
+	virtual int getBitWidth() const override final;
 
 	/*!
      *  Get number of bits the addressable unit contains.
 	 *
 	 *      @return The size of least addressable unit.
 	 */
-	virtual unsigned int getAddressUnitSize() const;
+	virtual unsigned int getAddressUnitSize() const override;
 
 	/*!
      *  Get the width of the item.
@@ -87,14 +93,14 @@ public:
 	 *
 	 *      @return The width of the item and it's sub-items.
 	 */
-	virtual qreal itemTotalWidth() const;
+	virtual qreal itemTotalWidth() const override final;
        
     /*!
      *  Checks if the item is to be used in the visualization.
      *
      *      @return True, if the item should be used, otherwise false.
      */
-    virtual bool isPresent() const;
+    virtual bool isPresent() const override final;
 
 protected:
 
@@ -104,13 +110,6 @@ protected:
     //! Pointer to the parent of the shown memory remap.
     QSharedPointer<MemoryMap> parentMemoryMap_;
 
-private:
-	
-	//! No copying.
-	MemoryMapGraphItem(const MemoryMapGraphItem& other);
-
-	//! No assignment.
-	MemoryMapGraphItem& operator=(const MemoryMapGraphItem& other);
 };
 
 #endif // MEMORYMAPGRAPHITEM_H

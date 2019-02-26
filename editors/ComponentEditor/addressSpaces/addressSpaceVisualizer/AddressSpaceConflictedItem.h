@@ -38,18 +38,16 @@ public:
 		QGraphicsItem* parent = 0);
 	
 	//! The destructor.
-	virtual ~AddressSpaceConflictedItem();
+	virtual ~AddressSpaceConflictedItem() = default;
+
+    //! No copying
+    AddressSpaceConflictedItem(const AddressSpaceConflictedItem& other) = delete;
+
+    //! No assignment
+    AddressSpaceConflictedItem& operator=(const AddressSpaceConflictedItem& other) = delete;
 
 	//! Refresh the item.
-    virtual void refresh();
-
-private:
-	
-	//! No copying
-	AddressSpaceConflictedItem(const AddressSpaceConflictedItem& other);
-
-	//! No assignment
-	AddressSpaceConflictedItem& operator=(const AddressSpaceConflictedItem& other);
+    virtual void refresh() override final;
 
 };
 

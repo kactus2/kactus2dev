@@ -27,14 +27,6 @@ addrSpace_(addrSpace)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem()
-//-----------------------------------------------------------------------------
-LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LocalMemoryMapGraphItem::getAddressUnitSize()
 //-----------------------------------------------------------------------------
 unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const

@@ -40,82 +40,75 @@ public:
         QGraphicsItem* parent);
 	
 	//! The destructor.
-	virtual ~RegisterGraphItem();
+	virtual ~RegisterGraphItem() = default;
+
+    //! No copying
+    RegisterGraphItem(const RegisterGraphItem& other) = delete;
+    RegisterGraphItem& operator=(const RegisterGraphItem& other) = delete;
 
 	//! Refresh the item, refresh and re-layout the sub-items and refresh parent item.
-    virtual void refresh();
+    virtual void refresh() override final;
 
     //! Updates the labels and tooltip for the item.
-   virtual  void updateDisplay();
+   virtual  void updateDisplay() override final;
 
 	//! Remove the item.
-    virtual void removeChild(MemoryVisualizationItem* childItem );
+    virtual void removeChild(MemoryVisualizationItem* childItem ) override final;
 
 	/*!
      *  Get the offset of the item. 
 	 *
 	 *      @return The offset of the item from the parent item's base address.
 	 */
-	virtual quint64 getOffset() const;
+	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
 	 *      @return The last address.
 	 */
-	virtual quint64 getLastAddress() const;
+	virtual quint64 getLastAddress() const override final;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
 	 */
-	virtual int getBitWidth() const;
+	virtual int getBitWidth() const override final;
 
 	/*!
      *  Get number of bits the addressable unit contains.
 	 *
 	 *      @return The size of least addressable unit.
 	 */
-	virtual unsigned int getAddressUnitSize() const;
+	virtual unsigned int getAddressUnitSize() const override final;
 
     /*!
      *  Set the width for the item.
 	 *
 	 *       @param [in] width The new width of the item.
 	 */
-    virtual void setWidth(qreal width);
-
-    /*!
-     *  Sets the index of the register dimension the item represents.
-     *
-     *      @param [in] index   The dimension index to set.
-     */
-    void setDimensionIndex(unsigned int index);
+    virtual void setWidth(qreal width) override final;
 
     /*!
      *  Checks if the item is to be used in the visualization.
      *
      *      @return True, if the item should be used, otherwise false.
      */
-    virtual bool isPresent() const;
+    virtual bool isPresent() const override final;
 
 protected:
 
     //! Update the child items in the map. Field items are organized according to last address.
-    virtual void updateChildMap();
+    virtual void updateChildMap() override final;
     
     /*!
      *  Repositions the child items and fills the empty gaps between them.
      */
-    virtual void repositionChildren();
+    virtual void repositionChildren() override final;
 
 private:
-	
-	//! No copying
-	RegisterGraphItem(const RegisterGraphItem& other);
-	RegisterGraphItem& operator=(const RegisterGraphItem& other);
-
+		
     /*!
      *  Gets the register size in AUB units.
      *
@@ -130,7 +123,7 @@ private:
      *
      *      @return The width for the child.
      */
-    virtual qreal findWidthFor(MemoryVisualizationItem* child) const;
+    qreal findWidthFor(MemoryVisualizationItem* child) const;
     
     /*!
      *  Finds the position for the given child item.
@@ -203,8 +196,6 @@ private:
     //! Pointer to the register being visualized.
 	QSharedPointer<Register> register_;
 
-    //! The index in the dimension the item represents.
-    unsigned int dimensionIndex_;
 };
 
 #endif // REGISTERGRAPHITEM_H

@@ -47,7 +47,11 @@ public:
 		QGraphicsItem* parent = 0);
 	
 	//! The destructor.
-	virtual ~AddressSpaceVisualizationItem();
+	virtual ~AddressSpaceVisualizationItem() = default;
+
+    //! No copying. No assignment.
+    AddressSpaceVisualizationItem(const AddressSpaceVisualizationItem& other) = delete;
+    AddressSpaceVisualizationItem& operator=(const AddressSpaceVisualizationItem& other) = delete;
 
 	//! Refresh the item.
 	virtual void refresh() = 0;
@@ -189,10 +193,6 @@ protected:
     quint64 lastFreeAddress_;
 
 private:
-	
-	//! No copying. No assignment.
-	AddressSpaceVisualizationItem(const AddressSpaceVisualizationItem& other);
-	AddressSpaceVisualizationItem& operator=(const AddressSpaceVisualizationItem& other);
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

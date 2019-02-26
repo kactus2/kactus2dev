@@ -15,7 +15,7 @@
 #include <QRectF>
 #include <QObject>
 
-/*! \brief VisualizerItem is base class that provides interface to visualize IP-Xact models.
+/*! VisualizerItem is base class that provides interface to visualize IP-Xact models.
  *
  */
 class VisualizerItem : public QObject, public QGraphicsRectItem {
@@ -37,7 +37,7 @@ public:
         NAME_BOTTOM         //! Name is aligned to the bottom of the item.
     };
 
-	//! \brief The minimum and maximum bounds for visualizer items.
+	//! The minimum and maximum bounds for visualizer items.
 	enum Bounds {
 		DEFAULT_HEIGHT = 40,    //! The height of a single item
 		MIN_WIDTH = 90,			//! The minimum width of an item
@@ -46,46 +46,52 @@ public:
         CORNER_INDENTATION = 4
 	};
 
-	//! \brief The font size to display text.
+	//! The font size to display text.
 	enum FontSize {
 		FONT_NAMESIZE = 10,		//! The size for name field
 		FONT_CORNERSIZE = 10	//! The size for corner texts
 	};
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
 	 * \param parent Pointer to the owner of this graphics item.
 	 *
 	*/
 	VisualizerItem(QGraphicsItem* parent = 0);
 	
-	//! \brief The destructor
-	virtual ~VisualizerItem();
+	//! The destructor
+	virtual ~VisualizerItem() = default;
 
-	//! \brief Refresh the item and possible sub-items
+    //! No copying
+    VisualizerItem(const VisualizerItem& other) = delete;
+
+    //! No assignment
+    VisualizerItem& operator=(const VisualizerItem& other) = delete;
+
+	//! Refresh the item and possible sub-items
 	virtual void refresh() = 0;
 
-	/*! \brief Get the rectangle reserved by this item and it's sub-items recursively.
+	/*! Get the rectangle reserved by this item and it's sub-items recursively.
 	 *
 	 * \return QRectF which contains the rectangles of this item and sub-items and their
 	 * children recursively.
 	*/
 	virtual QRectF itemTotalRect() const;
 
-	/*! \brief Get the displayed name of the object. 
+	/*! Get the displayed name of the object. 
      *
 	 * \return QString containing the name
 	*/
 	virtual QString name() const;
 
-	/*! \brief Set the width for the item.
+	/*! Set the width for the item.
 	 *
 	 * \param width The new width of the item.
 	 *
 	*/
 	virtual void setWidth(qreal width);
 
-	/*! \brief Get the width of the item.
+	/*! Get the width of the item.
 	 *
 	 * The width is dependent on the parents width.
 	 *
@@ -93,7 +99,7 @@ public:
 	*/
 	virtual qreal itemTotalWidth() const;
 
-	/*! \brief Set the name position of the item.
+	/*! Set the name position of the item.
 	 *
 	 * \param namePos The position to be used.
 	 *
@@ -102,7 +108,7 @@ public:
     
 protected slots:
 
-	/*! \brief Set new positions for child items.
+	/*! Set new positions for child items.
 	 * 
 	 * The base class implementation only updates the position of the name and corner texts.
 	*/
@@ -110,57 +116,57 @@ protected slots:
 
 protected:
 
-	/*! \brief Set the display name of the item.
+	/*! Set the display name of the item.
 	 *
 	 * \param name The name to display.
 	 *
 	*/
-	virtual void setName(const QString& name);
+	virtual void setName(QString const& name);
 
-	/*! \brief Set text to the top left corner.
+	/*! Set text to the top left corner.
 	 *
 	 * \param text The text to display in the corner.
 	 *
 	*/
-	virtual void setLeftTopCorner(const QString& text);
+	virtual void setLeftTopCorner(QString const& text);
 
-	/*! \brief Set text to the bottom left corner.
+	/*! Set text to the bottom left corner.
 	 *
 	 * \param text The text to display in the corner.
 	 *
 	*/
-	virtual void setLeftBottomCorner(const QString& text);
+	virtual void setLeftBottomCorner(QString const& text);
 
-	/*! \brief Set text to the top right corner.
+	/*! Set text to the top right corner.
 	 *
 	 * \param text The text to display in the corner.
 	 *
 	*/
-	virtual void setRightTopCorner(const QString& text);
+	virtual void setRightTopCorner(QString const& text);
 
-	/*! \brief Set text to the bottom right corner.
+	/*! Set text to the bottom right corner.
 	 *
 	 * \param text The text to display in the corner.
 	 *
 	*/
-	virtual void setRightBottomCorner(const QString& text);
+	virtual void setRightBottomCorner(QString const& text);
 
-	//! \brief Set the position for text in the top left corner.
+	//! Set the position for text in the top left corner.
     virtual void setLeftTopPosition();
 
-    //! \brief Set the position for text in the bottom left corner.
+    //! Set the position for text in the bottom left corner.
     virtual void setLeftBottomPosition();
 
-    //! \brief Set the position for text in the top right corner.
+    //! Set the position for text in the top right corner.
     virtual void setRightTopPosition();
 
-    //! \brief Set the position for text in the bottom right corner.
+    //! Set the position for text in the bottom right corner.
     virtual void setRightBottomPosition();
 
-    //! \brief Set the position for name text.
+    //! Set the position for name text.
     virtual void setNameLabelPosition();
 
-	/*! \brief Get the minimum rectangle of the item.
+	/*! Get the minimum rectangle of the item.
 	 *
 	 * \return QRectF that limits the minimum size needed by this item.
 	*/
@@ -184,17 +190,11 @@ protected:
     QBrush defaultBrush_;  
 
 private:
-	
-	//! \brief No copying
-	VisualizerItem(const VisualizerItem& other);
 
-	//! \brief No assignment
-	VisualizerItem& operator=(const VisualizerItem& other);
-
-    //! \brief Resizes text boxes according to ohters.
+    //! Resizes text boxes according to ohters.
     void resizeLabels();
     
-    /*! \brief If text is longer than maxChars, cuts the lenght to maxChars is and appends "...".
+    /*! If text is longer than maxChars, cuts the lenght to maxChars is and appends "...".
      *
 	 * \param text The text to clip.
      * \param maxChars Maximum number of characters to show.
@@ -203,26 +203,26 @@ private:
 	*/
     QString clipText(QString const& text, int maxChars) const;
 
-    //! \brief The name of the item.
+    //! The name of the item.
     QString name_;
 
-	//! \brief Defines where the name label is positioned.
+	//! Defines where the name label is positioned.
 	NameHorizontalAlign nameHorizontalPos_;
     NameVerticalAlign nameVerticalPos_;
 
-	//! \brief The label to display the name of the memory map.
+	//! The label to display the name of the memory map.
 	QGraphicsTextItem nameLabel_;
 
-	//! \brief The label to display text in the left top corner.
+	//! The label to display text in the left top corner.
 	QGraphicsSimpleTextItem leftTopText_;
 
-	//! \brief The label to display text in the left bottom corner.
+	//! The label to display text in the left bottom corner.
 	QGraphicsSimpleTextItem leftBottomText_;
 
-	//! \brief The label to display text in the right top corner.
+	//! The label to display text in the right top corner.
 	QGraphicsSimpleTextItem rightTopText_;
 
-	//! \brief The label to display text in the right bottom corner.
+	//! The label to display text in the right bottom corner.
 	QGraphicsSimpleTextItem rightBottomText_;
 };
 

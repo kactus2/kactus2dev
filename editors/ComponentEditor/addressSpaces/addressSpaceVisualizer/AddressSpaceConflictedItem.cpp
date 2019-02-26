@@ -27,14 +27,6 @@ AddressSpaceGapItem(addrPos, addressSpaceWidth, expressionParser, parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~AddressSpaceConflictedItem()
-//-----------------------------------------------------------------------------
-AddressSpaceConflictedItem::~AddressSpaceConflictedItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ~refresh()
 //-----------------------------------------------------------------------------
 void AddressSpaceConflictedItem::refresh()

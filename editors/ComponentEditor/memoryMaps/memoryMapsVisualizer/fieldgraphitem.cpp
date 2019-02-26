@@ -15,8 +15,8 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <QStringBuilder>
 #include <QBrush>
-
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::FieldGraphItem()
@@ -39,14 +39,6 @@ field_(field)
 	setExpansionRectVisible(false);
 
     updateDisplay();
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGraphItem::~FieldGraphItem()
-//-----------------------------------------------------------------------------
-FieldGraphItem::~FieldGraphItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +65,7 @@ void FieldGraphItem::updateDisplay()
 
     setDisplayOffset(leftBound);
     setDisplayLastAddress(rightBound);
-    setToolTip("<b>" + name() + "</b> [" + QString::number(leftBound) + ".." + QString::number(rightBound) + "]");
+    setToolTip("<b>" % name() % "</b> [" % QString::number(leftBound) % ".." % QString::number(rightBound) % "]");
 }
 
 //-----------------------------------------------------------------------------

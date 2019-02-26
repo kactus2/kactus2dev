@@ -33,14 +33,6 @@ overlapped_(false)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~AddressSpaceVisualizationItem()
-//-----------------------------------------------------------------------------
-AddressSpaceVisualizationItem::~AddressSpaceVisualizationItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: getBitWidth()
 //-----------------------------------------------------------------------------
 int AddressSpaceVisualizationItem::getBitWidth() const

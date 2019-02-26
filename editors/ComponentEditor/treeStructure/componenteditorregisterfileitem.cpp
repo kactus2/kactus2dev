@@ -41,8 +41,8 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
     ComponentEditorItem* parent) :
     ComponentEditorItem(model, libHandler, component, parent),
     registerFile_(registerFile),
-    visualizer_(NULL),
-    registerFileDimensions_(),
+    visualizer_(nullptr),
+    registerFileItem_(nullptr),
     expressionParser_(expressionParser),
     registerFileValidator_(registerFileValidator)
 {
@@ -51,7 +51,7 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
     setExpressionFormatter(expressionFormatter);
     setObjectName(tr("ComponentEditorRegFileItem"));
 
-    foreach (QSharedPointer<RegisterBase> regModel, *registerFile->getRegisterData())
+    for (QSharedPointer<RegisterBase> regModel : *registerFile->getRegisterData())
     {
         QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
         if (reg)
@@ -187,10 +187,17 @@ ItemVisualizer* ComponentEditorRegisterFileItem::visualizer()
 void ComponentEditorRegisterFileItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 {
     visualizer_ = visualizer;
-    resizeGraphicsToCurrentDimensionSize();
+
+    MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+    Q_ASSERT(parentItem);
+
+    registerFileItem_ = new RegisterFileGraphItem(registerFile_, expressionParser_, parentItem);    
+    parentItem->addChild(registerFileItem_);    
+
+    connect(registerFileItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 
     // update the visualizers for field items
-    foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
+    for (QSharedPointer<ComponentEditorItem> item : childItems_)
     {
         QSharedPointer<ComponentEditorRegisterItem> regItem = item.dynamicCast<ComponentEditorRegisterItem>();
         if (regItem)
@@ -212,14 +219,7 @@ void ComponentEditorRegisterFileItem::setVisualizer( MemoryMapsVisualizer* visua
 //-----------------------------------------------------------------------------
 QGraphicsItem* ComponentEditorRegisterFileItem::getGraphicsItem()
 {
-    if (!registerFileDimensions_.isEmpty())
-    {
-        return registerFileDimensions_.first();
-    }
-    else
-    {
-        return 0;
-    }
+    return registerFileItem_;
 }
 
 //-----------------------------------------------------------------------------
@@ -227,10 +227,9 @@ QGraphicsItem* ComponentEditorRegisterFileItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterFileItem::updateGraphics()
 {
-    resizeGraphicsToCurrentDimensionSize();
-    foreach (RegisterFileGraphItem* registerFileDimension, registerFileDimensions_)
+    if (registerFileItem_ != nullptr)
     {
-        registerFileDimension->refresh();
+        registerFileItem_->refresh();
     }
 }
 
@@ -256,72 +255,11 @@ void ComponentEditorRegisterFileItem::removeGraphicsItem()
     MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
     Q_ASSERT(parentItem);
 
-    foreach (RegisterFileGraphItem* registerFileDimension, registerFileDimensions_)
-    {
-        parentItem->removeChild(registerFileDimension);
-        registerFileDimension->setParent(0);
+    parentItem->removeChild(registerFileItem_);
+    registerFileItem_->setParent(0);
 
-        disconnect(registerFileDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+    disconnect(registerFileItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
-        registerFileDimensions_.removeAll(registerFileDimension);
-
-        delete registerFileDimension;
-        registerFileDimension = NULL;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterFileItem::resizeToCurrentDimensionSize()
-//-----------------------------------------------------------------------------
-void ComponentEditorRegisterFileItem::resizeGraphicsToCurrentDimensionSize()
-{
-    MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-
-    if(!parentItem)
-    {
-        return;
-    }
-
-    const int DIMENSION_SIZE = qMax(expressionParser_->parseExpression(registerFile_->getDimension()).toInt(), 1);
-    for (int currentDimension = registerFileDimensions_.count(); currentDimension < DIMENSION_SIZE; currentDimension++)
-    {
-        createDimensionGraphicsItem(currentDimension, parentItem);
-    }
-
-    for (int currentDimension = registerFileDimensions_.count() - 1; currentDimension >= DIMENSION_SIZE;
-        currentDimension--)
-    {
-        removeDimensionGraphicsItem(currentDimension, parentItem);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterFileItem::createDimensionGraphicsItem()
-//-----------------------------------------------------------------------------
-void ComponentEditorRegisterFileItem::createDimensionGraphicsItem(int dimensionIndex,
-    MemoryVisualizationItem* parentItem)
-{
-    RegisterFileGraphItem* newDimension = new RegisterFileGraphItem(registerFile_, expressionParser_, parentItem);
-    newDimension->setDimensionIndex(dimensionIndex);
-
-    parentItem->addChild(newDimension);
-    registerFileDimensions_.append(newDimension);
-
-    connect(newDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterFileItem::removeDimensionGraphicsItem()
-//-----------------------------------------------------------------------------
-void ComponentEditorRegisterFileItem::removeDimensionGraphicsItem(int dimensionIndex,
-    MemoryVisualizationItem* parentItem)
-{
-    RegisterFileGraphItem* removedDimension = registerFileDimensions_.takeAt(dimensionIndex);
-    parentItem->removeChild(removedDimension);
-    removedDimension->setParent(0);
-
-    disconnect(removedDimension, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
-
-    delete removedDimension;
-    removedDimension = 0;
+    delete registerFileItem_;
+    registerFileItem_ = nullptr;
 }

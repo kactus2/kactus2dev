@@ -64,7 +64,11 @@ public:
 		ComponentEditorItem* parent);
 
 	//! The destructor.
-	virtual ~ComponentEditorRegisterItem();
+	virtual ~ComponentEditorRegisterItem() = default;
+
+    //! No copying. No assignment.
+    ComponentEditorRegisterItem(const ComponentEditorRegisterItem& other) = delete;
+    ComponentEditorRegisterItem& operator=(const ComponentEditorRegisterItem& other) = delete;
 
 	/*! Get the tool tip for the item.
 	 * 
@@ -133,28 +137,6 @@ protected slots:
 
 private:
 	
-	//! No copying. No assignment.
-	ComponentEditorRegisterItem(const ComponentEditorRegisterItem& other);
-	ComponentEditorRegisterItem& operator=(const ComponentEditorRegisterItem& other);
-
-    //! Updates the graphical items to match the current register dimension.
-    void resizeGraphicsToCurrentDimensionSize();
-
-    /*!
-     *  Creates a graphical item for representing a register dimension.
-     *
-     *      @param [in] dimensionIndex      The index of the represented dimension.
-     *      @param [in] parentItem          The parent graphical item for the dimension item.
-     */
-    void createDimensionGraphicsItem(int dimensionIndex, MemoryVisualizationItem* parentItem);
-    
-    /*!
-     *  Removes a graphical item representing a register dimension.
-     *
-     *      @param [in] dimensionIndex      The index of the dimension to remove.
-     *      @param [in] parentItem          The parent graphical item of the dimension item.
-     */
-    void removeDimensionGraphicsItem(int dimensionIndex, MemoryVisualizationItem* parentItem);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -166,8 +148,8 @@ private:
 	//! The visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_;
 
-	//! The graph items that visualizes the register dimensions.
-	QList<RegisterGraphItem*> registerDimensions_;
+	//! The graph item that visualizes the register and possible dimensions.
+	RegisterGraphItem* registerItem_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

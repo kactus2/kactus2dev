@@ -7,22 +7,23 @@
 
 #include "visualizeritem.h"
 
+#include <QStringBuilder>
 #include <QFontMetrics>
 #include <QFont>
 
 //-----------------------------------------------------------------------------
 // Function: VisualizerItem()
 //-----------------------------------------------------------------------------
-VisualizerItem::VisualizerItem( QGraphicsItem* parent /*= 0*/ )
-    : QGraphicsRectItem(parent),
-      name_(),
-      nameHorizontalPos_(VisualizerItem::NAME_LEFT_ALIGN),
-      nameVerticalPos_(VisualizerItem::NAME_MIDDLE),
-      nameLabel_(this),
-      leftTopText_(this),
-      leftBottomText_(this),
-      rightTopText_(this),
-      rightBottomText_(this)
+VisualizerItem::VisualizerItem(QGraphicsItem* parent /*= 0*/) :
+    QGraphicsRectItem(parent),
+    name_(),
+    nameHorizontalPos_(VisualizerItem::NAME_LEFT_ALIGN),
+    nameVerticalPos_(VisualizerItem::NAME_MIDDLE),
+    nameLabel_(this),
+    leftTopText_(this),
+    leftBottomText_(this),
+    rightTopText_(this),
+    rightBottomText_(this)
 {
 	setRect(0, 0, VisualizerItem::DEFAULT_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
 
@@ -48,15 +49,9 @@ VisualizerItem::VisualizerItem( QGraphicsItem* parent /*= 0*/ )
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~VisualizerItem()
-//-----------------------------------------------------------------------------
-VisualizerItem::~VisualizerItem() {
-}
-
-//-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setName( const QString& name ) 
+void VisualizerItem::setName(QString const& name)
 {	
     name_ = name;
     nameLabel_.setPlainText(name); 
@@ -70,7 +65,7 @@ void VisualizerItem::setName( const QString& name )
 //-----------------------------------------------------------------------------
 // Function: setLeftTopCorner()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setLeftTopCorner( const QString& text ) 
+void VisualizerItem::setLeftTopCorner(QString const& text) 
 {
     setLeftTopPosition();	
     leftTopText_.setText(text);
@@ -79,7 +74,7 @@ void VisualizerItem::setLeftTopCorner( const QString& text )
 //-----------------------------------------------------------------------------
 // Function: setLeftBottomCorner()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setLeftBottomCorner( const QString& text ) 
+void VisualizerItem::setLeftBottomCorner(QString const& text) 
 {
 	setLeftBottomPosition();
     leftBottomText_.setText(text);
@@ -88,7 +83,7 @@ void VisualizerItem::setLeftBottomCorner( const QString& text )
 //-----------------------------------------------------------------------------
 // Function: setRightTopCorner()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setRightTopCorner( const QString& text ) 
+void VisualizerItem::setRightTopCorner(QString const& text) 
 {
     rightTopText_.setText(text);
     setRightTopPosition();
@@ -97,7 +92,7 @@ void VisualizerItem::setRightTopCorner( const QString& text )
 //-----------------------------------------------------------------------------
 // Function: setRightBottomCorner()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setRightBottomCorner( const QString& text ) 
+void VisualizerItem::setRightBottomCorner(QString const& text) 
 {
 	rightBottomText_.setText(text);
 	setRightBottomPosition();
@@ -125,8 +120,8 @@ void VisualizerItem::setLeftBottomPosition()
 //-----------------------------------------------------------------------------
 void VisualizerItem::setRightTopPosition()
 {
-   rightTopText_.setPos(rect().topRight().x() - rightTopText_.boundingRect().width() - VisualizerItem::CORNER_INDENTATION, 
-    VisualizerItem::CORNER_INDENTATION);
+    rightTopText_.setPos(rect().topRight().x() - rightTopText_.boundingRect().width() - VisualizerItem::CORNER_INDENTATION, 
+        VisualizerItem::CORNER_INDENTATION);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,45 +138,48 @@ void VisualizerItem::setRightBottomPosition()
 //-----------------------------------------------------------------------------
 void VisualizerItem::setNameLabelPosition()
 {
-
     // Horizontal position.
     int xCoordinate = 0;
-    switch (nameHorizontalPos_) {
-    case VisualizerItem::NAME_RIGHT_ALIGN: {
-        xCoordinate = rightTopText_.x() - nameLabel_.boundingRect().width() - VisualizerItem::NAME_INDENTATION; //!!!!!!!!!
-        break;
-                                     }
-
-    case VisualizerItem::NAME_CENTERED: {
-        xCoordinate = rect().center().x() - (nameLabel_.boundingRect().width() / 2);
-        break;
-                                        }
-
-    case VisualizerItem::NAME_LEFT_ALIGN:
-    default: {
-        xCoordinate = leftTopText_.x() + leftTopText_.boundingRect().width() +  VisualizerItem::NAME_INDENTATION;
-        break;
-             }
+    switch (nameHorizontalPos_)
+    {
+        case VisualizerItem::NAME_RIGHT_ALIGN:
+        {
+            xCoordinate = rightTopText_.x() - nameLabel_.boundingRect().width() - VisualizerItem::NAME_INDENTATION;
+            break;
+        }
+        case VisualizerItem::NAME_CENTERED:
+        {
+            xCoordinate = rect().center().x() - (nameLabel_.boundingRect().width() / 2);
+            break;
+        }
+        case VisualizerItem::NAME_LEFT_ALIGN:
+        default:
+        {
+            xCoordinate = leftTopText_.x() + leftTopText_.boundingRect().width() + VisualizerItem::NAME_INDENTATION;
+            break;
+        }
     }
 
     // Vertical position.
     int yCoordinate = 0;
-    switch (nameVerticalPos_) {
-    case VisualizerItem::NAME_TOP: {
-        yCoordinate = VisualizerItem::CORNER_INDENTATION;
-        break;
-                                   }
-
-    case VisualizerItem::NAME_BOTTOM: {
-        yCoordinate = rect().bottomRight().y() - VisualizerItem::FONT_NAMESIZE  - 3 * VisualizerItem::CORNER_INDENTATION;
-        break;
-                                      }
-
-    case VisualizerItem::NAME_MIDDLE:
-    default: {
-        yCoordinate = (rect().height() - nameLabel_.boundingRect().height()) / 2;
-        break;
-             }
+    switch (nameVerticalPos_)
+    {
+        case VisualizerItem::NAME_TOP:
+        {
+            yCoordinate = VisualizerItem::CORNER_INDENTATION;
+            break;
+        }
+        case VisualizerItem::NAME_BOTTOM:
+        {
+            yCoordinate = rect().bottomRight().y() - VisualizerItem::FONT_NAMESIZE - 3 * VisualizerItem::CORNER_INDENTATION;
+            break;
+        }
+        case VisualizerItem::NAME_MIDDLE:
+        default:
+        {
+            yCoordinate = (rect().height() - nameLabel_.boundingRect().height()) / 2;
+            break;
+        }
     }
 
     nameLabel_.setPos(xCoordinate, yCoordinate);
@@ -236,12 +234,11 @@ QRectF VisualizerItem::itemTotalRect() const
 	// the rectangle that contains this item
 	QRectF totalRect(rect());
 
-	// if there are children
-	QList<QGraphicsItem*> children = childItems();
-	foreach (QGraphicsItem* child, children)
+	// if there are children	
+	for (QGraphicsItem const* child : childItems())
     {
 		// the rectangle must contain this item and also the child item
-		VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
+		VisualizerItem const* childItem = dynamic_cast<VisualizerItem const*>(child);
 		if (childItem && childItem->isVisible())
         {
 			totalRect = totalRect.united(mapRectFromItem(child, childItem->itemTotalRect()));
@@ -253,7 +250,8 @@ QRectF VisualizerItem::itemTotalRect() const
 //-----------------------------------------------------------------------------
 // Function: itemTotalWidth()
 //-----------------------------------------------------------------------------
-qreal VisualizerItem::itemTotalWidth() const {
+qreal VisualizerItem::itemTotalWidth() const
+{
 	return VisualizerItem::DEFAULT_WIDTH;
 }
 
@@ -269,15 +267,15 @@ void VisualizerItem::setWidth(qreal width)
 //-----------------------------------------------------------------------------
 // Function: name()
 //-----------------------------------------------------------------------------
-QString VisualizerItem::name() const {
+QString VisualizerItem::name() const
+{
 	return name_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: setNamePosition()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setNamePosition( const NameHorizontalAlign hPos, 
-    const NameVerticalAlign vPos ) 
+void VisualizerItem::setNamePosition( const NameHorizontalAlign hPos, const NameVerticalAlign vPos ) 
 {
 	nameHorizontalPos_ = hPos;
     nameVerticalPos_ = vPos;
@@ -402,24 +400,20 @@ void VisualizerItem::resizeLabels()
     setNameLabelPosition();
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: clipText()
 //-----------------------------------------------------------------------------
 QString VisualizerItem::clipText(QString const& text, int maxChars) const
 {
     // if the text is too wide to be displayed at all.
-    if (text.size() > maxChars && maxChars < 2)
+    if (maxChars < 2 && text.size() > maxChars)
     {
         return QString();
     }       
     else if (text.size() > maxChars)
     {    
-        QString chopped(text);
-        chopped.resize(maxChars - 3);
-
         // add "..." to the end to indicate the text has been partly hidden.
-        chopped.append(QStringLiteral("..."));
+        QString chopped(text.left(maxChars - 3) % QStringLiteral("..."));        
         return chopped;
     }
 

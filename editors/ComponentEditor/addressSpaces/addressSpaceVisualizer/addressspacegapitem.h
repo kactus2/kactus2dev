@@ -46,24 +46,30 @@ public:
 		QGraphicsItem* parent = 0);
 	
 	//! The destructor.
-	virtual ~AddressSpaceGapItem();
+	virtual ~AddressSpaceGapItem() = default;
+
+    //! No copying.
+    AddressSpaceGapItem(const AddressSpaceGapItem& other) = delete;
+
+    //! No assignment.
+    AddressSpaceGapItem& operator=(const AddressSpaceGapItem& other) = delete;
 
 	//! Refresh the item.
-	virtual void refresh();
+	virtual void refresh() override;
 
 	/*!
      *  Get the offset of the item. 
 	 *
 	 *      @return int The offset of the item.
 	 */
-	virtual quint64 getOffset() const;
+	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
 	 *      @return The last address.
 	 */
-	virtual quint64 getLastAddress() const;
+	virtual quint64 getLastAddress() const override final;
 
 	/*!
      *  Set start address for the gap.
@@ -95,23 +101,17 @@ public:
 	 *
 	 *      @param [in] address     The first address to set.
 	 */
-    virtual void setOverlappingTop(quint64 const& address);
+    virtual void setOverlappingTop(quint64 const& address) override final;
 
 	/*!
      *  Sets the last non-overlapping address to display.
 	 *
 	 *      @param [in] address     The last address to set.
 	 */
-    virtual void setOverlappingBottom(quint64 const& address);
+    virtual void setOverlappingBottom(quint64 const& address) override final;
 
 private:
-	
-	//! No copying.
-	AddressSpaceGapItem(const AddressSpaceGapItem& other);
-
-	//! No assignment.
-	AddressSpaceGapItem& operator=(const AddressSpaceGapItem& other);
-
+		
 	//! The start address of the gap.
 	quint64 start_;
 

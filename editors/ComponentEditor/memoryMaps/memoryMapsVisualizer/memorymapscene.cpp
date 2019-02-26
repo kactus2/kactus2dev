@@ -81,8 +81,7 @@ void MemoryMapScene::addMemGraphItem( VisualizerItem* memGraphItem )
 void MemoryMapScene::removeMemGraphItem( VisualizerItem* memGraphItem )
 {
 	Q_ASSERT(memGraphItem);
-
-    int startIndex = memGraphItems_.indexOf(memGraphItem);
+    
     qreal yCoordinate = memGraphItem->pos().y();
 
     removeItem(memGraphItem);
@@ -90,10 +89,8 @@ void MemoryMapScene::removeMemGraphItem( VisualizerItem* memGraphItem )
 
     disconnect(memGraphItem, SIGNAL(expandStateChanged()), this, SLOT(rePosition()));
 
-    for (int i = startIndex; i < memGraphItems_.count(); i++)
-    {     
-        VisualizerItem* memMap = memGraphItems_.at(i);
-
+    for (VisualizerItem* memMap : memGraphItems_)
+    {   
         memMap->setPos(0, yCoordinate);
         yCoordinate += memMap->itemTotalRect().bottom() + 10;
     }
@@ -113,7 +110,7 @@ void MemoryMapScene::rePosition()
 {
 	qreal yCoordinate = 0;
 
-	foreach (VisualizerItem* memMap, memGraphItems_)
+	for (VisualizerItem* memMap : memGraphItems_)
     {        
 		memMap->setPos(0, yCoordinate);
         yCoordinate += memMap->itemTotalRect().bottom() + 10;
@@ -137,7 +134,7 @@ void MemoryMapScene::setWidth(int width)
     {
         width_ = width - MemoryVisualizationItem::CHILD_INDENTATION;        
        
-        foreach (VisualizerItem* memMap, memGraphItems_)
+        for (VisualizerItem* memMap : memGraphItems_)
         {        
             memMap->setWidth(width_);
         }

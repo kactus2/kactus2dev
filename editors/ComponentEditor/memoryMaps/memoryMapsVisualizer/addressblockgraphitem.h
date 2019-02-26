@@ -41,34 +41,40 @@ public:
 		QGraphicsItem *parent);
 	
 	//! The destructor
-	virtual ~AddressBlockGraphItem();
+	virtual ~AddressBlockGraphItem() = default;
+
+    //! No copying.
+    AddressBlockGraphItem(const AddressBlockGraphItem& other) = delete;
+
+    //! No assignment.
+    AddressBlockGraphItem& operator=(const AddressBlockGraphItem& other) = delete;
 
     //! Refresh the item, re-layout the sub-items and refresh parent item.
-	virtual void refresh();
+	virtual void refresh() override final;
 
     //! Updates the labels and tooltip for the item.
-    virtual void updateDisplay();
+    virtual void updateDisplay() override final;
 
 	/*!
      *  Get the offset of the item. 
 	 *
 	 *      @return int The offset of the item from the parent item's base address.
 	 */
-	virtual quint64 getOffset() const;
+	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
 	 *      @return The last address.
 	 */
-	virtual quint64 getLastAddress() const;
+	virtual quint64 getLastAddress() const override final;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
 	 */
-	virtual int getBitWidth() const;
+	virtual int getBitWidth() const override final;
 
     /*!
      *  Sets the addressable unit size.
@@ -82,23 +88,17 @@ public:
 	 *
 	 *      @return The size of least addressable unit.
 	 */
-	virtual unsigned int getAddressUnitSize() const;
+	virtual unsigned int getAddressUnitSize() const override final;
            
     /*!
      *  Checks if the item is to be used in the visualization.
      *
      *      @return True, if the item should be used, otherwise false.
      */
-    virtual bool isPresent() const;
+    virtual bool isPresent() const override final;
 
 private:
-	
-	//! No copying.
-	AddressBlockGraphItem(const AddressBlockGraphItem& other);
-
-	//! No assignment.
-	AddressBlockGraphItem& operator=(const AddressBlockGraphItem& other);
-
+		
 	//! Pointer to the address block being displayed.
 	QSharedPointer<AddressBlock> addrBlock_;
 

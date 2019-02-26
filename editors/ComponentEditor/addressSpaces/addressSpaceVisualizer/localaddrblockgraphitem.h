@@ -42,33 +42,33 @@ public:
 		QGraphicsItem* parent = 0);
 	
 	//! The destructor.
-	virtual ~LocalAddrBlockGraphItem();
+	virtual ~LocalAddrBlockGraphItem() = default;
+
+    //! No copying.
+    LocalAddrBlockGraphItem(const LocalAddrBlockGraphItem& other) = delete;
+
+    //! No assignment.
+    LocalAddrBlockGraphItem& operator=(const LocalAddrBlockGraphItem& other) = delete;
 
 	//! Refresh the item.
-	virtual void refresh();
+	virtual void refresh() override final;
 
 	/*!
      *  Get the offset of the item. 
 	 *
 	 *      @return int The offset of the item.
 	 */
-	virtual quint64 getOffset() const;
+	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
 	 *      @return The last address.
 	 */
-	virtual quint64 getLastAddress() const;
+	virtual quint64 getLastAddress() const override final;
 
 private:
-	
-	//! No copying.
-	LocalAddrBlockGraphItem(const LocalAddrBlockGraphItem& other);
-
-	//! No assignment.
-	LocalAddrBlockGraphItem& operator=(const LocalAddrBlockGraphItem& other);
-
+		
 	//! The address block being visualized.
 	QSharedPointer<AddressBlock> addrBlock_;
 };

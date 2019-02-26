@@ -59,94 +59,78 @@ public:
     //! The destructor.
     virtual ~ComponentEditorRegisterFileItem() = default;
 
+    //! No copying. No assignment.
+    ComponentEditorRegisterFileItem(const ComponentEditorRegisterFileItem& other) = delete;
+    ComponentEditorRegisterFileItem& operator=(const ComponentEditorRegisterFileItem& other) = delete;
+
     /*!
     *  Get the tool tip for the item.
     *
     *      @return The text for the tool tip to print to user.
     */
-    virtual QString getTooltip() const;
+    virtual QString getTooltip() const override final;
 
     /*!
     *  Get the text to be displayed to user in the tree for this item.
     *
     *      @return QString Contains the text to display.
     */
-    virtual QString text() const;
+    virtual QString text() const override final;
 
     /*!
     *  Check the validity of this item and sub items.
     *
     *      @return bool True if item is in valid state.
     */
-    virtual bool isValid() const;
+    virtual bool isValid() const override final;
 
     /*!
     *  Get pointer to the editor of this item.
     *
     *      @return The editor to use for this item.
     */
-    virtual ItemEditor* editor();
+    virtual ItemEditor* editor() override final;
 
     /*!
     *  Add a new child to the item.
     *
     *      @param [in] index The index to add the child into.
     */
-    virtual void createChild(int index);
+    virtual void createChild(int index) override final;
 
     /*!
     *  Get the visualizer graphics item for the memory map.
     *
     *      @return QGraphicsItem* The graphics item.
     */
-    virtual QGraphicsItem* getGraphicsItem();
+    virtual QGraphicsItem* getGraphicsItem() override final;
 
     /*!
     *  Remove the graphics item of the memory map.
     */
-    virtual void removeGraphicsItem();
+    virtual void removeGraphicsItem() override final;
 
     /*!
     *  Get pointer to the visualizer of this item.
     *
     *      @return The visualizer to use for this item.
     */
-    virtual ItemVisualizer* visualizer();
+    virtual ItemVisualizer* visualizer() override final;
 
 
-    virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
+    void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 protected slots:
-
 
     /*!
     *  Update the graphics item of the memory map.
     */
-    virtual void updateGraphics();
+    virtual void updateGraphics() override final;
 
     //!  Handler for editor's contentChanged signal.
-    virtual void onGraphicsChanged();
+    virtual void onGraphicsChanged() override final;
 
 private:
-
-    //! Updates the graphical items to match the current register file dimension.
-    void resizeGraphicsToCurrentDimensionSize();
-
-    /*!
-    *  Creates a graphical item for representing a register file dimension.
-    *
-    *      @param [in] dimensionIndex      The index of the represented dimension.
-    *      @param [in] parentItem          The parent graphical item for the dimension item.
-    */
-    void createDimensionGraphicsItem(int dimensionIndex, MemoryVisualizationItem* parentItem);
-
-    /*!
-    *  Removes a graphical item representing a register file dimension.
-    *
-    *      @param [in] dimensionIndex      The index of the dimension to remove.
-    *      @param [in] parentItem          The parent graphical item of the dimension item.
-    */
-    void removeDimensionGraphicsItem(int dimensionIndex, MemoryVisualizationItem* parentItem);
 
     //! The register file being edited.
     QSharedPointer<RegisterFile> registerFile_;
@@ -154,8 +138,8 @@ private:
     //! The visualizer for memory maps.
     MemoryMapsVisualizer* visualizer_;
 
-    //! The graph items that visualizes the register file dimensions.
-    QList<RegisterFileGraphItem*> registerFileDimensions_;
+    //! The graph item that visualizes the register file and its dimensions.
+    RegisterFileGraphItem* registerFileItem_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

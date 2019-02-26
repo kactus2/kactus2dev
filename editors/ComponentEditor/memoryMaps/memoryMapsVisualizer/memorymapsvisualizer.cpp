@@ -99,7 +99,7 @@ void MemoryMapsVisualizer::showEvent(QShowEvent* event)
 
     emit displayed();
 
-    foreach (MemoryMapGraphItem* memoryMap, memGraphItems_)
+    for (MemoryMapGraphItem* memoryMap : memGraphItems_)
     {
         if (memoryMap->isPresent())
         {

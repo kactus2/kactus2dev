@@ -39,41 +39,45 @@ public:
         QGraphicsItem* parent);
 
 	//! The destructor
-	virtual ~FieldGraphItem();
+	virtual ~FieldGraphItem() = default;
+
+    //! No copying
+    FieldGraphItem(const FieldGraphItem& other) = delete;
+    FieldGraphItem& operator=(const FieldGraphItem& other) = delete;
 
     //! Refresh the item and the parent item.
-	virtual void refresh();
+	virtual void refresh() override final;
 
     //! Updates the labels and tooltip for the item.
-    virtual void updateDisplay();
+    virtual void updateDisplay() override final;
 
 	/*!
      *  Get the offset of the item. 
 	 *
 	 *      @return int The offset of the item from the parent item's base address.
 	 */
-	virtual quint64 getOffset() const;
+	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last bit contained in the field.
 	 *
 	 *      @return The last bit.
 	 */
-	virtual quint64 getLastAddress() const;
+	virtual quint64 getLastAddress() const override final;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
 	 */
-	virtual int getBitWidth() const;
+	virtual int getBitWidth() const override final;
 
 	/*!
      *  Get number of bits the addressable unit contains.
 	 *
 	 *      @return The size of least addressable unit.
 	 */
-	virtual unsigned int getAddressUnitSize() const;
+	virtual unsigned int getAddressUnitSize() const override final;
  
 	/*!
      *  Set the width for the item.
@@ -87,7 +91,7 @@ public:
 	 *
 	 *      @param [in] The first address to set.
 	 */
-    virtual void setDisplayOffset(quint64 const& address);
+    virtual void setDisplayOffset(quint64 const& address) override final;
 
 
     /*!
@@ -95,25 +99,21 @@ public:
      *
      *      @param [in] The last address to set.
      */
-    virtual void setDisplayLastAddress(quint64 const& address);
+    virtual void setDisplayLastAddress(quint64 const& address) override final;
     
     /*!
      *  Checks if the item is to be used in the visualization.
      *
      *      @return True, if the item should be used, otherwise false.
      */
-    virtual bool isPresent() const;
+    virtual bool isPresent() const override final;
 
 protected:
      
     //! Set the item into conflicted (overlapping memory) state.
-     virtual void setConflicted(bool conflicted);
+     virtual void setConflicted(bool conflicted) override final;
 
 private:
-
-	//! No copying
-	FieldGraphItem(const FieldGraphItem& other);
-	FieldGraphItem& operator=(const FieldGraphItem& other);
 
 	//! The field being visualized.
 	QSharedPointer<Field> field_;

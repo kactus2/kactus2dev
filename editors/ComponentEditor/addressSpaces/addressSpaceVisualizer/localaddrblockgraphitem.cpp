@@ -37,14 +37,6 @@ addrBlock_(block)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem()
-//-----------------------------------------------------------------------------
-LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LocalAddrBlockGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void LocalAddrBlockGraphItem::refresh()

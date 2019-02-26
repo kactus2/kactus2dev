@@ -15,6 +15,7 @@
 
 #include <common/KactusColors.h>
 
+#include <QStringBuilder>
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
@@ -33,14 +34,6 @@ RegisterFileGraphItem::RegisterFileGraphItem(QSharedPointer<RegisterFile> regFil
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterFileGraphItem::setDimensionIndex()
-//-----------------------------------------------------------------------------
-void RegisterFileGraphItem::setDimensionIndex(unsigned int index)
-{
-    dimensionIndex_ = index;
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterFileGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void RegisterFileGraphItem::refresh()
@@ -55,9 +48,11 @@ void RegisterFileGraphItem::refresh()
 void RegisterFileGraphItem::updateDisplay()
 {
     QString name = regFile_->name();
-    if (parseExpression(regFile_->getDimension()) > 0)
+    
+    int dimension = parseExpression(regFile_->getDimension());
+    if (dimension > 0)
     {
-        name.append("[" + QString::number(dimensionIndex_) + "]");
+        name.append("[" % QString::number(dimension - 1) % ":0]");
     }
 
     quint64 offset = getOffset();
@@ -68,28 +63,27 @@ void RegisterFileGraphItem::updateDisplay()
     setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
-    setToolTip("<b>Name: </b>" + regFile_->name() + "<br>" +
-        "<b>AUB: </b>" + QString::number(getAddressUnitSize()) + "<br>" +
-        "<b>First address: </b>" + toHexString(offset) + "<br>" +
-        "<b>Last address: </b>" + toHexString(lastAddress));
+    setToolTip("<b>Name: </b>" % regFile_->name() % "<br>" %
+        "<b>AUB: </b>" % QString::number(getAddressUnitSize()) % "<br>" %
+        "<b>First address: </b>" % toHexString(offset) % "<br>" %
+        "<b>Last address: </b>" % toHexString(lastAddress));
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileGraphItem::getOffset()
 //-----------------------------------------------------------------------------
 quint64 RegisterFileGraphItem::getOffset() const
-{
-    // the register offset from the address block
-    quint64 regFileOffset = parseExpression(regFile_->getAddressOffset());
-
+{    
     // the address block's offset
     MemoryVisualizationItem* parent = static_cast<MemoryVisualizationItem*>(parentItem());
     Q_ASSERT(parent);
     quint64 parentOffset = parent->getOffset();
-    quint64 range = parseExpression(regFile_->getRange());
+    
+    // the register offset from the address block
+    quint64 regFileOffset = parseExpression(regFile_->getAddressOffset());
 
     // the total offset is the address block's offset added with register's offset
-    return parentOffset + regFileOffset + (dimensionIndex_ * range);
+    return parentOffset + regFileOffset;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,8 +93,9 @@ quint64 RegisterFileGraphItem::getLastAddress() const
 {
     quint64 base = getOffset();
     quint64 range = parseExpression(regFile_->getRange());
+    int dimension = qMax(1, parseExpression(regFile_->getDimension()));
 
-    quint64 lastAddr = base + range;
+    quint64 lastAddr = base + range * dimension;
 
     if (lastAddr == 0)
     {

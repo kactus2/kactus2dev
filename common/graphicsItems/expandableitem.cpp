@@ -33,20 +33,12 @@ expansionArrow_(new QGraphicsPixmapItem(this))
 }
 
 //-----------------------------------------------------------------------------
-// Function: ExpandableItem::~ExpandableItem()
-//-----------------------------------------------------------------------------
-ExpandableItem::~ExpandableItem()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ExpandableItem::onExpandStateChange()
 //-----------------------------------------------------------------------------
 void ExpandableItem::onExpandStateChange(bool expanded)
 {
-	// if there are children
-	QList<QGraphicsItem*> children = childItems();
-	foreach (QGraphicsItem* child, children)
+	// if there are children	
+	for (QGraphicsItem* child : childItems())
     {
 		Q_ASSERT(child);
 

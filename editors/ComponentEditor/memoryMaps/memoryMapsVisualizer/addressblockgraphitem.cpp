@@ -15,6 +15,7 @@
 
 #include <common/KactusColors.h>
 
+#include <QStringBuilder>
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
@@ -31,14 +32,6 @@ addrssableUnitBits_(0)
 	setDefaultBrush(brush);
 
     updateDisplay();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockGraphItem::~AddressBlockGraphItem()
-//-----------------------------------------------------------------------------
-AddressBlockGraphItem::~AddressBlockGraphItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -64,10 +57,10 @@ void AddressBlockGraphItem::updateDisplay()
     setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
-    setToolTip("<b>Name: </b>" + addrBlock_->name() + "<br>" +
-        "<b>Offset: </b>" + toHexString(offset) + "<br>" +
-        "<b>Last address: </b>" + toHexString(lastAddress) + "<br>" +
-        "<b>Size [AUB]: </b>" + parseExpression(addrBlock_->getRange()));
+    setToolTip("<b>Name: </b>" % addrBlock_->name() % "<br>" %
+        "<b>Offset: </b>" % toHexString(offset) % "<br>" %
+        "<b>Last address: </b>" % toHexString(lastAddress) % "<br>" %
+        "<b>Size [AUB]: </b>" % QString::number(parseExpression(addrBlock_->getRange())));
 }
 
 //-----------------------------------------------------------------------------
