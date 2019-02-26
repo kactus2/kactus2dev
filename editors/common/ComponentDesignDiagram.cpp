@@ -449,7 +449,10 @@ QMenu* ComponentDesignDiagram::createContextMenu(QPointF const& pos)
         menu->addAction(&openComponentAction_);
         menu->addMenu(&openDesignMenu_);
         menu->addSeparator();
-        menu->addAction(&openAutoConnector_);
+        if (addAutoConnectorActionToContextMenu())
+        {
+            menu->addAction(&openAutoConnector_);
+        }
         menu->addSeparator();
         menu->addAction(&copyAction_);
         menu->addAction(&pasteAction_);
@@ -467,6 +470,14 @@ QMenu* ComponentDesignDiagram::createContextMenu(QPointF const& pos)
     }
 
     return menu;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::addAutoConnectorActionToContextMenu()
+//-----------------------------------------------------------------------------
+bool ComponentDesignDiagram::addAutoConnectorActionToContextMenu() const
+{
+    return false;
 }
 
 //-----------------------------------------------------------------------------

@@ -3005,3 +3005,11 @@ void HWDesignDiagram::createConnectionBetweenEndPoints(ConnectionEndpoint* start
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::addAutoConnectorActionToContextMenu()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::addAutoConnectorActionToContextMenu() const
+{
+    return true;
+}

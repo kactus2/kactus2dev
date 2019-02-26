@@ -563,6 +563,13 @@ private:
     virtual void createConnectionBetweenEndPoints(ConnectionEndpoint* startPoint,
         ConnectionEndpoint* endPoint) = 0;
 
+    /*!
+     *  Check if the auto connector should be added to the context menu.
+     *
+     *      @return True, if the auto connected should be added, false otherwise.
+     */
+    virtual bool addAutoConnectorActionToContextMenu() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
