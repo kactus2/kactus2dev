@@ -93,9 +93,10 @@ void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondI
     firstComponentGroup->setLayout(firstComponentLayout);
     secondComponentGroup->setLayout(secondComponentLayout);
 
-    connectorTable_ = new AutoConnectorConnectionTable(firstItem->componentModel(), secondItem->componentModel(),
-        firstItemList_, secondItemList_, firstItemName, secondItemName, itemMatcher, this);
-    connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(firstItemList_, secondItemList_, this));
+    connectorTable_ = new AutoConnectorConnectionTable(firstComponent_, secondComponent_, firstItemList_,
+        secondItemList_, firstItemName, secondItemName, itemMatcher, this);
+    connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(
+        firstComponent_, secondComponent_, firstItemList_, secondItemList_, itemMatcher, this));
 
     connect(connectorTable_->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&, const QVector<int> &)),
         this, SLOT(invalidateListFilters()), Qt::UniqueConnection);

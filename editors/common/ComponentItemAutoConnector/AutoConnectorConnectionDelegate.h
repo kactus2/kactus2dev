@@ -16,6 +16,9 @@
 #include <QListView>
 #include <QComboBox>
 
+class Component;
+class TableItemMatcher;
+
 //-----------------------------------------------------------------------------
 //! Delegate that provides widgets for editing connected pairings.
 //-----------------------------------------------------------------------------
@@ -28,11 +31,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] firstList   View of the first item list.
-     *      @param [in] secondList  View of the second item list.
-	 *      @param [in] parent      The parent of the object.
+     *      @param [in] firstItem       The first component item to be connected.
+     *      @param [in] secondItem      The second component item to be connected.
+     *      @param [in] firstList       View of the first item list.
+     *      @param [in] secondList      View of the second item list.
+     *      @param [in] itemMatcher     Checks for possible matches between two items.
+     *      @param [in] parent          The parent of the object.
 	 */
-    AutoConnectorConnectionDelegate(QListView* firstList, QListView* secondList, QObject* parent = 0);
+    AutoConnectorConnectionDelegate(QSharedPointer<Component> firstComponent,
+        QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
+        TableItemMatcher* itemMatcher, QObject* parent = 0);
 
 	/*!
      *  The destructor.
@@ -77,22 +85,37 @@ private:
     /*!
      *  Create the selection widget for ports.
      *
-     *      @param [in] component   Component containing the selected ports.
-     *      @param [in] parent      Parent item of the editor.
+     *      @param [in] selectionIndex              Index of the item selector.
+     *      @param [in] itemList                    List containing the items of the selected component.
+     *      @param [in] comparisonItemColumn        Column of the comparison item.
+     *      @param [in] itemComponent               Component containing the items of the selected index.
+     *      @param [in] comparisonItemComponent     Component containing the items of the comparison index.
+     *      @param [in] parent                      Parent item of the editor.
      *
      *      @return Combobox for component ports.
      */
-    QComboBox* createItemSelector(QListView* itemList, QWidget* parent) const;
+    QComboBox* createItemSelector(QModelIndex const& selectionIndex, QListView* itemList, int comparisonItemColumn,
+        QSharedPointer<Component> itemComponent, QSharedPointer<Component> comparisonItemComponent,
+        QWidget* parent) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The first component item to be connected.
+    QSharedPointer<Component> firstComponent_;
+
+    //! The second component item to be connected.
+    QSharedPointer<Component> secondComponent_;
 
     //! View of the first item list.
     QListView* firstList_;
 
     //! View of the second item list.
     QListView* secondList_;
+
+    //! Checks for possible matches between two items.
+    TableItemMatcher* itemMatcher_;
 };
 
 #endif // AUTOCONNECTORCONNECTIONDELEGATE_H

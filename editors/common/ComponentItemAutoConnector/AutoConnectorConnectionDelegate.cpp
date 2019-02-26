@@ -11,14 +11,20 @@
 
 #include "AutoConnectorConnectionDelegate.h"
 
+#include <editors/common/ComponentItemAutoConnector/TableItemMatcher.h>
+
 //-----------------------------------------------------------------------------
 // Function: AutoConnectorConnectionDelegate::AutoConnectorConnectionDelegate()
 //-----------------------------------------------------------------------------
-AutoConnectorConnectionDelegate::AutoConnectorConnectionDelegate(QListView* firstList, QListView* secondList,
-    QObject* parent):
+AutoConnectorConnectionDelegate::AutoConnectorConnectionDelegate(QSharedPointer<Component> firstComponent,
+    QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
+    TableItemMatcher* itemMatcher, QObject* parent):
 QStyledItemDelegate(parent),
+firstComponent_(firstComponent),
+secondComponent_(secondComponent),
 firstList_(firstList),
-secondList_(secondList)
+secondList_(secondList),
+itemMatcher_(itemMatcher)
 {
 
 }
@@ -39,11 +45,11 @@ QWidget* AutoConnectorConnectionDelegate::createEditor(QWidget* parent, QStyleOp
 {
     if (index.column() == 0)
     {
-        return createItemSelector(firstList_, parent);
+        return createItemSelector(index, firstList_, 1, firstComponent_, secondComponent_, parent);
     }
     else if (index.column() == 1)
     {
-        return createItemSelector(secondList_, parent);
+        return createItemSelector(index, secondList_, 0, secondComponent_, firstComponent_, parent);
     }
     else
     {
@@ -54,18 +60,30 @@ QWidget* AutoConnectorConnectionDelegate::createEditor(QWidget* parent, QStyleOp
 //-----------------------------------------------------------------------------
 // Function: AutoConnectorConnectionDelegate::createItemSelector()
 //-----------------------------------------------------------------------------
-QComboBox* AutoConnectorConnectionDelegate::createItemSelector(QListView* itemList, QWidget* parent) const
+QComboBox* AutoConnectorConnectionDelegate::createItemSelector(QModelIndex const& selectionIndex,
+    QListView* itemList, int comparisonItemColumn, QSharedPointer<Component> itemComponent,
+    QSharedPointer<Component> comparisonItemComponent, QWidget* parent) const
 {
     QComboBox* combo = new QComboBox(parent);
     combo->addItem(QString("<none>"));
 
-    for (int i = 0; i < itemList->model()->rowCount(); ++i)
+    if (itemList->model()->rowCount() > 0)
     {
-        QModelIndex itemIndex = itemList->model()->index(i, 0);
-        QString itemName = itemIndex.data(Qt::DisplayRole).toString();
-        QIcon itemIcon = itemIndex.data(Qt::DecorationRole).value<QIcon>();
+        QModelIndex comparisonItemIndex = selectionIndex.sibling(selectionIndex.row(), comparisonItemColumn);
 
-        combo->addItem(itemIcon, itemName);
+        for (int i = 0; i < itemList->model()->rowCount(); ++i)
+        {
+            QModelIndex itemIndex = itemList->model()->index(i, 0);
+
+            if (itemMatcher_->canDrop(itemIndex, comparisonItemIndex, itemComponent, comparisonItemComponent))
+            {
+                QString itemName = itemIndex.data(Qt::DisplayRole).toString();
+
+                QIcon itemIcon = itemIndex.data(Qt::DecorationRole).value<QIcon>();
+
+                combo->addItem(itemIcon, itemName);
+            }
+        }
     }
 
     return combo;
