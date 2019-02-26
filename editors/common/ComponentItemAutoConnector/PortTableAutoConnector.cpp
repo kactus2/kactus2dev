@@ -11,6 +11,8 @@
 
 #include "PortTableAutoConnector.h"
 
+#include <editors/common/PortUtilities.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
 
@@ -47,30 +49,10 @@ QVector<QPair<QString, QVector<QString> > > PortTableAutoConnector::findPossible
 QVector<QString> PortTableAutoConnector::getConnectablePortNames(DirectionTypes::Direction portDirection,
     QSharedPointer<QList<QSharedPointer<Port>>> secondItemPorts) const
 {
-    //! In -> Out & InOut & phantom
-    //! Out -> In & InOut & phantom
-    //! InOut -> InOut & phantom
-    //! Phantom -> In & Out & InOut & Phantom
-    QList<DirectionTypes::Direction> connectableDirections;
-    if (portDirection == DirectionTypes::IN)
-    {
-        connectableDirections = { DirectionTypes::OUT, DirectionTypes::INOUT, DirectionTypes::DIRECTION_PHANTOM };
-    }
-    else if (portDirection == DirectionTypes::OUT)
-    {
-        connectableDirections = { DirectionTypes::IN, DirectionTypes::INOUT, DirectionTypes::DIRECTION_PHANTOM };
-    }
-    else if (portDirection == DirectionTypes::INOUT)
-    {
-        connectableDirections = { DirectionTypes::INOUT, DirectionTypes::DIRECTION_PHANTOM };
-    }
-    else if (portDirection == DirectionTypes::DIRECTION_PHANTOM)
-    {
-        connectableDirections =
-        { DirectionTypes::IN, DirectionTypes::OUT, DirectionTypes::INOUT, DirectionTypes::DIRECTION_PHANTOM };
-    }
-
     QVector<QString> connectablePorts;
+
+    QVector<DirectionTypes::Direction> connectableDirections =
+        PortUtilities::getConnectableDirections(portDirection);
     if (!connectableDirections.isEmpty())
     {
         for (auto comparisonPort : *secondItemPorts)

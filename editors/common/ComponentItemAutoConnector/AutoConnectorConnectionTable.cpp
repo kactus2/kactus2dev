@@ -11,6 +11,10 @@
 
 #include "AutoConnectorConnectionTable.h"
 
+#include <editors/common/ComponentItemAutoConnector/TableItemMatcher.h>
+
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QHeaderView>
 #include <QContextMenuEvent>
 #include <QMenu>
@@ -19,14 +23,18 @@
 //-----------------------------------------------------------------------------
 // Function: AutoConnectorConnectionTable::AutoConnectorConnectionTable()
 //-----------------------------------------------------------------------------
-AutoConnectorConnectionTable::AutoConnectorConnectionTable(QListView* firstList, QListView* secondList,
-    QString const& firstItemName, QString const& secondItemName, QWidget* parent):
+AutoConnectorConnectionTable::AutoConnectorConnectionTable(QSharedPointer<Component> firstComponent,
+    QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
+    QString const& firstItemName, QString const& secondItemName, TableItemMatcher* itemMatcher, QWidget* parent):
 QTableWidget(parent),
+firstComponent_(firstComponent),
+secondComponent_(secondComponent),
 firstItemList_(firstList),
 secondItemList_(secondList),
 dragSourceList_(),
 removeRowAction_(new QAction(tr("Remove row"), this)),
-addRowAction_(new QAction(tr("Add row"), this))
+addRowAction_(new QAction(tr("Add row"), this)),
+itemMatcher_(itemMatcher)
 {
     setDragDropMode(QAbstractItemView::DropOnly);
 
@@ -110,24 +118,12 @@ void AutoConnectorConnectionTable::onAddRow()
 //-----------------------------------------------------------------------------
 void AutoConnectorConnectionTable::onRemoveRow()
 {
-    QModelIndexList indexList = selectedIndexes();
-
     QModelIndexList indexlist = selectedIndexes();
     qSort(indexlist.begin(), indexlist.end(), qGreater<QModelIndex>());
     foreach(QModelIndex index, indexlist)
     {
         removeRow(index.row());
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AutoConnectorConnectionTable::dropEvent()
-//-----------------------------------------------------------------------------
-void AutoConnectorConnectionTable::dropEvent(QDropEvent *event)
-{
-    dragSourceList_ = qobject_cast<QListView*>(event->source());
-
-    QTableWidget::dropEvent(event);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,5 +152,56 @@ bool AutoConnectorConnectionTable::dropMimeData(int row, int column, const QMime
         dragSourceList_ = nullptr;
 
         return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorConnectionTable::dragEnterEvent()
+//-----------------------------------------------------------------------------
+void AutoConnectorConnectionTable::dragEnterEvent(QDragEnterEvent *event)
+{
+    QTableWidget::dragEnterEvent(event);
+
+    dragSourceList_ = qobject_cast<QListView*>(event->source());
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorConnectionTable::dragMoveEvent()
+//-----------------------------------------------------------------------------
+void AutoConnectorConnectionTable::dragMoveEvent(QDragMoveEvent *event)
+{
+    QTableWidget::dragMoveEvent(event);
+
+    QModelIndex positionIndex = indexAt(event->pos());
+    if (positionIndex.isValid() && itemMatcher_)
+    {
+        QSharedPointer<Component> sourceComponent = firstComponent_;
+        QSharedPointer<Component> targetComponent = secondComponent_;
+        int comparisonIndexColumn = 1;
+        if (dragSourceList_ == secondItemList_)
+        {
+            sourceComponent = secondComponent_;
+            targetComponent = firstComponent_;
+            comparisonIndexColumn = 0;
+        }
+
+        if (positionIndex.column() != comparisonIndexColumn)
+        {
+            positionIndex = positionIndex.sibling(positionIndex.row(), comparisonIndexColumn);
+        }
+
+        if (itemMatcher_->canDrop(
+                dragSourceList_->currentIndex(), positionIndex, sourceComponent, targetComponent))
+        {
+            event->setDropAction(Qt::MoveAction);
+        }
+        else
+        {
+            event->setDropAction(Qt::IgnoreAction);
+        }
+    }
+    else
+    {
+        event->setDropAction(Qt::MoveAction);
     }
 }

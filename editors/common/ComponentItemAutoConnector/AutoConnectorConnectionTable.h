@@ -14,6 +14,10 @@
 
 #include <QTableWidget>
 #include <QListView>
+#include <QSharedPointer>
+
+class Component;
+class TableItemMatcher;
 
 //-----------------------------------------------------------------------------
 //! Table for connected items of two components.
@@ -27,14 +31,19 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] firstList   View of the first item list to be connected.
-     *      @param [in] secondList  View of the second item list to be connected.
-     *      @param [in] firstName   Name of the first item.
-     *      @param [in] secondName  Name of the second item.
-     *      @param [in] parent      The parent item.
+     *      @param [in] firstComponent      The first component containing the items to be connected.
+     *      @param [in] secondComponent     The second component containing the items to be connected.
+     *      @param [in] firstList           View of the first item list to be connected.
+     *      @param [in] secondList          View of the second item list to be connected.
+     *      @param [in] firstName           Name of the first item.
+     *      @param [in] secondName          Name of the second item.
+     *      @param [in] itemMatcher         Checks for possible matches between two items.
+     *      @param [in] parent              The parent item.
      */
-    AutoConnectorConnectionTable(QListView* firstList, QListView* secondList, QString const& firstItemName,
-        QString const& secondItemName, QWidget* parent = 0);
+    AutoConnectorConnectionTable(QSharedPointer<Component> firstComponent,
+        QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
+        QString const& firstItemName, QString const& secondItemName, TableItemMatcher* itemMatcher,
+        QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -72,11 +81,18 @@ protected:
     virtual bool dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action);
 
     /*!
-     *  Handles the drop events.
+     *  Handles the events for drag entering this table
      *
-     *      @param [in] event   The drop event.
+     *      @param [in] event   The selected drag enter event.
      */
-    virtual void dropEvent(QDropEvent *event);
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+
+    /*!
+     *  Handles the events for drag moving in this table
+     *
+     *      @param [in] event   The selected drag move event.
+     */
+    virtual void dragMoveEvent(QDragMoveEvent *event);
 
 private slots:
 
@@ -96,6 +112,12 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! Component containing the first list of items.
+    QSharedPointer<Component> firstComponent_;
+
+    //! Component containing the second list of items.
+    QSharedPointer<Component> secondComponent_;
+
     //! View of the first item list.
     QListView* firstItemList_;
 
@@ -110,6 +132,9 @@ private:
 
     //! Action for adding rows.
     QAction* addRowAction_;
+
+    //! Checks for possible matches between two items.
+    TableItemMatcher* itemMatcher_;
 };
 
 #endif // AUTOCONNECTORCONNECTIONTABLE_H

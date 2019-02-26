@@ -28,7 +28,7 @@
 // Function: AutoConnector::AutoConnector()
 //-----------------------------------------------------------------------------
 AutoConnector::AutoConnector(ComponentItem* firstItem, ComponentItem* secondItem, ListFiller* listFiller,
-    TableAutoConnector* tableInitializer, QString const& itemName, QWidget* parent) :
+    TableAutoConnector* tableInitializer, QString const& itemName, TableItemMatcher* itemMatcher, QWidget* parent):
 QWidget(parent),
 firstComponent_(firstItem->componentModel()),
 secondComponent_(secondItem->componentModel()),
@@ -39,7 +39,7 @@ secondItemList_(),
 connectorTable_(),
 tableInitializer_(tableInitializer)
 {
-    setupLayout(firstItem, secondItem, listFiller, itemName);
+    setupLayout(firstItem, secondItem, listFiller, itemName, itemMatcher);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ QVector<QPair<QString, QString> > AutoConnector::getConnectedItems() const
 // Function: AutoConnector::setupLayout()
 //-----------------------------------------------------------------------------
 void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondItem, ListFiller* listFiller,
-    QString const& itemName)
+    QString const& itemName, TableItemMatcher* itemMatcher)
 {
     firstItemList_ = new QListView(this);
     secondItemList_ = new QListView(this);
@@ -93,8 +93,8 @@ void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondI
     firstComponentGroup->setLayout(firstComponentLayout);
     secondComponentGroup->setLayout(secondComponentLayout);
 
-    connectorTable_ =
-        new AutoConnectorConnectionTable(firstItemList_, secondItemList_, firstItemName, secondItemName, this);
+    connectorTable_ = new AutoConnectorConnectionTable(firstItem->componentModel(), secondItem->componentModel(),
+        firstItemList_, secondItemList_, firstItemName, secondItemName, itemMatcher, this);
     connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(firstItemList_, secondItemList_, this));
 
     connect(connectorTable_->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&, const QVector<int> &)),

@@ -19,8 +19,10 @@
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
 #include <editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.h>
 #include <editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.h>
+#include <editors/common/ComponentItemAutoConnector/BusInterfaceItemMatcher.h>
 #include <editors/common/ComponentItemAutoConnector/PortListFiller.h>
 #include <editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h>
+#include <editors/common/ComponentItemAutoConnector/PortItemMatcher.h>
 
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
@@ -38,9 +40,10 @@ connectButton_(new QPushButton(QIcon(":/icons/common/graphics/connect.png"), "Co
 autoConnectButton_(new QPushButton(QIcon(":/icons/common/graphics/configuration.png"), "Auto connect all", this)),
 clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clear"), this)),
 busInterfaceConnector_(new AutoConnector(firstItem, secondItem, new BusInterfaceListFiller(),
-    new BusInterfaceTableAutoConnector(library), tr("bus interfaces"), this)),
-portConnector_(new AutoConnector(
-    firstItem, secondItem, new PortListFiller(), new PortTableAutoConnector(), tr("ports"), this)),
+    new BusInterfaceTableAutoConnector(library), tr("bus interfaces"), new BusInterfaceItemMatcher(library),
+    this)),
+portConnector_(new AutoConnector(firstItem, secondItem, new PortListFiller(), new PortTableAutoConnector(),
+    tr("ports"), new PortItemMatcher(), this)),
 tabs_(this)
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

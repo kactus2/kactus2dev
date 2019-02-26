@@ -4642,6 +4642,18 @@
     <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorListFilter.cpp">
       <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\PortItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\TableItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\BusInterfaceItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\PortUtilities.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7086,6 +7098,18 @@
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClInclude>
     <ClInclude Include="editors\common\BusInterfaceUtilities.h">
+      <Filter>Header Files\editors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\TableItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\PortItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\BusInterfaceItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\PortUtilities.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
   </ItemGroup>
