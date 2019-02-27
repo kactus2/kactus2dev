@@ -52,7 +52,10 @@ ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPoin
     openComponentAction_(tr("Open Component"), this),
     deleteAction_(tr("Delete"), this),
     openDesignMenu_(tr("Open Design")),
-    clickedPosition_()
+    clickedPosition_(),
+    lastMousePress_(Qt::NoButton),
+    itemDragMarginX_(0),
+    itemDragMarginY_(0)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(editProvider.data(), SIGNAL(modified()), this, SIGNAL(contentChanged()));
@@ -230,6 +233,8 @@ void ComponentDesignDiagram::onOpenDesignAction(QAction* selectedAction)
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    lastMousePress_ = mouseEvent->button();
+
     // if other than left button was pressed return the mode back to select
 	if (mouseEvent->button() != Qt::LeftButton)
     {
@@ -254,6 +259,13 @@ void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
         {
             // Handle the mouse press and bring the new selection to front.
             QGraphicsScene::mousePressEvent(mouseEvent);
+
+            if (singleSelection())
+            {
+                QGraphicsItem* draggedItem = selectedItems().first();
+                itemDragMarginX_ = -(draggedItem->boundingRect().width() / 4.4);
+                itemDragMarginY_ = draggedItem->boundingRect().height();
+            }
         }
     }
     else if (getMode() == MODE_CONNECT && !isProtected())
@@ -311,6 +323,11 @@ void ComponentDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent
     // Allow moving items only when a single item is selected.
     else if (singleSelection())
     {
+        if (lastMousePress_ == Qt::LeftButton)
+        {
+            views().first()->ensureVisible(selectedItems().first(), itemDragMarginX_, itemDragMarginY_);
+        }
+
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }
@@ -334,6 +351,10 @@ void ComponentDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEv
 
     // process the normal mouse release event
 	QGraphicsScene::mouseReleaseEvent(mouseEvent);
+
+    lastMousePress_ = Qt::NoButton;
+    itemDragMarginX_ = 0;
+    itemDragMarginY_ = 0;
 }
 
 //-----------------------------------------------------------------------------

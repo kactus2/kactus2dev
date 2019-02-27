@@ -569,6 +569,14 @@ private:
     //! Cursor position where the user right-presses to open the context menu.
     QPoint clickedPosition_;
 
+    //! The pressed mouse button.
+    Qt::MouseButton lastMousePress_;
+
+    //! X margin for dragging items out of visible area.
+    double itemDragMarginX_;
+    
+    //! Y margin for dragging items out of visible area.
+    double itemDragMarginY_;
 };
 
 #endif // COMPONENTDESIGNDIAGRAM_H
