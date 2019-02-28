@@ -232,6 +232,10 @@ QVariant PortMapTreeModel::headerData(int section, Qt::Orientation orientation, 
             {
                 return tr("Invert");
             }
+            else if (section == PortMapsColumns::ISINFORMATIVE)
+            {
+                return tr("Informative");
+            }
             else if (section == PortMapsColumns::TIEOFF)
             {
                 QString tieOff = tr("Tie Off") + getExpressionSymbol();
@@ -314,6 +318,21 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
             return aggregatedInvert.toBool();
         }
 
+        else if (index.column() == PortMapsColumns::ISINFORMATIVE && !index.parent().isValid() &&
+            !portMappings_.at(index.row()).portMaps_.isEmpty())
+        {
+            BooleanValue aggregatedInfo = portMappings_.at(index.row()).portMaps_.first()->getIsInformative();
+            foreach(QSharedPointer<PortMap> map, portMappings_.at(index.row()).portMaps_)
+            {
+                if (aggregatedInfo.toBool() != map->getIsInformative().toBool())
+                {
+                    return MULTIPLE_SELECTED;
+                }
+            }
+
+            return aggregatedInfo.toBool();
+        }
+
         else if (index.column() == PortMapsColumns::TIEOFF && !index.parent().isValid() &&
             !portMappings_.at(index.row()).portMaps_.isEmpty())
         {
@@ -340,9 +359,11 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
         }
     }
 
-    else if (index.parent().isValid() && role == Qt::CheckStateRole && index.column() == PortMapsColumns::INVERT)
+    else if (index.parent().isValid() && role == Qt::CheckStateRole &&
+        (index.column() == PortMapsColumns::INVERT || index.column() == PortMapsColumns::ISINFORMATIVE))
     {
-        if (portMap->getInvert().toBool())
+        if ((index.column() == PortMapsColumns::INVERT && portMap->getInvert().toBool()) ||
+            (index.column() == PortMapsColumns::ISINFORMATIVE && portMap->getIsInformative().toBool()))
         {
             return Qt::Checked;
         }
@@ -711,10 +732,18 @@ bool PortMapTreeModel::setData(const QModelIndex &index, const QVariant &value, 
     }
     else if (index.parent().isValid() && role == Qt::CheckStateRole)
     {
-        bool invertValue = (value == Qt::Checked);
+        bool checkValue = (value == Qt::Checked);
 
         QSharedPointer<PortMap> portMap = getIndexedPortMap(index.parent(), index.row());
-        portMap->setInvert(invertValue);
+
+        if (index.column() == PortMapsColumns::INVERT)
+        {
+            portMap->setInvert(checkValue);
+        }
+        else if (index.column() == PortMapsColumns::ISINFORMATIVE)
+        {
+            portMap->setIsInformative(checkValue);
+        }
 
         QModelIndex logicalInvertIndex = index.parent().sibling(index.parent().row(), index.column());
 
@@ -913,7 +942,8 @@ Qt::ItemFlags PortMapTreeModel::flags(QModelIndex const& index) const
 
     Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 
-    if (index.column() == PortMapsColumns::INVERT && index.parent().isValid())
+    if ((index.column() == PortMapsColumns::INVERT || index.column() == PortMapsColumns::ISINFORMATIVE)
+        && index.parent().isValid())
     {
         itemFlags |= Qt::ItemIsUserCheckable;
     }
@@ -1149,7 +1179,8 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
                 return false;
             }
         }
-        else if (index.column() != PortMapsColumns::LOGICAL_PRESENCE && index.column() != PortMapsColumns::INVERT)
+        else if (index.column() != PortMapsColumns::LOGICAL_PRESENCE &&
+            index.column() != PortMapsColumns::INVERT && index.column() != PortMapsColumns::ISINFORMATIVE)
         {
             if (currentPortMap->getPhysicalPort() && !currentPortMap->getLogicalTieOff().isEmpty())
             {

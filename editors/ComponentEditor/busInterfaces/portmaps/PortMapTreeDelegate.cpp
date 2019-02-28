@@ -227,7 +227,8 @@ void PortMapTreeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
 {
 	QStyleOptionViewItem viewItemOption(option);
 
-    if (index.parent().isValid() && index.column() == PortMapsColumns::INVERT)
+    if (index.parent().isValid() &&
+        (index.column() == PortMapsColumns::INVERT || index.column() == PortMapsColumns::ISINFORMATIVE))
     {
         QVariant colourVariant = index.data(Qt::BackgroundRole);
         QColor backgroundColour = colourVariant.value<QColor>();
@@ -261,7 +262,7 @@ void PortMapTreeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
         painter->drawLine(option.rect.topLeft(), option.rect.topRight());
     }
 
-    if (index.column() == PortMapsColumns::LOGICAL_PRESENCE || index.column() == PortMapsColumns::INVERT)
+    if (index.column() == PortMapsColumns::LOGICAL_PRESENCE || index.column() == PortMapsColumns::ISINFORMATIVE)
     {
         painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
     }

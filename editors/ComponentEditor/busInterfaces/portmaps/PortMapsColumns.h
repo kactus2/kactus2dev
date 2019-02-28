@@ -22,6 +22,7 @@ namespace PortMapsColumns
         PHYSICAL_LEFT,
         PHYSICAL_RIGHT,
         INVERT,
+        ISINFORMATIVE,
         TIEOFF,
         COLUMN_COUNT
     };
