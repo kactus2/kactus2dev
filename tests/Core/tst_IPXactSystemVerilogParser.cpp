@@ -130,7 +130,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithUnknownReference()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(emptyComponent)));
 
-    QCOMPARE(parser.parseExpression("unknownParameter"), QString(""));
+    QCOMPARE(parser.parseExpression("unknownParameter"), QString("x"));
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +146,7 @@ void tst_IPXactSystemVerilogParser::testParameterWithoutId()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
-    QCOMPARE(parser.parseExpression("unknownParameter"), QString(""));
+    QCOMPARE(parser.parseExpression("unknownParameter"), QString("x"));
 }
 
 //-----------------------------------------------------------------------------

@@ -30,10 +30,14 @@ public:
 	 *  The constructor.
 	 *
 	 */
-    ProtocolValidator();
+    ProtocolValidator() = default;
 
 	//! The destructor.
-	~ProtocolValidator();
+	~ProtocolValidator() = default;
+
+    // Disable copying.
+    ProtocolValidator(ProtocolValidator const& rhs) = delete;
+    ProtocolValidator& operator=(ProtocolValidator const& rhs) = delete;
 
     /*!
      *  Validates the given Protocol.
@@ -65,9 +69,6 @@ private:
      */
 	bool hasValidName(QString const& name) const;
 
-	// Disable copying.
-	ProtocolValidator(ProtocolValidator const& rhs);
-	ProtocolValidator& operator=(ProtocolValidator const& rhs);
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

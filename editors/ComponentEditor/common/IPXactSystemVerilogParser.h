@@ -16,7 +16,7 @@
 
 #include <QSharedPointer>
 #include <QString>
-#include <QStringList>
+#include <QVector>
 
 class ParameterFinder;
 
@@ -35,8 +35,12 @@ public:
     explicit IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder);
     
     //! The destructor.
-    virtual ~IPXactSystemVerilogParser();
-    
+    virtual ~IPXactSystemVerilogParser() = default;
+
+    // Disable copying.
+    IPXactSystemVerilogParser(IPXactSystemVerilogParser const& rhs) = delete;
+    IPXactSystemVerilogParser& operator=(IPXactSystemVerilogParser const& rhs) = delete;
+
     /*!
      *  Checks if the given expression is a symbol e.g. reference.
      *
@@ -66,10 +70,6 @@ public:
 
 private:
 
-    // Disable copying.
-    IPXactSystemVerilogParser(IPXactSystemVerilogParser const& rhs);
-    IPXactSystemVerilogParser& operator=(IPXactSystemVerilogParser const& rhs);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ private:
     QSharedPointer<ParameterFinder> finder_;
 
     //! Stack for tracking already evaluated symbols to check for loops in references.
-    mutable QStringList symbolStack_;
+    mutable QVector<QString> symbolStack_;
 };
 
 #endif // IPXACTSYSTEMVERILOGPARSER_H

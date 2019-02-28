@@ -147,14 +147,6 @@ assertionValidator_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentValidator::~ComponentValidator()
-//-----------------------------------------------------------------------------
-ComponentValidator::~ComponentValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: OtherClockDriverValidator::validate()
 //-----------------------------------------------------------------------------
 bool ComponentValidator::validate(QSharedPointer<Component> component)
@@ -187,7 +179,7 @@ bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> compone
     changeComponent(component);
 
     QVector<QString> busInterfaceNames;
-    foreach (QSharedPointer<BusInterface> bus, *component->getBusInterfaces())
+    for (QSharedPointer<BusInterface> bus : *component->getBusInterfaces())
     {
         if (busInterfaceNames.contains(bus->name()) || !busInterfaceValidator_->validate(bus))
         {
@@ -209,7 +201,7 @@ bool ComponentValidator::hasValidIndirectInterfaces(QSharedPointer<Component> co
     changeComponent(component);
 
     QVector<QString> interfaceNames;
-    foreach (QSharedPointer<IndirectInterface> indirectInterface, *component->getIndirectInterfaces())
+    for (QSharedPointer<IndirectInterface> indirectInterface : *component->getIndirectInterfaces())
     {
         if (interfaceNames.contains(indirectInterface->name()) || 
             !indirectInterfaceValidator_->validate(indirectInterface))
@@ -234,7 +226,7 @@ bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component)
     {
         QVector<QString> channelNames;
         QVector<QString> interfaceNames;
-        foreach (QSharedPointer<Channel> channel, *component->getChannels())
+        for (QSharedPointer<Channel> channel : *component->getChannels())
         {
             if (channelNames.contains(channel->name()) || !channelValidator_->validate(channel))
             {
@@ -243,7 +235,7 @@ bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component)
             else
             {
                 channelNames.append(channel->name());
-                foreach (QString const& busInterface, channel->getInterfaces())
+                for (QString const& busInterface : channel->getInterfaces())
                 {
                     if (interfaceNames.contains(busInterface))
                     {
@@ -269,7 +261,7 @@ bool ComponentValidator::hasValidRemapStates(QSharedPointer<Component> component
     if (!component->getRemapStates()->isEmpty())
     {
         QVector<QString> stateNames;
-        foreach (QSharedPointer<RemapState> remapState, *component->getRemapStates())
+        for (QSharedPointer<RemapState> remapState : *component->getRemapStates())
         {
             if (stateNames.contains(remapState->name()) || !remapStateValidator_->validate(remapState))
             {
@@ -295,7 +287,7 @@ bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> compone
     if (!component->getAddressSpaces()->isEmpty())
     {
         QVector<QString> spaceNames;
-        foreach (QSharedPointer<AddressSpace> space, *component->getAddressSpaces())
+        for (QSharedPointer<AddressSpace> space : *component->getAddressSpaces())
         {
             if (spaceNames.contains(space->name()) || !addressSpaceValidator_->validate(space))
             {
@@ -321,7 +313,7 @@ bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component)
     if (!component->getMemoryMaps()->isEmpty())
     {
         QVector<QString> mapNames;
-        foreach (QSharedPointer<MemoryMap> memoryMap, *component->getMemoryMaps())
+        for (QSharedPointer<MemoryMap> memoryMap : *component->getMemoryMaps())
         {
             if (mapNames.contains(memoryMap->name()) || !memoryMapValidator_->validate(memoryMap))
             {
@@ -347,7 +339,7 @@ bool ComponentValidator::hasValidViews(QSharedPointer<Component> component)
     if (!component->getViews()->isEmpty())
     {
         QVector<QString> viewNames;
-        foreach (QSharedPointer<View> view, *component->getViews())
+        for (QSharedPointer<View> view : *component->getViews())
         {
             if (viewNames.contains(view->name()) || !viewValidator_->validate(view))
             {
@@ -373,7 +365,7 @@ bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Componen
     if (!component->getComponentInstantiations()->isEmpty())
     {
         QVector<QString> instantiationNames;
-        foreach (QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
+        for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) ||
                 !instantiationsValidator_->validateComponentInstantiation(instantiation))
@@ -400,7 +392,7 @@ bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> 
     if (!component->getDesignInstantiations()->isEmpty())
     {
         QVector<QString> instantiationNames;
-        foreach (QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
+        for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) ||
                 !instantiationsValidator_->validateDesignInstantiation(instantiation))
@@ -427,7 +419,7 @@ bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointe
     if (!component->getDesignConfigurationInstantiations()->isEmpty())
     {
         QVector<QString> instantiationNames;
-        foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
             *component->getDesignConfigurationInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) ||
@@ -455,7 +447,7 @@ bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component)
     if (!component->getPorts()->isEmpty())
     {
         QVector<QString> portNames;
-        foreach (QSharedPointer<Port> port, *component->getPorts())
+        for (QSharedPointer<Port> port : *component->getPorts())
         {
             if (portNames.contains(port->name()) || !portValidator_->validate(port))
             {
@@ -481,7 +473,7 @@ bool ComponentValidator::hasValidComponentGenerators(QSharedPointer<Component> c
     if (!component->getComponentGenerators()->isEmpty())
     {
         QVector<QString> generatorNames;
-        foreach (QSharedPointer<ComponentGenerator> generator, *component->getComponentGenerators())
+        for (QSharedPointer<ComponentGenerator> generator : *component->getComponentGenerators())
         {
             if (generatorNames.contains(generator->name()) || !generatorValidator_->validate(generator))
             {
@@ -507,7 +499,7 @@ bool ComponentValidator::hasValidChoices(QSharedPointer<Component> component)
     if (!component->getChoices()->isEmpty())
     {
         QVector<QString> choiceNames;
-        foreach (QSharedPointer<Choice> choice, *component->getChoices())
+        for (QSharedPointer<Choice> choice : *component->getChoices())
         {
             if (choiceNames.contains(choice->name()) || !choiceValidator_->validate(choice))
             {
@@ -532,7 +524,7 @@ bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component)
     if (!component->getFileSets()->isEmpty())
     {
         QVector<QString> fileSetNames;
-        foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+        for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
         {
             if (fileSetNames.contains(fileSet->name()) || !fileSetValidator_->validate(fileSet))
             {
@@ -557,7 +549,7 @@ bool ComponentValidator::hasValidCPUs(QSharedPointer<Component> component)
     if (!component->getCpus()->isEmpty())
     {
         QVector<QString> cpuNames;
-        foreach (QSharedPointer<Cpu> cpu, *component->getCpus())
+        for (QSharedPointer<Cpu> cpu : *component->getCpus())
         {
             if (cpuNames.contains(cpu->name()) || !cpuValidator_->validate(cpu))
             {
@@ -582,7 +574,7 @@ bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> com
     if (!component->getOtherClockDrivers()->isEmpty())
     {
         QVector<QString> driverNames;
-        foreach (QSharedPointer<OtherClockDriver> otherClockDriver, *component->getOtherClockDrivers())
+        for (QSharedPointer<OtherClockDriver> otherClockDriver : *component->getOtherClockDrivers())
         {
             if (driverNames.contains(otherClockDriver->getClockName()) ||
                 !otherClockDriverValidator_->validate(otherClockDriver))
@@ -605,7 +597,7 @@ bool ComponentValidator::hasValidResetTypes(QSharedPointer<Component> component)
 {
     if (!component->getResetTypes()->isEmpty())
     {
-        foreach(QSharedPointer<ResetType> resetType, *component->getResetTypes())
+        for(QSharedPointer<ResetType> resetType : *component->getResetTypes())
         {
             if (!singleResetTypeIsValid(resetType, component->getResetTypes()))
             {
@@ -629,7 +621,7 @@ bool ComponentValidator::singleResetTypeIsValid(QSharedPointer<ResetType> resetT
         return false;
     }
 
-    foreach(QSharedPointer<ResetType> comparisonReset, *resetTypes)
+    for(QSharedPointer<ResetType> comparisonReset : *resetTypes)
     {
         if (resetType != comparisonReset && currentName == comparisonReset->name())
         {
@@ -650,7 +642,7 @@ bool ComponentValidator::hasValidParameters(QSharedPointer<Component> component)
     if (!component->getParameters()->isEmpty())
     {
         QVector<QString> parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
+        for (QSharedPointer<Parameter> parameter : *component->getParameters())
         {
             if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
@@ -675,7 +667,7 @@ bool ComponentValidator::hasValidAssertions(QSharedPointer<Component> component)
     if (!component->getAssertions()->isEmpty())
     {
         QVector<QString> assertionNames;
-        foreach (QSharedPointer<Assertion> assertion, *component->getAssertions())
+        for (QSharedPointer<Assertion> assertion : *component->getAssertions())
         {
             if (assertionNames.contains(assertion->name()) || !assertionValidator_->validate(assertion))
             {
@@ -740,7 +732,7 @@ void ComponentValidator::findErrorsInBusInterface(QVector<QString>& errors, QSha
     {
         QVector<QString> busInterfaceNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<BusInterface> bus, *component->getBusInterfaces())
+        for (QSharedPointer<BusInterface> bus : *component->getBusInterfaces())
         {
             if (busInterfaceNames.contains(bus->name()) && !duplicateNames.contains(bus->name()))
             {
@@ -762,7 +754,7 @@ void ComponentValidator::findErrorsInIndirectInterfaces(QVector<QString>& errors
 {
     QVector<QString> interfaceNames;
     QVector<QString> duplicateNames;
-    foreach (QSharedPointer<IndirectInterface> indirectInterface, *component->getIndirectInterfaces())
+    for (QSharedPointer<IndirectInterface> indirectInterface : *component->getIndirectInterfaces())
     {
         if (interfaceNames.contains(indirectInterface->name()) && !duplicateNames.contains(indirectInterface->name()))
         {
@@ -789,7 +781,7 @@ void ComponentValidator::findErrorsInChannels(QVector<QString>& errors, QSharedP
 
         QVector<QString> interfaceNames;
         QVector<QString> duplicateInterfaceNames;
-        foreach(QSharedPointer<Channel> channel, *component->getChannels())
+        for(QSharedPointer<Channel> channel : *component->getChannels())
         {
             if (channelNames.contains(channel->name()) && !duplicateChannelNames.contains(channel->name()))
             {
@@ -801,7 +793,7 @@ void ComponentValidator::findErrorsInChannels(QVector<QString>& errors, QSharedP
             channelNames.append(channel->name());
             channelValidator_->findErrorsIn(errors, channel, context);
 
-            foreach (QString const& busInterface, channel->getInterfaces())
+            for (QString const& busInterface : channel->getInterfaces())
             {
                 if (interfaceNames.contains(busInterface) && !duplicateInterfaceNames.contains(busInterface))
                 {
@@ -826,7 +818,7 @@ void ComponentValidator::findErrorsInRemapStates(QVector<QString>& errors, QShar
     {
         QVector<QString> stateNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<RemapState> remapState, *component->getRemapStates())
+        for (QSharedPointer<RemapState> remapState : *component->getRemapStates())
         {
             if (stateNames.contains(remapState->name()) && !duplicateNames.contains(remapState->name()))
             {
@@ -851,7 +843,7 @@ void ComponentValidator::findErrorsInAddressSpaces(QVector<QString>& errors, QSh
     {
         QVector<QString> spaceNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
+        for (QSharedPointer<AddressSpace> addressSpace : *component->getAddressSpaces())
         {
             if (spaceNames.contains(addressSpace->name()) && !duplicateNames.contains(addressSpace->name()))
             {
@@ -876,7 +868,7 @@ void ComponentValidator::findErrorsInMemoryMaps(QVector<QString>& errors, QShare
     {
         QVector<QString> mapNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<MemoryMap> memoryMap, *component->getMemoryMaps())
+        for (QSharedPointer<MemoryMap> memoryMap : *component->getMemoryMaps())
         {
             if (mapNames.contains(memoryMap->name()) && !duplicateNames.contains(memoryMap->name()))
             {
@@ -901,7 +893,7 @@ void ComponentValidator::findErrorsInViews(QVector<QString>& errors, QSharedPoin
     {
         QVector<QString> viewNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<View> view, *component->getViews())
+        for (QSharedPointer<View> view : *component->getViews())
         {
             if (viewNames.contains(view->name()) && !duplicateNames.contains(view->name()))
             {
@@ -925,7 +917,7 @@ void ComponentValidator::findErrorsInComponentInstantiations(QVector<QString>& e
     {
         QVector<QString> instantiationNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
+        for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) &&
                 !duplicateNames.contains(instantiation->name()))
@@ -951,7 +943,7 @@ void ComponentValidator::findErrorsInDesignInstantiations(QVector<QString>& erro
     {
         QVector<QString> instantiationNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
+        for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) &&
                 !duplicateNames.contains(instantiation->name()))
@@ -977,7 +969,7 @@ void ComponentValidator::findErrorsInDesignConfigurationInstantiations(QVector<Q
     {
         QVector<QString> instantiationNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
             *component->getDesignConfigurationInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) &&
@@ -1004,7 +996,7 @@ void ComponentValidator::findErrorsInPorts(QVector<QString>& errors, QSharedPoin
     {
         QVector<QString> portNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Port> port, *component->getPorts())
+        for (QSharedPointer<Port> port : *component->getPorts())
         {
             if (portNames.contains(port->name()) && !duplicateNames.contains(port->name()))
             {
@@ -1028,7 +1020,7 @@ void ComponentValidator::findErrorsInComponentGenerators(QVector<QString>& error
     {
         QVector<QString> generatorNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<ComponentGenerator> generator, *component->getComponentGenerators())
+        for (QSharedPointer<ComponentGenerator> generator : *component->getComponentGenerators())
         {
             if (generatorNames.contains(generator->name()) && !duplicateNames.contains(generator->name()))
             {
@@ -1053,7 +1045,7 @@ void ComponentValidator::findErrorsInChoices(QVector<QString>& errors, QSharedPo
     {
         QVector<QString> choiceNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Choice> choice, *component->getChoices())
+        for (QSharedPointer<Choice> choice : *component->getChoices())
         {
             if (choiceNames.contains(choice->name()) && !duplicateNames.contains(choice->name()))
             {
@@ -1078,7 +1070,7 @@ void ComponentValidator::findErrorsInFileSets(QVector<QString>& errors, QSharedP
     {
         QVector<QString> fileSetNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+        for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
         {
             if (fileSetNames.contains(fileSet->name()) && !duplicateNames.contains(fileSet->name()))
             {
@@ -1103,7 +1095,7 @@ void ComponentValidator::findErrorsInCPUs(QVector<QString>& errors, QSharedPoint
     {
         QVector<QString> cpuNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Cpu> cpu, *component->getCpus())
+        for (QSharedPointer<Cpu> cpu : *component->getCpus())
         {
             if (cpuNames.contains(cpu->name()) && !duplicateNames.contains(cpu->name()))
             {
@@ -1127,7 +1119,7 @@ void ComponentValidator::findErrorsInOtherClockDrivers(QVector<QString>& errors,
     {
         QVector<QString> clockDriverNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<OtherClockDriver> clockDriver, *component->getOtherClockDrivers())
+        for (QSharedPointer<OtherClockDriver> clockDriver : *component->getOtherClockDrivers())
         {
             if (clockDriverNames.contains(clockDriver->getClockName()) &&
                 !duplicateNames.contains(clockDriver->getClockName()))
@@ -1153,7 +1145,7 @@ void ComponentValidator::findErrorsInResetTypes(QVector<QString>& errors, QShare
     {
         QVector<QString> resetTypeNames;
         QVector<QString> duplicateNames;
-        foreach(QSharedPointer<ResetType> resetType, *component->getResetTypes())
+        for(QSharedPointer<ResetType> resetType : *component->getResetTypes())
         {
             if (resetType->name().isEmpty())
             {
@@ -1190,7 +1182,7 @@ void ComponentValidator::findErrorsInParameters(QVector<QString>& errors, QShare
     {
         QVector<QString> parameterNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
+        for (QSharedPointer<Parameter> parameter : *component->getParameters())
         {
             if (parameterNames.contains(parameter->name()) && !duplicateNames.contains(parameter->name()))
             {
@@ -1215,7 +1207,7 @@ void ComponentValidator::findErrorsInAssertions(QVector<QString>& errors, QShare
     {
         QVector<QString> assertionNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Assertion> assertion, *component->getAssertions())
+        for (QSharedPointer<Assertion> assertion : *component->getAssertions())
         {
             if (assertionNames.contains(assertion->name()) && !duplicateNames.contains(assertion->name()))
             {

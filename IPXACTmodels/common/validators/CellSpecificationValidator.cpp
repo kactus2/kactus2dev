@@ -16,24 +16,17 @@
 //-----------------------------------------------------------------------------
 // Function: CellSpecificationValidator::CellSpecificationValidator()
 //-----------------------------------------------------------------------------
-CellSpecificationValidator::CellSpecificationValidator()
+CellSpecificationValidator::CellSpecificationValidator() :
+functions_({QStringLiteral("nd2"),
+    QStringLiteral("buf"),
+    QStringLiteral("inv"),
+    QStringLiteral("mux21"),
+    QStringLiteral("dff"),
+    QStringLiteral("latch"),
+    QStringLiteral("xor2"),
+    QStringLiteral("other")})
 {
-	functions_.append(QStringLiteral("nd2"));
-	functions_.append(QStringLiteral("buf"));
-	functions_.append(QStringLiteral("inv"));
-	functions_.append(QStringLiteral("mux21"));
-	functions_.append(QStringLiteral("dff"));
-	functions_.append(QStringLiteral("latch"));
-	functions_.append(QStringLiteral("xor2"));
-	functions_.append(QStringLiteral("other"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: CellSpecificationValidator::~CellSpecificationValidator()
-//-----------------------------------------------------------------------------
-CellSpecificationValidator::~CellSpecificationValidator()
-{
-
+	
 }
 
 //-----------------------------------------------------------------------------

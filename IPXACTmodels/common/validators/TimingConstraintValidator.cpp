@@ -19,22 +19,6 @@
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
-// Function: TimingConstraintValidator::TimingConstraintValidator()
-//-----------------------------------------------------------------------------
-TimingConstraintValidator::TimingConstraintValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: TimingConstraintValidator::~TimingConstraintValidator()
-//-----------------------------------------------------------------------------
-TimingConstraintValidator::~TimingConstraintValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: TimingConstraintValidator::validateInstantiation()
 //-----------------------------------------------------------------------------
 bool TimingConstraintValidator::validate(QSharedPointer<TimingConstraint> timingConstraint,

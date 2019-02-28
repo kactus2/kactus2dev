@@ -42,7 +42,7 @@ public:
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces);
 
 	//! The destructor.
-	virtual ~CPUValidator();
+	~CPUValidator() = default;
     
     /*!
      *  Change the available address spaces.

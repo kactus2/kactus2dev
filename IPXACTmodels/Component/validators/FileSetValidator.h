@@ -38,8 +38,12 @@ public:
         QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	virtual ~FileSetValidator();
-    
+	~FileSetValidator() = default;
+
+    // Disable copying.
+    FileSetValidator(FileSetValidator const& rhs) = delete;
+    FileSetValidator& operator=(FileSetValidator const& rhs) = delete;
+
     /*!
      *  Validates the given FileSet.
      *
@@ -47,7 +51,7 @@ public:
      *
      *      @return True, if the FileSet is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<FileSet> FileSet) const;
+    bool validate(QSharedPointer<FileSet> FileSet) const;
     
     /*!
      *  Check if the name is valid.
@@ -74,14 +78,10 @@ public:
      *      @param [in] FileSet   The FileSet whose errors to find.
      *      @param [in] context     Context to help locate the errors.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<FileSet> FileSet,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<FileSet> FileSet,
 		QString const& context) const;
 
 private:
-
-    // Disable copying.
-    FileSetValidator(FileSetValidator const& rhs);
-    FileSetValidator& operator=(FileSetValidator const& rhs);
 
     //! The used file validator.
     QSharedPointer<FileValidator> fileValidator_;

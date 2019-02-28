@@ -298,7 +298,7 @@ void MainWindow::copyComponentEditorSettings(QString workspaceName)
 
         hwHierarchyName = "HW/" + hwHierarchyName;
 
-        foreach (QString name, ComponentEditor::getHwItemNames())
+        for (QString const& name : ComponentEditor::getHwItemNames())
         {
             settings.setValue(newWorkspacePath + hwHierarchyName + "/" + name,
                 settings.value(activeWorkspacePath + hwHierarchyName + "/" + name).toBool());
@@ -308,7 +308,7 @@ void MainWindow::copyComponentEditorSettings(QString workspaceName)
     activeWorkspacePath = activeWorkspacePath + "SW/";
     newWorkspacePath = newWorkspacePath + "SW/";
 
-    foreach (QString itemName, ComponentEditor::getSwItemNames())
+    for (QString const& itemName : ComponentEditor::getSwItemNames())
     {
         settings.setValue(newWorkspacePath + itemName, settings.value(activeWorkspacePath + itemName).toBool());
     }
@@ -342,7 +342,7 @@ void MainWindow::createNewWorkspace(QString workspaceName)
         QString hwHierarchyName(KactusAttribute::hierarchyToString(val));
         settings.beginGroup(hwHierarchyName);
 
-        foreach (QString itemName, ComponentEditor::getHwItemNames())
+        for (QString const& itemName : ComponentEditor::getHwItemNames())
         {
             settings.setValue(itemName, true);
         }
@@ -353,7 +353,7 @@ void MainWindow::createNewWorkspace(QString workspaceName)
     settings.endGroup(); // HW
     settings.beginGroup("SW");
 
-    foreach (QString itemName, ComponentEditor::getSwItemNames())
+    for (QString const& itemName : ComponentEditor::getSwItemNames())
     {
         settings.setValue(itemName, true);
     }
@@ -378,7 +378,7 @@ void MainWindow::updateWorkspaceMenu()
     QActionGroup* workspaceGroup = new QActionGroup(this);
     workspaceGroup->setExclusive(true);
 
-    foreach (QString const& workspaceID, workspaceIDs)
+    for (QString const& workspaceID : workspaceIDs)
     {
         QString workspaceName = workspaceID;
 
@@ -1759,7 +1759,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
         viewName = baseViewName;
         unsigned int runningNumber = 1;
 
-        foreach (QSharedPointer<View> view, *component->getViews())
+        for (QSharedPointer<View> view : *component->getViews())
         {
             if (view->name() == viewName)
             {
@@ -1998,7 +1998,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
         viewName = baseViewName;
         unsigned int runningNumber = 1;
 
-        foreach (QSharedPointer<View> swView, *component->getViews())
+        for (QSharedPointer<View> swView : *component->getViews())
         {
             if (swView->name() == viewName)
             {
@@ -3140,7 +3140,7 @@ void MainWindow::openCSource(ComponentItem* compItem)
         saveDialog.setWindowTitle(tr("Open Source"));
         saveDialog.setDescription(tr("Select C source file to open:"));
 
-        foreach (QSharedPointer<File> file, *fileSet->getFiles())
+        for (QSharedPointer<File> file : *fileSet->getFiles())
         {
             saveDialog.addItem(new QListWidgetItem(file->name()));
         }
@@ -3294,7 +3294,7 @@ void MainWindow::changeProtection(bool locked)
         bool previouslyUnlocked = doc->isPreviouslyUnlocked();
 
         // User wanted to unlock this doc so go through other documents to see if they were unlocked.
-        foreach (TabDocument* otherDoc, otherDocs)
+        for (TabDocument* otherDoc : otherDocs)
         {
             otherDoc->setProtection(true);
 
@@ -3320,7 +3320,7 @@ void MainWindow::changeProtection(bool locked)
 
                     detailMsg += tr("The component has been instantiated in the following %1 component(s):\n").arg(
                         refCount);
-                    foreach (VLNV const& owner, list)
+                    for (VLNV const& owner : list)
                     {
                         detailMsg += "* " + owner.toString() + "\n";
                     }
@@ -3352,7 +3352,7 @@ void MainWindow::changeProtection(bool locked)
         }
 
         // mark the other documents also unlocked to keep the unlock history in sync.
-        foreach (TabDocument* otherDoc, otherDocs)
+        for (TabDocument* otherDoc : otherDocs)
         {
             otherDoc->setPreviouslyUnlocked();
         }
@@ -3547,7 +3547,7 @@ void MainWindow::onDeleteWorkspace()
 
     QStringList workspaces = settings.childGroups();
 
-    foreach (QString const& workspace, workspaces)
+    for (QString const& workspace : workspaces)
     {
         if (workspace != "Default" && workspace != curWorkspaceName_)
         {
@@ -3614,7 +3614,7 @@ bool MainWindow::isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation 
 bool MainWindow::hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referencingVlnv)
 {
     bool invalidReferences = false;
-    foreach (VLNV ref, hierRefs)
+    for (VLNV const& ref : hierRefs)
     {
         // if the hierarchy referenced object is not found in library
         if (!libraryHandler_->contains(ref))
@@ -3729,7 +3729,7 @@ void MainWindow::createGeneratorPluginActions()
 {
     pluginActionGroup_ = new QActionGroup(this);
 
-    foreach (IPlugin* plugin, PluginManager::getInstance().getActivePlugins())
+    for (IPlugin* plugin : PluginManager::getInstance().getActivePlugins())
     {
         IGeneratorPlugin* genPlugin = dynamic_cast<IGeneratorPlugin*>(plugin);
 
@@ -3766,7 +3766,7 @@ void MainWindow::updateGeneratorPluginActions()
     // Remove all plugin actions.
     QList<QAction*> actions = generationGroup_->actions();
 
-    foreach (QAction* action, actions)
+    for (QAction* action : actions)
     {
         // Check if the action contains the plugin pointer.
         if (action->data().value<void*>() != 0)
@@ -3875,7 +3875,7 @@ void MainWindow::setPluginVisibilities()
         }
     }
 
-    foreach (QAction* action, pluginActionGroup_->actions())
+    for (QAction* action : pluginActionGroup_->actions())
     {
         IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
         Q_ASSERT(plugin != 0);
@@ -3885,7 +3885,7 @@ void MainWindow::setPluginVisibilities()
 
 
     bool isGenerationGroupVisible = false;
-    foreach (QAction* action, generationGroup_->actions())
+    for (QAction* action : generationGroup_->actions())
     {
         if (action->isVisible())
         {

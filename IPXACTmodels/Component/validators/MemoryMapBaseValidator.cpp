@@ -33,14 +33,6 @@ addressBlockValidator_(addressBlockValidator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBaseValidator::~MemoryMapBaseValidator()
-//-----------------------------------------------------------------------------
-MemoryMapBaseValidator::~MemoryMapBaseValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapBaseValidator::componentChange()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes)

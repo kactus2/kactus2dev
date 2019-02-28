@@ -19,17 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: VLNVDataNode()
 //-----------------------------------------------------------------------------
-VLNVDataNode::VLNVDataNode(QString const& name, unsigned int level)
+VLNVDataNode::VLNVDataNode(QString const& name)
     : name_(name),
-      level_(level),
       vlnv_()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~VLNVDataNode()
-//-----------------------------------------------------------------------------
-VLNVDataNode::~VLNVDataNode()
 {
 }
 
@@ -50,35 +42,11 @@ VLNV const& VLNVDataNode::getVLNV() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: getLevel()
-//-----------------------------------------------------------------------------
-unsigned int VLNVDataNode::getLevel() const
-{
-    return level_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: findChild()
 //-----------------------------------------------------------------------------
-VLNVDataNode* VLNVDataNode::findChild(QString const& name)
+VLNVDataNode* VLNVDataNode::findChild(QString const& name) const
 {
-    foreach (QSharedPointer<VLNVDataNode> node, children_)
-    {
-        if (node->name() == name)
-        {
-            return node.data();
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: findChild()
-//-----------------------------------------------------------------------------
-VLNVDataNode const* VLNVDataNode::findChild(QString const& name) const
-{
-    foreach (QSharedPointer<VLNVDataNode> node, children_)
+    for (QSharedPointer<VLNVDataNode> node : children_)
     {
         if (node->name() == name)
         {
@@ -98,11 +66,19 @@ QList< QSharedPointer<VLNVDataNode> > const& VLNVDataNode::getChildren() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VLNVDataNode::getChildren()
+//-----------------------------------------------------------------------------
+int VLNVDataNode::getChildCount() const
+{
+    return children_.count();
+}
+
+//-----------------------------------------------------------------------------
 // Function: addChild()
 //-----------------------------------------------------------------------------
 VLNVDataNode* VLNVDataNode::addChild(QString const& name)
 {
-    QSharedPointer<VLNVDataNode> child(new VLNVDataNode(name, level_ + 1));
+    QSharedPointer<VLNVDataNode> child(new VLNVDataNode(name));
     children_.append(child);
     return child.data();
 }
@@ -112,7 +88,7 @@ VLNVDataNode* VLNVDataNode::addChild(QString const& name)
 //-----------------------------------------------------------------------------
 void VLNVDataNode::removeChild(QString const& name)
 {
-    foreach (QSharedPointer<VLNVDataNode> node, children_)
+    for (QSharedPointer<VLNVDataNode> node : children_)
     {
         if (node->name() == name)
         {
@@ -153,13 +129,6 @@ VLNVDataTree::VLNVDataTree(): VLNVDataNode(),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~VLNVDataTree()
-//-----------------------------------------------------------------------------
-VLNVDataTree::~VLNVDataTree()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: parse()
 //-----------------------------------------------------------------------------
 void VLNVDataTree::parse(LibraryInterface* lh, QList<VLNV::IPXactType> const& types)
@@ -179,7 +148,7 @@ void VLNVDataTree::clear()
 //-----------------------------------------------------------------------------
 // Function: setFirmnessFilter()
 //-----------------------------------------------------------------------------
-void VLNVDataTree::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness /*= KactusAttribute::KTS_TEMPLATE*/)
+void VLNVDataTree::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness)
 {
     firmnessFilterEnabled_ = on;
     firmnessFilter_ = firmness;
@@ -188,7 +157,7 @@ void VLNVDataTree::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness
 //-----------------------------------------------------------------------------
 // Function: setHierarchyFilter()
 //-----------------------------------------------------------------------------
-void VLNVDataTree::setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier /*= KactusAttribute::KTS_IP*/)
+void VLNVDataTree::setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier)
 {
     hierarchyFilterEnabled_ = on;
     hierarchyFilter_ = productHier;
@@ -197,7 +166,7 @@ void VLNVDataTree::setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy
 //-----------------------------------------------------------------------------
 // Function: setImplementationFilter()
 //-----------------------------------------------------------------------------
-void VLNVDataTree::setImplementationFilter(bool on, KactusAttribute::Implementation implementation /*= KactusAttribute::KTS_HW*/)
+void VLNVDataTree::setImplementationFilter(bool on, KactusAttribute::Implementation implementation)
 {
     implementationFilterEnabled_ = on;
     implementationFilter_ = implementation;
@@ -209,44 +178,43 @@ void VLNVDataTree::setImplementationFilter(bool on, KactusAttribute::Implementat
 void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node,
                                 QList<VLNV::IPXactType> const& types)
 {
-    for (int i = 0; i < libItem->getNumberOfChildren(); ++i)
+    const int childCount = libItem->getNumberOfChildren();
+    for (int i = 0; i < childCount; ++i)
     {
         LibraryItem const* item = libItem->child(i);
 
         // Check if this is a leaf item.
-        if (item->getLevel() == LibraryItem::VERSION)
+        if (item->getLevel() == LibraryItem::Level::VERSION)
         {
-            VLNV const vlnv = item->getVLNV();
-
             // Check if the tree already contains an node with the same name.
-            if (node.findChild(item->name()))
+            // Check that the type is valid.
+            if (node.findChild(item->name()) || !types.contains(item->getVLNV().getType()))
             {
                 continue;
             }
 
-            // Check that the type is valid.
-            if (!types.contains(item->getVLNV().getType()))
+            VLNV const vlnv = item->getVLNV();
+
+            bool useFilters = (vlnv.getType() == VLNV::COMPONENT);
+            KactusAttribute::Firmness firmness = KactusAttribute::KTS_REUSE_LEVEL_COUNT;
+            KactusAttribute::ProductHierarchy hierarchy = KactusAttribute::KTS_PRODHIER_COUNT;
+            KactusAttribute::Implementation implementation = KactusAttribute::KTS_IMPLEMENTATION_COUNT;
+
+            if (useFilters)
             {
-                continue;
+                // Retrieve the library component for filtering. Filtering is possible only if the
+                // library component is an IP-XACT component.        
+                QSharedPointer<Component const> component = lh->getModelReadOnly<Component>(vlnv);
+                firmness = component->getFirmness();
+                hierarchy = component->getHierarchy();
+                implementation = component->getImplementation();
             }
 
             // If filtering is off, just accept the item.
-            if (!firmnessFilterEnabled_ && !hierarchyFilterEnabled_ && !implementationFilterEnabled_)
-            {
-                VLNVDataNode* childNode = node.addChild(item->name());
-                childNode->setVLNV(vlnv);
-                continue;
-            }
-
-            // Retrieve the library component for filtering. Filtering is possible only if the
-            // library component is an IP-XACT component.
-            QSharedPointer<Document const> libComp = lh->getModelReadOnly(vlnv);
-            QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
-
-            if (component == 0 ||
-                ((!firmnessFilterEnabled_ || firmnessFilter_ == component->getFirmness()) &&
-                (!hierarchyFilterEnabled_ || hierarchyFilter_ == component->getHierarchy()) &&
-                (!implementationFilterEnabled_ || implementationFilter_ == component->getImplementation())))
+            if (useFilters == false ||
+                ((!firmnessFilterEnabled_ || firmnessFilter_ == firmness) &&
+                (!hierarchyFilterEnabled_ || hierarchyFilter_ == hierarchy) &&
+                (!implementationFilterEnabled_ || implementationFilter_ == implementation)))
             {
                 VLNVDataNode* childNode = node.addChild(item->name());
                 childNode->setVLNV(vlnv);
@@ -256,10 +224,10 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
         {
             QString name = item->name();
 
-            if (item->getLevel() == LibraryItem::NAME)
+            if (item->getLevel() == LibraryItem::Level::NAME)
             {
                 // Filter out extensions.
-                foreach (QString const& ext, extensions_)
+                for (QString const& ext : extensions_)
                 {
                     if (name.endsWith(ext))
                     {
@@ -278,7 +246,7 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
 
             parseSubtree(lh, item, *childNode, types);
 
-            if (childNode->getChildren().size() == 0)
+            if (childNode->getChildCount() == 0)
             {
                 node.removeChild(name);
             }

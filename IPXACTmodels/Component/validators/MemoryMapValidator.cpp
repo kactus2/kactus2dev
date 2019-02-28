@@ -30,14 +30,6 @@ availableRemapStates_(remapStates)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapValidator::~MemoryMapValidator()
-//-----------------------------------------------------------------------------
-MemoryMapValidator::~MemoryMapValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapValidator::componentChange()
 //-----------------------------------------------------------------------------
 void MemoryMapValidator::componentChange(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
@@ -90,7 +82,7 @@ bool MemoryMapValidator::hasValidMemoryRemaps(QSharedPointer<MemoryMap> memoryMa
     {
         QStringList remapNames;
         QStringList remapStates;
-        foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
+        for (QSharedPointer<MemoryRemap> memoryRemap : *memoryMap->getMemoryRemaps())
         {
             if (remapNames.contains(memoryRemap->name()) ||
                 remapStates.contains(memoryRemap->getRemapState()) ||
@@ -117,7 +109,7 @@ bool MemoryMapValidator::remapStateIsNotValid(QSharedPointer<MemoryRemap> memory
 {
     if (!memoryRemap->getRemapState().isEmpty())
     {
-        foreach (QSharedPointer<RemapState> state, *availableRemapStates_)
+        for (QSharedPointer<RemapState> state : *availableRemapStates_)
         {
             if (state->name() == memoryRemap->getRemapState())
             {
@@ -169,7 +161,7 @@ void MemoryMapValidator::findErrorsInMemoryRemaps(QVector<QString>& errors, QSha
         QStringList nonUniqueNames;
         QStringList remapStates;
         bool remapStatesAreUnique = true;
-        foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
+        for (QSharedPointer<MemoryRemap> memoryRemap : *memoryMap->getMemoryRemaps())
         {
             MemoryMapBaseValidator::findErrorsIn(errors, memoryRemap, memoryMap->getAddressUnitBits(), context);
 

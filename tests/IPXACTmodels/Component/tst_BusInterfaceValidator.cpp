@@ -535,16 +535,11 @@ void tst_BusInterfaceValidator::testPortMapLogicalPortIsValid()
                 .arg(logicalPortName).arg(context);
         }
 
-        else if (parser->parseExpression(rangeLeft).toInt() < 0 || parser->parseExpression(rangeRight) < 0 ||
-            rangeLeft.isEmpty() || rangeRight.isEmpty())
+        else if (!abstractionWidth.isEmpty() || rangeLeft.isEmpty() || rangeRight.isEmpty() ||
+            parser->parseExpression(rangeLeft).toInt() < 0 || parser->parseExpression(rangeRight).toInt() < 0)
         {
             expectedError = QObject::tr("Invalid range given for logical port %1 mapped within %2")
                 .arg(logicalPortName).arg(context);
-        }
-        else if (!abstractionWidth.isEmpty())
-        {
-            expectedError = QObject::tr("Logical port %1 range is not within referenced abstraction definition "
-                "port width within %2").arg(logicalPortName).arg(context);
         }
 
         if (errorIsNotFoundInErrorList(expectedError, errorsFound))

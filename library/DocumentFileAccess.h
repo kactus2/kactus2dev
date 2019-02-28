@@ -12,15 +12,12 @@
 #ifndef DOCUMENTFILEACCESS_H
 #define DOCUMENTFILEACCESS_H
 
-#include <common/ui/MessageMediator.h>
-
-#include <IPXACTmodels/common/VLNV.h>
 
 #include <QSharedPointer>
 #include <QString>
-#include <QDomDocument>
 
 class Document;
+class MessageMediator;
 
 //-----------------------------------------------------------------------------
 //! Reading and writing of IP-XACT documents using a standard file system.
@@ -35,20 +32,17 @@ public:
 	//! The destructor.
 	~DocumentFileAccess() = default;
 
+    //! Disable copying.
+    DocumentFileAccess(DocumentFileAccess const& rhs) = delete;
+    DocumentFileAccess& operator=(DocumentFileAccess const& rhs) = delete;
+
     //! Reads the document from given path.
     QSharedPointer<Document> readDocument(QString const& path);
 
     //! Writes to document model to the given path.
     bool writeDocument(QSharedPointer<Document> model, QString const& path);
-
-    //! Gets the VLVN type of the document in the given path.
-    VLNV::IPXactType getDocumentVLNV(QDomDocument const& doc);
-
+    
 private:
-
-	//! Disable copying.
-	DocumentFileAccess(DocumentFileAccess const& rhs);
-	DocumentFileAccess& operator=(DocumentFileAccess const& rhs);
 
     //! Channel for messages concerning file access.
     MessageMediator* messageChannel_;

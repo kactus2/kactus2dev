@@ -20,13 +20,6 @@ LibraryErrorModel::LibraryErrorModel(QObject* parent): QAbstractTableModel(paren
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryErrorModel::~LibraryErrorModel()
-//-----------------------------------------------------------------------------
-LibraryErrorModel::~LibraryErrorModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::addErrors()
 //-----------------------------------------------------------------------------
 void LibraryErrorModel::addErrors(QVector<QString> const& errorList, QString const& vlnv)

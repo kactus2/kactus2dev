@@ -127,7 +127,7 @@ void HierarchyWidget::selectItems(VLNV const& vlnv)
 
 	// convert the model indexes to view indexes
 	QModelIndexList viewIndexes;
-	foreach (QModelIndex const& index, model_->findIndexes(vlnv))
+	for (QModelIndex const& index : model_->findIndexes(vlnv))
     {
 		if (index.isValid())
         {

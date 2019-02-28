@@ -45,7 +45,7 @@ public:
         QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
-	~AddressBlockValidator();
+	~AddressBlockValidator() = default;
     
     /*!
      *  Change the containing component.

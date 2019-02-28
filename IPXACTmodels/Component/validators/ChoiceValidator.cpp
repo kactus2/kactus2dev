@@ -27,14 +27,6 @@ expressionParser_(expressionParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChoiceValidator::~ChoiceValidator()
-//-----------------------------------------------------------------------------
-ChoiceValidator::~ChoiceValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ChoiceValidator::validate()
 //-----------------------------------------------------------------------------
 bool ChoiceValidator::validate(QSharedPointer<Choice> choice) const
@@ -66,7 +58,7 @@ bool ChoiceValidator::hasValidEnumerations(QSharedPointer<Choice> choice) const
 {
     if (!choice->enumerations()->isEmpty())
     {
-        foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+        for (QSharedPointer<Enumeration> const& enumeration : *choice->enumerations())
         {
             bool isValidValue = false;
             expressionParser_->parseExpression(enumeration->getValue(), &isValidValue);
@@ -116,7 +108,7 @@ void ChoiceValidator::findErrorsInEnumerations(QVector<QString>& errors, QShared
     }
     else
     {
-        foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+        for (QSharedPointer<Enumeration> const& enumeration : *choice->enumerations())
         {
             bool isValidValue = false;
             expressionParser_->parseExpression(enumeration->getValue(), &isValidValue);

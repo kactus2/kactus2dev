@@ -66,8 +66,9 @@ void PortValidator::componentChange(QSharedPointer<QList<QSharedPointer<View> > 
 //-----------------------------------------------------------------------------
 bool PortValidator::validate(QSharedPointer<Port> port) const
 {
-    return hasValidName(port->name()) && hasValidIsPresent(port) && hasValidArrays(port) && hasValidWire(port) &&
-        hasValidTransactionalPort(port) && (port->getTransactional() || port->getWire());
+    return hasValidName(port->name()) && hasValidIsPresent(port) && hasValidArrays(port) &&
+        (port->getTransactional() || port->getWire()) && hasValidWire(port) &&
+        hasValidTransactionalPort(port) ;
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +109,7 @@ bool PortValidator::hasValidIsPresent(QSharedPointer<Port> port) const
 bool PortValidator::hasValidArrays(QSharedPointer<Port> port) const
 {
     // Any arrays must have valid left and right.
-    foreach ( QSharedPointer<Array> array, *port->getArrays() )
+    for ( QSharedPointer<Array> array : *port->getArrays() )
     {
         if (!arrayValueIsValid(array->getLeft()) || !arrayValueIsValid(array->getRight()))
         {
@@ -289,7 +290,7 @@ bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
 bool PortValidator::hasValidTypeDefinitions(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions)
     const
 {
-    foreach (QSharedPointer<WireTypeDef> singleTypeDefinition, *typeDefinitions)
+    for (QSharedPointer<WireTypeDef> singleTypeDefinition : *typeDefinitions)
     {
         if (!typeValidator_->validate(singleTypeDefinition, typeDefinitions))
         {
@@ -319,7 +320,7 @@ void PortValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> 
 	}
 
 	// Any arrays must have valid left and right.
-	foreach ( QSharedPointer<Array> array, *port->getArrays() )
+	for ( QSharedPointer<Array> array : *port->getArrays() )
 	{
         if (!arrayValueIsValid(array->getLeft()))
 		{
@@ -454,7 +455,7 @@ void PortValidator::findErrorsInTransactional(QVector<QString> &errors, QSharedP
 void PortValidator::findErrorsInTypeDefinitions(QVector<QString>& errors,
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions, QString const& context) const
 {
-    foreach (QSharedPointer<WireTypeDef> singleTypeDefinition, *typeDefinitions)
+    for (QSharedPointer<WireTypeDef> singleTypeDefinition : *typeDefinitions)
     {
         typeValidator_->findErrorsIn(errors, context, singleTypeDefinition, typeDefinitions);
     }
@@ -478,7 +479,7 @@ bool PortValidator::hasValidTypes(QSharedPointer<Port> port) const
 
     if (typeDefinitions)
     {
-        foreach (QSharedPointer<WireTypeDef> singleType, *typeDefinitions)
+        for (QSharedPointer<WireTypeDef> singleType : *typeDefinitions)
         {
             if (!typeValidator_->validate(singleType, typeDefinitions))
             {

@@ -39,7 +39,7 @@ public:
         QSharedPointer<AddressBlockValidator> addressBlockValidator);
 
 	//! The destructor.
-	virtual ~MemoryMapBaseValidator();
+	virtual ~MemoryMapBaseValidator() = default;
     
     /*!
      *  Change the containing component.

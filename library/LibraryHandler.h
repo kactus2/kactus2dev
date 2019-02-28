@@ -32,7 +32,7 @@
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QSharedPointer>
-#include <QMap>
+#include <QHash>
 #include <QObject>
 
 using FileList = QVector<QFileInfo>;

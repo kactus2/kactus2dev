@@ -24,30 +24,21 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
-#include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
-#include <IPXACTmodels/Catalog/validators/CatalogValidator.h>
-
-
 //-----------------------------------------------------------------------------
 // Function: DocumentValidator::DocumentValidator()
 //-----------------------------------------------------------------------------
-DocumentValidator::DocumentValidator(LibraryInterface* library) : library_(library),
+DocumentValidator::DocumentValidator(LibraryInterface* library) :
+    library_(library),
+    abstractionValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
+    busValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
+    catalogValidator_(),
     componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
     componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
-    library_),
+        library_),
     designValidatorFinder_(new ListParameterFinder()),
     designValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(designValidatorFinder_)), library_),
     designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), library_),
     systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), library_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentValidator::~DocumentValidator()
-//-----------------------------------------------------------------------------
-DocumentValidator::~DocumentValidator()
 {
 
 }
@@ -59,20 +50,16 @@ bool DocumentValidator::validate(QSharedPointer<Document> document)
 {
     VLNV::IPXactType documentType = document->getVlnv().getType();
     if (documentType == VLNV::ABSTRACTIONDEFINITION)
-    {
-        AbstractionDefinitionValidator validator(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
-        return validator.validate(document.dynamicCast<AbstractionDefinition>());
+    {        
+        return abstractionValidator_.validate(document.dynamicCast<AbstractionDefinition>());
     }
     else if (documentType == VLNV::BUSDEFINITION)
     {
-        BusDefinitionValidator validator(
-            library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
-        return validator.validate(document.dynamicCast<BusDefinition>());
+        return busValidator_.validate(document.dynamicCast<BusDefinition>());
     } 
     else if (documentType == VLNV::CATALOG)
     {
-        CatalogValidator validator;
-        return validator.validate(document.dynamicCast<Catalog>());
+        return catalogValidator_.validate(document.dynamicCast<Catalog>());
     }
     else if (documentType == VLNV::COMPONENT)
     {

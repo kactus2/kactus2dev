@@ -26,14 +26,6 @@ LibraryFilter(parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyFilter::~HierarchyFilter()
-//-----------------------------------------------------------------------------
-HierarchyFilter::~HierarchyFilter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: HierarchyFilter::filterAcceptsRow()
 //-----------------------------------------------------------------------------
 bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const

@@ -31,7 +31,7 @@ public:
 	 *
 	 * Level is used to tell what information to use from VLNV tag in creating new component in hierarchy.
 	 */
-	enum Level
+	enum class Level
     {
         ROOT = 0, 
 		VENDOR, 

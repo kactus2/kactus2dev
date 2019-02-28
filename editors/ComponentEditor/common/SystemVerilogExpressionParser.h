@@ -30,6 +30,10 @@ public:
 	//! The destructor.
     virtual ~SystemVerilogExpressionParser() = default;
 
+    // Disable copying.
+    SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs) = delete;
+    SystemVerilogExpressionParser& operator=(SystemVerilogExpressionParser const& rhs) = delete;
+
     /*!
      *  Parses an expression to decimal number.
      *
@@ -110,15 +114,11 @@ protected:
     *
     *      @param [in] oper  The operator whose precedence to get.
     *
-    *      @return The precedenve value where bigger value has higher precedence.
+    *      @return The precedence value where bigger value has higher precedence.
     */
     unsigned int operatorPrecedence(QString oper) const;
 
 private:
-
-	// Disable copying.
-	SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs);
-	SystemVerilogExpressionParser& operator=(SystemVerilogExpressionParser const& rhs);
 
     /*!
      *  Converts the given expression to Reverse Polish Notation (RPN) format.
@@ -128,7 +128,7 @@ private:
      *
      *      @return The conversion result.
      */
-    QStringList convertToRPN(QString const& expression) const;
+    QVector<QString> convertToRPN(QString const& expression) const;
 
     /*!
      *  Solves the given RPN expression.
@@ -138,7 +138,7 @@ private:
      *
      *      @return The solved result.
      */
-    QString solveRPN(QStringList const& rpn, bool* validExpression) const;
+    QString solveRPN(QVector<QString> rpn, bool* validExpression) const;
 
     /*!
      *  Checks if the given expression is a string.

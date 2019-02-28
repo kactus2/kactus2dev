@@ -38,7 +38,11 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~LibraryErrorModel();
+    virtual ~LibraryErrorModel() = default;
+
+    // Disable copying.
+    LibraryErrorModel(LibraryErrorModel const& rhs) = delete;
+    LibraryErrorModel& operator=(LibraryErrorModel const& rhs) = delete;
 
     /*!
      *  Adds errors to the model.
@@ -50,14 +54,14 @@ public:
      *
      *      @param [in] parent Identifies the parent. Must always be a invalid index.
      */
-    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const override final;
 
     /*!
      *  Returns the number of columns to display.
      *
      *      @param [in] parent Identifies the parent. Must always be a invalid index.
      */
-    virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+    virtual int columnCount(const QModelIndex& parent = QModelIndex()) const override final;
 
     /*!
      *  Returns that data for specified index in given data role.
@@ -67,7 +71,7 @@ public:
      *
      *      @return QVariant containing the requested data.
      */
-    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override final;
 
     /*!
      *  Returns the data for given header in given data role.
@@ -78,7 +82,8 @@ public:
      *
      *      @return QVariant contains the requested data.
      */
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const 
+        override final;
 
     /*!
      *  Retrieves info on what operations are possible for specified item.
@@ -87,12 +92,9 @@ public:
      *
      *      @return Item flags containing info on which operations are available for the given index.
      */
-    virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const override final;
 
 private:
-    // Disable copying.
-    LibraryErrorModel(LibraryErrorModel const& rhs);
-    LibraryErrorModel& operator=(LibraryErrorModel const& rhs);
 
     //-----------------------------------------------------------------------------
     //! Column enumeration.

@@ -7,19 +7,14 @@
 
 #include "librarypathvalidator.h"
 
-#include <QRegExp>
+#include <QRegularExpressionValidator>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryPathValidator()
 //-----------------------------------------------------------------------------
-LibraryPathValidator::LibraryPathValidator(QObject *parent):
-QRegExpValidator(parent) {
-}
+LibraryPathValidator::LibraryPathValidator(QObject *parent): QRegularExpressionValidator(parent)
+{
 
-//-----------------------------------------------------------------------------
-// Function: ~LibraryPathValidator()
-//-----------------------------------------------------------------------------
-LibraryPathValidator::~LibraryPathValidator() {
 }
 
 //-----------------------------------------------------------------------------
@@ -27,20 +22,23 @@ LibraryPathValidator::~LibraryPathValidator() {
 //-----------------------------------------------------------------------------
 QValidator::State LibraryPathValidator::validate(QString& input, int& pos) const
 {
-    State state = QRegExpValidator::validate(input,pos);
+    State state = QRegularExpressionValidator::validate(input,pos);
 
-    // Partial libraryp path is considered invalid.
+    // Partial library path is considered invalid.
     if (state == QValidator::Intermediate)
     {
         return QValidator::Invalid;
     }
+
     return state;
 }
 
 //-----------------------------------------------------------------------------
-// Function: setUnmodifiablePath()
+// Function: LibraryPathValidator::setUnmodifiablePath()
 //-----------------------------------------------------------------------------
-void LibraryPathValidator::setUnmodifiablePath( const QString& path ) {
-	QRegExp regExp(path + QString("*"), Qt::CaseInsensitive, QRegExp::Wildcard);
-	setRegExp(regExp);
+void LibraryPathValidator::setUnmodifiablePath( const QString& path )
+{
+    QRegularExpression regExp(path + QString(".*"), 
+        QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+	setRegularExpression(regExp);
 }

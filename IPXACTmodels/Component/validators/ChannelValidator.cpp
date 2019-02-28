@@ -30,14 +30,6 @@ expressionParser_(expressionParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChannelValidator::~ChannelValidator()
-//-----------------------------------------------------------------------------
-ChannelValidator::~ChannelValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ChannelValidator::componentChange()
 //-----------------------------------------------------------------------------
 void ChannelValidator::componentChange(QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces)
@@ -80,7 +72,7 @@ bool ChannelValidator::hasValidBusInterfaceReferences(QSharedPointer<Channel> ch
         return false;
     }
 
-    foreach (QString const& currentRef, channel->getInterfaces())
+    for (QString const& currentRef : channel->getInterfaces())
     {
         if (!isReferenceToMirroredInterface(currentRef))
         {
@@ -116,7 +108,7 @@ void ChannelValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cha
 		errors.append(QObject::tr("At least two interfaces must be defined for channel %1.").arg(channel->name()));
 	}
 
-	foreach (QString const& currentRef, channel->getInterfaces())
+	for (QString const& currentRef : channel->getInterfaces())
 	{
 		if (!isValidBusIntefaceReference(currentRef))
 		{
@@ -153,7 +145,7 @@ bool ChannelValidator::isValidBusIntefaceReference(QString const& interfaceName)
 {
     if (busInterfaces_)
     {
-        foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces_)
+        for (QSharedPointer<BusInterface> const& busInterface : *busInterfaces_)
         {
             if (busInterface->name() == interfaceName)
             {
@@ -172,7 +164,7 @@ bool ChannelValidator::isReferenceToMirroredInterface(QString const& interfaceNa
 {
     if (busInterfaces_)
     {
-        foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces_)
+        for (QSharedPointer<BusInterface> const& busInterface : *busInterfaces_)
         {
             if (busInterface->name() == interfaceName)
             {

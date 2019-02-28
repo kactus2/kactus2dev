@@ -12,23 +12,6 @@
 #include "ProtocolValidator.h"
 
 #include <QRegularExpression>
-#include <QStringList>
-
-//-----------------------------------------------------------------------------
-// Function: ProtocolValidator::ProtocolValidator()
-//-----------------------------------------------------------------------------
-ProtocolValidator::ProtocolValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ProtocolValidator::~ProtocolValidator()
-//-----------------------------------------------------------------------------
-ProtocolValidator::~ProtocolValidator()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: ProtocolValidator::validateInstantiation()

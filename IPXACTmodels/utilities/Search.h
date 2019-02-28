@@ -23,15 +23,15 @@ namespace Search
     QSharedPointer<ContainerItem> findByName(QString const& name, 
         Container<QSharedPointer<ContainerItem> > container)
     {
-        for (auto item : container)
+        auto item = std::find_if(container.constBegin(), container.constEnd(),
+            [name](QSharedPointer<ContainerItem> const& item) { return item->name().compare(name) == 0; });
+
+        if (item == container.constEnd())
         {
-            if (item->name().compare(name) == 0)
-            {
-                return item;
-            }
+            return QSharedPointer<ContainerItem>();
         }
 
-        return QSharedPointer<ContainerItem>();
+        return *item;
     }
 };
 

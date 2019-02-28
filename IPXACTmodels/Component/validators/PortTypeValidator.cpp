@@ -23,14 +23,6 @@ availableViews_(views)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortTypeValidator::~PortTypeValidator()
-//-----------------------------------------------------------------------------
-PortTypeValidator::~PortTypeValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortTypeValidator::componentChange()
 //-----------------------------------------------------------------------------
 void PortTypeValidator::componentChange(QSharedPointer<QList<QSharedPointer<View> > > newViews)
@@ -67,9 +59,8 @@ bool PortTypeValidator::hasValidViewReferences(QSharedPointer<WireTypeDef> typeD
     }
     else
     {
-        for (int i = 0; i < typeDefinition->getViewRefs()->size(); ++i)
-        {
-            QString* view = &(*typeDefinition->getViewRefs())[i];
+        for (QString const& view : *typeDefinition->getViewRefs())
+        {            
             if (!hasValidView(view, definitionList))
             {
                 return false;
@@ -83,18 +74,18 @@ bool PortTypeValidator::hasValidViewReferences(QSharedPointer<WireTypeDef> typeD
 //-----------------------------------------------------------------------------
 // Function: PortTypeValidator::hasValidView()
 //-----------------------------------------------------------------------------
-bool PortTypeValidator::hasValidView(QString* view,
+bool PortTypeValidator::hasValidView(QString const& view,
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitionList) const
 {
-    return !view->isEmpty() && referencedViewExists(view) && viewIsReferencedOnce(view, typeDefinitionList);
+    return !view.isEmpty() && referencedViewExists(view) && viewIsReferencedOnce(view, typeDefinitionList);
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortTypeValidator::referencedViewExists()
 //-----------------------------------------------------------------------------
-bool PortTypeValidator::referencedViewExists(QString* viewRef) const
+bool PortTypeValidator::referencedViewExists(QString const& viewRef) const
 {
-    foreach (QSharedPointer<View> view, *availableViews_)
+    for (QSharedPointer<View> view : *availableViews_)
     {
         if (view->name() == viewRef)
         {
@@ -108,7 +99,7 @@ bool PortTypeValidator::referencedViewExists(QString* viewRef) const
 //-----------------------------------------------------------------------------
 // Function: PortTypeValidator::viewIsReferencedOnce()
 //-----------------------------------------------------------------------------
-bool PortTypeValidator::viewIsReferencedOnce(QString* referencedView,
+bool PortTypeValidator::viewIsReferencedOnce(QString const& referencedView,
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitionList) const
 {
     if (!typeDefinitionList)
@@ -116,15 +107,18 @@ bool PortTypeValidator::viewIsReferencedOnce(QString* referencedView,
         return false;
     }
 
-    foreach (QSharedPointer<WireTypeDef> typeDefinition, *typeDefinitionList)
+    int count = 0;
+    for (QSharedPointer<WireTypeDef> typeDefinition : *typeDefinitionList)
     {
-        for (int i = 0; i < typeDefinition->getViewRefs()->size(); ++i)
-        {
-            QString* typeView = &(*typeDefinition->getViewRefs())[i];
-
-            if (typeView != referencedView && QString::compare(*typeView, *referencedView) == 0)
+        for (QString const& typeView : *typeDefinition->getViewRefs())
+        {           
+            if (QString::compare(typeView, referencedView) == 0)
             {
-                return false;
+                ++count;
+                if (count > 1)
+                {
+                    return false;
+                }
             }
         }
     }
@@ -164,11 +158,9 @@ void PortTypeValidator::findErrorsInViewReferences(QVector<QString>& errors, QSt
     }
     else
     {
-        for (int i = 0; i < typeDefinition->getViewRefs()->size(); ++i)
+        for (QString const& view : *typeDefinition->getViewRefs())
         {
-            QString* view = &(*typeDefinition->getViewRefs())[i];
-
-            if (view->isEmpty())
+            if (view.isEmpty())
             {
                 errors.append(QObject::tr("Empty view reference assigned to port type %1 within %2").
                     arg(typeName).arg(context));
@@ -178,14 +170,14 @@ void PortTypeValidator::findErrorsInViewReferences(QVector<QString>& errors, QSt
                 if (!referencedViewExists(view))
                 {
                     errors.append(QObject::tr("View %1 referenced by port type %2 does not exist within %3").
-                        arg(*view).arg(typeName).arg(context));
+                        arg(view).arg(typeName).arg(context));
                 }
 
                 if (!viewIsReferencedOnce(view, definitionList))
                 {
                     errors.append(QObject::tr(
                         "View %1 referenced by port type %2 has been used in multiple types within %3").
-                        arg(*view).arg(typeName).arg(context));
+                        arg(view).arg(typeName).arg(context));
                 }
             }
         }

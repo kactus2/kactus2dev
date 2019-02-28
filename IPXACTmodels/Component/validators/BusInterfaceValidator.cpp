@@ -174,7 +174,7 @@ bool BusInterfaceValidator::hasValidBusType(QSharedPointer<BusInterface> busInte
 bool BusInterfaceValidator::hasValidAbstractionTypes(QSharedPointer<BusInterface> busInterface) const
 {
     QSharedPointer<QList<QSharedPointer<AbstractionType> > > busAbstractions = busInterface->getAbstractionTypes();
-    foreach (QSharedPointer<AbstractionType> abstraction, *busAbstractions)
+    for (QSharedPointer<AbstractionType> const& abstraction : *busAbstractions)
     {
         if (!abstractionValidator_->validate(abstraction, busAbstractions, busInterface))
         {
@@ -233,14 +233,13 @@ bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<MasterInterfa
 
     else if (!master->getAddressSpaceRef().isEmpty())
     {
-        foreach (QSharedPointer<AddressSpace> space, *availableAddressSpaces_)
+        for (QSharedPointer<AddressSpace> space : *availableAddressSpaces_)
         {
             if (master->getAddressSpaceRef() == space->name())
             {
                 bool changeOk = true;
                 bool expressionValid = false;
-                quint64 baseAddress =
-                    expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toULongLong(&changeOk);
+                expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toULongLong(&changeOk);
 
                 return (master->getBaseAddress().isEmpty() || (changeOk && expressionValid)) &&
                     hasValidIsPresent(master->getIsPresent()) &&
@@ -318,7 +317,7 @@ bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<Bu
 {
     if (!slave->getMemoryMapRef().isEmpty())
     {
-        foreach (QSharedPointer<MemoryMap> memoryMap, *availableMemoryMaps_)
+        for (QSharedPointer<MemoryMap> memoryMap : *availableMemoryMaps_)
         {
             if (slave->getMemoryMapRef() == memoryMap->name())
             {
@@ -335,7 +334,7 @@ bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<Bu
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveInterfaceHasValidBridges(QSharedPointer<SlaveInterface> slave) const
 {
-    foreach (QSharedPointer<TransparentBridge> bridge, *slave->getBridges())
+    for (QSharedPointer<TransparentBridge> bridge : *slave->getBridges())
     {
         if (slaveBridgeReferencesValidMaster(bridge))
         {
@@ -351,7 +350,7 @@ bool BusInterfaceValidator::slaveInterfaceHasValidBridges(QSharedPointer<SlaveIn
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveBridgeReferencesValidMaster(QSharedPointer<TransparentBridge> bridge) const
 {
-    foreach (QSharedPointer<BusInterface> busInterface, *availableBusInterfaces_)
+    for (QSharedPointer<BusInterface> busInterface : *availableBusInterfaces_)
     {
         if (busInterface->getInterfaceMode() == General::MASTER && bridge->getMasterRef() == busInterface->name())
         {
@@ -367,9 +366,9 @@ bool BusInterfaceValidator::slaveBridgeReferencesValidMaster(QSharedPointer<Tran
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointer<SlaveInterface> slave) const
 {
-    foreach (QSharedPointer<SlaveInterface::FileSetRefGroup> group, *slave->getFileSetRefGroup())
+    for (QSharedPointer<SlaveInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
     {
-        foreach (QString fileSetReference, group->fileSetRefs_)
+        for (QString const& fileSetReference : group->fileSetRefs_)
         {
             if (!slaveFileSetReferenceIsValid(fileSetReference))
             {
@@ -386,7 +385,7 @@ bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointe
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveFileSetReferenceIsValid(QString const& fileSetReference) const
 {
-    foreach (QSharedPointer<FileSet> fileset, *availableFileSets_)
+    for (QSharedPointer<FileSet> fileset : *availableFileSets_)
     {
         if (fileSetReference == fileset->name())
         {
@@ -432,7 +431,7 @@ bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<Mirror
     {
         if (!mirroredSlave->getRemapAddresses()->isEmpty())
         {
-            foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress,
+            for (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress :
                 *mirroredSlave->getRemapAddresses())
             {
                 if (!mirroredSlaveRemapAddressIsValid(remapAddress) || !mirroredSlaveStateIsValid(remapAddress))
@@ -484,7 +483,7 @@ bool BusInterfaceValidator::mirroredSlaveStateIsValid(
 {
     if (!remapAddress->state_.isEmpty())
     {
-        foreach (QSharedPointer<RemapState> remapState, *availableRemapStates_)
+        for (QSharedPointer<RemapState> remapState : *availableRemapStates_)
         {
             if (remapState->name() == remapAddress->state_)
             {
@@ -566,7 +565,7 @@ bool BusInterfaceValidator::hasValidParameters(QSharedPointer<BusInterface> busI
     if (!busInterface->getParameters()->isEmpty())
     {
         QStringList parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
+        for (QSharedPointer<Parameter> parameter : *busInterface->getParameters())
         {
             if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
@@ -659,7 +658,7 @@ void BusInterfaceValidator::findErrorsInAbstractionTypes(QVector<QString>& error
     QSharedPointer<BusInterface> busInterface, QString const& context) const
 {
     QSharedPointer<QList<QSharedPointer<AbstractionType> > > busAbstractions = busInterface->getAbstractionTypes();
-    foreach (QSharedPointer<AbstractionType> abstraction, *busAbstractions)
+    for (QSharedPointer<AbstractionType> abstraction : *busAbstractions)
     {
         abstractionValidator_->findErrorsIn(errors, abstraction, busAbstractions, busInterface, context);
     }
@@ -674,7 +673,7 @@ void BusInterfaceValidator::findErrorsInParameters(QVector<QString>& errors,
     if (!busInterface->getParameters()->isEmpty())
     {
         QVector<QString> parameterNames(busInterface->getParameters()->count());
-        foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
+        for (QSharedPointer<Parameter> parameter : *busInterface->getParameters())
         {
             if (parameterNames.contains(parameter->name()))
             {
@@ -742,7 +741,7 @@ void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors
         if (!master->getAddressSpaceRef().isEmpty())
         {
             bool found = false;
-            foreach (QSharedPointer<AddressSpace> space, *availableAddressSpaces_)
+            for (QSharedPointer<AddressSpace> space : *availableAddressSpaces_)
             {
                 if (master->getAddressSpaceRef() == space->name())
                 {
@@ -800,7 +799,7 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
             .arg(slave->getMemoryMapRef()).arg(context));
     }
 
-    foreach (QSharedPointer<TransparentBridge> bridge, *slave->getBridges())
+    for (QSharedPointer<TransparentBridge> bridge : *slave->getBridges())
     {
         if (!slaveBridgeReferencesValidMaster(bridge))
         {
@@ -814,9 +813,9 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
         }
     }
 
-    foreach (QSharedPointer<SlaveInterface::FileSetRefGroup> group, *slave->getFileSetRefGroup())
+    for (QSharedPointer<SlaveInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
     {
-        foreach (QString fileSetReference, group->fileSetRefs_)
+        for (QString fileSetReference : group->fileSetRefs_)
         {
             if (!slaveFileSetReferenceIsValid(fileSetReference))
             {
@@ -867,7 +866,7 @@ void BusInterfaceValidator::findErrorsInMirroredSlaveInterface(QVector<QString>&
             errors.append(QObject::tr("Invalid remap address set for %1").arg(context));
         }
 
-        foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress,
+        for (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress :
             *mirroredSlave->getRemapAddresses())
         {
             if (!mirroredSlaveRemapAddressIsValid(remapAddress))

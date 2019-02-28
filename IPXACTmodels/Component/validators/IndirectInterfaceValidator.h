@@ -45,8 +45,12 @@ public:
         QSharedPointer<ParameterValidator> parameterValidator);
 
 	//! The destructor.
-	virtual ~IndirectInterfaceValidator();
-            
+	~IndirectInterfaceValidator()= default;
+
+    // Disable copying.
+    IndirectInterfaceValidator(IndirectInterfaceValidator const& rhs) = delete;
+    IndirectInterfaceValidator& operator=(IndirectInterfaceValidator const& rhs) = delete;
+
     void componentChange(QSharedPointer<Component> component);
 
     /*!
@@ -56,7 +60,7 @@ public:
      *
      *      @return True, if the IndirectInterface is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<IndirectInterface> indirectInterface) const;
+    bool validate(QSharedPointer<IndirectInterface> indirectInterface) const;
     
     /*!
      *  Check if the name is valid.
@@ -137,14 +141,10 @@ public:
     *      @param [in] indirectInterface   The indirectInterface whose errors to find.
     *      @param [in] context             Context to help locate the errors.
     */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
         QString const& context) const;
 
 private:
-
-    // Disable copying.
-    IndirectInterfaceValidator(IndirectInterfaceValidator const& rhs);
-    IndirectInterfaceValidator& operator=(IndirectInterfaceValidator const& rhs);
 
     /*!
      * Finds the field with the given Id reference.

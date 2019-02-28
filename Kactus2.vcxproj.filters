@@ -4426,9 +4426,6 @@
     <ClCompile Include="library\LibraryLoader.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LibraryLoader.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusDefinitionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>

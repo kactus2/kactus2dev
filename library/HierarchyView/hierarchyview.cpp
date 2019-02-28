@@ -187,7 +187,7 @@ void HierarchyView::setupActions()
 //-----------------------------------------------------------------------------
 void HierarchyView::onOpenItem()
 {
-	foreach (QModelIndex const& index, selectedIndexes())
+	for (QModelIndex const& index : selectedIndexes())
     {
 		emit openItem(filter_->mapToSource(index));
 	}
@@ -198,7 +198,7 @@ void HierarchyView::onOpenItem()
 //-----------------------------------------------------------------------------
 void HierarchyView::onOpenDesign()
 {
-    foreach (QModelIndex const& index, selectedIndexes())
+    for (QModelIndex const& index : selectedIndexes())
     {
         emit openDesign(filter_->mapToSource(index));
     }
@@ -209,7 +209,7 @@ void HierarchyView::onOpenDesign()
 //-----------------------------------------------------------------------------
 void HierarchyView::onOpenMemoryDesign()
 {
-    foreach (QModelIndex const& index, selectedIndexes())
+    for (QModelIndex const& index : selectedIndexes())
     {
         emit openMemoryDesign(filter_->mapToSource(index));
     }
@@ -292,7 +292,7 @@ void HierarchyView::onDeleteAction()
 //-----------------------------------------------------------------------------
 void HierarchyView::onExportAction()
 {
-	foreach (QModelIndex const& index, selectedIndexes())
+	for (QModelIndex const& index : selectedIndexes())
     {
 		emit exportItem(filter_->mapToSource(index));
 	}
@@ -311,7 +311,7 @@ void HierarchyView::onShowErrors()
 //-----------------------------------------------------------------------------
 void HierarchyView::onOpenXml()
 {
-	QModelIndex const& index = filter_->mapToSource(currentIndex());
+	QModelIndex const index = filter_->mapToSource(currentIndex());
 	HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
 	VLNV vlnv = item->getVLNV();
 
@@ -325,7 +325,7 @@ void HierarchyView::onOpenXml()
 //-----------------------------------------------------------------------------
 void HierarchyView::onOpenContainingFolder()
 {
-    QModelIndex index = filter_->mapToSource(currentIndex());
+    QModelIndex const index = filter_->mapToSource(currentIndex());
     HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
     VLNV vlnv = item->getVLNV();
 
@@ -353,7 +353,7 @@ void HierarchyView::contextMenuEvent(QContextMenuEvent* event)
 	}
 
 	// get original model index so internalPointer can be used
-	QModelIndex sourceIndex = filter_->mapToSource(current);
+	QModelIndex const sourceIndex = filter_->mapToSource(current);
 
 	HierarchyItem* item = static_cast<HierarchyItem*>(sourceIndex.internalPointer());
 	VLNV vlnv = item->getVLNV();
@@ -624,7 +624,7 @@ void HierarchyView::setSelectedIndexes(QModelIndexList const& indexes)
 	// clear any previously selected items
 	clearSelection();
 
-	foreach (QModelIndex const& index, indexes)
+	for (QModelIndex const& index : indexes)
     {		
         if (index.isValid())
         {

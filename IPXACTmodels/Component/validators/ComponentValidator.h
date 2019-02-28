@@ -57,7 +57,7 @@ public:
     ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
 
 	//! The destructor.
-	~ComponentValidator();
+	~ComponentValidator() = default;
     
     /*!
      *  Validates the given component.

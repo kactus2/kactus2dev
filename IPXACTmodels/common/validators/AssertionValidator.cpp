@@ -27,14 +27,6 @@ expressionParser_(expressionParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AssertionValidator::~AssertionValidator()
-//-----------------------------------------------------------------------------
-AssertionValidator::~AssertionValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AssertionValidator::validate()
 //-----------------------------------------------------------------------------
 bool AssertionValidator::validate(QSharedPointer<Assertion> assertion) const

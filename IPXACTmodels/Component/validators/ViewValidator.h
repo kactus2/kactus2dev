@@ -41,7 +41,7 @@ public:
     ViewValidator(QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Model> model);
 
 	//! The destructor.
-	virtual ~ViewValidator();
+	~ViewValidator() = default;
 
     /*!
      *  Change the available model.
@@ -120,7 +120,7 @@ public:
      *
      *      @return True, if the environment identifier is valid, otherwise false.
      */
-	bool isValidEnvId( QSharedPointer<View::EnvironmentIdentifier> envId ) const;
+	bool isValidEnvId(QSharedPointer<View::EnvironmentIdentifier> const& envId) const;
 
     /*!
      *  Finds possible errors in a View and creates a list of them.

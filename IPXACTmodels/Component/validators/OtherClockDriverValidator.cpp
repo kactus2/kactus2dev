@@ -28,14 +28,6 @@ expressionParser_(expressionParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: OtherClockDriverValidator::~OtherClockDriverValidator()
-//-----------------------------------------------------------------------------
-OtherClockDriverValidator::~OtherClockDriverValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: OtherClockDriverValidator::validate()
 //-----------------------------------------------------------------------------
 bool OtherClockDriverValidator::validate(QSharedPointer<OtherClockDriver> otherClockDriver) const

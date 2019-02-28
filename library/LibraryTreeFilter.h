@@ -34,7 +34,13 @@ public:
     LibraryTreeFilter(LibraryInterface* handler, QObject *parent = 0);
 
 	//! The destructor
-    virtual ~LibraryTreeFilter();
+    virtual ~LibraryTreeFilter() = default;
+
+    //! No copying
+    LibraryTreeFilter(const LibraryTreeFilter& other) = delete;
+
+    //! No assignment
+    LibraryTreeFilter& operator=(const LibraryTreeFilter& other) = delete;
 
 protected:
 
@@ -45,15 +51,9 @@ protected:
 	 *
 	 *      @return True if item is shown, otherwise false.
 	*/
-	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const;
+	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const override final;
 
 private:
-
-	//! No copying
-	LibraryTreeFilter(const LibraryTreeFilter& other);
-
-	//! No assignment
-	LibraryTreeFilter& operator=(const LibraryTreeFilter& other);
 
 	//! The instance that manages the library.
 	LibraryInterface* handler_;

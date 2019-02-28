@@ -34,7 +34,11 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~PortTypeValidator();
+    ~PortTypeValidator() = default;
+
+    // No copying. No assignment.
+    PortTypeValidator(PortTypeValidator const& rhs) = delete;
+    PortTypeValidator& operator=(PortTypeValidator const& rhs) = delete;
 
     /*!
      *  Change the available views.
@@ -51,7 +55,7 @@ public:
      *
      *      @return True, if the type definition is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<WireTypeDef> typeDefinition,
+    bool validate(QSharedPointer<WireTypeDef> typeDefinition,
         QSharedPointer<QList<QSharedPointer<WireTypeDef> > > definitionList) const;
 
     /*!
@@ -82,7 +86,7 @@ public:
      *
      *      @return True, if the view reference is valid IP-XACT, otherwise false.
      */
-    bool hasValidView(QString* view, QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitionList)
+    bool hasValidView(QString const& view, QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitionList)
         const;
 
     /*!
@@ -92,7 +96,7 @@ public:
      *
      *      @return True, if the view reference exists, otherwise false.
      */
-    bool referencedViewExists(QString* viewRef) const;
+    bool referencedViewExists(QString const& viewRef) const;
 
     /*!
      *  Checks if the selected view is referenced only once in all of the type definitions.
@@ -102,7 +106,7 @@ public:
      *
      *      @return True, if the view reference is used only once in all of the type definitions, otherwise false.
      */
-    bool viewIsReferencedOnce(QString* referencedView,
+    bool viewIsReferencedOnce(QString const& referencedView,
         QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitionList) const;
 
     /*!
@@ -113,15 +117,11 @@ public:
      *      @param [in] typeDefinition  The selected type definition.
      *      @param [in] definitionList  List of type definitions contained within the containing port.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QString const& context,
+    void findErrorsIn(QVector<QString>& errors, QString const& context,
         QSharedPointer<WireTypeDef> typeDefinition,
         QSharedPointer<QList<QSharedPointer<WireTypeDef> > > definitionList) const;
 
 private:
-
-	// No copying. No assignment.
-	PortTypeValidator(PortTypeValidator const& rhs);
-	PortTypeValidator& operator=(PortTypeValidator const& rhs);
 
     /*!
      *  Find errors in the view references of the selected type definition.

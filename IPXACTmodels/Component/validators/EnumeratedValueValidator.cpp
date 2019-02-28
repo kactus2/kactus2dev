@@ -27,14 +27,6 @@ expressionParser_(expressionParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: EnumeratedValueValidator::~EnumeratedValueValidator()
-//-----------------------------------------------------------------------------
-EnumeratedValueValidator::~EnumeratedValueValidator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: EnumeratedValueValidator::validate()
 //-----------------------------------------------------------------------------
 bool EnumeratedValueValidator::validate(QSharedPointer<EnumeratedValue> enumeratedValue) const

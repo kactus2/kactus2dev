@@ -85,7 +85,7 @@ public:
 	 *
 	 *      @param [in] other The VLNV to be copied.
 	 */
-	VLNV(VLNV const& other);
+	VLNV(VLNV const& other) = default;
 
 	//! The destructor
 	~VLNV() = default;
@@ -261,5 +261,7 @@ private:
 
 // With this declaration, VLNV can be used as a QVariant.
 Q_DECLARE_METATYPE(VLNV);
+
+Q_DECLARE_TYPEINFO(VLNV, Q_MOVABLE_TYPE);
 
 #endif /* VLNV_H */

@@ -46,13 +46,6 @@ QSortFilterProxyModel(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryFilter::~LibraryFilter()
-//-----------------------------------------------------------------------------
-LibraryFilter::~LibraryFilter()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryFilter::onVendorChanged()
 //-----------------------------------------------------------------------------
 void LibraryFilter::onVendorChanged(QString const& vendorText)
@@ -301,7 +294,7 @@ bool LibraryFilter::checkHierarchy(QSharedPointer<Component const> component) co
 //-----------------------------------------------------------------------------
 bool LibraryFilter::checkVLNVs(QVector<VLNV> const& list) const
 {
-    foreach (VLNV const& vlnv, list)
+    for (VLNV const& vlnv : list)
     {
         int pos = 0;
 

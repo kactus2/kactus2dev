@@ -76,7 +76,7 @@ public:
 	HierarchyItem(LibraryInterface* handler, QObject* parent);
 
     //! The destructor
-    virtual ~HierarchyItem();
+    virtual ~HierarchyItem() = default;
 
 	/*! Create a child for the HierarchyItem that represents the given VLNV.
 	 * 
@@ -97,7 +97,7 @@ public:
 	 *
 	 *      @return VLNV of the component this item represents.
 	*/
-	VLNV getVLNV() const;
+	VLNV const& getVLNV() const;
 
 	/*! Get pointer to the child item with given index.
 	 * 
@@ -292,14 +292,14 @@ public:
 	 *      @param [in] owner Identifies the object that's children are searched.
 	 *
 	*/
-	void getChildren(QList<VLNV>& childList, const VLNV& owner);
+	void getChildren(QList<VLNV>& childList, const VLNV& owner) const;
 
 	/*! Get the vlnvs of the items that are this item's children.
 	 *
 	 *      @param [in] itemList The list where the vlnvs are appended to.
 	 *
 	*/
-	void getChildItems(QList<VLNV>& itemList);
+	void getChildItems(QList<VLNV>& itemList) const;
 
 	/*! Count how many times this component has been instantiated in a containing design.
 	 * 
@@ -417,7 +417,7 @@ private:
      *
      *      @return The valid VLVN references.
      */
-    QVector<VLNV> getValidComponentsInDesign();
+    QVector<VLNV> getValidComponentsInDesign(QSharedPointer<Design const> design);
 
     /*!
      *  Checks if the given VLNV reference to a component is valid.
@@ -432,32 +432,17 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The VLNV this item represents.
+    VLNV vlnv_;
+
 	//! The component that this hierarhcyItem represents.
 	QSharedPointer<Component const> component_;
-
-	//! The bus definition that this hierarchyItem represents.
-	QSharedPointer<BusDefinition const> busDef_;
-
-	//! The abstraction definition that this hierarchyItem represents.
-	QSharedPointer<AbstractionDefinition const> absDef_;
-
-    //! The COM definition that this hierarchyItem represents.
-    QSharedPointer<ComDefinition const> comDef_;
-
-    //! The API definition that this hierarchyItem represents.
-    QSharedPointer<ApiDefinition const> apiDef_;
-
-	//! The design that this hierarchyItem represents.
-	QSharedPointer<Design const> design_;
-
-    //! The catalog that this hierarhcyItem represents.
-    QSharedPointer<Catalog const> catalog_;
 
 	//! The object that manages the library.
 	LibraryInterface* library_;
 
 	//! List of children of this item.
-	QList<HierarchyItem*> childItems_;
+	QVector<HierarchyItem*> childItems_;
 
 	//! The parent of this item.
 	HierarchyItem* parentItem_;

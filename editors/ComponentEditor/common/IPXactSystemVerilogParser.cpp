@@ -13,22 +13,11 @@
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <QRegularExpression>
-#include <QStringList>
-
 //-----------------------------------------------------------------------------
 // Function: IPXactSystemVerilogParser::IPXactSystemVerilogParser()
 //-----------------------------------------------------------------------------
 IPXactSystemVerilogParser::IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder):
 SystemVerilogExpressionParser(), finder_(finder), symbolStack_()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::~IPXactSystemVerilogParser()
-//-----------------------------------------------------------------------------
-IPXactSystemVerilogParser::~IPXactSystemVerilogParser()
 {
 
 }
@@ -55,7 +44,11 @@ QString IPXactSystemVerilogParser::findSymbolValue(QString const& expression) co
 
     symbolStack_.append(expression);
     QString value = parseExpression(finder_->valueForId(expression));
-    symbolStack_.removeOne(expression);
+    if (symbolStack_.isEmpty() == false)
+    {
+        symbolStack_.removeLast();
+    }
+    
 
     return value;
 }

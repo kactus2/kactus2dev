@@ -17,11 +17,11 @@ QT += core xml gui testlib widgets
 CONFIG += testcase console c++14
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels 
+    LIBS += -L$$PWD/../../x64/executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd 
+    LIBS += -L$$PWD/../../x64/executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {

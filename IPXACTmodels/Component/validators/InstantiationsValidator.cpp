@@ -89,12 +89,9 @@ bool InstantiationsValidator::hasValidName(QString const& name) const
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::hasValidDesignReference(QSharedPointer<DesignInstantiation> designInstantiation) const
 {
-    if ( libraryHandler_ && designInstantiation->getDesignReference() &&
-        designInstantiation->getDesignReference()->isValid() &&
-        libraryHandler_->getModel(*designInstantiation->getDesignReference().data()))
+    if (designInstantiation->getDesignReference() && designInstantiation->getDesignReference()->isValid())
     {
-        return libraryHandler_->contains(*designInstantiation->getDesignReference().data()) &&
-            libraryHandler_->getDocumentType(*designInstantiation->getDesignReference().data()) == VLNV::DESIGN;
+        return libraryHandler_->getDocumentType(*designInstantiation->getDesignReference().data()) == VLNV::DESIGN;
     }
 
     return false;
@@ -122,7 +119,7 @@ void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& 
 		errors.append(QObject::tr("Invalid design reference %1 set for design instantiation %2")
             .arg(designInstantiation->getDesignReference()->toString()).arg(designInstantiation->name()));
 	}
-    else if (!libraryHandler_->getModel(*designInstantiation->getDesignReference().data()))
+    else if (!libraryHandler_->contains(*designInstantiation->getDesignReference()))
     {
         errors.append(QObject::tr("Design %1 referenced by design instantiation in %2 was not found in the "
             "library.")
@@ -146,13 +143,11 @@ bool InstantiationsValidator::validateDesignConfigurationInstantiation(
 bool InstantiationsValidator::hasValidDesignConfigurationReference(
     QSharedPointer<DesignConfigurationInstantiation> instantiation) const
 {
-    if ( libraryHandler_ && instantiation->getDesignConfigurationReference() &&
-        instantiation->getDesignConfigurationReference()->isValid() &&
-        libraryHandler_->getModel(*instantiation->getDesignConfigurationReference().data()))
+    if (instantiation->getDesignConfigurationReference() &&
+        instantiation->getDesignConfigurationReference()->isValid())
     {
-        return libraryHandler_->contains(*instantiation->getDesignConfigurationReference().data()) &&
-            libraryHandler_->getDocumentType(
-            *instantiation->getDesignConfigurationReference().data()) == VLNV::DESIGNCONFIGURATION;
+        return libraryHandler_->getDocumentType(*instantiation->getDesignConfigurationReference()) == 
+            VLNV::DESIGNCONFIGURATION;
     }
 
     return false;
@@ -167,7 +162,7 @@ bool InstantiationsValidator::hasValidParameters(
     if (!availableParameters->isEmpty())
     {
         QStringList parameterNames;
-        foreach ( QSharedPointer<Parameter> parameter, *availableParameters )
+        for( QSharedPointer<Parameter> parameter : *availableParameters )
         {
             if ( parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter) )
             {
@@ -206,7 +201,7 @@ void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVect
             "instantiation %2")
             .arg(instantiation->getDesignConfigurationReference()->toString()).arg(instantiation->name()));
 	}
-    else if (!libraryHandler_->getModel(*instantiation->getDesignConfigurationReference().data()))
+    else if (!libraryHandler_->contains(*instantiation->getDesignConfigurationReference()))
     {
         errors.append(QObject::tr("Design configuration %1 referenced by design configuration instantiation in "
             "%2 was not found in the library.")
@@ -215,7 +210,7 @@ void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVect
 
     QStringList parameterNames;
     QStringList foundNames;
-	foreach ( QSharedPointer<Parameter> parameter, *instantiation->getParameters() )
+	for ( QSharedPointer<Parameter> parameter : *instantiation->getParameters() )
 	{
         if (parameterNames.contains(parameter->name()) && !foundNames.contains(parameter->name()))
         {
@@ -250,7 +245,7 @@ bool InstantiationsValidator::validateComponentInstantiation (QSharedPointer<Com
 bool InstantiationsValidator::componentInstantiationFileBuildersAreValid(
     QSharedPointer<ComponentInstantiation> instantiation) const
 {
-    foreach ( QSharedPointer<FileBuilder> currentFileBuilder, *instantiation->getDefaultFileBuilders() )
+    for ( QSharedPointer<FileBuilder> currentFileBuilder : *instantiation->getDefaultFileBuilders() )
     {
         if ( !hasValidName( currentFileBuilder->getFileType() ) ||
             !fileBuilderReplaceDefaultFlagsIsValid(currentFileBuilder) )
@@ -285,7 +280,7 @@ bool InstantiationsValidator::fileBuilderReplaceDefaultFlagsIsValid(QSharedPoint
 bool InstantiationsValidator::componentInstantiationFileSetReferencesAreValid(
     QSharedPointer<ComponentInstantiation> instantiation) const
 {
-    foreach ( QString fileSetRef, *instantiation->getFileSetReferences() )
+    for ( QString const& fileSetRef : *instantiation->getFileSetReferences() )
     {
         if ( !fileSetReferenceIsValid(fileSetRef) )
         {
@@ -301,7 +296,7 @@ bool InstantiationsValidator::componentInstantiationFileSetReferencesAreValid(
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::fileSetReferenceIsValid(QString const& fileSetRef) const
 {
-    foreach ( QSharedPointer<FileSet> fileSet, *availableFileSets_ )
+    for ( QSharedPointer<FileSet> fileSet : *availableFileSets_ )
     {
         if ( fileSetRef == fileSet->name() )
         {
@@ -320,7 +315,7 @@ bool InstantiationsValidator::hasValidModuleParameters(QSharedPointer<ComponentI
     if (!instantiation->getModuleParameters()->isEmpty())
     {
         QStringList moduleParameterNames;
-        foreach ( QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters() )
+        for ( QSharedPointer<ModuleParameter> parameter : *instantiation->getModuleParameters() )
         {
             if ( moduleParameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter) ||
                 !moduleParameterHasValidPresence(parameter) || !moduleParameterHasValidUsageType(parameter))
@@ -347,7 +342,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
             .arg(instantiation->name()).arg(context));
     }
 
-    foreach ( QString fileSetRef, *instantiation->getFileSetReferences() )
+    for ( QString const& fileSetRef : *instantiation->getFileSetReferences() )
     {
         if ( !fileSetReferenceIsValid(fileSetRef) )
         {
@@ -355,7 +350,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
         }
     }
 
-	foreach ( QSharedPointer<FileBuilder> currentFileBuilder, *instantiation->getDefaultFileBuilders() )
+	for ( QSharedPointer<FileBuilder> currentFileBuilder : *instantiation->getDefaultFileBuilders() )
 	{
 		if ( !hasValidName( currentFileBuilder->getFileType() ) )
 		{
@@ -371,7 +366,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 
     QStringList parameterNames;
     QStringList duplicateParameterNames;
-	foreach ( QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters() )
+	for ( QSharedPointer<ModuleParameter> parameter : *instantiation->getModuleParameters() )
 	{
 		parameterValidator_->findErrorsIn(errors,parameter,context);
 
@@ -401,7 +396,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 
     parameterNames.clear();
     duplicateParameterNames.clear();
-	foreach ( QSharedPointer<Parameter> parameter, *instantiation->getParameters() )
+	for ( QSharedPointer<Parameter> parameter : *instantiation->getParameters() )
 	{
         parameterValidator_->findErrorsIn(errors,parameter,context);
         

@@ -31,15 +31,8 @@ VLNV CommonItemsReader::createVLNVFrom(QDomNode const& vlnvNode, VLNV::IPXactTyp
     QString library = vlnvNode.firstChildElement(QStringLiteral("ipxact:library")).firstChild().nodeValue();
     QString name = vlnvNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
     QString version = vlnvNode.firstChildElement(QStringLiteral("ipxact:version")).firstChild().nodeValue();
-
-    VLNV itemVLNV;
-    itemVLNV.setType(type);
-    itemVLNV.setVendor(vendor);
-    itemVLNV.setLibrary(library);
-    itemVLNV.setName(name);
-    itemVLNV.setVersion(version);
-
-    return itemVLNV;
+    
+    return VLNV(type, vendor, library, name, version);
 }
 
 //-----------------------------------------------------------------------------

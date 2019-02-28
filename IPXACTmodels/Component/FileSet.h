@@ -268,13 +268,6 @@ public:
 	void changeFileName(const QString& from, const QString& to);
 
 	/*!
-     *  Sort the files in the file set to given order.
-	 *
-	 *      @param [in] fileNames   Names of files in the order to sort them into.
-	 */
-	void sortFiles(const QStringList& fileNames);
-
-	/*!
      *  Remove the files listed in the file set.
 	 */
 	void clearFiles();
@@ -292,11 +285,6 @@ public:
 	 *      @param [in] id  The id to be set.
 	 */
 	void setFileSetId(const QString& newId);
-
-	/*! 
-     *  Sorts files by file name.
-	 */
-	void sortFiles();
 
 private:
 
