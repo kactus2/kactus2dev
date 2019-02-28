@@ -48,7 +48,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~AutoConnectorConnectionTable();
+    ~AutoConnectorConnectionTable() = default;
 
     /*!
      *  Get the connected items.
@@ -106,7 +106,17 @@ private slots:
      */
     void onAddRow();
 
+    /*!
+     *  Handles the cell clearing.
+     */
+    void onClearCells();
+
 private:
+
+    /*!
+     *  Setup the available actions.
+     */
+    void setupActions();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -132,6 +142,9 @@ private:
 
     //! Action for adding rows.
     QAction* addRowAction_;
+
+    //! Action for clearing the cells.
+    QAction* clearAction_;
 
     //! Checks for possible matches between two items.
     TableItemMatcher* itemMatcher_;

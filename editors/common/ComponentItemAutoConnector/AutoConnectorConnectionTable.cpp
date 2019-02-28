@@ -34,6 +34,7 @@ secondItemList_(secondList),
 dragSourceList_(),
 removeRowAction_(new QAction(tr("Remove row"), this)),
 addRowAction_(new QAction(tr("Add row"), this)),
+clearAction_(new QAction(tr("Clear"), this)),
 itemMatcher_(itemMatcher)
 {
     setDragDropMode(QAbstractItemView::DropOnly);
@@ -51,16 +52,37 @@ itemMatcher_(itemMatcher)
     QStringList horizontalHeaders = { firstHeader, secondHeader };
     setHorizontalHeaderLabels(horizontalHeaders);
 
-    connect(removeRowAction_, SIGNAL(triggered()), this, SLOT(onRemoveRow()), Qt::UniqueConnection);
-    connect(addRowAction_, SIGNAL(triggered()), this, SLOT(onAddRow()), Qt::UniqueConnection);
+    setupActions();
 }
 
 //-----------------------------------------------------------------------------
-// Function: AutoConnectorConnectionTable::~AutoConnectorConnectionTable()
+// Function: AutoConnectorConnectionTable::setupActions()
 //-----------------------------------------------------------------------------
-AutoConnectorConnectionTable::~AutoConnectorConnectionTable()
+void AutoConnectorConnectionTable::setupActions()
 {
+    QList<QKeySequence> addRowShortcuts;
+    addRowShortcuts << QKeySequence::InsertLineSeparator << Qt::SHIFT + Qt::Key_Return;
 
+    addAction(addRowAction_);
+    addRowAction_->setToolTip(tr("Add a new row to table"));
+    addRowAction_->setStatusTip(tr("Add a new row to table"));
+    addRowAction_->setShortcuts(addRowShortcuts);
+    addRowAction_->setShortcutContext(Qt::WidgetShortcut);
+    connect(addRowAction_, SIGNAL(triggered()), this, SLOT(onAddRow()), Qt::UniqueConnection);
+
+    addAction(removeRowAction_);
+    removeRowAction_->setToolTip(tr("Remove a connection from the table"));
+    removeRowAction_->setStatusTip(tr("Remove a connection from the table"));
+    removeRowAction_->setShortcut(Qt::SHIFT + Qt::Key_Delete);
+    removeRowAction_->setShortcutContext(Qt::WidgetShortcut);
+    connect(removeRowAction_, SIGNAL(triggered()), this, SLOT(onRemoveRow()), Qt::UniqueConnection);
+
+    addAction(clearAction_);
+    clearAction_->setToolTip(tr("Clear the contents of a cell"));
+    clearAction_->setStatusTip(tr("Clear the contents of a cell"));
+    clearAction_->setShortcut(QKeySequence::Delete);
+    clearAction_->setShortcutContext(Qt::WidgetShortcut);
+    connect(clearAction_, SIGNAL(triggered()), this, SLOT(onClearCells()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -120,9 +142,22 @@ void AutoConnectorConnectionTable::onRemoveRow()
 {
     QModelIndexList indexlist = selectedIndexes();
     qSort(indexlist.begin(), indexlist.end(), qGreater<QModelIndex>());
-    foreach(QModelIndex index, indexlist)
+    for(QModelIndex const& index : indexlist)
     {
         removeRow(index.row());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorConnectionTable::onClearCells()
+//-----------------------------------------------------------------------------
+void AutoConnectorConnectionTable::onClearCells()
+{
+    QModelIndexList indexList = selectedIndexes();
+    for(QModelIndex const& index : indexList)
+    {
+        model()->setData(index, QVariant(), Qt::DecorationRole);
+        model()->setData(index, QVariant(), Qt::EditRole);
     }
 }
 

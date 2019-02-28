@@ -844,10 +844,13 @@ void EditableTableView::setModel(QAbstractItemModel* model)
 //-----------------------------------------------------------------------------
 void EditableTableView::setupActions()
 {
+    QList<QKeySequence> addRowShortcuts;
+    addRowShortcuts << QKeySequence::InsertLineSeparator << Qt::SHIFT + Qt::Key_Return;
+
     addAction(&addAction_);
     addAction_.setToolTip(tr("Add a new row to table"));
     addAction_.setStatusTip(tr("Add a new row to table"));
-    addAction_.setShortcut(QKeySequence::InsertLineSeparator);
+    addAction_.setShortcuts(addRowShortcuts);
     addAction_.setShortcutContext(Qt::WidgetShortcut);
     connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
 

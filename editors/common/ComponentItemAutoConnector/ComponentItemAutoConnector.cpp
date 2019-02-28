@@ -120,7 +120,8 @@ void ComponentItemAutoConnector::setupLayout()
 {
     QString introLabel = tr("Auto connector");
     QString introText = tr("Connect bus interfaces and ports from two component instances automatically.") +
-        tr(" Bus interfaces create interconnections and ports create ad-hoc connections.");
+        tr(" Automatic connections are created using the names of the items.\n") +
+        tr("Bus interfaces create interconnections and ports create ad-hoc connections.");
     QWidget* introWidget = setupIntroWidget(introLabel, introText);
 
     QPushButton* okButton(new QPushButton(tr("Finish"), this));
