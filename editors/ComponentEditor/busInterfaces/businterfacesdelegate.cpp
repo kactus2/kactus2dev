@@ -119,9 +119,7 @@ void BusInterfacesDelegate::setModelData(QWidget* editor, QAbstractItemModel* mo
         InterfaceModeSelector* selector = qobject_cast<InterfaceModeSelector*>(editor);
         Q_ASSERT(selector);
 
-        General::InterfaceMode mode = selector->selected();
-        QString modeStr = General::interfaceMode2Str(mode);
-        model->setData(index, modeStr, Qt::EditRole);
+        model->setData(index, selector->currentText(), Qt::EditRole);
     }	
     else
     {

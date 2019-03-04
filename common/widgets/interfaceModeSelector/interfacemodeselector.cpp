@@ -128,6 +128,6 @@ void InterfaceModeSelector::setMode(QString const& modeName)
 //-----------------------------------------------------------------------------
 General::InterfaceMode InterfaceModeSelector::selected() const
 {
-	int index = currentIndex();
+	int index = qMax(0, currentIndex());
 	return static_cast<General::InterfaceMode>(index);
 }
