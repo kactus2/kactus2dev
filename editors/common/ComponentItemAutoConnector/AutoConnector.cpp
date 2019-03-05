@@ -27,11 +27,12 @@
 //-----------------------------------------------------------------------------
 // Function: AutoConnector::AutoConnector()
 //-----------------------------------------------------------------------------
-AutoConnector::AutoConnector(ComponentItem* firstItem, ComponentItem* secondItem, ListFiller* listFiller,
+AutoConnector::AutoConnector(QString const& firstComponentName, QString const& secondComponentName,
+    QSharedPointer<Component> firstComponent, QSharedPointer<Component> secondComponent, ListFiller* listFiller,
     TableAutoConnector* tableInitializer, QString const& itemName, TableItemMatcher* itemMatcher, QWidget* parent):
 QWidget(parent),
-firstComponent_(firstItem->componentModel()),
-secondComponent_(secondItem->componentModel()),
+firstComponent_(firstComponent),
+secondComponent_(secondComponent),
 firstListFilter_(),
 secondListFilter_(),
 firstItemList_(),
@@ -39,7 +40,7 @@ secondItemList_(),
 connectorTable_(),
 tableInitializer_(tableInitializer)
 {
-    setupLayout(firstItem, secondItem, listFiller, itemName, itemMatcher);
+    setupLayout(firstComponentName, secondComponentName, listFiller, itemName, itemMatcher);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,8 +62,8 @@ QVector<QPair<QString, QString> > AutoConnector::getConnectedItems() const
 //-----------------------------------------------------------------------------
 // Function: AutoConnector::setupLayout()
 //-----------------------------------------------------------------------------
-void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondItem, ListFiller* listFiller,
-    QString const& itemName, TableItemMatcher* itemMatcher)
+void AutoConnector::setupLayout(QString const& firstComponentName, QString const& secondComponentName,
+    ListFiller* listFiller, QString const& itemName, TableItemMatcher* itemMatcher)
 {
     firstItemList_ = new QListView(this);
     secondItemList_ = new QListView(this);
@@ -85,16 +86,13 @@ void AutoConnector::setupLayout(ComponentItem* firstItem, ComponentItem* secondI
     secondComponentLayout->addWidget(secondItemList_, 1);
     secondComponentLayout->addWidget(secondHideBox);
 
-    QString firstItemName = getComponentItemName(firstItem);
-    QString secondItemName = getComponentItemName(secondItem);
-
-    QGroupBox* firstComponentGroup(new QGroupBox(firstItemName, this));
-    QGroupBox* secondComponentGroup(new QGroupBox(secondItemName, this));
+    QGroupBox* firstComponentGroup(new QGroupBox(firstComponentName, this));
+    QGroupBox* secondComponentGroup(new QGroupBox(secondComponentName, this));
     firstComponentGroup->setLayout(firstComponentLayout);
     secondComponentGroup->setLayout(secondComponentLayout);
 
     connectorTable_ = new AutoConnectorConnectionTable(firstComponent_, secondComponent_, firstItemList_,
-        secondItemList_, firstItemName, secondItemName, itemMatcher, this);
+        secondItemList_, firstComponentName, secondComponentName, itemMatcher, this);
     connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(
         firstComponent_, secondComponent_, firstItemList_, secondItemList_, itemMatcher, this));
 
@@ -136,21 +134,6 @@ void AutoConnector::invalidateListFilters()
 {
     firstListFilter_->invalidate();
     secondListFilter_->invalidate();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AutoConnector::getComponentItemName()
-//-----------------------------------------------------------------------------
-QString AutoConnector::getComponentItemName(ComponentItem* componentItem) const
-{
-    if (!componentItem->displayName().isEmpty())
-    {
-        return componentItem->displayName();
-    }
-    else
-    {
-        return componentItem->name();
-    }
 }
 
 //-----------------------------------------------------------------------------

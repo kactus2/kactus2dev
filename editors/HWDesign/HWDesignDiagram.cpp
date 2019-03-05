@@ -44,7 +44,16 @@
 #include <editors/common/DesignDiagramResolver.h>
 #include <editors/common/StickyNote/StickyNote.h>
 #include <editors/common/Association/Association.h>
+#include <editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h>
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
+#include <editors/common/ComponentItemAutoConnector/HierarchicalPortItemMatcher.h>
+#include <editors/common/ComponentItemAutoConnector/PortItemMatcher.h>
+#include <editors/common/ComponentItemAutoConnector/HierarchicalPortTableAutoConnector.h>
+#include <editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h>
+#include <editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceItemMatcher.h>
+#include <editors/common/ComponentItemAutoConnector/BusInterfaceItemMatcher.h>
+#include <editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceTableAutoConnector.h>
+#include <editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.h>
 
 #include <editors/HWDesign/HierarchicalBusInterfaceItem.h>
 #include <editors/HWDesign/ActiveBusInterfaceItem.h>
@@ -59,6 +68,7 @@
 #include <editors/HWDesign/undoCommands/HWComponentAddCommand.h>
 #include <editors/HWDesign/undoCommands/HWColumnAddCommand.h>
 #include <editors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
+#include <editors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h>
 
 #include <library/LibraryHandler.h>
 
@@ -165,7 +175,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             findOrCreateInterfaceExtensionGroup(design, busIf->name());
 
         HierarchicalBusInterfaceItem* topInterface =
-            new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup);
+            new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, getLibraryInterface());
 
         GraphicsColumn* targetColumn = getLayout()->findColumnAt(topInterface->scenePos());
         if (targetColumn && targetColumn->isItemAllowed(topInterface))
@@ -1722,7 +1732,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     getDesign()->getVendorExtensions()->append(dataGroup);
 
     HierarchicalBusInterfaceItem* newItem =
-        new HierarchicalBusInterfaceItem(getEditedComponent(), busif, dataGroup);
+        new HierarchicalBusInterfaceItem(getEditedComponent(), busif, dataGroup, getLibraryInterface());
     newItem->setPos(newPosition);
 
     // Save the positions of the other diagram interfaces.
@@ -2699,8 +2709,8 @@ void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData con
 
             QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(copyBusIf->name()));
 
-            HierarchicalBusInterfaceItem* pastedItem =
-                new HierarchicalBusInterfaceItem(getEditedComponent(), copyBusIf, dataGroup, targetColumn);
+            HierarchicalBusInterfaceItem* pastedItem = new HierarchicalBusInterfaceItem(
+                getEditedComponent(), copyBusIf, dataGroup, getLibraryInterface(), targetColumn);
 
             BusInterfacePasteCommand* pasteCmd = new BusInterfacePasteCommand(getEditedComponent(), pastedItem,
                 targetColumn, this, cmd);    
@@ -2923,13 +2933,106 @@ QStringList HWDesignDiagram::getTopLevelInterfaceNames() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createAutoConnector()
+//-----------------------------------------------------------------------------
+ComponentItemAutoConnector* HWDesignDiagram::createAutoConnector(ComponentItem* firstItem) const
+{
+    QString firstItemName = firstItem->name();
+    QString firstItemVisibleName = getVisibleNameForComponentItem(firstItem);
+    QString secondItemName = "";
+    QString secondItemVisibleName = "";
+    QSharedPointer<Component> firstComponent = firstItem->componentModel();
+    QSharedPointer<Component> secondComponent;
+
+    TableItemMatcher* busItemMatcher;
+    TableAutoConnector* busAutoConnector;
+    TableItemMatcher* portItemMatcher;
+    TableAutoConnector* portAutoConnector;
+
+    AutoConnectorItem::ContainerType secondContainerType;
+
+    if (selectedItems().count() == 1)
+    {
+        secondComponent = getEditedComponent();
+        secondItemName = secondComponent->getVlnv().getName();
+        secondItemVisibleName = secondItemName;
+
+        busItemMatcher = new HierarchicalBusInterfaceItemMatcher(getLibraryInterface());
+        busAutoConnector = new HierarchicalBusInterfaceTableAutoConnector(getLibraryInterface());
+
+        portItemMatcher = new HierarchicalPortItemMatcher();
+        portAutoConnector = new HierarchicalPortTableAutoConnector();
+
+        secondContainerType = AutoConnectorItem::TOP_COMPONENT;
+    }
+    else
+    {
+        QGraphicsItem* secondItem = selectedItems().first();
+        if (secondItem == firstItem)
+        {
+            secondItem = selectedItems().last();
+        }
+
+        ComponentItem* secondComponentItem = dynamic_cast<ComponentItem*>(secondItem);
+
+        secondItemName = secondComponentItem->name();
+        secondItemVisibleName = getVisibleNameForComponentItem(secondComponentItem);
+        secondComponent = secondComponentItem->componentModel();
+
+        busItemMatcher = new BusInterfaceItemMatcher(getLibraryInterface());
+        busAutoConnector = new BusInterfaceTableAutoConnector(getLibraryInterface());
+
+        portItemMatcher = new PortItemMatcher();
+        portAutoConnector = new PortTableAutoConnector();
+
+        secondContainerType = AutoConnectorItem::COMPONENT_ITEM;
+    }
+
+    ComponentItemAutoConnector::AutoContainer firstContainer;
+    firstContainer.component_ = firstComponent;
+    firstContainer.name_ = firstItemName;
+    firstContainer.visibleName_ = firstItemVisibleName;
+    ComponentItemAutoConnector::AutoContainer secondContainer;
+    secondContainer.component_ = secondComponent;
+    secondContainer.name_ = secondItemName;
+    secondContainer.visibleName_ = secondItemVisibleName;
+    ComponentItemAutoConnector::TableTools busTools;
+    busTools.itemMatcher_ = busItemMatcher;
+    busTools.tableConnector_ = busAutoConnector;
+    ComponentItemAutoConnector::TableTools portTools;
+    portTools.itemMatcher_ = portItemMatcher;
+    portTools.tableConnector_ = portAutoConnector;
+
+    ComponentItemAutoConnector* autoConnector = new ComponentItemAutoConnector(
+        firstContainer, secondContainer, busTools, portTools, secondContainerType, getParent());
+
+    return autoConnector;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::getEndPointForItem()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* HWDesignDiagram::getEndPointForItem(AutoConnectorItem* connectorItem)
 {
+    if (connectorItem->getContainterType() == AutoConnectorItem::COMPONENT_ITEM)
+    {
+        return getEndPointFromComponentItem(connectorItem);
+    }
+    else
+    {
+        return getEndPointForTopComponentItem(connectorItem);
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::getEndPointFromComponentItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* HWDesignDiagram::getEndPointFromComponentItem(AutoConnectorItem* connectorItem)
+{
     HWComponentItem* containingItem = getComponentItem(connectorItem->getContainingItem());
     QString itemName = connectorItem->getName();
-
     if (connectorItem->getItemType() == AutoConnectorItem::PORT)
     {
         for (auto const& endpoint : containingItem->getEndpoints())
@@ -2965,6 +3068,33 @@ ConnectionEndpoint* HWDesignDiagram::getEndPointForItem(AutoConnectorItem* conne
                 return endPoint;
             }
         }
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::getEndPointForTopComponentItem()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* HWDesignDiagram::getEndPointForTopComponentItem(AutoConnectorItem* connectorItem)
+{
+    QString itemName = connectorItem->getName();
+    if (connectorItem->getItemType() == AutoConnectorItem::PORT)
+    {
+        HWConnectionEndpoint* portEndPoint = getDiagramAdHocPort(itemName);
+        if (!portEndPoint && getEditedComponent()->hasPort(itemName))
+        {
+            TopAdHocVisibilityChangeCommand* adHocCommand =
+                new TopAdHocVisibilityChangeCommand(this, itemName, true);
+            adHocCommand->redo();
+            portEndPoint = getDiagramAdHocPort(itemName);
+        }
+
+        return portEndPoint;
+    }
+    else
+    {
+        return findOrCreateHierarchicalInterface(itemName);
     }
 
     return 0;

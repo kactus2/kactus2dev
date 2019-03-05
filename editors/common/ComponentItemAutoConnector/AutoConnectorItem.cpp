@@ -15,10 +15,11 @@
 // Function: AutoConnectorItem::AutoConnectorItem()
 //-----------------------------------------------------------------------------
 AutoConnectorItem::AutoConnectorItem(QString const& itemName, QString const& componentItemName,
-    AutoConnectorItem::ItemType itemType):
+    AutoConnectorItem::ItemType itemType, AutoConnectorItem::ContainerType containerType):
 itemName_(itemName),
 containingItemName_(componentItemName),
-itemType_(itemType)
+itemType_(itemType),
+containterType_(containerType)
 {
 
 }
@@ -102,4 +103,20 @@ AutoConnectorItem::ItemType AutoConnectorItem::getItemType() const
 void AutoConnectorItem::setNewItemType(AutoConnectorItem::ItemType newItemType)
 {
     itemType_ = newItemType;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorItem::getContainterType()
+//-----------------------------------------------------------------------------
+AutoConnectorItem::ContainerType AutoConnectorItem::getContainterType() const
+{
+    return containterType_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorItem::setNewContainerType()
+//-----------------------------------------------------------------------------
+void AutoConnectorItem::setNewContainerType(AutoConnectorItem::ContainerType newContainerType)
+{
+    containterType_ = newContainerType;
 }

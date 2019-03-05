@@ -58,6 +58,7 @@ class DesignDiagramResolver;
 class AdHocItem;
 class MultipleParameterFinder;
 class ListParameterFinder;
+class ComponentItemAutoConnector;
 
 //-----------------------------------------------------------------------------
 //! HWDesignDiagram is a graphical view to a design.
@@ -842,6 +843,15 @@ private:
     bool referenceFinderContainsComponent(QSharedPointer<Component> component);
 
     /*!
+     *  Create auto connection dialog.
+     *
+     *      @param [in] firstItem   The first item for the auto connector.
+     *
+     *      @return The auto connector dialog.
+     */
+    virtual ComponentItemAutoConnector* createAutoConnector(ComponentItem* firstItem) const;
+
+    /*!
      *  Get the connection end point for the selected auto connector item.
      *
      *      @param [in] connectorItem   The selected auto connector item.
@@ -849,6 +859,24 @@ private:
      *      @return The end point item for the selected auto connector item.
      */
     virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem);
+
+    /*!
+     *  Get the component item connection end point for the selected auto connector item.
+     *
+     *      @param [in] connectorItem   The selected auto connector item.
+     *
+     *      @return The selected component item connection end point.
+     */
+    ConnectionEndpoint* getEndPointFromComponentItem(AutoConnectorItem* connectorItem);
+
+    /*!
+     *  Get the top component connection end point for the selected auto connector item.
+     *
+     *      @param [in] connectorItem   The selected auto connector item.
+     *
+     *      @return The selected top component connection end point.
+     */
+    ConnectionEndpoint* getEndPointForTopComponentItem(AutoConnectorItem* connectorItem);
 
     /*!
      *  Create connection between the selected end points.

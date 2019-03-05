@@ -233,20 +233,11 @@ void ComponentDesignDiagram::onOpenDesignAction(QAction* selectedAction)
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::onOpenAutoConnector()
 {
-    QGraphicsItem* secondItem = selectedItems().first();
-    if (secondItem == contextMenuItem_)
-    {
-        secondItem = selectedItems().last();
-    }
-
-    ComponentItem* secondComponentItem = dynamic_cast<ComponentItem*>(secondItem);
-
-    ComponentItemAutoConnector autoConnector(
-        contextMenuItem_, secondComponentItem, getLibraryInterface(), getParent());
-    if (autoConnector.exec() == QDialog::Accepted)
+    ComponentItemAutoConnector* autoConnector = createAutoConnector(contextMenuItem_);
+    if (autoConnector && autoConnector->exec() == QDialog::Accepted)
     {
         QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > autoConnections =
-            autoConnector.getConnectedItems();
+            autoConnector->getConnectedItems();
 
         if (!autoConnections.isEmpty())
         {
@@ -263,6 +254,21 @@ void ComponentDesignDiagram::onOpenAutoConnector()
 
             emit contentChanged();
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::getVisibleNameForComponentItem()
+//-----------------------------------------------------------------------------
+QString ComponentDesignDiagram::getVisibleNameForComponentItem(ComponentItem* item) const
+{
+    if (!item->displayName().isEmpty())
+    {
+        return item->displayName();
+    }
+    else
+    {
+        return item->name();
     }
 }
 
@@ -508,26 +514,36 @@ void ComponentDesignDiagram::setupAutoconnectText(ComponentItem* componentItem)
 {
     if (openAutoConnector_.isEnabled())
     {
-        ComponentItem* connectionTarget;
-        if (selectedItems().first() == componentItem)
+        QString targetName = "";
+
+        if (selectedItems().count() == 1)
         {
-            connectionTarget = dynamic_cast<ComponentItem*>(selectedItems().last());
+            targetName = getEditedComponent()->getVlnv().getName();
         }
         else
         {
-            connectionTarget = dynamic_cast<ComponentItem*>(selectedItems().first());
+            ComponentItem* connectionTarget;
+            if (selectedItems().first() == componentItem)
+            {
+                connectionTarget = dynamic_cast<ComponentItem*>(selectedItems().last());
+            }
+            else
+            {
+                connectionTarget = dynamic_cast<ComponentItem*>(selectedItems().first());
+            }
+
+            if (connectionTarget)
+            {
+                targetName = connectionTarget->displayName();
+                if (targetName.isEmpty())
+                {
+                    targetName = connectionTarget->name();
+                }
+            }
         }
 
         QString actionText = openAutoConnector_.text();
-
-        QString targetName = connectionTarget->displayName();
-        if (targetName.isEmpty())
-        {
-            targetName = connectionTarget->name();
-        }
-
         actionText.replace("...", targetName);
-
         openAutoConnector_.setText(actionText);
     }
 }
@@ -577,8 +593,10 @@ bool ComponentDesignDiagram::openDesignEnabled() const
 //-----------------------------------------------------------------------------
 bool ComponentDesignDiagram::autoConnectorEnabled() const
 {
-    return !isProtected() && selectedItems().count() == 2 && selectedItems().first()->type() == componentType() &&
-        selectedItems().last()->type() == componentType();
+    int itemCount = selectedItems().count();
+
+    return !isProtected() && (itemCount == 1 || itemCount == 2 ) &&
+        selectedItems().first()->type() == componentType() && selectedItems().last()->type() == componentType();
 }
 
 //-----------------------------------------------------------------------------

@@ -39,7 +39,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~BusInterfaceTableAutoConnector();
+    virtual ~BusInterfaceTableAutoConnector() = default;
 
     // No copying. No assignments.
     BusInterfaceTableAutoConnector(BusInterfaceTableAutoConnector const& rhs) = delete;
@@ -94,13 +94,14 @@ private:
         QVector<General::InterfaceMode> compatibleModes) const;
 
     /*!
-     *  Get the path for the icon of the bus interface mode.
+     *  Get connectible bus interface modes for the selected interface mode.
      *
      *      @param [in] busMode     The selected bus interface mode.
      *
-     *      @return Path for the bus interface mode icon.
+     *      @return List of connectible interface modes.
      */
-    QString getIconPath(General::InterfaceMode busMode) const;
+    virtual QVector<General::InterfaceMode> getCompatibleInterfaceModes(General::InterfaceMode const& busMode)
+        const;
 
     //-----------------------------------------------------------------------------
     // Data.

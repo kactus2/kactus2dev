@@ -14,6 +14,8 @@
 
 #include <QSharedPointer>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 class BusDefinition;
 class VLNV;
 class LibraryInterface;
@@ -34,6 +36,15 @@ namespace BusInterfaceUtilities
      */
     bool hasMatchingBusDefinitions(QSharedPointer<const BusDefinition> firstDefinition,
         VLNV const& secondDefinitionVLNV, LibraryInterface* library);
+
+    /*!
+     *  Get the path for the icon of the bus interface mode.
+     *
+     *      @param [in] busMode     The selected bus interface mode.
+     *
+     *      @return Path for the bus interface mode icon.
+     */
+    QString getIconPath(General::InterfaceMode busMode);
 }
 
 //-----------------------------------------------------------------------------

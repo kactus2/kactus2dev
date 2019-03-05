@@ -29,6 +29,25 @@ namespace PortUtilities
      *      @return List of connectible port directions.
      */
     QVector<DirectionTypes::Direction> getConnectableDirections(DirectionTypes::Direction portDirection);
+
+    /*!
+     *  Get the list of hierarchical port directions connectible to the selected port direction.
+     *
+     *      @param [in] portDirection   The selected port direction.
+     *
+     *      @return List of hierarchical connectible port directions.
+     */
+    QVector<DirectionTypes::Direction> getConnectableHierarchicalDirections(
+        DirectionTypes::Direction portDirection);
+
+    /*!
+     *  Get the path for the icon matching the selected port direction.
+     *
+     *      @param [in] portDirection   The selected port direction.
+     *
+     *      @return Path containing the icon for the selected port direction.
+     */
+    QString getDirectionIconPath(DirectionTypes::Direction portDirection);
 }
 
 //-----------------------------------------------------------------------------

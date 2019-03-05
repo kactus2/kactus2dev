@@ -46,3 +46,41 @@ bool BusInterfaceUtilities::hasMatchingBusDefinitions(QSharedPointer<const BusDe
 
     return false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceUtilities::getIconPath()
+//-----------------------------------------------------------------------------
+QString BusInterfaceUtilities::getIconPath(General::InterfaceMode busMode)
+{
+    QString iconPath("");
+    if (busMode == General::MASTER)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMaster.png";
+    }
+    else if (busMode == General::MIRROREDMASTER)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredMaster.png";
+    }
+    else if (busMode == General::SLAVE)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceSlave.png";
+    }
+    else if (busMode == General::MIRROREDSLAVE)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredSlave.png";
+    }
+    else if (busMode == General::SYSTEM)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceSystem.png";
+    }
+    else if (busMode == General::MIRROREDSYSTEM)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMirroredSystem.png";
+    }
+    else if (busMode == General::MONITOR)
+    {
+        iconPath = ":icons/common/graphics/busInterfaceMonitor.png";
+    }
+
+    return iconPath;
+}

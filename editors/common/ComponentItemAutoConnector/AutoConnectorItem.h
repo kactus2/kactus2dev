@@ -30,15 +30,25 @@ public:
         INVALID
     };
 
+    //! Container type.
+    enum ContainerType
+    {
+        TOP_COMPONENT,
+        COMPONENT_ITEM,
+        INVALID_CONTAINER
+    };
+
     /*!
      *  The constructor.
      *
      *      @param [in] itemName            Name of the connected item.
      *      @param [in] componentItemName   Name of the containing component item.
-     *      @param [in] parent              The parent item.
+     *      @param [in] itemType            Type of the item.
+     *      @param [in] containerType       Type of the container.
      */
     AutoConnectorItem(QString const& itemName, QString const& componentItemName,
-        AutoConnectorItem::ItemType itemType);
+        AutoConnectorItem::ItemType itemType,
+        AutoConnectorItem::ContainerType containerType = AutoConnectorItem::ContainerType::COMPONENT_ITEM);
 
     /*!
      *  Copy constructor.
@@ -97,6 +107,20 @@ public:
      */
     void setNewItemType(AutoConnectorItem::ItemType newItemType);
 
+    /*!
+     *  Get the container type.
+     *
+     *      @return Type of the container.
+     */
+    AutoConnectorItem::ContainerType getContainterType() const;
+
+    /*!
+     *  Set the type for the container.
+     *
+     *      @param [in] newContainerType    New type for the container.
+     */
+    void setNewContainerType(AutoConnectorItem::ContainerType newContainerType);
+
 private:
 
     //-----------------------------------------------------------------------------
@@ -111,6 +135,9 @@ private:
 
     //! Item type.
     AutoConnectorItem::ItemType itemType_;
+
+    //! Container type.
+    AutoConnectorItem::ContainerType containterType_;
 };
 
 #endif // AUTOCONNECTORITEM_H

@@ -25,6 +25,11 @@
 #include <editors/common/diagramgrid.h>
 #include <editors/common/DesignDiagram.h>
 #include <editors/common/GraphicsItemLabel.h>
+#include <editors/common/BusInterfaceUtilities.h>
+
+#include <library/LibraryInterface.h>
+
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -36,9 +41,10 @@
 //-----------------------------------------------------------------------------
 // Function: HierarchicalBusInterfaceItem::HierarchicalBusInterfaceItem()
 //-----------------------------------------------------------------------------
-HierarchicalBusInterfaceItem::HierarchicalBusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
-    QSharedPointer<InterfaceGraphicsData> dataGroup, QGraphicsItem *parent):
-BusInterfaceEndPoint(busIf, component, parent),
+HierarchicalBusInterfaceItem::HierarchicalBusInterfaceItem(QSharedPointer<Component> component,
+    QSharedPointer<BusInterface> busIf, QSharedPointer<InterfaceGraphicsData> dataGroup, LibraryInterface* library,
+    QGraphicsItem *parent):
+BusInterfaceEndPoint(busIf, component, library, parent),
 dataGroup_(dataGroup),
 oldColumn_(0)
 {
@@ -104,12 +110,20 @@ void HierarchicalBusInterfaceItem::createMoveCommandForClashedItem(ConnectionEnd
 //-----------------------------------------------------------------------------
 bool HierarchicalBusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const
 {
+    QSharedPointer<BusInterface> bus = getBusInterface();
+    QSharedPointer<const BusDefinition> busDefinition;
     QSharedPointer<BusInterface> otherInterface = otherEndPoint->getBusInterface();
 
+    if (bus)
+    {
+        busDefinition = getLibraryAccess()->getModelReadOnly(bus->getBusType()).dynamicCast<const BusDefinition>();
+    }
+
     return (otherInterface &&
-        (getBusInterface()->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
-        !otherInterface->getBusType().isValid() ||
-        (otherInterface->getBusType() == getBusInterface()->getBusType())));
+            (getBusInterface()->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
+            !otherInterface->getBusType().isValid() ||
+            (busDefinition && BusInterfaceUtilities::hasMatchingBusDefinitions(
+                busDefinition, otherInterface->getBusType(), getLibraryAccess()))));
 }
 
 //-----------------------------------------------------------------------------

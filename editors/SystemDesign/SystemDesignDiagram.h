@@ -604,6 +604,15 @@ private:
     virtual QStringList getUsedInstanceNames() const;
 
     /*!
+     *  Create auto connection dialog.
+     *
+     *      @param [in] firstItem   The first item for the auto connector.
+     *
+     *      @return The auto connector dialog.
+     */
+    virtual ComponentItemAutoConnector* createAutoConnector(ComponentItem* firstItem) const;
+
+    /*!
      *  Get the connection end point for the selected auto connector item.
      *
      *      @param [in] connectorItem   The selected auto connector item.

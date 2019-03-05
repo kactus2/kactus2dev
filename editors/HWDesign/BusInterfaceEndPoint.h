@@ -24,6 +24,7 @@ class BusInterface;
 class Port;
 class DesignDiagram;
 class HWComponentItem;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Parent interface class for HW bus interfaces.
@@ -39,11 +40,12 @@ public:
      *
      *      @param [in] busIf       The bus interface this item represents.
      *      @param [in] component   Component containing the bus interface.
+     *      @param [in] library     Access to the library.
      *      @param [in] parent      The parent object.
      *      @param [in] dir         Direction for the end point graphics.
      */
     BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
-        QGraphicsItem *parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
+        LibraryInterface* library, QGraphicsItem *parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
 	/*!
      *  The destructor.
@@ -137,7 +139,7 @@ public:
     /*!
      *  Handles the connecting of the connection end points.
      *
-     *      @param [in] other   The other end of the conenction.
+     *      @param [in] other   The other end of the connection.
      *
      *      @return True, if the connection was made successfully, false otherwise.
      */
@@ -218,6 +220,13 @@ protected:
      */
     virtual QPolygonF getDirectionInOutShape() const;
 
+    /*!
+     *  Get access to the library.
+     *
+     *      @return The library interface.
+     */
+    LibraryInterface* getLibraryAccess() const;
+
 private:
 
     // Disable copying.
@@ -294,6 +303,9 @@ private:
 
     //! Old positions of the associated end points.
     QMap<ConnectionEndpoint*, QPointF> oldPortPositions_;
+
+    //! Access to the library.
+    LibraryInterface* library_;
 };
 
 #endif // BUSINTERFACEENDPOINT_H

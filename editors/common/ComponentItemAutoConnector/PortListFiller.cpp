@@ -11,25 +11,10 @@
 
 #include "PortListFiller.h"
 
+#include <editors/common/PortUtilities.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
-
-//-----------------------------------------------------------------------------
-// Function: PortListFiller::PortListFiller()
-//-----------------------------------------------------------------------------
-PortListFiller::PortListFiller():
-ListFiller()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortListFiller::~PortListFiller()
-//-----------------------------------------------------------------------------
-PortListFiller::~PortListFiller()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: PortListFiller::initializeList()
@@ -39,34 +24,11 @@ void PortListFiller::initializeList(QStandardItemModel* selectedList,
 {
     for (auto port : *containingComponent->getPorts())
     {
-        QString iconPath = getIconPath(port->getDirection());
+        QString iconPath = PortUtilities::getDirectionIconPath(port->getDirection());
 
-        selectedList->appendRow(new QStandardItem(QIcon(iconPath), port->name()));
-    }
-}
+        QStandardItem* portItem = new QStandardItem(QIcon(iconPath), port->name());
+        portItem->setEditable(false);
 
-//-----------------------------------------------------------------------------
-// Function: PortListFiller::getIconPath()
-//-----------------------------------------------------------------------------
-QString PortListFiller::getIconPath(DirectionTypes::Direction portDirection) const
-{
-    QString iconPath = ":icons/common/graphics/cross.png";
-    if (portDirection == DirectionTypes::IN)
-    {
-        iconPath = ":icons/common/graphics/input.png";
+        selectedList->appendRow(portItem);
     }
-    else if (portDirection == DirectionTypes::OUT)
-    {
-        iconPath = ":icons/common/graphics/output.png";
-    }
-    else if (portDirection == DirectionTypes::INOUT)
-    {
-        iconPath = ":icons/common/graphics/inout.png";
-    }
-    else if (portDirection == DirectionTypes::DIRECTION_PHANTOM)
-    {
-        iconPath = ":icons/common/graphics/phantom.png";
-    }
-
-    return iconPath;
 }

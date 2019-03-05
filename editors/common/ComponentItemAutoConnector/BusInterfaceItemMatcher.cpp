@@ -52,8 +52,7 @@ bool BusInterfaceItemMatcher::itemsCanBeConnected(QString const& firstItem,
                 General::InterfaceMode secondBusMode = secondBus->getInterfaceMode();
                 if (busMode != General::MONITOR && secondBusMode != General::MONITOR)
                 {
-                    QVector<General::InterfaceMode> compatibleModes =
-                        General::getCompatibleInterfaceModesForActiveInterface(firstBus->getInterfaceMode());
+                    QVector<General::InterfaceMode> compatibleModes = getCompatibleModes(busMode);
 
                     return compatibleModes.contains(secondBusMode) &&
                         BusInterfaceUtilities::hasMatchingBusDefinitions(
@@ -64,4 +63,12 @@ bool BusInterfaceItemMatcher::itemsCanBeConnected(QString const& firstItem,
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceItemMatcher::getCompatibleModes()
+//-----------------------------------------------------------------------------
+QVector<General::InterfaceMode> BusInterfaceItemMatcher::getCompatibleModes(General::InterfaceMode busMode) const
+{
+    return General::getCompatibleInterfaceModesForActiveInterface(busMode);
 }

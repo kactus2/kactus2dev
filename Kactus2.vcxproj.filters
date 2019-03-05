@@ -4654,6 +4654,18 @@
     <ClCompile Include="editors\common\PortUtilities.cpp">
       <Filter>Source Files\editors\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalPortTableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalPortItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceTableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7111,6 +7123,18 @@
     </ClInclude>
     <ClInclude Include="editors\common\PortUtilities.h">
       <Filter>Header Files\editors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalPortTableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalPortItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceTableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

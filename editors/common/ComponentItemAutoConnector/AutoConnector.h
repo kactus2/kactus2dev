@@ -36,17 +36,20 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] firstItem           The first component item to be connected.
-     *      @param [in] secondItem          The second component item to be connected.
-     *      @param [in] listFiller          Used to populate the item lists.
-     *      @param [in] tableInitializer    Used to populate the connection table.
-     *      @param [in] itemName            Name of the items being connected.
-     *      @param [in] itemMatcher         Checks for possible matches between two items.
-     *      @param [in] parent              The parent of this widget.
+     *      @param [in] firstComponentName      Visible name of the first container.
+     *      @param [in] secondComponentName     Visible name of the second container.
+     *      @param [in] firstComponent          The first container component.
+     *      @param [in] secondComponent         The second container component.
+     *      @param [in] listFiller              Used to populate the item lists.
+     *      @param [in] tableInitializer        Used to populate the connection table.
+     *      @param [in] itemName                Name of the items being connected.
+     *      @param [in] itemMatcher             Checks for possible matches between two items.
+     *      @param [in] parent                  The parent of this widget.
      */
-    AutoConnector(ComponentItem* firstItem, ComponentItem* secondItem, ListFiller* listFiller,
-        TableAutoConnector* tableInitializer, QString const& itemName, TableItemMatcher* itemMatcher,
-        QWidget* parent = 0);
+    AutoConnector(QString const& firstComponentName, QString const& secondComponentName,
+        QSharedPointer<Component> firstComponent, QSharedPointer<Component> secondComponent,
+        ListFiller* listFiller, TableAutoConnector* tableInitializer, QString const& itemName,
+        TableItemMatcher* itemMatcher, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -91,23 +94,14 @@ private:
     /*!
      *  Setup the layout.
      *
-     *      @param [in] firstItem       The first component item to be connected.
-     *      @param [in] secondItem      The second component item to be connected.
-     *      @param [in] listFiller      Used to populate the item lists.
-     *      @param [in] itemName        Name of the items being connected.
-     *      @param [in] itemMatcher     Checks for possible matches between two items.
+     *      @param [in] firstComponentName      Name of the first container.
+     *      @param [in] secondComponentName     Name of the second container.
+     *      @param [in] listFiller              Used to populate the item lists.
+     *      @param [in] itemName                Name of the items being connected.
+     *      @param [in] itemMatcher             Checks for possible matches between two items.
      */
-    void setupLayout(ComponentItem* firstItem, ComponentItem* secondItem, ListFiller* listFiller,
+    void setupLayout(QString const& firstComponentName, QString const& secondComponentName, ListFiller* listFiller,
         QString const& itemName, TableItemMatcher* itemMatcher);
-
-    /*!
-     *  Get the name of the selected component item.
-     *
-     *      @param [in] componentItem   The selected component item.
-     *
-     *      @return The name of the selected component item.
-     */
-    QString getComponentItemName(ComponentItem* componentItem) const;
 
     //-----------------------------------------------------------------------------
     // Data.

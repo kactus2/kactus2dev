@@ -80,13 +80,13 @@ namespace General
         General::InterfaceMode mode);
 
     /*!
-     *  Get the compatible hierarchical bus interface mode for the selected bus interface mode.
+     *  Get the compatible hierarchical bus interface modes for the selected bus interface mode.
      *
      *      @param [in] mode    The selected bus interface mode.
      *
-     *      @return The compatible bus interface mode.
+     *      @return The connectible bus interface modes.
      */
-    IPXACTMODELS_EXPORT InterfaceMode getCompatibleInterfaceModeForHierarchicalInterface(
+    IPXACTMODELS_EXPORT QVector<InterfaceMode> getCompatibleInterfaceModeForHierarchicalInterface(
         General::InterfaceMode mode);
 
     /*!

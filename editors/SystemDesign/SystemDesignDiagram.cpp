@@ -2915,6 +2915,14 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
 }
 
 //-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createAutoConnector()
+//-----------------------------------------------------------------------------
+ComponentItemAutoConnector* SystemDesignDiagram::createAutoConnector(ComponentItem*) const
+{
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::getEndPointForItem()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* SystemDesignDiagram::getEndPointForItem(AutoConnectorItem*)

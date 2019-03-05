@@ -27,10 +27,19 @@ bool PortItemMatcher::itemsCanBeConnected(QString const& firstItem, QSharedPoint
     if (firstPort && secondPort)
     {
         QVector<DirectionTypes::Direction> connectableDirections =
-            PortUtilities::getConnectableDirections(firstPort->getDirection());
+            getConnectableDirections(firstPort->getDirection());
 
         return connectableDirections.contains(secondPort->getDirection());
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortItemMatcher::getConnectableDirections()
+//-----------------------------------------------------------------------------
+QVector<DirectionTypes::Direction> PortItemMatcher::getConnectableDirections(
+    DirectionTypes::Direction portDirection) const
+{
+    return PortUtilities::getConnectableDirections(portDirection);
 }

@@ -28,12 +28,12 @@ public:
     /*!
      *  The constructor.
      */
-    PortListFiller();
+    PortListFiller() = default;
 
     /*!
      *  Destructor.
      */
-    ~PortListFiller();
+    ~PortListFiller() = default;
 
     /*!
      *  Populate the selected model with ports from the selected component.
@@ -47,15 +47,6 @@ public:
     // No copying. No assignments.
     PortListFiller(PortListFiller const& rhs) = delete;
     PortListFiller& operator=(PortListFiller const& rhs) = delete;
-
-private:
-
-    /*!
-     *  Get the path for the icon used by the port list item.
-     *
-     *      @param [in] portDirection   Direction of the selected port.
-     */
-    QString getIconPath(DirectionTypes::Direction portDirection) const;
 };
 
 //-----------------------------------------------------------------------------

@@ -176,13 +176,6 @@ private:
      *      @return The current position of the end point.
      */
     virtual QPointF getCurrentPosition() const;
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-	//! The library interface.
-    LibraryInterface* library_;
 };
 
 #endif // ACTIVEBUSINTERFACEITEM_H

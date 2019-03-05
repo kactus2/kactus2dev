@@ -51,8 +51,7 @@ QVector<QString> PortTableAutoConnector::getConnectablePortNames(DirectionTypes:
 {
     QVector<QString> connectablePorts;
 
-    QVector<DirectionTypes::Direction> connectableDirections =
-        PortUtilities::getConnectableDirections(portDirection);
+    QVector<DirectionTypes::Direction> connectableDirections = getConnectableDirections(portDirection);
     if (!connectableDirections.isEmpty())
     {
         for (auto comparisonPort : *secondItemPorts)
@@ -68,6 +67,15 @@ QVector<QString> PortTableAutoConnector::getConnectablePortNames(DirectionTypes:
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortTableAutoConnector::getConnectableDirections()
+//-----------------------------------------------------------------------------
+QVector<DirectionTypes::Direction> PortTableAutoConnector::getConnectableDirections(
+    DirectionTypes::Direction portDirection) const
+{
+    return PortUtilities::getConnectableDirections(portDirection);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortTableAutoConnector::createTableWidgetItem()
 //-----------------------------------------------------------------------------
 QTableWidgetItem* PortTableAutoConnector::createTableWidgetItem(QString const& itemName,
@@ -76,34 +84,8 @@ QTableWidgetItem* PortTableAutoConnector::createTableWidgetItem(QString const& i
     QTableWidgetItem* newTableItem = TableAutoConnector::createTableWidgetItem(itemName, containingComponent);
 
     QSharedPointer<Port> itemPort = containingComponent->getPort(itemName);
-    QIcon portItemIcon(getIconPath(itemPort->getDirection()));
+    QIcon portItemIcon(PortUtilities::getDirectionIconPath(itemPort->getDirection()));
 
     newTableItem->setIcon(portItemIcon);
     return newTableItem;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortTableAutoConnector::getIconPath()
-//-----------------------------------------------------------------------------
-QString PortTableAutoConnector::getIconPath(DirectionTypes::Direction portDirection) const
-{
-    QString iconPath = ":icons/common/graphics/cross.png";
-    if (portDirection == DirectionTypes::IN)
-    {
-        iconPath = ":icons/common/graphics/input.png";
-    }
-    else if (portDirection == DirectionTypes::OUT)
-    {
-        iconPath = ":icons/common/graphics/output.png";
-    }
-    else if (portDirection == DirectionTypes::INOUT)
-    {
-        iconPath = ":icons/common/graphics/inout.png";
-    }
-    else if (portDirection == DirectionTypes::DIRECTION_PHANTOM)
-    {
-        iconPath = ":icons/common/graphics/phantom.png";
-    }
-
-    return iconPath;
 }

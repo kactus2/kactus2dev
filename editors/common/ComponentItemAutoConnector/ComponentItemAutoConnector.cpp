@@ -31,20 +31,23 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentItemAutoConnector::ComponentItemAutoConnector()
 //-----------------------------------------------------------------------------
-ComponentItemAutoConnector::ComponentItemAutoConnector(ComponentItem* firstItem, ComponentItem* secondItem,
-    LibraryInterface* library, QWidget* parent):
+ComponentItemAutoConnector::ComponentItemAutoConnector(AutoContainer const& firstContainer,
+    AutoContainer const& secondContainer, TableTools const& busTableTools, TableTools const& portTableTools,
+    AutoConnectorItem::ContainerType secondItemType, QWidget* parent):
 QDialog(parent),
-firstItemName_(firstItem->name()),
-secondItemName_(secondItem->name()),
+firstItemName_(firstContainer.name_),
+secondItemName_(secondContainer.name_),
 connectButton_(new QPushButton(QIcon(":/icons/common/graphics/connect.png"), "Connect", this)),
 autoConnectButton_(new QPushButton(QIcon(":/icons/common/graphics/configuration.png"), "Auto connect all", this)),
 clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clear"), this)),
-busInterfaceConnector_(new AutoConnector(firstItem, secondItem, new BusInterfaceListFiller(),
-    new BusInterfaceTableAutoConnector(library), tr("bus interfaces"), new BusInterfaceItemMatcher(library),
-    this)),
-portConnector_(new AutoConnector(firstItem, secondItem, new PortListFiller(), new PortTableAutoConnector(),
-    tr("ports"), new PortItemMatcher(), this)),
-tabs_(this)
+busInterfaceConnector_(new AutoConnector(firstContainer.visibleName_, secondContainer.visibleName_,
+    firstContainer.component_, secondContainer.component_, new BusInterfaceListFiller(),
+    busTableTools.tableConnector_, tr("bus interfaces"), busTableTools.itemMatcher_, this)),
+portConnector_(new AutoConnector(firstContainer.visibleName_, secondContainer.visibleName_,
+    firstContainer.component_, secondContainer.component_, new PortListFiller(), portTableTools.tableConnector_,
+    tr("ports"), portTableTools.itemMatcher_, this)),
+tabs_(this),
+secondContainerType_(secondItemType)
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
@@ -56,11 +59,9 @@ tabs_(this)
 
     setupLayout();
 
-    QSharedPointer<Component> firstComponent = firstItem->componentModel();
-    QSharedPointer<Component> secondComponent = secondItem->componentModel();
-
-    if (firstComponent->getBusInterfaces()->isEmpty() && secondComponent->getBusInterfaces()->isEmpty() &&
-        (!firstComponent->getPorts()->isEmpty() || !secondComponent->getPorts()->isEmpty()))
+    if (firstContainer.component_->getBusInterfaces()->isEmpty() &&
+        secondContainer.component_->getBusInterfaces()->isEmpty() &&
+        (!firstContainer.component_->getPorts()->isEmpty() || !secondContainer.component_->getPorts()->isEmpty()))
     {
         tabs_.setCurrentWidget(portConnector_);
     }
@@ -101,7 +102,8 @@ QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > ComponentItemAutoConnect
     for (auto const& connection : connectionPairs)
     {
         AutoConnectorItem* firstItem(new AutoConnectorItem(connection.first, firstItemName_, itemType));
-        AutoConnectorItem* secondItem(new AutoConnectorItem(connection.second, secondItemName_, itemType));
+        AutoConnectorItem* secondItem(
+            new AutoConnectorItem(connection.second, secondItemName_, itemType, secondContainerType_));
 
         QPair<AutoConnectorItem*, AutoConnectorItem*> newConnection;
         newConnection.first = firstItem;

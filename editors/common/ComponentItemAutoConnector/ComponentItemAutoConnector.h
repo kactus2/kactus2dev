@@ -21,7 +21,9 @@
 
 class ComponentItem;
 class AutoConnector;
-class LibraryInterface;
+class Component;
+class TableItemMatcher;
+class TableAutoConnector;
 
 //-----------------------------------------------------------------------------
 //! Automatically connects the ports and bus interfaces of two component items.
@@ -32,16 +34,42 @@ class ComponentItemAutoConnector : public QDialog
 
 public:
 
+    //! Holder for item container data.
+    struct AutoContainer
+    {
+        //! Component containing the items.
+        QSharedPointer<Component> component_;
+
+        //! Name of the container.
+        QString name_;
+
+        //! Visible name of the container.
+        QString visibleName_;
+    };
+
+    //! Holder for required auto connector tools.
+    struct TableTools 
+    {
+        //! Table Item matcher.
+        TableItemMatcher* itemMatcher_;
+
+        //! Table auto connector.
+        TableAutoConnector* tableConnector_;
+    };
+
     /*!
      *  The constructor.
      *
-     *      @param [in] firstItem   The first component item to be connected.
-     *      @param [in] secondItem  The second component item to be connected.
-     *      @param [in] library     The library access.
-     *      @param [in] parent      The parent of this widget.
+     *      @param [in] firstContainer      Data for the first container.
+     *      @param [in] secondContainer     Data for the second container.
+     *      @param [in] busTableTools       Auto connector tools for the bus interface item connector.
+     *      @param [in] portTableTools      Auto connector tools for the port item connector.
+     *      @param [in] secondItemType      Type of the second item container.
+     *      @param [in] parent              The parent of this widget.
      */
-    ComponentItemAutoConnector(ComponentItem* firstItem, ComponentItem* secondItem, LibraryInterface* library,
-        QWidget* parent = 0);
+    ComponentItemAutoConnector(AutoContainer const& firstContainer, AutoContainer const& secondContainer,
+        TableTools const& busTableTools, TableTools const& portTableTools,
+        AutoConnectorItem::ContainerType secondItemType, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -131,6 +159,9 @@ private:
 
     //! Holds the different editors.
     QTabWidget tabs_;
+
+    //! Type of the second item container.
+    AutoConnectorItem::ContainerType secondContainerType_;
 };
 
 //-----------------------------------------------------------------------------

@@ -55,6 +55,16 @@ private:
      */
     virtual bool itemsCanBeConnected(QString const& firstItem, QSharedPointer<Component> firstComponent,
         QString const& secondItem, QSharedPointer<Component> secondComponent) const;
+
+    /*!
+     *  Get connectible port directions for the selected port direction.
+     *
+     *      @param [in] portDirection   The selected port direction.
+     *
+     *      @return List of connectible port directions.
+     */
+    virtual QVector<DirectionTypes::Direction> getConnectableDirections(DirectionTypes::Direction portDirection)
+        const;
 };
 
 //-----------------------------------------------------------------------------

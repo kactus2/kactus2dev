@@ -34,7 +34,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~PortTableAutoConnector() = default;
+    virtual ~PortTableAutoConnector() = default;
 
     // No copying. No assignments.
     PortTableAutoConnector(PortTableAutoConnector const& rhs) = delete;
@@ -78,13 +78,14 @@ private:
         QSharedPointer<QList<QSharedPointer<Port> > > secondItemPorts) const;
 
     /*!
-     *  Get the icon path for the selected port.
+     *  Get connectible port directions for the selected port direction.
      *
-     *      @param [in] protDirection       Direction of the selected port.
+     *      @param [in] portDirection   The selected port direction.
      *
-     *      @return Icon path for the selected port.
+     *      @return List of connectible port directions.
      */
-    QString getIconPath(DirectionTypes::Direction portDirection) const;
+    virtual QVector<DirectionTypes::Direction> getConnectableDirections(DirectionTypes::Direction portDirection)
+        const;
 };
 
 //-----------------------------------------------------------------------------

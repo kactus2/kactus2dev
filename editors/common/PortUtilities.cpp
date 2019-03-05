@@ -43,3 +43,42 @@ QVector<DirectionTypes::Direction> PortUtilities::getConnectableDirections(
 
     return connectableDirections;
 }
+
+//-----------------------------------------------------------------------------
+// Function: PortUtilities::getConnectableHierarchicalDirections()
+//-----------------------------------------------------------------------------
+QVector<DirectionTypes::Direction> PortUtilities::getConnectableHierarchicalDirections(
+    DirectionTypes::Direction portDirection)
+{
+    QVector<DirectionTypes::Direction> connectableDirections;
+
+    connectableDirections.append(portDirection);
+
+    return connectableDirections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortUtilities::getDirectionIconPath()
+//-----------------------------------------------------------------------------
+QString PortUtilities::getDirectionIconPath(DirectionTypes::Direction portDirection)
+{
+    QString iconPath = ":icons/common/graphics/cross.png";
+    if (portDirection == DirectionTypes::IN)
+    {
+        iconPath = ":icons/common/graphics/input.png";
+    }
+    else if (portDirection == DirectionTypes::OUT)
+    {
+        iconPath = ":icons/common/graphics/output.png";
+    }
+    else if (portDirection == DirectionTypes::INOUT)
+    {
+        iconPath = ":icons/common/graphics/inout.png";
+    }
+    else if (portDirection == DirectionTypes::DIRECTION_PHANTOM)
+    {
+        iconPath = ":icons/common/graphics/phantom.png";
+    }
+
+    return iconPath;
+}

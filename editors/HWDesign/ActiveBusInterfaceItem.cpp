@@ -39,8 +39,7 @@
 //-----------------------------------------------------------------------------
 ActiveBusInterfaceItem::ActiveBusInterfaceItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library,
     HWComponentItem* parent):
-BusInterfaceEndPoint(busIf, parent->componentModel(), parent),
-library_(library)
+BusInterfaceEndPoint(busIf, parent->componentModel(), library, parent)
 {
     Q_ASSERT_X(busIf, "ActiveBusInterfaceItem constructor", "Null BusInterface pointer given as parameter");
 
@@ -104,9 +103,10 @@ bool ActiveBusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* oth
         }
 
         // Otherwise make sure that the bus and abstraction definitions are of the same type.
-        QSharedPointer<const BusDefinition> busDefinition =
-            library_->getModelReadOnly(getBusInterface()->getBusType()).dynamicCast<const BusDefinition>();
-        if (BusInterfaceUtilities::hasMatchingBusDefinitions(busDefinition, otherInterface->getBusType(), library_))
+        QSharedPointer<const BusDefinition> busDefinition = getLibraryAccess()->getModelReadOnly(
+            getBusInterface()->getBusType()).dynamicCast<const BusDefinition>();
+        if (BusInterfaceUtilities::hasMatchingBusDefinitions(
+            busDefinition, otherInterface->getBusType(), getLibraryAccess()))
         {
             QList<General::InterfaceMode> compatibleModes = getOpposingModes(getBusInterface());
             compatibleModes.append(General::SYSTEM);
@@ -311,7 +311,7 @@ QList<General::InterfaceMode> ActiveBusInterfaceItem::getOpposingModes(QSharedPo
     if (sourceMode == General::MASTER)
     {
         QSharedPointer<BusDefinition const> busDef = 
-            library_->getModelReadOnly(busIf->getBusType()).dynamicCast<BusDefinition const>();
+            getLibraryAccess()->getModelReadOnly(busIf->getBusType()).dynamicCast<BusDefinition const>();
         if (busDef != 0 && busDef->getDirectConnection())
         {
             possibleModes.append(General::SLAVE);      
@@ -320,7 +320,7 @@ QList<General::InterfaceMode> ActiveBusInterfaceItem::getOpposingModes(QSharedPo
     else if (sourceMode == General::SLAVE)
     {
         QSharedPointer<BusDefinition const> busDef = 
-            library_->getModelReadOnly(busIf->getBusType()).dynamicCast<BusDefinition const>();
+            getLibraryAccess()->getModelReadOnly(busIf->getBusType()).dynamicCast<BusDefinition const>();
         if (busDef != 0 && busDef->getDirectConnection())
         {
             possibleModes.append(General::MASTER);      

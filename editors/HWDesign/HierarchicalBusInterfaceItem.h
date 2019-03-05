@@ -46,10 +46,11 @@ public:
      *      @param [in] component   The component containing the bus interface this item represents.
      *      @param [in] busIf       The bus interface this item represents.
      *      @param [in] dataGroup   The container for the item data.
+     *      @param [in] library     Access to the library.
      *      @param [in] parent      The parent object.
      */
     HierarchicalBusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
-        QSharedPointer<InterfaceGraphicsData> dataGroup, QGraphicsItem *parent = 0);
+        QSharedPointer<InterfaceGraphicsData> dataGroup, LibraryInterface* library, QGraphicsItem *parent = 0);
 
 	/*!
      *  The destructor.

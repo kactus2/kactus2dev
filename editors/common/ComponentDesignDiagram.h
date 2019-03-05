@@ -26,6 +26,7 @@ class GraphicsConnection;
 class LibraryInterface;
 class IEditProvider;
 class AutoConnectorItem;
+class ComponentItemAutoConnector;
 
 //-----------------------------------------------------------------------------
 // ComponentDesignDiagram is a base class for component designs.
@@ -308,6 +309,15 @@ protected:
      */
     QPointF findCursorPositionMappedToScene();
 
+    /*!
+     *  Get the visible name for the selected component item.
+     *
+     *      @param [in] item    The selected component item.
+     *
+     *      @return Visible name of the selected component item.
+     */
+    QString getVisibleNameForComponentItem(ComponentItem* item) const;
+
 private:
     // Disable copying.
     ComponentDesignDiagram(ComponentDesignDiagram const& rhs);
@@ -569,6 +579,15 @@ private:
      *      @return True, if the auto connected should be added, false otherwise.
      */
     virtual bool addAutoConnectorActionToContextMenu() const;
+
+    /*!
+     *  Create auto connection dialog.
+     *
+     *      @param [in] firstItem   The first item for the auto connector.
+     *
+     *      @return The auto connector dialog.
+     */
+    virtual ComponentItemAutoConnector* createAutoConnector(ComponentItem* firstItem) const = 0;
 
     //-----------------------------------------------------------------------------
     // Data.

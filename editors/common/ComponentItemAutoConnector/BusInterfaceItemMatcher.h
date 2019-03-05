@@ -14,6 +14,8 @@
 
 #include <editors/common/ComponentItemAutoConnector/TableItemMatcher.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QSharedPointer>
 
 class Component;
@@ -56,6 +58,15 @@ private:
      */
     virtual bool itemsCanBeConnected(QString const& firstItem, QSharedPointer<Component> firstComponent,
         QString const& secondItem, QSharedPointer<Component> secondComponent) const;
+
+    /*!
+     *  Get connectible bus interface modes for the selected interface mode.
+     *
+     *      @param [in] busMode     The selected bus interface mode.
+     *
+     *      @return List of connectible interface modes.
+     */
+    virtual QVector<General::InterfaceMode> getCompatibleModes(General::InterfaceMode busMode) const;
 
     //-----------------------------------------------------------------------------
     // Data.

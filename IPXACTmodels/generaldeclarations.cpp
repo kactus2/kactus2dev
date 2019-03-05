@@ -295,10 +295,14 @@ QVector<General::InterfaceMode> General::getCompatibleInterfaceModesForActiveInt
 //-----------------------------------------------------------------------------
 // Function: generaldeclarations::getCompatibleInterfaceModeForHierarchicalInterface()
 //-----------------------------------------------------------------------------
-General::InterfaceMode General::getCompatibleInterfaceModeForHierarchicalInterface(General::InterfaceMode mode)
+QVector<General::InterfaceMode> General::getCompatibleInterfaceModeForHierarchicalInterface(
+    General::InterfaceMode mode)
 {
     //! Hierarchical Interface -> Same Mode
-    return mode;
+
+    QVector<General::InterfaceMode> compatibleModes;
+    compatibleModes.append(mode);
+    return compatibleModes;
 }
 
 QString General::getRelativePath(QString from, QString to)  
