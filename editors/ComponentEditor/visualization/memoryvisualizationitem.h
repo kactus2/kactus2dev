@@ -94,16 +94,12 @@ public:
 	 */
 	virtual void addChild(MemoryVisualizationItem* childItem);
 
-    void addChildren(QVector<MemoryVisualizationItem*> childItems);
-
     /*!
      *  Remove a child visualization item from this item.
 	 *
 	 *       @param [in] childItem Pointer to the child to remove.
 	 */
 	virtual void removeChild(MemoryVisualizationItem* childItem);
-
-    void removeChildren(QVector<MemoryVisualizationItem*> childItems);
 
     /*!
      *  Set the width for the item.

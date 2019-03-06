@@ -1543,12 +1543,6 @@
     <ClInclude Include="Component\FieldReset.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="utilities\Search.h">
-      <Filter>Header Files\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="utilities\ComponentSearch.h">
-      <Filter>Header Files\utilities</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">

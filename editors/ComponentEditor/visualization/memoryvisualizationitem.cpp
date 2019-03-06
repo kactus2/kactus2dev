@@ -43,7 +43,11 @@ ExpandableItem(parent),
 //-----------------------------------------------------------------------------
 MemoryVisualizationItem::~MemoryVisualizationItem()
 {
-
+    for (auto const& childItem : childItems_)
+    {
+        disconnect(childItem, SIGNAL(destroyed(QObject*)), this, SLOT(reorganizeChildren()));
+        disconnect(childItem, SIGNAL(destroyed(QObject*)), this, SIGNAL(expandStateChanged()));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -76,32 +80,6 @@ void MemoryVisualizationItem::addChild(MemoryVisualizationItem* childItem)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::addChildren()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::addChildren(QVector<MemoryVisualizationItem*> childItems)
-{
-    for (MemoryVisualizationItem* childItem : childItems)
-    {
-        childItems_.insertMulti(childItem->getOffset(), childItem);
-
-        childItem->setWidth(childWidth_);
-        childItem->setVisible(isExpanded());
-    }
-
-    reorganizeChildren();
-    emit expandStateChanged();
-
-    for (MemoryVisualizationItem* childItem : childItems)
-    {
-        connect(childItem, SIGNAL(expandStateChanged()), this, SLOT(reorganizeChildren()), Qt::UniqueConnection);
-        connect(childItem, SIGNAL(expandStateChanged()), this, SIGNAL(expandStateChanged()), Qt::UniqueConnection);
-
-        connect(childItem, SIGNAL(destroyed(QObject*)), this, SLOT(reorganizeChildren()), Qt::UniqueConnection);
-        connect(childItem, SIGNAL(destroyed(QObject*)), this, SIGNAL(expandStateChanged()), Qt::UniqueConnection);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::removeChild()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::removeChild(MemoryVisualizationItem* childItem)
@@ -112,22 +90,6 @@ void MemoryVisualizationItem::removeChild(MemoryVisualizationItem* childItem)
     childItems_.remove(offset, childItem);
 
     showExpandIconIfHasChildren();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::removeChildren()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::removeChildren(QVector<MemoryVisualizationItem*> childItems)
-{
-    for (auto& childItem : childItems)
-    {
-        quint64 offset = childItems_.key(childItem);
-        childItems_.remove(offset, childItem);
-        disconnect(childItem, SIGNAL(destroyed(QObject*)), this, SLOT(reorganizeChildren()));
-    }
-    
-    showExpandIconIfHasChildren();
-    reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------

@@ -327,7 +327,11 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     else if (index.column() == RegisterColumns::RESETS_COLUMN)
     {
         QSharedPointer<QList<QSharedPointer<FieldReset> > > indexedResets = fields_->at(index.row())->getResets();
-        if (indexedResets->count() == 1)
+        if (indexedResets->isEmpty())
+        {
+            return QVariant();
+        }
+        else if (indexedResets->count() == 1)
         {
             return indexedResets->first()->getResetValue();
         }

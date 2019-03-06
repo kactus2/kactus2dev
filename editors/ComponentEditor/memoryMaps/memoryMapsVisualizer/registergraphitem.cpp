@@ -85,6 +85,8 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
+
+    disconnect(childItem, SIGNAL(destroyed(QObject*)), this, SLOT(reorganizeChildren()));
 }
 
 //-----------------------------------------------------------------------------
@@ -304,7 +306,7 @@ qreal RegisterGraphItem::findWidthFor(MemoryVisualizationItem* child) const
 
     qreal pixelsPerBit = childWidth_/registerSize;
 
-    return pixelsPerBit * childBitWidth;
+    return qMax(1.0, pixelsPerBit * childBitWidth);
 }
 
 //-----------------------------------------------------------------------------

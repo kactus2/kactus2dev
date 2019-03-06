@@ -406,15 +406,18 @@ void VisualizerItem::resizeLabels()
 QString VisualizerItem::clipText(QString const& text, int maxChars) const
 {
     // if the text is too wide to be displayed at all.
-    if (maxChars < 2 && text.size() > maxChars)
+    if (text.size() > maxChars)
     {
-        return QString();
-    }       
-    else if (text.size() > maxChars)
-    {    
-        // add "..." to the end to indicate the text has been partly hidden.
-        QString chopped(text.left(maxChars - 3) % QStringLiteral("..."));        
-        return chopped;
+        if (maxChars < 2)
+        {
+            return QString();
+        }
+        else
+        {
+            // add "..." to the end to indicate the text has been partly hidden.
+            QString chopped(text.left(maxChars - 3) % QStringLiteral("..."));
+            return chopped;
+        }
     }
 
     return text;
