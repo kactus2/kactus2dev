@@ -99,6 +99,11 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QString const
     // Clear the edit provider.
     editProvider_->clear();
 
+    for (auto instanceItem : getInstances())
+    {
+        instanceItem->disconnect();
+    }
+
     // Clear the scene.
     clearScene();
     getParent()->clearRelatedVLNVs();

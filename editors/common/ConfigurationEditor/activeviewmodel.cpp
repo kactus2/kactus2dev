@@ -121,11 +121,6 @@ void ActiveViewModel::clear()
 		designWidget_ = 0;
 	}
 
-	// disconnect all component instances and clear the list
-	foreach(ComponentItem* diaComp, instances_)
-    {
-		diaComp->disconnect(this);
-	}
 	instances_.clear();
 
 	// clear the pointers
@@ -230,32 +225,29 @@ bool ActiveViewModel::setData(const QModelIndex& index, const QVariant& value, i
 		return false;
     }
 
-	if (role == Qt::EditRole)
+    QVariant oldValue = data(index);
+
+    if (role == Qt::EditRole && index.column() == ActiveViewColumns::ACTIVE_VIEW && oldValue != value)
     {
-        if (index.column() == ActiveViewColumns::ACTIVE_VIEW)
-        {
-            // create a command to the undo stack
-            QSharedPointer<ComponentActiveViewChangeCommand> command =
-                QSharedPointer<ComponentActiveViewChangeCommand>(new ComponentActiveViewChangeCommand(
+        // create a command to the undo stack
+        QSharedPointer<ComponentActiveViewChangeCommand> command =
+            QSharedPointer<ComponentActiveViewChangeCommand>(new ComponentActiveViewChangeCommand(
                 table_[index.row()].instanceName_, table_[index.row()].viewName_, value.toString(), this));
-            editProvider_->addCommand(command);
+        editProvider_->addCommand(command);
 
-            // make the change
-            table_[index.row()].viewName_ = value.toString();
+        // make the change
+        table_[index.row()].viewName_ = value.toString();
 
-            // save the new active view to the design configuration
-            changeViewConfiguration(table_.at(index.row()).instanceName_, table_.at(index.row()).viewName_);
+        // save the new active view to the design configuration
+        changeViewConfiguration(table_.at(index.row()).instanceName_, table_.at(index.row()).viewName_);
 
-            emit dataChanged(index, index);
-            return true;
-        }
-        else
-        {
-				return false;
-		}
+        emit dataChanged(index, index);
+        return true;
 	}
-	else
-		return false;
+    else
+    {
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -263,12 +255,20 @@ bool ActiveViewModel::setData(const QModelIndex& index, const QVariant& value, i
 //-----------------------------------------------------------------------------
 void ActiveViewModel::changeViewConfiguration(QString const& instanceName, QString const& newViewName)
 {
-    foreach (QSharedPointer<ViewConfiguration> configuration, *desConf_->getViewConfigurations())
+    if (newViewName.isEmpty())
     {
-        if (configuration->getInstanceName().compare(instanceName) == 0)
+        desConf_->removeViewConfiguration(instanceName);
+        return;
+    }
+    else
+    {
+        foreach(QSharedPointer<ViewConfiguration> configuration, *desConf_->getViewConfigurations())
         {
-            configuration->setViewReference(newViewName);
-            return;
+            if (configuration->getInstanceName().compare(instanceName) == 0)
+            {
+                configuration->setViewReference(newViewName);
+                return;
+            }
         }
     }
 
@@ -460,7 +460,7 @@ void ActiveViewModel::setActiveView( const QString& instanceName, const QString&
 			// update the design configuration
 			if (desConf_)
             {
-				desConf_->addViewConfiguration(instanceName, viewName);
+                changeViewConfiguration(instanceName, viewName);
 			}
 			return;
 		}

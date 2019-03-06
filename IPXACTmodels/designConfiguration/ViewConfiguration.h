@@ -44,6 +44,8 @@ public:
      */
     ViewConfiguration(const ViewConfiguration& other);
 
+    ViewConfiguration& operator=(const ViewConfiguration& other) = delete;
+
     /*!
      *  The destructor.
      */
