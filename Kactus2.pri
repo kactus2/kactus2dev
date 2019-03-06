@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
-    ./resource5.h \
     ./VersionHelper.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
