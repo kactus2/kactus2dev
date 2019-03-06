@@ -52,51 +52,57 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
     }
 
     for (VLNV const& vlnv : list)
-    {
-        QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
+    {        
         VLNV::IPXactType documentType = handler_->getDocumentType(vlnv);
 
         if (documentType == VLNV::COMPONENT)
         {
             if (type().components_)
             {
+                QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
                 QSharedPointer<Component const> component = document.staticCast<Component const>();
 
-                return checkImplementation(component) && checkHierarchy(component) && checkFirmness(component);                
+                if (checkImplementation(component) && checkHierarchy(component) && checkFirmness(component))
+                {
+                    return true;
+                }                   
             }
         }
 
-        else if (documentType == VLNV::CATALOG)
+        else if (documentType == VLNV::CATALOG && type().catalogs_)
         {
-            return type().catalogs_;
+            return true;
         }
 
-        else if (documentType == VLNV::ABSTRACTIONDEFINITION)
+        else if (documentType == VLNV::ABSTRACTIONDEFINITION && type().buses_ && implementation().hw_)
         {
-            return type().buses_ && implementation().hw_;
+                return true;         
         }
 
-        else if (documentType == VLNV::BUSDEFINITION)
+        else if (documentType == VLNV::BUSDEFINITION && type().buses_ && implementation().hw_)
         {
-            return type().buses_ && implementation().hw_;
+            return true;
         }
 
-        else if (documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION)
+        else if ((documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION) && type().apis_)
         {
-            return type().apis_;
+            return true;
         }
 
         else if (documentType == VLNV::DESIGN)
         {
             QSharedPointer<Design> design = handler_->getDesign(vlnv);
 
-            return type().advanced_ || (type().components_ && implementation().sw_ &&
-                design->getImplementation() == KactusAttribute::SW);
+            if (type().advanced_ || (type().components_ && implementation().sw_ &&
+                design->getImplementation() == KactusAttribute::SW))
+            {
+                return true;
+            }
         }
 
-        else // if type is one of the advanced
+        else if (type().advanced_)
         {
-            return type().advanced_;
+            return true;
         }
     }
 
