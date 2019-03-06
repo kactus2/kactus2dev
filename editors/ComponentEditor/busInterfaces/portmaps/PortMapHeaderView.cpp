@@ -41,7 +41,7 @@ void PortMapHeaderView::paintSection(QPainter *painter, const QRect &rect, int l
     QHeaderView::paintSection(painter, rect, logicalIndex);
     painter->restore();
 
-    if ( logicalIndex == PortMapsColumns::LOGICAL_PRESENCE || logicalIndex == PortMapsColumns::INVERT)
+    if (logicalIndex == PortMapsColumns::LOGICAL_PRESENCE || logicalIndex == PortMapsColumns::ISINFORMATIVE)
     {
         QPen oldPen = painter->pen();
         QPen newPen(Qt::lightGray);

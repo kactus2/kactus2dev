@@ -469,7 +469,7 @@ void HWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     }
     
     ComponentItem::mouseMoveEvent(event);
-    
+
     if (oldColumn_ != 0)
     {
         setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
