@@ -13,11 +13,7 @@
 #include "HWMoveCommands.h"
 #include "HWAddCommands.h"
 #include "HWConnection.h"
-#include "BusPortItem.h"
-#include "AdHocPortItem.h"
-#include "AdHocInterfaceItem.h"
 #include "HWComponentItem.h"
-#include "BusInterfaceItem.h"
 #include "columnview/HWColumn.h"
 
 #include <common/graphicsItems/ComponentItem.h>
@@ -30,6 +26,10 @@
 #include <editors/common/Association/AssociationChangeEndpointCommand.h>
 #include <editors/common/ConfigurationEditor/activeviewmodel.h>
 
+#include <editors/HWDesign/HierarchicalBusInterfaceItem.h>
+#include <editors/HWDesign/ActiveBusInterfaceItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
+#include <editors/HWDesign/ActivePortItem.h>
 #include <editors/HWDesign/AdHocConnectionItem.h>
 #include <editors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
 #include <editors/HWDesign/undoCommands/ComponentDeleteCommand.h>

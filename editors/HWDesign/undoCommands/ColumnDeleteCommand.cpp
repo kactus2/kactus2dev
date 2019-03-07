@@ -23,7 +23,7 @@
 #include <editors/HWDesign/HWComponentItem.h>
 #include <editors/HWDesign/HWConnection.h>
 #include <editors/HWDesign/HWConnectionEndpoint.h>
-#include <editors/HWDesign/AdHocInterfaceItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
 #include <editors/HWDesign/HWDesignDiagram.h>
 
 #include <editors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h>
@@ -82,7 +82,7 @@ del_(true)
             HWDesignDiagram* hwDiagram = dynamic_cast<HWDesignDiagram*>(diagram);
             if (hwDiagram)
             {
-                AdHocInterfaceItem* adHocInterface = dynamic_cast<AdHocInterfaceItem*>(item);
+                HierarchicalPortItem* adHocInterface = dynamic_cast<HierarchicalPortItem*>(item);
 
                 new TopAdHocVisibilityChangeCommand(hwDiagram, adHocInterface->name(), false, this);
             }

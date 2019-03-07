@@ -615,6 +615,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
+    ./editors/common/BusInterfaceUtilities.h \
     ./editors/common/ColumnTypes.h \
     ./editors/common/DefaultRouting.h \
     ./editors/common/DesignDiagramResolver.h \
@@ -626,6 +627,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/GraphicsItemLabel.h \
     ./editors/common/ImageExporter.h \
     ./editors/common/NamelabelWidth.h \
+    ./editors/common/PortUtilities.h \
     ./editors/common/TopComponentParameterFinder.h \
     ./editors/common/ComponentDesignDiagram.h \
     ./editors/common/ComponentInstanceParameterFinder.h \
@@ -669,20 +671,35 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/StickyNote/StickyNote.h \
     ./editors/common/StickyNote/StickyNoteAddCommand.h \
     ./editors/common/StickyNote/StickyNoteRemoveCommand.h \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceItemMatcher.h \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.h \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/ListFiller.h \
+    ./editors/common/ComponentItemAutoConnector/PortItemMatcher.h \
+    ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/TableAutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/TableItemMatcher.h \
+    ./editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorItem.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.h \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorListFilter.h \
+    ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
     ./editors/HWDesign/AdHocEnabled.h \
     ./editors/HWDesign/HWAddCommands.h \
     ./editors/HWDesign/HWMoveCommands.h \
     ./editors/HWDesign/InterfaceGraphics.h \
     ./editors/HWDesign/PortmapDialog.h \
     ./editors/HWDesign/AdHocConnectionItem.h \
-    ./editors/HWDesign/AdHocInterfaceItem.h \
+    ./editors/HWDesign/ActiveBusInterfaceItem.h \
+    ./editors/HWDesign/ActivePortItem.h \
     ./editors/HWDesign/AdHocItem.h \
-    ./editors/HWDesign/AdHocPortItem.h \
     ./editors/HWDesign/SelectItemTypeDialog.h \
     ./editors/HWDesign/BusInterfaceDialog.h \
     ./editors/HWDesign/BusInterfaceEndPoint.h \
-    ./editors/HWDesign/BusInterfaceItem.h \
-    ./editors/HWDesign/BusPortItem.h \
+    ./editors/HWDesign/HierarchicalBusInterfaceItem.h \
+    ./editors/HWDesign/HierarchicalPortItem.h \
     ./editors/HWDesign/HWChangeCommands.h \
     ./editors/HWDesign/HWComponentItem.h \
     ./editors/HWDesign/HWConnection.h \
@@ -790,7 +807,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalPortTableAutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalPortItemMatcher.h \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceItemMatcher.h \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceTableAutoConnector.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1312,6 +1333,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/CatalogEditor/CatalogFileFilter.cpp \
     ./editors/CatalogEditor/CatalogFileModel.cpp \
     ./editors/CatalogEditor/CatalogFileView.cpp \
+    ./editors/common/BusInterfaceUtilities.cpp \
     ./editors/common/ComponentDesignDiagram.cpp \
     ./editors/common/ComponentInstanceParameterFinder.cpp \
     ./editors/common/DefaultRouting.cpp \
@@ -1323,6 +1345,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/GraphicsItemLabel.cpp \
     ./editors/common/ImageExporter.cpp \
     ./editors/common/NamelabelWidth.cpp \
+    ./editors/common/PortUtilities.cpp \
     ./editors/common/TopComponentParameterFinder.cpp \
     ./editors/common/Association/Associable.cpp \
     ./editors/common/Association/Association.cpp \
@@ -1358,15 +1381,29 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/StickyNote/StickyNoteEditCommand.cpp \
     ./editors/common/StickyNote/StickyNoteMoveCommand.cpp \
     ./editors/common/StickyNote/StickyNoteRemoveCommand.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionTable.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorItem.cpp \
+    ./editors/common/ComponentItemAutoConnector/AutoConnectorListFilter.cpp \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceItemMatcher.cpp \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.cpp \
+    ./editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/PortItemMatcher.cpp \
+    ./editors/common/ComponentItemAutoConnector/PortListFiller.cpp \
+    ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/TableAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/TableItemMatcher.cpp \
+    ./editors/HWDesign/ActiveBusInterfaceItem.cpp \
+    ./editors/HWDesign/ActivePortItem.cpp \
     ./editors/HWDesign/AdHocConnectionItem.cpp \
     ./editors/HWDesign/AdHocEnabled.cpp \
-    ./editors/HWDesign/AdHocInterfaceItem.cpp \
     ./editors/HWDesign/AdHocItem.cpp \
-    ./editors/HWDesign/AdHocPortItem.cpp \
     ./editors/HWDesign/BusInterfaceDialog.cpp \
     ./editors/HWDesign/BusInterfaceEndPoint.cpp \
-    ./editors/HWDesign/BusInterfaceItem.cpp \
-    ./editors/HWDesign/BusPortItem.cpp \
+    ./editors/HWDesign/HierarchicalBusInterfaceItem.cpp \
+    ./editors/HWDesign/HierarchicalPortItem.cpp \
     ./editors/HWDesign/HWAddCommands.cpp \
     ./editors/HWDesign/HWChangeCommands.cpp \
     ./editors/HWDesign/HWComponentItem.cpp \
@@ -1475,5 +1512,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalPortTableAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalPortItemMatcher.cpp \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceItemMatcher.cpp \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceTableAutoConnector.cpp
 RESOURCES += kactus.qrc

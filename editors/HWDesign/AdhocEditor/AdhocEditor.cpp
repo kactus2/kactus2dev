@@ -22,8 +22,8 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <editors/HWDesign/AdHocItem.h>
-#include <editors/HWDesign/AdHocPortItem.h>
-#include <editors/HWDesign/AdHocInterfaceItem.h>
+#include <editors/HWDesign/ActivePortItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
 #include <editors/HWDesign/HWDesignDiagram.h>
 #include <editors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h>
 #include <editors/HWDesign/undoCommands/AdHocTieOffBoundsChangeCommand.h>
@@ -117,8 +117,8 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingD
     portName_->parentWidget()->show();
     tiedValueEditor_->parentWidget()->show();
 
-    AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(containedPortItem_);
-    AdHocInterfaceItem* adhocInterfaceItem = dynamic_cast<AdHocInterfaceItem*>(containedPortItem_);
+    ActivePortItem* adhocPortItem = dynamic_cast<ActivePortItem*>(containedPortItem_);
+    HierarchicalPortItem* adhocInterfaceItem = dynamic_cast<HierarchicalPortItem*>(containedPortItem_);
     
     QSharedPointer<Port> referencedPort = containedPortItem_->getPort();
 

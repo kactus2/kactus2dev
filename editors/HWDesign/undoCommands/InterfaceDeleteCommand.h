@@ -21,7 +21,7 @@
 
 class AbstractionType;
 class BusInterface;
-class BusInterfaceItem;
+class HierarchicalBusInterfaceItem;
 class DesignDiagram;
 class GraphicsColumn;
 class Port;
@@ -41,7 +41,7 @@ public:
      *      @param [in] interface    The interface to delete.
      *      @param [in] removePorts  If true, the ports that are part of the interface are also removed.
      */
-    InterfaceDeleteCommand(DesignDiagram* diagram, BusInterfaceItem* interface, bool removePorts,
+    InterfaceDeleteCommand(DesignDiagram* diagram, HierarchicalBusInterfaceItem* interface, bool removePorts,
         QUndoCommand* parent = 0);
 
     /*!
@@ -74,7 +74,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram interface.
-    BusInterfaceItem* interface_;
+    HierarchicalBusInterfaceItem* interface_;
 
     //! The bus interface.
     QSharedPointer<BusInterface> busIf_;

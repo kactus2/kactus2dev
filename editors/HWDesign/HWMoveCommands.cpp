@@ -12,14 +12,13 @@
 #include "HWMoveCommands.h"
 
 #include "HWConnection.h"
-#include "BusPortItem.h"
 #include "HWComponentItem.h"
-#include "BusInterfaceItem.h"
 #include "columnview/HWColumn.h"
 
 #include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <editors/common/DesignDiagram.h>
+#include <editors/HWDesign/HWConnectionEndpoint.h>
 
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()

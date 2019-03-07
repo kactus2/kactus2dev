@@ -28,10 +28,10 @@
 
 class AbstractionDefinition;
 class AdHocConnection;
-class AdHocInterfaceItem;
-class AdHocPortItem;
-class BusPortItem;
-class BusInterfaceItem;
+class HierarchicalPortItem;
+class ActivePortItem;
+class ActiveBusInterfaceItem;
+class HierarchicalBusInterfaceItem;
 class Component;
 class ComponentInstance;
 class ComponentItem;
@@ -58,6 +58,7 @@ class DesignDiagramResolver;
 class AdHocItem;
 class MultipleParameterFinder;
 class ListParameterFinder;
+class ComponentItemAutoConnector;
 
 //-----------------------------------------------------------------------------
 //! HWDesignDiagram is a graphical view to a design.
@@ -656,7 +657,7 @@ private:
      *
      *      @return A port item for a missing port.
      */
-    BusPortItem* createMissingBusInterface(QString const& interfaceName, HWComponentItem* containingComponent, 
+    ActiveBusInterfaceItem* createMissingBusInterface(QString const& interfaceName, HWComponentItem* containingComponent,
         QSharedPointer<Design> design);
 
     /*!
@@ -714,7 +715,7 @@ private:
      *
      *      @return The interface item for the missing interface.
      */
-    AdHocInterfaceItem* createMissingHierarchicalAdHocPort(QString const& portName,
+    HierarchicalPortItem* createMissingHierarchicalAdHocPort(QString const& portName,
         QSharedPointer<Kactus2Placeholder> adHocExtension, QGraphicsItem* parentItem = (QGraphicsItem*)0);
 
     /*!
@@ -731,7 +732,7 @@ private:
      *
      *      @return The port item or 0 if port cannot be found.
      */
-    AdHocPortItem* findAdhocPort(QSharedPointer<PortReference> portReference);
+    ActivePortItem* findAdhocPort(QSharedPointer<PortReference> portReference);
 
     /*!
      *  Create a symbol for an ad hoc tie off value.
@@ -840,6 +841,57 @@ private:
      *              false.
      */
     bool referenceFinderContainsComponent(QSharedPointer<Component> component);
+
+    /*!
+     *  Create auto connection dialog.
+     *
+     *      @param [in] firstItem   The first item for the auto connector.
+     *
+     *      @return The auto connector dialog.
+     */
+    virtual ComponentItemAutoConnector* createAutoConnector(ComponentItem* firstItem) const;
+
+    /*!
+     *  Get the connection end point for the selected auto connector item.
+     *
+     *      @param [in] connectorItem   The selected auto connector item.
+     *
+     *      @return The end point item for the selected auto connector item.
+     */
+    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem);
+
+    /*!
+     *  Get the component item connection end point for the selected auto connector item.
+     *
+     *      @param [in] connectorItem   The selected auto connector item.
+     *
+     *      @return The selected component item connection end point.
+     */
+    ConnectionEndpoint* getEndPointFromComponentItem(AutoConnectorItem* connectorItem);
+
+    /*!
+     *  Get the top component connection end point for the selected auto connector item.
+     *
+     *      @param [in] connectorItem   The selected auto connector item.
+     *
+     *      @return The selected top component connection end point.
+     */
+    ConnectionEndpoint* getEndPointForTopComponentItem(AutoConnectorItem* connectorItem);
+
+    /*!
+     *  Create connection between the selected end points.
+     *
+     *      @param [in] startPoint  Start point for the connection.
+     *      @param [in] endPoint    End point for the connection.
+     */
+    virtual void createConnectionBetweenEndPoints(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
+
+    /*!
+     *  Check if the auto connector should be added to the context menu.
+     *
+     *      @return True, if the auto connected should be added, false otherwise.
+     */
+    virtual bool addAutoConnectorActionToContextMenu() const;
 
     //-----------------------------------------------------------------------------
     // Data.

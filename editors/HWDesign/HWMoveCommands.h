@@ -18,9 +18,7 @@
 #include <QString>
 
 class HWConnection;
-class BusPortItem;
 class HWComponentItem;
-class BusInterfaceItem;
 class HWConnectionEndpoint;
 class IGraphicsItemStack;
 class DesignDiagram;

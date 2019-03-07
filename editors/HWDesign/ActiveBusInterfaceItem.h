@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusPortItem.h
+// File: ActiveBusInterfaceItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: 
@@ -8,8 +8,8 @@
 // Description:
 // HWConnection represents graphically an IP-XACT bus interface in a component instance.
 //-----------------------------------------------------------------------------
-#ifndef BUSPORTITEM_H
-#define BUSPORTITEM_H
+#ifndef ACTIVEBUSINTERFACEITEM_H
+#define ACTIVEBUSINTERFACEITEM_H
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
@@ -28,7 +28,7 @@ class DesignDiagram;
 //-----------------------------------------------------------------------------
 //! HWConnection represents graphically an IP-XACT bus interface in a component instance
 //-----------------------------------------------------------------------------
-class BusPortItem : public BusInterfaceEndPoint
+class ActiveBusInterfaceItem : public BusInterfaceEndPoint
 {
     Q_OBJECT
 
@@ -43,12 +43,12 @@ public:
      *      @param [in] library     The IP-XACT library in use.
      *      @param [in] parent      The parent object.
      */
-    BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library, HWComponentItem* parent);
+    ActiveBusInterfaceItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library, HWComponentItem* parent);
 
 	/*!
      *  The destructor.
      */
-	virtual ~BusPortItem();
+	virtual ~ActiveBusInterfaceItem();
 
 	/*!
 	 *  Get the graphics item type.
@@ -176,13 +176,6 @@ private:
      *      @return The current position of the end point.
      */
     virtual QPointF getCurrentPosition() const;
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-	//! The library interface.
-    LibraryInterface* library_;
 };
 
-#endif // BUSPORTITEM_H
+#endif // ACTIVEBUSINTERFACEITEM_H

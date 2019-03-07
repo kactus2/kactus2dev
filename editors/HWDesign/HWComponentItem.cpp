@@ -10,8 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include "HWComponentItem.h"
-#include "BusPortItem.h"
-#include "AdHocPortItem.h"
 #include "HWMoveCommands.h"
 
 #include "columnview/HWColumn.h"
@@ -28,6 +26,8 @@
 #include <editors/common/diagramgrid.h>
 #include <editors/common/DesignDiagram.h>
 #include <editors/HWDesign/AdHocItem.h>
+#include <editors/HWDesign/ActiveBusInterfaceItem.h>
+#include <editors/HWDesign/ActivePortItem.h>
 #include <editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
 #include <editors/HWDesign/undoCommands/ComponentItemMoveCommand.h>
 
@@ -83,9 +83,9 @@ HWComponentItem::~HWComponentItem()
     // Remove all interconnections.
     foreach (QGraphicsItem *item, childItems())
     {
-        if (item->type() == BusPortItem::Type)
+        if (item->type() == ActiveBusInterfaceItem::Type)
         {
-            BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
+            ActiveBusInterfaceItem* diagramPort = qgraphicsitem_cast<ActiveBusInterfaceItem*>(item);
             foreach (GraphicsConnection *interconnection, diagramPort->getConnections())
             {
                 delete interconnection;
@@ -161,10 +161,10 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
             adhocPort = QSharedPointer<Port>(new Port(portName));
         }
 
-        AdHocPortItem* port = getAdHocPort(portName);
+        ActivePortItem* port = getAdHocPort(portName);
         if (!port)
         {
-            port = new AdHocPortItem(adhocPort, this);
+            port = new ActivePortItem(adhocPort, this);
             addPortToSideWithLessPorts(port);
         }
         
@@ -227,7 +227,7 @@ HWConnectionEndpoint* HWComponentItem::getDiagramAdHocPort(QString const& portNa
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::addPort()
 //-----------------------------------------------------------------------------
-BusPortItem* HWComponentItem::addPort(QPointF const& pos)
+ActiveBusInterfaceItem* HWComponentItem::addPort(QPointF const& pos)
 {
     // Determine a unique name for the bus interface.
     QString name = "bus";
@@ -248,7 +248,7 @@ BusPortItem* HWComponentItem::addPort(QPointF const& pos)
     componentModel()->getBusInterfaces()->append(busIf);
 
     // Create the visualization for the bus interface.
-    BusPortItem* draftPort = new BusPortItem(busIf, getLibraryInterface(), this);
+    ActiveBusInterfaceItem* draftPort = new ActiveBusInterfaceItem(busIf, getLibraryInterface(), this);
     draftPort->setTemporary(true);
     draftPort->setPos(mapFromScene(pos));
     
@@ -266,7 +266,7 @@ void HWComponentItem::addPort(HWConnectionEndpoint* port)
 {
     port->setParentItem(this);
 
-    if (port->type() == BusPortItem::Type)
+    if (port->type() == ActiveBusInterfaceItem::Type)
     {
         // Add the bus interface to the component.
         componentModel()->getBusInterfaces()->append(port->getBusInterface());
@@ -288,7 +288,7 @@ void HWComponentItem::removePort(HWConnectionEndpoint* port)
     rightPorts_.removeAll(port);
     updateSize();
 
-    if (port->type() == BusPortItem::Type)
+    if (port->type() == ActiveBusInterfaceItem::Type)
     {
         componentModel()->getBusInterfaces()->removeOne(port->getBusInterface());
         getComponentInstance()->removeBusInterfacePosition(port->name());
@@ -298,13 +298,13 @@ void HWComponentItem::removePort(HWConnectionEndpoint* port)
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::getBusPort()
 //-----------------------------------------------------------------------------
-BusPortItem* HWComponentItem::getBusPort(QString const& name) const
+ActiveBusInterfaceItem* HWComponentItem::getBusPort(QString const& name) const
 {
     foreach (QGraphicsItem* item, QGraphicsRectItem::childItems())
     {
-        if (item->type() == BusPortItem::Type)
+        if (item->type() == ActiveBusInterfaceItem::Type)
         {
-            BusPortItem* busPort = qgraphicsitem_cast<BusPortItem*>(item);
+            ActiveBusInterfaceItem* busPort = qgraphicsitem_cast<ActiveBusInterfaceItem*>(item);
             if (busPort->name() == name)
             {
                 return busPort;
@@ -318,7 +318,7 @@ BusPortItem* HWComponentItem::getBusPort(QString const& name) const
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::getAdHocPort()
 //-----------------------------------------------------------------------------
-AdHocPortItem* HWComponentItem::getAdHocPort(QString const& portName) const
+ActivePortItem* HWComponentItem::getAdHocPort(QString const& portName) const
 {
     QList<ConnectionEndpoint*> allInterfaces;
     allInterfaces.append(leftPorts_);
@@ -326,9 +326,9 @@ AdHocPortItem* HWComponentItem::getAdHocPort(QString const& portName) const
 
     foreach (ConnectionEndpoint* endpoint, allInterfaces)
     {
-        if (dynamic_cast<AdHocPortItem*>(endpoint) != 0 && endpoint->name() == portName)
+        if (dynamic_cast<ActivePortItem*>(endpoint) != 0 && endpoint->name() == portName)
         {
-            return static_cast<AdHocPortItem*>(endpoint);
+            return static_cast<ActivePortItem*>(endpoint);
         }
     }
 
@@ -637,7 +637,7 @@ void HWComponentItem::positionBusInterfaceTerminals()
 
     foreach (QSharedPointer<BusInterface> busInterface, *componentModel()->getBusInterfaces())
     {
-        BusPortItem *port = new BusPortItem(busInterface, getLibraryInterface(), this);
+        ActiveBusInterfaceItem* port = new ActiveBusInterfaceItem(busInterface, getLibraryInterface(), this);
 
         // Check if instance specific position has been specified.
         if (instancePositions.contains(busInterface->name()))
@@ -665,7 +665,7 @@ void HWComponentItem::positionBusInterfaceTerminals()
             busInterface->setName(interfaceName);
             componentModel()->getBusInterfaces()->append(busInterface);
 
-            BusPortItem *port = new BusPortItem(busInterface, getLibraryInterface(), this);
+            ActiveBusInterfaceItem* port = new ActiveBusInterfaceItem(busInterface, getLibraryInterface(), this);
 
             port->setPos(instancePositions.value(interfaceName));
             port->setTemporary(true);
@@ -695,7 +695,7 @@ void HWComponentItem::positionAdHocPortTerminals()
             adhocPort = QSharedPointer<Port>(new Port(portName));
         }
 
-        AdHocPortItem* portItem = new AdHocPortItem(adhocPort, this);
+        ActivePortItem* portItem = new ActivePortItem(adhocPort, this);
         portItem->setPos(portPosition);
 
         addPortToSideByPosition(portItem);
@@ -705,7 +705,7 @@ void HWComponentItem::positionAdHocPortTerminals()
     {
         if (adhocPort->isAdHocVisible() && !instancePositions.contains(adhocPort->name()))
         {
-            AdHocPortItem* adhocItem (new AdHocPortItem(adhocPort, this));
+            ActivePortItem* adhocItem (new ActivePortItem(adhocPort, this));
 
             addPortToSideWithLessPorts(adhocItem);
         }
@@ -723,10 +723,10 @@ AdHocItem* HWComponentItem::createAdhocItem(QString const& portName)
         adhocPort = QSharedPointer<Port>(new Port(portName));
     }
 
-    AdHocPortItem* portItem = getAdHocPort(portName);
+    ActivePortItem* portItem = getAdHocPort(portName);
     if (!portItem)
     {
-        portItem = new AdHocPortItem(adhocPort, this);
+        portItem = new ActivePortItem(adhocPort, this);
         addPortToSideWithLessPorts(portItem);
 
         updateSize();
@@ -740,7 +740,7 @@ AdHocItem* HWComponentItem::createAdhocItem(QString const& portName)
 //-----------------------------------------------------------------------------
 void HWComponentItem::showAdhocPort(AdHocItem* portItem)
 {
-    AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(portItem);
+    ActivePortItem* adhocPortItem = dynamic_cast<ActivePortItem*>(portItem);
     if (adhocPortItem)
     {
         getComponentInstance()->updateAdHocPortPosition(adhocPortItem->name(), adhocPortItem->pos());
@@ -756,7 +756,7 @@ void HWComponentItem::showAdhocPort(AdHocItem* portItem)
 //-----------------------------------------------------------------------------
 void HWComponentItem::hideAdhocPort(AdHocItem* portItem)
 {
-    AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(portItem);
+    ActivePortItem* adhocPortItem = dynamic_cast<ActivePortItem*>(portItem);
     if (adhocPortItem)
     {
         removePort(adhocPortItem);

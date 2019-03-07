@@ -14,7 +14,7 @@
 
 #include <common/graphicsItems/GraphicsColumnAddCommand.h>
 
-#include <editors/HWDesign/AdHocInterfaceItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
 
 class Kactus2Group;
 class Kactus2Placeholder;
@@ -62,7 +62,7 @@ private:
      *
      *      @return The mandatory port items that have not been inserted into any columns.
      */
-    QVector<AdHocInterfaceItem*> getMissingAdHocPortItems() const;
+    QVector<HierarchicalPortItem*> getMissingAdHocPortItems() const;
 
     /*!
      *  Get the mandatory ports that have not been inserted into any columns.
@@ -104,7 +104,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The missing mandatory ad hoc port items.
-    QVector<AdHocInterfaceItem*> missingAdHocPortItems_;
+    QVector<HierarchicalPortItem*> missingAdHocPortItems_;
 };
 
 //-----------------------------------------------------------------------------

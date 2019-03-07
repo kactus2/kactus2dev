@@ -14,7 +14,7 @@
 #include <common/graphicsItems/GraphicsColumnConstants.h>
 
 #include <editors/common/DesignDiagram.h>
-#include <editors/HWDesign/BusPortItem.h>
+#include <editors/HWDesign/ActiveBusInterfaceItem.h>
 #include <editors/HWDesign/HWComponentItem.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -23,8 +23,8 @@
 //-----------------------------------------------------------------------------
 // Function: PortPasteCommand::PortPasteCommand()
 //-----------------------------------------------------------------------------
-PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, BusPortItem* port, DesignDiagram* diagram,
-    QUndoCommand* parent):
+PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, ActiveBusInterfaceItem* port,
+    DesignDiagram* diagram, QUndoCommand* parent):
 QUndoCommand(parent),
 component_(destComponent),
 port_(port),

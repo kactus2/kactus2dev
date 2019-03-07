@@ -923,6 +923,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\resetTypes">
       <UniqueIdentifier>{0f12853c-c767-42a8-b933-8619ad2c25e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\common\ComponentItemAutoConnector">
+      <UniqueIdentifier>{b19bcb03-5261-4a26-bc2b-0a5a52a78cc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\ComponentItemAutoConnector">
+      <UniqueIdentifier>{8029a13a-32fe-4c57-8ddb-679bc640eb95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4015,25 +4021,13 @@
     <ClCompile Include="GeneratedFiles\moc_AdHocConnectionItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocInterfaceItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AdHocItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceEndPoint.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_HWChangeCommands.cpp">
@@ -4081,25 +4075,13 @@
     <ClCompile Include="editors\HWDesign\AdHocEnabled.cpp">
       <Filter>Source Files\editors\HWDesign</Filter>
     </ClCompile>
-    <ClCompile Include="editors\HWDesign\AdHocInterfaceItem.cpp">
-      <Filter>Source Files\editors\HWDesign</Filter>
-    </ClCompile>
     <ClCompile Include="editors\HWDesign\AdHocItem.cpp">
-      <Filter>Source Files\editors\HWDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\AdHocPortItem.cpp">
       <Filter>Source Files\editors\HWDesign</Filter>
     </ClCompile>
     <ClCompile Include="editors\HWDesign\BusInterfaceDialog.cpp">
       <Filter>Source Files\editors\HWDesign</Filter>
     </ClCompile>
     <ClCompile Include="editors\HWDesign\BusInterfaceEndPoint.cpp">
-      <Filter>Source Files\editors\HWDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\BusInterfaceItem.cpp">
-      <Filter>Source Files\editors\HWDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\BusPortItem.cpp">
       <Filter>Source Files\editors\HWDesign</Filter>
     </ClCompile>
     <ClCompile Include="editors\HWDesign\HWAddCommands.cpp">
@@ -4581,6 +4563,105 @@
     </ClCompile>
     <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionsDelegate.cpp">
       <Filter>Source Files\editors\VendorExtensionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\ComponentItemAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentItemAutoConnector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AutoConnectorConnectionTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionTable.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorItem.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AutoConnector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\PortListFiller.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionDelegate.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AutoConnectorConnectionDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\PortTableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\TableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\BusInterfaceListFiller.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\BusInterfaceTableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HierarchicalBusInterfaceItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HierarchicalBusInterfaceItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\BusInterfaceUtilities.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ActiveBusInterfaceItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\ActiveBusInterfaceItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HierarchicalPortItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\HierarchicalPortItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\ActivePortItem.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ActivePortItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AutoConnectorListFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorListFilter.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\PortItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\TableItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\BusInterfaceItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\PortUtilities.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalPortTableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalPortItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceItemMatcher.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceTableAutoConnector.cpp">
+      <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6045,25 +6126,13 @@
     <CustomBuild Include="editors\HWDesign\AdHocConnectionItem.h">
       <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\HWDesign\AdHocInterfaceItem.h">
-      <Filter>Header Files\editors\HWDesign</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\HWDesign\AdHocItem.h">
-      <Filter>Header Files\editors\HWDesign</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\HWDesign\AdHocPortItem.h">
       <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\HWDesign\BusInterfaceDialog.h">
       <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\HWDesign\BusInterfaceEndPoint.h">
-      <Filter>Header Files\editors\HWDesign</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\HWDesign\BusInterfaceItem.h">
-      <Filter>Header Files\editors\HWDesign</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\HWDesign\BusPortItem.h">
       <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\HWDesign\HWChangeCommands.h">
@@ -6266,6 +6335,39 @@
     </CustomBuild>
     <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsDelegate.h">
       <Filter>Header Files\editors\VendorExtensionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\ComponentItemAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionTable.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnectorItem.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionDelegate.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\HWDesign\HierarchicalBusInterfaceItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\HWDesign\ActiveBusInterfaceItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\HWDesign\HierarchicalPortItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\HWDesign\ActivePortItem.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\AutoConnectorListFilter.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\ComponentItemAutoConnector\PortListFiller.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6985,6 +7087,48 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\ResetColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\ListFiller.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\PortTableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\TableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\BusInterfaceListFiller.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\BusInterfaceTableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\BusInterfaceUtilities.h">
+      <Filter>Header Files\editors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\TableItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\PortItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\BusInterfaceItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\PortUtilities.h">
+      <Filter>Header Files\editors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalPortTableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalPortItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceItemMatcher.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceTableAutoConnector.h">
+      <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

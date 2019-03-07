@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusInterfaceItem.h
+// File: HierarchicalBusInterfaceItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Diagram interface graphics item.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSINTERFACEITEM_H
-#define BUSINTERFACEITEM_H
+#ifndef HIERARCHICALBUSINTERFACEITEM_H
+#define HIERARCHICALBUSINTERFACEITEM_H
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
@@ -33,7 +33,7 @@ class DesignDiagram;
 //-----------------------------------------------------------------------------
 //! BusInterfaceItem class.
 //-----------------------------------------------------------------------------
-class BusInterfaceItem : public BusInterfaceEndPoint
+class HierarchicalBusInterfaceItem : public BusInterfaceEndPoint
 {
     Q_OBJECT
 
@@ -46,15 +46,16 @@ public:
      *      @param [in] component   The component containing the bus interface this item represents.
      *      @param [in] busIf       The bus interface this item represents.
      *      @param [in] dataGroup   The container for the item data.
+     *      @param [in] library     Access to the library.
      *      @param [in] parent      The parent object.
      */
-    BusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
-        QSharedPointer<InterfaceGraphicsData> dataGroup, QGraphicsItem *parent = 0);
+    HierarchicalBusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
+        QSharedPointer<InterfaceGraphicsData> dataGroup, LibraryInterface* library, QGraphicsItem *parent = 0);
 
 	/*!
      *  The destructor.
      */
-	virtual ~BusInterfaceItem();
+	virtual ~HierarchicalBusInterfaceItem();
 
     /*!
      *  Get the graphics item type of this item.
@@ -170,4 +171,4 @@ private:
     HWColumn* oldColumn_;
 };
 
-#endif // BUSINTERFACEITEM_H
+#endif // HIERARCHICALBUSINTERFACEITEM_H

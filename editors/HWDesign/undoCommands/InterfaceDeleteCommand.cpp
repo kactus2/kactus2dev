@@ -15,7 +15,7 @@
 #include "ConnectionDeleteCommand.h"
 #include "PhysicalPortDeleteCommand.h"
 
-#include <editors/HWDesign/BusInterfaceItem.h>
+#include <editors/HWDesign/HierarchicalBusInterfaceItem.h>
 #include <editors/HWDesign/HWComponentItem.h>
 #include <editors/HWDesign/HWConnection.h>
 #include <editors/HWDesign/HWConnectionEndpoint.h>
@@ -34,8 +34,8 @@
 //-----------------------------------------------------------------------------
 // Function: InterfaceDeleteCommand::InterfaceDeleteCommand()
 //-----------------------------------------------------------------------------
-InterfaceDeleteCommand::InterfaceDeleteCommand(DesignDiagram* diagram, BusInterfaceItem* interface,
-                                               bool removePorts, QUndoCommand* parent):
+InterfaceDeleteCommand::InterfaceDeleteCommand(DesignDiagram* diagram, HierarchicalBusInterfaceItem* interface,
+    bool removePorts, QUndoCommand* parent):
 QUndoCommand(parent),
 interface_(interface),
 busIf_(interface_->getBusInterface()),

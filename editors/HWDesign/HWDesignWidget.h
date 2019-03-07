@@ -26,7 +26,7 @@ class LibraryInterface;
 class VLNV;
 class Component;
 class HWComponentItem;
-class BusPortItem;
+class ActiveBusInterfaceItem;
 class DesignConfiguration;
 class ExpressionParser;
 class MultipleParameterFinder;

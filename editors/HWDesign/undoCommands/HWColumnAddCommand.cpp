@@ -15,7 +15,7 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
 #include <editors/common/DesignDiagram.h>
-#include <editors/HWDesign/AdHocInterfaceItem.h>
+#include <editors/HWDesign/HierarchicalPortItem.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
@@ -34,9 +34,9 @@ missingAdHocPortItems_(getMissingAdHocPortItems())
 //-----------------------------------------------------------------------------
 // Function: HWColumnAddCommand::getMissingAdHocPortItems()
 //-----------------------------------------------------------------------------
-QVector<AdHocInterfaceItem*> HWColumnAddCommand::getMissingAdHocPortItems() const
+QVector<HierarchicalPortItem*> HWColumnAddCommand::getMissingAdHocPortItems() const
 {
-    QVector<AdHocInterfaceItem*> missingAdHocInterfaces;
+    QVector<HierarchicalPortItem*> missingAdHocInterfaces;
 
     QVector<QSharedPointer<Port> > missingPorts = getMissingAdHocPorts();
 
@@ -54,8 +54,8 @@ QVector<AdHocInterfaceItem*> HWColumnAddCommand::getMissingAdHocPortItems() cons
         {
             QSharedPointer<Kactus2Placeholder> newAdHocPosition = getAdHocPositionExtension(adhocGroup, port);
 
-            AdHocInterfaceItem* newAdHocItem =
-                new AdHocInterfaceItem(getDiagram()->getEditedComponent(), port, newAdHocPosition);
+            HierarchicalPortItem* newAdHocItem =
+                new HierarchicalPortItem(getDiagram()->getEditedComponent(), port, newAdHocPosition);
 
             missingAdHocInterfaces.append(newAdHocItem);
         }
@@ -126,7 +126,7 @@ HWColumnAddCommand::~HWColumnAddCommand()
     {
         while (!missingAdHocPortItems_.isEmpty())
         {
-            AdHocInterfaceItem* firstAdHoc = missingAdHocPortItems_.takeFirst();
+            HierarchicalPortItem* firstAdHoc = missingAdHocPortItems_.takeFirst();
             delete firstAdHoc;
         }
     }
@@ -154,7 +154,7 @@ void HWColumnAddCommand::removeMissingPortsFromDesign()
     QSharedPointer<VendorExtension> adhocExtension = getDiagram()->getDesign()->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
     
-    foreach (AdHocInterfaceItem* adHocItem, missingAdHocPortItems_)
+    foreach (HierarchicalPortItem* adHocItem, missingAdHocPortItems_)
     {
         getColumn()->removeItem(adHocItem);
 
@@ -201,7 +201,7 @@ void HWColumnAddCommand::addMissingPortsToNewColumn()
         getDiagram()->getDesign()->getVendorExtensions()->append(adhocGroup);
     }
 
-    foreach (AdHocInterfaceItem* adhocItem, missingAdHocPortItems_)
+    foreach (HierarchicalPortItem* adhocItem, missingAdHocPortItems_)
     {
         getColumn()->addItem(adhocItem);
 

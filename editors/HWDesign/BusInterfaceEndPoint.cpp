@@ -32,10 +32,11 @@
 // Function: BusInterfaceEndPoint::BusInterfaceEndPoint()
 //-----------------------------------------------------------------------------
 BusInterfaceEndPoint::BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
-    QGraphicsItem *parent, QVector2D const& dir):
+    LibraryInterface* library, QGraphicsItem *parent, QVector2D const& dir):
 HWConnectionEndpoint(busIf->name(), component, parent, dir),
 busInterface_(busIf),
-oldPos_()
+oldPos_(),
+library_(library)
 {
 
 }
@@ -403,4 +404,12 @@ QPolygonF BusInterfaceEndPoint::getDirectionInOutShape() const
         << QPointF(0, squareSize);
 
     return shape;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getLibraryAccess()
+//-----------------------------------------------------------------------------
+LibraryInterface* BusInterfaceEndPoint::getLibraryAccess() const
+{
+    return library_;
 }
