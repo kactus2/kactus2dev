@@ -99,6 +99,11 @@ private:
     //! Sets the widget layout.
     void setupLayout();
 
+    /*!
+     *  Change the extendable item in the vendor extensions editor to edited component.
+     */
+    void changeExtensionsEditorItem();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

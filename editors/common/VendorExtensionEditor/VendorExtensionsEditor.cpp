@@ -31,12 +31,12 @@ VendorExtensionsEditor::VendorExtensionsEditor(QWidget *parent) :
     QWidget(parent),
     extensionsView_(new EditableTableView(this)),
     extensionsModel_(new VendorExtensionsModel(this)),
-    summaryLable_(new QLabel())
+    summaryLabel_(new QLabel())
 {
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(summaryLable_, 0, Qt::AlignCenter);
+    layout->addWidget(summaryLabel_, 0, Qt::AlignCenter);
     layout->addWidget(extensionsView_);
 
     extensionsView_->setItemDelegate(new VendorExtensionsDelegate(this));
@@ -91,8 +91,8 @@ void VendorExtensionsEditor::changeVendorExtensions(QString const& containingID,
 {
     parentWidget()->raise();
 
-    summaryLable_->setText(containingID);
-    summaryLable_->setAlignment(Qt::AlignCenter);
+    summaryLabel_->setText(containingID);
+    summaryLabel_->setAlignment(Qt::AlignCenter);
 
     extensionsModel_->setVendorExtensions(extensionItem->getVendorExtensions());
 

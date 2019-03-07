@@ -120,6 +120,8 @@ void GeneralEditor::refresh()
 	QString comment = component()->getTopComments().join("\n");
 	headerEditor_->setPlainText(comment);
 	connect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
+
+    changeExtensionsEditorItem();
 }
 
 //-----------------------------------------------------------------------------
@@ -226,4 +228,15 @@ void GeneralEditor::setupLayout()
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(splitter);
     topLayout->setContentsMargins(4, 0, 0, 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: generaleditor::changeExtensionsEditorItem()
+//-----------------------------------------------------------------------------
+void GeneralEditor::changeExtensionsEditorItem()
+{
+    QSharedPointer<Component> editedComponent = component();
+
+    QString extensionID = QLatin1String("Component: ") + editedComponent->getVlnv().toString();
+    emit changeVendorExtensions(extensionID, editedComponent);
 }

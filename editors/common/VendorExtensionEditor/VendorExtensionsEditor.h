@@ -93,7 +93,7 @@ private:
     VendorExtensionsModel* extensionsModel_;
 
     //! Holds the ID for the editor.
-    QLabel* summaryLable_;
+    QLabel* summaryLabel_;
 };
 
 #endif // VENDOREXTENSIONSEDITOR_H

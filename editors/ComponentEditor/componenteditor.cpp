@@ -544,8 +544,13 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 {
     ComponentEditorRootItem* root = new ComponentEditorRootItem(libHandler_, component, &navigationModel_);
 
-    root->addChildItem(QSharedPointer<ComponentEditorGeneralItem>(
-        new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, root)));
+    QSharedPointer<ComponentEditorGeneralItem> generalItem(
+        new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, root));
+
+    connect(generalItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
+
+    root->addChildItem(generalItem);
 
     GeneralEditor* genEditor = static_cast<GeneralEditor*>(root->child(0)->editor());
 
