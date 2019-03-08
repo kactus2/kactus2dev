@@ -18,6 +18,7 @@
 #include <QSharedPointer>
 
 class VendorExtension;
+class GenericVendorExtension;
 
 //-----------------------------------------------------------------------------
 //! Model class to manage the vendor extension values being edited.
@@ -179,6 +180,15 @@ private:
     *     @return True, if the index content is editable, otherwise false.
     */
     bool indexIsEditable(QModelIndex const& index) const;
+
+    /*!
+     *  Get the value for item in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return Value of the selected index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.

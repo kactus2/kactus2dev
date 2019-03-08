@@ -29,6 +29,9 @@ class IPXACTMODELS_EXPORT GenericVendorExtension : public VendorExtension
 
 public:
 
+    /*!
+     *  Default constructor.
+     */
     GenericVendorExtension() = default;
 
     /*!
@@ -38,7 +41,15 @@ public:
 	 */
 	GenericVendorExtension(QDomNode const& extensionNode);
 
+    /*!
+     *  Copy constructor.
+     */
     GenericVendorExtension(GenericVendorExtension const& other) = default;
+
+    /*!
+     *  Assignment operator.
+     */
+    GenericVendorExtension& operator=(GenericVendorExtension const& rhs);
 
     /*!
      *  Clones the vendor extension.
@@ -78,11 +89,21 @@ public:
 
     void setAttributeValue(QString const& attributeName, QString const& attributeValue);
 
+    /*!
+     *  Get extension description.
+     *
+     *      @return Extension description.
+     */
+    QString getDescription() const;
+
+    /*!
+     *  Set a new description for the extension.
+     *
+     *      @param [in] newDescription  The new description.
+     */
+    void setDescription(QString const& newDescription);
+
 private:
-	// Disable copying.
-    
-    //! Disable assign.
-    GenericVendorExtension& operator=(GenericVendorExtension const& rhs);
 
     /*!
      *  Writes a DOM node to XML using a given XML writer.
@@ -112,16 +133,17 @@ private:
 	// Data.
 	//-----------------------------------------------------------------------------
 
+    //! Name of the extension.
     QString name_;
 
+    //! Value of the extension.
     QString value_;
 
-    QList<QPair<QString, QString> > attributes_;
+    //! List of attribute values.
+    QVector<QPair<QString, QString> > attributes_;
 
-    QList<GenericVendorExtension> children_;
-
-
-
+    //! List of child extensions.
+    QVector<GenericVendorExtension> children_;
 };
 #endif // GENERICVENDOREXTENSION_H
 

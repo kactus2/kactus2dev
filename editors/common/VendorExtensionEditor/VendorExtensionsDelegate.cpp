@@ -40,7 +40,8 @@ QWidget* VendorExtensionsDelegate::createEditor(QWidget* parent, QStyleOptionVie
 {
     if (index.column() == VendorExtensionColumns::NAME ||
         index.column() == VendorExtensionColumns::TYPE ||
-        index.column() == VendorExtensionColumns::VALUE)
+        index.column() == VendorExtensionColumns::VALUE ||
+        index.column() == VendorExtensionColumns::DESCRIPTION)
     {
         QLineEdit* lineEdit = new QLineEdit(parent);
         return lineEdit;
@@ -58,7 +59,8 @@ void VendorExtensionsDelegate::setEditorData(QWidget* editor, QModelIndex const&
 {
     if (index.column() == VendorExtensionColumns::NAME ||
         index.column() == VendorExtensionColumns::TYPE ||
-        index.column() == VendorExtensionColumns::VALUE)
+        index.column() == VendorExtensionColumns::VALUE ||
+        index.column() == VendorExtensionColumns::DESCRIPTION)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
@@ -80,7 +82,8 @@ void VendorExtensionsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
 {
     if (index.column() == VendorExtensionColumns::NAME ||
         index.column() == VendorExtensionColumns::TYPE ||
-        index.column() == VendorExtensionColumns::VALUE)
+        index.column() == VendorExtensionColumns::VALUE ||
+        index.column() == VendorExtensionColumns::DESCRIPTION)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);

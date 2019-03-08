@@ -93,39 +93,53 @@ QVariant VendorExtensionsModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
     {
-        QSharedPointer<VendorExtension> extension = vendorExtensions_->at(index.row());
-        QSharedPointer<GenericVendorExtension> genericExtension = extension.dynamicCast<GenericVendorExtension>();
-
-        if (index.column() == VendorExtensionColumns::NAME)
-        {
-            if (genericExtension.isNull())
-            {
-                return extension->type();
-            }
-            else
-            {
-                return genericExtension->name();
-            }
-        }
-        else if (index.column() == VendorExtensionColumns::TYPE)
-        {
-            if (genericExtension.isNull() == false)
-            {                           
-                return genericExtension->attributeValue(QStringLiteral("type"));
-            }
-        }
-        else if (index.column() == VendorExtensionColumns::VALUE)
-        {
-            if (genericExtension.isNull())
-            {
-                return QStringLiteral("N/A");
-            }
-            else
-            {
-                return genericExtension->value();
-            }
-        }
+        return valueForIndex(index);
 	}
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VendorExtensionsModel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant VendorExtensionsModel::valueForIndex(QModelIndex const& index) const
+{
+    QSharedPointer<VendorExtension> extension = vendorExtensions_->at(index.row());
+    QSharedPointer<GenericVendorExtension> genericExtension = extension.dynamicCast<GenericVendorExtension>();
+
+    if (index.column() == VendorExtensionColumns::NAME)
+    {
+        if (genericExtension.isNull())
+        {
+            return extension->type();
+        }
+        else
+        {
+            return genericExtension->name();
+        }
+    }
+    else if (index.column() == VendorExtensionColumns::TYPE)
+    {
+        if (genericExtension.isNull() == false)
+        {
+            return genericExtension->attributeValue(QStringLiteral("type"));
+        }
+    }
+    else if (index.column() == VendorExtensionColumns::VALUE)
+    {
+        if (genericExtension.isNull())
+        {
+            return QStringLiteral("N/A");
+        }
+        else
+        {
+            return genericExtension->value();
+        }
+    }
+    else if (index.column() == VendorExtensionColumns::DESCRIPTION && !genericExtension.isNull())
+    {
+        return genericExtension->getDescription();
+    }
 
     return QVariant();
 }
@@ -148,7 +162,11 @@ QVariant VendorExtensionsModel::headerData(int section, Qt::Orientation orientat
         else if (section == VendorExtensionColumns::VALUE)
         {            
             return tr("Value");
-        }        
+        }
+        else if (section == VendorExtensionColumns::DESCRIPTION)
+        {
+            return tr("Description");
+        }
     }
 
     return QVariant();
@@ -180,6 +198,10 @@ bool VendorExtensionsModel::setData(QModelIndex const& index, QVariant const& va
         else if (index.column() == VendorExtensionColumns::VALUE)
         {
             genericExtension->setValue(value.toString());
+        }
+        else if (index.column() == VendorExtensionColumns::DESCRIPTION)
+        {
+            genericExtension->setDescription(value.toString());
         }
         else
         {
