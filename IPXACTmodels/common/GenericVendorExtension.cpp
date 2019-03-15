@@ -14,7 +14,7 @@
 #include <QDomNode>
 #include <QObject>
 
-const QString DESCRIPTION = "Description";
+const QString DESCRIPTION = QStringLiteral("Description");
 
 //-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::GenericVendorExtension()
@@ -34,13 +34,15 @@ GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode):
     }
 
     QDomNodeList childNodes = extensionNode.childNodes();
-    value_ = extensionNode.firstChild().nodeValue();
-
     const int childCount = childNodes.count();
-    for (int i = 1; i < childCount; ++i)
+    for (int i = 0; i < childCount; ++i)
     {
         QDomNode childNode = childNodes.at(i);
-        children_.append(GenericVendorExtension(childNode));
+        if(childNode.isText()){
+          value_.append(childNode.nodeValue());
+        } else{
+          children_.append(GenericVendorExtension(childNode));
+        }
     }
 }
 
@@ -81,7 +83,7 @@ QString GenericVendorExtension::type() const
 //-----------------------------------------------------------------------------
 void GenericVendorExtension::write(QXmlStreamWriter& writer) const
 {
-    writeNode(*this, writer);    
+    writeNode(*this, writer);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +123,7 @@ void GenericVendorExtension::setValue(QString const& value)
 //-----------------------------------------------------------------------------
 QString GenericVendorExtension::attributeValue(QString const& attributeName) const
 {
-    auto target = std::find_if(attributes_.cbegin(), attributes_.cend(), 
+    auto target = std::find_if(attributes_.cbegin(), attributes_.cend(),
         [attributeName](QPair<QString, QString> const& attribute) {return attribute.first == attributeName;});
 
     if (target == attributes_.cend())
@@ -163,7 +165,7 @@ QString GenericVendorExtension::getDescription() const
         }
     }
 
-    return "";
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -220,7 +222,7 @@ void GenericVendorExtension::writeNode(GenericVendorExtension const& node, QXmlS
 void GenericVendorExtension::writeAttributes(GenericVendorExtension const& node, QXmlStreamWriter& writer) const
 {
     for (auto attribute : node.attributes_)
-    {      
+    {
         writer.writeAttribute(attribute.first, attribute.second);
     }
 }
@@ -232,6 +234,6 @@ void GenericVendorExtension::writeChildNodes(GenericVendorExtension const& node,
 {
     for (auto child : node.children_)
     {
-        writeNode(child, writer);                
+        writeNode(child, writer);
     }
 }
