@@ -674,6 +674,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/ComponentItemAutoConnector/BusInterfaceItemMatcher.h \
     ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.h \
     ./editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceItemMatcher.h \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceTableAutoConnector.h \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalPortItemMatcher.h \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalPortTableAutoConnector.h \
     ./editors/common/ComponentItemAutoConnector/ListFiller.h \
     ./editors/common/ComponentItemAutoConnector/PortItemMatcher.h \
     ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h \
@@ -804,14 +808,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionsDelegate.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsFilter.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/common/ComponentItemAutoConnector/HierarchicalPortTableAutoConnector.h \
-    ./editors/common/ComponentItemAutoConnector/HierarchicalPortItemMatcher.h \
-    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceItemMatcher.h \
-    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceTableAutoConnector.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1390,6 +1391,10 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.cpp \
     ./editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceItemMatcher.cpp \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceTableAutoConnector.cpp \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalPortItemMatcher.cpp \
+    ./editors/common/ComponentItemAutoConnector/HierarchicalPortTableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/PortItemMatcher.cpp \
     ./editors/common/ComponentItemAutoConnector/PortListFiller.cpp \
     ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.cpp \
@@ -1509,12 +1514,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsDelegate.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.cpp \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsFilter.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/common/ComponentItemAutoConnector/HierarchicalPortTableAutoConnector.cpp \
-    ./editors/common/ComponentItemAutoConnector/HierarchicalPortItemMatcher.cpp \
-    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceItemMatcher.cpp \
-    ./editors/common/ComponentItemAutoConnector/HierarchicalBusInterfaceTableAutoConnector.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
 RESOURCES += kactus.qrc

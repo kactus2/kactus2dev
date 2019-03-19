@@ -189,6 +189,13 @@ public slots:
      */
     void onPasteRows(QModelIndex index);
 
+    /*!
+     *  Remove all memory remaps from the selected memory map.
+     *
+     *      @param [in] itemIndex   Index of the selected memory map.
+     */
+    void onRemoveAllChildItemsFrom(QModelIndex const& itemIndex);
+
 signals:
 
 	//! Emitted when the contents of the model change.

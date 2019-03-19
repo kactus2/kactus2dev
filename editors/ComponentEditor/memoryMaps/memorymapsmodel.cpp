@@ -986,3 +986,28 @@ QStringList MemoryMapsModel::mimeTypes() const
 
     return types;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsModel::onRemoveAllChildItemsFrom()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::onRemoveAllChildItemsFrom(QModelIndex const& itemIndex)
+{
+    if (!itemIndex.parent().isValid() && isIndexValid(itemIndex))
+    {
+        QSharedPointer<MemoryMap> selectedMap = rootMemoryMaps_->at(itemIndex.row());
+
+        for (int i = selectedMap->getMemoryRemaps()->size() - 1; i >= 0; --i)
+        {
+            QSharedPointer<MemoryRemap> removedMemoryRemap = selectedMap->getMemoryRemaps()->at(i);
+            decreaseReferencesWithRemovedMemoryRemap(removedMemoryRemap);
+
+            emit memoryRemapRemoved(i, selectedMap);
+        }
+
+        beginRemoveRows(itemIndex, 0, selectedMap->getMemoryRemaps()->size());
+        selectedMap->getMemoryRemaps()->clear();
+        endRemoveRows();
+
+        emit contentChanged();
+    }
+}

@@ -17,7 +17,7 @@
 #include <QWidget>
 #include <QLabel>
 
-class EditableTableView;
+class EditableTreeView;
 class VendorExtensionsModel;
 class VendorExtension;
 class TabDocument;
@@ -87,7 +87,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The view for the vendor extensions table.
-    EditableTableView* extensionsView_;
+    EditableTreeView* extensionsView_;
 
     //! The model for the vendor extensions.
     VendorExtensionsModel* extensionsModel_;

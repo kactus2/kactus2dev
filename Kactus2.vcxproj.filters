@@ -4663,6 +4663,12 @@
     <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceTableAutoConnector.cpp">
       <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VendorExtensionsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionsFilter.cpp">
+      <Filter>Source Files\editors\VendorExtensionEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6368,6 +6374,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\common\ComponentItemAutoConnector\PortListFiller.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsFilter.h">
+      <Filter>Header Files\editors\VendorExtensionEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

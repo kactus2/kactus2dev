@@ -44,7 +44,7 @@ public:
 	 *
 	 *      @param [in] allow   If true, then import/export is enabled.
 	 */
-	virtual void setAllowImportExport(bool allow);
+	void setAllowImportExport(bool allow);
 
 public slots:
 
@@ -67,7 +67,7 @@ public slots:
 	 *
 	 *      @param [in] path    The path to tuse ad default.
 	 */
-	virtual void setDefaultImportExportPath(const QString& path);
+	void setDefaultImportExportPath(const QString& path);
 
 signals:
 
@@ -92,26 +92,26 @@ protected:
 	 *
 	 *      @param [in] event   The key event.
 	 */
-	virtual void keyPressEvent(QKeyEvent* event);
+	virtual void keyPressEvent(QKeyEvent* event) override final;
 
 	/*!
 	 *  Creates a context menu for adding/removing/editing items in the editor.
 	 *
 	 *      @param [in] event   The context menu event.
 	 */
-	virtual void contextMenuEvent(QContextMenuEvent* event);
+	virtual void contextMenuEvent(QContextMenuEvent* event) override final;
 
 private slots:
 
 	/*!
 	 *  Copies the text contained in the item.
 	 */
-	virtual void onCopyAction();
+	void onCopyAction();
 
 	/*!
 	 *  Pastes the text from clipboard to the item.
 	 */
-	virtual void onPasteAction();
+	void onPasteAction();
 
     /*!
      *  Handler for element copy action.

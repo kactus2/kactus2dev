@@ -120,6 +120,11 @@ void MemoryMapsEditor::connectSignals()
     connect(proxy_, SIGNAL(removeItem(QModelIndex const&)),
         model_, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
 
+    connect(view_, SIGNAL(removeAllSubItems(QModelIndexList const&)),
+        proxy_, SLOT(onRemoveAllSubItemsFromIndexes(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(proxy_, SIGNAL(removeAllSubItemsFromIndex(QModelIndex const&)),
+        model_, SLOT(onRemoveAllChildItemsFrom(QModelIndex const&)), Qt::UniqueConnection);
+
     connect(view_, SIGNAL(doubleClicked(const QModelIndex&)),
         this, SLOT(onDoubleClick(const QModelIndex&)), Qt::UniqueConnection);
 

@@ -43,7 +43,7 @@ void EditableTreeSortFilter::onAddItem(QModelIndexList const& indexes)
         posToAdd = mapToSource(indexes.first());
 
         int previousRow = indexes.first().row();
-        foreach (QModelIndex index, sortedIndexes)
+        for(QModelIndex const& index : sortedIndexes)
         {
             if (index.row() != previousRow)
             {
@@ -65,7 +65,7 @@ void EditableTreeSortFilter::onAddItem(QModelIndexList const& indexes)
 //-----------------------------------------------------------------------------
 void EditableTreeSortFilter::onAddSubItem(QModelIndexList const& parentIndexes)
 {
-    foreach (QModelIndex index, parentIndexes)
+    for(QModelIndex const& index : parentIndexes)
     {
         QModelIndex sourceParentIndex = mapToSource(index);
         emit addSubItem(sourceParentIndex);
@@ -87,7 +87,7 @@ void EditableTreeSortFilter::onRemoveSelectedRows(QModelIndexList const& indexes
 
     int previousRow = sortedIndexList.first().row();
     int rowCount = 1;
-    foreach (QModelIndex index, sortedIndexList)
+    for(QModelIndex const& index : sortedIndexList)
     {
         if (previousRow != index.row())
         {
@@ -112,12 +112,9 @@ void EditableTreeSortFilter::onRemoveAllSubItemsFromIndexes(QModelIndexList cons
 {
     if (!parentIndexes.isEmpty())
     {
-        foreach (QModelIndex index, parentIndexes)
+        for(QModelIndex const& index : parentIndexes)
         {
-            if (!index.parent().isValid())
-            {
-                emit removeAllSubItemsFromIndex(mapToSource(index));
-            }
+            emit removeAllSubItemsFromIndex(mapToSource(index));
         }
     }
 }

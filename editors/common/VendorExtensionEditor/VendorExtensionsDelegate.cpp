@@ -14,6 +14,7 @@
 #include <editors/common/VendorExtensionEditor/VendorExtensionColumns.h>
 
 #include <QLineEdit>
+#include <QPainter>
 
 //-----------------------------------------------------------------------------
 // Function: VendorExtensionsDelegate::VendorExtensionsDelegate()
@@ -38,9 +39,8 @@ VendorExtensionsDelegate::~VendorExtensionsDelegate()
 QWidget* VendorExtensionsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-    if (index.column() == VendorExtensionColumns::NAME ||
-        index.column() == VendorExtensionColumns::TYPE ||
-        index.column() == VendorExtensionColumns::VALUE ||
+    if (index.column() == VendorExtensionColumns::NAMESPACE || index.column() == VendorExtensionColumns::NAME ||
+        index.column() == VendorExtensionColumns::TYPE || index.column() == VendorExtensionColumns::VALUE ||
         index.column() == VendorExtensionColumns::DESCRIPTION)
     {
         QLineEdit* lineEdit = new QLineEdit(parent);
@@ -57,9 +57,8 @@ QWidget* VendorExtensionsDelegate::createEditor(QWidget* parent, QStyleOptionVie
 //-----------------------------------------------------------------------------
 void VendorExtensionsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == VendorExtensionColumns::NAME ||
-        index.column() == VendorExtensionColumns::TYPE ||
-        index.column() == VendorExtensionColumns::VALUE ||
+    if (index.column() == VendorExtensionColumns::NAMESPACE || index.column() == VendorExtensionColumns::NAME ||
+        index.column() == VendorExtensionColumns::TYPE || index.column() == VendorExtensionColumns::VALUE ||
         index.column() == VendorExtensionColumns::DESCRIPTION)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
@@ -80,9 +79,8 @@ void VendorExtensionsDelegate::setEditorData(QWidget* editor, QModelIndex const&
 void VendorExtensionsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index)
     const
 {
-    if (index.column() == VendorExtensionColumns::NAME ||
-        index.column() == VendorExtensionColumns::TYPE ||
-        index.column() == VendorExtensionColumns::VALUE ||
+    if (index.column() == VendorExtensionColumns::NAMESPACE || index.column() == VendorExtensionColumns::NAME ||
+        index.column() == VendorExtensionColumns::TYPE || index.column() == VendorExtensionColumns::VALUE ||
         index.column() == VendorExtensionColumns::DESCRIPTION)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
@@ -95,4 +93,25 @@ void VendorExtensionsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
     {
         QStyledItemDelegate::setModelData(editor, model, index);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsdelegate::paint()
+//-----------------------------------------------------------------------------
+void VendorExtensionsDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+    const QModelIndex &index) const
+{
+    QStyledItemDelegate::paint(painter, option, index);
+
+    QPen oldPen = painter->pen();
+    QPen newPen(Qt::lightGray);
+    newPen.setWidth(1);
+    painter->setPen(newPen);
+
+    if (index.column() != VendorExtensionColumns::DESCRIPTION)
+    {
+        painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
+    }
+
+    painter->setPen(oldPen);
 }

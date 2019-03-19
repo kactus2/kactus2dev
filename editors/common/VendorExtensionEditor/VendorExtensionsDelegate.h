@@ -65,6 +65,15 @@ public:
      */
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
+    /*!
+     *  Paint the vendor extension rows.
+     *
+     *      @param [in] painter     The used painter.
+     *      @param [in] option      Available style options.
+     *      @param [in] index       The current index.
+     */
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
 private:
 	
 	//! No copying. No assignment.

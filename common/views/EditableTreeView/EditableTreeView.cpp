@@ -16,6 +16,7 @@
 #include <QApplication>
 #include <QPainter>
 #include <QHeaderView>
+#include <QMenu>
 
 //-----------------------------------------------------------------------------
 // Function: EditableTreeView::EditableTreeView()
@@ -28,10 +29,25 @@ addItemAction_(new QAction(addItemText, this)),
 addSubItemAction_(new QAction(addSubItemText, this)),
 removeAction_(new QAction(removeItemText, this)),
 removeAllSubItemsAction_(new QAction(removeSubItemsText, this)),
-clearAction_(new QAction(tr("Clear"), this))
+clearAction_(new QAction(tr("Clear"), this)),
+expandAllItemsAction_(new QAction(tr("Expand all"), this)),
+collapseAllItemsAction_(new QAction(tr("Collapse all"), this))
 {
     header()->setDefaultAlignment(Qt::AlignCenter);
 
+    setIndentation(10);
+    setSortingEnabled(true);
+    setSelectionBehavior(QAbstractItemView::SelectItems);
+
+    setupActions(addItemText, addSubItemText, removeItemText, removeSubItemsText);
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTreeView::setupActions()
+//-----------------------------------------------------------------------------
+void EditableTreeView::setupActions(QString const& addItemText, QString const& addSubItemText,
+    QString const& removeItemText, QString const& removeSubItemsText)
+{
     addItemAction_->setToolTip(addItemText);
     addItemAction_->setStatusTip(addItemText);
     addSubItemAction_->setToolTip(addSubItemText);
@@ -43,14 +59,23 @@ clearAction_(new QAction(tr("Clear"), this))
     clearAction_->setToolTip(tr("Clear the contents of a cell."));
     clearAction_->setStatusTip(tr("Clear the contents of a cell."));
 
-    setIndentation(10);
-    setSortingEnabled(true);
-    setSelectionBehavior(QAbstractItemView::SelectItems);
+    expandAllItemsAction_->setToolTip(tr("Expand all port maps."));
+    expandAllItemsAction_->setStatusTip(tr("Expand all port maps."));
+    collapseAllItemsAction_->setToolTip(tr("Collapse all port maps."));
+    collapseAllItemsAction_->setStatusTip(tr("Collapse all port maps."));
 
     addAction(clearAction_);
     clearAction_->setShortcut(QKeySequence::Delete);
     clearAction_->setShortcutContext(Qt::WidgetShortcut);
 
+    connectActions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTreeView::connectActions()
+//-----------------------------------------------------------------------------
+void EditableTreeView::connectActions()
+{
     connect(addItemAction_, SIGNAL(triggered()), this, SLOT(onAddItem()), Qt::UniqueConnection);
     connect(addSubItemAction_, SIGNAL(triggered()), this, SLOT(onAddSubItem()), Qt::UniqueConnection);
 
@@ -58,15 +83,10 @@ clearAction_(new QAction(tr("Clear"), this))
     connect(removeAllSubItemsAction_, SIGNAL(triggered()),
         this, SLOT(onRemoveAllSubItems()), Qt::UniqueConnection);
 
-    connectClearAction();
-}
-
-//-----------------------------------------------------------------------------
-// Function: EditableTreeView::connectClearAction()
-//-----------------------------------------------------------------------------
-void EditableTreeView::connectClearAction()
-{
     connect(clearAction_, SIGNAL(triggered()), this, SLOT(onClearAction()), Qt::UniqueConnection);
+
+    connect(expandAllItemsAction_, SIGNAL(triggered()), this, SLOT(expandAll()), Qt::UniqueConnection);
+    connect(collapseAllItemsAction_, SIGNAL(triggered()), this, SLOT(collapseAll()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,6 +94,38 @@ void EditableTreeView::connectClearAction()
 //-----------------------------------------------------------------------------
 EditableTreeView::~EditableTreeView()
 {
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTreeView::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void EditableTreeView::contextMenuEvent(QContextMenuEvent* event)
+{
+    QModelIndex contextMenuIndex = indexAt(event->pos());
+
+    QMenu contextMenu(this);
+
+    contextMenu.addAction(addItemAction_);
+
+    if (contextMenuIndex.isValid())
+    {
+        contextMenu.addAction(removeAction_);
+        contextMenu.addAction(clearAction_);
+
+        contextMenu.addSeparator();
+        contextMenu.addAction(addSubItemAction_);
+        contextMenu.addAction(removeAllSubItemsAction_);
+    }
+
+    contextMenu.addSeparator();
+
+    contextMenu.addAction(expandAllItemsAction_);
+    contextMenu.addAction(collapseAllItemsAction_);
+
+    contextMenu.exec(event->globalPos());
+
+    event->accept();
 
 }
 
@@ -214,6 +266,22 @@ QAction* EditableTreeView::getRemoveAllSubItemsAction() const
 QAction* EditableTreeView::getClearAction() const
 {
     return clearAction_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTreeView::getExpandAllAction()
+//-----------------------------------------------------------------------------
+QAction* EditableTreeView::getExpandAllAction() const
+{
+    return expandAllItemsAction_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTreeView::getCollapseAllAction()
+//-----------------------------------------------------------------------------
+QAction* EditableTreeView::getCollapseAllAction() const
+{
+    return collapseAllItemsAction_;
 }
 
 //-----------------------------------------------------------------------------
