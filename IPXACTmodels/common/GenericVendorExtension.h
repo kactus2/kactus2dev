@@ -207,6 +207,20 @@ public:
      */
     void setParent(GenericVendorExtension* newParent);
 
+    /*!
+     *  Get a list of the attributes.
+     *
+     *      @return List of attribute type / value pairs.
+     */
+    QVector<QPair<QString, QString> > getAttributes() const;
+
+    /*!
+     *  Set new attributes.
+     *
+     *      @param [in] newAttributes   List of new attributes.
+     */
+    void setNewAttributes(QVector<QPair<QString, QString> > newAttributes);
+
 private:
 
     /*!
@@ -255,5 +269,8 @@ private:
     //! The parent generic vendor extension.
     GenericVendorExtension* parent_;
 };
+
+Q_DECLARE_METATYPE(GenericVendorExtension*)
+
 #endif // GENERICVENDOREXTENSION_H
 

@@ -1010,9 +1010,6 @@
     <ClCompile Include="Component\FieldReset.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="utilities\ComponentSearch.cpp">
-      <Filter>Source Files\utilities</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">

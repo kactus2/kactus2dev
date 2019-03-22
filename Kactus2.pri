@@ -809,6 +809,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionsDelegate.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionsFilter.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionsGeneral.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesColumns.h \
+    ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
@@ -1516,6 +1519,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsEditor.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsFilter.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
+    ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp

@@ -36,7 +36,6 @@ collapseAllItemsAction_(new QAction(tr("Collapse all"), this))
     header()->setDefaultAlignment(Qt::AlignCenter);
 
     setIndentation(10);
-    setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectItems);
 
     setupActions(addItemText, addSubItemText, removeItemText, removeSubItemsText);

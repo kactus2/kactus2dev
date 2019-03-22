@@ -15,7 +15,10 @@
 #include <QObject>
 
 //! Description element name.
-const QString DESCRIPTION = "Description";
+namespace
+{
+    const QString DESCRIPTION = QStringLiteral("Description");
+};
 
 //-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::GenericVendorExtension()
@@ -28,7 +31,7 @@ attributes_(),
 children_(),
 parent_(parent)
 {
-    QStringList combiName = extensionNode.nodeName().split(":");
+    QStringList combiName = extensionNode.nodeName().split(QLatin1Char(':'));
     if (combiName.size() == 2)
     {
         nameSpace_ = combiName.first();
@@ -251,7 +254,7 @@ QString GenericVendorExtension::getDescription() const
         }
     }
 
-    return "";
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -335,7 +338,7 @@ void GenericVendorExtension::writeNode(GenericVendorExtension const& node, QXmlS
         return;
     }
 
-    QString combinedName = node.nameSpace() + ":" + node.name();
+    QString combinedName = node.nameSpace() + QLatin1Char(':') + node.name();
     writer.writeStartElement(combinedName);
     writeAttributes(node, writer);
     if (node.value().isEmpty() == false)
@@ -404,4 +407,20 @@ GenericVendorExtension* GenericVendorExtension::getParent() const
 void GenericVendorExtension::setParent(GenericVendorExtension* newParent)
 {
     parent_ = newParent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::getAttributes()
+//-----------------------------------------------------------------------------
+QVector<QPair<QString, QString> > GenericVendorExtension::getAttributes() const
+{
+    return attributes_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::setNewAttributes()
+//-----------------------------------------------------------------------------
+void GenericVendorExtension::setNewAttributes(QVector<QPair<QString, QString> > newAttributes)
+{
+    attributes_ = newAttributes;
 }

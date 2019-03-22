@@ -27,6 +27,7 @@
 #include <IPXACTmodels/Component/RemapState.h>
 
 #include <QVBoxLayout>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapseditor::MemoryMapsEditor()
@@ -70,6 +71,10 @@ delegate_()
 
     delegate_ = new MemoryMapsDelegate(parameterCompleter, parameterFinder, getRemapStateNames(), this);
     view_->setItemDelegate(delegate_);
+
+    QHeaderView* header = new QHeaderView(Qt::Horizontal, this);
+    header->setStretchLastSection(true);
+    view_->setHeader(header);
 
     connectSignals();
 }

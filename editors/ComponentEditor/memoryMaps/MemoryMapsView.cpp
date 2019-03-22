@@ -23,6 +23,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QMimeData>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapsView::MemoryMapsView()

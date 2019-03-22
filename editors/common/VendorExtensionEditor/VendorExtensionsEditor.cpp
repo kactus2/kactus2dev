@@ -38,11 +38,14 @@ summaryLabel_(new QLabel())
 {
     extensionsView_->setSortingEnabled(false);
 
+    extensionsView_->setSelectionMode(QAbstractItemView::ContiguousSelection);
+
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(summaryLabel_, 0, Qt::AlignCenter);
     layout->addWidget(extensionsView_);
 
-    extensionsView_->setItemDelegate(new VendorExtensionsDelegate(this));
+    VendorExtensionsDelegate* extensionDelegate = new VendorExtensionsDelegate(this);
+    extensionsView_->setItemDelegate(extensionDelegate);
 
     VendorExtensionsFilter* newFilter(new VendorExtensionsFilter());
     newFilter->setSourceModel(extensionsModel_);
@@ -67,6 +70,8 @@ summaryLabel_(new QLabel())
         extensionsModel_, SLOT(onRemoveAllSubItems(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(extensionsModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(extensionDelegate, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     extensionsView_->header()->setStretchLastSection(true);
 

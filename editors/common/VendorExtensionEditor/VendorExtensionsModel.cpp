@@ -13,6 +13,7 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/common/VendorExtensionEditor/VendorExtensionsGeneral.h>
 #include <editors/common/VendorExtensionEditor/VendorExtensionColumns.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
@@ -94,7 +95,11 @@ QVariant VendorExtensionsModel::data(QModelIndex const& index, int role) const
         return QVariant();
     }
     
-    if (role == Qt::ForegroundRole)
+    if (role == VendorExtensionsGeneral::getGenericExtensionRole)
+    {
+        return QVariant::fromValue(getExtensionForIndex(index));
+    }
+    else if (role == Qt::ForegroundRole)
     {
         if (indexIsEditable(index))
         {
@@ -154,12 +159,15 @@ QVariant VendorExtensionsModel::valueForIndex(QModelIndex const& index) const
             return genericExtension->name();
         }
     }
-    else if (index.column() == VendorExtensionColumns::TYPE)
+    else if (index.column() == VendorExtensionColumns::ATTRIBUTES)
     {
-        if (genericExtension)
+        QStringList typeList;
+        for (auto attribute : genericExtension->getAttributes())
         {
-            return genericExtension->attributeValue(QStringLiteral("type"));
+            typeList.append(attribute.first);
         }
+
+        return typeList.join(",");
     }
     else if (index.column() == VendorExtensionColumns::VALUE)
     {
@@ -212,9 +220,9 @@ QVariant VendorExtensionsModel::headerData(int section, Qt::Orientation orientat
         {
             return tr("Name");
         }
-        else if (section == VendorExtensionColumns::TYPE)
+        else if (section == VendorExtensionColumns::ATTRIBUTES)
         {
-            return tr("Type");
+            return tr("Attributes");
         }
         else if (section == VendorExtensionColumns::VALUE)
         {            
@@ -251,9 +259,10 @@ bool VendorExtensionsModel::setData(QModelIndex const& index, QVariant const& va
         {
             genericExtension->setName(value.toString());
         }
-        else if (genericExtension && index.column() == VendorExtensionColumns::TYPE)
+        else if (genericExtension && index.column() == VendorExtensionColumns::ATTRIBUTES)
         {
-            genericExtension->setAttributeValue(QStringLiteral("type"), value.toString());
+            QVector<QPair<QString, QString> > newAttributes = value.value<QVector<QPair<QString, QString> > >();
+            genericExtension->setNewAttributes(newAttributes);
         }
         else if (genericExtension && index.column() == VendorExtensionColumns::VALUE)
         {
@@ -371,6 +380,11 @@ void VendorExtensionsModel::onAddSubItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void VendorExtensionsModel::onRemoveItem(QModelIndex const& index)
 {
+    if (!index.isValid() || !indexIsEditable(index))
+    {
+        return;
+    }
+
     QModelIndex parentIndex = index.parent();
     if (parentIndex.isValid())
     {
