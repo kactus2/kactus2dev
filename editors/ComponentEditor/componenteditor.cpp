@@ -217,9 +217,8 @@ void ComponentEditor::refresh()
 	VLNV compVLNV = component_->getVlnv();
 
 	// get the original model of the component
-	QSharedPointer<Document> libComp = libHandler_->getModel(compVLNV);
-	Q_ASSERT(libHandler_->getDocumentType(compVLNV) == VLNV::COMPONENT);
-	QSharedPointer<Component> comp = libComp.staticCast<Component>();
+	QSharedPointer<Component> comp = libHandler_->getModel<Component>(compVLNV);
+	Q_ASSERT(comp.isNull() == false);
 
 	// rebuild the navigation tree
 	navigationModel_.setRootItem(createNavigationRootForComponent(comp));

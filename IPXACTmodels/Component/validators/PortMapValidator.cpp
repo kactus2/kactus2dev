@@ -525,7 +525,7 @@ void PortMapValidator::findErrorsInLogicalPort(QVector<QString>& errors,
                 .arg(logicalPort->name_).arg(context));
         }
 
-        if (!logicalPortHasValidRange(logicalPort, referencedPort))
+        else if (!logicalPortHasValidRange(logicalPort, referencedPort))
         {
             errors.append(QObject::tr("Invalid range given for logical port %1 mapped within %2")
                 .arg(logicalPort->name_).arg(context));

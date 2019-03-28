@@ -46,7 +46,7 @@
 #include <QMessageBox>
 #include <QString>
 #include <QStringList>
-
+#include <QTimer>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::LibraryHandler()
@@ -65,12 +65,13 @@ QObject(parent),
     integrityWidget_(0),
     saveInProgress_(false),
     fileWatch_(this),
-    checkResults_()
+    checkResults_(),
+    updatedPaths_()
 {
     // create the connections between models and library handler
     syncronizeModels();
     connect(&fileWatch_, SIGNAL(fileChanged(QString const&)),
-            this, SLOT(onFileChanged(QString const&)), Qt::UniqueConnection);
+            this, SLOT(onFileChangedOnDisk(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,7 +92,12 @@ QSharedPointer<Document> LibraryHandler::getModel(VLNV const& vlnv)
         info->document = fileAccess_.readDocument(info->path);
     }
 
-    QSharedPointer<Document> copy = info->document->clone();
+    QSharedPointer<Document> copy;
+    if (info->document.isNull() == false)
+    {
+        copy = info->document->clone();
+    }
+
     return copy;
 }
 
@@ -887,20 +893,45 @@ void LibraryHandler::onCloseIntegrityReport()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryHandler::onFileChanged()
+// Function: LibraryHandler::onFileChangedOnDisk()
 //-----------------------------------------------------------------------------
-void LibraryHandler::onFileChanged(QString const& path)
+void LibraryHandler::onFileChangedOnDisk(QString const& path)
 {
-    auto changedDocument = std::find_if(documentCache_.cbegin(), documentCache_.cend(),
-        [path] (const DocumentInfo& item) { return item.path.compare(path) == 0; } );
+    // Add timer to skip the time it takes to remove the file and rewrite it on save.
+    updatedPaths_.append(path);
+    QTimer::singleShot(100, Qt::CoarseTimer, this, SLOT(handleFileChange()));
+}
 
-    if (changedDocument != documentCache_.cend() && changedDocument.key().isValid())
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::handleFileChange()
+//-----------------------------------------------------------------------------
+void LibraryHandler::handleFileChange()
+{
+    VLNV vlnv;
+    QString path = updatedPaths_.takeFirst();
+    
+    if (QFile::exists(path))
     {
-        emit updatedVLNV(changedDocument.key());
+        // File updated on disk.
+        QSharedPointer<Document> model = fileAccess_.readDocument(path);
+        vlnv = model->getVlnv();
+        documentCache_.insert(vlnv, DocumentInfo(path, model, validateDocument(model, path)));
+
+        emit updatedVLNV(vlnv);
     }
     else
     {
-        // TODO: File removed.
+        // File removed.
+        auto changedDocument = std::find_if(documentCache_.begin(), documentCache_.end(),
+            [path](const DocumentInfo& item) { return item.path.compare(path) == 0; });
+
+        if (changedDocument != documentCache_.end() && changedDocument.key().isValid())
+        {
+            vlnv = changedDocument.key();
+            documentCache_.erase(changedDocument);
+
+            emit removeVLNV(vlnv);
+        }
     }
 }
 
@@ -1509,7 +1540,7 @@ bool LibraryHandler::validateDependentFiles(QSharedPointer<Document> document, Q
 void LibraryHandler::findErrorsInDependentFiles(QSharedPointer<const Document> document,
     QString const& documentPath, QVector<QString>& errorList)
 {
-    foreach (QString filePath, document->getDependentFiles())
+    for (QString filePath : document->getDependentFiles())
     {
         // Check if the path is actually a URL to (external) location.
         int pos = 0;

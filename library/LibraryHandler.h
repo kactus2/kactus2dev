@@ -503,7 +503,9 @@ private slots:
     *
     *      @param [in] path Path to the changed file.
     */
-    void onFileChanged(QString const& path);
+    void onFileChangedOnDisk(QString const& path);
+
+    void handleFileChange();
 
 private:
 
@@ -753,6 +755,9 @@ private:
 
     //! Statistics for library integrity check.
     DocumentStatistics checkResults_;
+
+    //! Queue for files updated on disk.
+    QVector<QString> updatedPaths_;
 };
 
 #endif // LIBRARYHANDLER_H
