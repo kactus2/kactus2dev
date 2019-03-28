@@ -35,8 +35,6 @@
 #include <QHash>
 #include <QObject>
 
-using FileList = QVector<QFileInfo>;
-
 class Document;
 class LibraryItem;
 class MessageMediator;
@@ -44,6 +42,7 @@ class TableViewDialog;
 
 class ObjectSelectionDialog;
 class ObjectSelectionListItem;
+class ItemExporter;
 
 //-----------------------------------------------------------------------------
 //! LibraryHandler is the class that implements the services to manage the IP-XACT library.
@@ -276,21 +275,6 @@ public slots:
      *
     */
     virtual void onEditItem(VLNV const& vlnv) override final;
-
-    /*! Export a library item and it's subitems to a new location.
-     *
-     *      @param [in] vlnv VLNV tag that identifies the top item to export.
-     *
-    */
-    void onExportItem(VLNV const& vlnv);
-    
-    /*! Export a group of items to a new location
-     *
-     *      @param [in] vlnvs QList containing the VLNVs that are to be exported.
-     *      @param [in] targetPath Path to the location to export the objects to.
-     *
-    */
-    void onExportItems(const QList<VLNV> vlnvs);
 
     /*!
      *  Shows errors about the library item with the given VLNV.
@@ -589,54 +573,6 @@ private:
     QString createDeleteMessage(DocumentStatistics const& statistics) const;
 
     /*!
-     *  Export the selected objects.
-     *
-     *      @param [in] exportedItems       The selected items to be exported.
-     *      @param [in] destinationPath     The export destination path.
-     *
-     *      @return The count of the exported items in a pair of 1. VLNVs and 2. files.
-     */
-    DocumentStatistics exportSelectedObjects(QVector<ObjectSelectionListItem*> const& exportedItems,
-        QString const& destinationPath);
-
-    /*! Copy a single file
-     *
-     *      @param [in] source              The source file to be copied
-     *      @param [in/out] targetDirectory The directory where the file is copied to.
-     *      @param [in/out] handledFiles    List of files that have been copied
-     *      @param [in/out] yesToAll        Info if user has selected "yes to all" to overwrite
-     *      @param [in/out] noToAll         Info is user has selected "No to all" to overwrite
-     *
-     *      @return True, if the file was copied, false otherwise.
-     */
-    bool copyFile(QFileInfo const& source, QDir& targetDirectory, FileList& handledFiles,
-        InputSelection& selections);
-
-    /*!
-     *  Export the selected VLNV object.
-     *
-     *      @param [in] destinationFolder   Destination folder for the export.
-     *      @param [in] vlnv                VLNV of the exported item.
-     *      @param [in] handledFiles        List of the files that have been handled.
-     *      @param [in] selections          Container for yes/no to all status.
-     *
-     *      @return True, if the selected VLNV object was exported, false otherwise.
-     */
-    bool exportObject(QDir const& destinationFolder, VLNV const& vlnv, FileList& handledFiles,
-        InputSelection &selections);
-
-    /*!
-     *  Create the export message.
-     *
-     *      @param [in] vlnvCount           The amount of exported VLNV items.
-     *      @param [in] fileCount           The amount of exported files.
-     *      @param [in] destinationPath     The export destination.
-     *
-     *      @return The constructed export message.
-     */
-    QString createExportMessage(DocumentStatistics const& exportStatistics, QString const& destinationPath) const;
-
-    /*!
      *  Check if the given document is valid IP-XACT.
      *
      *      @param [in] document           The document to check.
@@ -752,6 +688,9 @@ private:
 
     //! Watch for changes in the IP-XACT files.
     QFileSystemWatcher fileWatch_;
+
+    //! Item exporter.
+    ItemExporter* itemExporter_;
 
     //! Statistics for library integrity check.
     DocumentStatistics checkResults_;

@@ -112,7 +112,9 @@ void ObjectExportDialog::setupLayout()
 {
     QString introLabel = tr("Export");
     QString introText = tr("Export the selected items to the destination folder. ") +
-        tr(" The original files will be retained in their containing folders.");
+        tr(" The original files will be retained in their containing folders.\n") +
+        tr("Selected files are exported to the folder of their containing component.") +
+        tr(" Unselected files are given paths to their original location.");
     QWidget* introWidget = setupIntroWidget(introLabel, introText);
 
     QString folderToolTip(tr("The destination folder for the export."));
