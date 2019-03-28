@@ -161,13 +161,16 @@ QVariant VendorExtensionsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == VendorExtensionColumns::ATTRIBUTES)
     {
-        QStringList typeList;
-        for (auto attribute : genericExtension->getAttributes())
+        if (genericExtension)
         {
-            typeList.append(attribute.first);
-        }
+            QStringList typeList;
+            for (auto attribute : genericExtension->getAttributes())
+            {
+                typeList.append(attribute.first);
+            }
 
-        return typeList.join(",");
+            return typeList.join(",");
+        }
     }
     else if (index.column() == VendorExtensionColumns::VALUE)
     {

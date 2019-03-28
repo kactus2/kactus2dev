@@ -168,12 +168,13 @@ void EditableTreeView::onAddSubItem()
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    QModelIndexList currentIndexes = selectedIndexes();
+    QModelIndexList currentIndexes;
+    for (auto index : selectedIndexes())
+    {
+        currentIndexes.append(index.sibling(index.row(), 0));
+    }
 
     emit addSubItem(currentIndexes);
-
-    clearSelection();
-    setCurrentIndex(QModelIndex());
 
     foreach (QModelIndex index, currentIndexes)
     {
