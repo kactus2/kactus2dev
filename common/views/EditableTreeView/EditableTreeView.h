@@ -82,7 +82,7 @@ protected:
 	 *
 	 *      @param [in] event   The mouse event.
 	 */
-	virtual void mouseDoubleClickEvent(QMouseEvent* event);
+	virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
     /*!
      *  Draws a row and.
@@ -91,14 +91,15 @@ protected:
      *      @param [in] option    Options for the drawing.
      *      @param [in] index     Index of the item to draw.
      */
-    virtual void drawRow(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
+    virtual void drawRow(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index)
+        const override;
 
     /*!
      *  Handler for context menu events.
      *
      *      @param [in] event   The context menu event.
      */
-    virtual void contextMenuEvent(QContextMenuEvent* event) = 0;
+    virtual void contextMenuEvent(QContextMenuEvent* event) override;
 
     /*!
      *  Gets the action for adding items.
@@ -135,32 +136,46 @@ protected:
      */
     QAction* getClearAction() const;
 
+    /*!
+     *  Gets the action for displaying all child items of an item.
+     *
+     *      @return The expand all item action.
+     */
+    QAction* getExpandAllAction() const;
+
+    /*!
+     *  Gets the action for hiding all child items of an item.
+     *
+     *      @return The collapse all item action.
+     */
+    QAction* getCollapseAllAction() const;
+
 protected slots:
 
     /*!
      *  Handles the clearing of the selected cell.
      */
-    virtual void onClearAction();
+    void onClearAction();
 
     /*!
      *  Handles the item addition.
      */
-    virtual void onAddItem();
+    void onAddItem();
 
     /*!
      *  Handles the sub item addition.
      */
-    virtual void onAddSubItem();
+    void onAddSubItem();
 
     /*!
      *  Handles the removal of the items.
      */
-    virtual void onRemoveSelectedItems();
+    void onRemoveSelectedItems();
 
     /*!
      *  Handles the removal of all sub items of the selected index.
      */
-    virtual void onRemoveAllSubItems();
+    void onRemoveAllSubItems();
 
 private:
    
@@ -168,7 +183,21 @@ private:
     EditableTreeView(EditableTreeView const& rhs);
     EditableTreeView& operator=(EditableTreeView const& rhs);
 
-    virtual void connectClearAction();
+    /*!
+     *  Setup the actions.
+     *
+     *      @param [in] addItemText         Text for adding new items.
+     *      @param [in] addSubItemText      Text for adding new sub items.
+     *      @param [in] removeItemText      Text for removing items.
+     *      @param [in] removeSubItemsText  Text for removing all sub items.
+     */
+    void setupActions(QString const& addItemText, QString const& addSubItemText, QString const& removeItemText,
+        QString const& removeSubItemsText);
+
+    /*!
+     *  Connect the actions to their corresponding slots.
+     */
+    void connectActions();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -191,6 +220,12 @@ private:
 
     //! Action for clearing a cell.
     QAction* clearAction_;
+
+    //! Action for displaying all child items.
+    QAction* expandAllItemsAction_;
+
+    //! Action for hiding all child items.
+    QAction* collapseAllItemsAction_;
 };
 
 //-----------------------------------------------------------------------------

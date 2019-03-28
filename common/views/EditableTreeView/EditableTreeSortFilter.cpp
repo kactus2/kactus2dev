@@ -43,7 +43,7 @@ void EditableTreeSortFilter::onAddItem(QModelIndexList const& indexes)
         posToAdd = mapToSource(indexes.first());
 
         int previousRow = indexes.first().row();
-        foreach (QModelIndex index, sortedIndexes)
+        for(QModelIndex const& index : sortedIndexes)
         {
             if (index.row() != previousRow)
             {
@@ -65,7 +65,7 @@ void EditableTreeSortFilter::onAddItem(QModelIndexList const& indexes)
 //-----------------------------------------------------------------------------
 void EditableTreeSortFilter::onAddSubItem(QModelIndexList const& parentIndexes)
 {
-    foreach (QModelIndex index, parentIndexes)
+    for(QModelIndex const& index : parentIndexes)
     {
         QModelIndex sourceParentIndex = mapToSource(index);
         emit addSubItem(sourceParentIndex);
@@ -82,27 +82,80 @@ void EditableTreeSortFilter::onRemoveSelectedRows(QModelIndexList const& indexes
         return;
     }
 
-    QModelIndexList sortedIndexList = indexes;
-    qSort(sortedIndexList);
+    QModelIndexList removableIndexList = getRemovableIndexes(concatIndexesToOneColumn(indexes));
+    qSort(removableIndexList);
 
-    int previousRow = sortedIndexList.first().row();
-    int rowCount = 1;
-    foreach (QModelIndex index, sortedIndexList)
+    for (int i = removableIndexList.size() - 1; i >= 0; i--)
     {
-        if (previousRow != index.row())
-        {
-            ++rowCount;
-        }
-        previousRow = index.row();
-    }
-
-    for (int i = 0; i < rowCount; ++i)
-    {
-        QModelIndex index = sortedIndexList.first();
-        index = mapToSource(index);
-
+        QModelIndex index = mapToSource(removableIndexList.at(i));
         emit removeItem(index);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTreeSortFilter::concatIndexesToOneColumn()
+//-----------------------------------------------------------------------------
+QModelIndexList EditableTreeSortFilter::concatIndexesToOneColumn(QModelIndexList const& indexes) const
+{
+    QModelIndexList firstColumnIndexes;
+
+    for (auto const& index : indexes)
+    {
+        if (index.column() == 0)
+        {
+            firstColumnIndexes.append(index);
+        }
+        else
+        {
+            QModelIndex firstColumnIndex = index.sibling(index.row(), 0);
+            if (!firstColumnIndexes.contains(firstColumnIndex))
+            {
+                firstColumnIndexes.append(firstColumnIndex);
+            }
+        }
+    }
+
+    return firstColumnIndexes;
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTreeSortFilter::getRemovableIndexes()
+//-----------------------------------------------------------------------------
+QModelIndexList EditableTreeSortFilter::getRemovableIndexes(QModelIndexList const& indexes) const
+{
+    QModelIndexList removableIndexes;
+
+    for (auto const& index : indexes)
+    {
+        if (indexIsRemovable(index, indexes))
+        {
+            removableIndexes.append(index);
+        }
+    }
+
+    return removableIndexes;
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTreeSortFilter::indexIsRemovable()
+//-----------------------------------------------------------------------------
+bool EditableTreeSortFilter::indexIsRemovable(QModelIndex const& index, QModelIndexList indexList) const
+{
+    if (index.parent().isValid())
+    {
+        QModelIndex const& parentIndex = index.parent();
+        for (auto const& comparisonIndex : indexList)
+        {
+            if (parentIndex == comparisonIndex)
+            {
+                return false;
+            }
+        }
+
+        return indexIsRemovable(parentIndex, indexList);
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -112,12 +165,9 @@ void EditableTreeSortFilter::onRemoveAllSubItemsFromIndexes(QModelIndexList cons
 {
     if (!parentIndexes.isEmpty())
     {
-        foreach (QModelIndex index, parentIndexes)
+        for(QModelIndex const& index : parentIndexes)
         {
-            if (!index.parent().isValid())
-            {
-                emit removeAllSubItemsFromIndex(mapToSource(index));
-            }
+            emit removeAllSubItemsFromIndex(mapToSource(index));
         }
     }
 }

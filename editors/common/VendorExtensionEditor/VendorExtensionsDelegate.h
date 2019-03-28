@@ -65,11 +65,47 @@ public:
      */
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
+    /*!
+     *  Paint the vendor extension rows.
+     *
+     *      @param [in] painter     The used painter.
+     *      @param [in] option      Available style options.
+     *      @param [in] index       The current index.
+     */
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+    /*!
+     *  Updates the editor geometry.
+     *
+     *      @param [in] editor  The editor being updated.
+     *      @param [in] option  The options used to update the editor.
+     *      @param [in] index   The model index being edited.
+     */
+    virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
+
+    //! No copying. No assignment.
+    VendorExtensionsDelegate(const VendorExtensionsDelegate& other) = delete;
+    VendorExtensionsDelegate& operator=(const VendorExtensionsDelegate& other) = delete;
+
+signals:
+
+    /*!
+     *  Informs a change in the edited document.
+     */
+    void contentChanged();
+
 private:
 	
-	//! No copying. No assignment.
-	VendorExtensionsDelegate(const VendorExtensionsDelegate& other);
-    VendorExtensionsDelegate& operator=(const VendorExtensionsDelegate& other);
+    /*!
+     *  Repositions the editor if there is not enough space under the default position. The editor is then resized
+     *  to use the available space.
+     *
+     *      @param [in] editor  The editor to reposition.
+     *      @param [in] option  The style options for the editor.
+     *      @param [in] index   The current index.
+     */
+    void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option) const;
 };
 
 #endif // VENDOREXTENSIONSDELEGATE_H

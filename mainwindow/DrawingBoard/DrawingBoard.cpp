@@ -99,7 +99,6 @@ void DrawingBoard::saveCurrentDocument()
     if (doc != 0 && shouldSave(doc))
     {
         doc->save();
-        emit currentChanged(currentIndex());
     }
 }
 
@@ -112,7 +111,6 @@ void DrawingBoard::saveCurrentDocumentAs()
 
     if (doc != 0 && shouldSave(doc) && doc->saveAs())
     {
-        emit currentChanged(currentIndex());
         doc->refresh();
     }
 }

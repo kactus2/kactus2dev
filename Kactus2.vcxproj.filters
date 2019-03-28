@@ -929,6 +929,12 @@
     <Filter Include="Header Files\editors\common\ComponentItemAutoConnector">
       <UniqueIdentifier>{8029a13a-32fe-4c57-8ddb-679bc640eb95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\VendorExtensionEditor\VendorExtensionAttributesEditor">
+      <UniqueIdentifier>{d8656ca0-4c6a-4863-af09-2dc2d853c2c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\VendorExtensionEditor\VendorExtensionsAttributesEditor">
+      <UniqueIdentifier>{66aec384-7d98-4bc2-b79f-2420c590071c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4663,6 +4669,18 @@
     <ClCompile Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceTableAutoConnector.cpp">
       <Filter>Source Files\editors\common\ComponentItemAutoConnector</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VendorExtensionsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionsFilter.cpp">
+      <Filter>Source Files\editors\VendorExtensionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VendorExtensionAttributesModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionAttributesEditor\VendorExtensionAttributesModel.cpp">
+      <Filter>Source Files\editors\VendorExtensionEditor\VendorExtensionsAttributesEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6369,6 +6387,15 @@
     <CustomBuild Include="editors\common\ComponentItemAutoConnector\PortListFiller.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsFilter.h">
+      <Filter>Header Files\editors\VendorExtensionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionAttributesEditor\VendorExtensionAttributesModel.h">
+      <Filter>Header Files\editors\VendorExtensionEditor\VendorExtensionAttributesEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsGeneral.h">
+      <Filter>Header Files\editors\VendorExtensionEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7129,6 +7156,9 @@
     </ClInclude>
     <ClInclude Include="editors\common\ComponentItemAutoConnector\HierarchicalBusInterfaceTableAutoConnector.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\VendorExtensionEditor\VendorExtensionAttributesEditor\VendorExtensionAttributesColumns.h">
+      <Filter>Header Files\editors\VendorExtensionEditor\VendorExtensionAttributesEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

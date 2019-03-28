@@ -50,21 +50,21 @@ protected:
      *
      *      @param [in] event   The key event.
      */
-    virtual void keyPressEvent(QKeyEvent* event);
+    virtual void keyPressEvent(QKeyEvent* event) override final;
 
     /*!
      *  Handler for context menu events.
      *
      *      @param [in] event   The context menu event.
      */
-    virtual void contextMenuEvent(QContextMenuEvent* event);
+    virtual void contextMenuEvent(QContextMenuEvent* event) override final;
 
     /*!
      *  Handler for drag enter events
 	 *
 	 *      @param [in] event The event object.
      */
-	virtual void dragEnterEvent(QDragEnterEvent* event);
+	virtual void dragEnterEvent(QDragEnterEvent* event) override final;
 
 signals:
 
@@ -76,16 +76,6 @@ signals:
     void autoConnecteLogicalSignals(QStringList const& logicalSignals);
 
 private slots:
-
-    /*!
-     *  Handler for expanding all items.
-     */
-    void onExpandAll();
-
-    /*!
-     *  Handler for collapsing all items.
-     */
-    void onCollapseAll();
 
     /*!
      *  Handler for automatically creating port maps for selected logical signals.
@@ -106,12 +96,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The action for expanding all items.
-    QAction expandAllItemsAction_;
-
-    //! The action for collapsing all items.
-    QAction collapseAllItemsAction_;
 
     //! The action for automatically connecting logical signals to physical ports.
     QAction autoConnectAction_;

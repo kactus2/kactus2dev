@@ -23,6 +23,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QMimeData>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapsView::MemoryMapsView()
@@ -111,9 +112,17 @@ void MemoryMapsView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction(getAddSubItemAction());
     }
 
+    menu.addSeparator();
+
     if (index.isValid())
     {
         menu.addAction(getRemoveAction());
+        if (!index.parent().isValid())
+        {
+            menu.addAction(getRemoveAllSubItemsAction());
+        }
+
+        menu.addSeparator();
     }
 
     menu.addAction(&pasteAction_);
@@ -159,7 +168,11 @@ void MemoryMapsView::contextMenuEvent(QContextMenuEvent* event)
         menu.addSeparator();
         menu.addAction(&importAction_);
         menu.addAction(&exportAction_);
+        menu.addSeparator();
     }
+
+    menu.addAction(getExpandAllAction());
+    menu.addAction(getCollapseAllAction());
 
     menu.exec(event->globalPos());
     event->accept();

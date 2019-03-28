@@ -12,6 +12,8 @@
 #ifndef VENDOREXTENSIONSMODEL_H
 #define VENDOREXTENSIONSMODEL_H
 
+#include <IPXACTmodels/common/GenericVendorExtension.h>
+
 #include <QAbstractItemModel>
 #include <QList>
 #include <QString>
@@ -140,18 +142,32 @@ public slots:
 	void clear();
 
     /*!
-     *  Handles the addition of new item.
+     *  Handles the addition of a new item.
      *
      *      @param [in] index   The index to add the new item.
      */
     void onAddItem(QModelIndex const& index);
 
     /*!
-    *  Handles item removal.
-    *
-    *      @param [in] index   The index to remove the item from.
-    */
+     *  Handles item removal.
+     *
+     *      @param [in] index   The index to remove the item from.
+     */
     void onRemoveItem(QModelIndex const& index);
+
+    /*!
+     *  Handles the addition of a new sub item.
+     *
+     *      @param [in] index   The parent index for the new sub item.
+     */
+    void onAddSubItem(QModelIndex const& index);
+
+    /*!
+     *  Remove all the sub items from the selected item.
+     *
+     *      @param [in] index   Index of the selected item.
+     */
+    void onRemoveAllSubItems(QModelIndex const& index);
 
 signals:
 
@@ -180,6 +196,60 @@ private:
     */
     bool indexIsEditable(QModelIndex const& index) const;
 
+    /*!
+     *  Get the value for item in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return Value of the selected index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the generic extension of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return Generic vendor extension of the selected index.
+     */
+    GenericVendorExtension* getExtensionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Create a parent index for the selected child index.
+     *
+     *      @param [in] childIndex  The selected child index.
+     *
+     *      @return The created parent index.
+     */
+    QModelIndex createParentIndexForChildExtension(QModelIndex const& childIndex) const;
+
+    /*!
+     *  Get the row of the selected extension item.
+     *
+     *      @param [in] extensionItem   The selected extension item.
+     *
+     *      @return Row of the selected extension item.
+     */
+    int getRowForItem(GenericVendorExtension* extensionItem) const;
+
+    /*!
+     *  Get the row of the selected root extension item.
+     *
+     *      @param [in] parentItem  The selected root extension item.
+     *
+     *      @return Row of the selected rot extension item.
+     */
+    int getRowForRootItem(GenericVendorExtension* parentItem) const;
+
+    /*!
+     *  Check if the column of the selected index is mandatory.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return True, if the column is mandatory, false otherwise.
+     */
+    bool mandatoryColumn(QModelIndex const& index) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -187,6 +257,8 @@ private:
     //! A list of the vendor extensions of the model.
     QSharedPointer<QList<QSharedPointer<VendorExtension> > > vendorExtensions_;
 
+    //! Empty generic vendor extension for comparisons.
+    GenericVendorExtension emptyExtension_;
 };
 
 #endif // VENDOREXTENSIONSMODEL_H

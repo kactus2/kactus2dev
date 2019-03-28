@@ -29,8 +29,6 @@
 PortMapTreeView::PortMapTreeView(QWidget* parent):
 EditableTreeView(false, QString(""), QString(tr("Add port map")), QString(tr("Remove port map")),
     QString(tr("Remove all port maps")), parent),
-expandAllItemsAction_(tr("Expand all"), this),
-collapseAllItemsAction_(tr("Collapse all"), this),
 autoConnectAction_(tr("Auto connect"), this)
 {
     header()->setSectionResizeMode(QHeaderView::Interactive);
@@ -66,14 +64,6 @@ void PortMapTreeView::setupActions()
 {
     getAddSubItemAction()->setToolTip(tr("Add a new port map to the selected logical port."));
     getAddSubItemAction()->setStatusTip(tr("Add a new port map to the selected logical port."));
-
-    expandAllItemsAction_.setToolTip(tr("Expand all port maps."));
-    expandAllItemsAction_.setStatusTip(tr("Expand all port maps."));
-    connect(&expandAllItemsAction_, SIGNAL(triggered()), this, SLOT(onExpandAll()), Qt::UniqueConnection);
-
-    collapseAllItemsAction_.setToolTip(tr("Collapse all port maps."));
-    collapseAllItemsAction_.setStatusTip(tr("Collapse all port maps."));
-    connect(&collapseAllItemsAction_, SIGNAL(triggered()), this, SLOT(onCollapseAll()), Qt::UniqueConnection);
 
     autoConnectAction_.setToolTip(
         tr("Automatically create a port map from this logical signal and physical port."));
@@ -131,28 +121,12 @@ void PortMapTreeView::contextMenuEvent(QContextMenuEvent* event)
         contextMenu.addSeparator();
     }
 
-    contextMenu.addAction(&expandAllItemsAction_);
-    contextMenu.addAction(&collapseAllItemsAction_);
+    contextMenu.addAction(getExpandAllAction());
+    contextMenu.addAction(getCollapseAllAction());
 
     contextMenu.exec(event->globalPos());
 
     event->accept();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapTreeView::onExpandAll()
-//-----------------------------------------------------------------------------
-void PortMapTreeView::onExpandAll()
-{
-    expandAll();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapTreeView::onCollapseAll()
-//-----------------------------------------------------------------------------
-void PortMapTreeView::onCollapseAll()
-{
-    collapseAll();
 }
 
 //-----------------------------------------------------------------------------

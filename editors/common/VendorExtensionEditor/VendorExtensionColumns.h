@@ -17,9 +17,11 @@ namespace VendorExtensionColumns
     //-----------------------------------------------------------------------------
     enum Columns
     {
-        NAME,               //!< Column for the name of the vendor extension.
-        TYPE,               //!< Column for the type attribute of the vendor extension.
-        VALUE,              //!< Column for the configurable value.
+        NAMESPACE,          //! Column for the name space of the vendor extension.
+        NAME,               //! Column for the name of the vendor extension.
+        ATTRIBUTES,         //! Column for attributes of the vendor extension.
+        VALUE,              //! Column for the configurable value.
+        DESCRIPTION,        //! Column for description.
         COLUMN_COUNT
     };
 }

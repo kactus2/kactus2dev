@@ -27,6 +27,7 @@
 #include <IPXACTmodels/Component/RemapState.h>
 
 #include <QVBoxLayout>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapseditor::MemoryMapsEditor()
@@ -70,6 +71,10 @@ delegate_()
 
     delegate_ = new MemoryMapsDelegate(parameterCompleter, parameterFinder, getRemapStateNames(), this);
     view_->setItemDelegate(delegate_);
+
+    QHeaderView* header = new QHeaderView(Qt::Horizontal, this);
+    header->setStretchLastSection(true);
+    view_->setHeader(header);
 
     connectSignals();
 }
@@ -119,6 +124,11 @@ void MemoryMapsEditor::connectSignals()
         proxy_, SLOT(onRemoveSelectedRows(QModelIndexList const&)), Qt::UniqueConnection);
     connect(proxy_, SIGNAL(removeItem(QModelIndex const&)),
         model_, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(removeAllSubItems(QModelIndexList const&)),
+        proxy_, SLOT(onRemoveAllSubItemsFromIndexes(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(proxy_, SIGNAL(removeAllSubItemsFromIndex(QModelIndex const&)),
+        model_, SLOT(onRemoveAllChildItemsFrom(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(view_, SIGNAL(doubleClicked(const QModelIndex&)),
         this, SLOT(onDoubleClick(const QModelIndex&)), Qt::UniqueConnection);

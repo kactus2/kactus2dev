@@ -14,15 +14,30 @@
 #include <QDomNode>
 #include <QObject>
 
+//! Description element name.
+namespace
+{
+    const QString DESCRIPTION = QStringLiteral("Description");
+};
+
 //-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::GenericVendorExtension()
 //-----------------------------------------------------------------------------
-GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode):
-    name_(extensionNode.nodeName()),
-    value_(),
-    attributes_(),
-    children_()
+GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode, GenericVendorExtension* parent):
+nameSpace_(),
+name_(),
+value_(),
+attributes_(),
+children_(),
+parent_(parent)
 {
+    QStringList combiName = extensionNode.nodeName().split(QLatin1Char(':'));
+    if (combiName.size() == 2)
+    {
+        nameSpace_ = combiName.first();
+    }
+    name_ = combiName.last();
+
     QDomNamedNodeMap attributes = extensionNode.attributes();
     const int attributeCount = attributes.length();
     for (int i = 0; i < attributeCount; ++i)
@@ -31,15 +46,88 @@ GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode):
         attributes_.append(qMakePair(attribute.nodeName(), attribute.nodeValue()));
     }
 
-    QDomNodeList childNodes = extensionNode.childNodes();
-    value_ = extensionNode.firstChild().nodeValue();
-
-    const int childCount = childNodes.count();
-    for (int i = 1; i < childCount; ++i)
+    QDomNode firstChildNode = extensionNode.firstChild();
+    if (!firstChildNode.isNull())
     {
-        QDomNode childNode = childNodes.at(i);
-        children_.append(GenericVendorExtension(childNode));
+        int startIndex = 0;
+        if (firstChildNode.isText())
+        {
+            value_ = firstChildNode.nodeValue();
+            startIndex = 1;
+        }
+
+        QDomNodeList childNodes = extensionNode.childNodes();
+
+        const int childCount = childNodes.count();
+        for (int i = startIndex; i < childCount; ++i)
+        {
+            QDomNode childNode = childNodes.at(i);
+            children_.append(new GenericVendorExtension(childNode, this));
+        }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::~GenericVendorExtension()
+//-----------------------------------------------------------------------------
+GenericVendorExtension::~GenericVendorExtension()
+{
+    for (int i = children_.size() - 1; i >= 0; --i)
+    {
+        GenericVendorExtension* child = children_.at(i);
+        delete child;
+        child = nullptr;
+    }
+
+    children_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::GenericVendorExtension()
+//-----------------------------------------------------------------------------
+GenericVendorExtension::GenericVendorExtension(GenericVendorExtension const& other)
+{
+    nameSpace_ = other.nameSpace_;
+    name_ = other.name_;
+    value_ = other.value_;
+    attributes_ = other.attributes_;
+    children_ = other.children_;
+    parent_ = nullptr;
+
+    children_.clear();
+
+    for (auto otherChild : other.children_)
+    {
+        GenericVendorExtension* newChild = new GenericVendorExtension(*otherChild);
+        newChild->setParent(this);
+        children_.append(newChild);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::operator=()
+//-----------------------------------------------------------------------------
+GenericVendorExtension& GenericVendorExtension::operator=(const GenericVendorExtension& other)
+{
+    if (this != &other)
+    {
+        nameSpace_ = other.nameSpace_;
+        name_ = other.name_;
+        value_ = other.value_;
+        attributes_ = other.attributes_;
+        children_ = other.children_;
+        parent_ = other.parent_;
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::isSame()
+//-----------------------------------------------------------------------------
+bool GenericVendorExtension::isSame(const GenericVendorExtension& otherItem) const
+{
+    return this == &otherItem;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,6 +152,27 @@ QString GenericVendorExtension::type() const
 void GenericVendorExtension::write(QXmlStreamWriter& writer) const
 {
     writeNode(*this, writer);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::nameSpace()
+//-----------------------------------------------------------------------------
+QString GenericVendorExtension::nameSpace() const
+{
+    return nameSpace_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::setNameSpace()
+//-----------------------------------------------------------------------------
+void GenericVendorExtension::setNameSpace(QString const& newNameSpace)
+{
+    nameSpace_ = newNameSpace;
+
+    if (hasDescription())
+    {
+        setDescription(getDescription());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -133,15 +242,108 @@ void GenericVendorExtension::setAttributeValue(QString const& attributeName, QSt
 }
 
 //-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::description()
+//-----------------------------------------------------------------------------
+QString GenericVendorExtension::getDescription() const
+{
+    for (auto childItem : children_)
+    {
+        if (childItem->name().endsWith(DESCRIPTION))
+        {
+            return childItem->value();
+        }
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::setDescription()
+//-----------------------------------------------------------------------------
+void GenericVendorExtension::setDescription(QString const& newDescription)
+{
+    for (int i = 0; i < children_.size(); ++i)
+    {
+        GenericVendorExtension* childItem = children_[i];
+        if (childItem->name().endsWith(DESCRIPTION))
+        {
+            if (newDescription.isEmpty())
+            {
+                delete childItem;
+                childItem = nullptr;
+                children_.remove(i);
+            }
+            else
+            {
+                childItem->setValue(newDescription);
+                childItem->setNameSpace(nameSpace());
+            }
+
+            return;
+        }
+    }
+
+    if (!newDescription.isEmpty())
+    {
+        GenericVendorExtension* newDescriptionChild(new GenericVendorExtension());
+        newDescriptionChild->setNameSpace(nameSpace());
+        newDescriptionChild->setName(DESCRIPTION);
+        newDescriptionChild->setValue(newDescription);
+        newDescriptionChild->setParent(this);
+
+        children_.append(newDescriptionChild);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::hasDescription()
+//-----------------------------------------------------------------------------
+bool GenericVendorExtension::hasDescription() const
+{
+    for (auto child : children_)
+    {
+        if (child->name().endsWith(DESCRIPTION))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::getDescriptionIndex()
+//-----------------------------------------------------------------------------
+int GenericVendorExtension::getDescriptionIndex() const
+{
+    for (int i = 0; i < children_.count(); ++i)
+    {
+        if (children_.at(i)->name().endsWith(DESCRIPTION))
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+//-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::writeNode()
 //-----------------------------------------------------------------------------
 void GenericVendorExtension::writeNode(GenericVendorExtension const& node, QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement(node.name());
-    writeAttributes(node, writer);
-    if (value_.isEmpty() == false)
+    if (node.nameSpace().isEmpty() && node.name().isEmpty() && node.value().isEmpty() &&
+        node.attributes_.isEmpty() && node.children_.isEmpty())
     {
-        writer.writeCharacters(value_);
+        return;
+    }
+
+    QString combinedName = node.nameSpace() + QLatin1Char(':') + node.name();
+    writer.writeStartElement(combinedName);
+    writeAttributes(node, writer);
+    if (node.value().isEmpty() == false)
+    {
+        writer.writeCharacters(node.value());
     }
     writeChildNodes(node, writer);
     writer.writeEndElement();
@@ -165,6 +367,60 @@ void GenericVendorExtension::writeChildNodes(GenericVendorExtension const& node,
 {
     for (auto child : node.children_)
     {
-        writeNode(child, writer);                
+        writeNode(*child, writer);                
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::getChildExtensions()
+//-----------------------------------------------------------------------------
+QVector<GenericVendorExtension*>& GenericVendorExtension::getChildExtensions()
+{
+    return children_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::removeIndexedChildExtensions()
+//-----------------------------------------------------------------------------
+void GenericVendorExtension::removeIndexedChildExtensions(int const& startIndex, int const& endIndex)
+{
+    for (int i = endIndex; i >= startIndex; --i)
+    {
+        GenericVendorExtension* child = children_.at(i);
+        children_.removeAt(i);
+        delete child;
+        child = nullptr;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::getParent()
+//-----------------------------------------------------------------------------
+GenericVendorExtension* GenericVendorExtension::getParent() const
+{
+    return parent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::setParent()
+//-----------------------------------------------------------------------------
+void GenericVendorExtension::setParent(GenericVendorExtension* newParent)
+{
+    parent_ = newParent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::getAttributes()
+//-----------------------------------------------------------------------------
+QVector<QPair<QString, QString> > GenericVendorExtension::getAttributes() const
+{
+    return attributes_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::setNewAttributes()
+//-----------------------------------------------------------------------------
+void GenericVendorExtension::setNewAttributes(QVector<QPair<QString, QString> > newAttributes)
+{
+    attributes_ = newAttributes;
 }
