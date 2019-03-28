@@ -220,6 +220,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./library/LibraryFilter.h \
     ./library/LibraryHandler.h \
     ./library/LibraryErrorModel.h \
+    ./library/ItemExporter.h \
     ./library/LibraryItem.h \
     ./library/LibraryTreeFilter.h \
     ./library/LibraryTreeModel.h \
@@ -980,6 +981,7 @@ SOURCES += ./VersionHelper.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
     ./library/DocumentFileAccess.cpp \
     ./library/DocumentValidator.cpp \
+    ./library/ItemExporter.cpp \
     ./library/LibraryErrorModel.cpp \
     ./library/LibraryFilter.cpp \
     ./library/LibraryHandler.cpp \
