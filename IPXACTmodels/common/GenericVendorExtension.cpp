@@ -91,7 +91,7 @@ GenericVendorExtension::GenericVendorExtension(GenericVendorExtension const& oth
     name_ = other.name_;
     value_ = other.value_;
     attributes_ = other.attributes_;
-    children_ = other.children_;
+    children_.clear();
     parent_ = nullptr;
 
     children_.clear();

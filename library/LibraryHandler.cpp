@@ -16,11 +16,12 @@
 #include "TableViewDialog.h"
 #include "LibraryItemSelectionFactory.h"
 
+#include <library/ItemExporter.h>
+
 #include <common/ui/MessageMediator.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
-#include <common/dialogs/ObjectExportDialog/ObjectExportDialog.h>
 #include <common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h>
 
 #include <IPXACTmodels/common/Document.h>
@@ -65,7 +66,8 @@ QObject(parent),
     integrityWidget_(0),
     saveInProgress_(false),
     fileWatch_(this),
-    checkResults_()
+    checkResults_(),
+    itemExporter_(new ItemExporter(messageChannel, this, fileAccess_, parentWidget, this))
 {
     // create the connections between models and library handler
     syncronizeModels();
@@ -500,44 +502,6 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryHandler::onExportItem()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onExportItem(VLNV const& vlnv)
-{  
-    onExportItems(QList<VLNV>() << vlnv);
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::onExportItems()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onExportItems(const QList<VLNV> vlnvs)
-{
-    if (vlnvs.isEmpty())
-    {
-        return;
-    }
-
-    // get the current working directory and save it to be restored in the end of the function
-    QDir savedWorkingDirectory = QDir::current();
-
-    ObjectExportDialog* exportDialog = new ObjectExportDialog(parentWidget_);
-    LibraryItemSelectionFactory::constructItemsForSelectionDialog(this, exportDialog, vlnvs);
-
-    if (exportDialog->exec() == QDialog::Rejected)
-    {
-        return;
-    }
-
-    QString destinationPath = exportDialog->getTargetDirectory();
-
-    DocumentStatistics exportStatistics = exportSelectedObjects(exportDialog->getSelectedItems(), destinationPath);
-
-    emit noticeMessage(createExportMessage(exportStatistics, destinationPath));
-
-    QDir::setCurrent(savedWorkingDirectory.absolutePath());
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryHandler::onShowErrors()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onShowErrors(VLNV const& vlnv)
@@ -926,6 +890,9 @@ void LibraryHandler::syncronizeModels()
     connect(this, SIGNAL(updatedVLNV(VLNV const&)),
             hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
+    connect(itemExporter_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
     //-----------------------------------------------------------------------------
@@ -964,7 +931,7 @@ void LibraryHandler::syncronizeModels()
     connect(treeModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(exportItems(const QList<VLNV>)),
-        this, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);
+        itemExporter_, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(refreshDialer()),
         this, SIGNAL(refreshDialer()), Qt::UniqueConnection);
 
@@ -1010,7 +977,7 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
     connect(hierarchyModel_, SIGNAL(exportItem(VLNV const&)),
-        this, SLOT(onExportItem(VLNV const& )), Qt::UniqueConnection);
+        itemExporter_, SLOT(onExportItem(VLNV const&)), Qt::UniqueConnection);
 
     connect(hierarchyModel_, SIGNAL(removeVLNV(QList<VLNV>)),
         this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
@@ -1180,190 +1147,6 @@ QString LibraryHandler::createDeleteMessage(DocumentStatistics const& statistics
     removeMessage.append('.');
 
     return removeMessage;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::exportSelectedObjects()
-//-----------------------------------------------------------------------------
-LibraryHandler::DocumentStatistics LibraryHandler::exportSelectedObjects(
-    QVector<ObjectSelectionListItem*> const& exportedItems, QString const& destinationPath)
-{
-    FileList handledFiles;
-    QDir destinationFolder(destinationPath);
-
-    InputSelection userSelections;
-    DocumentStatistics exportStatistics;
-
-    for (ObjectSelectionListItem const* exportedItem : exportedItems)
-    {
-        if (exportedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
-        {
-            if (exportObject(destinationFolder, exportedItem->getVLNV(), handledFiles, userSelections))
-            {
-                exportStatistics.documentCount++;
-            }
-        }
-        else if (exportedItem->getType() == ObjectSelectionListItem::FILE)
-        {
-            if (copyFile(QFileInfo(exportedItem->getPath()), destinationFolder, handledFiles, userSelections))
-            {
-                exportStatistics.fileCount++;
-            }
-        }
-
-        if (userSelections.noToAll)
-        {
-            break;
-        }
-    }
-
-    return exportStatistics;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::exportObject()
-//-----------------------------------------------------------------------------
-bool LibraryHandler::exportObject(QDir const& destinationFolder, VLNV const& vlnv,
-    FileList& handledFiles, InputSelection& selections)
-{
-    if (contains(vlnv) == false)
-    {
-        return false;
-    }
-
-    const QDir savedWorkingDir = QDir::current();
-
-    QDir::setCurrent(destinationFolder.absolutePath());
-
-    QDir vlnvTargetDirectory;
-    QString directoryPath = vlnv.toString("/");
-    if (!vlnvTargetDirectory.mkpath(directoryPath))
-    {
-        messageChannel_->showError(tr("Could not create directory structure, aborting."));
-        QDir::setCurrent(savedWorkingDir.absolutePath());
-        return false;
-    }
-
-    vlnvTargetDirectory.setPath(directoryPath);
-
-    QString documentPath = getPath(vlnv);
-    QFileInfo documentFileInfo(documentPath);
-
-    bool fileWasExported = copyFile(documentFileInfo, vlnvTargetDirectory, handledFiles, selections);
-
-    QDir::setCurrent(savedWorkingDir.absolutePath());
-    return fileWasExported;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::copyFile()
-//-----------------------------------------------------------------------------
-bool LibraryHandler::copyFile(QFileInfo const& source, QDir& targetDirectory, FileList& handledFiles,
-    InputSelection& selections)
-{
-    if (handledFiles.contains(source))
-    {
-        return false;
-    }
-
-    if (source.exists() == false)
-    {
-        messageChannel_->showError(tr("Could not find file: %1").arg(source.fileName()));
-        return false;
-    }
-
-    // Add file to handledFiles list to indicate that we don't need to check later in possible recursive calls.
-    handledFiles.append(source);
-
-    // save the current directory to be restored at the end of the function
-    QDir savedCurrentDir = QDir::current();
-
-    QString targetFileName = source.fileName();
-    QDir::setCurrent(targetDirectory.absolutePath());
-    if (QFile::exists(targetFileName))
-    {
-        QMessageBox::StandardButton answer = QMessageBox::No;
-
-        if (selections.noToAll)
-        {
-            answer = QMessageBox::No;
-        }
-        else if (selections.yesToAll)
-        {
-            answer = QMessageBox::Yes;
-        }
-        else
-        {
-            // If "yes to all" or "no to all" has not been clicked, ask user what to do.
-            answer = QMessageBox::question(parentWidget_, tr("Overwrite file?"),
-                tr("The file %1 already exists, would you like to overwrite the file?").arg(targetFileName),
-                QMessageBox::Yes | QMessageBox::No | QMessageBox::YesToAll | QMessageBox::NoToAll,
-                QMessageBox::No);
-
-            if (answer == QMessageBox::YesToAll)
-            {
-                selections.yesToAll = true;
-            }
-            else if (answer == QMessageBox::NoToAll)
-            {
-                selections.noToAll = true;
-            }
-        }
-
-        if (answer == QMessageBox::Yes || answer == QMessageBox::YesToAll)
-        {
-            QFile fileToOverwrite(targetFileName);
-            fileToOverwrite.remove();
-        }
-        else if (answer == QMessageBox::No || answer == QMessageBox::NoToAll)
-        {
-            // Restore the current directory to the state it was before this function.
-            QDir::setCurrent(savedCurrentDir.absolutePath());
-            return false;
-        }
-    }
-
-    QFile sourceFile(source.filePath());
-
-    if (!sourceFile.copy(targetFileName))
-    {
-        messageChannel_->showError(tr("File %1 couldn't be copied").arg(source.fileName()));
-    }
-
-    // restore the current directory to the state it was before this function
-    QDir::setCurrent(savedCurrentDir.absolutePath());
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::createExportMessage()
-//-----------------------------------------------------------------------------
-QString LibraryHandler::createExportMessage(DocumentStatistics const& exportStatistics,
-    QString const& destinationPath) const
-{
-    QString exportMessage = "Exported ";
-
-    if (exportStatistics.documentCount > 0)
-    {
-        exportMessage += QString("%1 VLNV item(s)").arg(QString::number(exportStatistics.documentCount));
-
-        if (exportStatistics.fileCount > 0)
-        {
-            exportMessage += QString(" and %1 file(s)").arg(QString::number(exportStatistics.fileCount));
-        }
-    }
-    else if (exportStatistics.fileCount > 0)
-    {
-        exportMessage += QString("%1 file(s)").arg(QString::number(exportStatistics.fileCount));
-    }
-    else
-    {
-        exportMessage += "0 items";
-    }
-
-    exportMessage += QString(" to %1.").arg(destinationPath);
-
-    return exportMessage;
 }
 
 //-----------------------------------------------------------------------------

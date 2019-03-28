@@ -3400,9 +3400,6 @@
     <ClCompile Include="GeneratedFiles\moc_LibraryFilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LibraryHandler.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_LibraryItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4680,6 +4677,15 @@
     </ClCompile>
     <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionAttributesEditor\VendorExtensionAttributesModel.cpp">
       <Filter>Source Files\editors\VendorExtensionEditor\VendorExtensionsAttributesEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ItemExporter.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LibraryHandler.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ItemExporter.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6395,6 +6401,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsGeneral.h">
       <Filter>Header Files\editors\VendorExtensionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\ItemExporter.h">
+      <Filter>Header Files\library</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
