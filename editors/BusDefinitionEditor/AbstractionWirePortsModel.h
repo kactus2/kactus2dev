@@ -27,6 +27,7 @@
 #include <QString>
 
 class BusDefinition;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Data model for the wires within abstraction definition.
@@ -40,9 +41,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   Pointer to the owner of this model.
+     *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] parent          Pointer to the owner of this model.
 	 */
-    AbstractionWirePortsModel(QObject *parent);
+    AbstractionWirePortsModel(LibraryInterface* libraryAccess, QObject *parent);
 	
 	/*!
 	 *  The destructor.
@@ -392,6 +394,9 @@ private:
 
 	//! Contains the rows in the table.
 	QList<SignalRow> table_;
+
+    //! Interface to the library.
+    LibraryInterface* libraryAccess_;
 };
 
 #endif // ABSTRACTIONWIREPORTSMODEL_H

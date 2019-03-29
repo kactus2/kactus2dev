@@ -22,12 +22,13 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor()
 //-----------------------------------------------------------------------------
-AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor(QWidget *parent):
+AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor(LibraryInterface* libraryAccess,
+    QWidget *parent):
 QWidget(parent),
 portView_(this),
 portProxy_(),
-portModel_(this),
-portDelegate_(this)
+portModel_(libraryAccess, this),
+portDelegate_(libraryAccess, this)
 {
     AbstractionDefinitionPortsSortFilter::ColumnHandles transactionalColumns;
     transactionalColumns.nameColumn_ = AbstractionTransactionalPortColumns::NAME;

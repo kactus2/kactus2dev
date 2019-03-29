@@ -152,10 +152,13 @@ void BusDefGroup::onSystemNamesChanged()
     for (int i = 0; i < systemGroupEditor_.count(); ++i)
     {
         QListWidgetItem* systemItem = systemGroupEditor_.item(i);
-        QString systemName = systemItem->text();
-        if (!systemGroupNames.contains(systemName))
+        if (systemItem->flags() & Qt::ItemIsEditable)
         {
-            systemGroupNames.append(systemName);
+            QString systemName = systemItem->text();
+            if (!systemGroupNames.contains(systemName))
+            {
+                systemGroupNames.append(systemName);
+            }
         }
     }
 

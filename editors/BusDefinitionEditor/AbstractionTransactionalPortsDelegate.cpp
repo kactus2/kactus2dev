@@ -20,8 +20,9 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsDelegate::AbstractionTransactionalPortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionTransactionalPortsDelegate::AbstractionTransactionalPortsDelegate(QObject *parent):
-AbstractionPortsDelegate(parent)
+AbstractionTransactionalPortsDelegate::AbstractionTransactionalPortsDelegate(LibraryInterface* libraryAccess,
+    QObject *parent):
+AbstractionPortsDelegate(libraryAccess, parent)
 {
 
 }

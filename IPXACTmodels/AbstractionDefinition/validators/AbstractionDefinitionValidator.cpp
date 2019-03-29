@@ -22,13 +22,16 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/TransactionalTypes.h>
-#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <IPXACTmodels/common/validators/CellSpecificationValidator.h>
 #include <IPXACTmodels/common/validators/TimingConstraintValidator.h>
+
+#include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -198,7 +201,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 		return false;
 	}
 
-    QStringList systemGroups = busDefinition->getSystemGroupNames();
+    QStringList systemGroups = BusDefinitionUtils::getSystemGroups(busDefinition, library_);
 
 	if (wire)
 	{
@@ -307,7 +310,7 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
     QString busDefinitionIdentifier = QStringLiteral(":::");
     if (busDefinition)
     {
-        systemGroupNames = busDefinition->getSystemGroupNames();
+        systemGroupNames = BusDefinitionUtils::getSystemGroups(busDefinition, library_);
         busDefinitionIdentifier = busDefinition->getVlnv().toString();
     }
 

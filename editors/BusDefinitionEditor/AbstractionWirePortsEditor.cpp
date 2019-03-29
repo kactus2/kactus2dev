@@ -22,12 +22,12 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsEditor::AbstractionWirePortsEditor()
 //-----------------------------------------------------------------------------
-AbstractionWirePortsEditor::AbstractionWirePortsEditor(QWidget *parent):
+AbstractionWirePortsEditor::AbstractionWirePortsEditor(LibraryInterface* libaryAccess, QWidget *parent):
 QWidget(parent),
 portView_(this),
 portProxy_(),
-portModel_(this),
-portDelegate_(this)
+portModel_(libaryAccess, this),
+portDelegate_(libaryAccess, this)
 {
     AbstractionDefinitionPortsSortFilter::ColumnHandles wireColumns;
     wireColumns.nameColumn_ = LogicalPortColumns::NAME;

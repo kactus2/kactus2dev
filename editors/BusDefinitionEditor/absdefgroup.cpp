@@ -30,8 +30,8 @@ vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendVLNVEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 descriptionEditor_(new QPlainTextEdit(this)),
 portTabs_(this),
-wirePortsEditor_(&portTabs_),
-transactionalPortsEditor_(&portTabs_),
+wirePortsEditor_(libraryHandler, &portTabs_),
+transactionalPortsEditor_(libraryHandler, &portTabs_),
 abstraction_()
 {
     extendVLNVEditor_->setToolTip(QString("Extended abstraction definition is not currently supported in Kactus2"));

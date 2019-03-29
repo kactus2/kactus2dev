@@ -19,8 +19,8 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsDelegate::AbstractionWirePortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionWirePortsDelegate::AbstractionWirePortsDelegate(QObject *parent):
-AbstractionPortsDelegate(parent)
+AbstractionWirePortsDelegate::AbstractionWirePortsDelegate(LibraryInterface* libraryAccess, QObject *parent):
+AbstractionPortsDelegate(libraryAccess, parent)
 {
 
 }

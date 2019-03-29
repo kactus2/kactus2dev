@@ -26,9 +26,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  The owner of this instance
+     *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] parent          The owner of this instance
      */
-    AbstractionTransactionalPortsDelegate(QObject *parent);
+    AbstractionTransactionalPortsDelegate(LibraryInterface* libraryAccess, QObject *parent);
 
 	/*!
      *  The destructor.

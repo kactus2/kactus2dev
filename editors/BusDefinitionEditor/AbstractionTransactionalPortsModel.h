@@ -30,6 +30,7 @@
 class BusDefinition;
 class AbstractionDefinition;
 class Protocol;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Data model for the transactional ports within abstraction definition.
@@ -43,9 +44,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   Pointer to the owner of this model.
+     *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] parent          Pointer to the owner of this model.
 	 */
-    AbstractionTransactionalPortsModel(QObject *parent);
+    AbstractionTransactionalPortsModel(LibraryInterface* libraryAccess, QObject *parent);
 	
 	/*!
 	 *  The destructor.
@@ -413,6 +415,9 @@ private:
 
 	//! Contains the rows in the table.
 	QList<SignalRow> table_;
+
+    //! Interface to the library.
+    LibraryInterface* libraryAccess_;
 };
 
 #endif // ABSTRACTIONTRANSACTIONALPORTSMODEL_H

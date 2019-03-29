@@ -13,6 +13,10 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
+#include <IPXACTmodels/utilities/BusDefinitionUtils.h>
+
+#include <library/LibraryInterface.h>
+
 #include <QComboBox>
 #include <QStringList>
 #include <QLineEdit>
@@ -20,8 +24,9 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::AbstractionPortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionPortsDelegate::AbstractionPortsDelegate(QObject *parent) :
+AbstractionPortsDelegate::AbstractionPortsDelegate(LibraryInterface* libraryAcces, QObject *parent):
 QStyledItemDelegate(parent),
+libraryAccess_(libraryAcces),
 busDefinition_(0)
 {
 
@@ -74,7 +79,7 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
         {
             QComboBox* box = new QComboBox(parent);
             box->addItem("");
-            box->addItems(busDefinition_->getSystemGroupNames());
+            box->addItems(BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_));
 
             connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
             return box;
@@ -190,7 +195,7 @@ void AbstractionPortsDelegate::commitAndCloseEditor()
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::setBusDef()
 //-----------------------------------------------------------------------------
-void AbstractionPortsDelegate::setBusDef(QSharedPointer<BusDefinition> busDefinition)
+void AbstractionPortsDelegate::setBusDef(QSharedPointer<const BusDefinition> busDefinition)
 {
     busDefinition_ = busDefinition;
 }

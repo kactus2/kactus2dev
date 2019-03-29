@@ -17,6 +17,8 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
+#include <IPXACTmodels/utilities/BusDefinitionUtils.h>
+
 #include <common/KactusColors.h>
 
 #include <QStringList>
@@ -25,11 +27,12 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsModel::AbstractionWirePortsModel()
 //-----------------------------------------------------------------------------
-AbstractionWirePortsModel::AbstractionWirePortsModel(QObject *parent):
+AbstractionWirePortsModel::AbstractionWirePortsModel(LibraryInterface* libraryAccess, QObject *parent):
 QAbstractTableModel(parent),
 absDef_(),
 busDefinition_(),
-table_() 
+table_(),
+libraryAccess_(libraryAccess)
 {
 
 }
@@ -215,8 +218,9 @@ QVariant AbstractionWirePortsModel::data(QModelIndex const& index, int role) con
         }
         else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
         {
-            if (port.mode_ != General::SYSTEM || !busDefinition_ || 
-                !busDefinition_->getSystemGroupNames().contains(port.wire_->getSystemGroup()))
+            if (!busDefinition_ || (port.mode_ == General::SYSTEM &&
+                !BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_).contains(
+                    port.wire_->getSystemGroup())))
             {
                 return  KactusColors::ERROR;
             }

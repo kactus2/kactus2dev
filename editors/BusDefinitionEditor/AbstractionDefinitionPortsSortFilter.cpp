@@ -49,6 +49,10 @@ QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIn
     {
         return KactusColors::MANDATORY_FIELD;
     }
+    else if (index.column() == columns_.systemGroupColumn_ && !systemGroupIsMandatory)
+    {
+        return KactusColors::DISABLED_FIELD;
+    }
 
     int previousRow = index.row() - 1;
     QString previousName("");

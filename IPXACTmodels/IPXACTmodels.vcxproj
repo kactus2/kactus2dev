@@ -549,6 +549,7 @@
     <ClCompile Include="kactusExtensions\validators\ComDefinitionValidator.cpp" />
     <ClCompile Include="kactusExtensions\validators\SystemDesignConfigurationValidator.cpp" />
     <ClCompile Include="kactusExtensions\validators\SystemViewConfigurationValidator.cpp" />
+    <ClCompile Include="utilities\BusDefinitionUtils.cpp" />
     <ClCompile Include="utilities\XmlUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -556,6 +557,7 @@
     <ClInclude Include="Component\FieldReset.h" />
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
     <ClInclude Include="Component\validators\RegisterFileValidator.h" />
+    <ClInclude Include="utilities\BusDefinitionUtils.h" />
     <ClInclude Include="utilities\XmlUtils.h" />
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>

@@ -16,6 +16,8 @@
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
+#include <IPXACTmodels/utilities/BusDefinitionUtils.h>
+
 #include <QContextMenuEvent>
 #include <QMenu>
 
@@ -85,8 +87,7 @@ QStringList SystemGroupListEditor::getExtendedSystemGroupNames(QSharedPointer<Bu
             QSharedPointer<BusDefinition> extendBus = extendDocument.dynamicCast<BusDefinition>();
             if (extendBus)
             {
-                extendedList = extendBus->getSystemGroupNames();
-                extendedList.append(getExtendedSystemGroupNames(extendBus));
+                extendedList.append(BusDefinitionUtils::getSystemGroups(extendBus, library_));
             }
         }
     }

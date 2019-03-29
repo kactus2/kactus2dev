@@ -35,9 +35,10 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] libraryAccess   Interface to the library.
      *      @param [in] parent          The owner of the editor.
      */
-    AbstractionWirePortsEditor(QWidget *parent);
+    AbstractionWirePortsEditor(LibraryInterface* libaryAccess, QWidget *parent);
 
     /*!
      *  The destructor.

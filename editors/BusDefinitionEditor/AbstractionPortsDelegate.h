@@ -15,6 +15,7 @@
 #include <QStyledItemDelegate>
 
 class BusDefinition;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Master delegate for abstraction definition wire and transactional ports.
@@ -28,9 +29,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  The owner of this instance
+     *      @param [in] libraryAccess   Interface to the library.
+	 *      @param [in] parent          The owner of this instance
      */
-    AbstractionPortsDelegate(QObject *parent);
+    AbstractionPortsDelegate(LibraryInterface* libraryAcces, QObject *parent);
 
 	/*!
      *  The destructor.
@@ -71,7 +73,7 @@ public:
 	 *
 	 *      @param [in] busDefinition  The referenced bus definition.
      */
-    void setBusDef(QSharedPointer<BusDefinition> busDefinition);
+    void setBusDef(QSharedPointer<const BusDefinition> busDefinition);
 
 protected slots:
 
@@ -165,8 +167,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! Interface to the library.
+    LibraryInterface* libraryAccess_;
+
     //! The bus definition referenced by the edited abstraction definition.
-    QSharedPointer<BusDefinition> busDefinition_;
+    QSharedPointer<const BusDefinition> busDefinition_;
 };
 
 #endif // ABSTRACTIONPORTSDELEGATE_H

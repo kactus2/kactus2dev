@@ -18,18 +18,23 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/Protocol.h>
+
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
+#include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsModel::AbstractionTransactionalPortsModel()
 //-----------------------------------------------------------------------------
-AbstractionTransactionalPortsModel::AbstractionTransactionalPortsModel(QObject *parent) :
+AbstractionTransactionalPortsModel::AbstractionTransactionalPortsModel(LibraryInterface* libraryAccess,
+    QObject *parent):
 QAbstractTableModel(parent),
 absDef_(),
 busDefinition_(),
-table_()
+table_(),
+libraryAccess_(libraryAccess)
 {
 
 }
@@ -244,8 +249,9 @@ QVariant AbstractionTransactionalPortsModel::data(QModelIndex const& index, int 
         }
         else if (index.column() == AbstractionTransactionalPortColumns::SYSTEM_GROUP)
         {
-            if (port.mode_ != General::SYSTEM || !busDefinition_ || 
-                !busDefinition_->getSystemGroupNames().contains(port.transactionalPort_->getSystemGroup()))
+            if (!busDefinition_ || (port.mode_ == General::SYSTEM &&
+                !BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_).contains(
+                    port.transactionalPort_->getSystemGroup())))
             {
                 return KactusColors::ERROR;
             }
