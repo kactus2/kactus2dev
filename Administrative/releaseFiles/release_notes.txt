@@ -1,12 +1,40 @@
 ===============================================================================
                             RELEASE NOTES : Kactus2
-				  Copyright (c) 2012-2019 Tampere University
+                  Copyright (c) 2012-2019 Tampere University
                             http://funbase.cs.tut.fi
 ===============================================================================
               + Improvement or feature added
               - Bug fix or something removed
               * Changed or Information
 ===============================================================================
+
+29/03/2019 3.7.0
+----------------------------------------------------
+
++ Added auto connector tool for component instances in a design
++ Added editor for Vendor Extensions in Component and Design
++ Added support for register files
++ Added support for multiple reset values for register fields
++ Added scrolling to design view when items are dragged
++ Improved memory map visualization and library loading performance
++ Improved expression parsing
+    * Added support for bitwise operations
+    * Improved expression solving performance
++ Improved VHDL and Verilog support
+    * Fixed array and vector boundary handling
+    * Include Verilog file parameters are imported
+    * Imported parameter type is set based on the data type in VHDL
++ Improved HW design editor to accept connections between extended bus definitions
+
+- Fixed an issue where removing an item in library did not remove the file on disk
+- Fixed an issue where removing items in memory maps would cause the application to crash
+- Fixed an issue where setting an empty bus interface mode would cause the application to crash
+- Fixed an issue where design active views were cleared on save
+- Fixed an issue where plugin details were incorrectly displayed in the settings
+- Fixed an issue where component instance parameter override was incorrectly displayed when
+  using parameter choices 
+- Fixed an issue where multiline description was not correctly CSV imported/exported
+
 
 29/06/2018 3.6.50
 ----------------------------------------------------
@@ -27,17 +55,17 @@
 + Added support for multiple abstraction definitions in a bus interface
 + Improvements to Memory Designer
     * Improved item scaling in non-compressed mode
-	* Improved search through hierarchies
-	* Improved visulization for multiple address spaces connected to one memory map
+    * Improved search through hierarchies
+    * Improved visulization for multiple address spaces connected to one memory map
 + Added feature to save HW, System and Memory Designer view as a PNG, JPG or SVG image
 + Improved expression parsing
-	* Support for exp, pow and sqrt functions
-	* Better suppport for string expressions and their comparison
-	* Faster parsing algorithm
+    * Support for exp, pow and sqrt functions
+    * Better suppport for string expressions and their comparison
+    * Faster parsing algorithm
 + Added Linux Device Tree Generator plugin
 + IP-XACT library handling improved for better performance and readability
 + HW and System design area size now adjusts to contents
-	
+
 - Restored automatic item selection in library view when component instance is selected
 - Fixed addressSpaceRef-attribute parsing and writing
 - Fixed export dialog from hierarchy view

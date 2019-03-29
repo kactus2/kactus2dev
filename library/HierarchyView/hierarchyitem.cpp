@@ -580,7 +580,7 @@ int HierarchyItem::countInstances(VLNV const& componentVLNV)
 bool HierarchyItem::hasChild(VLNV const& vlnv)
 {
     return std::find_if(childItems_.cbegin(), childItems_.cend(),
-        [&vlnv](auto& child) { return child->getVLNV() == vlnv; }) != childItems_.cend();
+        [&vlnv](HierarchyItem const* child) { return child->getVLNV() == vlnv; }) != childItems_.cend();
 }
 
 //-----------------------------------------------------------------------------
