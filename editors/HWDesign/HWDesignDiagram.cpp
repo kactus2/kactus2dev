@@ -3047,7 +3047,9 @@ ConnectionEndpoint* HWDesignDiagram::getEndPointFromComponentItem(AutoConnectorI
         {
             if (port->name() == itemName)
             {
-                new AdHocVisibilityChangeCommand(containingItem, itemName, true);
+                AdHocVisibilityChangeCommand* newVisibilityCommand =
+                    new AdHocVisibilityChangeCommand(containingItem, itemName, true);
+                newVisibilityCommand->redo();
 
                 for (auto const& endpoint : containingItem->getEndpoints())
                 {
