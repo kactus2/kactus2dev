@@ -23,7 +23,7 @@ IPXACTMODELS_EXPORT QStringList BusDefinitionUtils::getSystemGroups(QSharedPoint
 {
     QStringList systemGroups = bus->getSystemGroupNames();
 
-    VLNV& extendVLNV = bus->getExtends();
+    VLNV const extendVLNV = bus->getExtends();
     if (extendVLNV.isValid() && extendVLNV.getType() == VLNV::BUSDEFINITION)
     {
         QSharedPointer<const Document> extendDocument = libraryAccess->getModelReadOnly(extendVLNV);
