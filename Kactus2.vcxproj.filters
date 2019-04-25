@@ -935,6 +935,18 @@
     <Filter Include="Source Files\editors\VendorExtensionEditor\VendorExtensionsAttributesEditor">
       <UniqueIdentifier>{66aec384-7d98-4bc2-b79f-2420c590071c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\wizards\ImportWizard\ImportInstancesEditor">
+      <UniqueIdentifier>{a5d372ab-915a-4ab4-ba97-69fd866f4e7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\ImportWizard\ImportInstancesEditor">
+      <UniqueIdentifier>{9f761e61-b26d-4858-bcff-de9aead9a679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\expressions">
+      <UniqueIdentifier>{e1889aeb-d22a-4c23-9392-ee4107a7a552}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\expressions">
+      <UniqueIdentifier>{e067188b-7c08-4e68-82df-7de63c587d49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4687,6 +4699,27 @@
     <ClCompile Include="GeneratedFiles\moc_ItemExporter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesEditor.cpp">
+      <Filter>Source Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ImportInstancesEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ImportWizard\ImportWizardInstancesPage.cpp">
+      <Filter>Source Files\wizards\ImportWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ImportWizardInstancesPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\expressions\utilities.cpp">
+      <Filter>Source Files\common\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ImportInstancesDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesDelegate.cpp">
+      <Filter>Source Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6405,6 +6438,18 @@
     <CustomBuild Include="library\ItemExporter.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
+    <CustomBuild Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesEditor.h">
+      <Filter>Header Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ImportWizard\ImportWizardInstancesPage.h">
+      <Filter>Header Files\wizards\ImportWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\InstanceData.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesDelegate.h">
+      <Filter>Header Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7168,6 +7213,12 @@
     </ClInclude>
     <ClInclude Include="editors\common\VendorExtensionEditor\VendorExtensionAttributesEditor\VendorExtensionAttributesColumns.h">
       <Filter>Header Files\editors\VendorExtensionEditor\VendorExtensionAttributesEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="common\expressions\utilities.h">
+      <Filter>Header Files\common\expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesColumns.h">
+      <Filter>Header Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

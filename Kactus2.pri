@@ -176,8 +176,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.h \
     ./wizards/ImportWizard/ImportWizardIntroPage.h \
     ./wizards/ImportWizard/ImportWizardPages.h \
+    ./wizards/ImportWizard/ImportWizardInstancesPage.h \
     ./wizards/ImportWizard/ImportWizardImportPage.h \
     ./wizards/ImportWizard/ImportWizard.h \
+    ./wizards/ImportWizard/ImportInstancesEditor/ImportInstancesEditor.h \
     ./wizards/common/IPXactDiff.h \
     ./wizards/common/IPXactElementComparator.h \
     ./wizards/common/ListComparator.h \
@@ -816,7 +818,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./common/expressions/utilities.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -961,7 +964,9 @@ SOURCES += ./VersionHelper.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.cpp \
     ./wizards/ImportWizard/ImportWizard.cpp \
     ./wizards/ImportWizard/ImportWizardImportPage.cpp \
+    ./wizards/ImportWizard/ImportWizardInstancesPage.cpp \
     ./wizards/ImportWizard/ImportWizardIntroPage.cpp \
+    ./wizards/ImportWizard/ImportInstancesEditor/ImportInstancesEditor.cpp \
     ./wizards/common/IPXactDiff.cpp \
     ./wizards/common/ComponentComparator/ComponentComparator.cpp \
     ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
@@ -1524,5 +1529,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./common/expressions/utilities.cpp
 RESOURCES += kactus.qrc

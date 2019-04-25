@@ -15,12 +15,16 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
+#include <wizards/ComponentWizard/InstanceData.h>
+
 #include <QWizardPage>
 #include <QSharedPointer>
 
 class Component;
 class LibraryInterface;
 class ImportEditor;
+class Kactus2Value;
+class Kactus2Group;
 
 //-----------------------------------------------------------------------------
 //! Import page for the component wizard.
@@ -87,11 +91,72 @@ signals:
      */
     void decreaseReferences(QString const& id);
 
+private slots:
+
+    /*!
+     *  Handle the change in imported component.
+     *
+     *      @param [in] newComponent    The new component.
+     */
+    void onComponentChange(QSharedPointer<Component> newComponent);
+
 private:
 	// Disable copying.
 	ComponentWizardImportPage(ComponentWizardImportPage const& rhs);
 	ComponentWizardImportPage& operator=(ComponentWizardImportPage const& rhs);
     
+    /*!
+     *  Get the list of imported instances from the selected component.
+     *
+     *      @param [in] newComponent    The selected component.
+     *
+     *      @return List of imported instances from the selected component.
+     */
+    QVector<InstanceData::instanceData> getVerilogInstancesFromComponent(QSharedPointer<Component> newComponent)
+        const;
+
+    /*!
+     *  Get the list of imported instances from the selected vendor extension.
+     *
+     *      @param [in] instancesGroup  Extension group for component instances.
+     *
+     *      @return List of imported instances from the selected extension group.
+     */
+    QVector<InstanceData::instanceData> getVerilogInstancesFromExtension(
+        QSharedPointer<Kactus2Group> instancesGroup) const;
+
+    /*!
+     *  Get the string for the selected instance parameter.
+     *
+     *      @param [in] stringID        ID of the selected parameter.
+     *      @param [in] extensionGroup  Vendor extension group containing the instance.
+     *
+     *      @return Instance data matching the ID.
+     */
+    QString getInstanceString(QString const& stringID, QSharedPointer<Kactus2Group> extensionGroup) const;
+
+    /*!
+     *  Get the string pairs for the selected instance parameter pair.
+     *
+     *      @param [in] itemGroupID     ID of the selected item group.
+     *      @param [in] itemID          ID of the item pair.
+     *      @param [in] extensionGroup  Vendor extension group for the parameter pairs.
+     *
+     *      @return Parameter pair data for the selected ID.
+     */
+    QVector<QPair<QString, QString> > getInstanceStringPairs(QString const& itemGroupID, QString const& itemID,
+        QSharedPointer<Kactus2Group> extensionGroup) const;
+
+    /*!
+     *  Get a single value from the selected extension group.
+     *
+     *      @param [in] valueID         ID of the selected item.
+     *      @param [in] extensionGroup  Vendor extension group for the parameter pairs.
+     *
+     *      @return Value of the selected ID.
+     */
+    QString getSingleValueFromGroup(QString const& valueID, QSharedPointer<Kactus2Group> extensionGroup) const;
+
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------

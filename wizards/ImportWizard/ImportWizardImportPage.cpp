@@ -35,5 +35,5 @@ ImportWizardImportPage::~ImportWizardImportPage()
 //-----------------------------------------------------------------------------
 int ImportWizardImportPage::nextId() const
 {
-    return ImportWizardPages::CONCLUSION;
+    return ImportWizardPages::INSTANCES;
 }

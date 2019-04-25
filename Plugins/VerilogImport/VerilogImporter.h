@@ -16,6 +16,7 @@
 
 #include "VerilogPortParser.h"
 #include "VerilogParameterParser.h"
+#include "Plugins/VerilogImport/VerilogInstanceParser.h"
 
 #include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
@@ -181,6 +182,9 @@ private:
 
     //! The parameter parser to use for importing model parameters.
     VerilogParameterParser parameterParser_;
+
+    //! Instance parser used for importing contained component instances.
+    VerilogInstanceParser instanceParser_;
 
     //! The highlighter to use.
     Highlighter* highlighter_;

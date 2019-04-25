@@ -23,6 +23,8 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
+#include <common/expressions/utilities.h>
+
 #include <QList>
 #include <QString>
 #include <QRegularExpression>
@@ -116,7 +118,8 @@ QString VerilogParameterParser::findParameterSection(QString const &input)
     int endIndex = -1;
     if (beginIndex != -1)
     {
-        endIndex = findMatchingEndParenthesis(inspect, beginIndex - 1);
+        endIndex =
+            ExpressionUtilities::findMatchingEndParenthesis(inspect, beginIndex - 1, VerilogSyntax::COMMENT);
     }
 
     int length = input.length();
@@ -131,45 +134,6 @@ QString VerilogParameterParser::findParameterSection(QString const &input)
 
     return inspect.mid(beginIndex, length);
 }
-
-//-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::findMatchingEndParenthesis()
-//-----------------------------------------------------------------------------
-int VerilogParameterParser::findMatchingEndParenthesis(QString const& equation, int parenthesesStart) const
-{
-    QRegularExpression parenthesesExpression("[()]");
-    QRegularExpression commentExpression(VerilogSyntax::COMMENT);
-
-    int position = parenthesesStart + 1;
-    QRegularExpressionMatch commentMatch = commentExpression.match(equation, position);
-
-    int depth = 1;
-    while (depth > 0)
-    {
-        position = equation.indexOf(parenthesesExpression, position);
-
-        // Skip commented sections.
-        if (commentMatch.hasMatch() && position > commentMatch.capturedStart())
-        {
-            position = commentMatch.capturedEnd();
-            commentMatch = commentExpression.match(equation, position);
-            continue;
-        }
-
-        if (parenthesesExpression.match(equation.at(position)).captured() == "(")
-        {
-            depth++;
-        }
-        else
-        {
-            depth--;
-        }
-        position++;
-    }
-
-    return position - 1;
-}
-
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::parseParameters()

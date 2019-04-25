@@ -11,7 +11,8 @@ HEADERS += ../PluginSystem/ImportPlugin/ImportColors.h \
     ../VerilogImport/VerilogParameterParser.h \
     ./verilogincludeimport_global.h \
     ./VerilogIncludeImport.h \
-    ../../IPXACTmodels/utilities/Search.h
+    ../../common/expressions/utilities.h
 SOURCES += ../VerilogImport/VerilogParameterParser.cpp \
     ../VerilogImport/VerilogSyntax.cpp \
-    ./VerilogIncludeImport.cpp
+    ./VerilogIncludeImport.cpp \
+    ../../common/expressions/utilities.cpp

@@ -7,23 +7,28 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../common/NameGenerationPolicy.h \
+HEADERS += ../../common/expressions/utilities.h \
+    ../../common/NameGenerationPolicy.h \
     ../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/NullParser.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../IPXACTmodels/utilities/Search.h \
+    ../../wizards/ComponentWizard/InstanceData.h \
     ../common/HDLmath.h \
+    ./VerilogInstanceParser.h \
     ./VerilogParameterParser.h \
     ./VerilogPortParser.h \
     ./VerilogSyntax.h \
     ./verilogimport_global.h \
-    ./VerilogImporter.h \
-    ../../IPXACTmodels/utilities/Search.h
-SOURCES += ../../common/NameGenerationPolicy.cpp \
+    ./VerilogImporter.h
+SOURCES += ../../common/expressions/utilities.cpp \
+    ../../common/NameGenerationPolicy.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/NullParser.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./VerilogImporter.cpp \
+    ./VerilogInstanceParser.cpp \
     ./VerilogParameterParser.cpp \
     ./VerilogPortParser.cpp \
     ./VerilogSyntax.cpp

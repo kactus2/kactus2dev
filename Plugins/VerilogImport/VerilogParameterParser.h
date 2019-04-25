@@ -95,8 +95,6 @@ private:
      */
     QStringList findParameterDeclarations(QString const& inspect);
 
-    int findMatchingEndParenthesis(QString const& equation, int parenthesesStart) const;
-
     /*!
      *  Create an IP-XACT type for the parameter according to the given data type.
      *

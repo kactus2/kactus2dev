@@ -22,7 +22,12 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::VerilogImporter()
 //-----------------------------------------------------------------------------
-VerilogImporter::VerilogImporter(): QObject(0), portParser_(), parameterParser_(), highlighter_(0)
+VerilogImporter::VerilogImporter():
+QObject(0),
+portParser_(),
+parameterParser_(),
+instanceParser_(),
+highlighter_(0)
 {
 
 }
@@ -126,6 +131,8 @@ void VerilogImporter::import(QString const& input, QSharedPointer<Component> tar
         parameterParser_.import(input, targetComponent, targetComponentInstantiation);
 
         portParser_.import(input, targetComponent, targetComponentInstantiation);
+
+        instanceParser_.import(input, targetComponent);
     }
 }
 
@@ -136,6 +143,7 @@ void VerilogImporter::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ = highlighter;
 
+    instanceParser_.setHighlighter(highlighter);
     parameterParser_.setHighlighter(highlighter);
     portParser_.setHighlighter(highlighter);
 }

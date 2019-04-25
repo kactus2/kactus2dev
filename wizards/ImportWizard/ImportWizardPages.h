@@ -20,6 +20,7 @@ namespace ImportWizardPages
     {
         INTRO = 0,
         IMPORT,
+        INSTANCES,
         CONCLUSION
 	 };
 
