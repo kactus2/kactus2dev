@@ -19,12 +19,11 @@
 #include <QSharedPointer>
 
 class ExpressionParser;
-
 class Port;
 class View;
 class Wire;
 class WireTypeDef;
-
+class Transactional;
 class PortTypeValidator;
 
 //-----------------------------------------------------------------------------
@@ -135,6 +134,60 @@ public:
      *      @return True, if the transactional port is valid, otherwise false.
      */
     bool hasValidTransactionalPort(QSharedPointer<Port> port) const;
+
+    /*!
+     *  Check if a transactional has a valid initiative.
+     *
+     *      @param [in] transactional   The selected transactional
+     *
+     *      @return True, if the initiative is valid, false otherwise.
+     */
+    bool hasValidTransactionalInitiative(QSharedPointer<Transactional> transactional) const;
+
+    /*!
+     *  Check if a transactional has a valid kind.
+     *
+     *      @param [in] transactional   The selected transactional
+     *
+     *      @return True, if the kind is valid, false otherwise.
+     */
+    bool hasValidTransactionalKind(QSharedPointer<Transactional> transactional) const;
+
+    /*!
+     *  Check if a transactional has a valid bus width.
+     *
+     *      @param [in] transactional   The selected transactional
+     *
+     *      @return True, if the bus width is valid, false otherwise.
+     */
+    bool hasValidTransactionalWidth(QSharedPointer<Transactional> transactional) const;
+
+    /*!
+     *  Check if a transactional has a valid value for maximum connections.
+     *
+     *      @param [in] transactional   The selected transactional
+     *
+     *      @return True, if the maximum connections value is valid, false otherwise.
+     */
+    bool hasValidTransactionalMaxConnections(QSharedPointer<Transactional> transactional) const;
+
+    /*!
+     *  Check if a transactional has a valid value for minimum connections.
+     *
+     *      @param [in] transactional   The selected transactional
+     *
+     *      @return True, if the minimum connections value is valid, false otherwise.
+     */
+    bool hasValidTransactionalMinConnections(QSharedPointer<Transactional> transactional) const;
+
+    /*!
+     *  Check if a transactional has a protocol.
+     *
+     *      @param [in] transactional   The selected transactional
+     *
+     *      @return True, if the protocol is valid, false otherwise.
+     */
+    bool hasValidTransactionalProtocol(QSharedPointer<Transactional> transactional) const;
 
     /*!
      *  Check if the port has valid type definitions.

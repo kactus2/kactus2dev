@@ -11,18 +11,17 @@
 
 #include "PortsView.h"
 
-#include "PortColumns.h"
-
 #include <QMenu>
 #include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: PortsView::PortsView()
 //-----------------------------------------------------------------------------
-PortsView::PortsView(QWidget *parent):
+PortsView::PortsView(int const& nameColumn, QWidget *parent):
 EditableTableView(parent),
-    createBus_(tr("Create new bus definition"), this),
-    createExistingBus_(tr("Use existing bus definition"), this)
+createBus_(tr("Create new bus definition"), this),
+createExistingBus_(tr("Use existing bus definition"), this),
+nameColumn_(nameColumn)
 {
     verticalHeader()->show();
     verticalHeader()->setMaximumWidth(300);
@@ -49,7 +48,7 @@ void PortsView::onCreateNewBus()
     QStringList selectedPorts;
     foreach(QModelIndex const& portIndex, selectedIndexes())
     {   
-        QString portName = portIndex.sibling(portIndex.row(), PortColumns::NAME).data().toString();
+        QString portName = portIndex.sibling(portIndex.row(), nameColumn_).data().toString();
         if (!selectedPorts.contains(portName))
         {
             selectedPorts.append(portName);
@@ -67,8 +66,7 @@ void PortsView::onCreateExistingBus()
     QStringList selectedPorts;
     foreach(QModelIndex const& portIndex, selectedIndexes())
     {   
-
-        QString portName = portIndex.sibling(portIndex.row(), PortColumns::NAME).data().toString();
+        QString portName = portIndex.sibling(portIndex.row(), nameColumn_).data().toString();
         if (!selectedPorts.contains(portName))
         {
             selectedPorts.append(portName);

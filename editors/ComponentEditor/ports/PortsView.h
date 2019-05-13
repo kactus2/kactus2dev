@@ -28,9 +28,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   The parent widget.	 
+     *      @param [in] nameColumn  Name column index of.
+	 *      @param [in] parent      The parent widget.	 
 	 */
-	PortsView(QWidget *parent);
+    PortsView(int const& nameColumn, QWidget *parent);
 
 	//! The destructor.
 	virtual ~PortsView();
@@ -83,6 +84,9 @@ private:
 
     //! Action for creating a new bus interface.
     QAction createExistingBus_;
+
+    //! Name column index.
+    int nameColumn_;
 };
 
 #endif // PORTSVIEW_H

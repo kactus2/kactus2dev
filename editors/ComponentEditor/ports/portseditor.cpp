@@ -11,9 +11,9 @@
 
 #include "portseditor.h"
 
-#include "portsdelegate.h"
-#include "portsmodel.h"
-#include "PortsView.h"
+#include <editors/ComponentEditor/ports/MasterPortsEditor.h>
+#include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
+#include <editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.h>
 
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -31,17 +31,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <IPXACTmodels/Component/validators/PortValidator.h>
-
-#include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QHeaderView>
-#include <QFileDialog>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: PortsEditor::PortsEditor()
@@ -50,17 +40,16 @@ PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* 
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<PortValidator> portValidator, QWidget *parent):
 ItemEditor(component, handler, parent),
-view_(new PortsView(this)), 
-model_(0),
-proxy_(this),
 component_(component),
 handler_(handler),
-delegate_()
+wireEditor_(0),
+transactionalEditor_(0),
+portTabs_(new QTabWidget(this))
 {
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
+	QString defaultPath = QString("%1/portListing.csv").arg(componentPath);
 
-    model_ = new PortsModel(component->getModel(), expressionParser, parameterFinder, expressionFormatter,
-        portValidator, this);
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -68,64 +57,61 @@ delegate_()
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
-    delegate_ = new PortsDelegate(component, parameterCompleter, parameterFinder,
-        portValidator->getTypeValidator(), this);
+    wireEditor_ = new MasterPortsEditor(component, handler, new WirePortsEditorConstructor(), expressionParser,
+        parameterFinder, expressionFormatter, portValidator, parameterCompleter, defaultPath, this);
 
-	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
-	QString defaultPath = QString("%1/portListing.csv").arg(componentPath);
-	view_->setDefaultImportExportPath(defaultPath);
-	view_->setAllowImportExport(true);
-    view_->setAlternatingRowColors(false);
-    view_->setSortingEnabled(true);
-    view_->setItemsDraggable(false);
-    view_->setItemDelegate(delegate_);
+    transactionalEditor_ =
+        new MasterPortsEditor(component, handler, new TransactionalPortsEditorConstructor(), expressionParser,
+            parameterFinder, expressionFormatter, portValidator, parameterCompleter, defaultPath, this);
 
-    proxy_.setSourceModel(model_);
-    view_->setModel(&proxy_);
-
-    view_->resizeColumnsToContents();
-
-    proxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
-
-	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(model_, SIGNAL(errorMessage(const QString&)),
+	connect(wireEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(wireEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(model_, SIGNAL(noticeMessage(const QString&)),
+	connect(wireEditor_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(view_, SIGNAL(addItem(const QModelIndex&)),
-        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
-		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-  
-    connect(view_, SIGNAL(createBus(QStringList const& )), this, SLOT(onCreateNewInteface(QStringList const& )));
-    connect(view_, SIGNAL(createExistingBus(QStringList const& )), 
-        this, SLOT(onCreateInterface(QStringList const& )));
+    connect(wireEditor_, SIGNAL(createNewInteface(QStringList const&)),
+        this, SLOT(onCreateNewInteface(QStringList const&)), Qt::UniqueConnection);
+    connect(wireEditor_, SIGNAL(createInterface(QStringList const&)),
+        this, SLOT(onCreateInterface(QStringList const&)), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(createNewInteface(QStringList const&)),
+        this, SLOT(onCreateNewInteface(QStringList const&)), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(createInterface(QStringList const&)),
+        this, SLOT(onCreateInterface(QStringList const&)), Qt::UniqueConnection);
 
-    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 
+    connect(wireEditor_, SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)), 
+    connect(wireEditor_, SIGNAL(decreaseReferences(QString)), 
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(model_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-
-    connect(delegate_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-    connect(view_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
+    connect(wireEditor_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
         this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
-    connect(model_, SIGNAL(portExtensionDataChanged(QModelIndex const&)),
+    connect(transactionalEditor_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
         this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
 
-	// display a label on top the table
+    connect(wireEditor_, SIGNAL(invalidateOtherFilter()),
+        transactionalEditor_, SIGNAL(ivalidateThisFilter()), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(invalidateOtherFilter()),
+        wireEditor_, SIGNAL(ivalidateThisFilter()), Qt::UniqueConnection);
+
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
+
+    portTabs_->addTab(wireEditor_, QStringLiteral("Wire ports"));
+    portTabs_->addTab(transactionalEditor_, QStringLiteral("Transactional ports"));
 
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-	layout->addWidget(view_, 1);
+ 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    layout->addWidget(portTabs_);
 	layout->setContentsMargins(0, 0, 0, 0);
 }
 
@@ -142,7 +128,7 @@ PortsEditor::~PortsEditor()
 //-----------------------------------------------------------------------------
 bool PortsEditor::isValid() const
 {
-	return model_->isValid();
+    return wireEditor_->isValid() && transactionalEditor_->isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +136,8 @@ bool PortsEditor::isValid() const
 //-----------------------------------------------------------------------------
 void PortsEditor::refresh()
 {
-	view_->update();
+    wireEditor_->refresh();
+    transactionalEditor_->refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +154,8 @@ void PortsEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void PortsEditor::setAllowImportExport(bool allow)
 {
-	view_->setAllowImportExport(allow);
+    wireEditor_->setAllowImportExport(allow);
+    transactionalEditor_->setAllowImportExport(allow);
 }
 
 //-----------------------------------------------------------------------------
@@ -176,8 +164,9 @@ void PortsEditor::setAllowImportExport(bool allow)
 void PortsEditor::setComponent(QSharedPointer<Component> component)
 {
     component_ = component;
-    model_->setModelAndLockCurrentPorts(component_->getModel());
-    delegate_->setComponent(component);
+
+    wireEditor_->setComponent(component);
+    transactionalEditor_->setComponent(component);
 }
 
 //-----------------------------------------------------------------------------
@@ -331,7 +320,16 @@ void PortsEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
     }
     else
     {
-        QSharedPointer<Port> selectedPort = model_->getPortAtIndex(itemIndex);
+        QSharedPointer<Port> selectedPort;
+        if (portTabs_->currentWidget() == wireEditor_)
+        {
+            selectedPort = wireEditor_->getIndexedPort(itemIndex);
+        }
+        else
+        {
+            selectedPort = transactionalEditor_->getIndexedPort(itemIndex);
+        }
+
         extensionItem = selectedPort;
         extensionID = QLatin1String("Port: ") + selectedPort->name();
     }

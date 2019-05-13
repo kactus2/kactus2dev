@@ -113,6 +113,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/ui/ConsoleMediator.h \
     ./common/ui/GraphicalMessageMediator.h \
     ./common/ui/MessageMediator.h \
+    ./common/expressions/utilities.h \
     ./mainwindow/CommandLineParser.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/ExitScreen.h \
@@ -159,6 +160,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
+    ./wizards/ComponentWizard/InstanceData.h \
     ./wizards/ComponentWizard/ViewListModel.h \
     ./wizards/ComponentWizard/ComponentWizardViewsPage.h \
     ./wizards/ComponentWizard/ImportRunner.h \
@@ -179,7 +181,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./wizards/ImportWizard/ImportWizardInstancesPage.h \
     ./wizards/ImportWizard/ImportWizardImportPage.h \
     ./wizards/ImportWizard/ImportWizard.h \
+    ./wizards/ImportWizard/ImportInstancesEditor/ImportInstancesColumns.h \
     ./wizards/ImportWizard/ImportInstancesEditor/ImportInstancesEditor.h \
+    ./wizards/ImportWizard/ImportInstancesEditor/ImportInstancesDelegate.h \
     ./wizards/common/IPXactDiff.h \
     ./wizards/common/IPXactElementComparator.h \
     ./wizards/common/ListComparator.h \
@@ -258,7 +262,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/itemeditor.h \
     ./editors/ComponentEditor/itemvisualizer.h \
     ./editors/ComponentEditor/general/generaleditor.h \
-    ./editors/ComponentEditor/ports/PortColumns.h \
+    ./editors/ComponentEditor/ports/WirePortColumns.h \
     ./editors/ComponentEditor/ports/PortTypeDefinitionDelegate.h \
     ./editors/ComponentEditor/ports/PortWireTypeColumns.h \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.h \
@@ -819,7 +823,18 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./common/expressions/utilities.h
+    ./editors/ComponentEditor/ports/WirePortsEditorConstructor.h \
+    ./editors/ComponentEditor/ports/TransactionalPortColumns.h \
+    ./editors/ComponentEditor/ports/MasterPortsEditor.h \
+    ./editors/ComponentEditor/ports/PortsEditorConstructor.h \
+    ./editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.h \
+    ./editors/ComponentEditor/ports/WirePortsModel.h \
+    ./editors/ComponentEditor/ports/TransactionalPortsModel.h \
+    ./editors/ComponentEditor/ports/WirePortsFilter.h \
+    ./editors/ComponentEditor/ports/TransactionalPortsFilter.h \
+    ./editors/ComponentEditor/ports/WirePortsDelegate.h \
+    ./editors/ComponentEditor/ports/TransactionalPortsDelegate.h \
+    ./editors/ComponentEditor/ports/PortsFilter.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -904,6 +919,7 @@ SOURCES += ./VersionHelper.cpp \
     ./common/views/EditableTreeView/EditableTreeView.cpp \
     ./common/ui/ConsoleMediator.cpp \
     ./common/ui/GraphicalMessageMediator.cpp \
+    ./common/expressions/utilities.cpp \
     ./mainwindow/CommandLineParser.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/DockWidgetHandler.cpp \
@@ -966,6 +982,7 @@ SOURCES += ./VersionHelper.cpp \
     ./wizards/ImportWizard/ImportWizardImportPage.cpp \
     ./wizards/ImportWizard/ImportWizardInstancesPage.cpp \
     ./wizards/ImportWizard/ImportWizardIntroPage.cpp \
+    ./wizards/ImportWizard/ImportInstancesEditor/ImportInstancesDelegate.cpp \
     ./wizards/ImportWizard/ImportInstancesEditor/ImportInstancesEditor.cpp \
     ./wizards/common/IPXactDiff.cpp \
     ./wizards/common/ComponentComparator/ComponentComparator.cpp \
@@ -1530,5 +1547,14 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./common/expressions/utilities.cpp
+    ./editors/ComponentEditor/ports/WirePortsEditorConstructor.cpp \
+    ./editors/ComponentEditor/ports/MasterPortsEditor.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.cpp \
+    ./editors/ComponentEditor/ports/WirePortsModel.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortsModel.cpp \
+    ./editors/ComponentEditor/ports/WirePortsFilter.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortsFilter.cpp \
+    ./editors/ComponentEditor/ports/WirePortsDelegate.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortsDelegate.cpp \
+    ./editors/ComponentEditor/ports/PortsFilter.cpp
 RESOURCES += kactus.qrc

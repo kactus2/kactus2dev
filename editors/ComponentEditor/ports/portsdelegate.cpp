@@ -11,21 +11,16 @@
 
 #include "portsdelegate.h"
 
-#include "PortColumns.h"
-#include "PortTagEditorDelegate.h"
-
 #include <common/widgets/listManager/listeditor.h>
+
+#include <editors/ComponentEditor/ports/PortTagEditorDelegate.h>
 #include <editors/ComponentEditor/ports/PortWireTypeEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QApplication>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QLineEdit>
 #include <QMouseEvent>
 #include <QPainter>
-#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::PortsDelegate()
@@ -43,28 +38,16 @@ typeValidator_(typeValidator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsDelegate::~PortsDelegate()
-//-----------------------------------------------------------------------------
-PortsDelegate::~PortsDelegate()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortsDelegate::createEditor()
 //-----------------------------------------------------------------------------
 QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
     QModelIndex const& index) const
 {
-    if (index.column() == PortColumns::DIRECTION)
-    {
-        return createSelectorForDirection(parent);
-    }
-    else if (index.column() == PortColumns::TYPE_NAME)
+    if (index.column() == typeColumn())
     {
         return createTypeEditor(parent);
     }
-    else if (index.column() == PortColumns::TAG_GROUP)
+    else if (index.column() == tagColumn())
     {
         return createListEditorForPortTags(index, parent);
     }
@@ -91,27 +74,19 @@ QWidget* PortsDelegate::createTypeEditor(QWidget* parent) const
 //-----------------------------------------------------------------------------
 void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == PortColumns::DIRECTION)
-    {
-        QString text = index.data(Qt::DisplayRole).toString();
-        QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
-        int comboIndex = combo->findText(text);
-        combo->setCurrentIndex(comboIndex);
-    }
-    else if (index.column() == PortColumns::TYPE_NAME)
+    if (index.column() == typeColumn())
     {
         PortWireTypeEditor* typeEditor = dynamic_cast<PortWireTypeEditor*>(editor);
         if (typeEditor)
         {
-            QModelIndex portNameIndex = index.sibling(index.row(), PortColumns::NAME);
+            QModelIndex portNameIndex = index.sibling(index.row(), nameColumn());
             QString portName = portNameIndex.data(Qt::DisplayRole).toString();
             QSharedPointer<Port> currentPort = component_->getPort(portName);
 
             typeEditor->setPortForModel(currentPort);
         }
     }
-    else if (index.column() == PortColumns::TAG_GROUP)
+    else if (index.column() == tagColumn())
     {
         ListEditor* tagEditor = qobject_cast<ListEditor*>(editor);
         Q_ASSERT(tagEditor);
@@ -135,17 +110,11 @@ void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 void PortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index ) const
 {
-    if (index.column() == PortColumns::DIRECTION)
-    {
-        QComboBox* combo = qobject_cast<QComboBox*>(editor);
-        QString text = combo->currentText();
-        model->setData(index, text, Qt::EditRole);
-    }
-    else if (index.column() == PortColumns::TYPE_NAME)
+    if (index.column() == typeColumn())
     {
         return;
     }
-    else if (index.column() == PortColumns::TAG_GROUP)
+    else if (index.column() == tagColumn())
     {
         ListEditor* tagEditor = qobject_cast<ListEditor*>(editor);
         Q_ASSERT(tagEditor);
@@ -262,7 +231,7 @@ void PortsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option,
 {
 	QStyleOptionViewItem viewItemOption(option);
 
-    if (index.column() == PortColumns::ADHOC_VISIBILITY)
+    if (index.column() == adHocColumn())
     {
         painter->fillRect(option.rect, Qt::white);
 
@@ -283,31 +252,7 @@ void PortsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option,
 //-----------------------------------------------------------------------------
 bool PortsDelegate::columnAcceptsExpression(int column) const
 {
-    return column == PortColumns::DEFAULT_VALUE || column == PortColumns::LEFT_BOUND ||
-        column == PortColumns::RIGHT_BOUND || column == PortColumns::ARRAY_LEFT ||
-        column == PortColumns::ARRAY_RIGHT;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsDelegate::descriptionColumn()
-//-----------------------------------------------------------------------------
-int PortsDelegate::descriptionColumn() const
-{
-    return PortColumns::DESCRIPTION;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsDelegate::createSelectorForDirection()
-//-----------------------------------------------------------------------------
-QWidget* PortsDelegate::createSelectorForDirection(QWidget* parent) const
-{
-    QComboBox* directionSelector = new QComboBox(parent);
-    directionSelector->addItem("in");
-    directionSelector->addItem("out");
-    directionSelector->addItem("inout");
-    directionSelector->addItem("phantom");
-
-    return directionSelector;
+    return column == arrayLeftColumn() || column == arrayRightColumn();
 }
 
 //-----------------------------------------------------------------------------
@@ -323,7 +268,7 @@ QWidget* PortsDelegate::createListEditorForPortTags(const QModelIndex& currentIn
     int portCount = currentIndex.model()->rowCount();
     for (int i = 0; i < portCount; ++i)
     {
-        QModelIndex portIndex = currentIndex.sibling(i, PortColumns::TAG_GROUP);
+        QModelIndex portIndex = currentIndex.sibling(i, tagColumn());
         QString portTags = portIndex.data(Qt::ToolTipRole).toString();
 
         if (!portTags.isEmpty())
@@ -346,7 +291,7 @@ void PortsDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionView
 {
     ExpressionDelegate::updateEditorGeometry(editor, option, index);
 
-    if (index.column() == PortColumns::TYPE_NAME)
+    if (index.column() == typeColumn())
     {
         repositionAndResizeEditor(editor, option, index);
     }
@@ -394,7 +339,7 @@ void PortsDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewI
 //-----------------------------------------------------------------------------
 int PortsDelegate::getRowCountForPortTypes(QModelIndex const& index) const
 {
-    QModelIndex portNameIndex = index.sibling(index.row(), PortColumns::NAME);
+    QModelIndex portNameIndex = index.sibling(index.row(), nameColumn());
     QString portName = portNameIndex.data(Qt::DisplayRole).toString();
     QSharedPointer<Port> currentPort = component_->getPort(portName);
 

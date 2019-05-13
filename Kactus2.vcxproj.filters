@@ -4720,6 +4720,60 @@
     <ClCompile Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesDelegate.cpp">
       <Filter>Source Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\MasterPortsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MasterPortsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_WirePortsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TransactionalPortsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortsFilter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_WirePortsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsFilter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TransactionalPortsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_WirePortsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortsDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TransactionalPortsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortsFilter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6450,6 +6504,36 @@
     <CustomBuild Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesDelegate.h">
       <Filter>Header Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\MasterPortsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortsEditorConstructor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\WirePortsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\TransactionalPortsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\WirePortsFilter.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\TransactionalPortsFilter.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\WirePortsDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\TransactionalPortsDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortsFilter.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6634,9 +6718,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\ports\PortColumns.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
@@ -7219,6 +7300,15 @@
     </ClInclude>
     <ClInclude Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesColumns.h">
       <Filter>Header Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\WirePortColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

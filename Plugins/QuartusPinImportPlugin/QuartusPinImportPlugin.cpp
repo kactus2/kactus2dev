@@ -167,7 +167,12 @@ void QuartusPinImportPlugin::createPort(QString const& line, QSharedPointer<Comp
     QSharedPointer<Port> port = targetComponent->getPort(portName);
     if (port.isNull())
     {
-        port = QSharedPointer<Port>(new Port(portName, DirectionTypes::DIRECTION_PHANTOM));
+        QSharedPointer<Wire> portWire(new Wire());
+        portWire->setDirection(DirectionTypes::DIRECTION_PHANTOM);
+
+        port = QSharedPointer<Port>(new Port(portName));
+        port->setWire(portWire);
+
         targetComponent->getPorts()->append(port);
     }
 

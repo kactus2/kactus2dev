@@ -21,9 +21,10 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
+#include <QSortFilterProxyModel>
+
 class Model;
 class Port;
-
 class PortValidator;
 
 //-----------------------------------------------------------------------------
@@ -35,6 +36,12 @@ class PortsModel : public ReferencingTableModel, public ParameterizableTable
 
 public:
 
+    //! Role for locating an indexed port.
+    enum portRoles
+    {
+        getPortRole = Qt::UserRole
+    };
+
 	/*!
      *  The constructor.
 	 *
@@ -43,16 +50,17 @@ public:
      *      @param [in] parameterFinder         Pointer to the parameter finder.
      *      @param [in] expressionFormatter     Pointer to the expression formatter.
      *      @param [in] portValidator           Validator used for ports.
+     *      @param [in] filter                  Filter used for ports.
 	 *      @param [in] parent                  Pointer to the owner of this model.
      */
-	PortsModel(QSharedPointer<Model> model, QSharedPointer <ExpressionParser> expressionParser,
-        QSharedPointer <ParameterFinder> parameterFinder, QSharedPointer <ExpressionFormatter> expressionFormatter,
-        QSharedPointer<PortValidator> portValidator, QObject *parent);
-	
+    PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<PortValidator> portValidator, QSortFilterProxyModel* filter, QObject *parent);
+
 	/*!
      *  The destructor.
      */
-	virtual ~PortsModel();
+	virtual ~PortsModel() = default;
 
 	/*!
      *  Get the number of rows in the model.
@@ -62,15 +70,6 @@ public:
 	 *      @return Number of rows currently in the model.
      */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
-
-	/*!
-     *  Get the number of columns in the model.
-	 *
-	 *      @param [in] parent      Model index of the parent of the item. Must be invalid
-     *
-	 *      @return Always returns 9.
-     */
-	virtual int columnCount(const QModelIndex& parent = QModelIndex() ) const;
 
 	/*!
      *  Get the data for the specified item for specified role.
@@ -145,6 +144,11 @@ public:
      */
     QSharedPointer<Port> getPortAtIndex(QModelIndex const& index) const;
 
+
+    //! No copying. No assignment.
+    PortsModel(const PortsModel& other) = delete;
+    PortsModel& operator=(const PortsModel& other) = delete;
+
 protected:
 
     /*!
@@ -154,7 +158,7 @@ protected:
      *
      *      return      True, if column can have expressions, false otherwise.
      */
-    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const = 0;
 
     /*!
      *  Gets the expression for the given index, or plain value if there is no expression.
@@ -164,6 +168,15 @@ protected:
      *      return      Expression in the given index, or plain value.
      */
     virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      return      The data in the given index.
+     */
+    virtual QVariant valueForIndex(QModelIndex const& index) const;
 
     /*!
      *  Validates the data in the cell given by the column.
@@ -183,6 +196,31 @@ protected:
      *      @return Number of references made to the selected id from the selected row.
      */
     virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const&  valueID) const;
+
+    /*!
+     *  Gets the port in a given row.
+     *
+     *      @param [in] row   The row to search for.
+     *
+     *      @return The port on the given row.
+     */
+    virtual QSharedPointer<Port> portOnRow(int row) const;
+
+    /*!
+     *   Checks if given index is locked.
+     *
+     *      @param [in] index   The index to check.
+     *
+     *      @return True if the index is locked, otherwise false.
+     */
+    bool isLocked(QModelIndex const& index) const;
+
+    /*!
+     *  Get the active port validator.
+     *
+     *      @return The port validator.
+     */
+    QSharedPointer<PortValidator> getValidator() const;
 
 public slots:
 
@@ -244,20 +282,114 @@ signals:
      */
     void portExtensionDataChanged(QModelIndex const& index);
 
-private:
-	
-	//! No copying. No assignment.
-	PortsModel(const PortsModel& other);
-	PortsModel& operator=(const PortsModel& other);
- 
     /*!
-     *  Gets the port in a given row.
-     *
-     *      @param [in] row   The row to search for.
-     *
-     *      @return The port on the given row.
+     *  Invalidate the filter in the other ports model.
      */
-    QSharedPointer<Port> portOnRow(int row) const;
+    void invalidateOtherFilter();
+
+private:
+
+    /*!
+     *  Get the column for row number.
+     *
+     *      @return Row number column.
+     */
+    virtual int rowNumberColumn() const = 0;
+
+    /*!
+     *  Get the column for name.
+     *
+     *      @return Name column.
+     */
+    virtual int nameColumn() const = 0;
+
+    /*!
+     *  Get the column for type definitions.
+     *
+     *      @return Type definitions column.
+     */
+    virtual int typeColumn() const = 0;
+
+    /*!
+     *  Get the column for array left.
+     *
+     *      @return Array left column.
+     */
+    virtual int arrayLeftColumn() const = 0;
+
+    /*!
+     *  Get the column for array right.
+     *
+     *      @return Array right column.
+     */
+    virtual int arrayRightColum() const = 0;
+
+    /*!
+     *  Get the column for tags.
+     *
+     *      @return Tags column.
+     */
+    virtual int tagColumn() const = 0;
+
+    /*!
+     *  Get the column for description.
+     *
+     *      @return Description column.
+     */
+    virtual int descriptionColumn() const = 0;
+
+    /*!
+     *  Check if the selected item is disabled.
+     *
+     *      @param [in] index           Index of the selected item.
+     *      @param [in] indexedPort     The indexed port.
+     *
+     *      @return True, if the indexed item is disabled, false otherwise.
+     */
+    virtual bool indexedItemIsDisabled(QModelIndex const& index, QSharedPointer<Port> indexedPort) const = 0;
+
+    /*!
+     *  Check if the selected item is mandatory.
+     *
+     *      @param [in] index   Index of the selected item.
+     *
+     *      @return True, if the indexed item is mandatory, false otherwise.
+     */
+    virtual bool indexedItemIsMandatory(QModelIndex const& index) const = 0;
+
+    /*!
+     *  Check if the selected item can be checked.
+     *
+     *      @param [in] index   Index of the selected item.
+     *
+     *      @return True, if the indexed item can be checked, false otherwise.
+     */
+    virtual bool indexedItemCanBeChecked(QModelIndex const& index) const = 0;
+
+    /*!
+     *  Check if the selected item is locked.
+     *
+     *      @param [in] index   Index of the selected item.
+     *
+     *      @return True, if the indexed item is locked, false otherwise.
+     */
+    virtual bool indexedItemIsLocked(QModelIndex const& index) const = 0;
+
+    /*!
+     *  Get a list of the locked port indexes from the selected index.
+     *
+     *      @param [in] portIndex   Index of the selected item.
+     *
+     *      @return List of the locked port indexes.
+     */
+    virtual QModelIndexList getLockedPortIndexes(QModelIndex const& portIndex) const = 0;
+
+    /*!
+     *  Add the wire or transactional to a new port.
+     *
+     *      @param [in] port    The selected port.
+     */
+    virtual void finalizePort(QSharedPointer<Port> port) = 0;
 
     /*!
      *   Locks the name, direction  and type columns of a port.
@@ -288,15 +420,6 @@ private:
     void unlockIndex(QModelIndex const& index);
 
     /*!
-     *   Checks if given index is locked.
-     *
-     *      @param [in] index   The index to check.
-	 *
-	 *      @return True if the index is locked, otherwise false.
-     */
-    bool isLocked(QModelIndex const& index) const;
-
-    /*!
      *   Checks if given row is locked.
      *
      *      @param [in] row   The row to check.
@@ -304,32 +427,6 @@ private:
 	 *      @return True if the row is locked, otherwise false.
      */
     bool rowIsLocked(int row);
-
-    /*!
-     *  Gets the value for the given index.
-     *
-     *      @param [in] index   The index of target data.
-     *
-     *      return      The data in the given index.
-     */
-    QVariant valueForIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Changes the type name and definition on a row according to the port width.
-     *
-     *      @param [in] port    The port whose type name and definition to update.
-     *      @param [in] row     The row number of the port.
-     */
-    void setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int row);
-
-    /*!
-     *  Checks if a given port has an expression as a left or right bound.
-     *
-     *      @param [in] port   The port to check.
-     *
-     *      @return True, if left or right bound is an expression, otherwise false.
-     */
-    bool hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) const;
 
     /*!
      *  Get the displayed names of the port types.
@@ -358,6 +455,9 @@ private:
 
     //! The validator used for ports.
     QSharedPointer<PortValidator> portValidator_;
+
+    //! The filter for ports.
+    QSortFilterProxyModel* filter_;
 };
 
 #endif // PORTSMODEL_H

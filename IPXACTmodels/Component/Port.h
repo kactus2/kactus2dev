@@ -40,9 +40,8 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] portName    Name of the port.
-	 *      @param [in] direction   Direction of the port.
 	 */
-	Port(QString const& portName = QString(), DirectionTypes::Direction direction = DirectionTypes::IN);
+    Port(QString const& portName = QString());
 
     /*!
      *  Copy constructor.
@@ -339,5 +338,7 @@ private:
     //! The list of arrays.
     QSharedPointer<QList<QSharedPointer<Array> > > configurableArrays_;
 };
+
+Q_DECLARE_METATYPE(QSharedPointer<Port>)
 
 #endif // PORT_H

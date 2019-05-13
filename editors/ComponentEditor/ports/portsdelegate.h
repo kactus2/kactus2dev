@@ -43,35 +43,38 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortTypeValidator> typeValidator,
         QObject* parent = 0);
 	
-	//! The destructor
-	virtual ~PortsDelegate();
+	/*!
+     *  The destructor.
+     */
+	virtual ~PortsDelegate() = default;
 
-	/*! Create a new editor for the given item
+	/*!
+     *  Create a new editor for the given item
 	 *
-	 * @param [in] parent   Owner for the editor.
-	 * @param [in] option   Contains options for the editor.
-	 * @param [in] index    Model index identifying the item.
+	 *      @param [in] parent  Owner for the editor.
+	 *      @param [in] option  Contains options for the editor.
+	 *      @param [in] index   Model index identifying the item.
 	 *
-	 * @return The editor to be used to edit the item.
-	*/
-	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
-        QModelIndex const& index) const;
+	 *      @return The editor to be used to edit the item.
+     */
+	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index)
+        const;
 
-	/*! Set the data for the editor.
+	/*!
+     *  Set the data for the editor.
 	 *
-	 * @param [in] editor   The editor where the data is to be set.
-	 * @param [in] index    Model index identifying the item that's data is to be set.
-	 *
-	*/
+	 *      @param [in] editor  The editor where the data is to be set.
+	 *      @param [in] index   Model index identifying the item that's data is to be set.
+     */
 	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
 
-	/*! Save the data from the editor to the model.
+	/*!
+     *  Save the data from the editor to the model.
 	 *
-	 * @param [in] editor   The editor that contains the data to store.
-	 * @param [in] model    Model that contains the data structure where data is to be saved to.
-	 * @param [in] index    Model index identifying the item that's data is to be saved.
-	 *
-	*/
+	 *      @param [in] editor  The editor that contains the data to store.
+	 *      @param [in] model   Model that contains the data structure where data is to be saved to.
+	 *      @param [in] index   Model index identifying the item that's data is to be saved.
+     */
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		QModelIndex const& index) const;
 
@@ -100,6 +103,10 @@ public:
      *      @param [in] newComponent    The new component.
      */
     void setComponent(QSharedPointer<Component> newComponent);
+
+    // Disable copying.
+    PortsDelegate(PortsDelegate const& rhs) = delete;
+    PortsDelegate& operator=(PortsDelegate const& rhs) = delete;
 
 signals:
 
@@ -132,22 +139,56 @@ protected:
      */
     virtual bool columnAcceptsExpression(int column) const;
 
-    //! Gets the description column.
-    virtual int descriptionColumn() const;
+    /*!
+     *  Gets the description column.
+     *
+     *      @return Description column index.
+     */
+    virtual int descriptionColumn() const = 0;
 
 private:
-    // Disable copying.
-    PortsDelegate(PortsDelegate const& rhs);
-    PortsDelegate& operator=(PortsDelegate const& rhs);
 
     /*!
-     *  Creates a selector for port direction.
+     *  Get the name column index.
      *
-     *      @param [in] parent   The parent widget for the selector.
-     *
-     *      @return The selector for port direction.
+     *      @return Name column index.
      */
-    QWidget* createSelectorForDirection(QWidget* parent) const;
+    virtual int nameColumn() const = 0;
+
+    /*!
+     *  Get the type definition column index.
+     *
+     *      @return Type definition column index.
+     */
+    virtual int typeColumn() const = 0;
+
+    /*!
+     *  Get the tag group column index.
+     *
+     *      @return Tag group column index.
+     */
+    virtual int tagColumn() const = 0;
+
+    /*!
+     *  Get the adhoc column index.
+     *
+     *      @return Adhoc column index.
+     */
+    virtual int adHocColumn() const = 0;
+
+    /*!
+     *  Get the array left column index.
+     *
+     *      @return Array left column index.
+     */
+    virtual int arrayLeftColumn() const = 0;
+
+    /*!
+     *  Get the array right column index.
+     *
+     *      @return Array right column index.
+     */
+    virtual int arrayRightColumn() const = 0;
 
     /*!
      *  Creates a port type editor.

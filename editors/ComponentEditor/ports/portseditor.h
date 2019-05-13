@@ -16,19 +16,12 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/itemeditor.h>
 
-#include <common/views/EditableTableView/editabletableview.h>
-
-#include <QPushButton>
-#include <QSortFilterProxyModel>
-#include <QSharedPointer>
-
 class Component;
 class LibraryInterface;
-class Port;
-class PortsModel;
-class PortsView;
 class PortValidator;
-class PortsDelegate;
+class MasterPortsEditor;
+
+#include <QTabWidget>
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
@@ -84,6 +77,10 @@ public:
      */
     void setComponent(QSharedPointer<Component> component);
 
+    //! No copying
+    PortsEditor(const PortsEditor& other) = delete;
+    PortsEditor& operator=(const PortsEditor& other) = delete;
+
 signals:
 
     /*!
@@ -121,27 +118,20 @@ private slots:
 
 private:
 
-	//! No copying
-	PortsEditor(const PortsEditor& other);
-	PortsEditor& operator=(const PortsEditor& other);
-
-	//! The view that displays the parameters.
-	PortsView* view_;
-
-	//! The model that holds the data to be displayed to the user
-	PortsModel* model_;
-
-	//! The proxy that is used to sort the view
-	QSortFilterProxyModel proxy_;
-
     //! The component whose ports are being edited.
     QSharedPointer<Component> component_; 
 
 	//! The instance that manages the library.
 	LibraryInterface* handler_;
 
-    //! The delegate for ports.
-    PortsDelegate* delegate_;
+    //! Editor for wire ports.
+    MasterPortsEditor* wireEditor_;
+
+    //! Editor for transactional ports.
+    MasterPortsEditor* transactionalEditor_;
+
+    //! Tabs for the port editors.
+    QTabWidget* portTabs_;
 };
 
 #endif // PORTSEDITOR_H

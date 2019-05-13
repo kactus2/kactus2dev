@@ -226,58 +226,76 @@ bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
     QSharedPointer<Transactional> trans = port->getTransactional();
     if (trans)
     {
-        // There must a known initiative type.
-        if (!TransactionalTypes::isIpXactInitiativeType(trans->getInitiative()))
+        return hasValidTransactionalInitiative(trans) && hasValidTransactionalKind(trans) &&
+            hasValidTransactionalWidth(trans) && hasValidTransactionalMaxConnections(trans) &&
+            hasValidTransactionalMinConnections(trans) && hasValidTypeDefinitions(trans->getTransTypeDef()) &&
+            hasValidTransactionalProtocol(trans);
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidTransactionalInitiative()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidTransactionalInitiative(QSharedPointer<Transactional> transactional) const
+{
+    return TransactionalTypes::isIpXactInitiativeType(transactional->getInitiative());
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidTransactionalKind()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidTransactionalKind(QSharedPointer<Transactional> transactional) const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidTransactionalWidth()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidTransactionalWidth(QSharedPointer<Transactional> transactional) const
+{
+    bool isValidBusWidth = false;
+    expressionParser_->parseExpression(transactional->getBusWidth(), &isValidBusWidth);
+
+    return isValidBusWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidTransactionalMaxConnections()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidTransactionalMaxConnections(QSharedPointer<Transactional> transactional) const
+{
+    bool isValidMaxConnections = false;
+    expressionParser_->parseExpression(transactional->getMaxConnections(), &isValidMaxConnections);
+
+    return isValidMaxConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidTransactionalMinConnections()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidTransactionalMinConnections(QSharedPointer<Transactional> transactional) const
+{
+    bool isValidMinConnections = false;
+    expressionParser_->parseExpression(transactional->getMinConnections(), &isValidMinConnections);
+
+    return isValidMinConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidTransactionalProtocol()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidTransactionalProtocol(QSharedPointer<Transactional> transactional) const
+{
+    QSharedPointer<Protocol> protocol = transactional->getProtocol();
+    if (protocol)
+    {
+        ProtocolValidator protocolValidator;
+        if (!protocolValidator.validate(protocol))
         {
             return false;
-        }
-
-        // If defined, kind must a known one.
-        if (!trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType(trans->getKind()))
-        {
-            return false;
-        }
-
-        // If defined, bus width must be a valid expression.
-        bool isValidBusWidth = false;
-        expressionParser_->parseExpression(trans->getBusWidth(), &isValidBusWidth);
-        if (isValidBusWidth == false)
-        {
-            return false;
-        }
-
-        // If defined, max connections width must be a valid expression.
-        bool isValidMaxConnections = false;
-        expressionParser_->parseExpression(trans->getMaxConnections(), &isValidMaxConnections);
-        if (isValidMaxConnections == false)
-        {
-            return false;
-        }
-
-        // If defined, min connections width must be a valid expression.
-        bool isValidMinConnections = false;
-        expressionParser_->parseExpression(trans->getMinConnections(), &isValidMinConnections);
-        if (isValidMinConnections == false)
-        {
-            return false;
-        }
-
-        if (!hasValidTypeDefinitions(trans->getTransTypeDef()))
-        {
-            return false;
-        }
-
-        QSharedPointer<Protocol> protocol = trans->getProtocol();
-
-        // Protocol must be valid if it exists.
-        if (protocol)
-        {
-            ProtocolValidator protocolValidator;
-
-            if (!protocolValidator.validate(protocol))
-            {
-                return false;
-            }
         }
     }
 
@@ -395,42 +413,27 @@ void PortValidator::findErrorsInTransactional(QVector<QString> &errors, QSharedP
     QSharedPointer<Transactional> trans = port->getTransactional();
     if (trans)
     {
-        // There must a known initiative type.
-        if (!TransactionalTypes::isIpXactInitiativeType( trans->getInitiative() ) )
+        if (!hasValidTransactionalInitiative(trans))
         {
             errors.append(QObject::tr("The transactional initiative is invalid: %1 in port %2")
                 .arg(trans->getInitiative()).arg(port->name()));
         }
-
-        // If defined, kind must a known one.
-        if ( !trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType( trans->getKind() ) )
+        if (!hasValidTransactionalKind(trans))
         {
             errors.append(QObject::tr("The transactional kind is invalid: %1 in port %2")
                 .arg(trans->getInitiative()).arg(port->name()));
         }
-
-        // If defined, bus width must be a valid expression.
-        bool isValidBusWidth = false;
-        expressionParser_->parseExpression(trans->getBusWidth(), &isValidBusWidth);
-        if (isValidBusWidth == false)
+        if (!hasValidTransactionalWidth(trans))
         {
             errors.append(QObject::tr("The transactional bus width is invalid: %1 in port %2")
                 .arg(trans->getBusWidth()).arg(port->name()));
         }
-
-        // If defined, max connections width must be a valid expression.
-        bool isValidMaxConnections = false;
-        expressionParser_->parseExpression(trans->getMaxConnections(), &isValidMaxConnections);
-        if (isValidMaxConnections == false)
+        if (!hasValidTransactionalMaxConnections(trans))
         {
             errors.append(QObject::tr("The transactional max connections is invalid: %1 in port %2")
                 .arg(trans->getMaxConnections()).arg(port->name()));
         }
-
-        // If defined, min connections width must be a valid expression.
-        bool isValidMinConnections = false;
-        expressionParser_->parseExpression(trans->getMaxConnections(), &isValidMinConnections);
-        if (isValidMinConnections == false)
+        if (!hasValidTransactionalMinConnections(trans))
         {
             errors.append(QObject::tr("The transactional min connections is invalid: %1 in port %2")
                 .arg(trans->getMinConnections()).arg(port->name()));

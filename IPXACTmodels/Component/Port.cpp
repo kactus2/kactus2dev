@@ -20,15 +20,15 @@
 //-----------------------------------------------------------------------------
 // Function: Port::Port()
 //-----------------------------------------------------------------------------
-Port::Port(QString const& portName, DirectionTypes::Direction direction) :
+Port::Port(QString const& portName) :
 NameGroup(portName),
 Extendable(),
 isPresent_(),
-wire_(QSharedPointer<Wire>(new Wire())),
+wire_(),
 transactional_(),
 configurableArrays_(new QList<QSharedPointer<Array> > ())
 {
-    setDirection(direction);
+
 }
 
 //-----------------------------------------------------------------------------

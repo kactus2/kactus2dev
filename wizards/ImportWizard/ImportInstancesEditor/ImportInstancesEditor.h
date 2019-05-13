@@ -58,8 +58,8 @@ public:
     void setupInstances(QVector<InstanceData::instanceData> const& newInstances);
 
     //! No copying. No assignment.
-    ImportInstancesEditor(const ImportInstancesEditor& other);
-    ImportInstancesEditor& operator=(const ImportInstancesEditor& other);
+    ImportInstancesEditor(const ImportInstancesEditor& other) = delete;
+    ImportInstancesEditor& operator=(const ImportInstancesEditor& other) = delete;
 
 public slots:
 
