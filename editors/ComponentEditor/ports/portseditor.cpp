@@ -33,6 +33,12 @@
 
 #include <QVBoxLayout>
 
+namespace
+{
+    QString const WIREPORTS = QLatin1String("Wire ports");
+    QString const TRANSACTIONALPORTS = QLatin1String("Transactional ports");
+};
+
 //-----------------------------------------------------------------------------
 // Function: PortsEditor::PortsEditor()
 //-----------------------------------------------------------------------------
@@ -64,11 +70,31 @@ portTabs_(new QTabWidget(this))
         new MasterPortsEditor(component, handler, new TransactionalPortsEditorConstructor(), expressionParser,
             parameterFinder, expressionFormatter, portValidator, parameterCompleter, defaultPath, this);
 
-	connect(wireEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connectSignals();
+
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
+
+    portTabs_->addTab(wireEditor_, getTabNameWithPortCount(WIREPORTS, wireEditor_->getAmountOfPorts()));
+    portTabs_->addTab(transactionalEditor_,
+        getTabNameWithPortCount(TRANSACTIONALPORTS, transactionalEditor_->getAmountOfPorts()));
+
+	// create the layout, add widgets to it
+	QVBoxLayout* layout = new QVBoxLayout(this);
+ 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    layout->addWidget(portTabs_);
+	layout->setContentsMargins(0, 0, 0, 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: portseditor::connectSignals()
+//-----------------------------------------------------------------------------
+void PortsEditor::connectSignals()
+{
+    connect(wireEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(wireEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(wireEditor_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(wireEditor_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
     connect(transactionalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(transactionalEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -84,9 +110,9 @@ portTabs_(new QTabWidget(this))
     connect(transactionalEditor_, SIGNAL(createInterface(QStringList const&)),
         this, SLOT(onCreateInterface(QStringList const&)), Qt::UniqueConnection);
 
-    connect(wireEditor_, SIGNAL(increaseReferences(QString)), 
+    connect(wireEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(wireEditor_, SIGNAL(decreaseReferences(QString)), 
+    connect(wireEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     connect(transactionalEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -103,24 +129,41 @@ portTabs_(new QTabWidget(this))
     connect(transactionalEditor_, SIGNAL(invalidateOtherFilter()),
         wireEditor_, SIGNAL(ivalidateThisFilter()), Qt::UniqueConnection);
 
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
+    connect(portTabs_, SIGNAL(currentChanged(int)), this, SLOT(changeHelpFile()), Qt::UniqueConnection);
 
-    portTabs_->addTab(wireEditor_, QStringLiteral("Wire ports"));
-    portTabs_->addTab(transactionalEditor_, QStringLiteral("Transactional ports"));
-
-	// create the layout, add widgets to it
-	QVBoxLayout* layout = new QVBoxLayout(this);
- 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-    layout->addWidget(portTabs_);
-	layout->setContentsMargins(0, 0, 0, 0);
+    connect(wireEditor_, SIGNAL(portCountChanged()), this, SLOT(redefineTabText()), Qt::UniqueConnection);
+    connect(transactionalEditor_, SIGNAL(portCountChanged()), this, SLOT(redefineTabText()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsEditor::~PortsEditor()
+// Function: portseditor::getTabNameWithPortCount()
 //-----------------------------------------------------------------------------
-PortsEditor::~PortsEditor()
+QString PortsEditor::getTabNameWithPortCount(QString const& tabName, int const& portCount) const
 {
+    QString tabText = tabName + QLatin1String(" (") + QString::number(portCount) + QLatin1Char(')');
+    return tabText;
+}
 
+//-----------------------------------------------------------------------------
+// Function: portseditor::redefineTabText()
+//-----------------------------------------------------------------------------
+void PortsEditor::redefineTabText()
+{
+    int portCount = 0;
+    QString tabText("");
+
+    if (portTabs_->currentWidget() == wireEditor_)
+    {
+        tabText = WIREPORTS;
+        portCount = wireEditor_->getAmountOfPorts();
+    }
+    else if (portTabs_->currentWidget() == transactionalEditor_)
+    {
+        tabText = TRANSACTIONALPORTS;
+        portCount = transactionalEditor_->getAmountOfPorts();
+    }
+
+    portTabs_->setTabText(portTabs_->currentIndex(), getTabNameWithPortCount(tabText, portCount));
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +189,22 @@ void PortsEditor::refresh()
 void PortsEditor::showEvent(QShowEvent* event)
 {
     ItemEditor::showEvent(event);
-    emit helpUrlRequested("componenteditor/ports.html");
+    changeHelpFile();
+}
+
+//-----------------------------------------------------------------------------
+// Function: portseditor::changeHelpFile()
+//-----------------------------------------------------------------------------
+void PortsEditor::changeHelpFile()
+{
+    if (portTabs_->currentWidget() == wireEditor_)
+    {
+        emit helpUrlRequested("componenteditor/wirePorts.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/transactionalPorts.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

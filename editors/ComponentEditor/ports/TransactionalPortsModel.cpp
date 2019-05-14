@@ -341,6 +341,14 @@ int TransactionalPortsModel::tagColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransactionalPortsModel::adHocColumn()
+//-----------------------------------------------------------------------------
+int TransactionalPortsModel::adHocColumn() const
+{
+    return TransactionalPortColumns::ADHOC_VISIBILITY;
+}
+
+//-----------------------------------------------------------------------------
 // Function: WirePortsModel::descriptionColumn()
 //-----------------------------------------------------------------------------
 int TransactionalPortsModel::descriptionColumn() const
@@ -364,14 +372,6 @@ bool TransactionalPortsModel::indexedItemIsMandatory(QModelIndex const& index) c
 {
     return index.column() == TransactionalPortColumns::NAME ||
         index.column() == TransactionalPortColumns::INITIATIVE;
-}
-
-//-----------------------------------------------------------------------------
-// Function: WirePortsModel::indexedItemCanBeChecked()
-//-----------------------------------------------------------------------------
-bool TransactionalPortsModel::indexedItemCanBeChecked(QModelIndex const&) const
-{
-    return false;
 }
 
 //-----------------------------------------------------------------------------

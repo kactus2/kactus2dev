@@ -101,6 +101,13 @@ public:
      */
     QSharedPointer<Port> getIndexedPort(QModelIndex const& portIndex) const;
 
+    /*!
+     *  Get the current amount of visible ports in the editor.
+     *
+     *      @return The amount of visible ports.
+     */
+    int getAmountOfPorts() const;
+
     //! No copying.
     MasterPortsEditor(const MasterPortsEditor& other) = delete;
     MasterPortsEditor& operator=(const MasterPortsEditor& other) = delete;
@@ -137,6 +144,11 @@ signals:
      *  Invalidate the filter from this editor.
      */
     void ivalidateThisFilter();
+
+    /*!
+     *  Inform that the port count has changed.
+     */
+    void portCountChanged();
 
 private:
 

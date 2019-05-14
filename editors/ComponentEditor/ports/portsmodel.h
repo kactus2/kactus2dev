@@ -287,6 +287,11 @@ signals:
      */
     void invalidateOtherFilter();
 
+    /*!
+     *  Inform of a change in the amount of editable ports.
+     */
+    void portCountChanged();
+
 private:
 
     /*!
@@ -332,6 +337,13 @@ private:
     virtual int tagColumn() const = 0;
 
     /*!
+     *  Get the column for ad hoc visibility.
+     *
+     *      @return Ad hoc visibility column.
+     */
+    virtual int adHocColumn() const = 0;
+
+    /*!
      *  Get the column for description.
      *
      *      @return Description column.
@@ -356,15 +368,6 @@ private:
      *      @return True, if the indexed item is mandatory, false otherwise.
      */
     virtual bool indexedItemIsMandatory(QModelIndex const& index) const = 0;
-
-    /*!
-     *  Check if the selected item can be checked.
-     *
-     *      @param [in] index   Index of the selected item.
-     *
-     *      @return True, if the indexed item can be checked, false otherwise.
-     */
-    virtual bool indexedItemCanBeChecked(QModelIndex const& index) const = 0;
 
     /*!
      *  Check if the selected item is locked.

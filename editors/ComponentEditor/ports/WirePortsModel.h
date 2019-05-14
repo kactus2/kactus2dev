@@ -171,6 +171,13 @@ private:
     virtual int tagColumn() const;
 
     /*!
+     *  Get the column for ad hoc visibility.
+     *
+     *      @return Ad hoc visibility column.
+     */
+    virtual int adHocColumn() const;
+
+    /*!
      *  Get the column for description.
      *
      *      @return Description column.
@@ -195,15 +202,6 @@ private:
      *      @return True, if the indexed item is mandatory, false otherwise.
      */
     virtual bool indexedItemIsMandatory(QModelIndex const& index) const;
-
-    /*!
-     *  Check if the selected item can be checked.
-     *
-     *      @param [in] index   Index of the selected item.
-     *
-     *      @return True, if the indexed item can be checked, false otherwise.
-     */
-    virtual bool indexedItemCanBeChecked(QModelIndex const& index) const;
 
     /*!
      *  Check if the selected item is locked.

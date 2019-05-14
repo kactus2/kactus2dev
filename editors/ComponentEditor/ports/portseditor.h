@@ -49,13 +49,16 @@ public:
                 QSharedPointer<PortValidator> portValidator,
                 QWidget *parent = 0);
 
-	//! The destructor
-	virtual ~PortsEditor();
+	/*!
+     *  The destructor.
+     */
+	virtual ~PortsEditor() = default;
 
-	/*! Check for the validity of the edited ports.
-	*
-	*      @return True if all ports are in valid state.
-	*/
+	/*!
+     *  Check for the validity of the edited ports.
+     *
+     *      @return True if all ports are in valid state.
+     */
 	virtual bool isValid() const;
 
 	/*!
@@ -77,7 +80,7 @@ public:
      */
     void setComponent(QSharedPointer<Component> component);
 
-    //! No copying
+    //! No copying.
     PortsEditor(const PortsEditor& other) = delete;
     PortsEditor& operator=(const PortsEditor& other) = delete;
 
@@ -90,7 +93,9 @@ signals:
 
 protected:
 
-    //! Called when the editor is shown.
+    /*!
+     *  Called when the editor is shown.
+     */
     virtual void showEvent(QShowEvent* event);
 
 private slots:
@@ -116,7 +121,36 @@ private slots:
      */
     void changeExtensionsEditorItem(QModelIndex const& itemIndex);
 
+    /*!
+     *  Handles the changing of the help file.
+     */
+    void changeHelpFile();
+
+    /*!
+     *  Handles the redefinition of tab text.
+     */
+    void redefineTabText();
+
 private:
+
+    /*!
+     *  Connect the signals.
+     */
+    void connectSignals();
+
+    /*!
+     *  Get the name for the tab.
+     *
+     *      @param [in] tabName     Basic name of the editor.
+     *      @param [in] portCount   Current number of editor ports.
+     *
+     *      @return The name of the tab combined with the number of ports.
+     */
+    QString getTabNameWithPortCount(QString const& tabName, int const& portCount) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The component whose ports are being edited.
     QSharedPointer<Component> component_; 

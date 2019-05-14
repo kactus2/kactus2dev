@@ -166,8 +166,7 @@ int TransactionalPortsDelegate::tagColumn() const
 //-----------------------------------------------------------------------------
 int TransactionalPortsDelegate::adHocColumn() const
 {
-//     return WirePortColumns::ADHOC_VISIBILITY;
-    return -1;
+    return TransactionalPortColumns::ADHOC_VISIBILITY;
 }
 
 //-----------------------------------------------------------------------------

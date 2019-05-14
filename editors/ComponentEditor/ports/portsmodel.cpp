@@ -129,7 +129,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
     }
     else if (Qt::CheckStateRole == role)
     {
-        if (indexedItemCanBeChecked(index))
+        if (index.column() == adHocColumn())
         {
             if (portOnRow(index.row())->isAdHocVisible())
             {
@@ -197,6 +197,10 @@ QVariant PortsModel::headerData(int section, Qt::Orientation orientation, int ro
             else if (section == tagColumn())
             {
                 return tr("Port\ntags");
+            }
+            else if (section == adHocColumn())
+            {
+                return tr("Ad-hoc");
             }
             else if (section == descriptionColumn())
             {
@@ -295,6 +299,10 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
 
             emit portExtensionDataChanged(index);
         }
+        else if (index.column() == adHocColumn())
+        {
+            port->setAdHocVisible(value.toBool());
+        }
         else if (index.column() == descriptionColumn())
         {
             port->setDescription(value.toString());
@@ -336,7 +344,7 @@ Qt::ItemFlags PortsModel::flags(QModelIndex const& index) const
     {
         return flags;
     }
-    else if (indexedItemCanBeChecked(index))
+    else if (index.column() == adHocColumn())
     {
         flags |= Qt::ItemIsUserCheckable;
     }
@@ -381,6 +389,7 @@ void PortsModel::onRemoveRow(int row)
 	endRemoveRows();
 
     emit invalidateOtherFilter();
+    emit portCountChanged();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
@@ -406,6 +415,7 @@ void PortsModel::onRemoveItem(QModelIndex const& index)
 	endRemoveRows();
 
     emit invalidateOtherFilter();
+    emit portCountChanged();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
@@ -427,6 +437,7 @@ void PortsModel::onAddRow()
 	endInsertRows();
 
     emit invalidateOtherFilter();
+    emit portCountChanged();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
@@ -453,6 +464,7 @@ void PortsModel::onAddItem(QModelIndex const& index)
     endInsertRows();
 
     emit invalidateOtherFilter();
+    emit portCountChanged();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
@@ -473,6 +485,7 @@ void PortsModel::addPort(QSharedPointer<Port> port)
 	endInsertRows();
 
     emit invalidateOtherFilter();
+    emit portCountChanged();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
@@ -628,6 +641,10 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     else if (index.column() == tagColumn())
     {
         return port->getPortTags();
+    }
+    else if (index.column() == adHocColumn())
+    {
+        return port->isAdHocVisible();
     }
     else if (index.column() == descriptionColumn())
     {

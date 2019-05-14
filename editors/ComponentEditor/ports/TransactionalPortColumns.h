@@ -31,6 +31,7 @@ namespace TransactionalPortColumns
         TAG_GROUP,          //!< Column for tagging a port.
         MAX_CONNECTIONS,    //!< Column for setting the maximum number of connections.
         MIN_CONNECTIONS,    //!< Column for setting the minimum number of connections.
+        ADHOC_VISIBILITY,   //!< Column for toggling ad-hoc visibility on/off.
         DESCRIPTION,        //!< Column for adding a description for the port.
         COLUMN_COUNT
     };

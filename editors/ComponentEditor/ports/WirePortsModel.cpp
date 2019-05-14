@@ -71,10 +71,6 @@ QVariant WirePortsModel::headerData(int section, Qt::Orientation orientation, in
             QString defaultHeader = tr("Default\nvalue") + getExpressionSymbol();
             return defaultHeader;
         }
-        else if (section == WirePortColumns::ADHOC_VISIBILITY)
-        {
-            return tr("Ad-hoc");
-        }
     }
 
     return PortsModel::headerData(section, orientation, role);
@@ -165,21 +161,11 @@ bool WirePortsModel::setData(QModelIndex const& index, QVariant const& value, in
 
             port->setDefaultValue(value.toString());
         }
-        else if (index.column() == WirePortColumns::ADHOC_VISIBILITY)
-        {
-            port->setAdHocVisible(value.toBool());
-        }
         else
         {
             return false;
         }
 
-        emit dataChanged(index, index);
-        return true;
-    }
-    else if (role == Qt::CheckStateRole)
-    {
-        port->setAdHocVisible(value == Qt::Checked);
         emit dataChanged(index, index);
         return true;
     }
@@ -237,10 +223,6 @@ QVariant WirePortsModel::valueForIndex(QModelIndex const& index) const
         else if (index.column() == WirePortColumns::DEFAULT_VALUE)
         {
             return port->getDefaultValue();
-        }
-        else if (index.column() == WirePortColumns::ADHOC_VISIBILITY)
-        {
-            return port->isAdHocVisible();
         }
     }
     
@@ -433,6 +415,14 @@ int WirePortsModel::tagColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: WirePortsModel::adHocColumn()
+//-----------------------------------------------------------------------------
+int WirePortsModel::adHocColumn() const
+{
+    return WirePortColumns::ADHOC_VISIBILITY;
+}
+
+//-----------------------------------------------------------------------------
 // Function: WirePortsModel::descriptionColumn()
 //-----------------------------------------------------------------------------
 int WirePortsModel::descriptionColumn() const
@@ -458,14 +448,6 @@ bool WirePortsModel::indexedItemIsMandatory(QModelIndex const& index) const
 {
     return index.column() == WirePortColumns::NAME || index.column() == WirePortColumns::DIRECTION ||
         index.column() == WirePortColumns::WIDTH;
-}
-
-//-----------------------------------------------------------------------------
-// Function: WirePortsModel::indexedItemCanBeChecked()
-//-----------------------------------------------------------------------------
-bool WirePortsModel::indexedItemCanBeChecked(QModelIndex const& index) const
-{
-    return index.column() == WirePortColumns::ADHOC_VISIBILITY;
 }
 
 //-----------------------------------------------------------------------------

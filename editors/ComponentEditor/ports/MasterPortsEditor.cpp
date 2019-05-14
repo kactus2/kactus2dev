@@ -103,8 +103,17 @@ void MasterPortsEditor::connectSignals()
         this, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(invalidateOtherFilter()), this, SIGNAL(invalidateOtherFilter()), Qt::UniqueConnection);
-
     connect(this, SIGNAL(ivalidateThisFilter()), proxy_, SLOT(invalidate()), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(portCountChanged()), this, SIGNAL(portCountChanged()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterPortsEditor::getAmountOfPorts()
+//-----------------------------------------------------------------------------
+int MasterPortsEditor::getAmountOfPorts() const
+{
+    return proxy_->rowCount();
 }
 
 //-----------------------------------------------------------------------------
