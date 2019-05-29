@@ -11,6 +11,8 @@
 
 #include "PortListSortProxyModel.h"
 
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h>
+
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
@@ -28,7 +30,8 @@ filterDirection_(DirectionFilter::ANY),
 hideConnected_(true),
 connectedPorts_(),
 filterPorts_(),
-abstraction_()
+abstraction_(),
+visibleType_(PortTypes::WIRETYPE)
 {
     onConnectionsReset();
 }
@@ -207,8 +210,44 @@ bool PortListSortProxyModel::filterAcceptsRow(int source_row, const QModelIndex&
         return false;
     }
 
+    if (visibleType_ == PortTypes::WIRETYPE && !currentPort->getWire())
+    {
+        return false;
+    }
+    else if (visibleType_ == PortTypes::TRANSACTIONALTYPE && !currentPort->getTransactional())
+    {
+        return false;
+    }
+
     // Check filter for port name.
     return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortListSortProxyModel::filterAcceptsColumn()
+//-----------------------------------------------------------------------------
+bool PortListSortProxyModel::filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const
+{
+    if ((visibleType_ == PortTypes::WIRETYPE && source_column == PortMappingColumns::INITIATIVE) ||
+        (visibleType_ == PortTypes::TRANSACTIONALTYPE &&
+            (source_column == PortMappingColumns::DIRECTION || source_column == PortMappingColumns::LEFT_BOUND ||
+            source_column == PortMappingColumns::RIGHT_BOUND)))
+    {
+        return false;
+    }
+    else
+    {
+        return QSortFilterProxyModel::filterAcceptsColumn(source_column, source_parent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortListSortProxyModel::onChangeFilteredType()
+//-----------------------------------------------------------------------------
+void PortListSortProxyModel::onChangeFilteredType(QString const& newVisibleType)
+{
+    visibleType_ = newVisibleType;
+    invalidateFilter();
 }
 
 //-----------------------------------------------------------------------------

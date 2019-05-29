@@ -174,6 +174,12 @@ private:
 	void setupLayout();
 
     /*!
+     *  Setup the port type filter.
+     *
+     */
+    void setupTypeFilter();
+
+    /*!
      *  Add the required items to the direction filter.
      */
     void addItemsToDirectionFilter();
@@ -207,6 +213,9 @@ private:
 
     //! Editor for filtering of physical ports by name.
     QLineEdit* nameFilterEditor_;
+
+    //! The port type selector.
+    QComboBox typeFilter_;
 
     //! The direction filter.
     QComboBox directionFilter_;

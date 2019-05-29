@@ -290,8 +290,10 @@ bool PortAbstraction::hasMode(General::InterfaceMode mode, QString const& system
     {
         return wire_->hasMode(mode, systemGroup);
     }    
-    else
+    else if (hasTransactional())
     {
-        return false;
+        return transactional_->hasMode(mode, systemGroup);
     }
+
+    return false;
 }

@@ -22,16 +22,50 @@
 //-----------------------------------------------------------------------------
 namespace TransactionalTypes
 {
+    //! Strings for the initiative types.
+    QString const INITIATIVE_REQUIRES = QLatin1String("requires");
+    QString const INITIATIVE_PROVIDES = QLatin1String("provides");
+    QString const INITIATIVE_BOTH = QLatin1String("both");
+    QString const INITIATIVE_PHANTOM = QLatin1String("phantom");
+    QString const INITIATIVE_REQUIRES_PROVIDES = QLatin1String("requires/provides");
+
     //! The number of supported file type definitions.
     const unsigned int INITIATIVE_TYPE_COUNT = 4;
 
 	//! The file types specified in the IP-Xact.
 	const QString INITIATIVE_TYPES[INITIATIVE_TYPE_COUNT] = {
-		QLatin1String("requires"),
-        QLatin1String("provides"),
-        QLatin1String("both"),
-        QLatin1String("phantom")
-	};
+        INITIATIVE_REQUIRES,
+        INITIATIVE_PROVIDES,
+        INITIATIVE_BOTH,
+        INITIATIVE_PHANTOM
+    };
+
+    //! Initiative types.
+    enum Initiative {
+        REQUIRES,
+        PROVIDES,
+        BOTH,
+        PHANTOM,
+        INITIATIVE_INVALID
+    };
+
+    /*!
+     *  Change the selected initiative value to string.
+     *
+     *      @param [in] initiative  The selected initiative value.
+     *
+     *      @return The selected initiative in string format.
+     */
+    IPXACTMODELS_EXPORT QString initiativeToString(TransactionalTypes::Initiative const& initiative);
+
+    /*!
+     *  Change the selected string to initiative value.
+     *
+     *      @param [in] str     The selected initiative string.
+     *
+     *      @return The selected initiative in initiative format.
+     */
+    IPXACTMODELS_EXPORT TransactionalTypes::Initiative strToInitiative(QString const& str);
 
 	/*!
 	 *  Checks if the file type belongs to the specified file types.

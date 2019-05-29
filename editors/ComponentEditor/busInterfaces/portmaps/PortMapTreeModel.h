@@ -343,6 +343,25 @@ private:
         QSharedPointer<PortMap> portMap) const;
 
     /*!
+     *  Get the icon for the selected logical signal.
+     *
+     *      @param [in] abstractPort    The selected logical signal.
+     *
+     *      @return Icon matching the direction or initiative of the selected logical signal.
+     */
+    QIcon getIconForLogicalPort(QSharedPointer<PortAbstraction> abstractPort) const;
+
+    /*!
+     *  Get the icon for the selected physical port.
+     *
+     *      @param [in] index       Index of the selected port.
+     *      @param [in] portMap     Port map containing the selected physical mapping.
+     *
+     *      @return Icon matching the direction or initiative of the selected logical signal.
+     */
+    QIcon getIconForPhysicalPort(QModelIndex const& index, QSharedPointer<PortMap> portMap) const;
+
+    /*!
      *  Get an icon matching the given direction.
      *
      *      @param [in] direction   The selected direction.
@@ -350,6 +369,15 @@ private:
      *      @return The icon matching the selected direction.
      */
     QIcon getIconForDirection(DirectionTypes::Direction direction) const;
+
+    /*!
+     *  Get an icon matching the given initiative.
+     *
+     *      @param [in] initiative  The selected initiative.
+     *
+     *      @return The icon matching the selected initiative.
+     */
+    QIcon getIconForInitiative(QString const& initiative) const;
 
     /*!
      *  Check if an index is valid.

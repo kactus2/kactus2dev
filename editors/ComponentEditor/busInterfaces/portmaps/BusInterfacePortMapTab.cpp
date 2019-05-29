@@ -46,6 +46,7 @@ physicalPortView_(this),
 physicalPortModel_(component_, expressionParser, this),
 physicalPortSorter_(component_, this),
 nameFilterEditor_(new QLineEdit(this)),
+typeFilter_(this),
 directionFilter_(this),
 hideConnectedPortsBox_(this),
 physicalPrefixEditor_(new QLineEdit(this)),
@@ -99,6 +100,7 @@ abstractions_()
     nameFilterEditor_->setToolTip(tr("Filter ports by name"));
     setTabOrder(nameFilterEditor_, &physicalPortView_);
 
+    setupTypeFilter();
     addItemsToDirectionFilter();
 
     connectItems();
@@ -109,6 +111,15 @@ abstractions_()
 //-----------------------------------------------------------------------------
 BusInterfacePortMapTab::~BusInterfacePortMapTab()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacePortMapTab::setupTypeFilter()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::setupTypeFilter()
+{
+    typeFilter_.addItem(PortTypes::WIRETYPE);
+    typeFilter_.addItem(PortTypes::TRANSACTIONALTYPE);
 }
 
 //-----------------------------------------------------------------------------
@@ -258,6 +269,7 @@ void BusInterfacePortMapTab::setupLayout()
 {
     QFormLayout* filterLayout = new QFormLayout(this);
     filterLayout->addRow("Name:", nameFilterEditor_);
+    filterLayout->addRow("Type:", &typeFilter_);
     filterLayout->addRow("Direction:", &directionFilter_);
     filterLayout->addRow("Hide connected:", &hideConnectedPortsBox_);
 
@@ -319,6 +331,9 @@ void BusInterfacePortMapTab::connectItems()
         &physicalPortSorter_, SLOT(setFilterPortName(const QString&)), Qt::UniqueConnection);
     connect(nameFilterEditor_, SIGNAL(textChanged(const QString&)), 
         &physicalPortView_, SLOT(onFilterNameChanged(const QString&)), Qt::UniqueConnection);
+
+    connect(&typeFilter_, SIGNAL(currentIndexChanged(QString const&)),
+        &physicalPortSorter_, SLOT(onChangeFilteredType(QString const&)), Qt::UniqueConnection);
 
     connect(&directionFilter_, SIGNAL(currentIndexChanged(QString const&)),
         this, SLOT(onDirectionFilterChanged(QString const&)), Qt::UniqueConnection);

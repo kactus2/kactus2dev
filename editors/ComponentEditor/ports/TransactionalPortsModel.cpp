@@ -13,6 +13,8 @@
 
 #include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
 
+#include <IPXACTmodels/common/TransactionalTypes.h>
+
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
@@ -113,7 +115,13 @@ bool TransactionalPortsModel::setData(QModelIndex const& index, QVariant const& 
         }
         else if (index.column() == TransactionalPortColumns::INITIATIVE)
         {
-            port->getTransactional()->setInitiative(value.toString());
+            QString newInitiative = value.toString();
+            if (newInitiative.compare(TransactionalTypes::INITIATIVE_REQUIRES_PROVIDES, Qt::CaseInsensitive) == 0)
+            {
+                newInitiative = TransactionalTypes::INITIATIVE_BOTH;
+            }
+
+            port->getTransactional()->setInitiative(newInitiative);
         }
         else if (index.column() == TransactionalPortColumns::KIND)
         {
@@ -166,7 +174,13 @@ QVariant TransactionalPortsModel::valueForIndex(QModelIndex const& index) const
         }
         else if (index.column() == TransactionalPortColumns::INITIATIVE)
         {
-            return portTransactional->getInitiative();
+            QString initiative = portTransactional->getInitiative();
+            if (initiative.compare(TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
+            {
+                initiative = TransactionalTypes::INITIATIVE_REQUIRES_PROVIDES;
+            }
+
+            return initiative;
         }
         else if (index.column() == TransactionalPortColumns::KIND)
         {
