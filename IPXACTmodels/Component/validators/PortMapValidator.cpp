@@ -17,10 +17,12 @@
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/TransactionalTypes.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 
 #include <IPXACTmodels/Component/Port.h>
 
@@ -31,12 +33,12 @@
 //-----------------------------------------------------------------------------
 PortMapValidator::PortMapValidator(QSharedPointer<ExpressionParser> parser,
     QSharedPointer<QList<QSharedPointer<Port> > > ports, LibraryInterface* libraryHandler) :
-    expressionParser_(parser),
-    availablePorts_(ports),
-    abstractionDefinition_(),
-    interfaceMode_(General::INTERFACE_MODE_COUNT),
-    systemGroup_(),
-    libraryHandler_(libraryHandler)
+expressionParser_(parser),
+availablePorts_(ports),
+abstractionDefinition_(),
+interfaceMode_(General::INTERFACE_MODE_COUNT),
+systemGroup_(),
+libraryHandler_(libraryHandler)
 {
 
 }
@@ -86,48 +88,32 @@ void PortMapValidator::componentChanged(QSharedPointer<QList<QSharedPointer<Port
 // Function: PortMapValidator::validate()
 //-----------------------------------------------------------------------------
 bool PortMapValidator::validate(QSharedPointer<PortMap> const& portMap) const
-{    
-    QSharedPointer<PortMap::LogicalPort> logical = portMap->getLogicalPort();   
-    if (logical.isNull())
-    {
-        return false;
-    }
-
-    QSharedPointer<PortAbstraction> logicalPort = findLogicalPort(logical->name_);
-    if (logicalPort.isNull() || logical->name_.isEmpty())
-    {
-        return false;
-    }
+{
+    QSharedPointer<PortMap::LogicalPort> const& logical = portMap->getLogicalPort();
+    QSharedPointer<PortMap::PhysicalPort> const& physical = portMap->getPhysicalPort();
     
-    QSharedPointer<PortMap::PhysicalPort> physical = portMap->getPhysicalPort();
-    if (physical.isNull() && hasValidTieOff(portMap) == false)
+    if (hasValidLogicalPort(logical) && hasValidPhysicalMapping(portMap) &&
+        hasValidIsPresent(portMap))
     {
-        return false;
-    }
-    
-    QSharedPointer<Port> physicalPort(0);
-    if (physical.isNull() == false)
-    {
-        physicalPort = findPhysicalPort(physical->name_);
-        if (physicalPort.isNull())
+        if (hasValidPhysicalPort(physical))
         {
-            return false;
+            QSharedPointer<PortAbstraction> logicalPort = findLogicalPort(logical->name_);
+            QSharedPointer<Port> physicalPort = findPhysicalPort(physical->name_);
+
+            return connectedPortsHaveValidPortTypes(logicalPort, physicalPort) &&
+                connectedPortsHaveValidDirections(logicalPort, physicalPort) &&
+                connectedPortsHaveValidInitiatives(logicalPort, physicalPort) &&
+                logicalPortHasValidRange(logical->range_, logicalPort) &&
+                physicalPortHasValidPartSelect(physical->partSelect_, physicalPort) &&
+                connectedPortsHaveSameRange(logical->range_, physical->partSelect_);
+        }
+        else if (hasValidTieOff(portMap->getLogicalTieOff()))
+        {
+            return true;
         }
     }
 
-    if (hasValidIsPresent(portMap) == false)
-    {
-        return false;
-    }
-
-    if (physical)
-    {
-        return connectedPortsHaveValidDirections(logicalPort, physicalPort) &&
-            connectedPortsHaveValidPortTypes(logicalPort, physicalPort) &&
-            connectedPortsHaveValidBoundaries(logicalPort, logical, physicalPort, physical);
-    }
-   
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -137,12 +123,11 @@ bool PortMapValidator::hasValidIsPresent(QSharedPointer<PortMap> const& portMap)
 {
     if (!portMap->getIsPresent().isEmpty())
     {
-        QString const solvedValue = expressionParser_->parseExpression(portMap->getIsPresent());
+        bool isPresentOk = true;
+        quint64 isPresetValue = 0;
+        std::tie(isPresentOk, isPresetValue) = checkAndParseExpression(portMap->getIsPresent());
 
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-        
-        if (!toIntOk || intValue < 0 || intValue > 1)
+        if (!isPresentOk || isPresetValue < 0 || isPresetValue > 1)
         {
             return false;
         }
@@ -154,9 +139,8 @@ bool PortMapValidator::hasValidIsPresent(QSharedPointer<PortMap> const& portMap)
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::hasValidLogicalPort()
 //-----------------------------------------------------------------------------
-bool PortMapValidator::hasValidLogicalPort(QSharedPointer<PortMap> const& portMap) const
+bool PortMapValidator::hasValidLogicalPort(QSharedPointer<PortMap::LogicalPort> const& logical) const
 {
-    QSharedPointer<PortMap::LogicalPort> logical = portMap->getLogicalPort();
     if (logical.isNull())
     {
         return false;
@@ -168,40 +152,148 @@ bool PortMapValidator::hasValidLogicalPort(QSharedPointer<PortMap> const& portMa
         return false;
     }
 
-    return logicalPortHasValidRange(logical, referencedPort);
+    return logicalPortHasValidRange(logical->range_, referencedPort);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::logicalPortHasValidRange()
+//-----------------------------------------------------------------------------
+bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<Range> const & logicalRange,
+    QSharedPointer<PortAbstraction> const & referencedPort) const
+{
+    if (logicalRange && (!logicalRange->getLeft().isEmpty() || !logicalRange->getRight().isEmpty()))
+    {
+        if (!bothRangeValuesExist(logicalRange->getLeft(), logicalRange->getRight()))
+        {
+            return false;
+        }
+
+        bool leftToIntOk = true;
+        qint64 leftValue = 0;
+        std::tie(leftToIntOk, leftValue) = checkAndParseExpression(logicalRange->getLeft());
+        if (!leftToIntOk)
+        {
+            return false;
+        }
+
+        bool rightToIntOk = true;
+        qint64 rightValue = 0;
+        std::tie(rightToIntOk, rightValue) = checkAndParseExpression(logicalRange->getRight());
+        if (!rightToIntOk)
+        {
+            return false;
+        }
+
+        return rangeIsWithinWidth(leftValue, rightValue, getLogicalPortWidth(referencedPort));
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::bothRangeValuesExist()
+//-----------------------------------------------------------------------------
+bool PortMapValidator::bothRangeValuesExist(QString const& leftRange, QString const& rightRange) const
+{
+    if ((leftRange.isEmpty() && !rightRange.isEmpty()) || (!leftRange.isEmpty() && rightRange.isEmpty()))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::getLogicalPortWidth()
+//-----------------------------------------------------------------------------
+quint64 PortMapValidator::getLogicalPortWidth(QSharedPointer<PortAbstraction> const& logicalPort) const
+{
+    if (logicalPort->hasWire())
+    {
+        return logicalPort->getWire()->getWidth(interfaceMode_, systemGroup_).toULongLong();
+    }
+    else if (logicalPort->hasTransactional())
+    {
+        return logicalPort->getTransactional()->getWidth(interfaceMode_, systemGroup_).toULongLong();
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::rangeIsWithinWidth()
+//-----------------------------------------------------------------------------
+bool PortMapValidator::rangeIsWithinWidth(quint64 const& rangeLeft, quint64 const& rangeRight,
+    quint64 const& width) const
+{
+    if (rangeLeft < 0 || rangeRight < 0 || rangeLeft > width - 1 || rangeRight > width - 1)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::hasValidPhysicalMapping()
+//-----------------------------------------------------------------------------
+bool PortMapValidator::hasValidPhysicalMapping(QSharedPointer<PortMap> const& portMap) const
+{
+    QSharedPointer<PortMap::PhysicalPort> physical = portMap->getPhysicalPort();
+    QString const& tieOff = portMap->getLogicalTieOff();
+
+    return !physical.isNull() != !tieOff.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::hasValidPhysicalPort()
 //-----------------------------------------------------------------------------
-bool PortMapValidator::hasValidPhysicalPort(QSharedPointer<PortMap> const& portMap,
-	QSharedPointer<Port>  const& physicalPort) const
+bool PortMapValidator::hasValidPhysicalPort(QSharedPointer<PortMap::PhysicalPort> const& physical) const
 {
-    QSharedPointer<PortMap::PhysicalPort> physical = portMap->getPhysicalPort();
-
-    if (physical.isNull() || physical->name_.isEmpty() || physicalPort.isNull() ||
-        portMap->getLogicalTieOff().isEmpty() == false)
+    if (physical.isNull())
     {
         return false;
     }
 
-    return physicalPortRangeIsWithinReferencedPort(physicalPort, physical);
+    QSharedPointer<Port> portReference = findPhysicalPort(physical->name_);
+    if (portReference.isNull())
+    {
+        return false;
+    }
+
+    return physicalPortHasValidPartSelect(physical->partSelect_, portReference);
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::hasValidTieOff()
 //-----------------------------------------------------------------------------
-bool PortMapValidator::hasValidTieOff(QSharedPointer<PortMap> const& portMap) const
+bool PortMapValidator::hasValidTieOff(QString const& tieOff) const
 {
-    if (portMap->getPhysicalPort() || portMap->getLogicalTieOff().isEmpty())
+    if (tieOff.isEmpty())
     {
         return false;
     }
 
     bool changeOk = true;
-    int logicalTieOff = expressionParser_->parseExpression(portMap->getLogicalTieOff()).toInt(&changeOk);
+    quint64 tieOffValue = 0;
 
-    return changeOk && logicalTieOff >= 0;
+    std::tie(changeOk, tieOffValue) = checkAndParseExpression(tieOff);
+    return changeOk;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::connectedPortsHaveValidPortTypes()
+//-----------------------------------------------------------------------------
+bool PortMapValidator::connectedPortsHaveValidPortTypes(QSharedPointer<PortAbstraction> const& logicalPort,
+    QSharedPointer<Port> const& physicalPort) const
+{
+    return (logicalPort->getWire() && physicalPort->getWire()) ||
+        (logicalPort->getTransactional() && physicalPort->getTransactional());
 }
 
 //-----------------------------------------------------------------------------
@@ -234,195 +326,33 @@ bool PortMapValidator::connectedPortsHaveValidDirections(QSharedPointer<PortAbst
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortMapValidator::connectedPortsHaveValidPortTypes()
+// Function: PortMapValidator::connectedPortsHaveValidInitiatives()
 //-----------------------------------------------------------------------------
-bool PortMapValidator::connectedPortsHaveValidPortTypes(QSharedPointer<PortAbstraction> const& logicalPort,
+bool PortMapValidator::connectedPortsHaveValidInitiatives(QSharedPointer<PortAbstraction> const& logicalPort,
     QSharedPointer<Port> const& physicalPort) const
 {
-    return (logicalPort->getWire() && physicalPort->getWire()) ||
-        (logicalPort->getTransactional() && physicalPort->getTransactional());
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapValidator::connectedPortsHaveSameRange()
-//-----------------------------------------------------------------------------
-bool PortMapValidator::connectedPortsHaveSameRange(QSharedPointer<PortMap> const& portMap) const
-{
-    if (portMap->getLogicalPort() && portMap->getPhysicalPort() &&
-        portMap->getLogicalPort()->range_ && portMap->getPhysicalPort()->partSelect_)
+    if (logicalPort->getTransactional() && physicalPort->getTransactional())
     {
-        int logicalLeft =
-            expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
-        int logicalRight =
-            expressionParser_->parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
+        if (physicalPort->getTransactional()->getAllLogicalInitiativesAllowed())
+        {
+            return true;
+        }
 
-        int physicalLeft = expressionParser_->parseExpression(
-            portMap->getPhysicalPort()->partSelect_->getLeftRange()).toInt();
-        int physicalRight = expressionParser_->parseExpression(
-            portMap->getPhysicalPort()->partSelect_->getRightRange()).toInt();
+        TransactionalTypes::Initiative logicalInitiative = TransactionalTypes::strToInitiative(
+            logicalPort->getTransactional()->getInitiative(interfaceMode_, systemGroup_));
+        TransactionalTypes::Initiative physicalInitiative =
+            TransactionalTypes::strToInitiative(physicalPort->getTransactional()->getInitiative());
 
-        int logicalSize = abs(logicalLeft - logicalRight) + 1;
-        int physicalSize = abs(physicalLeft - physicalRight) + 1;
-
-        return logicalSize == physicalSize;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapValidator::findErrorsIn()
-//-----------------------------------------------------------------------------
-void PortMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<PortMap> portMap,
-    QString const& context) const
-{
-    QSharedPointer<PortAbstraction> logicalPort;
-    QSharedPointer<PortMap::LogicalPort> logical = portMap->getLogicalPort();
-    if (logical)
-    {
-        logicalPort = findLogicalPort(logical->name_);
-    }
-
-    QSharedPointer<Port> physicalPort;
-    QSharedPointer<PortMap::PhysicalPort> physical = portMap->getPhysicalPort();
-    if (physical)
-    {
-        physicalPort = findPhysicalPort(physical->name_);
-    }
-
-    findErrorsInIsPresent(errors, portMap, context);
-    findErrorsInLogicalPort(errors, logical, context);
-    findErrorsInPhysicalPort(errors, portMap, physicalPort, context);
-	findErrorsInPortConnection(errors, portMap, logicalPort, physicalPort, context);
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapValidator::connectedPortsHaveValidBoundaries()
-//-----------------------------------------------------------------------------
-bool PortMapValidator::connectedPortsHaveValidBoundaries(QSharedPointer<PortAbstraction> logicalPort,
-    QSharedPointer<PortMap::LogicalPort> logical, QSharedPointer<Port> physicalPort,
-    QSharedPointer<PortMap::PhysicalPort> physical) const
-{
-    quint64 physicalLeft = 0;
-    quint64 physicalRight = 0;
-
-    if (physical->partSelect_ && (!physical->partSelect_->getLeftRange().isEmpty() ||
-        !physical->partSelect_->getRightRange().isEmpty()))
-    {
-        bool leftValid = false;
-        std::tie(leftValid, physicalLeft) = checkAndParseExpression(physical->partSelect_->getLeftRange());
-
-        if (leftValid == false)
+        if (physicalInitiative == TransactionalTypes::INITIATIVE_INVALID ||
+            ((logicalInitiative == TransactionalTypes::REQUIRES &&
+                physicalInitiative == TransactionalTypes::PROVIDES) ||
+                (logicalInitiative == TransactionalTypes::PROVIDES &&
+                    physicalInitiative == TransactionalTypes::REQUIRES) ||
+                (logicalInitiative == TransactionalTypes::BOTH &&
+                    (physicalInitiative == TransactionalTypes::REQUIRES ||
+                    physicalInitiative == TransactionalTypes::PROVIDES))))
         {
             return false;
-        }
-
-        bool rightValid = false;
-        std::tie(rightValid, physicalRight) = checkAndParseExpression(physical->partSelect_->getRightRange());
-
-        if (rightValid == false)
-        {
-            return false;
-        }
-
-        quint64 portLeft = expressionParser_->parseExpression(physicalPort->getLeftBound()).toULongLong();
-        quint64 portRight = expressionParser_->parseExpression(physicalPort->getRightBound()).toULongLong();
-
-        if (portLeft > portRight)
-        {
-            quint64 temporary = portLeft;
-            portLeft = portRight;
-            portRight = temporary;
-        }
-
-        if (physicalLeft < portLeft || physicalLeft > portRight ||
-            physicalRight < portLeft || physicalRight > portRight)
-        {
-            return false;
-        }
-    }
-
-    quint64 logicalLeft = 0;
-    quint64 logicalRight = 0;
-
-    if (logical->range_ && (!logical->range_->getLeft().isEmpty() || !logical->range_->getRight().isEmpty()))
-    {
-        bool leftValid = false;
-        std::tie(leftValid, logicalLeft) = checkAndParseExpression(logical->range_->getLeft());
-
-        if (leftValid == false)
-        {
-            return false;
-        }
-
-        bool rightValid = false;
-        std::tie(rightValid, logicalRight) = checkAndParseExpression(logical->range_->getRight());
-
-        if (rightValid == false)
-        {
-            return false;
-        }
-
-        if (logicalPort->getWire())
-        {
-            QString const width = logicalPort->getWire()->getWidth(interfaceMode_, systemGroup_);
-            if (width.isEmpty() == false)
-            {
-                quint64 abstractionWidth = expressionParser_->parseExpression(width).toULongLong();
-
-                if (logicalLeft > abstractionWidth - 1 || logicalRight > abstractionWidth - 1)
-                {
-                    return false;
-                }
-            }
-        }
-    }
-
-    int logicalSize = logicalLeft - logicalRight + 1;
-    int physicalSize = physicalLeft - physicalRight + 1;
-
-    return logicalSize == physicalSize;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapValidator::logicalPortHasValidRange()
-//-----------------------------------------------------------------------------
-bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<PortMap::LogicalPort> const& logicalPort,
-    QSharedPointer<PortAbstraction> const& referencedPort) const
-{
-    if (logicalPort->range_ &&
-        (!logicalPort->range_->getLeft().isEmpty() || !logicalPort->range_->getRight().isEmpty()))
-    {
-        bool leftValid = false;
-        quint64 logicalLeft = 0;
-        std::tie(leftValid, logicalLeft) = checkAndParseExpression(logicalPort->range_->getLeft());
-
-        if (leftValid == false)
-        {
-            return false;
-        }
-
-        bool rightValid = false;
-        quint64 logicalRight = 0;
-        std::tie(rightValid, logicalRight) = checkAndParseExpression(logicalPort->range_->getRight());
-
-        if (rightValid == false)
-        {
-            return false;
-        }
-
-        if (referencedPort->getWire())
-        {
-            QString const width = referencedPort->getWire()->getWidth(interfaceMode_, systemGroup_);
-            if (width.isEmpty() == false)
-            {
-                quint64 abstractionWidth = expressionParser_->parseExpression(width).toULongLong();
-
-                if (logicalLeft > abstractionWidth - 1 || logicalRight > abstractionWidth - 1)
-                {
-                    return false;
-                }
-            }
         }
     }
 
@@ -432,19 +362,49 @@ bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<PortMap::LogicalP
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::physicalPortHasValidPartSelect()
 //-----------------------------------------------------------------------------
-bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PortMap::PhysicalPort> const& physicalPort) const
+bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PartSelect> const& physicalPart,
+    QSharedPointer<Port> const& referencedPort) const
 {
-    if (physicalPort->partSelect_ && (!physicalPort->partSelect_->getLeftRange().isEmpty() ||
-        !physicalPort->partSelect_->getRightRange().isEmpty()))
+    if (physicalPart)
     {
-        auto leftPart = checkAndParseExpression(physicalPort->partSelect_->getLeftRange());
-        if (leftPart.first == false)
+        if (physicalPart->getLeftRange().isEmpty() && physicalPart->getRightRange().isEmpty())
+        {
+            return true;
+        }
+
+        if (!bothRangeValuesExist(physicalPart->getLeftRange(), physicalPart->getRightRange()))
         {
             return false;
         }
 
-        auto rightPart = checkAndParseExpression(physicalPort->partSelect_->getRightRange());
-        if (rightPart.first == false)
+        bool leftOK = true;
+        qint64 leftValue = 0;
+        std::tie(leftOK, leftValue) = checkAndParseExpression(physicalPart->getLeftRange());
+        if (!leftOK)
+        {
+            return false;
+        }
+
+        bool rightOK = true;
+        qint64 rightValue = 0;
+        std::tie(rightOK, rightValue) = checkAndParseExpression(physicalPart->getRightRange());
+        if (!rightOK)
+        {
+            return false;
+        }
+
+        if (referencedPort->getWire())
+        {
+            return rangeIsValidInWire(leftValue, rightValue,
+                expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
+                expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong());
+        }
+        else if (referencedPort->getTransactional())
+        {
+            return rangeIsWithinWidth(leftValue, rightValue, expressionParser_->parseExpression(
+                referencedPort->getTransactional()->getBusWidth()).toULongLong());
+        }
+        else
         {
             return false;
         }
@@ -454,47 +414,126 @@ bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PortMap::Ph
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortMapValidator::physicalPortRangeIsWithinReferencedPort()
+// Function: PortMapValidator::rangeIsValidInWire()
 //-----------------------------------------------------------------------------
-bool PortMapValidator::physicalPortRangeIsWithinReferencedPort(QSharedPointer<Port> const& referencedPort,
-    QSharedPointer<PortMap::PhysicalPort> const& physicalPort) const
+bool PortMapValidator::rangeIsValidInWire(quint64 const& rangeLeft, quint64 const& rangeRight,
+    quint64 const& wireLeft, quint64 const& wireRight) const
 {
-    if (physicalPort->partSelect_ && (!physicalPort->partSelect_->getLeftRange().isEmpty() ||
-        !physicalPort->partSelect_->getRightRange().isEmpty()))
+    if (wireLeft > wireRight)
+    {
+        return rangeLeft >= wireRight && rangeLeft <= wireLeft &&
+            rangeRight >= wireRight && rangeRight <= wireLeft;
+    }
+    else
+    {
+        return rangeLeft >= wireLeft && rangeLeft <= wireRight &&
+            rangeRight >= wireLeft && rangeRight <= wireRight;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::connectedPortsHaveSameRange()
+//-----------------------------------------------------------------------------
+bool PortMapValidator::connectedPortsHaveSameRange(QSharedPointer<Range> const& logicalRange,
+    QSharedPointer<PartSelect> const& physicalPart) const
+{
+    quint64 physicalLeft = 0;
+    quint64 physicalRight = 0;
+
+    if (physicalPart && (!physicalPart->getLeftRange().isEmpty() || !physicalPart->getRightRange().isEmpty()))
     {
         bool leftValid = false;
-        quint64 physicalLeft = 0;
-        std::tie(leftValid, physicalLeft) = checkAndParseExpression(physicalPort->partSelect_->getLeftRange());
-
+        std::tie(leftValid, physicalLeft) = checkAndParseExpression(physicalPart->getLeftRange());
         if (leftValid == false)
         {
             return false;
         }
 
         bool rightValid = false;
-        quint64 physicalright = 0;
-        std::tie(rightValid, physicalright) = checkAndParseExpression(physicalPort->partSelect_->getRightRange());
-
+        std::tie(rightValid, physicalRight) = checkAndParseExpression(physicalPart->getRightRange());
         if (rightValid == false)
         {
             return false;
         }
-
-        quint64 portLeft = expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong();
-        quint64 portRight = expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong();
-
-        if (portLeft > portRight)
-        {
-            quint64 temporary = portLeft;
-            portLeft = portRight;
-            portRight = temporary;
-        }
-
-        return physicalLeft >= portLeft && physicalLeft <= portRight &&
-            physicalright >= portLeft && physicalright <= portRight;
     }
 
-    return true;
+    quint64 logicalLeft = 0;
+    quint64 logicalRight = 0;
+    if (logicalRange && (!logicalRange->getLeft().isEmpty() || !logicalRange->getRight().isEmpty()))
+    {
+        bool leftValid = false;
+        std::tie(leftValid, logicalLeft) = checkAndParseExpression(logicalRange->getLeft());
+        if (leftValid == false)
+        {
+            return false;
+        }
+
+        bool rightValid = false;
+        std::tie(rightValid, logicalRight) = checkAndParseExpression(logicalRange->getRight());
+        if (rightValid == false)
+        {
+            return false;
+        }
+    }
+
+    quint64 physicalMax = qMax(physicalLeft, physicalRight);
+    quint64 physicalMin = qMin(physicalLeft, physicalRight);
+    quint64 logicalMax = qMax(logicalLeft, logicalRight);
+    quint64 logicalMin = qMin(logicalLeft, logicalRight);
+
+    quint64 logicalSize = logicalMax - logicalMin + 1;
+    quint64 physicalSize = physicalMax - physicalMin + 1;
+
+    return logicalSize == physicalSize;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::findErrorsIn()
+//-----------------------------------------------------------------------------
+void PortMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<PortMap> portMap,
+    QString const& context) const
+{
+    QSharedPointer<PortMap::LogicalPort> logicalPort = portMap->getLogicalPort();
+    QSharedPointer<PortMap::PhysicalPort> physicalPort = portMap->getPhysicalPort();
+
+    QSharedPointer<PortAbstraction> referencedLogicalPort;
+    if (logicalPort)
+    {
+        referencedLogicalPort = findLogicalPort(logicalPort->name_);
+    }
+    QSharedPointer<Port> referencedPhysicalPort;
+    if (physicalPort)
+    {
+        referencedPhysicalPort = findPhysicalPort(physicalPort->name_);
+    }
+
+    findErrorsInIsPresent(errors, portMap, context);
+    findErrorsInLogicalPort(errors, logicalPort, referencedLogicalPort, context);
+
+    if (physicalPort && !portMap->getLogicalTieOff().isEmpty())
+    {
+        errors.append(QObject::tr("Invalid port map: contains both a physical port and a tie off value within %1")
+            .arg(context));
+    }
+    else if (!portMap->getLogicalTieOff().isEmpty())
+    {
+        findErrorsInTieOff(errors, portMap->getLogicalTieOff(), context);
+    }
+    else if (physicalPort.isNull() == false && !physicalPort->name_.isEmpty())
+    {
+        findErrorsInPhysicalPort(errors, physicalPort, referencedPhysicalPort, context);
+
+        if (hasValidLogicalPort(logicalPort) && hasValidPhysicalPort(physicalPort))
+        {
+            findErrorsInPortConnection(
+                errors, logicalPort, physicalPort, referencedLogicalPort, referencedPhysicalPort, context);
+        }
+    }
+    else
+    {
+        errors.append(QObject::tr("Port map does not contain a physical port or a logical tie off within %1")
+            .arg(context));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -513,22 +552,63 @@ void PortMapValidator::findErrorsInIsPresent(QVector<QString>& errors, QSharedPo
 // Function: PortMapValidator::findErrorsInLogicalPort()
 //-----------------------------------------------------------------------------
 void PortMapValidator::findErrorsInLogicalPort(QVector<QString>& errors,
-    QSharedPointer<PortMap::LogicalPort> logicalPort, QString const& context) const
+    QSharedPointer<PortMap::LogicalPort> logicalPort, QSharedPointer<PortAbstraction> referencedPort,
+    QString const& context) const
 {
     if (logicalPort && !logicalPort->name_.isEmpty())
     {
-        QSharedPointer<PortAbstraction> referencedPort = findLogicalPort(logicalPort->name_);
-
         if (!referencedPort)
         {
             errors.append(QObject::tr("Could not locate logical port %1 mapped within %2")
                 .arg(logicalPort->name_).arg(context));
         }
-
-        else if (!logicalPortHasValidRange(logicalPort, referencedPort))
+        else if (logicalPort->range_)
         {
-            errors.append(QObject::tr("Invalid range given for logical port %1 mapped within %2")
-                .arg(logicalPort->name_).arg(context));
+            QSharedPointer<Range> logicalRange = logicalPort->range_;
+            if (!bothRangeValuesExist(logicalRange->getLeft(), logicalRange->getRight()))
+            {
+                if (logicalRange->getLeft().isEmpty())
+                {
+                    errors.append(QObject::tr("Empty left value in logical port %1 mapped within %2")
+                        .arg(logicalPort->name_).arg(context));
+                }
+                if (logicalRange->getRight().isEmpty())
+                {
+                    errors.append(QObject::tr("Empty right value in logical port %1 mapped within %2")
+                        .arg(logicalPort->name_).arg(context));
+                }
+            }
+            else
+            {
+                bool leftValid = false;
+                bool rightValid = false;
+                quint64 rangeLeft = 0;
+                quint64 rangeRight = 0;
+
+                std::tie(leftValid, rangeLeft) = checkAndParseExpression(logicalRange->getLeft());
+                std::tie(rightValid, rangeRight) = checkAndParseExpression(logicalRange->getRight());
+
+                if (!logicalRange->getLeft().isEmpty() && !leftValid)
+                {
+                    errors.append(QObject::tr(
+                        "Invalid value given for logical left in logical port %1 mapped within %2")
+                        .arg(logicalPort->name_).arg(context));
+                }
+                if (!logicalRange->getRight().isEmpty() && !rightValid)
+                {
+                    errors.append(QObject::tr(
+                        "Invalid value given for logical right in logical port %1 mapped within %2")
+                        .arg(logicalPort->name_).arg(context));
+                }
+
+                if (leftValid && rightValid &&
+                    !rangeIsWithinWidth(rangeLeft, rangeRight, getLogicalPortWidth(referencedPort)))
+                {
+                    errors.append(QObject::tr(
+                        "Range is not within the referenced port width in mapped logical port %1 in %2")
+                        .arg(logicalPort->name_).arg(context));
+                }
+            }
         }
     }
     else
@@ -538,79 +618,134 @@ void PortMapValidator::findErrorsInLogicalPort(QVector<QString>& errors,
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortMapValidator::findErrorsInTieOff()
+//-----------------------------------------------------------------------------
+void PortMapValidator::findErrorsInTieOff(QVector<QString>& errors, QString const& tieOff, QString const& context)
+    const
+{
+    if (!hasValidTieOff(tieOff))
+    {
+        errors.append(QObject::tr("Invalid port map logical tie off set within %1").arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortMapValidator::findErrorsInPhysicalPort()
 //-----------------------------------------------------------------------------
-void PortMapValidator::findErrorsInPhysicalPort(QVector<QString>& errors, QSharedPointer<PortMap> portMap,
-	QSharedPointer<Port> physicalPort,
+void PortMapValidator::findErrorsInPhysicalPort(QVector<QString>& errors,
+    QSharedPointer<PortMap::PhysicalPort> physicalPort, QSharedPointer<Port> referencedPort,
     QString const& context) const
 {
-    if (portMap->getPhysicalPort() && !portMap->getPhysicalPort()->name_.isEmpty() &&
-        portMap->getLogicalTieOff().isEmpty())
+    if (physicalPort)
     {
-        if (!physicalPort)
+        if (physicalPort->name_.isEmpty())
+        {
+            errors.append(QObject::tr("Port map does not contain a physical port within %1").arg(context));
+        }
+        else if (!referencedPort)
         {
             errors.append(QObject::tr("Could not locate physical port %1 mapped within %2")
-                .arg(portMap->getPhysicalPort()->name_).arg(context));
+                .arg(physicalPort->name_).arg(context));
         }
-
-        if (!physicalPortHasValidPartSelect(portMap->getPhysicalPort()))
+        else
         {
-            errors.append(QObject::tr("Invalid part select given for physical port %1 mapped within %2")
-                .arg(portMap->getPhysicalPort()->name_).arg(context));
-        }
+            QSharedPointer<PartSelect> physicalPart = physicalPort->partSelect_;
+            if (!physicalPart.isNull())
+            {
+                if (!bothRangeValuesExist(physicalPart->getLeftRange(), physicalPart->getRightRange()))
+                {
+                    if (physicalPart->getLeftRange().isEmpty())
+                    {
+                        errors.append(QObject::tr("Empty left value in physical port %1 mapped within %2")
+                            .arg(physicalPort->name_).arg(context));
+                    }
+                    if (physicalPart->getRightRange().isEmpty())
+                    {
+                        errors.append(QObject::tr("Empty right value in physical port %1 mapped within %2")
+                            .arg(physicalPort->name_).arg(context));
+                    }
+                }
+                else
+                {
+                    bool leftValid = false;
+                    bool rightValid = false;
+                    quint64 rangeLeft = 0;
+                    quint64 rangeRight = 0;
 
-        if (!physicalPortRangeIsWithinReferencedPort(physicalPort, portMap->getPhysicalPort()))
-        {
-            errors.append(QObject::tr("Physical port ranges are not within the referenced port %1 within %2")
-                .arg(physicalPort->name()).arg(context));
-        }
-    }
-    else if (!portMap->getLogicalTieOff().isEmpty() && !portMap->getPhysicalPort())
-    {
-        bool changeOk = true;
-        int logicalTieOff = expressionParser_->parseExpression(portMap->getLogicalTieOff()).toInt(&changeOk);
+                    std::tie(leftValid, rangeLeft) = checkAndParseExpression(physicalPart->getLeftRange());
+                    std::tie(rightValid, rangeRight) = checkAndParseExpression(physicalPart->getRightRange());
 
-        if (!changeOk || logicalTieOff <= 0)
-        {
-            errors.append(QObject::tr("Invalid port map logical tie off set within %1").arg(context));
+                    if (!leftValid)
+                    {
+                        errors.append(QObject::tr(
+                            "Invalid value given for physical left in physical port %1 mapped within %2")
+                            .arg(physicalPort->name_).arg(context));
+                    }
+                    if (!rightValid)
+                    {
+                        errors.append(QObject::tr(
+                            "Invalid value given for physical right in physical port %1 mapped within %2")
+                            .arg(physicalPort->name_).arg(context));
+                    }
+                    if (leftValid && rightValid)
+                    {
+                        if ((referencedPort->getWire() && !rangeIsValidInWire(rangeLeft, rangeRight,
+                            expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
+                            expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong())) ||
+                            ((referencedPort->getTransactional() && !rangeIsWithinWidth(rangeLeft, rangeRight,
+                                expressionParser_->parseExpression(
+                                    referencedPort->getTransactional()->getBusWidth()).toULongLong()))))
+                        {
+                            errors.append(QObject::tr(
+                                "Range is not within the referenced port width in mapped physical port %1 in %2")
+                                .arg(physicalPort->name_).arg(context));
+                        }
+                    }
+                }
+            }
         }
-    }
-    else
-    {
-        errors.append(QObject::tr("Port map does not contain a physical port or a logical tie off within %1")
-            .arg(context));
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::findErrorsInPortConnection()
 //-----------------------------------------------------------------------------
-void PortMapValidator::findErrorsInPortConnection(QVector<QString>& errors, QSharedPointer<PortMap> portMap,
-	QSharedPointer<PortAbstraction> logicalPort,
-	QSharedPointer<Port> physicalPort,
-    QString const& context) const
+void PortMapValidator::findErrorsInPortConnection(QVector<QString>& errors,
+    QSharedPointer<PortMap::LogicalPort> logical, QSharedPointer<PortMap::PhysicalPort> physical,
+    QSharedPointer<PortAbstraction> logicalPort, QSharedPointer<Port> physicalPort, QString const& context) const
 {
-    if (logicalPort && physicalPort)
+    if (!connectedPortsHaveValidPortTypes(logicalPort, physicalPort))
     {
-		if (!connectedPortsHaveValidDirections(logicalPort, physicalPort))
+        errors.append(QObject::tr("Connected logical port %1 and physical port %3 do not have the same port "
+            "type within %5").arg(logicalPort->name(), physicalPort->name(), context));
+    }
+    else
+    {
+        if (!connectedPortsHaveValidDirections(logicalPort, physicalPort))
         {
             QString logicalDirection =
                 DirectionTypes::direction2Str(logicalPort->getWire()->getDirection(interfaceMode_, systemGroup_));
             QString physicalDirection = DirectionTypes::direction2Str(physicalPort->getWire()->getDirection());
 
-            errors.append(QObject::tr("Invalid connection made between logical port %1 with direction %2 and "
-                "physical port %3 with direction %4 within %5")
+            errors.append(QObject::tr("Invalid connection made between logical port '%1' with direction '%2' and "
+                "physical port '%3' with direction '%4' within %5")
                 .arg(logicalPort->name()).arg(logicalDirection).arg(physicalPort->name()).arg(physicalDirection)
                 .arg(context));
         }
 
-		if (!connectedPortsHaveValidPortTypes(logicalPort, physicalPort))
+        if (!connectedPortsHaveValidInitiatives(logicalPort, physicalPort))
         {
-            errors.append(QObject::tr("Connected logical port %1 and physical port %3 do not have the same port "
-                "type within %5").arg(logicalPort->name(), physicalPort->name(), context));
+            QString logicalInitiative =
+                logicalPort->getTransactional()->getInitiative(interfaceMode_, systemGroup_);
+            QString physicalInitiative = physicalPort->getTransactional()->getInitiative();
+
+            errors.append(QObject::tr("Invalid connection made between logical port '%1' with initiative '%2' and "
+                "physical port '%3' with initiative '%4' within %5")
+                .arg(logicalPort->name()).arg(logicalInitiative).arg(physicalPort->name()).arg(physicalInitiative)
+                .arg(context));
         }
 
-        if (!connectedPortsHaveSameRange(portMap))
+        if (!connectedPortsHaveSameRange(logical->range_, physical->partSelect_))
         {
             errors.append(QObject::tr("Connected logical port %1 and physical port %2 do not have the same range "
                 "size within %3").arg(logicalPort->name(), physicalPort->name(), context));

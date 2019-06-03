@@ -17,13 +17,17 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
+#include <IPXACTmodels/common/TransactionalTypes.h>
+
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 
 #include <QIcon>
 #include <QSize>
@@ -404,28 +408,11 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
     {
         if (!index.parent().isValid() && index.column() == PortMapsColumns::LOGICAL_PORT)
         {
-            DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
-            if (absDef_ && abstractPort)
-            {
-                direction = absDef_->getPortDirection(abstractPort->name(), interfaceMode_, systemGroup_);
-            }
-
-            return getIconForDirection(direction);
+            return getIconForLogicalPort(abstractPort);
         }
         else if (index.column() == PortMapsColumns::PHYSICAL_PORT)
         {
-            QString physicalPortName = getPhysicalPortName(index, portMap).toString();
-            if (!physicalPortName.isEmpty() && physicalPortName.compare(MULTIPLE_SELECTED, Qt::CaseSensitive) != 0)
-            {
-                DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
-                QSharedPointer<Port> physicalPort = component_->getPort(physicalPortName);
-                if (physicalPort)
-                {
-                    direction = physicalPort->getDirection();
-                }
-
-                return getIconForDirection(direction);
-            }
+            return getIconForPhysicalPort(index, portMap);
         }
     }
     else if (role == Qt::SizeHintRole)
@@ -471,9 +458,71 @@ QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
         {
             return KactusColors::MANDATORY_FIELD;
         }
+        else if (index.column() == PortMapsColumns::LOGICAL_PRESENCE)
+        {
+            return KactusColors::DISABLED_FIELD;
+        }
     }
     // return QVariant();
     return KactusColors::REGULAR_FIELD;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeModel::getIconForLogicalPort()
+//-----------------------------------------------------------------------------
+QIcon PortMapTreeModel::getIconForLogicalPort(QSharedPointer<PortAbstraction> abstractPort) const
+{
+    if (abstractPort->hasWire())
+    {
+        DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
+        if (absDef_ && abstractPort)
+        {
+            direction = absDef_->getPortDirection(abstractPort->name(), interfaceMode_, systemGroup_);
+        }
+
+        return getIconForDirection(direction);
+    }
+    else if (abstractPort->hasTransactional())
+    {
+        QString initiative("");
+        if (absDef_ && abstractPort)
+        {
+            initiative = absDef_->getPortInitiative(abstractPort->name(), interfaceMode_, systemGroup_);
+        }
+
+        return getIconForInitiative(initiative);
+    }
+
+    return QIcon();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeModel::getIconForPhysicalPort()
+//-----------------------------------------------------------------------------
+QIcon PortMapTreeModel::getIconForPhysicalPort(QModelIndex const& index, QSharedPointer<PortMap> portMap) const
+{
+    QString physicalPortName = getPhysicalPortName(index, portMap).toString();
+    if (!physicalPortName.isEmpty() && physicalPortName.compare(MULTIPLE_SELECTED, Qt::CaseSensitive) != 0)
+    {
+        QSharedPointer<Port> physicalPort = component_->getPort(physicalPortName);
+        if (physicalPort->getWire())
+        {
+            DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
+            if (physicalPort)
+            {
+                direction = physicalPort->getDirection();
+            }
+
+            return getIconForDirection(direction);
+        }
+        else if (physicalPort->getTransactional())
+        {
+            QString initiative = physicalPort->getTransactional()->getInitiative();
+            return getIconForInitiative(initiative);
+        }
+    }
+
+    return QIcon();
 }
 
 //-----------------------------------------------------------------------------
@@ -481,25 +530,51 @@ QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
 //-----------------------------------------------------------------------------
 QIcon PortMapTreeModel::getIconForDirection(DirectionTypes::Direction direction) const
 {
-    QString directionPath = ":icons/common/graphics/cross.png";
+    QString directionPath = QLatin1String(":icons/common/graphics/cross.png");
     if (direction == DirectionTypes::IN)
     {
-        directionPath = ":icons/common/graphics/input.png";
+        directionPath = QLatin1String(":icons/common/graphics/input.png");
     }
     else if (direction == DirectionTypes::OUT)
     {
-        directionPath = ":icons/common/graphics/output.png";
+        directionPath = QLatin1String(":icons/common/graphics/output.png");
     }
     else if (direction == DirectionTypes::INOUT)
     {
-        directionPath = ":icons/common/graphics/inout.png";
+        directionPath = QLatin1String(":icons/common/graphics/inout.png");
     }
     else if (direction == DirectionTypes::DIRECTION_PHANTOM)
     {
-        directionPath = ":icons/common/graphics/phantom.png";
+        directionPath = QLatin1String(":icons/common/graphics/phantom.png");
     }
 
     return QIcon(directionPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeModel::getIconForInitiative()
+//-----------------------------------------------------------------------------
+QIcon PortMapTreeModel::getIconForInitiative(QString const& initiative) const
+{
+    QString iconPath = QLatin1String(":icons/common/graphics/cross.png");
+    if (initiative.compare(TransactionalTypes::INITIATIVE_PROVIDES, Qt::CaseInsensitive) == 0)
+    {
+        iconPath = QLatin1String(":icons/common/graphics/provides.png");
+    }
+    else if (initiative.compare(TransactionalTypes::INITIATIVE_REQUIRES, Qt::CaseInsensitive) == 0)
+    {
+        iconPath = QLatin1String(":icons/common/graphics/requires.png");
+    }
+    else if (initiative.compare(TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
+    {
+        iconPath = QLatin1String(":icons/common/graphics/requires_provides.png");
+    }
+    else if (initiative.compare(TransactionalTypes::INITIATIVE_PHANTOM, Qt::CaseInsensitive) == 0)
+    {
+        iconPath = QLatin1String(":icons/common/graphics/phantom.png");
+    }
+
+    return QIcon(iconPath);
 }
 
 //-----------------------------------------------------------------------------
@@ -629,15 +704,22 @@ QVariant PortMapTreeModel::getLogicalLeftBound(QSharedPointer<PortAbstraction> l
 {
     if (logicalPort)
     {
-        QSharedPointer<WireAbstraction> abstractWire = logicalPort->getWire();
-        if (abstractWire)
+        QString logicalWidth("");
+        if (logicalPort->hasWire())
         {
-            QString logicalWidth = abstractWire->getWidth(interfaceMode_, systemGroup_);
-            if (!logicalWidth.isEmpty())
-            {
-                int logicalLeft = parseExpressionToDecimal(logicalWidth).toInt() - 1;
-                return logicalLeft;
-            }
+            QSharedPointer<WireAbstraction> abstractWire = logicalPort->getWire();
+            logicalWidth = abstractWire->getWidth(interfaceMode_, systemGroup_);
+        }
+        else if (logicalPort->hasTransactional())
+        {
+            QSharedPointer<TransactionalAbstraction> abstractTransactional = logicalPort->getTransactional();
+            logicalWidth = abstractTransactional->getWidth(interfaceMode_, systemGroup_);
+        }
+
+        if (!logicalWidth.isEmpty())
+        {
+            int logicalLeft = parseExpressionToDecimal(logicalWidth).toInt() - 1;
+            return logicalLeft;
         }
     }
 
@@ -1142,83 +1224,64 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
         return false;
     }
 
+    if (!index.parent().isValid() || currentPortMap.isNull())
+    {
+        return true;
+    }
+
     QModelIndex physicalPortIndex = index.sibling(index.row(), PortMapsColumns::PHYSICAL_PORT);
     QString physicalPortName = physicalPortIndex.data(Qt::DisplayRole).toString();
     QSharedPointer<Port> physicalPort = component_->getPort(physicalPortName);
 
-    if ((index.column() == PortMapsColumns::LOGICAL_PORT || index.column() == PortMapsColumns::PHYSICAL_PORT) &&
-        (!physicalPortName.isEmpty() || physicalPortName.compare(MULTIPLE_SELECTED) != 0) && physicalPort &&
-        logicalPort->getWire())
+    if (index.column() == PortMapsColumns::LOGICAL_PORT || index.column() == PortMapsColumns::LOGICAL_LEFT ||
+        index.column() == PortMapsColumns::LOGICAL_RIGHT || index.column() == PortMapsColumns::PHYSICAL_PORT ||
+        index.column() == PortMapsColumns::PHYSICAL_LEFT || index.column() == PortMapsColumns::PHYSICAL_RIGHT ||
+        index.column() == PortMapsColumns::TIEOFF)
     {
-        DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_, systemGroup_);
-        DirectionTypes::Direction physicalDirection = physicalPort->getDirection();
-        if ((logicalDirection != physicalDirection && (physicalDirection != DirectionTypes::INOUT && 
-            physicalDirection != DirectionTypes::DIRECTION_PHANTOM)) ||
-            logicalDirection == DirectionTypes::DIRECTION_INVALID ||
-            physicalDirection == DirectionTypes::DIRECTION_INVALID)
+        if (portMapValidator_->hasValidLogicalPort(currentPortMap->getLogicalPort()))
         {
-            return false;
-        }
-    }
-
-    if (index.parent().isValid() && currentPortMap)
-    {
-        if (index.column() == PortMapsColumns::LOGICAL_PORT ||
-            index.column() == PortMapsColumns::LOGICAL_LEFT || index.column() == PortMapsColumns::LOGICAL_RIGHT)
-        {
-            if (portMapValidator_->hasValidLogicalPort(currentPortMap))
+            if (portMapValidator_->hasValidPhysicalMapping(currentPortMap))
             {
-                if (index.column() == PortMapsColumns::LOGICAL_LEFT || 
-                    index.column() == PortMapsColumns::LOGICAL_RIGHT)
+                if (index.column() != PortMapsColumns::TIEOFF &&
+                    portMapValidator_->hasValidPhysicalPort(currentPortMap->getPhysicalPort()))
                 {
-                    return portMapValidator_->connectedPortsHaveSameRange(currentPortMap);
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else if (index.column() != PortMapsColumns::LOGICAL_PRESENCE &&
-            index.column() != PortMapsColumns::INVERT && index.column() != PortMapsColumns::ISINFORMATIVE)
-        {
-            if (currentPortMap->getPhysicalPort() && !currentPortMap->getLogicalTieOff().isEmpty())
-            {
-                return false;
-            }
-
-            if (index.column() == PortMapsColumns::TIEOFF)
-            {
-                return portMapValidator_->hasValidTieOff(currentPortMap);
-            }
-
-            if (currentPortMap->getPhysicalPort())
-            {
-                QSharedPointer<Port> physicalPort = component_->getPort(currentPortMap->getPhysicalPort()->name_);
-                if (portMapValidator_->hasValidPhysicalPort(currentPortMap, physicalPort))
-                {
-                    if (index.column() == PortMapsColumns::PHYSICAL_LEFT ||
+                    if (index.column() == PortMapsColumns::LOGICAL_PORT ||
+                        index.column() == PortMapsColumns::PHYSICAL_PORT)
+                    {
+                        return portMapValidator_->connectedPortsHaveValidPortTypes(logicalPort, physicalPort) &&
+                            portMapValidator_->connectedPortsHaveValidDirections(logicalPort, physicalPort) &&
+                            portMapValidator_->connectedPortsHaveValidInitiatives(logicalPort, physicalPort);
+                    }
+                    else if (index.column() == PortMapsColumns::LOGICAL_LEFT ||
+                        index.column() == PortMapsColumns::LOGICAL_RIGHT ||
+                        index.column() == PortMapsColumns::PHYSICAL_LEFT ||
                         index.column() == PortMapsColumns::PHYSICAL_RIGHT)
                     {
-                        return portMapValidator_->connectedPortsHaveSameRange(currentPortMap);
+                        return portMapValidator_->connectedPortsHaveSameRange(
+                            currentPortMap->getLogicalPort()->range_,
+                            currentPortMap->getPhysicalPort()->partSelect_);
                     }
                 }
-                else
+                else if (index.column() == PortMapsColumns::TIEOFF &&
+                    portMapValidator_->hasValidTieOff(currentPortMap->getLogicalTieOff()))
                 {
-                    return false;
+                    return true;
                 }
             }
-        }
-    }
 
-    else
-    {
-        QSharedPointer<PortAbstraction> logicalPort = portMappings_.at(index.row()).logicalPort_;
-        bool hasPortMaps = !portMappings_.at(index.row()).portMaps_.isEmpty();
-        if (logicalPort && (logicalPort->getPresence(interfaceMode_, systemGroup_) == PresenceTypes::ILLEGAL) && hasPortMaps)
-        {
-            return false;
+            if (index.column() == PortMapsColumns::LOGICAL_PORT)
+            {
+                return true;
+            }
+            else if (index.column() == PortMapsColumns::LOGICAL_LEFT ||
+                index.column() == PortMapsColumns::LOGICAL_RIGHT)
+            {
+                return portMapValidator_->logicalPortHasValidRange(
+                    currentPortMap->getLogicalPort()->range_, logicalPort);
+            }
         }
+
+        return false;
     }
 
     return true;

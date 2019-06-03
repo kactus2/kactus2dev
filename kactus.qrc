@@ -123,6 +123,9 @@
         <file>common/graphics/busInterfaceSlave.png</file>
         <file>common/graphics/busInterfaceSystem.png</file>
         <file>common/graphics/autoConnect.png</file>
+        <file>common/graphics/provides.png</file>
+        <file>common/graphics/requires.png</file>
+        <file>common/graphics/requires_provides.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

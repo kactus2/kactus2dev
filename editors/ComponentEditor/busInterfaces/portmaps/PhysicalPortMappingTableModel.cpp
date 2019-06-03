@@ -14,7 +14,9 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
 
@@ -87,6 +89,7 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
     }
 
     QSharedPointer<Port> selectedPort = ports_.at(index.row());
+    QSharedPointer<Transactional> portTransactional = selectedPort->getTransactional();
 
     if (role == Qt::DisplayRole)
     {
@@ -97,6 +100,16 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
         else if (index.column() == PortMappingColumns::DIRECTION)
         {
             return DirectionTypes::direction2Str(selectedPort->getDirection());
+        }
+        else if (index.column() == PortMappingColumns::INITIATIVE && portTransactional)
+        {
+            QString transactionalInitiative = portTransactional->getInitiative();
+            if (transactionalInitiative == TransactionalTypes::INITIATIVE_BOTH)
+            {
+                transactionalInitiative = TransactionalTypes::INITIATIVE_REQUIRES_PROVIDES;
+            }
+
+            return transactionalInitiative;
         }
         else if (index.column() == PortMappingColumns::LEFT_BOUND)
         {
@@ -120,7 +133,14 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
         }
         else if (index.column() == PortMappingColumns::SIZE)
         {
-            return getPortSize(selectedPort);
+            if (portTransactional)
+            {
+                return expressionParser_->parseExpression(portTransactional->getBusWidth());
+            }
+            else
+            {
+                return getPortSize(selectedPort);
+            }
         }
     }
     else if (role == Qt::DecorationRole)
@@ -147,6 +167,29 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
             else
             {
                 return QIcon(":icons/common/graphics/cross.png");
+            }
+        }
+        else if (index.column() == PortMappingColumns::INITIATIVE && portTransactional)
+        {
+            if (portTransactional->getInitiative().compare(
+                TransactionalTypes::INITIATIVE_PROVIDES, Qt::CaseInsensitive) == 0)
+            {
+                return QIcon(":icons/common/graphics/provides.png");
+            }
+            else if (portTransactional->getInitiative().compare(
+                TransactionalTypes::INITIATIVE_REQUIRES, Qt::CaseInsensitive) == 0)
+            {
+                return QIcon(":icons/common/graphics/requires.png");
+            }
+            else if (portTransactional->getInitiative().compare(
+                TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
+            {
+                return QIcon(":icons/common/graphics/requires_provides.png");
+            }
+            else if (portTransactional->getInitiative().compare(
+                TransactionalTypes::INITIATIVE_PHANTOM, Qt::CaseInsensitive) == 0)
+            {
+                return QIcon(":icons/common/graphics/phantom.png");
             }
         }
     }

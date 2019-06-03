@@ -58,7 +58,13 @@ QWidget* TransactionalPortsDelegate::createSelectorForInitiative(QWidget* parent
 
     for (auto initiative : TransactionalTypes::INITIATIVE_TYPES)
     {
-        initiativeSelector->addItem(initiative);
+        QString newInitiative = initiative;
+        if (newInitiative.compare(TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
+        {
+            newInitiative = TransactionalTypes::INITIATIVE_REQUIRES_PROVIDES;
+        }
+
+        initiativeSelector->addItem(newInitiative);
     }
 
     return initiativeSelector;

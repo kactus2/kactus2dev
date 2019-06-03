@@ -126,6 +126,18 @@ public:
         QString const& newSystemGroup) const;
 
     /*!
+     *  Gets the initiative for a port in the selected interface mode.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] mode            Interface mode for the selected port.
+     *      @param [in] systemGroup     The used system group.
+     *
+     *      @return Initiative for the port in the given mode.
+     */
+    QString getPortInitiative(QString const& portName, General::InterfaceMode mode, QString const& systemGroup)
+        const;
+
+    /*!
      *  Gets a logical port with the given name.
      *
      *      @param [in] portName   The name of the port to get.

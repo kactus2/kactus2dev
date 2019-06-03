@@ -16,6 +16,7 @@ namespace PortMappingColumns
     {
         NAME = 0,
         DIRECTION,
+        INITIATIVE,
         LEFT_BOUND,
         RIGHT_BOUND,
         SIZE,

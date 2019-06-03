@@ -44,7 +44,9 @@ public:
         QSharedPointer<QList<QSharedPointer<Port> > > ports,
         LibraryInterface* libraryHandler);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	~PortMapValidator() = default;
     
     // Disable copying.
@@ -97,33 +99,51 @@ public:
     bool hasValidIsPresent(QSharedPointer<PortMap> const& portMap) const;
 
     /*!
-     *  Check if the logical port is valid.
+     *  Check if the selected logical port is valid.
      *
-     *      @param [in] portMap     The selected port map.
+     *      @param [in] logical     The selected logical port of a port map.
      *
      *      @return True, if the logical port is valid, otherwise false.
      */
-    bool hasValidLogicalPort(QSharedPointer<PortMap> const& portMap) const;
+    bool hasValidLogicalPort(QSharedPointer<PortMap::LogicalPort> const& logical) const;
 
     /*!
-     *  Check if the physical port is valid.
-     *
-	 *      @param [in] portMap         The selected port map.
-	 *      @param [in] physicalPort    The physical port to check.
-     *
-     *      @return True, if the physical port is valid, otherwise false.
-     */
-    bool hasValidPhysicalPort(QSharedPointer<PortMap> const& portMap,
-		QSharedPointer<Port> const& physicalPort) const;
-
-    /*!
-     *  Check if the tie off value is valid in the selected port map.
+     *  Check if the port map has a valid physical port or a valid tie off.
      *
      *      @param [in] portMap     The selected port map.
      *
+     *      @return True, if the physical mapping is valid, otherwise false.
+     */
+    bool hasValidPhysicalMapping(QSharedPointer<PortMap> const& portMap) const;
+
+    /*!
+     *  Check if the selected physical port is valid.
+     *
+	 *      @param [in] physical    The selected physical port of a port map.
+     *
+     *      @return True, if the physical port is valid, otherwise false.
+     */
+    bool hasValidPhysicalPort(QSharedPointer<PortMap::PhysicalPort> const& physical) const;
+
+    /*!
+     *  Check if the tie off value is valid.
+     *
+     *      @param [in] tieOff  The selected tie off value.
+     *
      *      @return True, if the tie off value is valid, otherwise false.
      */
-    bool hasValidTieOff(QSharedPointer<PortMap> const& portMap) const;
+    bool hasValidTieOff(QString const& tieOff) const;
+
+    /*!
+     *  Check if the connected ports have valid port types.
+     *
+     *      @param [in] logicalPort     The logical port to check.
+     *      @param [in] physicalPort    The physical port to check.
+     *
+     *      @return True, if the port types are valid, otherwise false.
+     */
+    bool connectedPortsHaveValidPortTypes(QSharedPointer<PortAbstraction> const& logicalPort,
+        QSharedPointer<Port> const& physicalPort) const;
 
     /*!
      *  Check if the connected ports have valid directions.
@@ -137,24 +157,48 @@ public:
 		QSharedPointer<Port> const& physicalPort) const;
 
     /*!
-     *  Check if the connected ports have valid port types.
+     *  Check if the connected ports have valid initiatives.
      *
-	 *      @param [in] logicalPort     The logical port to check.
-	 *      @param [in] physicalPort    The physical port to check.
+     *      @param [in] logicalPort     The logical port to check.
+     *      @param [in] physicalPort    The physical port to check.
      *
-     *      @return True, if the port types are valid, otherwise false.
+     *      @return True, if the initiatives are valid, otherwise false.
      */
-	bool connectedPortsHaveValidPortTypes(QSharedPointer<PortAbstraction> const& logicalPort,
-		QSharedPointer<Port> const& physicalPort) const;
+    bool connectedPortsHaveValidInitiatives(QSharedPointer<PortAbstraction> const& logicalPort,
+        QSharedPointer<Port> const& physicalPort) const;
+
+    /*!
+     * Checks if the logical port has a valid range.
+     *
+     *     @param [in] logicalRange     The logical port range to check.
+     *     @param [in] referencedPort   The logical signal in the referenced abstraction.
+     *
+     *     @return True, if the range is valid, otherwise false.
+     */
+    bool logicalPortHasValidRange(QSharedPointer<Range> const & logicalRange,
+        QSharedPointer<PortAbstraction> const & referencedPort) const;
+
+    /*!
+     *  Check if the physical port has a valid part select.
+     *
+     *      @param [in] physicalPart    The selected part select.
+     *      @param [in] referencedPort  Port referenced by the physical port.
+     *
+     *      @return True, if the part select is valid, otherwise false.
+     */
+    bool physicalPortHasValidPartSelect(QSharedPointer<PartSelect> const& physicalPart,
+        QSharedPointer<Port> const& referencedPort) const;
 
     /*!
      *  Check if the connected ports have the same range.
      *
-     *      @param [in] portMap     The selected port map.
+     *      @param [in] logicalRange    The logical range of the port map.
+     *      @param [in] physicalPart    The physical part selected of the port map.
      *
      *      @return True, if the connected ports have the same range, otherwise false.
      */
-    bool connectedPortsHaveSameRange(QSharedPointer<PortMap> const& portMap) const;
+    bool connectedPortsHaveSameRange(QSharedPointer<Range> const& logicalRange,
+        QSharedPointer<PartSelect> const& physicalPart) const;
 
     /*!
      *  Locate errors within a port map.
@@ -169,50 +213,47 @@ public:
 private:
 
     /*!
-     * Checks if the logical and physical port have valid boundaries.
+     *  Checks if both of the given range values exist.
      *
-     *     @param [in] logicalPort  The logical signal in abstraction to check.
-     *     @param [in] logical      The logical port to check.
-     *     @param [in] physicalPort The physical port in the component to check.
-     *     @param [in] physical     The physical port to check.
+     *      @param [in] leftRange   The selected left range.
+     *      @param [in] rightRange  The selected right range.
      *
-     *     @return True, if the boundaries are valid, otherwise false.
+     *      @return True, if both of the range values exist.
      */
-     bool connectedPortsHaveValidBoundaries(QSharedPointer<PortAbstraction> logicalPort,
-        QSharedPointer<PortMap::LogicalPort> logical,
-        QSharedPointer<Port> physicalPort,
-        QSharedPointer<PortMap::PhysicalPort> physical) const;
+    bool bothRangeValuesExist(QString const& leftRange, QString const& rightRange) const;
 
     /*!
-     * Checks if the logical port range is valid.
+     *  Get the bus width of a logical signal.
      *
-     *     @param [in] logicalPort      The logical port to check.
-     *     @param [in] referencedPort   The logical signal in abstraction to check.
+     *      @param [in] logicalPort     The selected logical signal.
      *
-     *     @return True, if the range is valid, otherwise false.
+     *      @return The bus width of the selected logical signal.
      */
-     bool logicalPortHasValidRange(QSharedPointer<PortMap::LogicalPort> const & logicalPort, 
-         QSharedPointer<PortAbstraction> const & referencedPort) const;
+    quint64 getLogicalPortWidth(QSharedPointer<PortAbstraction> const& logicalPort) const;
 
     /*!
-     *  Check if the physical port has a valid part select.
+     *  Check if the range is within the selected width.
      *
-     *      @param [in] physicalPort    The selected physical port.
+     *      @param [in] rangeLeft   Left range value.
+     *      @param [in] rangeRight  Right range value.
+     *      @param [in] width       The selected width.
      *
-     *      @return True, if the physical port part select is valid, otherwise false.
+     *      @return True, if the range is within the selected width, false otherwise.
      */
-    bool physicalPortHasValidPartSelect(QSharedPointer<PortMap::PhysicalPort> const& physicalPort) const;
+    bool rangeIsWithinWidth(quint64 const& rangeLeft, quint64 const& rangeRight, quint64 const& width) const;
 
     /*!
-     *  Check if the physical port range is within the referenced port.
+     *  Check if the range is valid in a wire port.
      *
-     *      @param [in] referencedPort  The referenced component port.
-     *      @param [in] physicalPort    The selected physical port.
+     *      @param [in] rangeLeft   Left range value.
+     *      @param [in] rangeRight  Right range value.
+     *      @param [in] wireLeft    Left limit of the wire.
+     *      @param [in] wireRight   Right limit of the wire.
      *
-     *      @return True, if the physical port range is within the referenced port, otherwise false.
+     *      @return True, if the range is valid in the wire limits, false otherwise.
      */
-    bool physicalPortRangeIsWithinReferencedPort(QSharedPointer<Port> const& referencedPort,
-        QSharedPointer<PortMap::PhysicalPort>  const& physicalPort) const;
+    bool rangeIsValidInWire(quint64 const& rangeLeft, quint64 const& rangeRight, quint64 const& wireLeft,
+        quint64 const& wireRight) const;
 
     /*!
      *  Find errors within port map isPresent.
@@ -229,37 +270,45 @@ private:
      *
      *      @param [in] errors          List of found errors.
      *      @param [in] logicalPort     The selected logical port.
-	 *      @param [in] abstractPort    The abstraction for the logical port.
+	 *      @param [in] referencedPort  The abstraction for the logical port.
      *      @param [in] context         Context to help locate the error.
      */
-    void findErrorsInLogicalPort(QVector<QString>& errors,
-        QSharedPointer<PortMap::LogicalPort> logicalPort, QString const& context) const;
+    void findErrorsInLogicalPort(QVector<QString>& errors, QSharedPointer<PortMap::LogicalPort> logicalPort,
+        QSharedPointer<PortAbstraction> referencedPort, QString const& context) const;
+
+    /*!
+     *  Find errors within the logical tie off.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] tieOff      The selected tie off value.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInTieOff(QVector<QString>& errors, QString const& tieOff, QString const& context) const;
 
     /*!
      *  Find errors within the physical port.
      *
      *      @param [in] errors          List of found errors.
-	 *      @param [in] portMap         The selected port map.
 	 *      @param [in] physicalPort    The physical port to check.
+     *      @param [in] referencedPort  The component port referenced by the physical port.
      *      @param [in] context         Context to help locate the error.
      */
-    void findErrorsInPhysicalPort(QVector<QString>& errors, QSharedPointer<PortMap> portMap,
-		QSharedPointer<Port> physicalPort, QString const& context) const;
+    void findErrorsInPhysicalPort(QVector<QString>& errors, QSharedPointer<PortMap::PhysicalPort> physicalPort,
+        QSharedPointer<Port> referencedPort, QString const& context) const;
 
     /*!
      *  Find errors within the mapping.
      *
      *      @param [in] errors          List of found errors.
-	 *      @param [in] portMap         The selected port map.
+     *      @param [in] logical         The mapped logical port.
+     *      @param [in] physical        The mapped physical port.
 	 *      @param [in] logicalPort     The logical port abstraction.
 	 *      @param [in] physicalPort    The physical port to check.
      *      @param [in] context         Context to help locate the error.
      */
-	void findErrorsInPortConnection(QVector<QString>& errors, 
-		QSharedPointer<PortMap> portMap, 
-		QSharedPointer<PortAbstraction> logicalPort,
-		QSharedPointer<Port> physicalPort,
-        QString const& context) const;
+    void findErrorsInPortConnection(QVector<QString>& errors, QSharedPointer<PortMap::LogicalPort> logical,
+        QSharedPointer<PortMap::PhysicalPort> physical, QSharedPointer<PortAbstraction> logicalPort,
+        QSharedPointer<Port> physicalPort, QString const& context) const;
 
     /*!
      * Parse expression and check if it is valid.

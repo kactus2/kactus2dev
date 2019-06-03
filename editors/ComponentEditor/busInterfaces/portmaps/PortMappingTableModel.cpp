@@ -61,6 +61,10 @@ QVariant PortMappingTableModel::headerData(int section, Qt::Orientation orientat
             {
                 return QString(tr("Direction"));
             }
+            else if (section == PortMappingColumns::INITIATIVE)
+            {
+                return QString(tr("Initiative"));
+            }
             else if (section == PortMappingColumns::LEFT_BOUND)
             {
                 return QString(tr("Left bound"));

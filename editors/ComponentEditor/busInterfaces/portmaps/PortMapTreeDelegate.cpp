@@ -15,9 +15,12 @@
 
 #include <library/LibraryInterface.h>
 
+#include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
@@ -136,7 +139,7 @@ void PortMapTreeDelegate::setPortDirectionIcons(QComboBox* portSelector) const
         QString portName = physicalPortNames_.at(portIndex);
         QString iconPath = ":icons/common/graphics/cross.png";
         QSharedPointer<Port> currentPort = component_->getPort(portName);
-        if (currentPort)
+        if (currentPort->getWire())
         {
             DirectionTypes::Direction portDirection = currentPort->getDirection();
             if (portDirection == DirectionTypes::IN)
@@ -150,6 +153,32 @@ void PortMapTreeDelegate::setPortDirectionIcons(QComboBox* portSelector) const
             else if (portDirection == DirectionTypes::INOUT)
             {
                 iconPath = ":icons/common/graphics/inout.png";
+            }
+            else if (portDirection == DirectionTypes::DIRECTION_PHANTOM)
+            {
+                iconPath = QLatin1String(":icons/common/graphics/phantom.png");
+            }
+        }
+        else if (currentPort->getTransactional())
+        {
+            TransactionalTypes::Initiative portInitiative =
+                TransactionalTypes::strToInitiative(currentPort->getTransactional()->getInitiative());
+
+            if (portInitiative == TransactionalTypes::PROVIDES)
+            {
+                iconPath = QLatin1String(":icons/common/graphics/provides.png");
+            }
+            else if (portInitiative == TransactionalTypes::REQUIRES)
+            {
+                iconPath = QLatin1String(":icons/common/graphics/requires.png");
+            }
+            else if (portInitiative == TransactionalTypes::BOTH)
+            {
+                iconPath = QLatin1String(":icons/common/graphics/requires_provides.png");
+            }
+            else if (portInitiative == TransactionalTypes::PHANTOM)
+            {
+                iconPath = QLatin1String(":icons/common/graphics/phantom.png");
             }
         }
 

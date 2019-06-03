@@ -15,6 +15,7 @@ CONFIG += testcase
 SUBDIRS += tst_AddressSpaceReader.pro \
 		   tst_AddressSpaceWriter.pro \
 		   tst_AddressSpaceValidator.pro \
+		   tst_BusInterfacePortMapValidator.pro \
 		   tst_BusInterfaceReader.pro \
 		   tst_BusInterfaceWriter.pro \
 		   tst_BusInterfaceValidator.pro \

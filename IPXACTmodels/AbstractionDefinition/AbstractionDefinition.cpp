@@ -11,8 +11,9 @@
 
 #include "AbstractionDefinition.h"
 
-#include "PortAbstraction.h"
-#include "WireAbstraction.h"
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
 #include <QDomDocument>
 #include <QString>
@@ -170,22 +171,29 @@ bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceM
 
         foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
         {
-            if (port->getLogicalName() == portName && port->hasWire())
+            if (port->getLogicalName() == portName)
             {
-                if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && port->getWire()->hasMasterPort())
+                QSharedPointer<WireAbstraction> portWire = port->getWire();
+                QSharedPointer<TransactionalAbstraction> portTransactional = port->getTransactional();
+                if ((mode == General::MASTER || mode == General::MIRROREDMASTER) &&
+                    ((portWire && portWire->hasMasterPort()) ||
+                    (portTransactional && portTransactional->hasMasterPort())))
                 {
                     return true;
                 }
-                else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && port->getWire()->hasSlavePort())
+                else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) &&
+                    ((portWire && portWire->hasSlavePort()) ||
+                    (portTransactional && portTransactional->hasSlavePort())))
                 {
                     return true;
                 }
-                else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) && 
-                    !port->getWire()->getSystemPorts()->isEmpty())
+                else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) &&
+                    ((portWire && !portWire->getSystemPorts()->isEmpty()) ||
+                    (portTransactional && portTransactional->getSystemPorts()->isEmpty())))
                 {
                     return true;
                 }
-            }        
+            }
         }
     }
 
@@ -242,6 +250,26 @@ DirectionTypes::Direction AbstractionDefinition::getPortDirection(QString const&
     }
 
     return DirectionTypes::DIRECTION_INVALID;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::getPortInitiative()
+//-----------------------------------------------------------------------------
+QString AbstractionDefinition::getPortInitiative(QString const& portName, General::InterfaceMode mode,
+    QString const& systemGroup) const
+{
+    if (logicalPorts_)
+    {
+        for (auto port : *logicalPorts_)
+        {
+            if (port->getLogicalName() == portName && port->hasTransactional())
+            {
+                return port->getTransactional()->getInitiative(mode, systemGroup);
+            }
+        }
+    }
+
+    return QString();
 }
 
 //-----------------------------------------------------------------------------

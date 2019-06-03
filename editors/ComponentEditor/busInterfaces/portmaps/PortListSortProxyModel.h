@@ -21,6 +21,13 @@
 class Component;
 class AbstractionType;
 
+//! The port types.
+namespace PortTypes
+{
+    QString const WIRETYPE = QStringLiteral("Wire");
+    QString const TRANSACTIONALTYPE = QStringLiteral("Transactional");
+};
+
 //-----------------------------------------------------------------------------
 //! Sorting proxy for port list view.
 //-----------------------------------------------------------------------------
@@ -138,6 +145,13 @@ public slots:
      */
     virtual void onPortDisconnected(QString const& portName);
 
+    /*!
+     *  Called to change the filtered port type.
+     *
+     *      @param [in] newVisibleType  The new visible port type.
+     */
+    virtual void onChangeFilteredType(QString const& newVisibleType);
+
 protected:
 
     /*!
@@ -148,7 +162,17 @@ protected:
      *
      *      @return True, if the row passes the filters, otherwise false.
 	 */
-    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
+    virtual bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
+
+    /*!
+     *  Implementation of the column filtering.
+     *
+     *      @param [in] source_column   The column to check for filtering.
+     *      @param [in] source_parent   Parent index of the row.
+     *
+     *      @return True, if the column passes the filters, otherwise false.
+     */
+    virtual bool filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const override;
 
 private:
     //! No copying
@@ -185,6 +209,9 @@ private:
 
     //! The connected abstraction type.
     QSharedPointer<AbstractionType> abstraction_;
+
+    //! The currently visible port type.
+    QString visibleType_;
 };
 
 #endif // PORTLISTSORTPROXYMODEL_H

@@ -236,7 +236,8 @@ void BusInterfaceWriter::writeLogicalPort(QXmlStreamWriter& writer,
     writer.writeTextElement(QStringLiteral("ipxact:name"), logicalPort->name_);
 
     // Write range of the logical port.
-    if (logicalPort->range_)
+    QSharedPointer<Range> logicalRange = logicalPort->range_;
+    if (logicalRange && (!logicalRange->getLeft().isEmpty() || !logicalRange->getRight().isEmpty()))
     {
         writer.writeStartElement(QStringLiteral("ipxact:range"));
         writer.writeTextElement(QStringLiteral("ipxact:left"), logicalPort->range_->getLeft());

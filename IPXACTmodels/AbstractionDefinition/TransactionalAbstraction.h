@@ -114,7 +114,50 @@ public:
      */
     QSharedPointer<TransactionalPort> getSlavePort() const;
 
+    /*!
+     *  Check if the transactional has the selected interface mode.
+     *
+     *      @param [in] mode            The selected interface mode.
+     *      @param [in] systemGroup     The selected interface system group.
+     *
+     *      @return True, if the transactional has the selected mode, otherwise false.
+     */
+    bool hasMode(General::InterfaceMode mode, QString const& systemGroup) const;
+
+    /*!
+     *  Get the initiative of the selected interface mode.
+     *
+     *      @param [in] mode            The selected interface mode.
+     *      @param [in] systemGroup     The selected interface system group.
+     *
+     *      @return The initiative of the selected mode.
+     */
+    QString getInitiative(General::InterfaceMode mode, QString const& systemGroup) const;
+
+    /*!
+     *  Get the width of the selected interface mode.
+     *
+     *      @param [in] mode            The selected interface mode.
+     *      @param [in] systemGroup     The selected interface system group.
+     *
+     *      @return The width of the selected mode.
+     */
+    QString getWidth(General::InterfaceMode mode, QString const& systemGroup) const;
+
 private:
+
+    /*!
+     *  Find the selected system port.
+     *
+     *      @param [in] systemGroup     The selected interface system group.
+     *
+     *      @return The selected system port, if it exists.
+     */
+    QSharedPointer<TransactionalPort> findSystemPort(QString const& systemGroup) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The qualifier describing the information the transaction carries.
 	Qualifier qualifier_;
