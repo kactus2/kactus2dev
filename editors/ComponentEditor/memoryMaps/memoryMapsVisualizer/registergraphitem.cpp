@@ -229,8 +229,10 @@ void RegisterGraphItem::repositionChildren()
     // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB). 
     // A local copy of the child items is created to ensure that inserting gaps does not interfere the iteration.
     QMap<quint64, MemoryVisualizationItem*> childCopies = childItems_;
-    for (MemoryVisualizationItem* current : childCopies)
-    {         
+    for (auto i = childCopies.cend() - 1; i != childCopies.cbegin() - 1; i--)
+    { 
+        MemoryVisualizationItem* current = i.value();
+
         if (current->isPresent())
         {
             // if there is a gap between the MSB of the register and the last item.
