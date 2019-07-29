@@ -13,10 +13,10 @@
 #define BUSIFINTERFACESLAVE_H
 
 #include "busifinterfacemodeeditor.h"
-
 #include "bridgeseditor.h"
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
+#include <editors/ComponentEditor/instantiations/filesetrefeditor.h>
 
 #include <IPXACTmodels/Component/SlaveInterface.h>
 
@@ -24,6 +24,7 @@
 
 class BusInterface;
 class Component;
+
 //-----------------------------------------------------------------------------
 //! Editor to the slave details of a bus interface.
 //-----------------------------------------------------------------------------
@@ -67,12 +68,31 @@ public:
 
 private slots:
 
-	//! Handler for changes in the memory map reference.
+	/*!
+     *  Handler for changes in the memory map reference.
+     *
+     *      @param [in] newMemoryMapName    The name of the selected memory map.
+     */
 	void onMemoryMapChange(QString const& newMemoryMapName);
 
+    /*!
+     *  Handler for selecting the memory map.
+     *
+     *      @param [in] checked     True, if the memory map was selected.
+     */
     void onMemoryMapSelected(bool checked);
 
+    /*!
+     *  Handler for selecting the transparent bridges.
+     *
+     *      @param [in] checked     True, if the transparent bridges was selected.
+     */
     void onTransparentBridgeSelected(bool checked);
+
+    /*!
+     *  Handler for changes in the file set references.
+     */
+    void onFileSetReferencesChanged();
 
 private:
 
@@ -82,7 +102,14 @@ private:
 	//! No assignment
 	BusIfInterfaceSlave& operator=(const BusIfInterfaceSlave& other);
 
-    //! Sets the editor layout.
+    /*!
+     *  Setup the current file set references.
+     */
+    void setupFileSetReferences();
+
+    /*!
+     *  Sets the editor layout.
+     */
     void setupLayout();
 
     //-----------------------------------------------------------------------------
@@ -92,6 +119,7 @@ private:
 	//! The slave interface mode being edited.
 	QSharedPointer<SlaveInterface> slave_;
 
+    //! Holder for the memory map option.
     QGroupBox* memoryMapBox_;
 
 	//! The editor to select a memory map from the component.
@@ -99,6 +127,9 @@ private:
 
 	//! The editor to edit the bridges of a slave interface.
 	BridgesEditor bridges_;
+
+    //! Editor to set the file set references.
+    FileSetRefEditor fileSetRefs_;
 };
 
 #endif // BUSIFINTERFACESLAVE_H

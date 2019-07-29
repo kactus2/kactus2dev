@@ -21,6 +21,11 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+namespace
+{
+    QString const DEFAULT_FILEGROUP = QLatin1String("default");
+};
+
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceSlave::BusIfInterfaceSlave()
 //-----------------------------------------------------------------------------
@@ -28,12 +33,15 @@ BusIfInterfaceSlave::BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,
     QSharedPointer<Component> component,
     QWidget *parent):
 BusIfInterfaceModeEditor(busif, component, tr("Slave"), parent),
-    slave_(QSharedPointer<SlaveInterface>(new SlaveInterface())),
-    memoryMapBox_(new QGroupBox(tr("Memory map"), this)),
-    memoryMapReferenceSelector_(this),
-    bridges_(slave_->getBridges(), component, this)
+slave_(QSharedPointer<SlaveInterface>(new SlaveInterface())),
+memoryMapBox_(new QGroupBox(tr("Memory map"), this)),
+memoryMapReferenceSelector_(this),
+bridges_(slave_->getBridges(), component, this),
+fileSetRefs_(component, tr("File set references"), this)
 {
     Q_ASSERT(slave_);
+
+    fileSetRefs_.initialize();
 
     memoryMapBox_->setCheckable(true);
     bridges_.setCheckable(true);
@@ -48,6 +56,9 @@ BusIfInterfaceModeEditor(busif, component, tr("Slave"), parent),
 	connect(&memoryMapReferenceSelector_, SIGNAL(itemSelected(QString const&)),
 		this, SLOT(onMemoryMapChange(QString const&)), Qt::UniqueConnection);
 	
+    connect(&fileSetRefs_, SIGNAL(contentChanged()),
+        this, SLOT(onFileSetReferencesChanged()), Qt::UniqueConnection);
+
     connect(&bridges_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
@@ -86,8 +97,34 @@ void BusIfInterfaceSlave::refresh()
 	memoryMapReferenceSelector_.selectItem(slave_->getMemoryMapRef());
     memoryMapBox_->setChecked(!slave_->getMemoryMapRef().isEmpty());
 
+    setupFileSetReferences();
+
     bridges_.refresh(slave_->getBridges());
     bridges_.setChecked(!slave_->getBridges()->isEmpty());
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifinterfaceslave::setupFileSetReferences()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceSlave::setupFileSetReferences()
+{
+    QStringList newFileSetItems;
+
+    if (slave_->getFileSetRefGroup())
+    {
+        for (auto fileGroup : *slave_->getFileSetRefGroup())
+        {
+            if (fileGroup->group_.compare(DEFAULT_FILEGROUP) == 0)
+            {
+                for (auto fileReference : fileGroup->fileSetRefs_)
+                {
+                    newFileSetItems.append(fileReference);
+                }
+            }
+        }
+    }
+
+    fileSetRefs_.setItems(newFileSetItems);
 }
 
 //-----------------------------------------------------------------------------
@@ -152,6 +189,35 @@ void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
 }
 
 //-----------------------------------------------------------------------------
+// Function: busifinterfaceslave::onFileSetReferencesChanged()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceSlave::onFileSetReferencesChanged()
+{
+    if (slave_->getFileSetRefGroup())
+    {
+        slave_->getFileSetRefGroup()->clear();
+    }
+    else
+    {
+        QSharedPointer<QList<QSharedPointer<SlaveInterface::FileSetRefGroup> > > newFileSetRefGroup
+            (new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >());
+        slave_->getFileSetRefGroup() = newFileSetRefGroup;
+    }
+
+    QStringList newItems = fileSetRefs_.items();
+    if (!newItems.isEmpty())
+    {
+        QSharedPointer<SlaveInterface::FileSetRefGroup> fileGroup(new SlaveInterface::FileSetRefGroup());
+        fileGroup->group_ = DEFAULT_FILEGROUP;
+
+        fileGroup->fileSetRefs_ = fileSetRefs_.items();
+        slave_->getFileSetRefGroup()->append(fileGroup);
+    }
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusIfInterfaceSlave::saveModeSpecific()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::saveModeSpecific()
@@ -167,9 +233,12 @@ void BusIfInterfaceSlave::setupLayout()
     QHBoxLayout* memRefLayout = new QHBoxLayout(memoryMapBox_);
     memRefLayout->addWidget(&memoryMapReferenceSelector_, 1);
 
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(memoryMapBox_);
-    topLayout->addWidget(&bridges_);
-    topLayout->addStretch();
-}
+    QVBoxLayout* mapBridgeLayout = new QVBoxLayout();
+    mapBridgeLayout->addWidget(memoryMapBox_);
+    mapBridgeLayout->addWidget(&bridges_);
+    mapBridgeLayout->addStretch();
 
+    QHBoxLayout* topLayout = new QHBoxLayout(this);
+    topLayout->addLayout(mapBridgeLayout);
+    topLayout->addWidget(&fileSetRefs_);
+}
