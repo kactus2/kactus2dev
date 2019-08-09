@@ -589,6 +589,13 @@ private:
      */
     virtual ComponentItemAutoConnector* createAutoConnector(ComponentItem* firstItem) const = 0;
 
+    /*!
+     *  Ensure visibility of a moving item.
+     *
+     *      @param [in] mouseEvent  The mouse event.
+     */
+    void ensureMovedItemVisibility(QGraphicsSceneMouseEvent* mouseEvent);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -644,11 +651,8 @@ private:
     //! The pressed mouse button.
     Qt::MouseButton lastMousePress_;
 
-    //! X margin for dragging items out of visible area.
-    double itemDragMarginX_;
-    
-    //! Y margin for dragging items out of visible area.
-    double itemDragMarginY_;
+    //! Check for moving item to be located in the right edge.
+    bool lastSelectedItemIsAtRightEdge_;
 };
 
 #endif // COMPONENTDESIGNDIAGRAM_H

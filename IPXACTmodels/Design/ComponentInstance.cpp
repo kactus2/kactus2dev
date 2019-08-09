@@ -121,8 +121,8 @@ void ComponentInstance::setPosition(QPointF const& pos)
     }
     if (!pos.isNull())
     {
-        QSharedPointer<Kactus2Placeholder> positionExtension (new Kactus2Placeholder(QStringLiteral("kactus2:position")))
-            ;
+        QSharedPointer<Kactus2Placeholder> positionExtension (
+            new Kactus2Placeholder(QStringLiteral("kactus2:position")));
         positionExtension->setAttribute(QStringLiteral("x"), QString::number(pos.x()));
         positionExtension->setAttribute(QStringLiteral("y"), QString::number(pos.y()));
 

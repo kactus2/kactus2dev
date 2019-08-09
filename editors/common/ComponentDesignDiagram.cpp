@@ -57,8 +57,7 @@ ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPoin
     openAutoConnector_(tr("Connect to ..."), this),
     clickedPosition_(),
     lastMousePress_(Qt::NoButton),
-    itemDragMarginX_(0),
-    itemDragMarginY_(0)
+    lastSelectedItemIsAtRightEdge_(false)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(editProvider.data(), SIGNAL(modified()), this, SIGNAL(contentChanged()));
@@ -309,9 +308,18 @@ void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
 
             if (singleSelection())
             {
-                QGraphicsItem* draggedItem = selectedItems().first();
-                itemDragMarginX_ = -(draggedItem->boundingRect().width() / 4.4);
-                itemDragMarginY_ = draggedItem->boundingRect().height();
+                QGraphicsItem* selectedItem = selectedItems().first();
+                QGraphicsView* firstView = views().first();
+                if (selectedItem && firstView)
+                {
+                    QRectF itemRectangle = selectedItem->sceneBoundingRect();
+                    QRectF viewScene = firstView->mapToScene(firstView->rect()).boundingRect();
+
+                    if (itemRectangle.right() > viewScene.right())
+                    {
+                        lastSelectedItemIsAtRightEdge_ = true;
+                    }
+                }
             }
         }
     }
@@ -372,10 +380,52 @@ void ComponentDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent
     {
         if (lastMousePress_ == Qt::LeftButton)
         {
-            views().first()->ensureVisible(selectedItems().first(), itemDragMarginX_, itemDragMarginY_);
+            ensureMovedItemVisibility(mouseEvent);
         }
 
         QGraphicsScene::mouseMoveEvent(mouseEvent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::getMovedItemRectangle()
+//-----------------------------------------------------------------------------
+void ComponentDesignDiagram::ensureMovedItemVisibility(QGraphicsSceneMouseEvent* mouseEvent)
+{
+    QGraphicsItem* selectedItem = selectedItems().first();
+    QGraphicsView* firstView = views().first();
+    if (selectedItem && firstView)
+    {
+        QRectF itemRectangle = selectedItem->sceneBoundingRect();
+        QRectF viewScene = firstView->mapToScene(firstView->rect()).boundingRect();
+        if (itemRectangle.height() > viewScene.height())
+        {
+            QPointF mousePosition = mouseEvent->scenePos();
+            qreal newY = mousePosition.y();
+            qreal newHeight = viewScene.height() / 2;
+
+            qreal availableAbove = mousePosition.y() - itemRectangle.y();
+            if (availableAbove >= newHeight / 2)
+            {
+                newY = newY - newHeight / 2;
+            }
+            else
+            {
+                newY = newY - availableAbove;
+            }
+
+            itemRectangle.setY(newY);
+            itemRectangle.setHeight(newHeight);
+        }
+
+        int sideMargin = 50;
+
+        if (lastSelectedItemIsAtRightEdge_)
+        {
+            sideMargin = -50;
+        }
+
+        firstView->ensureVisible(itemRectangle, sideMargin);
     }
 }
 
@@ -400,8 +450,7 @@ void ComponentDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEv
 	QGraphicsScene::mouseReleaseEvent(mouseEvent);
 
     lastMousePress_ = Qt::NoButton;
-    itemDragMarginX_ = 0;
-    itemDragMarginY_ = 0;
+    lastSelectedItemIsAtRightEdge_ = false;
 }
 
 //-----------------------------------------------------------------------------
