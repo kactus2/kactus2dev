@@ -62,17 +62,29 @@ QSharedPointer<BusInterface> BusInterfaceEndPoint::getBusInterface() const
 //-----------------------------------------------------------------------------
 void BusInterfaceEndPoint::updateEndPointGraphics()
 {
+    QPolygonF shape;
+
     DirectionTypes::Direction direction =
         InterfaceGraphics::getInterfaceDirection(busInterface_, getOwnerComponent());
+    TransactionalTypes::Initiative initiative =
+        InterfaceGraphics::getInterfaceInitiative(busInterface_, getOwnerComponent());
 
-    QPolygonF shape = getInterfaceShape(direction);
+    if (direction == DirectionTypes::DIRECTION_INVALID && initiative != TransactionalTypes::INITIATIVE_INVALID)
+    {
+        shape = getInterfaceShapeWithInitiative(initiative);
+    }
+    else
+    {
+        shape = getInterfaceShapeWithDirection(direction);
+    }
+
     setPolygon(shape);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::getInterfaceShape()
+// Function: BusInterfaceEndPoint::getInterfaceShapeWithDirection()
 //-----------------------------------------------------------------------------
-QPolygonF BusInterfaceEndPoint::getInterfaceShape(DirectionTypes::Direction direction) const
+QPolygonF BusInterfaceEndPoint::getInterfaceShapeWithDirection(DirectionTypes::Direction direction) const
 {
     if (direction == DirectionTypes::IN)
     {
@@ -99,6 +111,25 @@ QPolygonF BusInterfaceEndPoint::getInterfaceShape(DirectionTypes::Direction dire
     else
     {
         return getDirectionInOutShape();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getInterfaceShapeWithInitiative()
+//-----------------------------------------------------------------------------
+QPolygonF BusInterfaceEndPoint::getInterfaceShapeWithInitiative(TransactionalTypes::Initiative initiative) const
+{
+    if (initiative == TransactionalTypes::PROVIDES)
+    {
+        return getInitiativeProvidesShape();
+    }
+    else if (initiative == TransactionalTypes::REQUIRES)
+    {
+        return getInitiativeRequiresShape();
+    }
+    else
+    {
+        return getInitiativeRequiresProvidesShape();
     }
 }
 
@@ -402,6 +433,73 @@ QPolygonF BusInterfaceEndPoint::getDirectionInOutShape() const
         << QPointF(squareSize/2, 0)
         << QPointF(squareSize/2, squareSize/2)
         << QPointF(0, squareSize);
+
+    return shape;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getInitiativeProvidesShape()
+//-----------------------------------------------------------------------------
+QPolygonF BusInterfaceEndPoint::getInitiativeProvidesShape() const
+{
+    int squareSize = GridSize;
+
+    QPolygonF shape;
+
+    shape << QPointF(-squareSize / 2, squareSize * 3 / 4)
+        << QPointF(-squareSize / 2, -squareSize / 4)
+        << QPointF(-squareSize / 4, -squareSize / 4)
+        << QPointF(-squareSize / 4, -squareSize / 2)
+        << QPointF(squareSize / 4, -squareSize / 2)
+        << QPointF(squareSize / 4, -squareSize / 4)
+        << QPointF(squareSize / 2, -squareSize / 4)
+        << QPointF(squareSize / 2, squareSize * 3 / 4);
+
+    return shape;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getInitiativeRequiresShape()
+//-----------------------------------------------------------------------------
+QPolygonF BusInterfaceEndPoint::getInitiativeRequiresShape() const
+{
+    int squareSize = GridSize;
+
+    QPolygonF shape;
+
+    shape << QPointF(-squareSize / 2, squareSize * 3 / 4)
+        << QPointF(-squareSize / 2, -squareSize / 2)
+        << QPointF(-squareSize / 4, -squareSize / 2)
+        << QPointF(-squareSize / 4, -squareSize / 4)
+        << QPointF(squareSize / 4, -squareSize / 4)
+        << QPointF(squareSize / 4, -squareSize / 2)
+        << QPointF(squareSize / 2, -squareSize / 2)
+        << QPointF(squareSize / 2, squareSize * 3 / 4);
+
+    return shape;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getInitiativeRequiresProvidesShape()
+//-----------------------------------------------------------------------------
+QPolygonF BusInterfaceEndPoint::getInitiativeRequiresProvidesShape() const
+{
+    int squareSize = GridSize;
+
+    QPolygonF shape;
+
+    shape << QPointF(-squareSize / 2, squareSize * 3 / 4)
+        << QPointF(-squareSize / 2, -squareSize / 4)
+        << QPointF(-squareSize / 4, -squareSize / 4)
+        << QPointF(-squareSize / 4, -squareSize / 2)
+        << QPointF(squareSize / 4, -squareSize / 2)
+        << QPointF(squareSize / 4, -squareSize / 4)
+        << QPointF(squareSize / 2, -squareSize / 4)
+        << QPointF(squareSize / 2, squareSize * 3 / 4)
+        << QPointF(squareSize / 4, squareSize * 3 / 4)
+        << QPointF(squareSize / 4, squareSize / 2)
+        << QPointF(-squareSize / 4, squareSize / 2)
+        << QPointF(-squareSize / 4, squareSize * 3 / 4);
 
     return shape;
 }

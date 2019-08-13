@@ -13,6 +13,7 @@
 #define HWCONNECTIONENDPOINT_H
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/Component/Component.h>
 
 #include <common/graphicsItems/ConnectionEndpoint.h>

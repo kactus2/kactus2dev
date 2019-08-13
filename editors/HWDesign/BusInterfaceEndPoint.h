@@ -221,6 +221,28 @@ protected:
     virtual QPolygonF getDirectionInOutShape() const;
 
     /*!
+     *  Get the shape of the bus interface with initiative provides.
+     *
+     *      @return The shape of the bus interface with initiative provides.
+     */
+    virtual QPolygonF getInitiativeProvidesShape() const;
+
+    /*!
+     *  Get the shape of the bus interface with initiative requires.
+     *
+     *      @return The shape of the bus interface with initiative requires.
+     */
+    virtual QPolygonF getInitiativeRequiresShape() const;
+
+    /*!
+     *  Get the shape of the bus interface with initiative requries / provides.
+     *
+     *      @return The shape of the bus interface with initiative requires / provides.
+     */
+    virtual QPolygonF getInitiativeRequiresProvidesShape() const;
+
+
+    /*!
      *  Get access to the library.
      *
      *      @return The library interface.
@@ -240,7 +262,16 @@ private:
      *
      *      @return The new shape for the interface item.
      */
-    QPolygonF getInterfaceShape(DirectionTypes::Direction direction) const;
+    QPolygonF getInterfaceShapeWithDirection(DirectionTypes::Direction direction) const;
+
+    /*!
+     *  Get the graphical shape for the interface item.
+     *
+     *      @param [in] initiative  Initiative of the interface item.
+     *
+     *      @return The new shape for the interface item.
+     */
+    QPolygonF getInterfaceShapeWithInitiative(TransactionalTypes::Initiative initiative) const;
 
     /*!
      *  Handle the name change of the bus interface.
