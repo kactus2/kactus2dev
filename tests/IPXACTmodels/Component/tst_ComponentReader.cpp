@@ -83,6 +83,8 @@ private slots:
     void readApiInterfaces();
     void readFileDependencies();
     void readAuthorAndLicense();
+
+    void readTags();
 };
 
 //-----------------------------------------------------------------------------
@@ -1388,6 +1390,46 @@ void tst_ComponentReader::readAuthorAndLicense()
 
     QCOMPARE(testComponent->getAuthor(), QString("tester"));
     QCOMPARE(testComponent->getLicense(), QString("testLicense"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readTags()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readTags()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:tags>"
+                    "<kactus2:tag>"
+                        "<kactus2:name>TAG</kactus2:name>"
+                        "<kactus2:color>#79D173</kactus2:color>"
+                    "</kactus2:tag>"
+                "</kactus2:tags>"
+        "</ipxact:vendorExtensions>"
+        "</ipxact:component>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+
+    QCOMPARE(testComponent->getTags().size(), 1);
+    QCOMPARE(testComponent->getTags().first().first, QLatin1String("TAG"));
+    QCOMPARE(testComponent->getTags().first().second, QLatin1String("#79D173"));
 }
 
 

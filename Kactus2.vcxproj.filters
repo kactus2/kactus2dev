@@ -947,6 +947,12 @@
     <Filter Include="Source Files\common\expressions">
       <UniqueIdentifier>{e067188b-7c08-4e68-82df-7de63c587d49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\widgets\tagEditor">
+      <UniqueIdentifier>{1c290e27-81b0-4485-a82e-6483f74386b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\tagEditor">
+      <UniqueIdentifier>{1b390fb1-0cfa-4143-b40e-95a7467acb7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4774,6 +4780,27 @@
     <ClCompile Include="GeneratedFiles\moc_PortsFilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TagLabel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagLabel.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\FlowLayout.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TagContainer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagContainer.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagEditor.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TagEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6533,6 +6560,18 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\ports\PortsFilter.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\TagLabel.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\FlowLayout.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\TagContainer.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\TagEditor.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

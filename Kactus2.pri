@@ -262,15 +262,27 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/itemeditor.h \
     ./editors/ComponentEditor/itemvisualizer.h \
     ./editors/ComponentEditor/general/generaleditor.h \
-    ./editors/ComponentEditor/ports/WirePortColumns.h \
     ./editors/ComponentEditor/ports/PortTypeDefinitionDelegate.h \
     ./editors/ComponentEditor/ports/PortWireTypeColumns.h \
+    ./editors/ComponentEditor/ports/TransactionalPortColumns.h \
+    ./editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.h \
+    ./editors/ComponentEditor/ports/WirePortColumns.h \
+    ./editors/ComponentEditor/ports/MasterPortsEditor.h \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.h \
     ./editors/ComponentEditor/ports/PortWireTypeEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeModel.h \
     ./editors/ComponentEditor/ports/PortWireTypeDelegate.h \
+    ./editors/ComponentEditor/ports/PortsEditorConstructor.h \
+    ./editors/ComponentEditor/ports/PortsFilter.h \
     ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeView.h \
+    ./editors/ComponentEditor/ports/WirePortsEditorConstructor.h \
+    ./editors/ComponentEditor/ports/TransactionalPortsDelegate.h \
+    ./editors/ComponentEditor/ports/TransactionalPortsModel.h \
+    ./editors/ComponentEditor/ports/TransactionalPortsFilter.h \
+    ./editors/ComponentEditor/ports/WirePortsModel.h \
+    ./editors/ComponentEditor/ports/WirePortsFilter.h \
+    ./editors/ComponentEditor/ports/WirePortsDelegate.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
@@ -823,18 +835,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/ports/WirePortsEditorConstructor.h \
-    ./editors/ComponentEditor/ports/TransactionalPortColumns.h \
-    ./editors/ComponentEditor/ports/MasterPortsEditor.h \
-    ./editors/ComponentEditor/ports/PortsEditorConstructor.h \
-    ./editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.h \
-    ./editors/ComponentEditor/ports/WirePortsModel.h \
-    ./editors/ComponentEditor/ports/TransactionalPortsModel.h \
-    ./editors/ComponentEditor/ports/WirePortsFilter.h \
-    ./editors/ComponentEditor/ports/TransactionalPortsFilter.h \
-    ./editors/ComponentEditor/ports/WirePortsDelegate.h \
-    ./editors/ComponentEditor/ports/TransactionalPortsDelegate.h \
-    ./editors/ComponentEditor/ports/PortsFilter.h
+    ./common/widgets/tagEditor/TagContainer.h \
+    ./common/widgets/tagEditor/TagLabel.h \
+    ./common/widgets/tagEditor/FlowLayout.h \
+    ./common/widgets/tagEditor/TagEditor.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1119,8 +1123,10 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
     ./editors/ComponentEditor/parameters/Array/ArrayView.cpp \
     ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.cpp \
+    ./editors/ComponentEditor/ports/MasterPortsEditor.cpp \
     ./editors/ComponentEditor/ports/portsdelegate.cpp \
     ./editors/ComponentEditor/ports/portseditor.cpp \
+    ./editors/ComponentEditor/ports/PortsFilter.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
@@ -1130,6 +1136,14 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/PortWireTypeEditor.cpp \
     ./editors/ComponentEditor/ports/PortWireTypeModel.cpp \
     ./editors/ComponentEditor/ports/PortWireTypeView.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortsDelegate.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortsFilter.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortsModel.cpp \
+    ./editors/ComponentEditor/ports/WirePortsDelegate.cpp \
+    ./editors/ComponentEditor/ports/WirePortsEditorConstructor.cpp \
+    ./editors/ComponentEditor/ports/WirePortsFilter.cpp \
+    ./editors/ComponentEditor/ports/WirePortsModel.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
@@ -1547,14 +1561,8 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/ports/WirePortsEditorConstructor.cpp \
-    ./editors/ComponentEditor/ports/MasterPortsEditor.cpp \
-    ./editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.cpp \
-    ./editors/ComponentEditor/ports/WirePortsModel.cpp \
-    ./editors/ComponentEditor/ports/TransactionalPortsModel.cpp \
-    ./editors/ComponentEditor/ports/WirePortsFilter.cpp \
-    ./editors/ComponentEditor/ports/TransactionalPortsFilter.cpp \
-    ./editors/ComponentEditor/ports/WirePortsDelegate.cpp \
-    ./editors/ComponentEditor/ports/TransactionalPortsDelegate.cpp \
-    ./editors/ComponentEditor/ports/PortsFilter.cpp
+    ./common/widgets/tagEditor/TagContainer.cpp \
+    ./common/widgets/tagEditor/TagLabel.cpp \
+    ./common/widgets/tagEditor/FlowLayout.cpp \
+    ./common/widgets/tagEditor/TagEditor.cpp
 RESOURCES += kactus.qrc

@@ -18,6 +18,8 @@
 #include <QComboBox>
 #include <QLabel>
 
+class TagContainer;
+
 //-----------------------------------------------------------------------------
 //! KactusAttributeEditor class.
 //-----------------------------------------------------------------------------
@@ -46,9 +48,10 @@ public:
      *
      *      @param [in] prodHier    Product hierarchy.
      *      @param [in] firmness	Firmness.
+     *      @param [in] tags        Document tags.
      */
-    void setAttributes(KactusAttribute::ProductHierarchy prodHier,
-                       KactusAttribute::Firmness firmness);
+    void setAttributes(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
+        QVector<QPair<QString, QString> > tags);
 
     /*!
      *  Sets the implementation visible with the given value.
@@ -66,6 +69,13 @@ public:
      *  Returns the selected firmness.
      */
     KactusAttribute::Firmness getFirmness() const;
+
+    /*!
+     *  Get document tags.
+     *
+     *      @return Document tags.
+     */
+    QVector<QPair<QString, QString> > getTags() const;
 
 signals:
     //! Signaled when the attributes have changed.
@@ -100,6 +110,9 @@ private:
 
     //! Label for the implementation value.
     QLabel* implementationValue_;
+
+    //! Editor for document tags.
+    TagContainer* tagEditor_;
 };
 
 //-----------------------------------------------------------------------------

@@ -87,9 +87,8 @@ bool NewDesignPage::validate()
 //-----------------------------------------------------------------------------
 void NewDesignPage::apply()
 {
-    emit createDesign(attributeEditor_->getProductHierarchy(),
-                      attributeEditor_->getFirmness(),
-                      vlnvEditor_->getVLNV(), selectedPath());
+    emit createDesign(attributeEditor_->getProductHierarchy(), attributeEditor_->getFirmness(),
+        attributeEditor_->getTags(), vlnvEditor_->getVLNV(), selectedPath());
 }
 
 //-----------------------------------------------------------------------------
@@ -98,7 +97,8 @@ void NewDesignPage::apply()
 bool NewDesignPage::onPageChange()
 {
     // Discard the VLNV and reset the attributes.
-    attributeEditor_->setAttributes(KactusAttribute::FLAT, KactusAttribute::TEMPLATE);
+    attributeEditor_->setAttributes(KactusAttribute::FLAT, KactusAttribute::TEMPLATE,
+        QVector<QPair<QString, QString> >());
     onProductHierarchyChanged();
     return NewPage::onPageChange();
 }

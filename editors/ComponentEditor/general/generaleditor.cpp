@@ -92,7 +92,8 @@ void GeneralEditor::refresh()
 	{
         KactusAttribute::ProductHierarchy prodHier = component()->getHierarchy();
         KactusAttribute::Firmness firmness = component()->getFirmness();
-		attributeEditor_->setAttributes(prodHier, firmness);
+        QVector<QPair<QString, QString> > tags = component()->getTags();
+		attributeEditor_->setAttributes(prodHier, firmness, tags);
 	}
 	else
 	{
@@ -133,6 +134,7 @@ void GeneralEditor::onAttributesChange()
 	{
         component()->setHierarchy(attributeEditor_->getProductHierarchy());
         component()->setFirmness(attributeEditor_->getFirmness());
+        component()->setTags(attributeEditor_->getTags());
 	}
 	emit contentChanged();
 

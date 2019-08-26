@@ -719,8 +719,9 @@ void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
 
         KactusAttribute::ProductHierarchy prodHier = component->getHierarchy();
         KactusAttribute::Firmness firmness = component->getFirmness();
+        QVector<QPair<QString, QString> > tags = component->getTags();
 
-        newDesignDialog.setKactusAttributes(prodHier, firmness);
+        newDesignDialog.setKactusAttributes(prodHier, firmness, tags);
     }
 
     newDesignDialog.setVLNV(vlnv);
@@ -759,8 +760,8 @@ void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
     }
     else if (documentType == VLNV::COMPONENT)
     {
-        emit createComponent(newDesignDialog.getProductHierarchy(), newDesignDialog.getFirmness(), newVlnv,
-            directory);
+        emit createComponent(newDesignDialog.getProductHierarchy(), newDesignDialog.getFirmness(),
+            newDesignDialog.getTags(), newVlnv, directory);
     }
     else if (documentType == VLNV::APIDEFINITION)
     {

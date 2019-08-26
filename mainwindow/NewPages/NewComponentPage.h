@@ -76,7 +76,7 @@ signals:
      *  Signaled when a component should be created.
      */
     void createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        VLNV const& vlnv, QString const& directory);
+        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory);
 
 private:
     // Disable copying.

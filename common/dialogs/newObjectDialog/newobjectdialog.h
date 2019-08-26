@@ -60,8 +60,10 @@ public:
      *
      *      @param [in] prodHier    Product hierarchy.
      *      @param [in] firmness	firmness.
+     *      @param [in] tags        Tags.
      */
-    void setKactusAttributes(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness);
+    void setKactusAttributes(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
+        QVector<QPair<QString, QString> > tags);
 
     /*!
      *  Get the user inputted VLNV.
@@ -79,6 +81,13 @@ public:
     KactusAttribute::Firmness getFirmness() const;
 
     /*!
+     *  Get the document tags.
+     *
+     *      @return Document tags.
+     */
+    QVector<QPair<QString, QString> > getTags() const;
+
+    /*!
      *  Get the user inputted path.
      */
     QString getPath();
@@ -86,11 +95,20 @@ public:
     /*!
      *  Shows a pre-filled dialog with the version field set empty.
      *
+     *      @param [in] parent      The parent widget.
+     *      @param [in] lh          Interface to the library.
+     *      @param [in] oldVLNV     The old VLNV.
+     *      @param [in] prodHier    Product hierarchy.
+     *      @param [in] firmness    Firmness.
+     *      @param [in] tags        Document tags.
+     *      @param [in] vlnv        VLNV.
+     *      @param [in] directory   Directory.
+     *
      *      @return True, if the user pressed OK. False if the user pressed Cancel.
      */
     static bool saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
-                             KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness,
-                             VLNV& vlnv, QString& directory);
+        KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness,
+        QVector<QPair<QString, QString> >& tags, VLNV& vlnv, QString& directory);
 
     /*!
      *  Shows a pre-filled dialog with the version field set empty and attributes hidden.
