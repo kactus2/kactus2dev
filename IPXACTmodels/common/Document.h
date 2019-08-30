@@ -32,6 +32,7 @@
 #include <QFile>
 
 class VendorExtension;
+class Kactus2Group;
 
 //-----------------------------------------------------------------------------
 //! Base class for IP-XACT documents e.g. component and design.
@@ -269,7 +270,26 @@ public:
      */
     QString getLicense() const;
 
+    /*!
+     *  Set a new license for the document.
+     *
+     *      @param [in] license     The new license.
+     */
     void setLicense(QString const& license);
+
+    /*!
+     *  Get the document tags.
+     *
+     *      @return The document tags.
+     */
+    QVector<QPair<QString, QString> > getTags() const;
+
+    /*!
+     *  Set new tags for the document.
+     *
+     *      @param [in] newTags     The new tags.
+     */
+    void setTags(QVector<QPair<QString, QString> > newTags) const;
 
 private:
 
@@ -298,7 +318,24 @@ private:
      *      @param [in] other   The document to copy extensions from.
      */
     void copyVendorExtensions(const Document & other);
-    
+
+    /*!
+     *  Get the group container for document tags.
+     *
+     *      @return The group container for document tags.
+     */
+    QSharedPointer<Kactus2Group> getTagGroup() const;
+
+    /*!
+     *  Get a tag container using a name.
+     *
+     *      @param [in] name        The name of the selected tag.
+     *      @param [in] tagGroup    Tag group containing the document tags.
+     *
+     *      @return The selected tag container.
+     */
+    QSharedPointer<Kactus2Group> getTagByName(QString const& name, QSharedPointer<Kactus2Group> tagGroup) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

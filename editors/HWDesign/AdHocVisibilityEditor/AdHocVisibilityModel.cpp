@@ -115,7 +115,7 @@ QVariant AdHocVisibilityModel::data(QModelIndex const& index, int role /*= Qt::D
         }
         else if (index.column() == AdHocVisibilityColumns::ADHOC_COL_DIRECTION)
         {
-            return DirectionTypes::direction2Str(adhocPort->getDirection());
+            return getPortDirection(adhocPort);
         }
         else
         {
@@ -178,6 +178,28 @@ QVariant AdHocVisibilityModel::data(QModelIndex const& index, int role /*= Qt::D
     }
 
     return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocVisibilityModel::getPortDirection()
+//-----------------------------------------------------------------------------
+QString AdHocVisibilityModel::getPortDirection(QSharedPointer<Port> adhocPort) const
+{
+    DirectionTypes::Direction portDirection = adhocPort->getDirection();
+    if (portDirection == DirectionTypes::DIRECTION_INVALID && adhocPort->getTransactional())
+    {
+        QString initiative = adhocPort->getTransactional()->getInitiative();
+        if (initiative == TransactionalTypes::INITIATIVE_BOTH)
+        {
+            initiative = TransactionalTypes::INITIATIVE_REQUIRES_PROVIDES;
+        }
+
+        return initiative;
+    }
+    else
+    {
+        return DirectionTypes::direction2Str(portDirection);
+    }
 }
 
 //-----------------------------------------------------------------------------

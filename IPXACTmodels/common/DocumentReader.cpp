@@ -173,6 +173,12 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
         parseKactusAttributes(attributesNode, document);
     }
 
+    QDomNode tagsNode = extensionNodes.firstChildElement(QLatin1String("kactus2:tags"));
+    if (!tagsNode.isNull())
+    {
+        parseTags(tagsNode, document);
+    }
+
     QDomNode licenseNode = extensionNodes.firstChildElement(QStringLiteral("kactus2:license"));
     if (!licenseNode.isNull())
     {
@@ -208,5 +214,35 @@ void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QShar
     {
         KactusAttribute::Firmness firmness = KactusAttribute::firmnessFrom(firmnessNode.firstChild().nodeValue());
         document->setFirmness(firmness);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseTags()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseTags(QDomNode const& tagsGroupNode, QSharedPointer<Document> document) const
+{
+    QVector<QPair<QString, QString> > documentTags;
+
+    QDomNodeList tagNodeList = tagsGroupNode.childNodes();
+    for (int i = 0; i < tagNodeList.size(); ++i)
+    {
+        QDomNode tagNode = tagNodeList.at(i);
+        QDomElement nameElement = tagNode.firstChildElement(QLatin1String("kactus2:name"));
+        QDomElement colorElement = tagNode.firstChildElement(QLatin1String("kactus2:color"));
+
+        if (!nameElement.isNull() && !colorElement.isNull())
+        {
+            QPair<QString, QString> newTag;
+            newTag.first = nameElement.text();
+            newTag.second = colorElement.text();
+
+            documentTags.append(newTag);
+        }
+    }
+
+    if (!documentTags.isEmpty())
+    {
+        document->setTags(documentTags);
     }
 }

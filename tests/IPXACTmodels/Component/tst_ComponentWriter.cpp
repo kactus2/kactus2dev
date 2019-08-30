@@ -93,6 +93,8 @@ private slots:
     void writeApiInterfaces();
     void writeFileDependencies();
 
+    void writeTags();
+
 private:
 
     QSharedPointer<Component> testComponent_;
@@ -644,6 +646,11 @@ void tst_ComponentWriter::writePorts()
 
     QSharedPointer<Port> testPort (new Port("testPort"));
 
+    QSharedPointer<Wire> testWire(new Wire());
+    testWire->setDirection(DirectionTypes::IN);
+
+    testPort->setWire(testWire);
+
     testComponent_->getPorts()->append(testPort);
 
     QString expectedOutput(
@@ -1064,6 +1071,7 @@ void tst_ComponentWriter::writeVendorExtensions()
     extensionNode.appendChild(document.createTextNode("testValue"));
 
     QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
+    testExtension->setNameSpace(QStringLiteral("testSpace"));
 
     testComponent_->getVendorExtensions()->append(testExtension);
     testComponent_->setVersion("3.0.0");
@@ -1082,7 +1090,7 @@ void tst_ComponentWriter::writeVendorExtensions()
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
             "\t<ipxact:vendorExtensions>\n"
-                "\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
+                "\t\t<testSpace:testExtension testExtensionAttribute=\"extension\">testValue</testSpace:testExtension>\n"
                 "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
                 "\t\t<kactus2:license>testLicense</kactus2:license>\n"
             "\t</ipxact:vendorExtensions>\n"
@@ -1429,6 +1437,66 @@ void tst_ComponentWriter::writeFileDependencies()
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:component>\n"
         );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeTags()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeTags()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QPair<QString, QString> newTag1;
+    newTag1.first = QStringLiteral("Kohr-ah");
+    newTag1.second = QStringLiteral("#FFFFFF");
+
+    QPair<QString, QString> newTag2;
+    newTag2.first = QStringLiteral("Kzer-za");
+    newTag2.second = QStringLiteral("#54D66F");
+
+    QVector<QPair<QString, QString> > componentTags;
+    componentTags.append(newTag1);
+    componentTags.append(newTag2);
+
+    testComponent_->setVersion("3.0.0");
+    testComponent_->setTags(componentTags);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:tags>\n"
+                    "\t\t\t<kactus2:tag>\n"
+                        "\t\t\t\t<kactus2:name>Kohr-ah</kactus2:name>\n"
+                        "\t\t\t\t<kactus2:color>#FFFFFF</kactus2:color>\n"
+                    "\t\t\t</kactus2:tag>\n"
+                    "\t\t\t<kactus2:tag>\n"
+                        "\t\t\t\t<kactus2:name>Kzer-za</kactus2:name>\n"
+                        "\t\t\t\t<kactus2:color>#54D66F</kactus2:color>\n"
+                    "\t\t\t</kactus2:tag>\n"
+                "\t\t</kactus2:tags>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+    );
 
     ComponentWriter componentWriter;
     componentWriter.writeComponent(xmlStreamWriter, testComponent_);

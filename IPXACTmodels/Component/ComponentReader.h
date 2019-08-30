@@ -278,8 +278,6 @@ private:
      *      @param [in] newComponent    The new component.
      */
     void parseAuthor(QDomNode const& authorNode, QSharedPointer<Component> newComponent) const;
-    
-
 };
 
 #endif // COMPONENTREADER_H

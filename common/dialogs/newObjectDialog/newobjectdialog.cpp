@@ -120,9 +120,9 @@ void NewObjectDialog::setVLNV( const VLNV& vlnv )
 // Function: NewObjectDialog::setKactusAttributes()
 //-----------------------------------------------------------------------------
 void NewObjectDialog::setKactusAttributes(KactusAttribute::ProductHierarchy prodHier,
-                                          KactusAttribute::Firmness firmness)
+    KactusAttribute::Firmness firmness, QVector<QPair<QString, QString> > tags)
 {
-    attributeEditor_->setAttributes(prodHier, firmness);
+    attributeEditor_->setAttributes(prodHier, firmness, tags);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,11 +142,19 @@ KactusAttribute::Firmness NewObjectDialog::getFirmness() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: newobjectdialog::getTags()
+//-----------------------------------------------------------------------------
+QVector<QPair<QString, QString> > NewObjectDialog::getTags() const
+{
+    return attributeEditor_->getTags();
+}
+
+//-----------------------------------------------------------------------------
 // Function: NewObjectDialog::saveAsDialog()
 //-----------------------------------------------------------------------------
 bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
     KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness,
-    VLNV& vlnv, QString& directory)
+    QVector<QPair<QString, QString> >& tags, VLNV& vlnv, QString& directory)
 {
     VLNV suggestion = oldVLNV;
     suggestion.setVersion(QString());
@@ -154,7 +162,7 @@ bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV c
     NewObjectDialog dialog(lh, oldVLNV.getType(), oldVLNV.getType() != VLNV::BUSDEFINITION, parent);
     dialog.setWindowTitle(tr("Save As"));
     dialog.setVLNV(suggestion);
-    dialog.setKactusAttributes(prodHier, firmness);
+    dialog.setKactusAttributes(prodHier, firmness, tags);
 
     if (dialog.exec() == QDialog::Rejected)
     {
@@ -163,6 +171,8 @@ bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV c
 
     prodHier = dialog.getProductHierarchy();
     firmness = dialog.getFirmness();
+    tags = dialog.getTags();
+
     vlnv = dialog.getVLNV();
     directory = dialog.getPath();
     return true;

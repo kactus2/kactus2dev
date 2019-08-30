@@ -607,6 +607,7 @@ void SystemDesignDiagram::onAddToLibraryAction()
             comp->componentModel()->setVlnv(vlnv);
             comp->componentModel()->setHierarchy(dialog.getProductHierarchy());
             comp->componentModel()->setFirmness(dialog.getFirmness());
+            comp->componentModel()->setTags(dialog.getTags());
 
             if (comp->type() == HWMappingItem::Type)
             {

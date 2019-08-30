@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
+
 #include <QString>
 #include <QSharedPointer>
 #include <QObject>
@@ -535,4 +537,157 @@ void Document::copyAssertions(Document const& other)
             assertions_->append(copy);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getTags()
+//-----------------------------------------------------------------------------
+QVector<QPair<QString, QString> > Document::getTags() const
+{
+    QVector<QPair<QString, QString> > documentTags;
+
+    QSharedPointer<Kactus2Group> tagGroup = getTagGroup();
+    if (tagGroup)
+    {
+        for (auto singleTag : tagGroup->getByType(QLatin1String("kactus2:tag")))
+        {
+            QSharedPointer<Kactus2Group> tagValue = singleTag.dynamicCast<Kactus2Group>();
+            if (tagValue)
+            {
+                QPair<QString, QString> newTag;
+
+                QList<QSharedPointer<VendorExtension> > tagNamesExtension =
+                    tagValue->getByType(QLatin1String("kactus2:name"));
+                if (tagNamesExtension.size() == 1)
+                {
+                    QSharedPointer<Kactus2Value> tagName =
+                        tagNamesExtension.first().dynamicCast<Kactus2Value>();
+                    if (tagName)
+                    {
+                        newTag.first = tagName->value();
+                    }
+                }
+
+                QList<QSharedPointer<VendorExtension> > tagColorsExtension =
+                    tagValue->getByType(QLatin1String("kactus2:color"));
+                if (tagColorsExtension.size() == 1)
+                {
+                    QSharedPointer<Kactus2Value> tagColor =
+                        tagColorsExtension.first().dynamicCast<Kactus2Value>();
+                    if (tagColor)
+                    {
+                        newTag.second = tagColor->value();
+                    }
+                }
+
+                if (!newTag.first.isEmpty() && !newTag.second.isEmpty())
+                {
+                    documentTags.append(newTag);
+                }
+            }
+        }
+    }
+
+    return documentTags;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getTagGroup()
+//-----------------------------------------------------------------------------
+QSharedPointer<Kactus2Group> Document::getTagGroup() const
+{
+    for (auto extension : *getVendorExtensions())
+    {
+        if (extension->type() == QLatin1String("kactus2:tags"))
+        {
+            QSharedPointer<Kactus2Group> tagGroup = extension.dynamicCast<Kactus2Group>();
+            if (tagGroup)
+            {
+                return tagGroup;
+            }
+            else
+            {
+                return QSharedPointer<Kactus2Group>();
+            }
+        }
+    }
+
+    return QSharedPointer<Kactus2Group>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::setTags()
+//-----------------------------------------------------------------------------
+void Document::setTags(QVector<QPair<QString, QString> > newTags) const
+{
+    QSharedPointer<Kactus2Group> tagGroup = getTagGroup();
+
+    if (tagGroup && newTags.isEmpty())
+    {
+        getVendorExtensions()->removeAll(tagGroup);
+    }
+    else if (!tagGroup && !newTags.isEmpty())
+    {
+        tagGroup = QSharedPointer<Kactus2Group>(new Kactus2Group(QLatin1String("kactus2:tags")));
+        getVendorExtensions()->append(tagGroup);
+    }
+
+    for (auto singleTag : newTags)
+    {
+        QString tagName = singleTag.first;
+        QString tagColor = singleTag.second;
+
+        QSharedPointer<Kactus2Group> existingTag = getTagByName(tagName, tagGroup);
+        if (existingTag)
+        {
+            QList<QSharedPointer<VendorExtension> > colorExtension =
+                existingTag->getByType(QLatin1String("kactus2:color"));
+            if (colorExtension.size() == 1)
+            {
+                QSharedPointer<Kactus2Value> tagColorExtension =
+                    colorExtension.first().dynamicCast<Kactus2Value>();
+                if (tagColorExtension)
+                {
+                    tagColorExtension->setValue(tagColor);
+                }
+            }
+        }
+        else
+        {
+            QSharedPointer<Kactus2Value> newTagName(new Kactus2Value(QLatin1String("kactus2:name"), tagName));
+            QSharedPointer<Kactus2Value> newTagColor(new Kactus2Value(QLatin1String("kactus2:color"), tagColor));
+
+            QSharedPointer<Kactus2Group> newTagContainer(new Kactus2Group(QLatin1String("kactus2:tag")));
+            newTagContainer->addToGroup(newTagName);
+            newTagContainer->addToGroup(newTagColor);
+
+            tagGroup->addToGroup(newTagContainer);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getTagByName()
+//-----------------------------------------------------------------------------
+QSharedPointer<Kactus2Group> Document::getTagByName(QString const& name, QSharedPointer<Kactus2Group> tagGroup) const
+{
+    for (auto tagExtension : tagGroup->getByType(QLatin1String("kactus2:tag")))
+    {
+        QSharedPointer<Kactus2Group> tag = tagExtension.dynamicCast<Kactus2Group>();
+        if (tag)
+        {
+            QList<QSharedPointer<VendorExtension> > tagNameContainer =
+                tag->getByType(QLatin1String("kactus2:name"));
+            if (tagNameContainer.size() == 1)
+            {
+                QSharedPointer<Kactus2Value> tagName = tagNameContainer.first().dynamicCast<Kactus2Value>();
+                if (tagName && tagName->value() == name)
+                {
+                    return tag;
+                }
+            }
+        }
+    }
+
+    return QSharedPointer<Kactus2Group>();
 }

@@ -412,9 +412,8 @@ signals:
     void createBus(VLNV const& vlnv, const QString& directory);
 
     //! Signal that user wants to create a new component with given vlnv
-    void createComponent(KactusAttribute::ProductHierarchy,
-                         KactusAttribute::Firmness,
-                         VLNV const& vlnv, const QString& directory);
+    void createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
+        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, const QString& directory);
 
     //! Signal that user wants to create a new design for the given component.
     void createDesignForExistingComponent(VLNV const& vlnv);

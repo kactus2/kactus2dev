@@ -13,6 +13,7 @@
 #define INTERFACEGRAPHICS_H
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/TransactionalTypes.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 
@@ -58,6 +59,43 @@ namespace InterfaceGraphics
         return direction;
     }
 
+    static TransactionalTypes::Initiative getInterfaceInitiative(QSharedPointer<BusInterface> busInterface,
+        QSharedPointer<Component> component)
+    {
+        TransactionalTypes::Initiative initiative = TransactionalTypes::INITIATIVE_INVALID;
+
+        if (busInterface->getAbstractionTypes() && !busInterface->getAbstractionTypes()->isEmpty())
+        {
+            if (busInterface->getAbstractionTypes()->size() != 1)
+            {
+                initiative = TransactionalTypes::BOTH;
+            }
+
+            else
+            {
+                QSharedPointer<AbstractionType> abstraction = busInterface->getAbstractionTypes()->first();
+                foreach(QString portName, abstraction->getPhysicalPortNames())
+                {
+                    QSharedPointer<Port> port = component->getPort(portName);
+                    if (port != 0 && port->getTransactional() != 0)
+                    {
+                        TransactionalTypes::Initiative portInitiative =
+                            TransactionalTypes::strToInitiative(port->getTransactional()->getInitiative());
+                        if (initiative == TransactionalTypes::INITIATIVE_INVALID)
+                        {
+                            initiative = portInitiative;
+                        }
+                        else if (initiative != portInitiative)
+                        {
+                            return TransactionalTypes::BOTH;
+                        }
+                    }
+                }
+            }
+        }
+
+        return initiative;
+    }
 }
 
 #endif

@@ -71,7 +71,7 @@ bool NewComponentPage::validate()
 void NewComponentPage::apply()
 {
     emit createComponent(attributeEditor_->getProductHierarchy(), attributeEditor_->getFirmness(),
-                         vlnvEditor_->getVLNV(), selectedPath());
+        attributeEditor_->getTags(), vlnvEditor_->getVLNV(), selectedPath());
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +80,8 @@ void NewComponentPage::apply()
 bool NewComponentPage::onPageChange()
 {
     // Discard the VLNV and reset the attributes.
-    attributeEditor_->setAttributes(KactusAttribute::FLAT, KactusAttribute::TEMPLATE);
+    attributeEditor_->setAttributes(
+        KactusAttribute::FLAT, KactusAttribute::TEMPLATE, QVector<QPair<QString, QString> >());
     onProductHierarchyChanged();
     return NewPage::onPageChange();
 }

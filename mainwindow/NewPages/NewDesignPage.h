@@ -68,9 +68,8 @@ public slots:
 
 signals:
     //! Signaled when a design should be created.
-    void createDesign(KactusAttribute::ProductHierarchy prodHier,
-                      KactusAttribute::Firmness firmness,
-                      VLNV const& vlnv, QString const& directory);
+    void createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
+        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory);
 
 private:
     // Disable copying.

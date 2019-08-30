@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <common/widgets/tagEditor/TagContainer.h>
+
 #include <QFormLayout>
 #include <QString>
 
@@ -25,7 +27,8 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     firmnessLabel_(new QLabel(tr("Firmness:"), this)),
     firmnessCombo_(new QComboBox(this)),
     implementationLabel_(new QLabel(tr("Implementation:"), this)), 
-    implementationValue_(new QLabel(tr(""), this))
+    implementationValue_(new QLabel(tr(""), this)),
+    tagEditor_(new TagContainer(this))
 {
     // The implementation label and value label are set to invisible by default.
     implementationLabel_->setVisible(false);
@@ -47,10 +50,12 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     layout->addRow(prodHierLabel_, prodHierCombo_);
     layout->addRow(firmnessLabel_, firmnessCombo_);
     layout->addRow(implementationLabel_, implementationValue_);
-    
+    layout->addRow(new QLabel(QStringLiteral("Tags:")), tagEditor_);
+
     connect(prodHierCombo_, SIGNAL(currentIndexChanged(int)), this, SIGNAL(contentChanged()));
     connect(prodHierCombo_, SIGNAL(currentIndexChanged(int)), this, SIGNAL(productHierarchyChanged()));
     connect(firmnessCombo_, SIGNAL(currentIndexChanged(int)), this, SIGNAL(contentChanged()));
+    connect(tagEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,10 +69,11 @@ KactusAttributeEditor::~KactusAttributeEditor()
 // Function: KactusAttributeEditor::setAttributes()
 //-----------------------------------------------------------------------------
 void KactusAttributeEditor::setAttributes(KactusAttribute::ProductHierarchy prodHier,
-                                          KactusAttribute::Firmness firmness)
+    KactusAttribute::Firmness firmness, QVector<QPair<QString, QString> > tags)
 {
     prodHierCombo_->setCurrentIndex(prodHier);
     firmnessCombo_->setCurrentIndex(firmness);
+    tagEditor_->setupTags(tags);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,6 +90,14 @@ KactusAttribute::ProductHierarchy KactusAttributeEditor::getProductHierarchy() c
 KactusAttribute::Firmness KactusAttributeEditor::getFirmness() const
 {
     return static_cast<KactusAttribute::Firmness>(firmnessCombo_->currentIndex());
+}
+
+//-----------------------------------------------------------------------------
+// Function: KactusAttributeEditor::getTags()
+//-----------------------------------------------------------------------------
+QVector<QPair<QString, QString> > KactusAttributeEditor::getTags() const
+{
+    return tagEditor_->getTags();
 }
 
 //-----------------------------------------------------------------------------

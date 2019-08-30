@@ -317,14 +317,15 @@ bool ComponentEditor::saveAs()
 	// Ask the user for a new VLNV along with attributes and directory.
     KactusAttribute::ProductHierarchy prodHier = component_->getHierarchy();
     KactusAttribute::Firmness firmness = component_->getFirmness();
+    QVector<QPair<QString, QString> > tags = component_->getTags();
 
 	VLNV vlnv;
 	QString directory;
 
     if (component_->getImplementation() == KactusAttribute::HW)
     {
-	    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, component_->getVlnv(), prodHier, firmness,
-                                           vlnv, directory))
+	    if (!NewObjectDialog::saveAsDialog(
+            parentWidget(), libHandler_, component_->getVlnv(), prodHier, firmness, tags, vlnv, directory))
         {
 		    return false;
 	    }

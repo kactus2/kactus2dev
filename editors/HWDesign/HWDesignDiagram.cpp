@@ -586,6 +586,7 @@ void HWDesignDiagram::onAddToLibraryAction()
             targetComponent->setVlnv(vlnv);
             targetComponent->setHierarchy(dialog.getProductHierarchy());
             targetComponent->setFirmness(dialog.getFirmness());
+            targetComponent->setTags(dialog.getTags());
 
             foreach (ConnectionEndpoint* interfacePoint, componentItem->getEndpoints())
             {

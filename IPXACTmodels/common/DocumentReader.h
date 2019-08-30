@@ -104,6 +104,14 @@ protected:
      */
     void parseKactusAttributes(QDomNode const& attributesNode, QSharedPointer<Document> document) const;
 
+    /*!
+     *  Parses document tags from XML.
+     *
+     *      @param [in] tagsGroupNode   XML description of the tags.
+     *      @param [in] document        The containing component.
+     */
+    void parseTags(QDomNode const& tagsGroupNode, QSharedPointer<Document> document) const;
+
 private:
 
 	// Disable copying.

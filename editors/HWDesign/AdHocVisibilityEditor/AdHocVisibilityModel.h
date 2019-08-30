@@ -128,6 +128,15 @@ private:
     AdHocVisibilityModel(AdHocVisibilityModel const& rhs);
     AdHocVisibilityModel& operator=(AdHocVisibilityModel const& rhs);
 
+    /*!
+     *  Get the direction of the selected port.
+     *
+     *      @param [in] adhocPort   The selected port.
+     *
+     *      @return Direction of the selected port.
+     */
+    QString getPortDirection(QSharedPointer<Port> adhocPort) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

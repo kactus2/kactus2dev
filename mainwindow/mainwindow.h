@@ -245,13 +245,14 @@ public slots:
      *
      *      @param [in] prodHier    The product hierarchy attribute.
      *      @param [in] firmness	The firmness attribute.
+     *      @param [in] tags        Document tags.
      *      @param [in] vlnv        The component's VLNV.
      *      @param [in] directory   The directory where to save the component.
      *
      *      @remarks The component editor is opened automatically after successful creation.
      */
     void createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        VLNV const& vlnv, QString const& directory);
+        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory);
 
     /*!
      *  Creates a SW component to the library.
@@ -268,13 +269,14 @@ public slots:
      *
      *      @param [in] prodHier    The product hierarchy attribute.
      *      @param [in] firmness	The firmness attribute.
+     *      @param [in] tags        Document tags.
      *      @param [in] vlnv        The component's VLNV.
      *      @param [in] directory   The directory where to save the component.
      *
      *      @remarks The HW design editor is opened automatically after successful creation.
      */
     void createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-                      VLNV const& vlnv, QString const& directory);
+        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory);
     /*!
      *  Creates a new design for an existing component.
      *
