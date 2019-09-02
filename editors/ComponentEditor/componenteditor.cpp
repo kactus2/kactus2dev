@@ -52,6 +52,8 @@
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/itemvisualizer.h>
 
+#include <IPXACTmodels/common/TagData.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
@@ -317,7 +319,7 @@ bool ComponentEditor::saveAs()
 	// Ask the user for a new VLNV along with attributes and directory.
     KactusAttribute::ProductHierarchy prodHier = component_->getHierarchy();
     KactusAttribute::Firmness firmness = component_->getFirmness();
-    QVector<QPair<QString, QString> > tags = component_->getTags();
+    QVector<TagData> tags = component_->getTags();
 
 	VLNV vlnv;
 	QString directory;

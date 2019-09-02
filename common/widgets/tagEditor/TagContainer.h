@@ -12,6 +12,10 @@
 #ifndef TAGCONTAINER_H
 #define TAGCONTAINER_H
 
+#include <IPXACTmodels/common/TagData.h>
+
+#include <common/widgets/tagEditor/TagManager.h>
+
 #include <QWidget>
 #include <QObject>
 
@@ -44,14 +48,14 @@ public:
      *
      *      @param [in] documentTags    The tags of the selected document.
      */
-    void setupTags(QVector<QPair<QString, QString> > documentTags);
+    void setupTags(QVector<TagData> documentTags);
 
     /*!
      *  Get the tags.
      *
      *      @return A list of the edited document tags.
      */
-    QVector<QPair<QString, QString> > getTags() const;
+    QVector<TagData> getTags() const;
 
 signals:
 

@@ -17,9 +17,10 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/Extendable.h>
+#include <IPXACTmodels/common/TagData.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
@@ -282,14 +283,14 @@ public:
      *
      *      @return The document tags.
      */
-    QVector<QPair<QString, QString> > getTags() const;
+    QVector<TagData> getTags() const;
 
     /*!
      *  Set new tags for the document.
      *
      *      @param [in] newTags     The new tags.
      */
-    void setTags(QVector<QPair<QString, QString> > newTags) const;
+    void setTags(QVector<TagData> newTags) const;
 
 private:
 
@@ -335,6 +336,33 @@ private:
      *      @return The selected tag container.
      */
     QSharedPointer<Kactus2Group> getTagByName(QString const& name, QSharedPointer<Kactus2Group> tagGroup) const;
+
+    /*!
+     *  Remove old non-existing tags.
+     *
+     *      @param [in] tagContainer    Extension container for tags.
+     *      @param [in] newTags         The new tags.
+     */
+    void removeNonExistingTags(QSharedPointer<Kactus2Group> tagContainer, QVector<TagData> newTags) const;
+
+    /*!
+     *  Get the name of the selected tag.
+     *
+     *      @param [in] tagExtension    The selected tag.
+     *
+     *      @return Name of the selected tag.
+     */
+    QString getTagName(QSharedPointer<VendorExtension> tagExtension) const;
+
+    /*!
+     *  Check if a tag exists in the selected list.
+     *
+     *      @param [in] tagExtension    The selected tag extension.
+     *      @param [in] newTags         Selected list of tags.
+     *
+     *      @return True, if the selected tag exists in the selected list, false otherwise.
+     */
+    bool tagExistsInList(QSharedPointer<VendorExtension> tagExtension, QVector<TagData> newTags) const;
 
     //-----------------------------------------------------------------------------
     // Data.

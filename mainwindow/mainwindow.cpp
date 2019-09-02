@@ -990,9 +990,9 @@ void MainWindow::setupAndConnectLibraryHandler()
         this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 
     connect(libraryHandler_, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,KactusAttribute::Firmness,
-        QVector<QPair<QString, QString> >, const VLNV&, const QString&)),
-        this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<QPair<QString, QString> >, const VLNV&, const QString&)), Qt::UniqueConnection);
+            QVector<TagData>, const VLNV&, const QString&)),
+        this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData>,
+            const VLNV&, const QString&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1565,16 +1565,16 @@ void MainWindow::createNew()
     // Add pages to the dialog.
     NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
     connect(compPage, SIGNAL(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-        QVector<QPair<QString,QString> >, VLNV const&, QString const&)),
+            QVector<TagData>, VLNV const&, QString const&)),
         this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<QPair<QString, QString> >, VLNV const&, QString const&)));
+            QVector<TagData>, VLNV const&, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/hw-component.png"), tr("HW Component"), compPage);
 
     NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
     connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<QPair<QString, QString> >, VLNV const&, QString const&)),
+            QVector<TagData>, VLNV const&, QString const&)),
         this, SLOT(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<QPair<QString, QString> >, VLNV const&, QString const&)));
+            QVector<TagData>, VLNV const&, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
 
     NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
@@ -1611,7 +1611,7 @@ void MainWindow::createNew()
 // Function: mainwindow::createComponent()
 //-----------------------------------------------------------------------------
 void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-    QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory)
+    QVector<TagData> tags, VLNV const& vlnv, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
 
@@ -1645,7 +1645,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, Kac
 // Function: mainwindow::createDesign()
 //-----------------------------------------------------------------------------
 void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-    QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory)
+    QVector<TagData> tags, VLNV const& vlnv, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
 

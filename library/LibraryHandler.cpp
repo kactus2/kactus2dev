@@ -24,6 +24,8 @@
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
 #include <common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h>
 
+#include <common/widgets/tagEditor/TagManager.h>
+
 #include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
@@ -399,6 +401,7 @@ void LibraryHandler::onCheckLibraryIntegrity()
     checkResults_.documentCount = 0;
     checkResults_.fileCount = 0;
 
+    QVector<TagData> documentTags;
     for (auto it = documentCache_.begin(); it != documentCache_.end(); ++it)
     {
         // TODO: Add model to cache only, if it is already previously cached.
@@ -410,12 +413,20 @@ void LibraryHandler::onCheckLibraryIntegrity()
             it->document = model;
         }           
 
+        if (model.isNull() == false)
+        {
+            documentTags.append(model->getTags());
+        }
+
         it->isValid = validateDocument(model, it->path);
         if (it->isValid == false)
         {
             checkResults_.documentCount++;
         }
     }
+
+    TagManager& manager = TagManager::getInstance();
+    manager.setTags(documentTags);
 
     showIntegrityResults();
 
@@ -719,7 +730,7 @@ void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
 
         KactusAttribute::ProductHierarchy prodHier = component->getHierarchy();
         KactusAttribute::Firmness firmness = component->getFirmness();
-        QVector<QPair<QString, QString> > tags = component->getTags();
+        QVector<TagData> tags = component->getTags();
 
         newDesignDialog.setKactusAttributes(prodHier, firmness, tags);
     }
@@ -1041,6 +1052,8 @@ bool LibraryHandler::addObject(QSharedPointer<Document> model, QString const& fi
     fileWatch_.removePath(targetPath);
     fileAccess_.writeDocument(model, targetPath);
     fileWatch_.addPath(targetPath);
+
+    TagManager::getInstance().addNewTags(model->getTags());
 
     documentCache_.insert(model->getVlnv(), DocumentInfo(targetPath, model, validateDocument(model, targetPath)));
 

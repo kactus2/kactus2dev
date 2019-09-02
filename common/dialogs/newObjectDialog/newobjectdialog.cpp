@@ -120,7 +120,7 @@ void NewObjectDialog::setVLNV( const VLNV& vlnv )
 // Function: NewObjectDialog::setKactusAttributes()
 //-----------------------------------------------------------------------------
 void NewObjectDialog::setKactusAttributes(KactusAttribute::ProductHierarchy prodHier,
-    KactusAttribute::Firmness firmness, QVector<QPair<QString, QString> > tags)
+    KactusAttribute::Firmness firmness, QVector<TagData> tags)
 {
     attributeEditor_->setAttributes(prodHier, firmness, tags);
 }
@@ -144,7 +144,7 @@ KactusAttribute::Firmness NewObjectDialog::getFirmness() const
 //-----------------------------------------------------------------------------
 // Function: newobjectdialog::getTags()
 //-----------------------------------------------------------------------------
-QVector<QPair<QString, QString> > NewObjectDialog::getTags() const
+QVector<TagData> NewObjectDialog::getTags() const
 {
     return attributeEditor_->getTags();
 }
@@ -153,8 +153,8 @@ QVector<QPair<QString, QString> > NewObjectDialog::getTags() const
 // Function: NewObjectDialog::saveAsDialog()
 //-----------------------------------------------------------------------------
 bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
-    KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness,
-    QVector<QPair<QString, QString> >& tags, VLNV& vlnv, QString& directory)
+    KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness, QVector<TagData>& tags,
+    VLNV& vlnv, QString& directory)
 {
     VLNV suggestion = oldVLNV;
     suggestion.setVersion(QString());

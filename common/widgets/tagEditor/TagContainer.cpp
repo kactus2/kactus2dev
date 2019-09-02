@@ -35,7 +35,7 @@ tags_()
 //-----------------------------------------------------------------------------
 // Function: TagContainer::setupTags()
 //-----------------------------------------------------------------------------
-void TagContainer::setupTags(QVector<QPair<QString, QString> > documentTags)
+void TagContainer::setupTags(QVector<TagData> documentTags)
 {
     layout()->removeWidget(additionTag_);
     for (auto oldTag : tags_)
@@ -48,7 +48,7 @@ void TagContainer::setupTags(QVector<QPair<QString, QString> > documentTags)
 
     for (auto newTag : documentTags)
     {
-        TagLabel* newTag(new TagLabel(newTag.first, this, newTag.second));
+        TagLabel* newTag(new TagLabel(newTag.name_, this, newTag.color_));
         connectTagLabel(newTag);
 
         tags_.append(newTag);
@@ -218,20 +218,17 @@ void TagContainer::itemDeleted(TagLabel* editedTag, TagEditor* tagEditor)
 //-----------------------------------------------------------------------------
 // Function: TagContainer::getTags()
 //-----------------------------------------------------------------------------
-QVector<QPair<QString, QString> > TagContainer::getTags() const
+QVector<TagData> TagContainer::getTags() const
 {
-    QVector<QPair<QString, QString> > finishedTags;
+    QVector<TagData> finishedTags;
 
     for (auto tagWidget : tags_)
     {
         TagLabel* tag = dynamic_cast<TagLabel*>(tagWidget);
         if (tag)
         {
-            QPair<QString, QString> newTagData;
-            newTagData.first = tag->text();
-
             QColor tagColor = tag->palette().color(QPalette::Window);
-            newTagData.second = tagColor.name();
+            TagData newTagData({ tag->text(), tagColor.name() });
 
             finishedTags.append(newTagData);
         }

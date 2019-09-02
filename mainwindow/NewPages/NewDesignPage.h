@@ -13,6 +13,9 @@
 #define NEWDESIGNPAGE_H
 
 #include "NewPage.h"
+
+#include <IPXACTmodels/common/TagData.h>
+
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 class KactusAttributeEditor;
@@ -69,7 +72,7 @@ public slots:
 signals:
     //! Signaled when a design should be created.
     void createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory);
+        QVector<TagData> tags, VLNV const& vlnv, QString const& directory);
 
 private:
     // Disable copying.
