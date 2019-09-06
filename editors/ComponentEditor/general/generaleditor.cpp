@@ -11,6 +11,8 @@
 
 #include "generaleditor.h"
 
+#include <IPXACTmodels/common/TagData.h>
+
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
@@ -92,7 +94,7 @@ void GeneralEditor::refresh()
 	{
         KactusAttribute::ProductHierarchy prodHier = component()->getHierarchy();
         KactusAttribute::Firmness firmness = component()->getFirmness();
-        QVector<QPair<QString, QString> > tags = component()->getTags();
+        QVector<TagData> tags = component()->getTags();
 		attributeEditor_->setAttributes(prodHier, firmness, tags);
 	}
 	else

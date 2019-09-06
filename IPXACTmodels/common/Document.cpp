@@ -542,9 +542,9 @@ void Document::copyAssertions(Document const& other)
 //-----------------------------------------------------------------------------
 // Function: Document::getTags()
 //-----------------------------------------------------------------------------
-QVector<QPair<QString, QString> > Document::getTags() const
+QVector<TagData> Document::getTags() const
 {
-    QVector<QPair<QString, QString> > documentTags;
+    QVector<TagData> documentTags;
 
     QSharedPointer<Kactus2Group> tagGroup = getTagGroup();
     if (tagGroup)
@@ -554,7 +554,8 @@ QVector<QPair<QString, QString> > Document::getTags() const
             QSharedPointer<Kactus2Group> tagValue = singleTag.dynamicCast<Kactus2Group>();
             if (tagValue)
             {
-                QPair<QString, QString> newTag;
+                QString newTagName;
+                QString newTagColor;
 
                 QList<QSharedPointer<VendorExtension> > tagNamesExtension =
                     tagValue->getByType(QLatin1String("kactus2:name"));
@@ -564,7 +565,7 @@ QVector<QPair<QString, QString> > Document::getTags() const
                         tagNamesExtension.first().dynamicCast<Kactus2Value>();
                     if (tagName)
                     {
-                        newTag.first = tagName->value();
+                        newTagName = tagName->value();
                     }
                 }
 
@@ -576,12 +577,13 @@ QVector<QPair<QString, QString> > Document::getTags() const
                         tagColorsExtension.first().dynamicCast<Kactus2Value>();
                     if (tagColor)
                     {
-                        newTag.second = tagColor->value();
+                        newTagColor = tagColor->value();
                     }
                 }
 
-                if (!newTag.first.isEmpty() && !newTag.second.isEmpty())
+                if (!newTagName.isEmpty() && !newTagColor.isEmpty())
                 {
+                    TagData newTag({ newTagName, newTagColor });
                     documentTags.append(newTag);
                 }
             }
@@ -596,18 +598,22 @@ QVector<QPair<QString, QString> > Document::getTags() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Kactus2Group> Document::getTagGroup() const
 {
-    for (auto extension : *getVendorExtensions())
+    QSharedPointer<QList<QSharedPointer<VendorExtension> > > componentExtensions = getVendorExtensions();
+    if (componentExtensions)
     {
-        if (extension->type() == QLatin1String("kactus2:tags"))
+        for (auto extension : *componentExtensions)
         {
-            QSharedPointer<Kactus2Group> tagGroup = extension.dynamicCast<Kactus2Group>();
-            if (tagGroup)
+            if (extension->type() == QLatin1String("kactus2:tags"))
             {
-                return tagGroup;
-            }
-            else
-            {
-                return QSharedPointer<Kactus2Group>();
+                QSharedPointer<Kactus2Group> tagGroup = extension.dynamicCast<Kactus2Group>();
+                if (tagGroup)
+                {
+                    return tagGroup;
+                }
+                else
+                {
+                    return QSharedPointer<Kactus2Group>();
+                }
             }
         }
     }
@@ -618,13 +624,20 @@ QSharedPointer<Kactus2Group> Document::getTagGroup() const
 //-----------------------------------------------------------------------------
 // Function: Document::setTags()
 //-----------------------------------------------------------------------------
-void Document::setTags(QVector<QPair<QString, QString> > newTags) const
+void Document::setTags(QVector<TagData> newTags) const
 {
     QSharedPointer<Kactus2Group> tagGroup = getTagGroup();
 
-    if (tagGroup && newTags.isEmpty())
+    if (tagGroup)
     {
-        getVendorExtensions()->removeAll(tagGroup);
+        if (newTags.isEmpty())
+        {
+            getVendorExtensions()->removeAll(tagGroup);
+        }
+        else
+        {
+            removeNonExistingTags(tagGroup, newTags);
+        }
     }
     else if (!tagGroup && !newTags.isEmpty())
     {
@@ -634,8 +647,8 @@ void Document::setTags(QVector<QPair<QString, QString> > newTags) const
 
     for (auto singleTag : newTags)
     {
-        QString tagName = singleTag.first;
-        QString tagColor = singleTag.second;
+        QString tagName = singleTag.name_;
+        QString tagColor = singleTag.color_;
 
         QSharedPointer<Kactus2Group> existingTag = getTagByName(tagName, tagGroup);
         if (existingTag)
@@ -690,4 +703,57 @@ QSharedPointer<Kactus2Group> Document::getTagByName(QString const& name, QShared
     }
 
     return QSharedPointer<Kactus2Group>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::removeNonExistingTags()
+//-----------------------------------------------------------------------------
+void Document::removeNonExistingTags(QSharedPointer<Kactus2Group> tagContainer, QVector<TagData> newTags) const
+{
+    for (auto tagExtension : tagContainer->getByType(QLatin1String("kactus2:tag")))
+    {
+        if (!tagExistsInList(tagExtension, newTags))
+        {
+            tagContainer->removeFromGroup(tagExtension);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::tagExistsInList()
+//-----------------------------------------------------------------------------
+bool Document::tagExistsInList(QSharedPointer<VendorExtension> tagExtension, QVector<TagData> newTags) const
+{
+    QString tagName = getTagName(tagExtension);
+    for (auto comparisonTag : newTags)
+    {
+        if (comparisonTag.name_ == tagName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getTagName()
+//-----------------------------------------------------------------------------
+QString Document::getTagName(QSharedPointer<VendorExtension> tagExtension) const
+{
+    QSharedPointer<Kactus2Group> tag = tagExtension.dynamicCast<Kactus2Group>();
+    if (tag)
+    {
+        QList<QSharedPointer<VendorExtension> > tagNameContainer = tag->getByType(QLatin1String("kactus2:name"));
+        if (tagNameContainer.size() == 1 && tagNameContainer.first())
+        {
+            QSharedPointer<Kactus2Value> tagName = tagNameContainer.first().dynamicCast<Kactus2Value>();
+            if (tagName)
+            {
+                return tagName->value();
+            }
+        }
+    }
+
+    return QString();
 }

@@ -13,6 +13,7 @@
 #include "ParameterReader.h"
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
+#include <IPXACTmodels/common/TagData.h>
 
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::DocumentReader()
@@ -222,7 +223,7 @@ void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QShar
 //-----------------------------------------------------------------------------
 void DocumentReader::parseTags(QDomNode const& tagsGroupNode, QSharedPointer<Document> document) const
 {
-    QVector<QPair<QString, QString> > documentTags;
+    QVector<TagData> documentTags;
 
     QDomNodeList tagNodeList = tagsGroupNode.childNodes();
     for (int i = 0; i < tagNodeList.size(); ++i)
@@ -233,9 +234,7 @@ void DocumentReader::parseTags(QDomNode const& tagsGroupNode, QSharedPointer<Doc
 
         if (!nameElement.isNull() && !colorElement.isNull())
         {
-            QPair<QString, QString> newTag;
-            newTag.first = nameElement.text();
-            newTag.second = colorElement.text();
+            TagData newTag({ nameElement.text(), colorElement.text() });
 
             documentTags.append(newTag);
         }

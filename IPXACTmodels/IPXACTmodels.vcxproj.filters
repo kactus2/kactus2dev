@@ -1546,6 +1546,9 @@
     <ClInclude Include="utilities\BusDefinitionUtils.h">
       <Filter>Header Files\utilities</Filter>
     </ClInclude>
+    <ClInclude Include="common\TagData.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">

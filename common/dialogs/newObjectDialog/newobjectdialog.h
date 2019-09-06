@@ -15,6 +15,7 @@
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/TagData.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QDialog>
@@ -59,11 +60,11 @@ public:
      *  Sets the Kactus attributes for the dialog.
      *
      *      @param [in] prodHier    Product hierarchy.
-     *      @param [in] firmness	firmness.
+     *      @param [in] firmness    firmness.
      *      @param [in] tags        Tags.
      */
     void setKactusAttributes(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<QPair<QString, QString> > tags);
+        QVector<TagData> tags);
 
     /*!
      *  Get the user inputted VLNV.
@@ -85,7 +86,7 @@ public:
      *
      *      @return Document tags.
      */
-    QVector<QPair<QString, QString> > getTags() const;
+    QVector<TagData> getTags() const;
 
     /*!
      *  Get the user inputted path.
@@ -107,8 +108,8 @@ public:
      *      @return True, if the user pressed OK. False if the user pressed Cancel.
      */
     static bool saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
-        KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness,
-        QVector<QPair<QString, QString> >& tags, VLNV& vlnv, QString& directory);
+        KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness, QVector<TagData>& tags,
+        VLNV& vlnv, QString& directory);
 
     /*!
      *  Shows a pre-filled dialog with the version field set empty and attributes hidden.

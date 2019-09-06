@@ -4801,6 +4801,15 @@
     <ClCompile Include="GeneratedFiles\moc_TagEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagManager.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagCompleterModel.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TagCompleterModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6573,6 +6582,9 @@
     <CustomBuild Include="common\widgets\tagEditor\TagEditor.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\TagCompleterModel.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7348,6 +7360,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortColumns.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="common\widgets\tagEditor\TagManager.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

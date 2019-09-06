@@ -103,6 +103,13 @@ private slots:
      */
     void onDeleteItem();
 
+    /*!
+     *  Handler for changing color through completer.
+     *
+     *      @param [in] newColor    The color of the selected completer item.
+     */
+    void completerColorChange(QColor const& newColor);
+
 private:
     // Disable copying.
     TagEditor(TagEditor const& rhs);
@@ -117,6 +124,11 @@ private:
      *  Connect signals.
      */
     void connectSignals();
+
+    /*!
+     *  Setup the name editor.
+     */
+    void setupNameEditor();
 
     //-----------------------------------------------------------------------------
     // Data.

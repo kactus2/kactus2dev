@@ -9,6 +9,8 @@
 // Unit test for class ComponentReader.
 //-----------------------------------------------------------------------------
 
+#include <IPXACTmodels/common/TagData.h>
+
 #include <IPXACTmodels/Component/ComponentReader.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
@@ -1428,8 +1430,8 @@ void tst_ComponentReader::readTags()
     QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
 
     QCOMPARE(testComponent->getTags().size(), 1);
-    QCOMPARE(testComponent->getTags().first().first, QLatin1String("TAG"));
-    QCOMPARE(testComponent->getTags().first().second, QLatin1String("#79D173"));
+    QCOMPARE(testComponent->getTags().first().name_, QLatin1String("TAG"));
+    QCOMPARE(testComponent->getTags().first().color_, QLatin1String("#79D173"));
 }
 
 

@@ -80,8 +80,7 @@ void NewComponentPage::apply()
 bool NewComponentPage::onPageChange()
 {
     // Discard the VLNV and reset the attributes.
-    attributeEditor_->setAttributes(
-        KactusAttribute::FLAT, KactusAttribute::TEMPLATE, QVector<QPair<QString, QString> >());
+    attributeEditor_->setAttributes(KactusAttribute::FLAT, KactusAttribute::TEMPLATE, QVector<TagData>());
     onProductHierarchyChanged();
     return NewPage::onPageChange();
 }

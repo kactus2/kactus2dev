@@ -69,7 +69,7 @@ KactusAttributeEditor::~KactusAttributeEditor()
 // Function: KactusAttributeEditor::setAttributes()
 //-----------------------------------------------------------------------------
 void KactusAttributeEditor::setAttributes(KactusAttribute::ProductHierarchy prodHier,
-    KactusAttribute::Firmness firmness, QVector<QPair<QString, QString> > tags)
+    KactusAttribute::Firmness firmness, QVector<TagData> tags)
 {
     prodHierCombo_->setCurrentIndex(prodHier);
     firmnessCombo_->setCurrentIndex(firmness);
@@ -95,7 +95,7 @@ KactusAttribute::Firmness KactusAttributeEditor::getFirmness() const
 //-----------------------------------------------------------------------------
 // Function: KactusAttributeEditor::getTags()
 //-----------------------------------------------------------------------------
-QVector<QPair<QString, QString> > KactusAttributeEditor::getTags() const
+QVector<TagData> KactusAttributeEditor::getTags() const
 {
     return tagEditor_->getTags();
 }

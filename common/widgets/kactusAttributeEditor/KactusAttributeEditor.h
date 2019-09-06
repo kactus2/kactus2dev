@@ -13,6 +13,7 @@
 #define KACTUSATTRIBUTEEDITOR_H
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <IPXACTmodels/common/TagData.h>
 
 #include <QGroupBox>
 #include <QComboBox>
@@ -51,7 +52,7 @@ public:
      *      @param [in] tags        Document tags.
      */
     void setAttributes(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<QPair<QString, QString> > tags);
+        QVector<TagData> tags);
 
     /*!
      *  Sets the implementation visible with the given value.
@@ -75,7 +76,7 @@ public:
      *
      *      @return Document tags.
      */
-    QVector<QPair<QString, QString> > getTags() const;
+    QVector<TagData> getTags() const;
 
 signals:
     //! Signaled when the attributes have changed.

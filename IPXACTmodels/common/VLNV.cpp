@@ -31,7 +31,9 @@ namespace
         { QStringLiteral("ipxact:generatorChain"), VLNV::GENERATORCHAIN },
         { QStringLiteral("kactus2:comDefinition"), VLNV::COMDEFINITION },
         { QStringLiteral("kactus2:apiDefinition"), VLNV::APIDEFINITION },
-        { QStringLiteral("invalid"), VLNV::INVALID }
+        { QStringLiteral("invalid"), VLNV::INVALID },
+        { QStringLiteral("component"), VLNV::COMPONENT }
+
     };
 }
 

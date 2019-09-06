@@ -9,6 +9,8 @@
 // Unit test for class ComponentWriter.
 //-----------------------------------------------------------------------------
 
+#include <IPXACTmodels/common/TagData.h>
+
 #include <IPXACTmodels/Component/ComponentWriter.h>
 #include <IPXACTmodels/Component/Component.h>
 
@@ -94,6 +96,7 @@ private slots:
     void writeFileDependencies();
 
     void writeTags();
+    void writeErasedTags();
 
 private:
 
@@ -1455,17 +1458,9 @@ void tst_ComponentWriter::writeTags()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    QPair<QString, QString> newTag1;
-    newTag1.first = QStringLiteral("Kohr-ah");
-    newTag1.second = QStringLiteral("#FFFFFF");
-
-    QPair<QString, QString> newTag2;
-    newTag2.first = QStringLiteral("Kzer-za");
-    newTag2.second = QStringLiteral("#54D66F");
-
-    QVector<QPair<QString, QString> > componentTags;
-    componentTags.append(newTag1);
-    componentTags.append(newTag2);
+    TagData newTag1({ QStringLiteral("Kohr-ah"), QStringLiteral("#FFFFFF") });
+    TagData newTag2({ QStringLiteral("Kzer-za"), QStringLiteral("#54D66F") });
+    QVector<TagData> componentTags({ newTag1, newTag2 });
 
     testComponent_->setVersion("3.0.0");
     testComponent_->setTags(componentTags);
@@ -1492,6 +1487,57 @@ void tst_ComponentWriter::writeTags()
                     "\t\t\t<kactus2:tag>\n"
                         "\t\t\t\t<kactus2:name>Kzer-za</kactus2:name>\n"
                         "\t\t\t\t<kactus2:color>#54D66F</kactus2:color>\n"
+                    "\t\t\t</kactus2:tag>\n"
+                "\t\t</kactus2:tags>\n"
+            "\t</ipxact:vendorExtensions>\n"
+        "</ipxact:component>\n"
+    );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeErasedTags()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeErasedTags()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    TagData newTag1({ QStringLiteral("Kohr-ah") , QStringLiteral("#FFFFFF") });
+    TagData newTag2({ QStringLiteral("Kzer-za") , QStringLiteral("#54D66F") });
+    QVector<TagData> componentTags({ newTag1, newTag2 });
+
+    testComponent_->setVersion("3.0.0");
+    testComponent_->setTags(componentTags);
+
+    componentTags.removeLast();
+    testComponent_->setTags(componentTags);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:vendorExtensions>\n"
+                "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:tags>\n"
+                    "\t\t\t<kactus2:tag>\n"
+                        "\t\t\t\t<kactus2:name>Kohr-ah</kactus2:name>\n"
+                        "\t\t\t\t<kactus2:color>#FFFFFF</kactus2:color>\n"
                     "\t\t\t</kactus2:tag>\n"
                 "\t\t</kactus2:tags>\n"
             "\t</ipxact:vendorExtensions>\n"

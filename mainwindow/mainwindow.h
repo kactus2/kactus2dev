@@ -14,8 +14,11 @@
 
 #include <Plugins/PluginSystem/PluginManager.h>
 
-#include <editors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
+
+#include <editors/common/DrawMode.h>
+
+#include <IPXACTmodels/common/TagData.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
@@ -252,7 +255,7 @@ public slots:
      *      @remarks The component editor is opened automatically after successful creation.
      */
     void createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory);
+        QVector<TagData> tags, VLNV const& vlnv, QString const& directory);
 
     /*!
      *  Creates a SW component to the library.
@@ -276,7 +279,8 @@ public slots:
      *      @remarks The HW design editor is opened automatically after successful creation.
      */
     void createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory);
+        QVector<TagData> tags, VLNV const& vlnv, QString const& directory);
+
     /*!
      *  Creates a new design for an existing component.
      *

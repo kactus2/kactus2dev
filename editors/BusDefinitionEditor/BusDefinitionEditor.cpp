@@ -291,8 +291,7 @@ bool BusDefinitionEditor::saveAs()
         
         libHandler_->writeModelToFile(absDirectory, absDef_);                
     }
-
-    // if only bus def was being edited, write bus def and set the name
+    
     libHandler_->writeModelToFile(busDirectory, busDef_);
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     return TabDocument::saveAs();

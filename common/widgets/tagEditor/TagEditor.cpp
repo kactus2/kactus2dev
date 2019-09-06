@@ -11,13 +11,19 @@
 
 #include "TagEditor.h"
 
-#include <common/widgets/tagEditor/TagLabel.h>
+#include <IPXACTmodels/common/TagData.h>
+
 #include <common/widgets/colorBox/ColorBox.h>
+#include <common/widgets/tagEditor/TagLabel.h>
+#include <common/widgets/tagEditor/TagManager.h>
+#include <common/widgets/tagEditor/TagCompleterModel.h>
 
 #include <QHBoxLayout>
 #include <QColorDialog>
 #include <QApplication>
 #include <QFocusEvent>
+#include <QCompleter>
+#include <QAction>
 
 //-----------------------------------------------------------------------------
 // Function: TagEditor::TagEditor()
@@ -33,7 +39,7 @@ editedLabel_(tagLabel)
     nameEdit_->setFixedHeight(editorHeight);
     deleteButton_->setFixedHeight(editorHeight);
 
-    nameEdit_->setFixedWidth(80);
+    setupNameEditor();
 
     int smallButtonWidth = 20;
     deleteButton_->setFixedWidth(smallButtonWidth);
@@ -43,8 +49,6 @@ editedLabel_(tagLabel)
 
     colorButton_->setToolTip(QLatin1String("Select Color"));
     deleteButton_->setToolTip(QLatin1String("Delete Tag"));
-
-    nameEdit_->setText(tagLabel->text());
 
     colorButton_->setColor(tagLabel->palette().color(QPalette::Window));
     colorButton_->update();
@@ -80,6 +84,43 @@ void TagEditor::connectSignals()
 {
     connect(colorButton_, SIGNAL(clicked()), this, SLOT(changeColor()), Qt::UniqueConnection);
     connect(deleteButton_, SIGNAL(clicked()), this, SLOT(onDeleteItem()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: TagEditor::setupNameEditor()
+//-----------------------------------------------------------------------------
+void TagEditor::setupNameEditor()
+{
+    QCompleter* completer = new QCompleter(this);
+
+    TagCompleterModel* completerModel = new TagCompleterModel(TagManager::getInstance().getTags(), completer);
+    completer->setModel(completerModel);
+
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+
+    QAction* action = new QAction(this);
+    action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Space));
+    action->setShortcutContext(Qt::WidgetShortcut);
+
+    connect(action, SIGNAL(triggered()), completer, SLOT(complete()), Qt::UniqueConnection);
+    connect(completer, SIGNAL(activated(QModelIndex const&)),
+        completerModel, SLOT(itemSelected(QModelIndex const&)), Qt::UniqueConnection);
+    connect(completerModel, SIGNAL(selectedColor(QColor const&)),
+        this, SLOT(completerColorChange(QColor const&)), Qt::UniqueConnection);
+
+    nameEdit_->addAction(action);
+    nameEdit_->setCompleter(completer);
+    nameEdit_->setFixedWidth(80);
+    nameEdit_->setText(editedLabel_->text());
+}
+
+//-----------------------------------------------------------------------------
+// Function: TagEditor::completerColorChange()
+//-----------------------------------------------------------------------------
+void TagEditor::completerColorChange(QColor const& newColor)
+{
+    colorButton_->setColor(newColor);
+    colorButton_->update();
 }
 
 //-----------------------------------------------------------------------------

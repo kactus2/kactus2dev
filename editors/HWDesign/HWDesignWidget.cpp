@@ -50,6 +50,8 @@
 #include "columnview/ColumnEditDialog.h"
 #include "columnview/HWColumn.h"
 
+#include <IPXACTmodels/common/TagData.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/File.h>
@@ -248,7 +250,7 @@ bool HWDesignWidget::saveAs()
     // Ask the user for a new VLNV along with attributes and directory.
     KactusAttribute::ProductHierarchy prodHier = getEditedComponent()->getHierarchy();
     KactusAttribute::Firmness firmness = getEditedComponent()->getFirmness();
-    QVector<QPair<QString, QString> > tags = getEditedComponent()->getTags();
+    QVector<TagData> tags = getEditedComponent()->getTags();
 
     VLNV vlnv;
 

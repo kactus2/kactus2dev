@@ -13,6 +13,9 @@
 #define NEWCOMPONENTPAGE_H
 
 #include "NewPage.h"
+
+#include <IPXACTmodels/common/TagData.h>
+
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 class LibraryInterface;
@@ -76,7 +79,7 @@ signals:
      *  Signaled when a component should be created.
      */
     void createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<QPair<QString, QString> > tags, VLNV const& vlnv, QString const& directory);
+        QVector<TagData> tags, VLNV const& vlnv, QString const& directory);
 
 private:
     // Disable copying.
