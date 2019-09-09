@@ -310,7 +310,7 @@ void DialerWidget::setupLayout()
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
 
-    QGroupBox* filtersGroup = new QGroupBox(tr("Library Filters"), this);
+    QGroupBox* filtersGroup = new QGroupBox(tr("VLNV"), this);
 
     QFormLayout* layout = new QFormLayout(filtersGroup);
     layout->addRow(tr("Vendor:"), &vendorBox_);

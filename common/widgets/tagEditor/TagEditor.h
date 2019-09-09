@@ -12,18 +12,16 @@
 #ifndef TAGEDITOR_H
 #define TAGEDITOR_H
 
-#include <QFrame>
-#include <QObject>
+#include <common/widgets/tagEditor/TagDisplay.h>
+
 #include <QLineEdit>
-#include <QPushButton>
 
 class TagLabel;
-class ColorBox;
 
 //-----------------------------------------------------------------------------
 //! Editor for tags.
 //-----------------------------------------------------------------------------
-class TagEditor : public QFrame
+class TagEditor : public TagDisplay
 {
     Q_OBJECT
 
@@ -42,49 +40,19 @@ public:
      */
     virtual ~TagEditor() = default;
 
-    /*!
-     *  The event filter.
-     *
-     *      @param [in] watched     The monitored object.
-     *      @param [in] event       The occurring event.
-     *
-     *      @return True, if the event is caught, false otherwise.
-     */
-    virtual bool eventFilter(QObject *watched, QEvent *event) final;
-
 protected:
 
     /*!
-     *  Handler for focus out events.
-     *
-     *      @param [in] event   The focus event.
+     *  Connect signals.
      */
-    virtual void focusOutEvent(QFocusEvent* event) final;
+    virtual void connectSignals();
 
     /*!
-     *  Handler for key press events.
+     *  Setup the tag editors.
      *
-     *      @param [in] event   The key event.
+     *      @param [in] nameEditor  The name editor for the tag.
      */
-    virtual void keyPressEvent(QKeyEvent *event) final;
-    
-signals:
-
-    /*!
-     *  Signals the accepted changes made in the editor.
-     *
-     *      @param [in] editedLabel     The edited tag label.
-     *      @param [in] tagEditor       This editor.
-     */
-    void acceptChanges(TagLabel* editedLabel, TagEditor* tagEditor);
-
-    /*!
-     *  Signals the removal of this tag label.
-     *
-     *      @param [in] editedLabel     The edited tag label.
-     *      @param [in] tagEditor       This editor.
-     */
-    void deleteItem(TagLabel* editedLabel, TagEditor* tagEditor);
+    virtual void setupEditors(QWidget* nameEditor);
 
 private slots:
 
@@ -93,42 +61,17 @@ private slots:
      */
     void changeColor();
 
-    /*!
-     *  Handler for accepting changes.
-     */
-    void onAcceptChanges();
-
-    /*!
-     *  Handler for deleting item.
-     */
-    void onDeleteItem();
-
-    /*!
-     *  Handler for changing color through completer.
-     *
-     *      @param [in] newColor    The color of the selected completer item.
-     */
-    void completerColorChange(QColor const& newColor);
-
 private:
     // Disable copying.
     TagEditor(TagEditor const& rhs);
     TagEditor& operator=(TagEditor const& rhs);
 
     /*!
-     *  Setup the layout.
+     *  Get the current name from the name editor.
+     *
+     *      @return The current name of the name editor.
      */
-    void setupLayout();
-
-    /*!
-     *  Connect signals.
-     */
-    void connectSignals();
-
-    /*!
-     *  Setup the name editor.
-     */
-    void setupNameEditor();
+    virtual QString getNewName() const override final;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -136,15 +79,6 @@ private:
 
     //! Tag name editor.
     QLineEdit* nameEdit_;
-
-    //! Tag color editor.
-    ColorBox* colorButton_;
-
-    //! Delete tag button.
-    QPushButton* deleteButton_;
-
-    //! The edited tag label.
-    TagLabel* editedLabel_;
 };
 
 //-----------------------------------------------------------------------------

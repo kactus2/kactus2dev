@@ -20,9 +20,9 @@
 //-----------------------------------------------------------------------------
 HierarchyWidget::HierarchyWidget(LibraryInterface* handler, HierarchyModel* dataModel, QWidget *parent):
 QWidget(parent), 
-    filter_(new HierarchyFilter(this)),
-    view_(this, handler, filter_),
-    model_(dataModel)
+filter_(new HierarchyFilter(handler, this)),
+view_(this, handler, filter_),
+model_(dataModel)
 {
 	Q_ASSERT_X(handler, "HierarchyWidget constructor", "Null LibraryInterface pointer given as parameter");
 	Q_ASSERT_X(dataModel, "HierarchyWidget constructor", "Null HierarchyModel pointer given as parameter");

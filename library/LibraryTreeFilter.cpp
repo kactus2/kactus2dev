@@ -21,10 +21,9 @@
 // Function: LibraryTreeFilter::LibraryTreeFilter()
 //-----------------------------------------------------------------------------
 LibraryTreeFilter::LibraryTreeFilter(LibraryInterface* handler, QObject *parent):
-LibraryFilter(parent), 
-    handler_(handler)
+LibraryFilter(handler, parent)
 {
-    Q_ASSERT(handler_);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -51,56 +50,62 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
         return false;
     }
 
+    LibraryInterface* libraryAccess = getLibraryInterface();
+
     for (VLNV const& vlnv : list)
-    {        
-        VLNV::IPXactType documentType = handler_->getDocumentType(vlnv);
+    {
+        VLNV::IPXactType documentType = libraryAccess->getDocumentType(vlnv);
+        QSharedPointer<Document const> document = libraryAccess->getModelReadOnly(vlnv);
 
         if (documentType == VLNV::COMPONENT)
         {
             if (type().components_)
             {
-                QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
                 QSharedPointer<Component const> component = document.staticCast<Component const>();
 
-                if (checkImplementation(component) && checkHierarchy(component) && checkFirmness(component))
+                if (checkImplementation(component) && checkHierarchy(component) && checkFirmness(component) &&
+                    checkTags(document))
                 {
                     return true;
                 }                   
             }
         }
 
-        else if (documentType == VLNV::CATALOG && type().catalogs_)
+        else if (documentType == VLNV::CATALOG && type().catalogs_  && checkTags(document))
         {
             return true;
         }
 
-        else if (documentType == VLNV::ABSTRACTIONDEFINITION && type().buses_ && implementation().hw_)
+        else if (documentType == VLNV::ABSTRACTIONDEFINITION && type().buses_ && implementation().hw_ &&
+            checkTags(document))
         {
                 return true;         
         }
 
-        else if (documentType == VLNV::BUSDEFINITION && type().buses_ && implementation().hw_)
+        else if (documentType == VLNV::BUSDEFINITION && type().buses_ && implementation().hw_ &&
+            checkTags(document))
         {
             return true;
         }
 
-        else if ((documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION) && type().apis_)
+        else if ((documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION) && type().apis_ &&
+            checkTags(document))
         {
             return true;
         }
 
         else if (documentType == VLNV::DESIGN)
         {
-            QSharedPointer<Design> design = handler_->getDesign(vlnv);
+            QSharedPointer<Design> design = libraryAccess->getDesign(vlnv);
 
-            if (type().advanced_ || (type().components_ && implementation().sw_ &&
-                design->getImplementation() == KactusAttribute::SW))
+            if ((type().advanced_ || (type().components_ && implementation().sw_ &&
+                design->getImplementation() == KactusAttribute::SW)) && checkTags(document))
             {
                 return true;
             }
         }
 
-        else if (type().advanced_)
+        else if (type().advanced_ && checkTags(document))
         {
             return true;
         }

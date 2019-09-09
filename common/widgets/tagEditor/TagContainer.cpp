@@ -12,7 +12,7 @@
 #include "TagContainer.h"
 
 #include <common/widgets/tagEditor/TagLabel.h>
-#include <common/widgets/tagEditor/TagEditor.h>
+#include <common/widgets/tagEditor/TagDisplay.h>
 #include <common/widgets/tagEditor/FlowLayout.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -112,7 +112,7 @@ void TagContainer::itemClicked(TagLabel* clickedItem)
     clickedItem->hide();
     layout()->removeWidget(clickedItem);
 
-    TagEditor* newTagEditor = constructTagEditor(clickedItem);
+    TagDisplay* newTagEditor = constructTagEditor(clickedItem);
     for (auto newTag : temporaryTags)
     {
         layout()->addWidget(newTag);
@@ -125,26 +125,9 @@ void TagContainer::itemClicked(TagLabel* clickedItem)
 }
 
 //-----------------------------------------------------------------------------
-// Function: TagContainer::constructTagEditor()
-//-----------------------------------------------------------------------------
-TagEditor* TagContainer::constructTagEditor(TagLabel* editedLabel)
-{
-    TagEditor* newTagEditor(new TagEditor(editedLabel, this));
-
-    connect(newTagEditor, SIGNAL(acceptChanges(TagLabel*, TagEditor*)),
-        this, SLOT(itemChangesAccepted(TagLabel*, TagEditor*)), Qt::UniqueConnection);
-    connect(newTagEditor, SIGNAL(deleteItem(TagLabel*, TagEditor*)),
-        this, SLOT(itemDeleted(TagLabel*, TagEditor*)), Qt::UniqueConnection);
-
-    layout()->addWidget(newTagEditor);
-
-    return newTagEditor;
-}
-
-//-----------------------------------------------------------------------------
 // Function: TagContainer::itemChangesAccepted()
 //-----------------------------------------------------------------------------
-void TagContainer::itemChangesAccepted(TagLabel* editedTag, TagEditor* tagEditor)
+void TagContainer::itemChangesAccepted(TagLabel* editedTag, TagDisplay* tagEditor)
 {
     if (tagExists(editedTag))
     {
@@ -203,7 +186,7 @@ bool TagContainer::tagExists(TagLabel* editedTag) const
 //-----------------------------------------------------------------------------
 // Function: TagContainer::itemDeleted()
 //-----------------------------------------------------------------------------
-void TagContainer::itemDeleted(TagLabel* editedTag, TagEditor* tagEditor)
+void TagContainer::itemDeleted(TagLabel* editedTag, TagDisplay* tagEditor)
 {
     tags_.removeAll(tagEditor);
 

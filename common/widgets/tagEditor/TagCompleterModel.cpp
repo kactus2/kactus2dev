@@ -74,3 +74,14 @@ void TagCompleterModel::itemSelected(QModelIndex const& index)
         emit selectedColor(tagColor);
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: TagCompleterModel::unfilteredItemSelected()
+//-----------------------------------------------------------------------------
+void TagCompleterModel::unfilteredItemSelected(int itemIndex)
+{
+    TagData indexedTag = tags_.at(itemIndex);
+
+    QColor tagColor = QColor(indexedTag.color_);
+    emit selectedColor(tagColor);
+}

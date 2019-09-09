@@ -15,15 +15,18 @@
 #include <QIcon>
 #include <QSettings>
 
+#include <common/widgets/tagEditor/TagSelectorContainer.h>
+
 //-----------------------------------------------------------------------------
 // Function: VLNVDialer::VLNVDialer()
 //-----------------------------------------------------------------------------
 VLNVDialer::VLNVDialer(QWidget *parent):
 QWidget(parent),
-    filters_(this),
-    dialer_(this),
-    hideButton_(QIcon(":/icons/common/graphics/triangle_arrow_up.png"), QString(), this),
-    hidden_(false)
+filters_(this),
+dialer_(this),
+hideButton_(QIcon(":/icons/common/graphics/triangle_arrow_up.png"), QString(), this),
+tagFilter_(new TagSelectorContainer(this)),
+hidden_(false)
 {
 	// set visual options for the hide/show button
 	hideButton_.setFlat(true);
@@ -34,10 +37,18 @@ QWidget(parent),
 	hidden_ = !settings.value("FilterWidget/Hidden", false).toBool();
 	onHideShowClick();
 
+    QVBoxLayout* tagGroupLayout(new QVBoxLayout());
+    tagGroupLayout->addWidget(tagFilter_);
+
+    QGroupBox* tagGroup(new QGroupBox(QLatin1String("Tags"), this));
+    tagGroup->setLayout(tagGroupLayout);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&filters_, 0);
 	layout->addWidget(&hideButton_, 0);
-	layout->addWidget(&dialer_, 1);
+    layout->addWidget(&dialer_, 0);
+    layout->addWidget(tagGroup, 1);
+
 	layout->setSpacing(0);
 	layout->setContentsMargins(4, 4, 4, 4);
 
@@ -62,6 +73,16 @@ QWidget(parent),
 		this, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
     connect(&filters_, SIGNAL(optionsChanged(Utils::FilterOptions const&)),
         this, SIGNAL(filtersChanged(Utils::FilterOptions const&)), Qt::UniqueConnection);
+    connect(tagFilter_, SIGNAL(contentChanged()), this, SLOT(onHandleTagFilterChange()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: vlnvdialer::onHandleTagFilterChange()
+//-----------------------------------------------------------------------------
+void VLNVDialer::onHandleTagFilterChange()
+{
+    QVector<TagData> filteredTags = tagFilter_->getTags();
+    emit tagFiltersChanged(filteredTags);
 }
 
 //-----------------------------------------------------------------------------

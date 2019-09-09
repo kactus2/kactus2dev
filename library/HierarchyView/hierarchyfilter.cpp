@@ -16,11 +16,13 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <library/LibraryInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: HierarchyFilter::HierarchyFilter()
 //-----------------------------------------------------------------------------
-HierarchyFilter::HierarchyFilter(QObject *parent):
-LibraryFilter(parent)
+HierarchyFilter::HierarchyFilter(LibraryInterface* libraryAccess, QObject *parent):
+LibraryFilter(libraryAccess, parent)
 {
 
 }
@@ -40,6 +42,12 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
     }
 
 	HierarchyItem* item = static_cast<HierarchyItem*>(itemIndex.internalPointer());
+
+    QSharedPointer<const Document> document = getLibraryInterface()->getModelReadOnly(item->getVLNV());
+    if (!checkTags(document))
+    {
+        return false;
+    }
 
     // If no search rules for vlnv are defined then display only non-duplicate children of root.
     if (hasEmptyVLNVfilter() && item->parentIsRoot() && item->isDuplicate())

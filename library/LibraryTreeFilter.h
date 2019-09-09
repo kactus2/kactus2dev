@@ -53,10 +53,6 @@ protected:
 	*/
 	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const override final;
 
-private:
-
-	//! The instance that manages the library.
-	LibraryInterface* handler_;
 };
 
 #endif // LIBRARYTREEFILTER_H

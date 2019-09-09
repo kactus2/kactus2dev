@@ -11,17 +11,12 @@
 
 #include "TagEditor.h"
 
-#include <IPXACTmodels/common/TagData.h>
-
 #include <common/widgets/colorBox/ColorBox.h>
 #include <common/widgets/tagEditor/TagLabel.h>
 #include <common/widgets/tagEditor/TagManager.h>
 #include <common/widgets/tagEditor/TagCompleterModel.h>
 
-#include <QHBoxLayout>
 #include <QColorDialog>
-#include <QApplication>
-#include <QFocusEvent>
 #include <QCompleter>
 #include <QAction>
 
@@ -29,52 +24,10 @@
 // Function: TagEditor::TagEditor()
 //-----------------------------------------------------------------------------
 TagEditor::TagEditor(TagLabel* tagLabel, QWidget* parent /* = 0 */):
-QFrame(parent),
-nameEdit_(new QLineEdit(this)),
-colorButton_(),
-deleteButton_(new QPushButton(QIcon(":/icons/common/graphics/cross.png"), QLatin1String(""), this)),
-editedLabel_(tagLabel)
+TagDisplay(tagLabel, parent),
+nameEdit_(new QLineEdit(this))
 {
-    int editorHeight = 19;
-    nameEdit_->setFixedHeight(editorHeight);
-    deleteButton_->setFixedHeight(editorHeight);
-
-    setupNameEditor();
-
-    int smallButtonWidth = 20;
-    deleteButton_->setFixedWidth(smallButtonWidth);
-    deleteButton_->adjustSize();
-
-    colorButton_ = new ColorBox(QSize(smallButtonWidth, editorHeight), this);
-
-    colorButton_->setToolTip(QLatin1String("Select Color"));
-    deleteButton_->setToolTip(QLatin1String("Delete Tag"));
-
-    colorButton_->setColor(tagLabel->palette().color(QPalette::Window));
-    colorButton_->update();
-
-    setupLayout();
-    connectSignals();
-
-    setFrameStyle(QFrame::Panel);
-    setLineWidth(1);
-
-    setFocusProxy(nameEdit_);
-
-    nameEdit_->installEventFilter(this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: TagEditor::setupLayout()
-//-----------------------------------------------------------------------------
-void TagEditor::setupLayout()
-{
-    QHBoxLayout* editorLayout = new QHBoxLayout(this);
-    editorLayout->setContentsMargins(1, 1, 1, 1);
-
-    editorLayout->addWidget(nameEdit_);
-    editorLayout->addWidget(colorButton_);
-    editorLayout->addWidget(deleteButton_);
+    setupEditors(nameEdit_);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,15 +35,21 @@ void TagEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void TagEditor::connectSignals()
 {
-    connect(colorButton_, SIGNAL(clicked()), this, SLOT(changeColor()), Qt::UniqueConnection);
-    connect(deleteButton_, SIGNAL(clicked()), this, SLOT(onDeleteItem()), Qt::UniqueConnection);
+    connect(getColorButton(), SIGNAL(clicked()), this, SLOT(changeColor()), Qt::UniqueConnection);
+
+    TagDisplay::connectSignals();
 }
 
 //-----------------------------------------------------------------------------
-// Function: TagEditor::setupNameEditor()
+// Function: TagEditor::setupEditors()
 //-----------------------------------------------------------------------------
-void TagEditor::setupNameEditor()
+void TagEditor::setupEditors(QWidget* nameEditor)
 {
+    TagDisplay::setupEditors(nameEditor);
+
+    setFocusProxy(nameEdit_);
+    nameEdit_->installEventFilter(this);
+
     QCompleter* completer = new QCompleter(this);
 
     TagCompleterModel* completerModel = new TagCompleterModel(TagManager::getInstance().getTags(), completer);
@@ -111,16 +70,7 @@ void TagEditor::setupNameEditor()
     nameEdit_->addAction(action);
     nameEdit_->setCompleter(completer);
     nameEdit_->setFixedWidth(80);
-    nameEdit_->setText(editedLabel_->text());
-}
-
-//-----------------------------------------------------------------------------
-// Function: TagEditor::completerColorChange()
-//-----------------------------------------------------------------------------
-void TagEditor::completerColorChange(QColor const& newColor)
-{
-    colorButton_->setColor(newColor);
-    colorButton_->update();
+    nameEdit_->setText(getEditedLabel()->text());
 }
 
 //-----------------------------------------------------------------------------
@@ -128,84 +78,21 @@ void TagEditor::completerColorChange(QColor const& newColor)
 //-----------------------------------------------------------------------------
 void TagEditor::changeColor()
 {
+    ColorBox* colorButton = getColorButton();
+
     QColorDialog dialog(this);
-    dialog.setCurrentColor(colorButton_->getColor());
+    dialog.setCurrentColor(colorButton->getColor());
     if (dialog.exec() == QDialog::Accepted)
     {
-        colorButton_->setColor(dialog.currentColor());
-        colorButton_->update();
+        colorButton->setColor(dialog.currentColor());
+        colorButton->update();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: TagEditor::onAcceptChanges()
+// Function: TagEditor::getNewName()
 //-----------------------------------------------------------------------------
-void TagEditor::onAcceptChanges()
+QString TagEditor::getNewName() const
 {
-    QString newName = nameEdit_->text();
-    if (!newName.isEmpty())
-    {
-        editedLabel_->setText(newName);
-    }
-
-    editedLabel_->setPalette(colorButton_->palette());
-
-    emit acceptChanges(editedLabel_, this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: TagEditor::onDeleteItem()
-//-----------------------------------------------------------------------------
-void TagEditor::onDeleteItem()
-{
-    emit deleteItem(editedLabel_, this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: TagEditor::focusOutEvent()
-//-----------------------------------------------------------------------------
-void TagEditor::focusOutEvent(QFocusEvent* /*event*/)
-{
-    if ((QApplication::focusWidget() && QApplication::focusWidget()->parentWidget() == this) ||
-        (QApplication::activeWindow() && QApplication::activeWindow()->parentWidget() == this))
-    {
-        return;
-    }
-    else
-    {
-        onAcceptChanges();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: TagEditor::eventFilter()
-//-----------------------------------------------------------------------------
-bool TagEditor::eventFilter(QObject *watched, QEvent *event)
-{
-    if (event->type() == QEvent::FocusOut)
-    {
-        focusOutEvent(dynamic_cast<QFocusEvent*>(event));
-        return true;
-    }
-    else
-    {
-        return QFrame::eventFilter(watched, event);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: TagEditor::keyPressEvent()
-//-----------------------------------------------------------------------------
-void TagEditor::keyPressEvent(QKeyEvent *event)
-{
-    QFrame::keyPressEvent(event);
-
-    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-    {
-        onAcceptChanges();
-    }
-    else if (event->key() == Qt::Key_Escape)
-    {
-        emit acceptChanges(editedLabel_, this);
-    }
+    return nameEdit_->text();
 }

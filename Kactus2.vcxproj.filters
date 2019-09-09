@@ -4810,6 +4810,30 @@
     <ClCompile Include="GeneratedFiles\moc_TagCompleterModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TagEditorContainer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagEditorContainer.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TagDisplay.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagDisplay.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagSelectorContainer.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TagSelectorContainer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_TagSelector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\tagEditor\TagSelector.cpp">
+      <Filter>Source Files\common\widgets\tagEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6583,6 +6607,18 @@
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\tagEditor\TagCompleterModel.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\TagEditorContainer.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\TagDisplay.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\TagSelectorContainer.h">
+      <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\tagEditor\TagSelector.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </CustomBuild>
   </ItemGroup>

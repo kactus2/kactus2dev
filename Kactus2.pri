@@ -840,7 +840,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./common/widgets/tagEditor/TagManager.h \
-    ./common/widgets/tagEditor/TagCompleterModel.h
+    ./common/widgets/tagEditor/TagCompleterModel.h \
+    ./common/widgets/tagEditor/TagEditorContainer.h \
+    ./common/widgets/tagEditor/TagSelectorContainer.h \
+    ./common/widgets/tagEditor/TagDisplay.h \
+    ./common/widgets/tagEditor/TagSelector.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1568,5 +1572,9 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
     ./common/widgets/tagEditor/TagManager.cpp \
-    ./common/widgets/tagEditor/TagCompleterModel.cpp
+    ./common/widgets/tagEditor/TagCompleterModel.cpp \
+    ./common/widgets/tagEditor/TagEditorContainer.cpp \
+    ./common/widgets/tagEditor/TagSelectorContainer.cpp \
+    ./common/widgets/tagEditor/TagDisplay.cpp \
+    ./common/widgets/tagEditor/TagSelector.cpp
 RESOURCES += kactus.qrc

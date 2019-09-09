@@ -24,6 +24,15 @@ struct TagData
 
     //! Tag color in hex code ("#RRGGBB").
     QString color_;
+
+    /*
+     *  Comparison operator for tag data.
+     */
+    bool operator==(TagData const& other) const
+    {
+        return name_ == other.name_ && color_ == other.color_;
+    };
+
 };
 
 #endif // TAGDATA_H

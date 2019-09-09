@@ -12,10 +12,10 @@
 #ifndef VLNVDIALER_H
 #define VLNVDIALER_H
 
-#include <common/utils.h>
-
 #include "dialerwidget.h"
 #include "filterwidget.h"
+
+#include <IPXACTmodels/common/TagData.h>
 
 #include <common/utils.h>
 
@@ -24,6 +24,7 @@
 #include <QString>
 
 class LibraryItem;
+class TagContainer;
 
 //-----------------------------------------------------------------------------
 //! VLNVDialer is used to set options that specify what objects to display in library.
@@ -84,12 +85,24 @@ signals:
     //! Emitted when all options change.
     void filtersChanged(Utils::FilterOptions const&);
 
+    /*!
+     *  Informs of tag filter change.
+     *
+     *      @param [in] tagFilters  The new visible tags.
+     */
+    void tagFiltersChanged(QVector<TagData> tagFilters);
+
 public slots:
 
 	//! Refresh the list of vendors on the library
 	void refreshLibrary();
 
 private slots:
+
+    /*!
+     *  Handler for changing visible tags.
+     */
+    void onHandleTagFilterChange();
 
 	//! Handler for hide/show button clicks.
 	void onHideShowClick();
@@ -109,6 +122,9 @@ private:
 
 	//! Button to hide/show filters.
 	QPushButton hideButton_;
+
+    //! Tag filter.
+    TagContainer* tagFilter_;
 
 	//! Contains the value to know if filters are currently hidden or visible
 	bool hidden_;

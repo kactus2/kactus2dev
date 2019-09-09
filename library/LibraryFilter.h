@@ -14,14 +14,16 @@
 
 #include <common/utils.h>
 
+#include <IPXACTmodels/common/TagData.h>
 #include <IPXACTmodels/Component/Component.h>
-
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QRegExpValidator>
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 #include <QString>
+
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Base class for library filters.
@@ -35,11 +37,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent   The parent object.
+     *      @param [in] libraryAccess   Access to the library.
+     *      @param [in] parent          The parent object.
      *
      *      @return <Description>.
      */
-    LibraryFilter(QObject *parent = 0);
+    LibraryFilter(LibraryInterface* libraryAccess, QObject *parent = 0);
 
 	//! The destructor
     virtual ~LibraryFilter() = default;
@@ -72,6 +75,13 @@ public slots:
 
 	//! Handler for when hierarchy options change.
 	void onHierarchyChanged(Utils::HierarchyOptions const& options);
+
+    /*!
+     *  Handler for changing the filtered tags.
+     *
+     *      @param [in] filteredTags    The new visible tags.
+     */
+    void onTagFilterChanged(QVector<TagData> filteredTags);
 
 protected:
 
@@ -121,6 +131,15 @@ protected:
 	//! Check the hierarchy matching.
 	bool checkHierarchy(QSharedPointer<Component const> component) const;
 
+    /*!
+     *  Check the tag matching of the selected document.
+     *
+     *      @param [in] document    The selected document.
+     *
+     *      @return True, if the tags match the visible tags, false otherwise.
+     */
+    bool checkTags(QSharedPointer<Document const> document) const;
+
 	/*! Check the list of vlnvs if they match the search rules
 	 *
 	 *      @param [in]  list Contains the vlnvs to check. 
@@ -129,6 +148,13 @@ protected:
 	*/
 	bool checkVLNVs(QVector<VLNV> const& list) const;
 
+    /*!
+     *  Get the access to the library.
+     *
+     *      @return Access to the library.
+     */
+    LibraryInterface* getLibraryInterface() const;
+
 private:
 
 	//! No copying
@@ -136,6 +162,16 @@ private:
 
 	//! No assignment
 	LibraryFilter& operator=(const LibraryFilter& other);
+
+    /*!
+     *  Check if a document contains the selected tag.
+     *
+     *      @param [in] document    The selected document.
+     *      @param [in] tag         The selected tag.
+     *
+     *      @return True, if the selected document contains the selected tag, false otherwise.
+     */
+    bool documentContainsTag(QSharedPointer<Document const> document, TagData const& tag) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -152,6 +188,9 @@ private:
  
 	//! Contains filters for hierarchy
 	Utils::HierarchyOptions hierarchy_; //!
+
+    //! List of the visible tags.
+    QVector<TagData> tags_;
 
 	//! The validator that checks vendor rules
 	QRegExpValidator vendorValidator_;
@@ -177,6 +216,8 @@ private:
 	//! Contains filters for version
 	QString versionFilter_; 
 
+    //! Access to the library.
+    LibraryInterface* libraryAccess_;
 };
 
 #endif // LIBRARYFILTER_H

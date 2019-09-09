@@ -14,13 +14,11 @@
 
 #include <IPXACTmodels/common/TagData.h>
 
-#include <common/widgets/tagEditor/TagManager.h>
-
 #include <QWidget>
 #include <QObject>
 
 class TagLabel;
-class TagEditor;
+class TagDisplay;
 
 //-----------------------------------------------------------------------------
 //! Container for tags.
@@ -64,12 +62,7 @@ signals:
      */
     void contentChanged();
 
-private slots:
-
-    /*!
-     *  Handler for new tag creation.
-     */
-    void createNewTag();
+protected slots:
 
     /*!
      *  Handler for selecting a tag.
@@ -84,7 +77,7 @@ private slots:
      *      @param [in] editedTag   The edited tag label.
      *      @param [in] tagEditor   Editor of the selected tag label.
      */
-    void itemChangesAccepted(TagLabel* editedTag, TagEditor* tagEditor);
+    void itemChangesAccepted(TagLabel* editedTag, TagDisplay* tagEditor);
 
     /*!
      *  Handler for removing a tag.
@@ -92,12 +85,16 @@ private slots:
      *      @param [in] editedTag   The edited tag label.
      *      @param [in] tagEditor   Editor of the selected tag label.
      */
-    void itemDeleted(TagLabel* editedTag, TagEditor* tagEditor);
+    void itemDeleted(TagLabel* editedTag, TagDisplay* tagEditor);
 
-private:
-    // Disable copying.
-    TagContainer(TagContainer const& rhs);
-    TagContainer& operator=(TagContainer const& rhs);
+private slots:
+
+    /*!
+     *  Handler for new tag creation.
+     */
+    void createNewTag();
+
+protected:
 
     /*!
      *  Connect the selected tag label.
@@ -105,6 +102,11 @@ private:
      *      @param [in] tagItem The selected tag label.
      */
     void connectTagLabel(QWidget* tagItem);
+
+private:
+    // Disable copying.
+    TagContainer(TagContainer const& rhs);
+    TagContainer& operator=(TagContainer const& rhs);
 
     /*!
      *  Setup the layout.
@@ -118,7 +120,7 @@ private:
      *
      *      @return The created tag editor.
      */
-    TagEditor* constructTagEditor(TagLabel* editedLabel);
+    virtual TagDisplay* constructTagEditor(TagLabel* editedLabel) = 0;
 
     /*!
      *  Check if the selected tag exists.

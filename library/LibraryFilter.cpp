@@ -20,11 +20,12 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::LibraryFilter()
 //-----------------------------------------------------------------------------
-LibraryFilter::LibraryFilter(QObject *parent):
+LibraryFilter::LibraryFilter(LibraryInterface* libraryAccess, QObject *parent):
 QSortFilterProxyModel(parent), 
     firmness_(),
     implementation_(),
     hierarchy_(),
+    tags_(),
     vendorValidator_(this),
     libraryValidator_(this),
     nameValidator_(this),
@@ -32,7 +33,8 @@ QSortFilterProxyModel(parent),
     vendorFilter_(),
     libraryFilter_(),
     nameFilter_(),
-    versionFilter_() 
+    versionFilter_(),
+    libraryAccess_(libraryAccess)
 {
 	// set settings for filter
 	setSortLocaleAware(true);
@@ -43,6 +45,8 @@ QSortFilterProxyModel(parent),
 	libraryValidator_.setRegExp(regExp);
 	nameValidator_.setRegExp(regExp);
 	versionValidator_.setRegExp(regExp);
+
+    Q_ASSERT(libraryAccess_);
 }
 
 //-----------------------------------------------------------------------------
@@ -147,6 +151,15 @@ void LibraryFilter::onHierarchyChanged(Utils::HierarchyOptions const& options)
 {
 	hierarchy_ = options;
 	invalidateFilter();
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryFilter::onTagFilterChanged()
+//-----------------------------------------------------------------------------
+void LibraryFilter::onTagFilterChanged(QVector<TagData> filteredTags)
+{
+    tags_ = filteredTags;
+    invalidateFilter();
 }
 
 //-----------------------------------------------------------------------------
@@ -290,6 +303,55 @@ bool LibraryFilter::checkHierarchy(QSharedPointer<Component const> component) co
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryFilter::checkTags()
+//-----------------------------------------------------------------------------
+bool LibraryFilter::checkTags(QSharedPointer<Document const> document) const
+{
+    int tagCount = tags_.size();
+    if (tagCount == 0)
+    {
+        return true;
+    }
+
+    QVector<TagData> documentTags = document->getTags();
+    if (documentTags.size() < tagCount)
+    {
+        return false;
+    }
+
+    int documentTagCounter = 0;
+    for (auto const& singleDocumentTag : documentTags)
+    {
+        if (tags_.contains(singleDocumentTag))
+        {
+            documentTagCounter++;
+            if (documentTagCounter == tagCount)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryFilter::documentContainsTag()
+//-----------------------------------------------------------------------------
+bool LibraryFilter::documentContainsTag(QSharedPointer<Document const> document, TagData const& tag) const
+{
+    for (auto documentTag : document->getTags())
+    {
+        if (documentTag.name_ == tag.name_ && documentTag.color_ == tag.color_)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryFilter::checkVLNVs()
 //-----------------------------------------------------------------------------
 bool LibraryFilter::checkVLNVs(QVector<VLNV> const& list) const
@@ -315,4 +377,12 @@ bool LibraryFilter::checkVLNVs(QVector<VLNV> const& list) const
     }
     // if none of the vlnvs matched
 	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryFilter::getLibraryInterface()
+//-----------------------------------------------------------------------------
+LibraryInterface* LibraryFilter::getLibraryInterface() const
+{
+    return libraryAccess_;
 }

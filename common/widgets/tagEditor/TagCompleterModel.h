@@ -70,6 +70,13 @@ public slots:
      */
     void itemSelected(QModelIndex const& index);
 
+    /*!
+     *  Handler for item selection with item number.
+     *
+     *      @param [in] itemIndex   Index of the selected item.
+     */
+    void unfilteredItemSelected(int itemIndex);
+
 signals:
 
     /*!

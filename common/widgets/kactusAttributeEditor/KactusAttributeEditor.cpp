@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <common/widgets/tagEditor/TagContainer.h>
+#include <common/widgets/tagEditor/TagEditorContainer.h>
 
 #include <QFormLayout>
 #include <QString>
@@ -28,7 +28,7 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     firmnessCombo_(new QComboBox(this)),
     implementationLabel_(new QLabel(tr("Implementation:"), this)), 
     implementationValue_(new QLabel(tr(""), this)),
-    tagEditor_(new TagContainer(this))
+    tagEditor_(new TagEditorContainer(this))
 {
     // The implementation label and value label are set to invisible by default.
     implementationLabel_->setVisible(false);
