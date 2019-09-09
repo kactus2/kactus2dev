@@ -242,96 +242,59 @@ bool BusDefinitionEditor::saveAs()
 {
     // Ask the user for a new VLNV along with the directory.
     VLNV vlnv;
-    
-	VLNV busDefVLNV;
-	QString busDirectory;
 
-	VLNV absDefVLNV;
-	QString absDirectory;
+    VLNV busDefVLNV;
+    QString busDirectory;
 
-	// if bus definition is being edited
-	if (busDefGroup_.isEnabled())
+    VLNV absDefVLNV;
+    QString absDirectory;
+
+    if (!NewObjectDialog::saveAsDialog(this, libHandler_, busDef_->getVlnv(), vlnv, busDirectory))
     {
-		if (!NewObjectDialog::saveAsDialog(this, libHandler_, busDef_->getVlnv(), vlnv, busDirectory))
-        {
-			return false;
-		}
+        return false;
+    }
 
-		busDefVLNV = vlnv;
-        busDefVLNV.setType(VLNV::BUSDEFINITION);
+    busDefVLNV = vlnv;
+    busDefVLNV.setType(VLNV::BUSDEFINITION);
+    busDef_->setVlnv(busDefVLNV);
 
-		busDef_->setVlnv(busDefVLNV);
-	}
-
-	// if abstraction definition is being edited but not the bus definition
-	else if (absDef_ && !busDefGroup_.isEnabled())
+    // If also Abstraction Definition is being edited, save as that too.
+    if (absDef_)
     {
-		if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDef_->getVlnv(), vlnv, absDirectory))
-        {
-			return false;
-		}
+        // Remove the possible .busDef from the end of the name field.
+        QString absDefName = busDefVLNV.getName();
+        absDefName = absDefName.remove(".busDef", Qt::CaseInsensitive);
 
-		absDefGroup_.save();
+        absDefGroup_.save();
 
-		absDefVLNV = vlnv;
-        absDefVLNV.setType(VLNV::ABSTRACTIONDEFINITION);
+        // Create automatically vlnv for the abstraction definition.
+        absDefVLNV = VLNV(VLNV::ABSTRACTIONDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),
+            absDefName + ".absDef", vlnv.getVersion());
 
-		absDef_->setVlnv(absDefVLNV);
+        // By default, both bus def and abs def are saved in same directory.
+        absDirectory = busDirectory;
 
-		// write only the abs def
-		libHandler_->writeModelToFile(absDirectory, absDef_);
+        // if the automatic abs def vlnv is taken
+        if (libHandler_->contains(absDefVLNV))
+        {            
 
-		setDocumentName(absDefVLNV.getName() + " (" + absDefVLNV.getVersion() + ")");
-		return TabDocument::saveAs();
-	}
-    
-	// if both are being edited (now the bus definition vlnv has already been defined but not abs def)
-	if (busDefGroup_.isEnabled() && absDef_)
-    {
-		// remove the possible .busDef from the end of the name field
-		QString absDefName = busDefVLNV.getName();
-		absDefName = absDefName.remove(".busDef", Qt::CaseInsensitive);
-
-		absDefGroup_.save();
-
-		// create automatically vlnv for the abstraction definition
-		absDefVLNV = VLNV(VLNV::ABSTRACTIONDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),
-			absDefName + ".absDef", vlnv.getVersion());
-
-		// by default both bus def and abs def are saved in same directory
-		absDirectory = busDirectory;
-
-		// if the automatic abs def vlnv is taken
-		if (libHandler_->contains(absDefVLNV))
-        {
-			VLNV newAbsDefVLNV;
-
-			if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDefVLNV, newAbsDefVLNV, absDirectory))
+            if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDefVLNV, vlnv, absDirectory))
             {
-				return false;
-			}
-			// save the created abstraction definition vlnv
-			absDefVLNV = newAbsDefVLNV;
-		}
+                return false;
+            }
+            // Save the created abstraction definition vlnv
+            absDefVLNV = vlnv;
+        }
 
-		// update the vlnvs of the abs def
-		absDef_->setVlnv(absDefVLNV);
-
-		// update the abs def's reference to bus def
-		absDef_->setBusType(busDefVLNV);
-
-		// write the abs def and bus def
-		libHandler_->writeModelToFile(busDirectory, busDef_);
-		libHandler_->writeModelToFile(absDirectory, absDef_);
-
-		setDocumentName(absDefVLNV.getName() + " (" + absDefVLNV.getVersion() + ")");
-		return TabDocument::saveAs();
-	}
-	
-	// if only bus def was being edited, write bus def and set the name
-	libHandler_->writeModelToFile(busDirectory, busDef_);
-	setDocumentName(busDefVLNV.getName() + " (" + busDefVLNV.getVersion() + ")");
-	return TabDocument::saveAs();
+        absDef_->setVlnv(absDefVLNV);
+        absDef_->setBusType(busDefVLNV);
+        
+        libHandler_->writeModelToFile(absDirectory, absDef_);                
+    }
+    
+    libHandler_->writeModelToFile(busDirectory, busDef_);
+    setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
+    return TabDocument::saveAs();
 }
 
 //-----------------------------------------------------------------------------

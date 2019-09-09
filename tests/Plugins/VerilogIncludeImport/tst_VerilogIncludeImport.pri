@@ -7,13 +7,15 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../Plugins/VerilogImport/VerilogParameterParser.h \
+HEADERS += ../../../IPXACTmodels/utilities/Search.h \
+    ../../../Plugins/VerilogImport/VerilogParameterParser.h \
     ../../../Plugins/VerilogIncludeImport/verilogincludeimport_global.h \
     ../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ../../../Plugins/VerilogIncludeImport/VerilogIncludeImport.h \
-    ../../../IPXACTmodels/utilities/Search.h
+    ../../../common/expressions/utilities.h
 SOURCES += ../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ../../../Plugins/VerilogImport/VerilogSyntax.cpp \
     ../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
     ../../../Plugins/VerilogIncludeImport/VerilogIncludeImport.cpp \
-    ./tst_VerilogIncludeImport.cpp
+    ./tst_VerilogIncludeImport.cpp \
+    ../../../common/expressions/utilities.cpp

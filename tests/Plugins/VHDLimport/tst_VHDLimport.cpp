@@ -26,7 +26,7 @@
 #include <QSharedPointer>
 #include <common/NameGenerationPolicy.h>
 
-Q_DECLARE_METATYPE(QSharedPointer<Port>)
+
 Q_DECLARE_METATYPE(QSharedPointer<ModuleParameter>)
 
 class tst_VHDLimport : public QObject
@@ -800,7 +800,8 @@ void tst_VHDLimport::testExistingModelParameterIdDoesNotChange()
 //-----------------------------------------------------------------------------
 void tst_VHDLimport::testExistingPortIsSetAsPhantom()
 {
-    QSharedPointer<Port> existingPort(new Port("oldPort", DirectionTypes::IN));
+    QSharedPointer<Port> existingPort(new Port("oldPort"));
+    existingPort->setDirection(DirectionTypes::IN);
     importComponent_->getPorts()->append(existingPort);
 
     QString input =  
@@ -822,7 +823,8 @@ void tst_VHDLimport::testExistingPortIsSetAsPhantom()
 //-----------------------------------------------------------------------------
 void tst_VHDLimport::testExistingPortIsOverriden()
 {
-    QSharedPointer<Port> existingPort(new Port("oldPort", DirectionTypes::OUT));
+    QSharedPointer<Port> existingPort(new Port("oldPort"));
+    existingPort->setDirection(DirectionTypes::OUT);
     existingPort->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
     importComponent_->getPorts()->append(existingPort);
 

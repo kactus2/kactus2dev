@@ -244,7 +244,8 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portNa
     DirectionTypes::Direction direction, QSharedPointer<MetaComponent> component,
     QSharedPointer<MetaInterface> mInterface /*= QSharedPointer<MetaInterface>()*/)
 {
-    QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction));
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName));
+    port->setDirection(direction);
     port->setPortSize(portSize);
     QSharedPointer<MetaPort> gp(new MetaPort);
     gp->port_ = port;

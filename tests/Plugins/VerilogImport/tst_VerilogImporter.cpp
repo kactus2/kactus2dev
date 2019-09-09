@@ -1019,7 +1019,8 @@ void tst_VerilogImporter::testExistingParameterIsUpdated()
 //-----------------------------------------------------------------------------
 void tst_VerilogImporter::testExistingPortIsSetAsPhantom()
 {
-    QSharedPointer<Port> existingPort(new Port("oldPort", DirectionTypes::IN));
+    QSharedPointer<Port> existingPort(new Port("oldPort"));
+    existingPort->setDirection(DirectionTypes::IN);
     importComponent_->getPorts()->append(existingPort);
 
     QString input =  
@@ -1039,7 +1040,8 @@ void tst_VerilogImporter::testExistingPortIsSetAsPhantom()
 //-----------------------------------------------------------------------------
 void tst_VerilogImporter::testExistingPortIsOverriden()
 {
-    QSharedPointer<Port> existingPort(new Port("oldPort", DirectionTypes::OUT));
+    QSharedPointer<Port> existingPort(new Port("oldPort"));
+    existingPort->setDirection(DirectionTypes::OUT);
     importComponent_->getPorts()->append(existingPort);
 
     QString input =  

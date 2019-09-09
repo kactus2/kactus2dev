@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "3.7.0 64-bit"
+!define PRODUCT_VERSION "3.7.541 64-bit"
 !define PRODUCT_PUBLISHER "TUT"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -108,7 +108,7 @@ Section "MainSection" SEC01
   File "..\..\x64\executable\Plugins\VerilogIncludeImport.dll"
   File "..\..\x64\executable\Plugins\VerilogSourceAnalyzer.dll"
   File "..\..\x64\executable\Plugins\VHDLImport.dll"
-  File "..\..\x64\executable\Plugins\MemoryViewGenerator.dll"
+  #File "..\..\x64\executable\Plugins\MemoryViewGenerator.dll"
   File "..\..\x64\executable\Plugins\LinuxDeviceTreeGenerator.dll"
 
   SetOutPath "$INSTDIR\Help"
