@@ -50,9 +50,10 @@ extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
     maxMastersEditor_.setValidator(numberValidator);
     maxSlavesEditor_.setValidator(numberValidator);
 
+#if QT_VERSION > QT_VERSION_CHECK(5,3,0)
     maxMastersEditor_.setPlaceholderText(tr("unbound"));
     maxSlavesEditor_.setPlaceholderText(tr("unbound"));
-
+#endif
     setupLayout();
 
 	connect(&maxMastersEditor_, SIGNAL(editingFinished()), this, SLOT(onMastersChanged()), Qt::UniqueConnection);
@@ -242,12 +243,16 @@ void BusDefGroup::setupExtendedBus()
     if (extendedBus)
     {
         extendBusDefinition(extendedBus);
+#if QT_VERSION > QT_VERSION_CHECK(5,3,0)
         descriptionEditor_.setPlaceholderText(extendedBus->getDescription());
+#endif
         return;
     }
 
     removeBusExtension();
+#if QT_VERSION > QT_VERSION_CHECK(5,3,0)
     descriptionEditor_.setPlaceholderText(QString(""));
+# endif
 }
 
 //-----------------------------------------------------------------------------

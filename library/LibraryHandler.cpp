@@ -415,7 +415,7 @@ void LibraryHandler::onCheckLibraryIntegrity()
 
         if (model.isNull() == false)
         {
-            documentTags.append(model->getTags());
+            documentTags += (model->getTags());
         }
 
         it->isValid = validateDocument(model, it->path);

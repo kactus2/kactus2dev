@@ -49,8 +49,9 @@
 ****************************************************************************/
 
 #include <QtWidgets>
+#include <QtGlobal>
 
-#include "flowlayout.h"
+#include "FlowLayout.h"
 
 //-----------------------------------------------------------------------------
 // Function: FlowLayout::FlowLayout()
@@ -200,7 +201,7 @@ QSize FlowLayout::sizeHint() const
 QSize FlowLayout::minimumSize() const
 {
     QSize size;
-    for (const QLayoutItem *item : qAsConst(itemList_))
+    for (const QLayoutItem *item : itemList_)
     {
         size = size.expandedTo(item->minimumSize());
     }
@@ -222,7 +223,7 @@ int FlowLayout::doLayout(const QRect &rect, bool testOnly) const
     int y = effectiveRect.y();
     int lineHeight = 0;
 
-    for (QLayoutItem *item : qAsConst(itemList_))
+    for (QLayoutItem *item : itemList_)
     {
         const QWidget *wid = item->widget();
         int spaceX = horizontalSpacing();

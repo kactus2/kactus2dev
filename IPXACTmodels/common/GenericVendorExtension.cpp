@@ -13,6 +13,7 @@
 
 #include <QDomNode>
 #include <QObject>
+#include <QStringList>
 
 //! Description element name.
 namespace

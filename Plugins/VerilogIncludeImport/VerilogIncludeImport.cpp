@@ -143,7 +143,7 @@ void VerilogIncludeImport::import(QString const& input, QSharedPointer<Component
         defineMatch = DEFINE.match(nonCommentedInput, position);
     }
 
-    parameterParser_.import(input, targetComponent, nullptr);    
+    parameterParser_.import(input, targetComponent, QSharedPointer<ComponentInstantiation>(0));    
 }
 
 //-----------------------------------------------------------------------------

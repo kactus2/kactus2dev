@@ -84,8 +84,8 @@ QVector<QPair<AutoConnectorItem*, AutoConnectorItem* > > ComponentItemAutoConnec
 {
     QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > fullConnections;
 
-    fullConnections.append(createItemPairs(busInterfaceConnector_, AutoConnectorItem::BUS_INTERFACE));
-    fullConnections.append(createItemPairs(portConnector_, AutoConnectorItem::PORT));
+    fullConnections += createItemPairs(busInterfaceConnector_, AutoConnectorItem::BUS_INTERFACE);
+    fullConnections += createItemPairs(portConnector_, AutoConnectorItem::PORT);
 
     return fullConnections;
 }

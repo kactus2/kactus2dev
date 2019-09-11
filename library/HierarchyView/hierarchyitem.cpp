@@ -356,7 +356,7 @@ QVector<HierarchyItem*> HierarchyItem::findItems(const VLNV& vlnv)
 
 	for (HierarchyItem* item : childItems_)
     {
-		items.append(item->findItems(vlnv));
+		items += item->findItems(vlnv);
 	}
 
 	return items;
