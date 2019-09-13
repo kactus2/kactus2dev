@@ -62,7 +62,8 @@ tst_ComponentPortValidator::tst_ComponentPortValidator()
 //-----------------------------------------------------------------------------
 void tst_ComponentPortValidator::baseCase()
 {
-	QSharedPointer<Port> port( new Port );
+    QSharedPointer<Port> port( new Port );
+    port->setDirection(DirectionTypes::IN);
     port->setLeftBound("4");
     port->setRightBound("4");
 	PortValidator validator(parser_, views_);
@@ -190,7 +191,7 @@ void tst_ComponentPortValidator::initiativeKindFail()
 	QVector<QString> errorList;
     validator.findErrorsIn(errorList, port, "test");
 
-	QCOMPARE( errorList.size(), 2 );
+	QCOMPARE( errorList.size(), 1 );
     QVERIFY( !validator.validate(port) );
 }
 

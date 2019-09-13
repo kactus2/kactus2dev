@@ -8,6 +8,7 @@ HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../IPXACTmodels/Component/Choice.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/common/Array.h \
@@ -31,6 +32,7 @@ SOURCES += ../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
     ../../../IPXACTmodels/Component/Choice.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValue.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/common/Array.cpp \

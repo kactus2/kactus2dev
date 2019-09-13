@@ -17,6 +17,7 @@ HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/common/Enumeration.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/validators/FieldValidator.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -35,6 +36,8 @@ HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.h \
     ../../../IPXACTmodels/Component/validators/MemoryMapValidator.h \
     ../../../IPXACTmodels/Component/MemoryMap.h \
     ../../../IPXACTmodels/common/VLNV.h \
@@ -59,6 +62,7 @@ SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
@@ -77,6 +81,8 @@ SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../IPXACTmodels/Component/RegisterFile.cpp \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.cpp \
     ../../../IPXACTmodels/Component/validators/MemoryMapValidator.cpp \
     ../../../IPXACTmodels/Component/MemoryMap.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \

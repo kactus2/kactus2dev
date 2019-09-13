@@ -18,6 +18,7 @@ HEADERS += ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/Component/AlternateRegister.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/FieldReader.h \
     ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/common/VLNV.h \
@@ -48,6 +49,7 @@ SOURCES += ./tst_RegisterReader.cpp \
     ../../../IPXACTmodels/common/CommonItemsReader.cpp \
     ../../../IPXACTmodels/Component/FieldReader.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \

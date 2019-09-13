@@ -21,6 +21,7 @@ HEADERS += ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/Component/EnumeratedValueWriter.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/FieldWriter.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
@@ -45,6 +46,7 @@ SOURCES += ./tst_FieldWriter.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValue.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \

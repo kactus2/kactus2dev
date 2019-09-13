@@ -15,6 +15,7 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/Component/EnumeratedValueReader.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/FieldReader.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
@@ -37,6 +38,8 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
     ../../../IPXACTmodels/common/validators/ParameterValidator.h \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.h \
     ../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
     ../../../IPXACTmodels/Component/validators/MemoryReserve.h \
     ../../../IPXACTmodels/Component/validators/FieldValidator.h \
@@ -56,6 +59,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValueReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/FieldReader.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
@@ -79,6 +83,8 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ./tst_AddressBlockValidator.cpp \
     ../../../IPXACTmodels/common/validators/ParameterValidator.cpp \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.cpp \
     ../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
     ../../../IPXACTmodels/Component/validators/MemoryReserve.cpp \
     ../../../IPXACTmodels/Component/validators/FieldValidator.cpp \

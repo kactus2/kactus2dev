@@ -44,6 +44,7 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/Component/EnumeratedValueReader.h \
     ../../../IPXACTmodels/Component/FieldReader.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/MemoryMapBaseReader.h \
     ../../../IPXACTmodels/common/ModuleParameterReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
@@ -70,6 +71,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
     ../../../IPXACTmodels/Component/FieldReader.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \

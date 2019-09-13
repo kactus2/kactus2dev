@@ -15,6 +15,7 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/Component/EnumeratedValueReader.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/FieldReader.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -52,6 +53,7 @@ SOURCES += ./tst_MemoryMapReader.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValueReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/FieldReader.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \

@@ -24,6 +24,7 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
     ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -76,6 +77,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \

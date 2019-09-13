@@ -9,6 +9,7 @@ HEADERS += ../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
     ../../../IPXACTmodels/Component/EnumeratedValueWriter.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
@@ -39,6 +40,7 @@ SOURCES += ./tst_RegisterWriter.cpp \
     ../../../IPXACTmodels/Component/AlternateRegister.cpp \
     ../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/RegisterFile.cpp \
     ../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \

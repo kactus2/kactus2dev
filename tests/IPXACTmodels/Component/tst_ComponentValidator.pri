@@ -60,6 +60,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/Enumeration.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/validators/FieldValidator.h \
     ../../../IPXACTmodels/Component/File.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
@@ -210,6 +211,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
     ../../../IPXACTmodels/Component/File.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \

@@ -19,6 +19,7 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
     ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -49,10 +50,12 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/Component/validators/AddressBlockValidator.h \
     ../../../IPXACTmodels/Component/validators/FieldValidator.h \
     ../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.h \
     ../../../IPXACTmodels/common/validators/ParameterValidator.h \
     ../../../IPXACTmodels/common/Enumeration.h \
     ../../../IPXACTmodels/Component/Choice.h \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.h \
     ../../../IPXACTmodels/Component/RemapState.h \
     ../../../IPXACTmodels/common/validators/ValueFormatter.h \
     ../../../IPXACTmodels/Component/RemapPort.h
@@ -73,6 +76,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValue.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
@@ -103,10 +107,12 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/validators/AddressBlockValidator.cpp \
     ../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
     ../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.cpp \
     ../../../IPXACTmodels/common/validators/ParameterValidator.cpp \
     ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/Component/Choice.cpp \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.cpp \
     ../../../IPXACTmodels/Component/RemapState.cpp \
     ../../../IPXACTmodels/common/validators/ValueFormatter.cpp \
     ../../../IPXACTmodels/Component/RemapPort.cpp

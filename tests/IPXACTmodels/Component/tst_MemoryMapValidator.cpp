@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -55,6 +56,10 @@ private slots:
 private:
 
     bool errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList);
+
+    QSharedPointer<MemoryMapValidator> createValidator(
+        QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates = 
+        QSharedPointer<QList<QSharedPointer<RemapState> > >());
 };
 
 //-----------------------------------------------------------------------------
@@ -74,25 +79,14 @@ void tst_MemoryMapValidator::testNameIsValid()
 
     QSharedPointer<MemoryMap> testMap (new MemoryMap(name));
 
-    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
-    QSharedPointer<RegisterValidator> registerValidator (
-        new RegisterValidator(parser, fieldValidator, parameterValidator));
-    QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
-    MemoryMapValidator validator(parser, addressBlockValidator,
-        QSharedPointer<QList<QSharedPointer<RemapState> > > ());
-//     MemoryMapValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
-//         QSharedPointer<QList<QSharedPointer<RemapState> > > ());
-    QCOMPARE(validator.hasValidName(testMap), isValid);
+    QSharedPointer<MemoryMapValidator> validator = createValidator();
+
+    QCOMPARE(validator->hasValidName(testMap), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator->findErrorsIn(foundErrors, testMap, "test");
 
         QString expectedError = QObject::tr("Invalid name specified for memory map %1 within %2").
             arg(testMap->name(), "test");
@@ -135,23 +129,13 @@ void tst_MemoryMapValidator::testAddressUnitBitsIsValid()
         testMap->getMemoryBlocks()->append(testBlock);
     }
 
-    QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
-    QSharedPointer<RegisterValidator> registerValidator (
-        new RegisterValidator(parser, fieldValidator, parameterValidator));
-    QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
-    MemoryMapValidator validator(parser, addressBlockValidator,
-        QSharedPointer<QList<QSharedPointer<RemapState> > > ());
-    QCOMPARE(validator.hasValidAddressUnitBits(testMap), isValid);
+    QSharedPointer<MemoryMapValidator> validator = createValidator();
+    QCOMPARE(validator->hasValidAddressUnitBits(testMap), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator->findErrorsIn(foundErrors, testMap, "test");
 
         QString expectedError = QObject::tr("Invalid address unit bits specified for memory map %1 within %2").
             arg(testMap->name(), "test");
@@ -200,23 +184,14 @@ void tst_MemoryMapValidator::testAddressBlockWidthIsMultipleOfAddressUnitBits()
     testMap->setAddressUnitBits(addressUnitBits);
     testMap->getMemoryBlocks()->append(testBlock);
 
-    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
-    QSharedPointer<RegisterValidator> registerValidator (
-        new RegisterValidator(parser, fieldValidator, parameterValidator));
-    QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
-    MemoryMapValidator validator(parser, addressBlockValidator,
-        QSharedPointer<QList<QSharedPointer<RemapState> > > ());
-    QCOMPARE(validator.hasValidMemoryBlocks(testMap, addressUnitBits), isValid);
+    QSharedPointer<MemoryMapValidator> validator = createValidator();
+
+    QCOMPARE(validator->hasValidMemoryBlocks(testMap, addressUnitBits), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator->findErrorsIn(foundErrors, testMap, "test");
 
         QString expectedError = QObject::tr("Width of address block %1 is not a multiple of the address unit "
             "bits of %2 %3").arg(testBlock->name()).arg(testMap->elementName()).arg(testMap->name());
@@ -270,22 +245,14 @@ void tst_MemoryMapValidator::testHasValidMemoryRemaps()
     QSharedPointer<MemoryMap> testMap (new MemoryMap("testMap"));
     testMap->getMemoryRemaps()->append(testRemap);
 
-    QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
-    QSharedPointer<RegisterValidator> registerValidator (
-        new RegisterValidator(parser, fieldValidator, parameterValidator));
-    QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
-    MemoryMapValidator validator(parser, addressBlockValidator, remapStates);
-    QCOMPARE(validator.hasValidMemoryRemaps(testMap), isValid);
+    QSharedPointer<MemoryMapValidator> validator = createValidator(remapStates);
+
+    QCOMPARE(validator->hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator->findErrorsIn(foundErrors, testMap, "test");
 
         QString expectedError = QObject::tr("Invalid remap state %1 set for memory remap %2 within memory map %3")
             .arg(testRemap->getRemapState()).arg(testRemap->name()).arg(testMap->name());
@@ -332,22 +299,14 @@ void tst_MemoryMapValidator::testMemoryRemapHasValidName()
     testMap->getMemoryRemaps()->append(testRemap);
     testMap->getMemoryRemaps()->append(otherRemap);
 
-    QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
-    QSharedPointer<RegisterValidator> registerValidator (
-        new RegisterValidator(parser, fieldValidator, parameterValidator));
-    QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
-    MemoryMapValidator validator(parser, addressBlockValidator, remapStates);
-    QCOMPARE(validator.hasValidMemoryRemaps(testMap), isValid);
+    QSharedPointer<MemoryMapValidator> validator = createValidator(remapStates);
+
+    QCOMPARE(validator->hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator->findErrorsIn(foundErrors, testMap, "test");
 
         if (nameOne == nameTwo)
         {
@@ -405,22 +364,14 @@ void tst_MemoryMapValidator::testMemoryRemapHasValidIsPresent()
     QSharedPointer<MemoryMap> testMap (new MemoryMap("TestAddressBlock"));
     testMap->getMemoryRemaps()->append(testRemap);
 
-    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
-    QSharedPointer<RegisterValidator> registerValidator (
-        new RegisterValidator(parser, fieldValidator, parameterValidator));
-    QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
-    MemoryMapValidator validator(parser, addressBlockValidator, remapStates);
-    QCOMPARE(validator.hasValidMemoryRemaps(testMap), isValid);
+    QSharedPointer<MemoryMapValidator> validator = createValidator(remapStates);
+
+    QCOMPARE(validator->hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator->findErrorsIn(foundErrors, testMap, "test");
 
         QString expectedError = QObject::tr("Invalid isPresent set for memory remap %1 within memory map %2").
             arg(testRemap->name(), testMap->name());
@@ -476,22 +427,13 @@ void tst_MemoryMapValidator::testMemoryRemapsHaveUniqueRemapStates()
     testMap->getMemoryRemaps()->append(remapTwo);
     testMap->getMemoryRemaps()->append(remapThree);
 
-    QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
-    QSharedPointer<RegisterValidator> registerValidator (
-        new RegisterValidator(parser, fieldValidator, parameterValidator));
-    QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
-    MemoryMapValidator validator(parser, addressBlockValidator, remapStates);
-    QCOMPARE(validator.hasValidMemoryRemaps(testMap), isValid);
+    QSharedPointer<MemoryMapValidator> validator = createValidator(remapStates);
+    QCOMPARE(validator->hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testMap, "test");
+        validator->findErrorsIn(foundErrors, testMap, "test");
 
         QString expectedError = QObject::tr("Remap states are not unique for each memory remap within memory map "
             "%1").arg(testMap->name());
@@ -518,7 +460,7 @@ void tst_MemoryMapValidator::testMemoryRemapsHaveUniqueRemapStates_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_MemoryMapBaseValidator::errorIsNotFoundInErrorList()
+// Function: tst_MemoryMapValidator::errorIsNotFoundInErrorList()
 //-----------------------------------------------------------------------------
 bool tst_MemoryMapValidator::errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList)
 {
@@ -535,6 +477,28 @@ bool tst_MemoryMapValidator::errorIsNotFoundInErrorList(QString const& expectedE
     return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapValidator::errorIsNotFoundInErrorList()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryMapValidator> tst_MemoryMapValidator::createValidator(
+    QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates)
+{
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator (
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<RegisterFileValidator> registerFileValidator (
+        new RegisterFileValidator(parser, registerValidator, parameterValidator));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator (
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
+    QSharedPointer<MemoryMapValidator> validator(new MemoryMapValidator(parser, addressBlockValidator,
+       remapStates));
+
+    return validator;
+}
 QTEST_APPLESS_MAIN(tst_MemoryMapValidator)
 
 #include "tst_MemoryMapValidator.moc"

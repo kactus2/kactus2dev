@@ -13,6 +13,7 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/Component/MemoryBlockBase.h \
@@ -46,6 +47,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValue.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/Component/MemoryBlockBase.cpp \

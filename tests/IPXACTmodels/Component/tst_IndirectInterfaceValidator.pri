@@ -34,6 +34,7 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/File.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
     ../../../IPXACTmodels/kactusExtensions/FileDependency.h \
@@ -121,6 +122,7 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/File.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/kactusExtensions/FileDependency.cpp \
