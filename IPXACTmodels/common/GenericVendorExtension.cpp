@@ -339,7 +339,16 @@ void GenericVendorExtension::writeNode(GenericVendorExtension const& node, QXmlS
         return;
     }
 
-    QString combinedName = node.nameSpace() + QLatin1Char(':') + node.name();
+    QString combinedName;
+    if (node.nameSpace().isEmpty())
+    {
+        combinedName = node.name();
+    }
+    else
+    {
+        combinedName = node.nameSpace() + QLatin1Char(':') + node.name();
+    } 
+
     writer.writeStartElement(combinedName);
     writeAttributes(node, writer);
     if (node.value().isEmpty() == false)

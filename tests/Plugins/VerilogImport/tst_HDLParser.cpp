@@ -312,7 +312,8 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     addParameter("module", "10", "firstParameter", topComponent_);
     addParameter("freq", "firstParameter*3.14", "secondParameter", topComponent_);
 
-    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("clk", DirectionTypes::IN));
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("clk"));
+    port->setDirection(DirectionTypes::IN);
     port->setLeftBound("secondParameter*2");
     port->setRightBound("2+5");
     topComponent_->getPorts()->append(port);
@@ -344,7 +345,8 @@ void tst_HDLParser::testTopLevelComponentExpressions()
 QSharedPointer<Port> tst_HDLParser::addPort(QString const& portName, int portSize, 
     DirectionTypes::Direction direction, QSharedPointer<Component> component)
 {
-    QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction));
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName));
+    port->setDirection(direction);
     port->setPortSize(portSize);
     component->getPorts()->append(port);
 
@@ -484,7 +486,8 @@ void tst_HDLParser::createHierarchicalConnection(QString const& topInterfaceRef,
 //-----------------------------------------------------------------------------
 void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
 {
-    QSharedPointer<Port> clkPort (new Port("top_clk", DirectionTypes::IN));
+    QSharedPointer<Port> clkPort (new Port("top_clk"));
+    clkPort->setDirection(DirectionTypes::IN);
     clkPort->setLeftBound("2+2");
     clkPort->setRightBound("0");
     topComponent_->getPorts()->append(clkPort);
@@ -506,7 +509,8 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
 	componentParameter->setValueResolve("user");
 	instanceComponent->getParameters()->append(componentParameter);
 
-    QSharedPointer<Port> instanceClkPort (new Port("instance_clk", DirectionTypes::IN));
+    QSharedPointer<Port> instanceClkPort (new Port("instance_clk"));
+    instanceClkPort->setDirection(DirectionTypes::IN); 
     instanceClkPort->setLeftBound(componentParameter->getValueId() + "*2");
     instanceClkPort->setRightBound("4-2*2");
     instanceComponent->getPorts()->append(instanceClkPort);
@@ -875,7 +879,8 @@ void tst_HDLParser::testEmptyBounds()
     senderView->setComponentInstantiationRef(sendCimp->name());
     senderComponent->getComponentInstantiations()->append(sendCimp);
 
-    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out"));
+    senderPort->setDirection(DirectionTypes::OUT); 
     senderPort->setLeftBound("");
     senderPort->setRightBound("");
     senderComponent->getPorts()->append(senderPort);
@@ -902,7 +907,8 @@ void tst_HDLParser::testEmptyBounds()
     receiverView->setComponentInstantiationRef(recvCimp->name());
     receiverComponent->getComponentInstantiations()->append(recvCimp);
 
-    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in", DirectionTypes::IN));
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in"));
+    receiverPort->setDirection(DirectionTypes::IN); 
     receiverPort->setLeftBound("");
     receiverPort->setRightBound("");
     receiverComponent->getPorts()->append(receiverPort);
@@ -971,7 +977,8 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 	senderView->setComponentInstantiationRef(sendCimp->name());
 	senderComponent->getComponentInstantiations()->append(sendCimp);
 
-    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out"));
+    senderPort->setDirection(DirectionTypes::OUT);
     senderPort->setLeftBound("20-2");
     senderPort->setRightBound("0");
     senderComponent->getPorts()->append(senderPort);
@@ -998,7 +1005,8 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 	receiverView->setComponentInstantiationRef(recvCimp->name());
 	receiverComponent->getComponentInstantiations()->append(recvCimp);
 
-    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in", DirectionTypes::IN));
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in"));
+    receiverPort->setDirection(DirectionTypes::IN);
     receiverPort->setLeftBound("7+1");
     receiverPort->setRightBound("0");
     receiverComponent->getPorts()->append(receiverPort);
@@ -1729,7 +1737,8 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     addInstanceToDesign("sender", senderVLNV, activeView);
     senderComponent->getViews()->append(activeView);
 
-    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out"));
+    senderPort->setDirection(DirectionTypes::OUT);
     senderPort->setLeftBound("16");
     senderPort->setRightBound("4");
     senderComponent->getPorts()->append(senderPort);
@@ -1779,7 +1788,8 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     addInstanceToDesign("sender", senderVLNV, senderView);
     senderComponent->getViews()->append(senderView);
 
-    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out"));
+    senderPort->setDirection(DirectionTypes::OUT);
     senderPort->setLeftBound("16");
     senderPort->setRightBound("4");
     senderComponent->getPorts()->append(senderPort);
@@ -1792,7 +1802,8 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     addInstanceToDesign("receiver", receiverVLNV, receiverView);
     receiverComponent->getViews()->append(receiverView);
 
-    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in", DirectionTypes::IN));
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in"));
+    receiverPort->setDirection(DirectionTypes::IN);
     receiverPort->setLeftBound("7");
     receiverPort->setRightBound("0");
     receiverComponent->getPorts()->append(receiverPort);
@@ -2062,7 +2073,8 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
     QSharedPointer<Component> senderComponent(new Component(senderVLNV));
 
-    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out"));
+    senderPort->setDirection(DirectionTypes::OUT);
     senderPort->setLeftBound("7");
     senderPort->setRightBound("0");
     senderComponent->getPorts()->append(senderPort);
@@ -2084,7 +2096,8 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
     QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
 
-    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in", DirectionTypes::IN));
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in"));
+    receiverPort->setDirection(DirectionTypes::IN);
     receiverPort->setLeftBound("7");
     receiverPort->setRightBound("0");
     receiverComponent->getPorts()->append(receiverPort);
@@ -2342,7 +2355,8 @@ void tst_HDLParser::testFlatComponentExpressions()
     addModuleParameter("module", "10", "firstParameter", topComponent_);
     addModuleParameter("freq", "firstParameter*3.14", "secondParameter", topComponent_);
 
-    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("clk", DirectionTypes::IN));
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("clk"));
+    port->setDirection(DirectionTypes::IN);
     port->setLeftBound("secondParameter*2");
     port->setRightBound("2+5");
     topComponent_->getPorts()->append(port);

@@ -91,7 +91,8 @@ bool ComponentInstanceValidator::hasValidIsPresent(QSharedPointer<ComponentInsta
 //-----------------------------------------------------------------------------
 bool ComponentInstanceValidator::hasValidComponentReference(QSharedPointer<ComponentInstance> instance) const
 {
-    return instance->getComponentRef() && libraryHandler_->contains(*instance->getComponentRef());
+    return instance->getComponentRef() && instance->getComponentRef()->isValid() &&
+       libraryHandler_->contains(*instance->getComponentRef());
 }
 
 //-----------------------------------------------------------------------------

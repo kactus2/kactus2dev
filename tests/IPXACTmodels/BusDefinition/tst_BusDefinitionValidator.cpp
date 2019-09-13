@@ -57,7 +57,7 @@ void tst_BusDefinitionValidator::baseCase()
 
     busDefinition->getParameters()->append(parameter);
 
-	BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+	BusDefinitionValidator validator(nullptr, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, busDefinition);
@@ -73,7 +73,7 @@ void tst_BusDefinitionValidator::failVLNV()
 {
 	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
 
-	BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+	BusDefinitionValidator validator(nullptr, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, busDefinition);
@@ -98,7 +98,7 @@ void tst_BusDefinitionValidator::failParameter()
 
     busDefinition->getParameters()->append(parameter);
 
-	BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+	BusDefinitionValidator validator(nullptr,QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, busDefinition);
@@ -117,7 +117,7 @@ void tst_BusDefinitionValidator::maxFail()
     busDefinition->setMaxMasters("ghhhk,");
     busDefinition->setMaxSlaves("jii oku");
 
-	BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+	BusDefinitionValidator validator(nullptr,QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, busDefinition);
@@ -136,7 +136,7 @@ void tst_BusDefinitionValidator::maxPass()
     busDefinition->setMaxMasters("1337");
     busDefinition->setMaxSlaves("5");
 
-	BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+	BusDefinitionValidator validator(nullptr,QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, busDefinition);
@@ -155,7 +155,7 @@ void tst_BusDefinitionValidator::testEmptyMaximumMastersAndSlaves()
     busDefinition->setMaxMasters("");
     busDefinition->setMaxSlaves("");
 
-    BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+    BusDefinitionValidator validator(nullptr,QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 
     QVector<QString> errorList;
     validator.findErrorsIn(errorList, busDefinition);

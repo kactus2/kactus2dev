@@ -20,7 +20,7 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/Component/ChoiceReader.h \
@@ -53,7 +53,7 @@ SOURCES += ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/Component/choice.cpp \
     ./tst_ChoiceReader.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp

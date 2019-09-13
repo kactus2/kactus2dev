@@ -113,7 +113,8 @@ void tst_InterfaceDirectionNameSorter::testPortsOrderedByName()
 //-----------------------------------------------------------------------------
 void tst_InterfaceDirectionNameSorter::addPort(QString portName, DirectionTypes::Direction direction)
 {
-    QSharedPointer<Port> newPort (new Port(portName, direction));
+    QSharedPointer<Port> newPort (new Port(portName));
+    newPort->setDirection(direction);
     newPort->setAllLogicalDirectionsAllowed(true);
     component_->getPorts()->append(newPort);
 }

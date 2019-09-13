@@ -29,7 +29,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionWriter.h \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinitionWriter.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
@@ -73,6 +73,6 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionWriter.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionWriter.cpp

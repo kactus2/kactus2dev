@@ -156,13 +156,14 @@ void MetaComponent::formatParameters(ExpressionFormatter const& formatter)
 //-----------------------------------------------------------------------------
 // Function: MetaComponent::sortParameters()
 //-----------------------------------------------------------------------------
-void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters) const
+void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters)
 {
     // Go through existing ones on the instance.
     foreach (QSharedPointer<Parameter> current, *sortParameters)
     {
         // The value of the inspected parameter.
         QString currentValue = current->getValue();
+        QString currentId = current->getValueId();
 
         // The start position for the second pass.
         auto startPosition = std::find_if(sortParameters->begin(), sortParameters->end(),
@@ -176,8 +177,8 @@ void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter
         }
 
         auto firstReferencing = std::find_if(startPosition, sortParameters->end(),
-            [&currentValue](QSharedPointer<Parameter> referencing){ return referencing->getValue().contains(
-                currentValue); });
+            [&currentId](QSharedPointer<Parameter> referencing){ return referencing->getValue().contains(
+                currentId); });
         
         // Move to end of the list, unless referencing parameter is found.
         int target = sortParameters->size();
