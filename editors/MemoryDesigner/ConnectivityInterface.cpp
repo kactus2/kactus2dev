@@ -22,15 +22,8 @@ remapAddress_(),
 instance_(),
 memory_(),
 hierarchical_(false),
-bridged_(false)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConnectivityInterface::~ConnectivityInterface()
-//-----------------------------------------------------------------------------
-ConnectivityInterface::~ConnectivityInterface()
+bridged_(false),
+childInterfaceNodes_()
 {
 
 }
@@ -110,7 +103,7 @@ QString ConnectivityInterface::getRemapRange() const
 //-----------------------------------------------------------------------------
 // Function: ConnectivityInterface::setInstance()
 //-----------------------------------------------------------------------------
-void ConnectivityInterface::setInstance(QSharedPointer<ConnectivityComponent> instance)
+void ConnectivityInterface::setInstance(QSharedPointer<ConnectivityComponent const> instance)
 {
     instance_ = instance;
 }
@@ -177,4 +170,28 @@ void ConnectivityInterface::setBridged()
 bool ConnectivityInterface::isBridged() const
 {
     return bridged_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::getChildInterfaceNodes()
+//-----------------------------------------------------------------------------
+QVector<QSharedPointer<ConnectivityInterface> > ConnectivityInterface::getChildInterfaceNodes() const
+{
+    return childInterfaceNodes_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::addChildInterfaceNode()
+//-----------------------------------------------------------------------------
+void ConnectivityInterface::addChildInterfaceNode(QSharedPointer<ConnectivityInterface> newChild)
+{
+    childInterfaceNodes_.append(newChild);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::removeChildInterface()
+//-----------------------------------------------------------------------------
+void ConnectivityInterface::removeChildInterface(int const& indexOfInterface)
+{
+    childInterfaceNodes_.removeAt(indexOfInterface);
 }

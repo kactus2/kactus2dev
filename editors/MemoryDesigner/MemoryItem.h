@@ -12,6 +12,8 @@
 #ifndef MEMORYITEM_H
 #define MEMORYITEM_H
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QString>
 #include <QSharedPointer>
 #include <QVector>
@@ -176,6 +178,20 @@ public:
      */
     QVector<QSharedPointer<MemoryItem> > getChildItems() const;
 
+    /*!
+     *  Set the usage for the memory item.
+     *
+     *      @param [in] newUsage    The new usage value.
+     */
+    void setUsage(General::Usage const& newUsage);
+
+    /*!
+     *  Get the usage of the memory item.
+     *
+     *      @return The usage value.
+     */
+    General::Usage getUsage() const;
+
 private:
 
 	// Disable copying.
@@ -211,6 +227,9 @@ private:
 
     //! The offset of the memory.
     QString offset_;
+
+    //! The usage value of the memory item.
+    General::Usage usage_;
 
     //! The sub-elements of the memory.
     QVector<QSharedPointer<MemoryItem> > childItems_;

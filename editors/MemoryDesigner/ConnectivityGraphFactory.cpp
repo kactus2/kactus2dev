@@ -275,6 +275,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
     mapItem->setDisplayName(map->displayName());
     mapItem->setAUB(QString::number(addressableUnitBits));
 
+    General::Usage mapUsage = General::USAGE_COUNT;
     foreach (QSharedPointer<MemoryBlockBase> block, *map->getMemoryBlocks())
     {
         if (block->getIsPresent().isEmpty() ||
@@ -282,9 +283,16 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
         {
             QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
             QSharedPointer<MemoryItem> blockItem = createMemoryBlock(addressBlock, mapIdentifier, addressableUnitBits);
+            blockItem->setUsage(addressBlock->getUsage());
+            mapUsage = addressBlock->getUsage();
 
             mapItem->addChild(blockItem);
         }
+    }
+
+    if (map->getMemoryBlocks()->size() == 1 && mapUsage == General::MEMORY)
+    {
+        mapItem->setUsage(General::MEMORY);
     }
 
     return mapItem;

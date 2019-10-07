@@ -63,13 +63,52 @@ private:
     LinuxDeviceTreeGenerator(LinuxDeviceTreeGenerator const& rhs);
     LinuxDeviceTreeGenerator& operator=(LinuxDeviceTreeGenerator const& rhs);
 
+    //! Container for memory data.
+    struct CpuMemory
+    {
+        //! Interface containing the memory item.
+        QSharedPointer<ConnectivityInterface const> memoryInterface_;
+
+        //! Base address of the memory.
+        quint64 baseAddress_;
+
+        //! Range of the memory.
+        quint64 range_;
+    };
+
     //! Container for a component and its CPUs connected to an interface.
     struct ComponentCPUContainer
     {
-        QVector<QSharedPointer<Cpu> > interfacedCPUs_;
+        //! List of the interfaced CPUs.
+        QVector<QSharedPointer<const Cpu> > interfacedCPUs_;
 
+        //! List of memory data connected to the CPUs.
+        QVector<LinuxDeviceTreeGenerator::CpuMemory> memory_;
+
+        //! Component containing the CPUs.
         QSharedPointer<Component const> containingComponent_;
     };
+
+    /*!
+     *  Combine master roots with same CPUs into single master roots.
+     *
+     *      @param [in] roots   List of master interface nodes.
+     *
+     *      @return List of combined master roots.
+     */
+    QVector<QSharedPointer<ConnectivityInterface> > getMasterRoots(
+        QVector<QSharedPointer<ConnectivityInterface> > roots);
+
+    /*!
+     *  Check if two CPU containers are same.
+     *
+     *      @param [in] firstContainer      The first compared CPU container.
+     *      @param [in] secondContainer     The second compared CPU container.
+     *
+     *      @return True, if the CPUs are same, false otherwise.
+     */
+    bool cpuContainersMatch(ComponentCPUContainer const& firstContainer,
+        ComponentCPUContainer const& secondContainer) const;
 
     /*!
      *  Write the device tree file.
@@ -77,10 +116,10 @@ private:
      *      @param [in] outputPath      Path for the file.
      *      @param [in] topComponent    The top component in the hierarchy to generate listing for.
      *      @param [in] activeView      The currently active view of the top component.
-     *      @param [in] masterRoutes    List of the master slave routes that should be examined.
+     *      @param [in] masterRoots     List of the master interfaces.
      */
     void writeFile(QString const& outputPath, QSharedPointer<Component> topComponent, QString const& activeView,
-        QVector<QVector<QSharedPointer<const ConnectivityInterface> > >  masterRoutes);
+        QVector<QSharedPointer<ConnectivityInterface> >  masterRoots);
 
 	/*!
 	 *  Write the found memory paths.
@@ -88,10 +127,13 @@ private:
 	 *      @param [in]	outputStream    The stream to write into.
 	 *		@param [in]	topComponent    The starting component for the search.
 	 *		@param [in]	activeView      The currently active view of the starting component.
-	 *		@param [in]	masterPaths     List of the master slave paths.
+	 *		@param [in]	interfaceNodes  List of interface nodes.
+     *      @param [in] pathNumber      Number of the current CPU container.
+     *      @param [in] connectedCPUs   List of handled CPUs.
 	 */
-	void writePaths(QTextStream& outputStream, QSharedPointer<Component> topComponent, QString const& activeView,
-        QVector<QVector<QSharedPointer<const ConnectivityInterface> > > masterPaths);
+    void writePaths(QTextStream& outputStream, QSharedPointer<Component> topComponent, QString const& activeView,
+        QVector<QSharedPointer<ConnectivityInterface> > interfaceNodes, int pathNumber,
+        QVector<QSharedPointer<const Cpu> >& connectedCPUs);
 
     /*!
      *  Write the selected interface path.
@@ -101,8 +143,33 @@ private:
      *      @param [in] cpuContainer    Container for component and its CPUs connected to the starting interface.
      *		@param [in]	pathNumber      The current running number for CPU listings.
      */
-    void writePath(QTextStream& outputStream, QVector<QSharedPointer<const ConnectivityInterface> > path,
+    void startPathWriting(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> pathRootNode,
         ComponentCPUContainer cpuContainer, int pathNumber);
+
+    /*!
+     *  Write the selected interface node.
+     *
+     *      @param [in] outputStream        The stream to write into.
+     *      @param [in] previousInterface   The previously written interface.
+     *      @param [in] interfaceNode       The current interface.
+     *      @param [in] baseAddress         Currently effective base address.
+     *      @param [in] memoryItemRange     Currently effective range of the memory item.
+     *      @param [in] prefix              Current tab prefix of the items.
+     */
+    void writePathNode(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> previousInterface,
+        QSharedPointer<const ConnectivityInterface> interfaceNode, quint64 const& baseAddress,
+        quint64 const& memoryItemRange, QString& prefix);
+
+    /*!
+     *  Check if an interface node has access to memory interface nodes.
+     *
+     *      @param [in] interfaceNode   The selected interface node.
+     *      @param [in] previousNode    Previous interface node on the tree.
+     *
+     *      @return True, if an interface has access to memory interface nodes, false otherwise.
+     */
+    bool canWriteNode(QSharedPointer<const ConnectivityInterface> interfaceNode,
+        QSharedPointer<const ConnectivityInterface> previousNode) const;
 
     /*!
      *	Get all the CPUs connected to the selected interface.
@@ -111,7 +178,40 @@ private:
      *
      *		@return Container for component and its CPUs connected to the selected interface.
      */
-    ComponentCPUContainer getCPUsForInterface(QSharedPointer<const ConnectivityInterface> startInterface) const;
+    ComponentCPUContainer getCPUsForInterface(QSharedPointer<ConnectivityInterface> startInterface) const;
+
+    /*!
+     *  Get the component containing the selected interface.
+     *
+     *      @param [in] interfaceNode   The selected interface.
+     *
+     *      @return Component containing the selected interface.
+     */
+    QSharedPointer<Component const> getComponentContainingInterface(
+        QSharedPointer<const ConnectivityInterface> interfaceNode) const;
+
+    /*!
+     *  Get the memory data of the selected interface.
+     *
+     *      @param [in] previousInterface   The previously checked interface.
+     *      @param [in] interfaceNode       The current interface.
+     *      @param [in] baseAddress         Currently active base address.
+     *      @param [in] memoryItemRange     Currently active range.
+     *
+     *      @return List of memory data connected to the selected interface.
+     */
+    QVector<CpuMemory> getMemories(QSharedPointer<const ConnectivityInterface> previousInterface,
+        QSharedPointer<ConnectivityInterface> interfaceNode, quint64 baseAddress,
+        quint64 const& memoryItemRange) const;
+
+    /*!
+     *  Check if the selected interface contains memory data.
+     *
+     *      @param [in] memoryInterface     The selected interface.
+     *
+     *      @return True, if the selected interface contains memory data, false otherwise.
+     */
+    bool interfacedItemIsMemory(QSharedPointer<const ConnectivityInterface> memoryInterface) const;
 
     /*!
      *	Get all the CPUs connected to the selected interface from the selected component.
@@ -139,14 +239,15 @@ private:
      *		@param [in]	outputStream    The stream to write into.
      *		@param [in]	prefix          The prefix for the line ending.
      */
-    void writeLineEnding(QTextStream& outputStream, QString const& prefix);
+    void writeLineEnding(QTextStream& outputStream, QString const& prefix) const;
 
     /*!
      *	Write an introduction to the CPUs.
      *
      *		@param [in]	outputStream    The stream to write into.
+     *      @param [in] prefix          The prefix for CPUs.
      */
-    void writeIntroductionToCPUs(QTextStream& outputStream);
+    void writeIntroductionToCPUs(QTextStream& outputStream, QString& prefix);
 
     /*!
      *  Write a single CPU.
@@ -155,30 +256,58 @@ private:
      *      @param [in] CPUName         Name of the selected CPU.
      *      @param [in] componentVLNV   VLNV of the component containing the selected CPU.
      *		@param [in]	cpuNumber       Number of the CPU.
+     *      @param [in] prefix          The prefix for a single CPU.
      */
-    void writeCPU(QTextStream& outputStream, QString const& CPUName, VLNV const& componentVLNV, int cpuNumber);
+    void writeCPU(QTextStream& outputStream, QString const& CPUName, VLNV const& componentVLNV, int cpuNumber,
+        QString& prefix);
 
     /*!
-     *	Write the items connected to the selected starting interface.
+     *  Write a single bridge.
      *
-     *		@param [in]	outputStream    The stream to write into.
-     *		@param [in]	startInterface  The selected interface.
-     *		@param [in]	endInterface    The end interface of the path.
-     *		@param [in]	pathVariables   Variables calculated from the interface path.
+     *      @param [in] outputStream    The stream to write into.
+     *      @param [in] interfaceNode   Interface containing the bridge.
+     *      @param [in] prefix          The prefix for the bridge.
      */
-    void writeMultipleItems(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> startInterface,
-        QSharedPointer<const ConnectivityInterface> endInterface,
-        MemoryConnectionAddressCalculator::ConnectionPathVariables pathVariables);
+    void writeBridge(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
+        QString& prefix);
 
     /*!
-     *	Write a single item.
+     *  Write a memory map item.
      *
-     *		@param [in]	outputStream    The stream to write into.
-     *		@param [in]	itemName        Name of the selected item.
-     *		@param [in]	baseAddress     Base address of the selected item.
-     *		@param [in]	lastAddress     Last address of the selected item.
+     *      @param [in] outputStream    Stream to write into.
+     *      @param [in] interfaceNode   Interface containing the memory item.
+     *      @param [in] baseAddress     Base address of the memory item.
+     *      @param [in] range           Range of the memory item.
+     *      @param [in] prefix          Prefix of the memory map item.
      */
-    void writeItem(QTextStream& outputStream, QString const& itemName, quint64 baseAddress, quint64 lastAddress);
+    void writeMemoryMapItem(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
+        quint64 baseAddress, quint64 range, QString& prefix);
+
+    /*!
+     *  Write memory item.
+     *
+     *      @param [in] outputStream    Stream to write into.
+     *      @param [in] itemName        Name of the memory item.
+     *      @param [in] instanceName    Name of the instance containing the memory item.
+     *      @param [in] componentVLNV   VLNV of the component instance.
+     *      @param [in] baseAddress     Base address of the memory item.
+     *      @param [in] range           Range of the memory item.
+     *      @param [in] isMemory        Item memory usage.
+     *      @param [in] prefix          Prefix of the memory item.
+     */
+    void writeMemoryData(QTextStream& outputStream, QString const& itemName, QString const& instanceName,
+        QString const& componentVLNV, quint64 const& baseAddress, quint64 const& range, bool isMemory,
+        QString& prefix) const;
+
+    /*!
+     *  Write the memory items with usage memory.
+     *
+     *      @param [in] outputStream    Stream to write into.
+     *      @param [in] cpuContainer    CPU containing the memories.
+     *      @param [in] prefix          Prefix of the memories.
+     */
+    void writeMemories(QTextStream& outputStream, ComponentCPUContainer const& cpuContainer, QString& prefix)
+        const;
 
     /*!
      *	Write the unconnected CPUs of the design.
@@ -190,7 +319,7 @@ private:
      *		@param [in]	activeView      Currently active view of the top component.
      */
     void writeUnconnectedCPUs(QTextStream& outputStream, int& pathNumber,
-        QVector<QSharedPointer<Cpu> >& connectedCPUs, QSharedPointer<Component const> topComponent,
+        QVector<QSharedPointer<Cpu const> >& connectedCPUs, QSharedPointer<Component const> topComponent,
         QString const& activeView);
 
     /*!
@@ -202,7 +331,7 @@ private:
      *		@param [in]	connectedCPUs   List of the connected CPUs.
      */
     void writeUnconnectedCPUsOfComponent(QTextStream& outputStream, int& pathNumber,
-        QSharedPointer<Component const> component, QVector<QSharedPointer<Cpu> >& connectedCPUs);
+        QSharedPointer<Component const> component, QVector<QSharedPointer<Cpu const> >& connectedCPUs);
 
     /*!
      *	Get the active view matching the selected view name.
@@ -259,7 +388,7 @@ private:
      *		@param [in]	configuration   Design configuration of the selected design.
      */
     void analyzeDesignForUnconnectedCPUs(QTextStream& outputStream, int& pathNumber,
-        QVector<QSharedPointer<Cpu> >& connectedCPUs, QSharedPointer<const Design> design,
+        QVector<QSharedPointer<Cpu const> >& connectedCPUs, QSharedPointer<const Design> design,
         QSharedPointer<const DesignConfiguration> configuration);
 
     //-----------------------------------------------------------------------------
