@@ -43,7 +43,7 @@ HEADERS += ../../../IPXACTmodels/Design/ActiveInterface.h \
     ../../../IPXACTmodels/common/Range.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/ParameterWriter.h \
@@ -95,7 +95,7 @@ SOURCES += ../../../IPXACTmodels/Design/ActiveInterface.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_DesignWriter.cpp \
     ../../../IPXACTmodels/common/ParameterReader.cpp \

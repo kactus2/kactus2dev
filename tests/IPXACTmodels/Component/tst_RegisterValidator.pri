@@ -14,6 +14,7 @@ HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -28,6 +29,7 @@ HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
     ../../../IPXACTmodels/Component/validators/MemoryReserve.h \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
@@ -46,6 +48,7 @@ SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
@@ -60,6 +63,7 @@ SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../IPXACTmodels/Component/RegisterFile.cpp \
     ../../../IPXACTmodels/Component/validators/MemoryReserve.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.cpp \
     ../../../IPXACTmodels/Component/validators/FieldValidator.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \

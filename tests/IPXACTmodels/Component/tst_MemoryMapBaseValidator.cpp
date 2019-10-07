@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -71,8 +72,10 @@ void tst_MemoryMapBaseValidator::testNameIsValid()
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<RegisterFileValidator> registerFileValidator (
+        new RegisterFileValidator(parser, registerValidator, parameterValidator));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
     MemoryMapBaseValidator validator(parser, addressBlockValidator);
 //     MemoryMapBaseValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
     QCOMPARE(validator.hasValidName(testMap), isValid);
@@ -123,8 +126,10 @@ void tst_MemoryMapBaseValidator::testIsPresentIsValid()
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<RegisterFileValidator> registerFileValidator (
+        new RegisterFileValidator(parser, registerValidator, parameterValidator));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
     MemoryMapBaseValidator validator(parser, addressBlockValidator);
     QCOMPARE(validator.hasValidIsPresent(testMap), isValid);
 
@@ -176,8 +181,10 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<RegisterFileValidator> registerFileValidator (
+        new RegisterFileValidator(parser, registerValidator, parameterValidator));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
     MemoryMapBaseValidator validator(parser, addressBlockValidator);
     QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), false);
 
@@ -245,8 +252,10 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap()
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<RegisterFileValidator> registerFileValidator (
+        new RegisterFileValidator(parser, registerValidator, parameterValidator));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, parameterValidator));
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
     MemoryMapBaseValidator validator(parser, addressBlockValidator);
     QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), isValid);
 

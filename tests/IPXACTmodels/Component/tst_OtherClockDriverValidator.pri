@@ -25,7 +25,7 @@ HEADERS += ../../../IPXACTmodels/common/Array.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h
 SOURCES += ../../../IPXACTmodels/common/Array.cpp \
     ../../../IPXACTmodels/common/Assertion.cpp \

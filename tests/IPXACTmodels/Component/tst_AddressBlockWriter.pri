@@ -13,6 +13,7 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/Component/MemoryBlockBase.h \
@@ -27,7 +28,7 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
     ../../../IPXACTmodels/common/NameGroupWriter.h \
@@ -46,6 +47,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValue.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/Component/MemoryBlockBase.cpp \
@@ -59,7 +61,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AddressBlockWriter.cpp \
     ../../../IPXACTmodels/common/CommonItemsWriter.cpp \

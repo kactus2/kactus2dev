@@ -47,7 +47,7 @@ void VendorExtensionsModel::setVendorExtensions(
 void VendorExtensionsModel::clear() 
 {
 	beginResetModel();
-    vendorExtensions_ = nullptr;
+    vendorExtensions_.clear();
 	endResetModel();
 }
 

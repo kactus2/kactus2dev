@@ -4,6 +4,7 @@
 
 HEADERS += ../../../IPXACTmodels/Component/Field.h \
     ../../../IPXACTmodels/Component/FieldReader.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/NameGroup.h \
@@ -28,6 +29,7 @@ HEADERS += ../../../IPXACTmodels/Component/Field.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h
 SOURCES += ./tst_FieldReader.cpp \
     ../../../IPXACTmodels/Component/FieldReader.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/common/NameGroupReader.cpp \

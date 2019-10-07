@@ -37,13 +37,14 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/Component/AddressBlockReader.h \
     ../../../IPXACTmodels/Component/AddressSpaceReader.h \
     ../../../IPXACTmodels/common/CommonItemsReader.h \
     ../../../IPXACTmodels/Component/EnumeratedValueReader.h \
     ../../../IPXACTmodels/Component/FieldReader.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/MemoryMapBaseReader.h \
     ../../../IPXACTmodels/common/ModuleParameterReader.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
@@ -70,6 +71,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
     ../../../IPXACTmodels/Component/FieldReader.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
@@ -93,6 +95,6 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AddressSpaceReader.cpp

@@ -63,7 +63,8 @@ void tst_ComponentPortWriter::writeSimplePort()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::IN);
     testPort->setDisplayName("PortorDisplay");
     testPort->setDescription("PortorDescription");
 
@@ -91,7 +92,7 @@ void tst_ComponentPortWriter::writeSimpleTransactionalPort()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));
     testPort->setDisplayName("PortorDisplay");
     testPort->setDescription("PortorDescription");
 
@@ -124,7 +125,8 @@ void tst_ComponentPortWriter::writePortPresence()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort (new Port("testPort"));
+    testPort->setDirection(DirectionTypes::IN);
     testPort->setIsPresent("4-2*2+1");
 
     QString expectedOutput(
@@ -153,7 +155,7 @@ void tst_ComponentPortWriter::writePortArrays()
     QSharedPointer<Transactional> testTransactional(new Transactional());
     testTransactional->setInitiative("provides");
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));
     testPort->setArrayLeft("4+4");
     testPort->setArrayRight("18");
     testPort->setTransactional(testTransactional);
@@ -193,7 +195,8 @@ void tst_ComponentPortWriter::writePortExtensions()
 
     QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort (new Port("testPort"));
+    testPort->setDirection(DirectionTypes::IN);
     testPort->getVendorExtensions()->append(testExtension);
 
     QString expectedOutput(
@@ -221,7 +224,8 @@ void tst_ComponentPortWriter::writePortAdHocVisible()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));  
+    testPort->setDirection(DirectionTypes::IN);
     testPort->setAdHocVisible(true);
 
     QString expectedOutput(
@@ -249,8 +253,10 @@ void tst_ComponentPortWriter::writePortDefaultPosition()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
-    testPort->setDefaultPos(QPointF(1,1));
+
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::IN);
+    testPort->setDefaultPos(QPointF(1, 1));
 
     QString expectedOutput(
         "<ipxact:port>"
@@ -277,7 +283,8 @@ void tst_ComponentPortWriter::writePortTags()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::IN);
     testPort->setPortTags("oyoroi,yuJing,guilang,tags");
 
     QString expectedOutput(
@@ -305,7 +312,8 @@ void tst_ComponentPortWriter::writeWirePortAllLogicalDirectionsAllowed()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::IN);
     testPort->setAllLogicalDirectionsAllowed(true);
 
     QString expectedOutput(
@@ -330,7 +338,8 @@ void tst_ComponentPortWriter::writeWirePortVectors()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::OUT));
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::OUT);
     testPort->getWire()->setVectorLeftBound("4+18-Yaoxao");
     testPort->getWire()->setVectorRightBound("Yaoxao");
 
@@ -362,7 +371,8 @@ void tst_ComponentPortWriter::emptyVectorIsNotWritten()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::OUT));
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::OUT);
     testPort->getWire()->setVectorLeftBound("");
     testPort->getWire()->setVectorRightBound("");
 
@@ -388,7 +398,8 @@ void tst_ComponentPortWriter::writeWireTypeDefinitions()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::OUT));
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::OUT);
 
     QSharedPointer<WireTypeDef> testTypeDefinition (new WireTypeDef("testType", "testView"));
     testTypeDefinition->setConstrained(true);
@@ -427,7 +438,8 @@ void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::OUT));
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::OUT);
 
     QSharedPointer<WireTypeDef> testTypeDefinition (new WireTypeDef("testType", "testView"));
     testTypeDefinition->setConstrained(true);
@@ -487,7 +499,8 @@ void tst_ComponentPortWriter::writeWireDefaultValue()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::OUT));
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::OUT);
     testPort->setDefaultValue("4+4-2");
 
     QString expectedOutput(
@@ -521,7 +534,7 @@ void tst_ComponentPortWriter::writeTransactionalAllLogicalInitiativesAllowed()
     testTransactional->setInitiative("provides");
     testTransactional->setAllLogicalInitiativesAllowed(true);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));   
     testPort->setTransactional(testTransactional);
 
     QString expectedOutput(
@@ -550,7 +563,7 @@ void tst_ComponentPortWriter::writeTransactionalKind()
     testTransactional->setInitiative("provides");
     testTransactional->setKind("tlm_port");
     
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));    
     testPort->setTransactional(testTransactional);
 
     QString expectedOutput(
@@ -598,7 +611,8 @@ void tst_ComponentPortWriter::writeTransactionalBusWidth()
     testTransactional->setInitiative("provides");
     testTransactional->setBusWidth("8");
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+
+    QSharedPointer<Port> testPort(new Port("testPort"));    
     testPort->setTransactional(testTransactional);
 
     QString expectedOutput(
@@ -641,7 +655,7 @@ void tst_ComponentPortWriter::writeTransactionalProtocol()
     testTransactional->setInitiative("provides");
     testTransactional->setProtocol(testProtocol);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));    
     testPort->setTransactional(testTransactional);
 
     QString expectedOutput(
@@ -714,7 +728,7 @@ void tst_ComponentPortWriter::writeTransactionalTypeDefinitions()
     testTransactional->setInitiative("provides");
     testTransactional->getTransTypeDef()->append(testTypeDefinition);
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));    
     testPort->setTransactional(testTransactional);
 
     QString expectedOutput(
@@ -751,7 +765,7 @@ void tst_ComponentPortWriter::writeTransactionalConnectionMinMax()
     testTransactional->setMinConnections("8*2");
     testTransactional->setMaxConnections("16*2");
 
-    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::IN));
+    QSharedPointer<Port> testPort(new Port("testPort"));    
     testPort->setTransactional(testTransactional);
 
     QString expectedOutput(

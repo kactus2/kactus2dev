@@ -99,6 +99,13 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<FileSet> > > getFileSets() { return fileSets_; }
 
+    /*!
+    *  Sorts list of parameters based on their interdependencies.
+    *
+    *      @param [out] sortParameters         The list containing the parameters that will be sorted.
+    */
+    static void sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters);
+
 protected:
 
     void parseMetaParameters();
@@ -118,12 +125,6 @@ private:
     */
     void formatParameters(ExpressionFormatter const& formatter);
 
-    /*!
-    *  Sorts list of parameters based on their interdependencies.
-    *
-    *      @param [out] sortParameters         The list containing the parameters that will be sorted.
-    */
-    void sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters) const;
     
     /*!
      *  Associates the meta object file sets pointed by the active component instance.

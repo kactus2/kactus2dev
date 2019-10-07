@@ -723,7 +723,8 @@ void MetaDesign::removeUnconnectedInterfaceAssignments()
             bool connected = false;
             for (QSharedPointer<MetaPortAssignment> assignment : mPort->upAssignments_)
             {
-                if (assignment->wire_ && assignment->wire_->refCount >= 2)
+                if ((assignment->wire_ && assignment->wire_->refCount >= 2) ||
+                    assignment->defaultValue_.isEmpty() == false)
                 {
                     connected = true;
                 }

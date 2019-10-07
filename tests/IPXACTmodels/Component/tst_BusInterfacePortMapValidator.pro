@@ -26,11 +26,13 @@ else:unix {
     DESTDIR = ./release
 }
 
+
 INCLUDEPATH += $$DESTDIR
+INCLUDEPATH += ../../../
 
 DEPENDPATH += .
+DEPENDPATH += ../../../
 
-OBJECTS_DIR += $$DESTDIR
 
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles

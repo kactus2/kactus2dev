@@ -24,6 +24,7 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/Component/EnumeratedValue.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
     ../../../IPXACTmodels/common/FileTypes.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -42,7 +43,7 @@ HEADERS += ../../../IPXACTmodels/AbstractMemoryMap.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/Component/AddressBlockWriter.h \
     ../../../IPXACTmodels/Component/AddressSpaceWriter.h \
@@ -76,6 +77,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/EnumeratedValueWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \
     ../../../IPXACTmodels/common/FileTypes.cpp \
@@ -100,7 +102,7 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AddressSpaceWriter.cpp \
     ../../../IPXACTmodels/Component/TransparentBridge.cpp \

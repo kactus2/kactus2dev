@@ -5,10 +5,12 @@
 HEADERS += ../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../common/expressions/utilities.h \
     ../../../Plugins/VerilogImport/VerilogParameterParser.h \
     ../../../Plugins/VerilogImport/VerilogSyntax.h
 SOURCES += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../common/expressions/utilities.cpp \
     ../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ./tst_VerilogParameterParser.cpp \
     ../../../Plugins/VerilogImport/VerilogSyntax.cpp

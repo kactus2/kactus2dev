@@ -74,7 +74,8 @@ void tst_VerilogSourceAnalyzer::testFileTypes()
     QVERIFY(supportedFileTypes.contains("verilogSource"));
     QVERIFY(supportedFileTypes.contains("verilogSource-95"));
     QVERIFY(supportedFileTypes.contains("verilogSource-2001"));
-    QCOMPARE(supportedFileTypes.count(), 3);
+    QVERIFY(supportedFileTypes.contains("systemVerilogSource"));
+    QCOMPARE(supportedFileTypes.count(), 4);
 }
 
 //-----------------------------------------------------------------------------

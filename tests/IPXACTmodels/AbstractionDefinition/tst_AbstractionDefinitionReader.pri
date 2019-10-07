@@ -33,7 +33,7 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/NameGroupReader.h \
     ../../../IPXACTmodels/common/ParameterReader.h \
@@ -77,7 +77,7 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstractionReader.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionReader.cpp \
     ../../../IPXACTmodels/BusDefinition/BusDefinition.cpp

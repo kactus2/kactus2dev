@@ -15,6 +15,7 @@
 #include <QString>
 #include <QMap>
 #include <QSharedPointer>
+#include <QStringList>
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFile::RegisterFile()
@@ -103,6 +104,9 @@ void RegisterFile::setRegisterData(QSharedPointer<QList<QSharedPointer<RegisterB
     registerData_ = newRegisterData;
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterFile::getAllRegisterOffsets()
+//-----------------------------------------------------------------------------
 QStringList RegisterFile::getAllRegisterOffsets() const
 {
     QStringList registerOffsets;

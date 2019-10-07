@@ -417,7 +417,7 @@ void tst_BusDefinition::testVendorExtensions()
     busDefinition->setVersion("3.0.0");
 
     QDomDocument document;
-    QDomElement extensionNode = document.createElement("testExtension");
+    QDomElement extensionNode = document.createElement("kactus2:testExtension");
     extensionNode.setAttribute("vendorAttribute", "extension");
     extensionNode.appendChild(document.createTextNode("testValue"));
 
@@ -446,7 +446,7 @@ void tst_BusDefinition::testVendorExtensions()
             "<ipxact:isAddressable>true</ipxact:isAddressable>"
             "<ipxact:vendorExtensions>"
                 "<kactus2:version>3.0.0</kactus2:version>"
-                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                "<kactus2:testExtension vendorAttribute=\"extension\">testValue</kactus2:testExtension>"
             "</ipxact:vendorExtensions>"
         "</ipxact:busDefinition>\n"));
 }

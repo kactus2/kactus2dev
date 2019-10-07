@@ -17,6 +17,7 @@ HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/validators/FieldValidator.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -35,6 +36,8 @@ HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.h \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Enumeration.h \
@@ -54,6 +57,7 @@ SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/common/validators/ParameterValidator.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/validators/EnumeratedValueValidator.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
@@ -73,6 +77,8 @@ SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser
     ../../../IPXACTmodels/Component/RegisterFile.cpp \
     ../../../IPXACTmodels/Component/validators/AddressBlockValidator.cpp \
     ../../../IPXACTmodels/Component/validators/RegisterValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterBaseValidator.cpp \
+    ../../../IPXACTmodels/Component/validators/RegisterFileValidator.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \

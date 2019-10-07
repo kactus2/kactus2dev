@@ -857,9 +857,13 @@ void tst_DocumentGenerator::testRegistersWrittenWithTopComponent()
 //-----------------------------------------------------------------------------
 void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
 {
-    QSharedPointer<Field> testField = createTestField("testField", "Example Field", "2", "8");
-    testField->setResetValue("testReset");
-    testField->setResetMask("testMask");
+    QSharedPointer<Field> testField = createTestField("testField", "Example Field", "2", "8");    
+    QSharedPointer<FieldReset> resetValue(new FieldReset());
+    resetValue->setResetValue("testReset");
+    resetValue->setResetMask("testMask");
+
+    testField->getResets()->append(resetValue);
+
 
     QSharedPointer<Register> fieldRegister =createTestRegister("FieldRegister", "10", "10", "10", "");
     fieldRegister->getFields()->append(testField);
@@ -884,8 +888,7 @@ void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
         "\t\t\t\t\t<th>Width [bits]</th>\n"
         "\t\t\t\t\t<th>Volatile</th>\n"
         "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t\t<th>Reset value</th>\n"
-        "\t\t\t\t\t<th>Reset mask</th>\n"
+        "\t\t\t\t\t<th>Resets</th>\n"        
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
@@ -895,8 +898,7 @@ void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testField->getBitWidth() + "</td>\n"
         "\t\t\t\t\t<td>" + testField->getVolatile().toString() + "</td>\n"
         "\t\t\t\t\t<td>" + AccessTypes::access2Str(testField->getAccess()) + "</td>\n"
-        "\t\t\t\t\t<td>testReset</td>\n"
-        "\t\t\t\t\t<td>testMask</td>\n"
+        "\t\t\t\t\t<td>HARD : testReset</td>\n"        
         "\t\t\t\t\t<td>" + testField->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
@@ -940,8 +942,11 @@ void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
 void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 {
     QSharedPointer<Field> testField = createTestField("testField", "", "2", "8");
-    testField->setResetValue("8'h3");
-    testField->setResetMask("00000011");
+    QSharedPointer<FieldReset> resetValue(new FieldReset());
+    resetValue->setResetValue("8'h3");
+    resetValue->setResetMask("00000011");
+
+    testField->getResets()->append(resetValue);
 
     QList <QSharedPointer <Register> > registers;
     QSharedPointer<Register> testRegister = createTestRegister("testRegister", "10", "4", "2", "Describing reg.");
@@ -1033,8 +1038,7 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<th>Width [bits]</th>\n"
         "\t\t\t\t\t<th>Volatile</th>\n"
         "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t\t<th>Reset value</th>\n"
-        "\t\t\t\t\t<th>Reset mask</th>\n"
+        "\t\t\t\t\t<th>Resets</th>\n"        
         "\t\t\t\t\t<th>Description</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
@@ -1044,8 +1048,7 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testField->getBitWidth() + "</td>\n"
         "\t\t\t\t\t<td>" + testField->getVolatile().toString() + "</td>\n"
         "\t\t\t\t\t<td>" + AccessTypes::access2Str(testField->getAccess()) + "</td>\n"
-        "\t\t\t\t\t<td>8'h3</td>\n"
-        "\t\t\t\t\t<td>00000011</td>\n"
+        "\t\t\t\t\t<td>HARD : 8'h3</td>\n"        
         "\t\t\t\t\t<td>" + testField->description() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"

@@ -47,7 +47,8 @@ HEADERS += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h \
     ../../../IPXACTmodels/common/Vector.h \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.h \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/BusDefinitionUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../MockObjects/LibraryMock.h \
     ../../../IPXACTmodels/Design/Design.h \
@@ -107,7 +108,8 @@ SOURCES += ../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp
     ../../../IPXACTmodels/common/Vector.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WireAbstraction.cpp \
     ../../../IPXACTmodels/AbstractionDefinition/WirePort.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/BusDefinitionUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_AbstractionDefinitionValidator.cpp \
     ../../../IPXACTmodels/Design/Design.cpp \

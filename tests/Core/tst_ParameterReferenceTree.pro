@@ -30,9 +30,11 @@ else:unix {
 }
 
 INCLUDEPATH += $$PWD/../../
+INCLUDEPATH += $$PWD/../../executable
 INCLUDEPATH += $$DESTDIR
 
 DEPENDPATH += $$PWD/../../
+DEPENDPATH += $$PWD/../../executable
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR

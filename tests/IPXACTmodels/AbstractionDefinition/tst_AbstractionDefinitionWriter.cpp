@@ -229,7 +229,7 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
     testPort->getWire()->setQualifier(Qualifier::Data);
 
     QDomDocument document;
-    QDomElement extensionNode = document.createElement("testExtension");
+    QDomElement extensionNode = document.createElement("kactus2:testExtension");
     extensionNode.setAttribute("vendorAttribute", "extension");
     extensionNode.appendChild(document.createTextNode("testValue"));
 
@@ -271,7 +271,7 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
                         "<ipxact:defaultValue>0</ipxact:defaultValue>"
                     "</ipxact:wire>"
                     "<ipxact:vendorExtensions>"
-                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                        "<kactus2:testExtension vendorAttribute=\"extension\">testValue</kactus2:testExtension>"
                     "</ipxact:vendorExtensions>"
                 "</ipxact:port>"
             "</ipxact:ports>"
@@ -772,7 +772,7 @@ void tst_AbstractionDefinitionWriter::testWriteTransactionalPortWithProtocol()
     portProtocol->setPayloadType("generic");
 
     QDomDocument document;
-    QDomElement extensionNode = document.createElement("testExtension");
+    QDomElement extensionNode = document.createElement("kactus2:testExtension");
     extensionNode.setAttribute("vendorAttribute", "extension");
     extensionNode.appendChild(document.createTextNode("testValue"));
 
@@ -816,7 +816,7 @@ void tst_AbstractionDefinitionWriter::testWriteTransactionalPortWithProtocol()
                                     "<ipxact:type>generic</ipxact:type>"
                                     "<ipxact:extension mandatory=\"true\">extension</ipxact:extension>"
                                     "<ipxact:vendorExtensions>"
-                                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                                        "<kactus2:testExtension vendorAttribute=\"extension\">testValue</kactus2:testExtension>"
                                     "</ipxact:vendorExtensions>"
                                 "</ipxact:payload>"
                             "</ipxact:protocol>"
@@ -956,7 +956,7 @@ void tst_AbstractionDefinitionWriter::testVendorExtensions()
     abstractionDefinition->setVersion("3.0.0");
 
     QDomDocument document;
-    QDomElement extensionNode = document.createElement("testExtension");
+    QDomElement extensionNode = document.createElement("kactus2:testExtension");
     extensionNode.setAttribute("vendorAttribute", "extension");
     extensionNode.appendChild(document.createTextNode("testValue"));
 
@@ -984,7 +984,7 @@ void tst_AbstractionDefinitionWriter::testVendorExtensions()
             "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
             "<ipxact:vendorExtensions>"
                 "<kactus2:version>3.0.0</kactus2:version>"
-                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"       
+                "<kactus2:testExtension vendorAttribute=\"extension\">testValue</kactus2:testExtension>"       
             "</ipxact:vendorExtensions>"
         "</ipxact:abstractionDefinition>\n"));
 }

@@ -15,6 +15,7 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/Component/RegisterWriter.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/AddressBlockWriter.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
@@ -49,6 +50,7 @@ SOURCES += ./tst_MemoryMapBaseWriter.cpp \
     ../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/RegisterWriter.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \

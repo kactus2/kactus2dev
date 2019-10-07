@@ -497,7 +497,7 @@ void tst_RegisterGraphItem::testZeroWidthFields()
     QCOMPARE(emptySpaces.count(), 1);
 
     QVERIFY(msbItem->isConflicted());
-    QCOMPARE(msbItem->boundingRect().width(), qreal(0));
+    QCOMPARE(msbItem->boundingRect().width(), qreal(1));
 
     MemoryGapItem* placeholder = emptySpaces.first();
     QVERIFY(!placeholder->isConflicted());
@@ -507,7 +507,7 @@ void tst_RegisterGraphItem::testZeroWidthFields()
     QCOMPARE(placeholder->boundingRect().width(), registerItem->boundingRect().width());
 
     QVERIFY(lsbItem->isConflicted());
-    QCOMPARE(lsbItem->boundingRect().width(), qreal(0));
+    QCOMPARE(lsbItem->boundingRect().width(), qreal(1));
 
     delete registerItem->parent();
 }
@@ -534,21 +534,12 @@ void tst_RegisterGraphItem::testTwoDimensional()
     twoDimensionalRegister->setDimension("2");
 
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
-    registerItem->setDimensionIndex(0);
+    RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);    
     registerItem->updateDisplay();
-
-    RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
-    secondDimension->setDimensionIndex(1);
-    secondDimension->updateDisplay();
-
-    QCOMPARE(registerItem->name(), QString("testRegister[0]"));
+    
+    QCOMPARE(registerItem->name(), QString("testRegister[1:0]"));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(1));
-    QCOMPARE(registerItem->getDisplayLastAddress(), quint64(1));
-
-    QCOMPARE(secondDimension->name(), QString("testRegister[1]"));
-    QCOMPARE(secondDimension->getDisplayOffset(), quint64(2));
-    QCOMPARE(secondDimension->getDisplayLastAddress(), quint64(2));
+    QCOMPARE(registerItem->getDisplayLastAddress(), quint64(2));
 
     delete addressBlockItem;
 }
@@ -576,16 +567,12 @@ void tst_RegisterGraphItem::testLastDimensionExceedsAddressBlockRange()
 
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
-    registerItem->setDimensionIndex(0);
-    RegisterGraphItem* secondDimension = new RegisterGraphItem(twoDimensionalRegister, noParser, addressBlockItem);
-    secondDimension->setDimensionIndex(1);
+    
 
     QCOMPARE(registerItem->getOffset(), quint64(0));
-    QCOMPARE(registerItem->getLastAddress(), quint64(1));
+    QCOMPARE(registerItem->getLastAddress(), quint64(3));
 
-    QCOMPARE(secondDimension->getOffset(), quint64(2));
-    QCOMPARE(secondDimension->getLastAddress(), quint64(3));
-
+    
     delete addressBlockItem;
 }
 
@@ -615,9 +602,9 @@ void tst_RegisterGraphItem::testExpressions()
     RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, expressionParser, addressBlockItem);
     registerItem->refresh();
 
-    QCOMPARE(registerItem->name(), QString("testRegister[0]"));
+    QCOMPARE(registerItem->name(), QString("testRegister[1:0]"));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(2));
-    QCOMPARE(registerItem->getDisplayLastAddress(), quint64(3));
+    QCOMPARE(registerItem->getDisplayLastAddress(), quint64(5));
     QCOMPARE(registerItem->getBitWidth(), 16);
 
     delete addressBlockItem;

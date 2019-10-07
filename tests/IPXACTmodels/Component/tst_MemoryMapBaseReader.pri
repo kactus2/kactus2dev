@@ -10,6 +10,7 @@ HEADERS += ../../../IPXACTmodels/common/NameGroup.h \
     ../../../IPXACTmodels/Component/RegisterBase.h \
     ../../../IPXACTmodels/Component/Register.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/common/BooleanValue.h \
     ../../../IPXACTmodels/common/VLNV.h \
@@ -45,6 +46,7 @@ SOURCES += ./tst_MemoryMapBaseReader.cpp \
     ../../../IPXACTmodels/Component/RegisterBase.cpp \
     ../../../IPXACTmodels/Component/Register.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \

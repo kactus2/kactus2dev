@@ -44,6 +44,7 @@ HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/common/Enumeration.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/Component/Field.h \
+    ../../../IPXACTmodels/Component/FieldReset.h \
     ../../../IPXACTmodels/Component/FieldWriter.h \
     ../../../IPXACTmodels/Component/File.h \
     ../../../IPXACTmodels/common/FileBuilder.h \
@@ -157,6 +158,7 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/common/Enumeration.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/Component/Field.cpp \
+    ../../../IPXACTmodels/Component/FieldReset.cpp \
     ../../../IPXACTmodels/Component/FieldWriter.cpp \
     ../../../IPXACTmodels/Component/File.cpp \
     ../../../IPXACTmodels/common/FileBuilder.cpp \

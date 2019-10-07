@@ -976,9 +976,8 @@ void tst_ComponentValidator::testHasValidPorts()
     QFETCH(bool, copyPort);
     QFETCH(bool, isValid);
 
-    QSharedPointer<Port> testPort (
-        new Port(portName, DirectionTypes::str2Direction(wireDirection, DirectionTypes::DIRECTION_INVALID)));
-
+    QSharedPointer<Port> testPort (new Port(portName));
+    testPort->setDirection(DirectionTypes::str2Direction(wireDirection, DirectionTypes::DIRECTION_INVALID));
     QSharedPointer<Component> testComponent (new Component(
         VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
     testComponent->getPorts()->append(testPort);

@@ -25,7 +25,7 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../IPXACTmodels/common/VLNV.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/XmlUtils.h \
+    ../../../IPXACTmodels/utilities/XmlUtils.h \
     ../../../IPXACTmodels/generaldeclarations.h \
     ../../../IPXACTmodels/Component/BusInterfaceWriter.h \
     ../../../IPXACTmodels/common/CommonItemsWriter.h \
@@ -63,7 +63,7 @@ SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/XmlUtils.cpp \
+    ../../../IPXACTmodels/utilities/XmlUtils.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
     ./tst_BusInterfaceWriter.cpp \
     ../../../IPXACTmodels/Component/TransparentBridge.cpp

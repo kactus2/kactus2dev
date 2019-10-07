@@ -46,9 +46,9 @@ void TagContainer::setupTags(QVector<TagData> documentTags)
 
     tags_.clear();
 
-    for (auto newTag : documentTags)
+    for (auto tag : documentTags)
     {
-        TagLabel* newTag(new TagLabel(newTag.name_, this, newTag.color_));
+        TagLabel* newTag(new TagLabel(tag.name_, this, tag.color_));
         connectTagLabel(newTag);
 
         tags_.append(newTag);
@@ -135,7 +135,7 @@ void TagContainer::itemChangesAccepted(TagLabel* editedTag, TagDisplay* tagEdito
         editedTag->deleteLater();
         tagEditor->deleteLater();
 
-        tags_.removeAll(tagEditor);
+        tags_.removeAt(tags_.indexOf(tagEditor));
     }
     else
     {
@@ -188,7 +188,7 @@ bool TagContainer::tagExists(TagLabel* editedTag) const
 //-----------------------------------------------------------------------------
 void TagContainer::itemDeleted(TagLabel* editedTag, TagDisplay* tagEditor)
 {
-    tags_.removeAll(tagEditor);
+    tags_.removeAt(tags_.indexOf(tagEditor));
 
     layout()->removeWidget(editedTag);
     layout()->removeWidget(tagEditor);

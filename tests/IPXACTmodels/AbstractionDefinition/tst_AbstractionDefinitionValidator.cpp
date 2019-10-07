@@ -503,6 +503,12 @@ void tst_AbstractionDefinitionValidator::systemWirePortHasGroup()
     QCOMPARE(errorList.size(), 1);
     QVERIFY(validator.validate(abstraction) == false);
 
+    QSharedPointer<BusDefinition> busDef(new BusDefinition());
+    busDef->setVlnv(testBusDefVlnv_);
+    QStringList systemGroupNames({ "testSystem" });
+    busDef->setSystemGroupNames(systemGroupNames);
+    library_->addComponent(busDef);
+
     systemWire->setSystemGroup("testSystem");
 
     errorList.clear();
