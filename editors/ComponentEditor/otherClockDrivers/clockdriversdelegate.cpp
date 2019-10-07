@@ -18,6 +18,11 @@
 #include <QDoubleSpinBox>
 #include <QComboBox>
 
+namespace
+{
+    const QRegularExpression CLOCKREGULAREXPRESSION = QRegularExpression("[0-9]+([.][0-9]+)?");
+}
+
 //-----------------------------------------------------------------------------
 // Function: ClockDriversDelegate::ClockDriversDelegate()
 //-----------------------------------------------------------------------------
@@ -38,34 +43,33 @@ ClockDriversDelegate::~ClockDriversDelegate()
 QWidget* ClockDriversDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
     QModelIndex const& index ) const
 {
-	if (index.column() == OtherClockDriverColumns::NAME || index.column() == OtherClockDriverColumns::CLOCK_SOURCE)
+    if (index.column() == OtherClockDriverColumns::NAME ||
+        index.column() == OtherClockDriverColumns::CLOCK_SOURCE ||
+        index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||
+        index.column() == OtherClockDriverColumns::PULSE_OFFSET ||
+        index.column() == OtherClockDriverColumns::PULSE_DURATION)
     {
 		QLineEdit* editor = new QLineEdit(parent);
 		connect(editor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+
+        if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||
+            index.column() == OtherClockDriverColumns::PULSE_OFFSET ||
+            index.column() == OtherClockDriverColumns::PULSE_DURATION)
+        {
+            auto clockValidator = new QRegularExpressionValidator(CLOCKREGULAREXPRESSION, parent);
+            editor->setValidator(clockValidator);
+        }
+
 		return editor;
 	}
-
-	else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||	
-        index.column() == OtherClockDriverColumns::PULSE_OFFSET || 
-        index.column() == OtherClockDriverColumns::PULSE_DURATION)
-    {
-			QDoubleSpinBox* editor = new QDoubleSpinBox(parent);
-			editor->setMinimum(0);
-			editor->setSingleStep(0.1);
-			connect(editor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return editor;
-	}
-
 	else if (index.column() == OtherClockDriverColumns::PULSE_VALUE)
     {
-		QSpinBox* editor = new QSpinBox(parent);
-		editor->setMinimum(0);
-		editor->setMaximum(1);
+        QComboBox* editor = new QComboBox(parent);
+        editor->addItem(QLatin1String("0"));
+        editor->addItem(QLatin1String("1"));
 
-		connect(editor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-		return editor;
+        return editor;
 	}
-
 	else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD_UNIT ||
         index.column() == OtherClockDriverColumns::PULSE_OFFSET_UNIT ||
         index.column() == OtherClockDriverColumns::PULSE_DURATION_UNIT)
@@ -88,29 +92,23 @@ QWidget* ClockDriversDelegate::createEditor(QWidget* parent, QStyleOptionViewIte
 //-----------------------------------------------------------------------------
 void ClockDriversDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-	if (index.column() == OtherClockDriverColumns::NAME || index.column() == OtherClockDriverColumns::CLOCK_SOURCE)
+    if (index.column() == OtherClockDriverColumns::NAME ||
+        index.column() == OtherClockDriverColumns::CLOCK_SOURCE ||
+        index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||
+        index.column() == OtherClockDriverColumns::PULSE_OFFSET ||
+        index.column() == OtherClockDriverColumns::PULSE_DURATION)
     {
 		QLineEdit* lineEditor = qobject_cast<QLineEdit*>(editor);
 		QString text = index.data(Qt::DisplayRole).toString();
 		lineEditor->setText(text);
 	}
-
-    else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||	
-        index.column() == OtherClockDriverColumns::PULSE_OFFSET || 
-        index.column() == OtherClockDriverColumns::PULSE_DURATION)
-    {
-        QDoubleSpinBox* spinEditor = qobject_cast<QDoubleSpinBox*>(editor);
-        double value = index.data(Qt::DisplayRole).toDouble();
-        spinEditor->setValue(value);
-    }
-
 	else if (index.column() == OtherClockDriverColumns::PULSE_VALUE)
     {
-		QSpinBox* spinEditor = qobject_cast<QSpinBox*>(editor);
-		int value = index.data(Qt::DisplayRole).toInt();
-		spinEditor->setValue(value);
-	}
+        QComboBox* pulseEditor = qobject_cast<QComboBox*>(editor);
+        QString value = index.data(Qt::DisplayRole).toString();
 
+        pulseEditor->setCurrentIndex(pulseEditor->findText(value));
+	}
     else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD_UNIT ||
         index.column() == OtherClockDriverColumns::PULSE_OFFSET_UNIT ||
         index.column() == OtherClockDriverColumns::PULSE_DURATION_UNIT)
@@ -132,29 +130,23 @@ void ClockDriversDelegate::setEditorData(QWidget* editor, QModelIndex const& ind
 //-----------------------------------------------------------------------------
 void ClockDriversDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-	if (index.column() == OtherClockDriverColumns::NAME || index.column() == OtherClockDriverColumns::CLOCK_SOURCE)
+    if (index.column() == OtherClockDriverColumns::NAME ||
+        index.column() == OtherClockDriverColumns::CLOCK_SOURCE ||
+        index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||
+        index.column() == OtherClockDriverColumns::PULSE_OFFSET ||
+        index.column() == OtherClockDriverColumns::PULSE_DURATION)
     {
         QLineEdit* lineEditor = qobject_cast<QLineEdit*>(editor);
 		QString text = lineEditor->text();
 		model->setData(index, text, Qt::EditRole);
 	}
-
-    else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||	
-        index.column() == OtherClockDriverColumns::PULSE_OFFSET || 
-        index.column() == OtherClockDriverColumns::PULSE_DURATION)
-    {
-			QDoubleSpinBox* spinEditor = qobject_cast<QDoubleSpinBox*>(editor);
-			double value = spinEditor->value();
-			model->setData(index, value, Qt::EditRole);
-	}
-
 	else if (index.column() == OtherClockDriverColumns::PULSE_VALUE)
     {
-		QSpinBox* spinEditor = qobject_cast<QSpinBox*>(editor);
-		int value = spinEditor->value();
-		model->setData(index, value, Qt::EditRole);
-	}
+        QComboBox* pulseEditor = qobject_cast<QComboBox*>(editor);
+        QString value = pulseEditor->currentText();
 
+        model->setData(index, value, Qt::EditRole);
+	}
     else if (index.column() == OtherClockDriverColumns::CLOCK_PERIOD_UNIT ||
         index.column() == OtherClockDriverColumns::PULSE_OFFSET_UNIT ||
         index.column() == OtherClockDriverColumns::PULSE_DURATION_UNIT)
