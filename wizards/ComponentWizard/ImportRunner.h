@@ -20,6 +20,7 @@
 #include <QSharedPointer>
 #include <QTabWidget>
 #include <QPlainTextEdit>
+#include <QMap>
 
 class Component;
 class ExpressionParser;
@@ -210,6 +211,9 @@ private:
 
     //! The container widget for source display widgets.
     QTabWidget* displayTabs_;
+
+    //! Table containing file extensions as key combined with file types as value.
+    QMap<QString, QString> fileSuffixTable_;
 };
 
 #endif // IMPORTRUNNER_H

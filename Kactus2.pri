@@ -64,10 +64,16 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
+    ./common/widgets/tagEditor/TagManager.h \
     ./common/widgets/tagEditor/TagLabel.h \
     ./common/widgets/tagEditor/FlowLayout.h \
     ./common/widgets/tagEditor/TagContainer.h \
     ./common/widgets/tagEditor/TagEditor.h \
+    ./common/widgets/tagEditor/TagCompleterModel.h \
+    ./common/widgets/tagEditor/TagEditorContainer.h \
+    ./common/widgets/tagEditor/TagDisplay.h \
+    ./common/widgets/tagEditor/TagSelectorContainer.h \
+    ./common/widgets/tagEditor/TagSelector.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -839,12 +845,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./common/widgets/tagEditor/TagManager.h \
-    ./common/widgets/tagEditor/TagCompleterModel.h \
-    ./common/widgets/tagEditor/TagEditorContainer.h \
-    ./common/widgets/tagEditor/TagSelectorContainer.h \
-    ./common/widgets/tagEditor/TagDisplay.h \
-    ./common/widgets/tagEditor/TagSelector.h
+    ./editors/common/FileHandler/FileHandler.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -908,9 +909,15 @@ SOURCES += ./VersionHelper.cpp \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.cpp \
     ./common/widgets/colorBox/ColorBox.cpp \
     ./common/widgets/tagEditor/FlowLayout.cpp \
+    ./common/widgets/tagEditor/TagCompleterModel.cpp \
     ./common/widgets/tagEditor/TagContainer.cpp \
+    ./common/widgets/tagEditor/TagDisplay.cpp \
     ./common/widgets/tagEditor/TagEditor.cpp \
+    ./common/widgets/tagEditor/TagEditorContainer.cpp \
     ./common/widgets/tagEditor/TagLabel.cpp \
+    ./common/widgets/tagEditor/TagManager.cpp \
+    ./common/widgets/tagEditor/TagSelector.cpp \
+    ./common/widgets/tagEditor/TagSelectorContainer.cpp \
     ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
@@ -1571,10 +1578,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./common/widgets/tagEditor/TagManager.cpp \
-    ./common/widgets/tagEditor/TagCompleterModel.cpp \
-    ./common/widgets/tagEditor/TagEditorContainer.cpp \
-    ./common/widgets/tagEditor/TagSelectorContainer.cpp \
-    ./common/widgets/tagEditor/TagDisplay.cpp \
-    ./common/widgets/tagEditor/TagSelector.cpp
+    ./editors/common/FileHandler/FileHandler.cpp
 RESOURCES += kactus.qrc

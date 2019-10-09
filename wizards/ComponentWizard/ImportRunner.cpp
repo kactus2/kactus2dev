@@ -18,9 +18,10 @@
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
 
-#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
-
+#include <editors/common/FileHandler/FileHandler.h>
 #include <editors/ComponentEditor/common/NullParser.h>
+
+#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -43,7 +44,8 @@ expressionParser_(new NullParser()),
 ImportPlugins_(),
 analyzerPlugins_(),
 parameterFinder_(parameterFinder),
-displayTabs_(displayTabs)
+displayTabs_(displayTabs),
+fileSuffixTable_(FileHandler::constructFileSuffixTable())
 {
     
 }
@@ -210,6 +212,14 @@ QStringList ImportRunner::filetypesOf(QString const& fileName, QList<QSharedPoin
     }
 
     fileTypes.removeDuplicates();
+
+    if (fileTypes.isEmpty() && !fileName.isEmpty())
+    {
+        QFileInfo fileData(fileName);
+        QString fileSuffix = fileData.suffix();
+
+        fileTypes.append(FileHandler::getFileTypeForSuffix(fileSuffixTable_, fileSuffix));
+    }
 
     return fileTypes;
 }

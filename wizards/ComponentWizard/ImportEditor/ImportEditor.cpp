@@ -32,6 +32,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QDesktopServices>
+#include <QFileDialog>
 
 //-----------------------------------------------------------------------------
 // Function: ImportEditor::ImportEditor()
@@ -49,11 +50,15 @@ portEditor_(0),
 fileSelector_(new FileSelector(component, this)),
 editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
 refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this)),
+browseButton_(new QPushButton(this)),
 sourceDisplayTabs_(new QTabWidget(this)),
 runner_(new ImportRunner(parameterFinder, sourceDisplayTabs_, this)),
 messageBox_(new QLabel(this)),
 componentViews_(component->getViews())
 {
+    browseButton_->setIcon(QIcon(":icons/common/graphics/folder-horizontal-open.png"));
+    browseButton_->setToolTip(tr("Browse"));
+
     QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     QSharedPointer<PortValidator> portValidator (new PortValidator(expressionParser, componentViews_));
@@ -74,6 +79,7 @@ componentViews_(component->getViews())
 
     connect(refreshButton_, SIGNAL(clicked()),this, SLOT(onRefresh()), Qt::UniqueConnection);
     connect(editButton_, SIGNAL(clicked()), this, SLOT(onOpenEditor()), Qt::UniqueConnection);
+    connect(browseButton_, SIGNAL(clicked()), this, SLOT(onBrowseFile()), Qt::UniqueConnection);
 
     connect(runner_, SIGNAL(noticeMessage(QString const&)), 
         messageBox_, SLOT(setText(QString const&)), Qt::UniqueConnection);
@@ -140,6 +146,77 @@ void ImportEditor::onOpenEditor()
     {
         QDesktopServices::openUrl(QUrl::fromLocalFile(selectedFileAbsolutePath()));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportEditor::onBrowseFile()
+//-----------------------------------------------------------------------------
+void ImportEditor::onBrowseFile()
+{
+    QString path = selectedSourceFile_;
+    if (path.isEmpty())
+    {
+        path = QFileInfo(componentXmlPath_).absolutePath();
+    }
+
+    QFileDialog browseDialog(this, tr("Select file to import"), path, getFileBrowsingFilters());
+    if (browseDialog.exec() == QDialog::Accepted)
+    {
+        QStringList selectedFiles = browseDialog.selectedFiles();
+        if (!selectedFiles.isEmpty())
+        {
+            QFileInfo componentFileInfo(componentXmlPath_);
+            QString componentFolderPath = componentFileInfo.absolutePath();
+
+            QDir componentDirectory(componentFolderPath);
+
+            QString relativePath = componentDirectory.relativeFilePath(selectedFiles.first());
+
+            if (!fileExistsInFileSelector(relativePath))
+            {
+                fileSelector_->addItem(relativePath);
+            }
+
+            fileSelector_->selectFile(relativePath);
+            onFileSelected(relativePath, QSharedPointer<FileSet>());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportEditor::getFileBrowsingFilters()
+//-----------------------------------------------------------------------------
+QString ImportEditor::getFileBrowsingFilters() const
+{
+    QStringList possibleFileTypes = runner_->importFileTypes();
+    QStringList possibleSuffixes = fileExtensionsForTypes(possibleFileTypes);
+
+    QStringList filters;
+    for (auto suffix : possibleSuffixes)
+    {
+        if (!suffix.isEmpty())
+        {
+            filters.append(suffix.prepend(QLatin1String("*.")));
+        }
+    }
+
+    return filters.join(' ');
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportEditor::fileExistsInFileSelector()
+//-----------------------------------------------------------------------------
+bool ImportEditor::fileExistsInFileSelector(QString const& filePath) const
+{
+    for (int i = 0; i < fileSelector_->count(); ++i)
+    {
+        if (fileSelector_->itemText(i).compare(filePath) == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -228,8 +305,9 @@ void ImportEditor::setupLayout()
     QLabel* selectorLabel = new QLabel(tr("Top-level file to import:"), this);
     selectorLayout->addWidget(selectorLabel);
     selectorLayout->addWidget(fileSelector_, 1);
-    selectorLayout->addWidget(editButton_);    
-    selectorLayout->addWidget(refreshButton_);    
+    selectorLayout->addWidget(browseButton_);
+    selectorLayout->addWidget(editButton_);
+    selectorLayout->addWidget(refreshButton_);
 
     sourceLayout->addLayout(selectorLayout);
     sourceLayout->addWidget(sourceDisplayTabs_);

@@ -531,6 +531,7 @@ void PortsModel::setModelAndLockCurrentPorts(QSharedPointer<Model> model)
     }
 
     emit contentChanged();
+    emit portCountChanged();
 }
 
 //-----------------------------------------------------------------------------

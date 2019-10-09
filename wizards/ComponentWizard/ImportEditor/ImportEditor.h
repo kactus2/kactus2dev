@@ -105,6 +105,11 @@ private slots:
     //! Called when the source file should be re-parsed.
     void onRefresh();
 
+    /*!
+     *  Handles the file browsing.
+     */
+    void onBrowseFile();
+
 private:
 	
 	//! No copying.
@@ -136,6 +141,22 @@ private:
 
     //! Creates the layout for the editor.            
     void setupLayout();
+
+    /*!
+     *  Get the filters for file browsing.
+     *
+     *      @return List of filters combined with white space.
+     */
+    QString getFileBrowsingFilters() const;
+
+    /*!
+     *  Check if a file exists in the file selector.
+     *
+     *      @param [in] filePath    Path of the selected file.
+     *
+     *      @return True, if the file exists in the file selector, false otherwise.
+     */
+    bool fileExistsInFileSelector(QString const& filePath) const;
 
     //-----------------------------------------------------------------------------
     //! Data.
@@ -170,6 +191,9 @@ private:
 
     //! Button for refreshing ports and model parameters from the selected file.
     QPushButton* refreshButton_;
+
+    //! Button for browsing the imported file.
+    QPushButton* browseButton_;
 
     //! Tabs for displaying imported source files.
     QTabWidget* sourceDisplayTabs_;

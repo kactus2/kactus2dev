@@ -953,6 +953,12 @@
     <Filter Include="Header Files\common\widgets\tagEditor">
       <UniqueIdentifier>{1b390fb1-0cfa-4143-b40e-95a7467acb7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\common\FileHandler">
+      <UniqueIdentifier>{b9cac80c-ac4f-4d6c-8f6a-9e7c82788bf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\FileHandler">
+      <UniqueIdentifier>{9899fde0-87e9-463c-882a-86b05a20ba6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4834,6 +4840,9 @@
     <ClCompile Include="common\widgets\tagEditor\TagSelector.cpp">
       <Filter>Source Files\common\widgets\tagEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\FileHandler\FileHandler.cpp">
+      <Filter>Source Files\editors\common\FileHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6620,6 +6629,9 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\tagEditor\TagSelector.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\FileHandler\FileHandler.h">
+      <Filter>Header Files\editors\common\FileHandler</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
