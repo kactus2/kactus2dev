@@ -121,9 +121,27 @@ QString QuartusPinImportPlugin::getCompatibilityWarnings() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: QuartusPinImportPlugin::getFileComponents()
+//-----------------------------------------------------------------------------
+QStringList QuartusPinImportPlugin::getFileComponents(QString const& /*input*/) const
+{
+    return QStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: QuartusPinImportPlugin::getComponentName()
+//-----------------------------------------------------------------------------
+//     virtual QStringList getComponentNames(QStringList const& fileComponents) const = 0;
+QString QuartusPinImportPlugin::getComponentName(QString const& /*componentDeclaration*/) const
+{
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::import()
 //-----------------------------------------------------------------------------
-void QuartusPinImportPlugin::import(QString const& input, QSharedPointer<Component> targetComponent)
+void QuartusPinImportPlugin::import(QString const& input, QString const& /*componentDeclaration*/,
+    QSharedPointer<Component> targetComponent)
 {
     if (highlighter_)
     {

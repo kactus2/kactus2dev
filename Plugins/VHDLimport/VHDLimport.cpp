@@ -35,6 +35,9 @@ namespace
     //!  Regular expression for VHDL entity.
     const QRegularExpression ENTITY_EXP("ENTITY\\s+(\\w+)\\s+IS\\s+.*END(?:\\s+ENTITY)?(?:\\s+\\1)?\\s*[;]",
         QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+
+    //! Regular expression for finding the name of a VHDL entity.
+    const QRegularExpression ENTITYNAME_EXP("ENTITY\\s+(\\w+)\\s+IS", QRegularExpression::CaseInsensitiveOption);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,21 +145,50 @@ QString VHDLimport::getCompatibilityWarnings() const
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::parseFile()
 //-----------------------------------------------------------------------------
-void VHDLimport::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VHDLimport::import(QString const& input, QString const& componentDeclaration,
+    QSharedPointer<Component> targetComponent)
 {
     targetComponent_ = targetComponent;
  
     if (hasValidEntity(input))
-    {        
-        highlightEntity(input);
+    {
+        highlightEntity(componentDeclaration);
 
 		QSharedPointer<ComponentInstantiation> targetComponentInstantiation = setupComponentInstantiation();
-        parseModelNameAndArchitecture(input, targetComponentInstantiation);
+        parseModelNameAndArchitecture(input, componentDeclaration, targetComponentInstantiation);
 
-        genericParser_->import(input, targetComponent, targetComponentInstantiation);
-
-        portParser_->import(input, targetComponent, targetComponentInstantiation);
+        genericParser_->import(componentDeclaration, targetComponent, targetComponentInstantiation);
+        portParser_->import(componentDeclaration, targetComponent, targetComponentInstantiation);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::getFileComponents()
+//-----------------------------------------------------------------------------
+QStringList VHDLimport::getFileComponents(QString const& input) const
+{
+    QStringList fileEntities;
+
+    QRegularExpressionMatchIterator matchIterator = ENTITY_EXP.globalMatch(input);
+    while (matchIterator.hasNext())
+    {
+        QRegularExpressionMatch match = matchIterator.next();
+        if (match.hasMatch())
+        {
+            fileEntities.append(match.captured());
+        }
+    }
+
+    return fileEntities;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::getComponentName()
+//-----------------------------------------------------------------------------
+QString VHDLimport::getComponentName(QString const& componentDeclaration) const
+{
+    QRegularExpressionMatch match = ENTITYNAME_EXP.match(componentDeclaration);
+    return match.captured(1);
 }
 
 //-----------------------------------------------------------------------------
@@ -179,22 +211,11 @@ void VHDLimport::setModelParameterVisualizer(ModelParameterVisualizer* visualize
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::highlight()
-//-----------------------------------------------------------------------------
-void VHDLimport::highlight(QString const& text, QColor const& highlightColor) const
-{
-    if (highlighter_)
-    {
-        highlighter_->applyHighlight(text, highlightColor);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: VHDLimport::hasValidEntity()
 //-----------------------------------------------------------------------------
 bool VHDLimport::hasValidEntity(QString const& fileContent) const
 {
-    return fileContent.count(ENTITY_EXP) == 1;
+    return fileContent.count(ENTITY_EXP) > 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -206,16 +227,16 @@ void VHDLimport::highlightEntity(QString const& fileContent) const
     {
         QRegularExpressionMatch match = ENTITY_EXP.match(fileContent);
         highlighter_->applyFontColor(match.captured(), Qt::black);
-    }   
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::parseModelNameAndArchitecture()
 //-----------------------------------------------------------------------------
-void VHDLimport::parseModelNameAndArchitecture(QString const& input, 
+void VHDLimport::parseModelNameAndArchitecture(QString const& input, QString const& componentDeclaration,
     QSharedPointer<ComponentInstantiation> targetInstantiation) const
 {
-    QRegularExpressionMatch match = ENTITY_EXP.match(input);
+    QRegularExpressionMatch match = ENTITY_EXP.match(componentDeclaration);
     QString entityName = match.captured(1);
 
     QRegularExpression architectureExp("ARCHITECTURE\\s+((\\w+)\\s+OF\\s+(" + entityName + "))\\s+IS(?=\\s+)", 

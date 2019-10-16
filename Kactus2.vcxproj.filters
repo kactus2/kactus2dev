@@ -6633,6 +6633,9 @@
     <CustomBuild Include="editors\common\FileHandler\FileHandler.h">
       <Filter>Header Files\editors\common\FileHandler</Filter>
     </CustomBuild>
+    <CustomBuild Include="Plugins\PluginSystem\ImportPlugin\ImportPlugin.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6753,9 +6756,6 @@
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\HighlightSource.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ImportPlugin.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterSource.h">

@@ -124,9 +124,26 @@ QString VerilogIncludeImport::getCompatibilityWarnings() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogIncludeImport::getFileComponents()
+//-----------------------------------------------------------------------------
+QStringList VerilogIncludeImport::getFileComponents(QString const& input) const
+{
+    return QStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogIncludeImport::getComponentName()
+//-----------------------------------------------------------------------------
+QString VerilogIncludeImport::getComponentName(QString const& componentDeclaration) const
+{
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::import()
 //-----------------------------------------------------------------------------
-void VerilogIncludeImport::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogIncludeImport::import(QString const& input, QString const& /*componentDeclaration*/,
+    QSharedPointer<Component> targetComponent)
 {
     QString nonCommentedInput = VerilogSyntax::cullStrayComments(input);
 

@@ -116,9 +116,26 @@ QString VerilogImporter::getCompatibilityWarnings() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogImporter::getFileComponents()
+//-----------------------------------------------------------------------------
+QStringList VerilogImporter::getFileComponents(QString const& input) const
+{
+    return QStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::getComponentName()
+//-----------------------------------------------------------------------------
+QString VerilogImporter::getComponentName(QString const& componentDeclaration) const
+{
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogImporter::import()
 //-----------------------------------------------------------------------------
-void VerilogImporter::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogImporter::import(QString const& input, QString const& /*componentDeclaration*/,
+    QSharedPointer<Component> targetComponent)
 {   
     if (hasModuleDeclaration(input))
     {

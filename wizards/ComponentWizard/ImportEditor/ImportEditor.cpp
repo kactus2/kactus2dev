@@ -33,6 +33,7 @@
 #include <QLabel>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QFormLayout>
 
 //-----------------------------------------------------------------------------
 // Function: ImportEditor::ImportEditor()
@@ -51,11 +52,14 @@ fileSelector_(new FileSelector(component, this)),
 editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
 refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this)),
 browseButton_(new QPushButton(this)),
+componentSelector_(new QComboBox(this)),
 sourceDisplayTabs_(new QTabWidget(this)),
 runner_(new ImportRunner(parameterFinder, sourceDisplayTabs_, this)),
 messageBox_(new QLabel(this)),
 componentViews_(component->getViews())
 {
+    componentSelector_->setDisabled(true);
+
     browseButton_->setIcon(QIcon(":icons/common/graphics/folder-horizontal-open.png"));
     browseButton_->setToolTip(tr("Browse"));
 
@@ -83,6 +87,9 @@ componentViews_(component->getViews())
 
     connect(runner_, SIGNAL(noticeMessage(QString const&)), 
         messageBox_, SLOT(setText(QString const&)), Qt::UniqueConnection);
+
+    connect(componentSelector_, SIGNAL(currentIndexChanged(int)),
+        this, SLOT(onChangeSelectedComponent(int)), Qt::UniqueConnection);
 
     connect(portEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
@@ -224,23 +231,59 @@ bool ImportEditor::fileExistsInFileSelector(QString const& filePath) const
 //-----------------------------------------------------------------------------
 void ImportEditor::onRefresh() 
 {
-    importComponent_ = runner_->run(selectedSourceFile_, componentXmlPath_, component_);
+    changeAvailableComponents();
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ImportEditor::changeAvailableComponents()
+//-----------------------------------------------------------------------------
+void ImportEditor::changeAvailableComponents()
+{
+    QString currentComponent = componentSelector_->currentText();
+    componentSelector_->clear();
+
+    QStringList componentNames =
+        runner_->constructComponentDataFromFile(selectedSourceFile_, componentXmlPath_, component_);
+    if (!componentNames.isEmpty())
+    {
+        componentSelector_->setDisabled(false);
+
+        componentSelector_->addItems(componentNames);
+
+        componentSelector_->setCurrentIndex(0);
+    }
+    else
+    {
+        componentSelector_->setDisabled(true);
+        onChangeSelectedComponent(0);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportEditor::onChangeSelectedComponent()
+//-----------------------------------------------------------------------------
+void ImportEditor::onChangeSelectedComponent(int index)
+{
+    QString componentName = componentSelector_->itemText(index);
+
+    importComponent_ = runner_->run(componentName, selectedSourceFile_, componentXmlPath_, component_);
 
     portEditor_->setComponent(importComponent_);
 
     componentViews_ = importComponent_->getViews();
 
-	if (selectedFileSet_)
-	{
-		foreach(QSharedPointer<ComponentInstantiation> componentInstantiation, 
-			*importComponent_->getComponentInstantiations())
-		{
-			if (!componentInstantiation->getFileSetReferences()->contains(selectedFileSet_->name()))
-			{
-				componentInstantiation->getFileSetReferences()->append(selectedFileSet_->name());
-			}
-		}
-	}
+    if (selectedFileSet_)
+    {
+        foreach(QSharedPointer<ComponentInstantiation> componentInstantiation,
+            *importComponent_->getComponentInstantiations())
+        {
+            if (!componentInstantiation->getFileSetReferences()->contains(selectedFileSet_->name()))
+            {
+                componentInstantiation->getFileSetReferences()->append(selectedFileSet_->name());
+            }
+        }
+    }
 
     emit componentChanged(importComponent_);
     emit contentChanged();
@@ -301,15 +344,22 @@ void ImportEditor::setupLayout()
 
     sourceLayout->setContentsMargins(0, 0, 0, 0);
 
-    QHBoxLayout* selectorLayout = new QHBoxLayout();
-    QLabel* selectorLabel = new QLabel(tr("Top-level file to import:"), this);
-    selectorLayout->addWidget(selectorLabel);
-    selectorLayout->addWidget(fileSelector_, 1);
-    selectorLayout->addWidget(browseButton_);
-    selectorLayout->addWidget(editButton_);
-    selectorLayout->addWidget(refreshButton_);
+    QLabel* selectorLabel = new QLabel(tr("Select top-level file to import:"), this);
+    QLabel* entityLabel = new QLabel(tr("Select component to import:"), this);
 
-    sourceLayout->addLayout(selectorLayout);
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(browseButton_);
+    buttonLayout->addWidget(editButton_);
+    buttonLayout->addWidget(refreshButton_);
+
+    QGridLayout* upperLayout = new QGridLayout();
+    upperLayout->addWidget(selectorLabel, 0, 0);
+    upperLayout->addWidget(fileSelector_, 0, 1, 1, 3);
+    upperLayout->addWidget(entityLabel, 1, 0);
+    upperLayout->addWidget(componentSelector_, 1, 1, 1, 3);
+    upperLayout->addLayout(buttonLayout, 0, 4, Qt::AlignRight);
+
+    sourceLayout->addLayout(upperLayout);
     sourceLayout->addWidget(sourceDisplayTabs_);
 
     splitter_.addWidget(sourceWidget);

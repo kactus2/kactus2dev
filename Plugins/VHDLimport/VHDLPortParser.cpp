@@ -61,7 +61,7 @@ VHDLPortParser::VHDLPortParser(QObject* parent): QObject(parent), highlighter_(0
 // Function: VHDLPortParser::import()
 //-----------------------------------------------------------------------------
 void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
-	QSharedPointer<ComponentInstantiation> /*targetComponentInstantiation*/)
+    QSharedPointer<ComponentInstantiation> /*targetComponentInstantiation*/)
 {
     foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
@@ -73,8 +73,8 @@ void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targ
         createPortFromDeclaration(portDeclaration, targetComponent);
         if (highlighter_)
         {
-            highlighter_->applyHighlight(portDeclaration, ImportColors::PORT);
-        }        
+            highlighter_->applyHighlight(portDeclaration, ImportColors::PORT, input);
+        }
     }
 }
 

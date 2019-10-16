@@ -59,12 +59,39 @@ ImportRunner::~ImportRunner()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ImportRunner::run()
+// Function: ImportRunner::gatherComponentsFromFile()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> ImportRunner::run(QString const& filePath, QString const& componentXmlPath,
+QStringList ImportRunner::constructComponentDataFromFile(QString const& filePath, QString const& componentXMLPath,
     QSharedPointer<const Component> targetComponent)
 {
-    QApplication::setOverrideCursor(Qt::WaitCursor);    
+    QStringList filetypes = filetypesOf(filePath, *targetComponent->getFileSets().data());
+    QString const& fileContent = readInputFile(filePath, componentXMLPath);
+
+    QStringList availableComponentNames;
+
+    foreach(ImportPlugin* parser, importPluginsForFileTypes(filetypes))
+    {
+        QStringList possibleComponents = parser->getFileComponents(fileContent);
+        for (auto component : possibleComponents)
+        {
+            QString componentName = parser->getComponentName(component);
+            availableComponentNames.append(componentName);
+
+            ImportRunner::AvailableComponent newComponent{ componentName, component };
+            componentsInFile_.append(newComponent);
+        }
+    }
+
+    return availableComponentNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportRunner::run()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> ImportRunner::run(QString const& componentName, QString const& filePath,
+    QString const& componentXmlPath, QSharedPointer<const Component> targetComponent)
+{
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     displayTabs_->clear();
 
     QSharedPointer<Component> importComponent(new Component(*targetComponent.data()));
@@ -73,7 +100,7 @@ QSharedPointer<Component> ImportRunner::run(QString const& filePath, QString con
     importIncludes(filePath, componentXmlPath, importComponent);
 
     QStringList filetypes = filetypesOf(filePath, *importComponent->getFileSets().data());
-    importFile(filePath, componentXmlPath, importPluginsForFileTypes(filetypes), importComponent);
+    importFile(componentName, filePath, componentXmlPath, importPluginsForFileTypes(filetypes), importComponent);
 
     QApplication::restoreOverrideCursor();
 
@@ -186,7 +213,7 @@ void ImportRunner::importIncludes(QString const& filePath, QString const& compon
     QString basePath = QFileInfo(General::getAbsolutePath(componentXmlPath, filePath)).absolutePath() + "/";
     foreach(FileDependencyDesc dependency, dependencies)
     {
-        importFile(dependency.filename, basePath, importPlugins, importComponent);
+        importFile(QString(""), dependency.filename, basePath, importPlugins, importComponent);
     }
 }
 
@@ -248,10 +275,12 @@ QList<ISourceAnalyzerPlugin*> ImportRunner::analyzerPluginsForFileTypes(QStringL
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::importFile()
 //-----------------------------------------------------------------------------
-void ImportRunner::importFile(QString const& filePath, QString const& absoluteBasePath,
-    QList<ImportPlugin*> importPluginsForFile, QSharedPointer<Component> importComponent)
+void ImportRunner::importFile(QString const& componentName, QString const& filePath,
+    QString const& absoluteBasePath, QList<ImportPlugin *> importPluginsForFile,
+    QSharedPointer<Component> importComponent)
 {
-    if (filePath.isEmpty())
+    QString componentDeclaration = getComponentFromFile(componentName);
+    if (filePath.isEmpty() || (componentDeclaration.isEmpty() && !componentName.isEmpty()))
     {
         return;
     }
@@ -269,7 +298,7 @@ void ImportRunner::importFile(QString const& filePath, QString const& absoluteBa
         compatibilityWarnings.append(parser->getCompatibilityWarnings());
 
         addHighlightIfPossible(parser, highlighter);
-        parser->import(fileContent, importComponent);
+        parser->import(fileContent, componentDeclaration, importComponent);
         addHighlightIfPossible(parser, 0);
     }
     compatibilityWarnings.removeAll("");
@@ -279,6 +308,25 @@ void ImportRunner::importFile(QString const& filePath, QString const& absoluteBa
     scrollSourceDisplayToFirstHighlight(sourceDisplayer);
 
     delete highlighter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportRunner::getComponentFromFile()
+//-----------------------------------------------------------------------------
+QString ImportRunner::getComponentFromFile(QString const& componentName) const
+{
+    if (!componentName.isEmpty())
+    {
+        for (auto component : componentsInFile_)
+        {
+            if (component.componentName_.compare(componentName) == 0)
+            {
+                return component.componentFile_;
+            }
+        }
+    }
+
+    return QString("");
 }
 
 //-----------------------------------------------------------------------------
@@ -312,13 +360,13 @@ QString ImportRunner::readInputFile(QString const& relativePath, QString const& 
 
     QString absoluteFilePath = General::getAbsolutePath(basePath, relativePath);
 
-    QFile importFile(absoluteFilePath);
-    if (QFileInfo(absoluteFilePath).exists() && importFile.open(QIODevice::ReadOnly))
+    QFile importedFile(absoluteFilePath);
+    if (QFileInfo(absoluteFilePath).exists() && importedFile.open(QIODevice::ReadOnly))
     {
-        QTextStream stream(&importFile);
+        QTextStream stream(&importedFile);
         fileContent = stream.readAll();
         fileContent.replace("\r\n", "\n");
-        importFile.close();
+        importedFile.close();
     }
     else
     {

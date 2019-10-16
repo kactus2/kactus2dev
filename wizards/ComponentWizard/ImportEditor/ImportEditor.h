@@ -21,6 +21,7 @@
 #include <QString>
 #include <QTabWidget>
 #include <QWidget>
+#include <QComboBox>
 
 class FileSet;
 class Component;
@@ -110,6 +111,13 @@ private slots:
      */
     void onBrowseFile();
 
+    /*!
+     *  Handle the change in the imported component.
+     *
+     *      @param [in] index   Index of the new component.
+     */
+    void onChangeSelectedComponent(int index);
+
 private:
 	
 	//! No copying.
@@ -158,6 +166,11 @@ private:
      */
     bool fileExistsInFileSelector(QString const& filePath) const;
 
+    /*!
+     *  Change the available importable components.
+     */
+    void changeAvailableComponents();
+
     //-----------------------------------------------------------------------------
     //! Data.
     //-----------------------------------------------------------------------------
@@ -194,6 +207,9 @@ private:
 
     //! Button for browsing the imported file.
     QPushButton* browseButton_;
+
+    //! Used to selected the imported component.
+    QComboBox* componentSelector_;
 
     //! Tabs for displaying imported source files.
     QTabWidget* sourceDisplayTabs_;

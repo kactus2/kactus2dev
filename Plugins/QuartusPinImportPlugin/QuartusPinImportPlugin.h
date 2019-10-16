@@ -101,12 +101,32 @@ public:
     virtual QString getCompatibilityWarnings() const;
     
     /*!
+     *  Get component declarations from the selected input file.
+     *
+     *      @param [in] input   The selected input file.
+     *
+     *      @return List of component declarations found in the selected input.
+     */
+    virtual QStringList getFileComponents(QString const& input) const override final;
+
+    /*!
+     *  Get the name of the selected component declaration.
+     *
+     *      @param [in] componentDeclaration    The selected component declaration.
+     *
+     *      @return Name of the selected component declaration.
+     */
+    virtual QString getComponentName(QString const& componentDeclaration) const override final;
+
+    /*!
      *  Runs the import by parsing the given input and applying the parsed elements to the given component.
      *
-     *      @param [in] input               The input text to parse.
-     *      @param [in] targetComponent     The component to apply all imported changes to.
+     *      @param [in] input                   The input text to parse.
+     *      @param [in] componentDeclaration    Declaration of the selected component.
+     *      @param [in] targetComponent         The component to apply all imported changes to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
+    virtual void import(QString const& input, QString const& componentDeclaration,
+        QSharedPointer<Component> targetComponent);
 
 private:
 

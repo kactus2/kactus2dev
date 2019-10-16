@@ -51,7 +51,7 @@ VHDLGenericParser::VHDLGenericParser(QObject* parent): QObject(parent), highligh
 // Function: VHDLGenericParser::import()
 //-----------------------------------------------------------------------------
 void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> targetComponent,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
     foreach (QSharedPointer<ModuleParameter> modelParameter, *targetComponentInstantiation->getModuleParameters())
     {
@@ -63,7 +63,7 @@ void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> t
         createModelParameterFromDeclaration(declaration, targetComponentInstantiation);
         if (highlighter_)
         {
-            highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);
+            highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER, input);
         }        
     }
 
