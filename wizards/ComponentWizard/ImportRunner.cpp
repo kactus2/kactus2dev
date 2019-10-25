@@ -45,7 +45,8 @@ ImportPlugins_(),
 analyzerPlugins_(),
 parameterFinder_(parameterFinder),
 displayTabs_(displayTabs),
-fileSuffixTable_(FileHandler::constructFileSuffixTable())
+fileSuffixTable_(FileHandler::constructFileSuffixTable()),
+componentsInFile_()
 {
     
 }
@@ -64,6 +65,8 @@ ImportRunner::~ImportRunner()
 QStringList ImportRunner::constructComponentDataFromFile(QString const& filePath, QString const& componentXMLPath,
     QSharedPointer<const Component> targetComponent)
 {
+    componentsInFile_.clear();
+
     QStringList filetypes = filetypesOf(filePath, *targetComponent->getFileSets().data());
     QString const& fileContent = readInputFile(filePath, componentXMLPath);
 
@@ -384,12 +387,15 @@ QList<ImportPlugin*> ImportRunner::importPluginsForFileTypes(QStringList const& 
     QList<ImportPlugin*> compatiblePlugins;
     foreach(ImportPlugin* importer, ImportPlugins_)
     {
-        QStringList parserAcceptedFiletypes = importer->getSupportedFileTypes();
-        foreach(QString filetype, filetypes)
+        if (dynamic_cast<IncludeImportPlugin*>(importer) == 0)
         {
-            if (parserAcceptedFiletypes.contains(filetype) && !compatiblePlugins.contains(importer))
+            QStringList parserAcceptedFiletypes = importer->getSupportedFileTypes();
+            foreach(QString filetype, filetypes)
             {
-                compatiblePlugins.prepend(importer);
+                if (parserAcceptedFiletypes.contains(filetype) && !compatiblePlugins.contains(importer))
+                {
+                    compatiblePlugins.prepend(importer);
+                }
             }
         }
     }
@@ -402,14 +408,20 @@ QList<ImportPlugin*> ImportRunner::importPluginsForFileTypes(QStringList const& 
 //-----------------------------------------------------------------------------
 QList<ImportPlugin*> ImportRunner::includeImportPluginsForFileTypes(QStringList const& filetypes) const
 {
-    QList<ImportPlugin*> compatiblePlugins = importPluginsForFileTypes(filetypes);
-    foreach(ImportPlugin* importer, compatiblePlugins)
+    QList<ImportPlugin*> compatiblePlugins;
+    foreach(ImportPlugin* importer, ImportPlugins_)
     {
-        if (dynamic_cast<IncludeImportPlugin*>(importer) == 0)
+        if (dynamic_cast<IncludeImportPlugin*>(importer) != 0)
         {
-            compatiblePlugins.removeAll(importer);
+            QStringList parserAcceptedFiletypes = importer->getSupportedFileTypes();
+            foreach(QString filetype, filetypes)
+            {
+                if (parserAcceptedFiletypes.contains(filetype) && !compatiblePlugins.contains(importer))
+                {
+                    compatiblePlugins.prepend(importer);
+                }
+            }
         }
-
     }
 
     return compatiblePlugins;

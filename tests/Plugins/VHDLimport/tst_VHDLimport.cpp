@@ -44,7 +44,6 @@ private slots:
     void testSupportedFileTypes();
 
     void nothingParsedFromMalformedEntity();
-
     void nothingParsedFromMalformedEntity_data();
 
     void testEntityIsFound();
@@ -77,9 +76,14 @@ private slots:
     void testArchitecturePrecedesConfigurationForModelName();
     void testConfigurationIsImportedToViewIfNoArchitectureAvailable();
 
+    void testMultipleEntities();
+    void testMultipleEntities_data();
+
 private:
 
-    void runParser(QString& input);
+    void runParser(QString& input, int const& entityNumber = 0);
+
+    QString getEntityDeclaration(QString const& input, int const& entityNumber);
 
     QPlainTextEdit displayEditor_;
 
@@ -211,25 +215,6 @@ void tst_VHDLimport::nothingParsedFromMalformedEntity_data()
         "port (\n"
         "   clk: in std_logic\n"
         ");";
-
-    QTest::newRow("multiple entities") << 
-        "entity firstEntity is\n"
-        "generic (\n"
-        "   local_memory_addr_bits  : integer\n"
-        ");\n"
-        "port (\n"
-        "   clk: in std_logic\n"
-        ");\n"
-        "end firstEntity;\n"
-        "\n"
-        "entity secondEntity is\n"
-        "generic (\n"
-        "   local_memory_addr_bits  : integer\n"
-        ");\n"
-        "port (\n"
-        "   clk: in std_logic\n"
-        ");\n"
-        "end secondEntity;\n";
 }
 
 //-----------------------------------------------------------------------------
@@ -276,11 +261,44 @@ void tst_VHDLimport::testEntityIsFound_data()
 //-----------------------------------------------------------------------------
 // Function: tst_VHDLimport::runParser()
 //-----------------------------------------------------------------------------
-void tst_VHDLimport::runParser(QString& input)
+void tst_VHDLimport::runParser(QString& input, int const& selectedComponent /* = 0 */)
 {
-    displayEditor_.setPlainText(input.replace("\r\n", "\n"));    
+    QString inspect = input.replace("\r\n", "\n");
 
-    parser_.import(input.replace("\r\n", "\n"), importComponent_);
+    QString entityDeclaration = getEntityDeclaration(inspect, selectedComponent);
+
+    displayEditor_.setPlainText(inspect);
+    parser_.import(inspect, entityDeclaration, importComponent_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::getEntityDeclaration()
+//-----------------------------------------------------------------------------
+QString tst_VHDLimport::getEntityDeclaration(QString const& input, int const& entityNumber)
+{
+    QStringList fileEntities;
+
+    QRegularExpression entityExpression("ENTITY\\s+(\\w+)\\s+IS\\s+.*END(?:\\s+ENTITY)?(?:\\s+\\1)?\\s*[;]",
+        QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+
+    QRegularExpressionMatchIterator matchIterator = entityExpression.globalMatch(input);
+    while (matchIterator.hasNext())
+    {
+        QRegularExpressionMatch match = matchIterator.next();
+        if (match.hasMatch())
+        {
+            fileEntities.append(match.captured());
+        }
+    }
+
+    if (!fileEntities.isEmpty() && fileEntities.size() > entityNumber)
+    {
+        return fileEntities.at(entityNumber);
+    }
+    else
+    {
+        return input;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -947,6 +965,76 @@ void tst_VHDLimport::testConfigurationIsImportedToViewIfNoArchitectureAvailable(
     verifySectionFontColorIs(fileContent.indexOf(configuration), configuration.length(), QColor("black"));
     verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
         ImportColors::VIEWNAME);    
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testMultipleEntities()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testMultipleEntities()
+{
+    QFETCH(QString, fileContent);
+    QFETCH(int, entityNumber);
+    QFETCH(QString, entityName);
+
+    runParser(fileContent, entityNumber);
+
+    QCOMPARE(importComponent_->getComponentInstantiations()->size(), 1);
+
+    QSharedPointer<ComponentInstantiation> entityInstantiation =
+        importComponent_->getComponentInstantiations()->first();
+
+    QCOMPARE(entityInstantiation->getModuleName(), entityName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testMultipleEntities_data()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testMultipleEntities_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<int>("entityNumber");
+    QTest::addColumn<QString>("entityName");
+
+    QTest::newRow("select first entity") <<
+        "entity firstEntity is\n"
+        "generic (\n"
+        "   local_memory_addr_bits  : integer\n"
+        ");\n"
+        "port (\n"
+        "   clk: in std_logic\n"
+        ");\n"
+        "end firstEntity;\n"
+        "\n"
+        "entity secondEntity is\n"
+        "generic (\n"
+        "   local_memory_addr_bits  : integer\n"
+        ");\n"
+        "port (\n"
+        "   clk: in std_logic\n"
+        ");\n"
+        "end secondEntity;\n" <<
+        0 << "firstEntity";
+
+    QTest::newRow("select second entity") <<
+        "entity firstEntity is\n"
+        "generic (\n"
+        "   local_memory_addr_bits  : integer\n"
+        ");\n"
+        "port (\n"
+        "   clk: in std_logic\n"
+        ");\n"
+        "end firstEntity;\n"
+        "\n"
+        "entity secondEntity is\n"
+        "generic (\n"
+        "   local_memory_addr_bits  : integer\n"
+        ");\n"
+        "port (\n"
+        "   clk: in std_logic\n"
+        ");\n"
+        "end secondEntity;\n" <<
+        1 << "secondEntity";
 }
 
 QTEST_MAIN(tst_VHDLimport)

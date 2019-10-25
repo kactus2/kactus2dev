@@ -83,7 +83,7 @@ void VerilogPortParser::import(QString const& input, QSharedPointer<Component> t
     foreach (QString portDeclaration, findPortDeclarations(input))
     {
         createPortFromDeclaration(portDeclaration, targetComponent, targetComponentInstantiation);
-        highlight(portDeclaration);
+        highlight(portDeclaration, input);
     }
 }
 
@@ -278,11 +278,11 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::highlight()
 //-----------------------------------------------------------------------------
-void VerilogPortParser::highlight(QString const& portDeclaration)
+void VerilogPortParser::highlight(QString const& portDeclaration, QString const& componentDeclaration)
 {
     if (highlighter_)
     {
-        highlighter_->applyHighlight(portDeclaration, ImportColors::PORT);
+        highlighter_->applyHighlight(portDeclaration, ImportColors::PORT, componentDeclaration);
     }
 }
 

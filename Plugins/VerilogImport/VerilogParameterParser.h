@@ -43,12 +43,12 @@ public:
     /*!
      *  Runs the port parsing for the given input and adds the parsed ports to the given component.
      *
-     *      @param [in] input                           The input text to parse.
+     *      @param [in] componentDeclaration            The selected component declaration from the input text.
      *      @param [in] targetComponent                 The component to add all the imported parameters to.
      *      @param [in] targetComponentInstantiation    The instantiation to add all the imported parameters to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent,
-		QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
+    virtual void import(QString const& componentDeclaration, QSharedPointer<Component> targetComponent,
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
     /*!
      *  Sets the given highlighter to be used by the generic parser.
@@ -65,7 +65,7 @@ public:
      *      @return   The resulting list of parameter declarations.
      */
     QStringList findDeclarations(QString const& input);
-   
+
     /*!
      *  Parses parameters out of declaration.
      *
@@ -89,11 +89,12 @@ private:
     /*!
      *  Finds parameter declarations from the given string.
      *
-     *      @param [in] inspect           The input text containing the declarations.     
+     *      @param [in] componentDeclaration    The component declaration containing the parameters.
+     *      @param [in] parameterArea           The input text containing the declarations.     
      *
      *      @return   The resulting list of declarations.
      */
-    QStringList findParameterDeclarations(QString const& inspect);
+     QStringList findParameterDeclarations(QString const& componentDeclaration, QString const& parameterArea);
 
     /*!
      *  Create an IP-XACT type for the parameter according to the given data type.

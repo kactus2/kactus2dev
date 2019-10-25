@@ -90,10 +90,7 @@ bool ComponentWizardImportPage::isComplete() const
 void ComponentWizardImportPage::onComponentChange(QSharedPointer<Component> newComponent)
 {
     QVector<InstanceData::instanceData> verilogInstances = getVerilogInstancesFromComponent(newComponent);
-    if (!verilogInstances.isEmpty())
-    {
-        setField(InstanceData::VERILOGINSTANCES, QVariant::fromValue(verilogInstances));
-    }
+    setField(InstanceData::VERILOGINSTANCES, QVariant::fromValue(verilogInstances));
 
     emit componentChanged(newComponent);
 }

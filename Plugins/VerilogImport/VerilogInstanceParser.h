@@ -43,10 +43,12 @@ public:
     /*!
      *  Runs the port parsing for the given input and adds the parsed ports to the given component.
      *
-     *      @param [in] input                           The input text to parse.
-     *      @param [in] targetComponent                 The component to add all the imported parameters to.
+     *      @param [in] input                   The input text to parse.
+     *      @param [in] componentDeclaration    The selected component declaration.
+     *      @param [in] targetComponent         The component to add all the imported parameters to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
+    virtual void import(QString const& input, QString const& componentDeclaration,
+        QSharedPointer<Component> targetComponent);
 
     /*!
      *  Sets the given highlighter to be used by the generic parser.
@@ -60,11 +62,33 @@ private:
     /*!
      *  Find matches for the component instances in the selected verilog file.
      *
-     *      @param [in] input   The selected verilog file.
+     *      @param [in] input                   The selected verilog file.
+     *      @param [in] componentDeclaration    The selected component declaration.
      *
      *      @return List of component instance matches.
      */
-    QVector<QRegularExpressionMatch> findInstances(QString const& input);
+    QVector<QRegularExpressionMatch> findInstances(QString const& input, QString const& componentDeclaration);
+
+    /*!
+     *  Highlight the selected component instance.
+     *
+     *      @param [in] input               The selected verilog file.
+     *      @param [in] moduleDeclaration   The selected component declaration.
+     *      @param [in] instanceMatch       The selected component instance match.
+     */
+    void highlightInstance(QString const& input, QString const& moduleDeclaration,
+        QRegularExpressionMatch const& instanceMatch);
+
+    /*!
+     *  Highlight the selected text.
+     *
+     *      @param [in] moduleIndex         Start index of the component declaration.
+     *      @param [in] instanceIndex       Start index of the component instance.
+     *      @param [in] stringBeginIndex    Start index of the text.
+     *      @param [in] instanceString      The selected text.
+     */
+    void highlightInstanceString(int const& moduleIndex, int const& instanceIndex, int const& stringBeginIndex,
+        QString const& instanceString);
 
     /*!
      *  Get a list of separated sub items and their values from the selected sub item declarations.

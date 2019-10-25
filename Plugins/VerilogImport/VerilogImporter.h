@@ -167,19 +167,20 @@ private:
     /*!
      *  Highlights the module section in the input.
      *
-     *      @param [in] fileContent   The input file content to highlight entity in.
+     *      @param [in] input               The input file content to highlight entity in.
+     *      @param [in] moduleDeclaration   Selected module declaration from the file.
      */
-    void highlightModule(QString const& input);
+    void highlightModule(QString const& input, QString const& moduleDeclaration);
 
     /*!
      *  Parses the model name from the input and sets it in the rtl view.
      *
-     *      @param [in] input                               The input text to parse the model name from.
+     *      @param [in] moduleDeclaration                   The selected module declaration.
      *      @param [in/out] targetComponentInstantiation    The component instance to set the name in.
      */
-    void importModelName(QString const& input, 
+    void importModelName(QString const& moduleDeclaration,
         QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
-   
+
     /*!
      *  Finds a flat (rtl) view from the target component or creates one, if none are found.
      *

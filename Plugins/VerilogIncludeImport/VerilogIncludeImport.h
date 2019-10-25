@@ -171,6 +171,27 @@ private:
     QSharedPointer<Parameter> findParameterByName(QSharedPointer<Component> targetComponent, 
         QString const& name) const;
 
+    /*!
+     *  Parse the included verilog parameters.
+     *
+     *      @param [in] input               The input text to parse.
+     *      @param [in] targetComponent     The component to add the parameter to.
+     */
+    void parseParameters(QString const& input, QSharedPointer<Component> targetComponent);
+
+    /*!
+     *  Get the areas from the input text that do not contain verilog modules.
+     *
+     *      @param [in] input   The selected input.
+     *
+     *      @return List of non module text areas.
+     */
+    QStringList getNonModuleAreas(QString const& input) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Parser for verilog parameters.
     VerilogParameterParser parameterParser_;
 

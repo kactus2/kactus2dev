@@ -248,7 +248,7 @@ void VHDLimport::parseModelNameAndArchitecture(QString const& input, QString con
     QRegularExpressionMatch architectureMatch = architectureExp.match(input);
     QRegularExpressionMatch configurationMatch = configurationExp.match(input);
 
-    QString modelName = QString();
+    QString modelName = entityName;
     QString architecture = QString();
 
     if (architectureMatch.hasMatch())

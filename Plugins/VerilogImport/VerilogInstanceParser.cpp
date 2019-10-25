@@ -45,9 +45,10 @@ void VerilogInstanceParser::setHighlighter(Highlighter* highlighter)
 //-----------------------------------------------------------------------------
 // Function: VerilogInstanceParser::import()
 //-----------------------------------------------------------------------------
-void VerilogInstanceParser::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogInstanceParser::import(QString const& input, QString const& componentDeclaration,
+    QSharedPointer<Component> targetComponent)
 {
-    QVector<QRegularExpressionMatch> instanceDeclarations = findInstances(input);
+    QVector<QRegularExpressionMatch> instanceDeclarations = findInstances(input, componentDeclaration);
 
     if (!instanceDeclarations.isEmpty())
     {
@@ -102,13 +103,11 @@ void VerilogInstanceParser::import(QString const& input, QSharedPointer<Componen
 //-----------------------------------------------------------------------------
 // Function: VerilogInstanceParser::findInstances()
 //-----------------------------------------------------------------------------
-QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString const &input)
+QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString const& input,
+    QString const& componentDeclaration)
 {
     QVector<QRegularExpressionMatch> instances;
-    QString inspect = VerilogSyntax::cullStrayComments(input);
-    
-    QRegularExpression commentExpression(VerilogSyntax::COMMENT);
-    inspect.remove(commentExpression);
+    QString inspect = componentDeclaration;
 
     QString expressionString =
         "\\b([a-zA-Z_][\\w$]*)(\\s+#(?:(?:.|\\n)(?!(?:[)]\\s*[a-zA-Z_]|;)))*(?:.|\\n)\\))?\\s+([a-zA-Z_][\\w$]*)\\s*(\\((?:(?:.|\\n)(?!\\);))*\\s*\\)+;)";
@@ -123,10 +122,43 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
         if (instanceMatch.captured(1).compare(QStringLiteral("module"), Qt::CaseInsensitive) != 0)
         {
             instances.append(instanceMatch);
+            highlightInstance(input, componentDeclaration, instanceMatch);
         }
     }
 
     return instances;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogInstanceParser::highlightInstance()
+//-----------------------------------------------------------------------------
+void VerilogInstanceParser::highlightInstance(QString const& input, QString const& moduleDeclaration,
+    QRegularExpressionMatch const& instanceMatch)
+{
+    int moduleIndex = input.indexOf(moduleDeclaration);
+
+    QString instance = instanceMatch.captured();
+    int instanceIndex = moduleDeclaration.indexOf(instance);
+
+    QString instanceModuleName = instanceMatch.captured(1);
+    int instanceModuleNameIndex = instance.indexOf(instanceModuleName);
+    highlightInstanceString(moduleIndex, instanceIndex, instanceModuleNameIndex, instanceModuleName);
+
+    QString instanceName = instanceMatch.captured(3);
+    int instanceNameIndex = instance.indexOf(instanceName);
+    highlightInstanceString(moduleIndex, instanceIndex, instanceNameIndex, instanceName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogInstanceParser::highlightInstanceString()
+//-----------------------------------------------------------------------------
+void VerilogInstanceParser::highlightInstanceString(int const& moduleIndex, int const& instanceIndex,
+    int const& stringBeginIndex, QString const& instanceString)
+{
+    int beginPosition = moduleIndex + instanceIndex + stringBeginIndex;
+    int endPosition = beginPosition + instanceString.length();
+
+    highlighter_->applyHighlight(beginPosition, endPosition, ImportColors::INSTANCECOLOR);
 }
 
 //-----------------------------------------------------------------------------

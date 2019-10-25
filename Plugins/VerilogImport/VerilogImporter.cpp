@@ -19,6 +19,12 @@
 
 #include <QString>
 
+namespace
+{
+    const QRegularExpression MODULENAME_EXP("MODULE\\s+(\\w+)", QRegularExpression::CaseInsensitiveOption);
+}
+
+
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::VerilogImporter()
 //-----------------------------------------------------------------------------
@@ -120,7 +126,25 @@ QString VerilogImporter::getCompatibilityWarnings() const
 //-----------------------------------------------------------------------------
 QStringList VerilogImporter::getFileComponents(QString const& input) const
 {
-    return QStringList();
+    QStringList fileModules;
+
+    QRegularExpression multilineComment(VerilogSyntax::MULTILINE_COMMENT);
+
+    QString inspect = input;
+    int moduleBegin = inspect.indexOf(VerilogSyntax::MODULE_BEGIN);
+    int moduleEnd = VerilogSyntax::MODULE_END.match(inspect).capturedEnd();
+
+    while (moduleBegin != -1)
+    {
+        QString newModule = inspect.mid(moduleBegin, moduleEnd - moduleBegin);
+        fileModules.append(newModule);
+        inspect.remove(newModule);
+
+        moduleBegin = inspect.indexOf(VerilogSyntax::MODULE_BEGIN);
+        moduleEnd = VerilogSyntax::MODULE_END.match(inspect).capturedEnd();
+    }
+
+    return fileModules;
 }
 
 //-----------------------------------------------------------------------------
@@ -128,28 +152,27 @@ QStringList VerilogImporter::getFileComponents(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogImporter::getComponentName(QString const& componentDeclaration) const
 {
-    return QString();
+    QRegularExpressionMatch match = MODULENAME_EXP.match(componentDeclaration);
+    return match.captured(1);
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::import()
 //-----------------------------------------------------------------------------
-void VerilogImporter::import(QString const& input, QString const& /*componentDeclaration*/,
+void VerilogImporter::import(QString const& input, QString const& componentDeclaration,
     QSharedPointer<Component> targetComponent)
 {   
-    if (hasModuleDeclaration(input))
+    if (hasModuleDeclaration(componentDeclaration))
     {
-        highlightModule(input);
+        highlightModule(input, componentDeclaration);
 
 		QSharedPointer<ComponentInstantiation> targetComponentInstantiation;
 		setLanguageAndEnvironmentalIdentifiers(targetComponent, targetComponentInstantiation);
-		importModelName(input, targetComponentInstantiation);
+        importModelName(componentDeclaration, targetComponentInstantiation);
 
-        parameterParser_.import(input, targetComponent, targetComponentInstantiation);
-
-        portParser_.import(input, targetComponent, targetComponentInstantiation);
-
-        instanceParser_.import(input, targetComponent);
+        parameterParser_.import(componentDeclaration, targetComponent, targetComponentInstantiation);
+        portParser_.import(componentDeclaration, targetComponent, targetComponentInstantiation);
+        instanceParser_.import(input, componentDeclaration, targetComponent);
     }
 }
 
@@ -192,44 +215,30 @@ bool VerilogImporter::hasModuleDeclaration(QString const& input)
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::highlightModule()
 //-----------------------------------------------------------------------------
-void VerilogImporter::highlightModule(QString const& input)
+void VerilogImporter::highlightModule(QString const& input, QString const& moduleDeclaration)
 {
-	// Find the beginning and end of the module
-    int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
-    int moduleEnd = VerilogSyntax::MODULE_END.match(input).capturedEnd();
+    QRegularExpressionMatch match = MODULENAME_EXP.match(moduleDeclaration);
+    QString moduleDeclarationLine = match.captured();
 
-	// Paint the text black.
+    int moduleBegin = input.indexOf(moduleDeclarationLine);
+    int moduleEnd = VerilogSyntax::MODULE_END.match(input, moduleBegin).capturedEnd();
+
+    QString highlightedModule = input.mid(moduleBegin, moduleEnd - moduleBegin);
     if (highlighter_)
-    {        
-        highlighter_->applyFontColor(input.mid(moduleBegin, moduleEnd  - moduleBegin), KactusColors::REGULAR_TEXT);
+    {
+        highlighter_->applyFontColor(highlightedModule, KactusColors::REGULAR_TEXT);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::importModelName()
 //-----------------------------------------------------------------------------
-void VerilogImporter::importModelName(QString const& input,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
+void VerilogImporter::importModelName(QString const& moduleDeclaration,
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-	// Find the beginning of the module.
-    int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
+    QRegularExpressionMatch match = MODULENAME_EXP.match(moduleDeclaration);
 
-	// Operate if it exists.
-    if (moduleBegin != -1)
-    {
-		// Find the name of the module.
-        QString moduleName = VerilogSyntax::MODULE_BEGIN.match(input).captured(1);
-        targetComponentInstantiation->setModuleName(moduleName);
-
-        if (highlighter_)
-        {
-			// Find the beginning and the end of the name.
-            int moduleNameBegin = input.indexOf(moduleName, moduleBegin);
-			int moduleNameEnd = moduleNameBegin + moduleName.length();
-			// Highlight the name.
-            highlighter_->applyHighlight(moduleNameBegin, moduleNameEnd, ImportColors::VIEWNAME);
-        }
-    }
+    targetComponentInstantiation->setModuleName(match.captured(1));
 }
 
 //-----------------------------------------------------------------------------

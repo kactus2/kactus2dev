@@ -151,9 +151,10 @@ private:
     /*!
      *  Highlights the given port declaration.
      *
-     *      @param [in] portDeclaration   The port declaration to highlight.
+     *      @param [in] portDeclaration         The port declaration to highlight.
+     *      @param [in] componentDeclaration    Component declaration containing the selected port.
      */
-    void highlight(QString const& portDeclaration);
+    void highlight(QString const& portDeclaration, QString const& componentDeclaration);
 
     /*!
      *  Parses the port direction from a Verilog port declaration.

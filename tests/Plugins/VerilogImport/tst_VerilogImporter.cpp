@@ -81,9 +81,14 @@ private slots:
 
     void testComponentInstantiationAndViewExistsAfterImport();
 
+    void testMultipleModelsInOneFile();
+    void testMultipleModelsInOneFile_data();
+
 private:
 
-    void runParser(QString const& input);
+    QString getModuleDeclaration(QString const& input, int const& moduleNumber = 0);
+
+    void runParser(QString const& input, QString const& componentDeclaration = "");
 
     void verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor);
 
@@ -102,6 +107,8 @@ private:
     QPlainTextEdit displayEditor_;
 
     ImportHighlighter* highlighter_;
+
+    VerilogImporter importer_;
 };
 
 //-----------------------------------------------------------------------------
@@ -118,6 +125,7 @@ tst_VerilogImporter::tst_VerilogImporter(): importComponent_(0), displayEditor_(
 void tst_VerilogImporter::init()
 {
     importComponent_ = QSharedPointer<Component>(new Component());
+    importer_.setHighlighter(highlighter_);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,6 +164,7 @@ void tst_VerilogImporter::testNothingIsParsedFromMalformedInput()
 void tst_VerilogImporter::testNothingIsParsedFromMalformedInput_data()
 {
     QTest::addColumn<QString>("input");
+    QTest::addColumn<int>("moduleNumber");
 
     QTest::newRow("empty input") << "";
 
@@ -180,19 +189,33 @@ void tst_VerilogImporter::testNothingIsParsedFromMalformedInput_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::getModuleDeclaration()
+//-----------------------------------------------------------------------------
+QString tst_VerilogImporter::getModuleDeclaration(QString const& input, int const& moduleNumber /* = 0 */)
+{
+    QStringList fileComponents = importer_.getFileComponents(input);
+    return fileComponents.at(moduleNumber);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogImporter::runParser()
 //-----------------------------------------------------------------------------
-void tst_VerilogImporter::runParser(QString const& input)
+void tst_VerilogImporter::runParser(QString const& input, QString const& componentDeclaration /* = "" */)
 {
     displayEditor_.setPlainText(input);
 
     QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(importComponent_));
     QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(finder));
 
-    VerilogImporter importer;
-    importer.setExpressionParser(expressionParser);
-    importer.setHighlighter(highlighter_);
-    importer.import(input, importComponent_);
+    importer_.setExpressionParser(expressionParser);
+
+    QString importedModule = componentDeclaration;
+    if (importedModule.isEmpty())
+    {
+        importedModule = input;
+    }
+
+    importer_.import(input, importedModule, importComponent_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1155,7 +1178,7 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView()
     QFETCH(QString, fileContent);
     QFETCH(QString, modelName);
 
-    runParser(fileContent);
+    runParser(fileContent, getModuleDeclaration(fileContent));
 
 	QSharedPointer<ComponentInstantiation> importComponentInstantiation =
 		importComponent_->getModel()->getComponentInstantiations()->first();
@@ -1166,8 +1189,6 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView()
     QCOMPARE(importComponentInstantiation->getLanguage(), QString("Verilog"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->language, QString("Verilog"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, VerilogSyntax::TOOL_NAME);
-
-    verifyDeclarationIsHighlighted(fileContent.lastIndexOf(modelName), modelName.length(), ImportColors::VIEWNAME);
 }
 
 //-----------------------------------------------------------------------------
@@ -1247,6 +1268,85 @@ void tst_VerilogImporter::testComponentInstantiationAndViewExistsAfterImport()
     QCOMPARE(importedView->getComponentInstantiationRef(), importedInstantiation->name());
     QCOMPARE(importedInstantiation->getModuleParameters()->size(), 1);
     QCOMPARE(importedInstantiation->getModuleParameters()->first()->name(), QString("dataWidth_g"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testMultipleModelsInOneFile()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testMultipleModelsInOneFile()
+{
+    QFETCH(QString, fileContent);
+    QFETCH(QString, modelName);
+    QFETCH(int, moduleNumber);
+
+    runParser(fileContent, getModuleDeclaration(fileContent, moduleNumber));
+
+    QSharedPointer<ComponentInstantiation> importComponentInstantiation =
+        importComponent_->getModel()->getComponentInstantiations()->first();
+
+    QCOMPARE(importComponentInstantiation->getModuleName(), modelName);
+    QCOMPARE(importComponentInstantiation->getLanguage(), QString("Verilog"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testMultipleModelsInOneFile_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testMultipleModelsInOneFile_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<QString>("modelName");
+    QTest::addColumn<int>("moduleNumber");
+
+    QTest::newRow("Select first module") <<
+        "module firstModule();\n"
+        "    // inputs:\n"
+        "    input bit1,\n"
+        "    // outputs:\n"
+        "    output sum,\n"
+        "endmodule\n"
+        "module secondModule();\n"
+        "    // inputs:\n"
+        "    input bit2,\n"
+        "    // outputs:\n"
+        "    output clk,\n"
+        "endmodule\n"
+        <<
+        "firstModule"
+        << 0;
+
+    QTest::newRow("Select second module") <<
+        "module firstModule();\n"
+        "    // inputs:\n"
+        "    input bit1,\n"
+        "    // outputs:\n"
+        "    output sum,\n"
+        "endmodule\n"
+        "module secondModule();\n"
+        "    // inputs:\n"
+        "    input bit2,\n"
+        "    // outputs:\n"
+        "    output clk,\n"
+        "endmodule\n"
+        <<
+        "secondModule"
+        << 1;
+
+    QTest::newRow("Select third module") <<
+        "module firstModule();\n"
+        "    // inputs:\n"
+        "    input bit1,\n"
+        "endmodule\n"
+        "module secondModule();\n"
+        "    // inputs:\n"
+        "    input bit2,\n"
+        "endmodule\n"
+        "module thirdModule();\n"
+        "    // inputs:\n"
+        "    input bit3,\n"
+        "endmodule\n"
+        <<
+        "thirdModule"
+        << 2;
 }
 
 //-----------------------------------------------------------------------------
