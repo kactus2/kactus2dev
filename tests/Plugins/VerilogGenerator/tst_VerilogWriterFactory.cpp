@@ -23,6 +23,7 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -78,6 +79,9 @@ private slots:
     void testFlatComponent();
     void testFlatComponentWithTypedParameter();
 
+    void testDoNotWriteTransactionalPorts();
+    void testDoNotWriteTransactionalInterfaces();
+
 	void testGenerationWithImplementation();
 	void testGenerationWithImplementationWithTag();
 	void testGenerationWithImplementationWithPostModule();
@@ -94,6 +98,10 @@ private:
     QSharedPointer<MetaPort> addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
         QSharedPointer<MetaComponent> component,
         QSharedPointer<MetaInterface> mInterface = QSharedPointer<MetaInterface>());
+
+    QSharedPointer<MetaPort> addTransactional(QString const& portName, TransactionalTypes::Initiative initiative,
+        QSharedPointer<MetaComponent> component,
+        QSharedPointer<MetaInterface> containingInterface = QSharedPointer<MetaInterface>());
 
     QSharedPointer<Parameter> addParameter(QString const& name, QString const& value, 
         QSharedPointer<MetaComponent> mComponent);
@@ -1830,6 +1838,98 @@ void tst_VerilogWriterFactory::testFlatComponentWithTypedParameter()
         "// " + VerilogSyntax::TAG_OVERRIDE + "\n"
         "endmodule\n"
         ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testDoNotWriteTransactionalPorts()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testDoNotWriteTransactionalPorts()
+{
+    addTransactional("provide", TransactionalTypes::PROVIDES, flatComponent_);
+    addTransactional("require", TransactionalTypes::REQUIRES, flatComponent_);
+    addTransactional("both", TransactionalTypes::BOTH, flatComponent_);
+    addTransactional("phantom", TransactionalTypes::PHANTOM, flatComponent_);
+    addPort("dataIn", 8, DirectionTypes::IN, flatComponent_);
+
+    runGenerator(false);
+
+    verifyOutputContains(QString(
+        "module TestComponent(\n"
+        "    // These ports are not in any interface\n"
+        "    input                [7:0]          dataIn\n"
+        ");\n"
+        "\n"
+        "// " + VerilogSyntax::TAG_OVERRIDE + "\n"
+        "endmodule\n"
+    ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testDoNotWriteTransactionalInterfaces()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testDoNotWriteTransactionalInterfaces()
+{
+    QSharedPointer<MetaInterface> transactionalInterface =
+        addInterfaceToComponent("transactionalInterface", topComponent_);
+    QSharedPointer<MetaInterface> wireInterface = addInterfaceToComponent("wireInterface", topComponent_);
+
+    addTransactional("provide", TransactionalTypes::PROVIDES, topComponent_, transactionalInterface);
+    addTransactional("require", TransactionalTypes::REQUIRES, topComponent_, transactionalInterface);
+    addTransactional("both", TransactionalTypes::BOTH, topComponent_, transactionalInterface);
+    addTransactional("phantom", TransactionalTypes::PHANTOM, topComponent_, transactionalInterface);
+    addPort("clk", 1, DirectionTypes::IN, flatComponent_, wireInterface);
+    addPort("rst_n", 1, DirectionTypes::IN, flatComponent_, wireInterface);
+    addTransactional("otherBoat", TransactionalTypes::BOTH, topComponent_, wireInterface);
+    addPort("dataIn", 8, DirectionTypes::IN, flatComponent_);
+
+    runGenerator(false);
+
+    verifyOutputContains(QString(
+        "module TestComponent(\n"
+        "    // Interface: wireInterface\n"
+        "    input                               clk,\n"
+        "    input                               rst_n,\n"
+        "\n"
+        "    // These ports are not in any interface\n"
+        "    input                [7:0]          dataIn\n"
+        ");\n"
+        "\n"
+        "// " + VerilogSyntax::TAG_OVERRIDE + "\n"
+        "endmodule\n"
+    ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::addTransactional()
+//-----------------------------------------------------------------------------
+QSharedPointer<MetaPort> tst_VerilogWriterFactory::addTransactional(QString const& portName,
+    TransactionalTypes::Initiative initiative, QSharedPointer<MetaComponent> component,
+    QSharedPointer<MetaInterface> containingInterface /* = QSharedPointer<MetaInterface>() */)
+{
+    QSharedPointer<Transactional> portTransactional(new Transactional());
+    portTransactional->setInitiative(TransactionalTypes::initiativeToString(initiative));
+
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName));
+    port->setTransactional(portTransactional);
+
+    QSharedPointer<MetaPort> newMetaPort(new MetaPort);
+    newMetaPort->port_ = port;
+    component->getPorts()->insert(portName, newMetaPort);
+    component->getComponent()->getPorts()->append(port);
+
+    if (containingInterface)
+    {
+        containingInterface->ports_.insert(portName, newMetaPort);
+
+        QSharedPointer<PortMap> newPortMap(new PortMap);
+        QSharedPointer<PortMap::PhysicalPort> portMapPhysicalPort(new PortMap::PhysicalPort);
+        portMapPhysicalPort->name_ = portName;
+        newPortMap->setPhysicalPort(portMapPhysicalPort);
+
+        containingInterface->interface_->getAbstractionTypes()->first()->getPortMaps()->append(newPortMap);
+    }
+
+    return newMetaPort;
 }
 
 //-----------------------------------------------------------------------------
