@@ -12,6 +12,7 @@
 #include "DockWidgetHandler.h"
 
 #include <mainwindow/MessageConsole/messageconsole.h>
+#include <mainwindow/PythonConsole/PythonConsole.h>
 
 #include <Help/HelpSystem/HelpWindow.h>
 #include <Help/HelpSystem/ContextHelpBrowser.h>
@@ -84,6 +85,8 @@ DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* m
     interfaceDock_(0),
     connectionEditor_(0),
     connectionDock_(0),
+    pythonConsoleDock_(0), 
+    pythonConsole_(0),
     extensionDock_(0),
     extensionEditor_(0),
     helpWnd_(0),
@@ -119,6 +122,7 @@ void DockWidgetHandler::setupDockWidgets()
     setupSystemDetailsEditor();
     setupInterfaceEditor();
     setupConnectionEditor();
+    setupConsole();
     setupVendorExtensionEditor();
 }
 
@@ -409,6 +413,22 @@ void DockWidgetHandler::setupConnectionEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::setWindowVisibility()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::setupConsole()
+{
+    pythonConsoleDock_ = new QDockWidget(tr("Console"), mainWindow_);
+    pythonConsoleDock_->setObjectName(tr("Console"));
+    pythonConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    pythonConsoleDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+    pythonConsole_ = new PythonConsole(pythonConsoleDock_);
+    pythonConsoleDock_->setWidget(pythonConsole_);
+
+    mainWindow_->addDockWidget(Qt::BottomDockWidgetArea, pythonConsoleDock_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::setupVendorExtensionEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupVendorExtensionEditor()
@@ -479,6 +499,10 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
     const bool extensionsVisible = settings.value("VendorExtensionVisibility", false).toBool();
     visibilities_.insert(TabDocument::VENDOREXTENSIONWINDOW, extensionsVisible);
     extensionDock_->toggleViewAction()->setChecked(extensionsVisible);
+
+    const bool consoleVisible = settings.value("ConsoleVisibility", true).toBool();
+    visibilities_.insert(TabDocument::CONSOLEWINDOW, consoleVisible);
+    pythonConsoleDock_->toggleViewAction()->setChecked(connectionVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -690,6 +714,7 @@ void DockWidgetHandler::updateWindows(int const& tabCount, QWidget* currentTabWi
         tabCount, currentTabWidget, TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::ADHOC_WINDOW, adhocDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::VENDOREXTENSIONWINDOW, extensionDock_);
+    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::CONSOLEWINDOW, pythonConsoleDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -737,7 +762,8 @@ unsigned int DockWidgetHandler::currentlySupportedWindows(int const& tabCount, Q
 unsigned int DockWidgetHandler::defaultWindows()
 {
     return TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW |
-        TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW;
+        TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW |
+        TabDocument::CONSOLEWINDOW;
 }
 
 //-----------------------------------------------------------------------------

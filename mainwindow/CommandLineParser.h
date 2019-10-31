@@ -29,7 +29,7 @@ public:
     CommandLineParser();
 
     // The destructor.
-    ~CommandLineParser();
+    ~CommandLineParser() = default;
 
     /*!
      *  Reads the given arguments. 

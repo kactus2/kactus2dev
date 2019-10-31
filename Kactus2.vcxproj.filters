@@ -953,6 +953,12 @@
     <Filter Include="Header Files\common\widgets\tagEditor">
       <UniqueIdentifier>{1b390fb1-0cfa-4143-b40e-95a7467acb7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\mainwindow\PythonConsole">
+      <UniqueIdentifier>{e5bdaa76-a8b0-4586-a46a-ef2b27027e85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mainwindow\PythonConsole">
+      <UniqueIdentifier>{568a4c91-5702-4d4e-ba13-4caf59b977bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4834,6 +4840,18 @@
     <ClCompile Include="common\widgets\tagEditor\TagSelector.cpp">
       <Filter>Source Files\common\widgets\tagEditor</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\PythonConsole\PythonConsole.cpp">
+      <Filter>Source Files\mainwindow\PythonConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PythonConsole.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\PythonConsole\ConsoleEditor.cpp">
+      <Filter>Source Files\mainwindow\PythonConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConsoleEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6621,6 +6639,12 @@
     <CustomBuild Include="common\widgets\tagEditor\TagSelector.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="mainwindow\PythonConsole\PythonConsole.h">
+      <Filter>Header Files\mainwindow\PythonConsole</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\PythonConsole\ConsoleEditor.h">
+      <Filter>Header Files\mainwindow\PythonConsole</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6967,9 +6991,6 @@
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\LogicalPortColumns.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="VersionHelper.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\BridgeColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>

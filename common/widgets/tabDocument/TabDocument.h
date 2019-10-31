@@ -61,7 +61,8 @@ public:
         ADDRESS_WINDOW          = 0x400,
         ADHOC_WINDOW            = 0x800,
         DESIGNPARAMETERSWINDOW  = 0x1000,
-        VENDOREXTENSIONWINDOW   = 0x2000
+        VENDOREXTENSIONWINDOW   = 0x2000,
+        CONSOLEWINDOW           = 0x4000
 	};
 
     /*!
