@@ -22,6 +22,13 @@
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WirePort.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -82,9 +89,15 @@ private slots:
     void testDoNotWriteTransactionalPorts();
     void testDoNotWriteTransactionalInterfaces();
 
+    void testDoNotWriteTransactionalConnections();
+
 	void testGenerationWithImplementation();
 	void testGenerationWithImplementationWithTag();
 	void testGenerationWithImplementationWithPostModule();
+
+private slots:
+
+    void gatherErrorMessage(QString const& errorMessage);
 
 private:
 
@@ -131,6 +144,37 @@ private:
 
     QSharedPointer<MetaInstance> addReceiver(QString const& instanceName);
 
+    QSharedPointer<Component> createComponent(QString const& componentName);
+
+    QSharedPointer<Design> createDesignForComponent(QString const& designName, QSharedPointer<Component> component);
+
+    QSharedPointer<BusDefinition> createBusDefinition(QString const& definitionName);
+
+    QSharedPointer<AbstractionDefinition> createAbstractionDefinition(QString const& definitionName);
+
+    QSharedPointer<Port> addPortToComponent(QString const& portName, QSharedPointer<Component> containingComponent,
+        TransactionalTypes::Initiative newInitiative = TransactionalTypes::INITIATIVE_INVALID,
+        DirectionTypes::Direction newDirection = DirectionTypes::DIRECTION_INVALID);
+
+    QSharedPointer<BusInterface> addBusInterfaceToComponent(QString const& busName,
+        QSharedPointer<Component> containingComponent, General::InterfaceMode busMode,
+        QSharedPointer<BusDefinition> busDefinition, QSharedPointer<AbstractionDefinition> abstraction);
+
+    QSharedPointer<PortAbstraction> addLogicalPortToAbstraction(QString const& portName,
+        QSharedPointer<AbstractionDefinition> containingAbstraction, General::InterfaceMode busMode,
+        TransactionalTypes::Initiative logicalInitiative = TransactionalTypes::INITIATIVE_INVALID,
+        DirectionTypes::Direction logicalDirection = DirectionTypes::DIRECTION_INVALID);
+
+    void mapPortsToBusInterface(QSharedPointer<BusInterface> containingBus, QSharedPointer<Port> physicalPort,
+        QSharedPointer<PortAbstraction> logicalPort);
+
+    QSharedPointer<ComponentInstance> addInstanceToDesign(QSharedPointer<Design> containingDesign,
+        QSharedPointer<Component> instancedComponent);
+
+    QSharedPointer<Interconnection> addInterconnectionToDesign(QString const& interconnectionName,
+        QSharedPointer<Design> containingDesign, QString const& startInterfaceName,
+        QString const& startInstanceName, QString const& secondInterfaceName, QString const& secondInstanceName);
+
     QSharedPointer<MetaInterconnection> addConnectionToDesign();
 
     void addDefaultPortAssignmentToPort(QSharedPointer<MetaPort> port, QString tieOff, bool up);
@@ -152,12 +196,15 @@ private:
 
     //! The test mock for library interface.
     LibraryMock library_;
+
+    QStringList errorMessages_;
 };
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::tst_VerilogWriterFactory()
 //-----------------------------------------------------------------------------
-tst_VerilogWriterFactory::tst_VerilogWriterFactory(): output_(), generationTime_(), library_(this)
+tst_VerilogWriterFactory::tst_VerilogWriterFactory(): output_(), generationTime_(), library_(this),
+errorMessages_()
 {
 }
 
@@ -197,6 +244,7 @@ void tst_VerilogWriterFactory::init()
         new MetaComponent(&messages, component, QSharedPointer<View>()));
 
     library_.clear();
+    errorMessages_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -255,10 +303,14 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portNa
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName));
     port->setDirection(direction);
     port->setPortSize(portSize);
+
     QSharedPointer<MetaPort> gp(new MetaPort);
+    gp->isWire_ = true;
+    gp->isTransactional_ = false;
     gp->port_ = port;
     gp->vectorBounds_.first = QString::number(portSize-1);
     gp->vectorBounds_.second = "0";
+
     component->getPorts()->insert(portName,gp);
     component->getComponent()->getPorts()->append(port);
 
@@ -1913,7 +1965,10 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addTransactional(QString cons
     port->setTransactional(portTransactional);
 
     QSharedPointer<MetaPort> newMetaPort(new MetaPort);
+    newMetaPort->isWire_ = false;
+    newMetaPort->isTransactional_ = true;
     newMetaPort->port_ = port;
+    
     component->getPorts()->insert(portName, newMetaPort);
     component->getComponent()->getPorts()->append(port);
 
@@ -1930,6 +1985,344 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addTransactional(QString cons
     }
 
     return newMetaPort;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testDoNotWriteTransactionalConnections()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testDoNotWriteTransactionalConnections()
+{
+    QSharedPointer<Component> topComponent = createComponent("topComponent");
+    QSharedPointer<Design> topDesign = createDesignForComponent("topDesign", topComponent);
+
+    QSharedPointer<BusDefinition> busDefinition = createBusDefinition("testBus");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition = createAbstractionDefinition("testAbstraction");
+
+    QSharedPointer<PortAbstraction> logicalProvider = addLogicalPortToAbstraction(
+        "logicalTransactional", abstractionDefinition, General::MASTER, TransactionalTypes::PROVIDES);
+    QSharedPointer<PortAbstraction> logicalRequirer = addLogicalPortToAbstraction(
+        "logicalTransactional", abstractionDefinition, General::SLAVE, TransactionalTypes::REQUIRES);
+
+    QSharedPointer<PortAbstraction> logicalIn = addLogicalPortToAbstraction("logicalWire", abstractionDefinition,
+        General::MASTER, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+    QSharedPointer<PortAbstraction> logicalOut = addLogicalPortToAbstraction("logicalWire", abstractionDefinition,
+        General::SLAVE, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::OUT);
+
+    QSharedPointer<Component> transactionProviderComponent = createComponent("TestProvider");
+    QSharedPointer<Component> transactionRequirerComponent = createComponent("TestRequirer");
+
+    QSharedPointer<BusInterface> providerBus = addBusInterfaceToComponent(
+        "providerBus", transactionProviderComponent, General::MASTER, busDefinition, abstractionDefinition);
+    QSharedPointer<BusInterface> requirerBus = addBusInterfaceToComponent(
+        "requirerBus", transactionRequirerComponent, General::SLAVE, busDefinition, abstractionDefinition);
+
+    QSharedPointer<BusInterface> wireInBus = addBusInterfaceToComponent(
+        "wireInBus", transactionProviderComponent, General::MASTER, busDefinition, abstractionDefinition);
+    QSharedPointer<BusInterface> wireOutBus = addBusInterfaceToComponent(
+        "wireOutBus", transactionRequirerComponent, General::SLAVE, busDefinition, abstractionDefinition);
+
+    QSharedPointer<Port> providerPort =
+        addPortToComponent("providerPort", transactionProviderComponent, TransactionalTypes::PROVIDES);
+    QSharedPointer<Port> requirerPort =
+        addPortToComponent("requirerPort", transactionRequirerComponent, TransactionalTypes::REQUIRES);
+
+    QSharedPointer<Port> wireInPort = addPortToComponent(
+        "wireInPort", transactionProviderComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+    QSharedPointer<Port> wireOutPort = addPortToComponent(
+        "wireOutPort", transactionRequirerComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::OUT);
+
+    mapPortsToBusInterface(providerBus, providerPort, logicalProvider);
+    mapPortsToBusInterface(requirerBus, requirerPort, logicalRequirer);
+
+    mapPortsToBusInterface(wireInBus, wireInPort, logicalIn);
+    mapPortsToBusInterface(wireOutBus, wireOutPort, logicalOut);
+
+    QSharedPointer<ComponentInstance> providerInstance =
+        addInstanceToDesign(topDesign, transactionProviderComponent);
+    QSharedPointer<ComponentInstance> requirerInstance =
+        addInstanceToDesign(topDesign, transactionRequirerComponent);
+
+    QSharedPointer<Interconnection> transactionalConnection = addInterconnectionToDesign("transactionalConnection",
+        topDesign, providerBus->name(), providerInstance->getInstanceName(), requirerBus->name(),
+        requirerInstance->getInstanceName());
+
+    QSharedPointer<Interconnection> wireConnection = addInterconnectionToDesign("wireConnection", topDesign,
+        wireInBus->name(), providerInstance->getInstanceName(), wireOutBus->name(),
+        requirerInstance->getInstanceName());
+
+    MessagePasser messages;
+
+    connect(&messages, SIGNAL(errorMessage(const QString&)),
+        this, SLOT(gatherErrorMessage(QString const&)), Qt::UniqueConnection);
+
+    GenerationTuple input;
+    input.component = topComponent;
+    input.design = topDesign;
+    input.messages = &messages;
+
+    QList<QSharedPointer<MetaDesign> > designs =
+        MetaDesign::parseHierarchy(&library_, input, topComponent->getViews()->first());
+
+    QCOMPARE(designs.size(), 1);
+
+    design_ = designs.first();
+    runGenerator(true);
+
+    output_;
+
+    QCOMPARE(errorMessages_.isEmpty(), true);
+
+    verifyOutputContains("module topComponent();\n\n"
+        "    // wireConnection wires:\n"
+        "    wire       wireConnection_logicalWire;");
+
+    verifyOutputContains("    // TestProvider_instance port wires:\n"
+        "    wire       TestProvider_instance_wireInPort;\n"
+        "    // TestRequirer_instance port wires:\n"
+        "    wire       TestRequirer_instance_wireOutPort;");
+
+    verifyOutputContains("    // TestProvider_instance assignments:\n"
+        "    assign TestProvider_instance_wireInPort = wireConnection_logicalWire;\n"
+        "    // TestRequirer_instance assignments:\n"
+        "    assign wireConnection_logicalWire = TestRequirer_instance_wireOutPort;");
+
+    verifyOutputContains("    // IP-XACT VLNV: Test:TestLibrary:TestProvider:1.0\n"
+        "    TestProvider TestProvider_instance(\n"
+        "        // Interface: wireInBus\n"
+        "        .wireInPort          (TestProvider_instance_wireInPort));");
+
+    verifyOutputContains("    // IP-XACT VLNV: Test:TestLibrary:TestRequirer:1.0\n"
+        "    TestRequirer TestRequirer_instance(\n"
+        "        // Interface: wireOutBus\n"
+        "        .wireOutPort         (TestRequirer_instance_wireOutPort));");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::createComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> tst_VerilogWriterFactory::createComponent(QString const& componentName)
+{
+    VLNV providerVLNV(VLNV::COMPONENT, "Test", "TestLibrary", componentName, "1.0");
+    QSharedPointer<Component> transactionProviderComponent = addTestComponentToLibrary(providerVLNV);
+
+    return transactionProviderComponent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::createDesignForComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Design> tst_VerilogWriterFactory::createDesignForComponent(QString const& designName,
+    QSharedPointer<Component> component)
+{
+    VLNV designVLNV(VLNV::DESIGN, "Test", "TestLibrary", designName, "1.0");
+    QSharedPointer<Design> newDesign(new Design(designVLNV));
+    library_.addComponent(newDesign);
+
+    QSharedPointer<DesignInstantiation> newDesignInstantiation(new DesignInstantiation("designInstantiation"));
+    component->getDesignInstantiations()->append(newDesignInstantiation);
+
+    QSharedPointer<View> newView(new View("hierarchical"));
+    newView->setDesignInstantiationRef(newDesignInstantiation->name());
+    component->getViews()->append(newView);
+
+    return newDesign;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::createBusDefinition()
+//-----------------------------------------------------------------------------
+QSharedPointer<BusDefinition> tst_VerilogWriterFactory::createBusDefinition(QString const& definitionName)
+{
+    VLNV busVLNV(VLNV::BUSDEFINITION, "Test", "TestLibrary", definitionName, "1.0");
+    QSharedPointer<BusDefinition> newBus(new BusDefinition());
+    newBus->setVlnv(busVLNV);
+    library_.addComponent(newBus);
+
+    return newBus;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::createAbstractionDefinition()
+//-----------------------------------------------------------------------------
+QSharedPointer<AbstractionDefinition> tst_VerilogWriterFactory::createAbstractionDefinition(
+    QString const& definitionName)
+{
+    VLNV abstractionVLNV(VLNV::BUSDEFINITION, "Test", "TestLibrary", definitionName, "1.0");
+    QSharedPointer<AbstractionDefinition> newAbstraction(new AbstractionDefinition());
+    newAbstraction->setVlnv(abstractionVLNV);
+    library_.addComponent(newAbstraction);
+
+    return newAbstraction;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::addPortToComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Port> tst_VerilogWriterFactory::addPortToComponent(QString const& portName,
+    QSharedPointer<Component> containingComponent, TransactionalTypes::Initiative newInitiative,
+    DirectionTypes::Direction newDirection)
+{
+    QSharedPointer<Port> newPort = QSharedPointer<Port>(new Port(portName));
+
+    if (newDirection != DirectionTypes::DIRECTION_INVALID)
+    {
+        QSharedPointer<Wire> newPortWire(new Wire());
+        newPortWire->setDirection(newDirection);
+
+        newPort->setWire(newPortWire);
+    }
+    else if (newInitiative != TransactionalTypes::INITIATIVE_INVALID)
+    {
+        QSharedPointer<Transactional> newPortTransactional(new Transactional());
+        newPortTransactional->setInitiative(TransactionalTypes::initiativeToString(newInitiative));
+
+        newPort->setTransactional(newPortTransactional);
+    }
+
+    containingComponent->getPorts()->append(newPort);
+    return newPort;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::addBusInterfaceToComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<BusInterface> tst_VerilogWriterFactory::addBusInterfaceToComponent(QString const& busName,
+    QSharedPointer<Component> containingComponent, General::InterfaceMode busMode,
+    QSharedPointer<BusDefinition> busDefinition, QSharedPointer<AbstractionDefinition> abstraction)
+{
+    const ConfigurableVLNVReference busVLNV(busDefinition->getVlnv());
+    QSharedPointer<ConfigurableVLNVReference> abstractionVLNV(
+        new ConfigurableVLNVReference(abstraction->getVlnv()));
+
+    QSharedPointer<BusInterface> newInterface(new BusInterface());
+    newInterface->setName(busName);
+    newInterface->setInterfaceMode(busMode);
+    newInterface->setBusType(busVLNV);
+
+    QSharedPointer<AbstractionType> newAbstractionType(new AbstractionType());
+    newAbstractionType->setAbstractionRef(abstractionVLNV);
+
+    newInterface->getAbstractionTypes()->append(newAbstractionType);
+
+    containingComponent->getBusInterfaces()->append(newInterface);
+    return newInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::addLogicalPortToAbstraction()
+//-----------------------------------------------------------------------------
+QSharedPointer<PortAbstraction> tst_VerilogWriterFactory::addLogicalPortToAbstraction(QString const& portName,
+    QSharedPointer<AbstractionDefinition> containingAbstraction, General::InterfaceMode busMode,
+    TransactionalTypes::Initiative logicalInitiative, DirectionTypes::Direction logicalDirection)
+{
+    QSharedPointer<PortAbstraction> newLogical = containingAbstraction->getPort(portName);
+    if (!newLogical)
+    {
+        newLogical = QSharedPointer<PortAbstraction>(new PortAbstraction());
+        newLogical->setName(portName);
+
+        containingAbstraction->getLogicalPorts()->append(newLogical);
+    }
+
+    if (logicalDirection != DirectionTypes::DIRECTION_INVALID)
+    {
+        QSharedPointer<WireAbstraction> newWireAbstraction = newLogical->getWire();
+        if (!newWireAbstraction)
+        {
+            newWireAbstraction = QSharedPointer<WireAbstraction>(new WireAbstraction());
+            newLogical->setWire(newWireAbstraction);
+        }
+
+        QSharedPointer<WirePort> newWirePort(new WirePort());
+        if (busMode == General::MASTER)
+        {
+            newWireAbstraction->setMasterPort(newWirePort);
+        }
+        else if (busMode == General::SLAVE)
+        {
+            newWireAbstraction->setSlavePort(newWirePort);
+        }
+    }
+    else if (logicalInitiative != TransactionalTypes::INITIATIVE_INVALID)
+    {
+        QSharedPointer<TransactionalAbstraction> newTransactionalAbstraction = newLogical->getTransactional();
+        if (!newTransactionalAbstraction)
+        {
+            newTransactionalAbstraction = QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction());
+            newLogical->setTransactional(newTransactionalAbstraction);
+        }
+
+        QSharedPointer<TransactionalPort> newTransactionalPort(new TransactionalPort());
+        if (busMode == General::MASTER)
+        {
+            newTransactionalAbstraction->setMasterPort(newTransactionalPort);
+        }
+        else if (busMode == General::SLAVE)
+        {
+            newTransactionalAbstraction->setSlavePort(newTransactionalPort);
+        }
+    }
+
+    return newLogical;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::mapPortsToBusInterface()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::mapPortsToBusInterface(QSharedPointer<BusInterface> containingBus,
+    QSharedPointer<Port> physicalPort, QSharedPointer<PortAbstraction> logicalPort)
+{
+    QSharedPointer<PortMap> newPortMap(new PortMap());
+
+    QSharedPointer<PortMap::PhysicalPort> newPhysical(new PortMap::PhysicalPort(physicalPort->name()));
+    QSharedPointer<PortMap::LogicalPort> newLogical(new PortMap::LogicalPort(logicalPort->name()));
+
+    newPortMap->setPhysicalPort(newPhysical);
+    newPortMap->setLogicalPort(newLogical);
+
+    containingBus->getAbstractionTypes()->first()->getPortMaps()->append(newPortMap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::addInstanceToDesign()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstance> tst_VerilogWriterFactory::addInstanceToDesign(
+    QSharedPointer<Design> containingDesign, QSharedPointer<Component> instancedComponent)
+{
+    QSharedPointer<ConfigurableVLNVReference> newConfigurableVLNV(
+        new ConfigurableVLNVReference(instancedComponent->getVlnv()));
+
+    QString instanceName = instancedComponent->getVlnv().getName() + "_instance";
+    QSharedPointer<ComponentInstance> newComponentInstance(
+        new ComponentInstance(instanceName, newConfigurableVLNV));
+
+    containingDesign->getComponentInstances()->append(newComponentInstance);
+    return newComponentInstance;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::addInterconnectionToDesign()
+//-----------------------------------------------------------------------------
+QSharedPointer<Interconnection> tst_VerilogWriterFactory::addInterconnectionToDesign(
+    QString const& interconnectionName, QSharedPointer<Design> containingDesign, QString const& startInterfaceName,
+    QString const& startInstanceName, QString const& secondInterfaceName, QString const& secondInstanceName)
+{
+    QSharedPointer<ActiveInterface> startInterface(new ActiveInterface(startInstanceName, startInterfaceName));
+    QSharedPointer<ActiveInterface> secondInterface(new ActiveInterface(secondInstanceName, secondInterfaceName));
+
+    QSharedPointer<Interconnection> newInterconnection(new Interconnection(interconnectionName, startInterface));
+    newInterconnection->getActiveInterfaces()->append(secondInterface);
+
+    containingDesign->getInterconnections()->append(newInterconnection);
+    return newInterconnection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::gatherErrorMessage()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::gatherErrorMessage(QString const& errorMessage)
+{
+    errorMessages_.append(errorMessage);
 }
 
 //-----------------------------------------------------------------------------
