@@ -221,10 +221,25 @@ void MetaComponent::formatPorts(ExpressionFormatter const& formatter)
     {
         QSharedPointer<MetaPort> mPort(new MetaPort);
         mPort->port_ = cport;
-        mPort->arrayBounds_.first = formatter.formatReferringExpression(cport->getArrayLeft());
-        mPort->arrayBounds_.second = formatter.formatReferringExpression(cport->getArrayRight());
+        mPort->arrayBounds_.first = "";
+        mPort->arrayBounds_.second = "";
+        mPort->width_ = "";
         mPort->vectorBounds_.first = formatter.formatReferringExpression(cport->getLeftBound());
         mPort->vectorBounds_.second = formatter.formatReferringExpression(cport->getRightBound());
+        mPort->isWire_ = false;
+        mPort->isTransactional_ = false;
+
+        if (cport->getWire())
+        {
+            mPort->isWire_ = true;
+            mPort->arrayBounds_.first = formatter.formatReferringExpression(cport->getArrayLeft());
+            mPort->arrayBounds_.second = formatter.formatReferringExpression(cport->getArrayRight());
+        }
+        else if (cport->getTransactional())
+        {
+            mPort->isTransactional_ = true;
+            mPort->width_ = formatter.formatReferringExpression(cport->getTransactional()->getBusWidth());
+        }
 
         ports_->insert(cport->name(), mPort);
     }

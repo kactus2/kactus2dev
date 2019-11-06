@@ -150,7 +150,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
     {
         QSharedPointer<MetaPort> mPort = instance_->getPorts()->value(cPort->name());
 
-        if (!mPort)
+        if (!mPort || mPort->isTransactional_)
         {
             // TODO: error
             continue;

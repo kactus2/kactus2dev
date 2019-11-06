@@ -135,11 +135,27 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser const& parser)
     {        
         QSharedPointer<MetaPort> mPort(new MetaPort);
         mPort->port_ = cport;
-        mPort->arrayBounds_.first = parseExpression(parser, cport->getArrayLeft());
-        mPort->arrayBounds_.second = parseExpression(parser, cport->getArrayRight());
+        mPort->arrayBounds_.first = "";
+        mPort->arrayBounds_.second = "";
+        mPort->width_ = "";
         mPort->vectorBounds_.first = parseExpression(parser, cport->getLeftBound());
         mPort->vectorBounds_.second = parseExpression(parser, cport->getRightBound());
         mPort->defaultValue_ = parseExpression(parser, cport->getDefaultValue());
+
+        mPort->isWire_ = false;
+        mPort->isTransactional_ = false;
+
+        if (cport->getWire())
+        {
+            mPort->isWire_ = true;
+            mPort->arrayBounds_.first = parseExpression(parser, cport->getArrayLeft());
+            mPort->arrayBounds_.second = parseExpression(parser, cport->getArrayRight());
+        }
+        else if (cport->getTransactional())
+        {
+            mPort->isTransactional_ = true;
+            mPort->width_ = parseExpression(parser, cport->getTransactional()->getBusWidth());
+        }
 
         getPorts()->insert(cport->name(), mPort);
     }

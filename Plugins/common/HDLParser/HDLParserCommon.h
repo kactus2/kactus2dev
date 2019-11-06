@@ -56,8 +56,20 @@ struct MetaWire
     QString name_;
     //! The hierarchical ports that are assigned to the wire.
     QList<QSharedPointer<MetaPort> > hierPorts_;
-    //! How many times to the wire is referred by a prot assignment.
+    //! How many times to the wire is referred by a port assignment.
     int refCount;
+};
+
+struct MetaTransactional
+{
+    //! Name of the transactional.
+    QString name_;
+
+    //! Hierarchical ports that are assigned to the transactional.
+    QList<QSharedPointer<MetaPort> > hierPorts_;
+
+    //! Number of times this transactional has been assigned to a port.
+    int refCount_;
 };
 
 struct MetaPortAssignment
@@ -68,9 +80,11 @@ struct MetaPortAssignment
     QPair<QString,QString> logicalBounds_;
     //! The wire of interconnection where port is assigned. Is null if there is none.
     QSharedPointer<MetaWire> wire_;
+    //! Interconnection transactional where the port is assigned. Null if not assigned.
+    QSharedPointer<MetaTransactional> transactional_;
     //! The assigned and parsed default value: Either a tie-off or the abstraction definition default.
     QString defaultValue_;
-
+    //! Flag for inverting the signal.
     bool invert_;
 };
 
@@ -78,8 +92,10 @@ struct MetaPort
 {
     //! The matching IP-XACT port.
     QSharedPointer<Port> port_;
-    //! The parsed vector bounds for the port.
+    //! The parsed vector bounds for the port. For wires.
     QPair<QString,QString> vectorBounds_;
+    //! Port width. For transactional.
+    QString width_;
     //! The parsed array bounds for the port.
     QPair<QString,QString> arrayBounds_;
     //! The parsed default value for port.
@@ -88,6 +104,10 @@ struct MetaPort
     QMultiMap<QString, QSharedPointer<MetaPortAssignment> > upAssignments_;
     //! The parsed assignments for port that go lower level in hierarchy.
     QMultiMap<QString, QSharedPointer<MetaPortAssignment> > downAssignments_;
+    //! Flag for wire ports.
+    bool isWire_;
+    //! Flag for transactional ports.
+    bool isTransactional_;
 };
 
 struct MetaInterface;
@@ -98,6 +118,8 @@ struct MetaInterconnection
     QString name_;
     //! The wires for the logical wires in interconnections.
     QMap<QString, QSharedPointer<MetaWire> > wires_;
+    //! The transactionals.
+    QMap<QString, QSharedPointer<MetaTransactional> > transactionals_;
     //! The hierarchical interfaces that are assigned to the interconection.
     QList<QSharedPointer<MetaInterface> > hierIfs_;
 };

@@ -199,7 +199,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
     {
         QSharedPointer<MetaPort> mPort = component_->getPorts()->value(cPort->name());
 
-        if (!mPort)
+        if (!mPort || mPort->isTransactional_)
         {
             // TODO: error
             continue;
