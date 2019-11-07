@@ -109,10 +109,16 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
     QVector<QRegularExpressionMatch> instances;
     QString inspect = componentDeclaration;
 
+    QRegularExpression multilineComment(VerilogSyntax::MULTILINE_COMMENT);
+    QRegularExpression strayComment(VerilogSyntax::COMMENT);
+    inspect = inspect.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment).remove(strayComment);
+
     QString expressionString =
         "\\b([a-zA-Z_][\\w$]*)(\\s+#(?:(?:.|\\n)(?!(?:[)]\\s*[a-zA-Z_]|;)))*(?:.|\\n)\\))?\\s+([a-zA-Z_][\\w$]*)\\s*(\\((?:(?:.|\\n)(?!\\);))*\\s*\\)+;)";
     QRegularExpression instanceExpression(expressionString);
     QRegularExpressionMatchIterator instanceMatchIterator = instanceExpression.globalMatch(inspect);
+
+    QRegularExpressionMatchIterator multilineCommentIterator = multilineComment.globalMatch(input);
 
     while (instanceMatchIterator.hasNext())
     {
@@ -122,7 +128,7 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
         if (instanceMatch.captured(1).compare(QStringLiteral("module"), Qt::CaseInsensitive) != 0)
         {
             instances.append(instanceMatch);
-            highlightInstance(input, componentDeclaration, instanceMatch);
+            highlightInstance(input, componentDeclaration, instanceMatch, multilineCommentIterator);
         }
     }
 
@@ -133,32 +139,59 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
 // Function: VerilogInstanceParser::highlightInstance()
 //-----------------------------------------------------------------------------
 void VerilogInstanceParser::highlightInstance(QString const& input, QString const& moduleDeclaration,
-    QRegularExpressionMatch const& instanceMatch)
+    QRegularExpressionMatch const& instanceMatch, QRegularExpressionMatchIterator const& multilineCommentIterator)
 {
-    int moduleIndex = input.indexOf(moduleDeclaration);
-
-    QString instance = instanceMatch.captured();
-    int instanceIndex = moduleDeclaration.indexOf(instance);
-
     QString instanceModuleName = instanceMatch.captured(1);
-    int instanceModuleNameIndex = instance.indexOf(instanceModuleName);
-    highlightInstanceString(moduleIndex, instanceIndex, instanceModuleNameIndex, instanceModuleName);
-
     QString instanceName = instanceMatch.captured(3);
-    int instanceNameIndex = instance.indexOf(instanceName);
-    highlightInstanceString(moduleIndex, instanceIndex, instanceNameIndex, instanceName);
+
+    QRegularExpression inputInstanceExpression("\\b(" + instanceModuleName +
+        "\\s+(?:[^;])*?" +
+        instanceName + ")\\s*(\\((?:(?:.|\\n)(?!\\);))*\\s*\\)+;)", QRegularExpression::DotMatchesEverythingOption);
+
+    QRegularExpressionMatchIterator instanceIntroductionIterator = inputInstanceExpression.globalMatch(input);
+    while (instanceIntroductionIterator.hasNext())
+    {
+        QRegularExpressionMatch instanceIntroductionMatch = instanceIntroductionIterator.next();
+        if (!matchIsWithinComments(instanceIntroductionMatch, multilineCommentIterator))
+        {
+            QString matchedIntroduction = instanceIntroductionMatch.captured(1);
+            int instanceModuleBeginIndex =
+                instanceIntroductionMatch.capturedStart() + matchedIntroduction.indexOf(instanceModuleName);
+            int instanceModuleEndIndex = instanceModuleBeginIndex + instanceModuleName.length();
+
+            int instanceNameBeginIndex =
+                instanceIntroductionMatch.capturedStart() + matchedIntroduction.lastIndexOf(instanceName);
+            int instanceNameEndIndex = instanceNameBeginIndex + instanceName.length();
+
+            highlighter_->applyHighlight(
+                instanceModuleBeginIndex, instanceModuleEndIndex, ImportColors::INSTANCECOLOR);
+            highlighter_->applyHighlight(
+                instanceNameBeginIndex, instanceNameEndIndex, ImportColors::INSTANCECOLOR);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogInstanceParser::highlightInstanceString()
+// Function: VerilogInstanceParser::matchIsWithinComments()
 //-----------------------------------------------------------------------------
-void VerilogInstanceParser::highlightInstanceString(int const& moduleIndex, int const& instanceIndex,
-    int const& stringBeginIndex, QString const& instanceString)
+bool VerilogInstanceParser::matchIsWithinComments(QRegularExpressionMatch const& expressionMatch,
+    QRegularExpressionMatchIterator commentMatchIterator) const
 {
-    int beginPosition = moduleIndex + instanceIndex + stringBeginIndex;
-    int endPosition = beginPosition + instanceString.length();
+    int expressionStart = expressionMatch.capturedStart();
 
-    highlighter_->applyHighlight(beginPosition, endPosition, ImportColors::INSTANCECOLOR);
+    while (commentMatchIterator.hasNext())
+    {
+        QRegularExpressionMatch commentMatch = commentMatchIterator.next();
+        int commentStart = commentMatch.capturedStart();
+        int commentEnd = commentMatch.capturedEnd();
+
+        if (expressionStart > commentStart && expressionStart < commentEnd)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

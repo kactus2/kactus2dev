@@ -15,6 +15,7 @@
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
 #include <QSharedPointer>
+#include <QRegularExpressionMatchIterator>
 
 class Component;
 class Kactus2Group;
@@ -72,23 +73,25 @@ private:
     /*!
      *  Highlight the selected component instance.
      *
-     *      @param [in] input               The selected verilog file.
-     *      @param [in] moduleDeclaration   The selected component declaration.
-     *      @param [in] instanceMatch       The selected component instance match.
+     *      @param [in] input                       The selected verilog file.
+     *      @param [in] moduleDeclaration           The selected component declaration.
+     *      @param [in] instanceMatch               The selected component instance match.
+     *      @param [in] multilineCommentIterator    Regular expression Match iterator for multi line comments.
      */
     void highlightInstance(QString const& input, QString const& moduleDeclaration,
-        QRegularExpressionMatch const& instanceMatch);
+        QRegularExpressionMatch const& instanceMatch,
+        QRegularExpressionMatchIterator const& multilineCommentIterator);
 
     /*!
-     *  Highlight the selected text.
+     *  Check if a regular expression match is located within comments.
      *
-     *      @param [in] moduleIndex         Start index of the component declaration.
-     *      @param [in] instanceIndex       Start index of the component instance.
-     *      @param [in] stringBeginIndex    Start index of the text.
-     *      @param [in] instanceString      The selected text.
+     *      @param [in] expressionMatch         The selected regular expression match.
+     *      @param [in] commentMatchIterator    Regular expression Match iterator for multi line comments.
+     *
+     *      @return True, if the match is located within comments, false otherwise.
      */
-    void highlightInstanceString(int const& moduleIndex, int const& instanceIndex, int const& stringBeginIndex,
-        QString const& instanceString);
+    bool matchIsWithinComments(QRegularExpressionMatch const& expressionMatch,
+        QRegularExpressionMatchIterator commentMatchIterator) const;
 
     /*!
      *  Get a list of separated sub items and their values from the selected sub item declarations.
