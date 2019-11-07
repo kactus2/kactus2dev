@@ -37,7 +37,10 @@ public:
 	VhdlObject(const QString& name = QString(), const QString& description = QString());
 	
 	//! \brief The destructor
-	virtual ~VhdlObject();
+	virtual ~VhdlObject() = default;
+
+    //! No copying
+    VhdlObject(const VhdlObject& other) = default;
 
 	/*! \brief Write the contents of the object to the text stream.
 	 *
@@ -85,8 +88,6 @@ public:
     virtual QString getVhdlLegalName() const;
 
 private:
-	//! No copying
-	VhdlObject(const VhdlObject& other);
 
 	//! No assignment
 	VhdlObject& operator=(const VhdlObject& other);

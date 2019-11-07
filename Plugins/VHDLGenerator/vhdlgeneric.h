@@ -32,25 +32,26 @@ public:
 	 *
 	*/
 	VhdlGeneric(QSharedPointer<ModuleParameter> generic, QSharedPointer<ExpressionFormatter> formatter);
-	
+
+    //! No copying
+    VhdlGeneric(const VhdlGeneric& other) = delete;
+
+    //! No assignment
+    VhdlGeneric& operator=(const VhdlGeneric& other) = delete;
+
 	//! \brief The destructor
-	virtual ~VhdlGeneric();
+	virtual ~VhdlGeneric() = default;
 
 	/*! \brief Write the contents of the generic into text stream.
 	 *
 	 * \param stream The text stream to write the generic into.
 	 *
 	*/
-	virtual void write(QTextStream& stream) const;
+	virtual void write(QTextStream& stream) const override final;
 
 private:
-	
-	//! No copying
-	VhdlGeneric(const VhdlGeneric& other);
 
-	//! No assignment
-	VhdlGeneric& operator=(const VhdlGeneric& other);
-
+    // Formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;
 };
 

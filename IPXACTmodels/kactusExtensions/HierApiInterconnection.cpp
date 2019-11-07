@@ -87,15 +87,9 @@ direction_()
     QDomElement routeElement = connectionNode.firstChildElement(QStringLiteral("kactus2:route"));
     if (!routeElement.isNull())
     {
+        setOffPage(routeElement.attribute(QStringLiteral("kactus2:offPage")) == QLatin1String("true"));
+
         QList<QPointF> newRoute;
-        if (routeElement.attribute(QStringLiteral("kactus2:offPage")) == QLatin1String("true"))
-        {
-            setOffPage(true);
-        }
-        else
-        {
-            setOffPage(false);
-        }
 
         QDomNodeList positionList = routeElement.childNodes();
         for (int i = 0; i < positionList.count(); ++i)
@@ -110,82 +104,6 @@ direction_()
         setRoute(newRoute);
     }
 }
-
-/*
-//-----------------------------------------------------------------------------
-// Function: HierApiDependency::HierApiDependency()
-//-----------------------------------------------------------------------------
-HierApiDependency::HierApiDependency(QDomNode& node) :
-NameGroup(),
-//name_(), displayName_(), desc_(),
-interfaceRef_(),
-interface_(new ActiveInterface()),
-position_(),
-direction_(1.0, 0.0),
-route_(),
-offPage_(false)
-{
-    interfaceRef_ = node.attributes().namedItem(QStringLiteral("kactus2:interfaceRef")).nodeValue();
-
-    for (int i = 0; i < node.childNodes().count(); ++i)
-    {
-        QDomNode childNode = node.childNodes().at(i);
-
-        if (childNode.isComment())
-        {
-            continue;
-        }
-
-        if (childNode.nodeName() == QStringLiteral("ipxact:name"))
-        {
-            setName(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == QStringLiteral("ipxact:displayName"))
-        {
-            setDisplayName(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == QStringLiteral("ipxact:description"))
-        {
-            setDescription(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == QStringLiteral("kactus2:activeApiInterface"))
-        {
-            //interface_.componentRef = childNode.attributes().namedItem(QStringLiteral("kactus2:componentRef")).nodeValue();
-            //interface_.apiRef = childNode.attributes().namedItem(QStringLiteral("kactus2:apiRef")).nodeValue();
-            interface_->setComponentReference(childNode.attributes().namedItem(QStringLiteral("kactus2:componentRef")).nodeValue());
-            interface_->setBusReference(childNode.attributes().namedItem(QStringLiteral("kactus2:apiRef")).nodeValue());
-        }
-        else if (childNode.nodeName() == QStringLiteral("kactus2:position"))
-        {
-            QDomNamedNodeMap attributeMap = childNode.attributes();
-            position_.setX(attributeMap.namedItem("x")).nodeValue().toInt());
-            position_.setY(attributeMap.namedItem("y")).nodeValue().toInt());
-        }
-        else if (childNode.nodeName() == QStringLiteral("kactus2:direction"))
-        {
-            QDomNamedNodeMap attributeMap = childNode.attributes();
-            direction_.setX(attributeMap.namedItem("x")).nodeValue().toInt());
-            direction_.setY(attributeMap.namedItem("y")).nodeValue().toInt());
-        }
-        else if (childNode.nodeName() == QStringLiteral("kactus2:route"))
-        {
-            offPage_ = childNode.attributes().namedItem(QStringLiteral("kactus2:offPage")).nodeValue() == "true";
-
-            for (int i = 0; i < childNode.childNodes().size(); ++i)
-            {
-                QDomNode posNode = childNode.childNodes().at(i);
-                QPointF pos;
-
-                if (posNode.nodeName() == QStringLiteral("kactus2:position"))
-                {
-                    pos.setX(posNode.attributes().namedItem("x")).nodeValue().toInt());
-                    pos.setY(posNode.attributes().namedItem("y")).nodeValue().toInt());
-                    route_.append(pos);
-                }
-            }
-        }
-    }
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: HierApiInterconnection::HierApiInterconnection()
@@ -255,79 +173,6 @@ void HierApiInterconnection::write(QXmlStreamWriter& writer) const
 
     writer.writeEndElement(); // kactus2:hierApiDependency
 }
-/*
-//-----------------------------------------------------------------------------
-// Function: HierApiDependency::isValid()
-//-----------------------------------------------------------------------------
-bool HierApiDependency::isValid( QStringList& errorList, QStringList const& instanceNames, QString const& parentId ) const {
-	bool valid = true;
-	QString const thisId(QObject::tr("Hierarchical API dependency in %1")).arg(parentId));
-
-	if (name().isEmpty()) {
-		errorList.append(QObject::tr("No name specified for API dependency in %1")).arg(parentId));
-		valid = false;
-	}
-	// instance interface:
-
-	// if the component instance name is empty
-	if (interface_->getComponentReference().isEmpty()) {
-		errorList.append(QObject::tr("No component instance reference set for %1.")).arg(thisId));
-		valid = false;
-	}
-	// if the component instance does not exist.
-	else if (!instanceNames.contains(interface_->getComponentReference())) {
-		errorList.append(QObject::tr("%1 contains reference to component instance %2 that does not exist.")).arg(
-			thisId).arg(interface_->getComponentReference()));
-		valid = false;
-	}
-	// if the API reference is empty
-	if (interface_->getBusReference().isEmpty()) {
-		errorList.append(QObject::tr("No API reference set for API dependency in %1")).arg(thisId));
-		valid = false;
-	}
-
-	// interface in top component:
-
-	if (interfaceRef_.isEmpty()) {
-		errorList.append(QObject::tr("No API reference set for top API dependency in %1.")).arg(thisId));
-		valid = false;
-	}
-
-	return valid;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierApiDependency::isValid()
-//-----------------------------------------------------------------------------
-bool HierApiDependency::isValid( const QStringList& instanceNames ) const {
-	if (name().isEmpty()) {
-		return false;
-	}
-	// instance interface:
-
-	// if the component instance name is empty
-	if (interface_->getComponentReference().isEmpty()) {
-		return false;
-	}
-	// if the component instance does not exist.
-	else if (!instanceNames.contains(interface_->getComponentReference())) {
-		return false;
-	}
-	// if the API reference is empty
-	if (interface_->getBusReference().isEmpty()) {
-		return false;
-	}
-
-	// interface in top component:
-
-	if (interfaceRef_.isEmpty()) {
-		return false;
-	}	
-
-	// all ok
-	return true;
-}
-*/
 
 //-----------------------------------------------------------------------------
 // Function: HierApiInterconnection::setTopInterfaceRef()

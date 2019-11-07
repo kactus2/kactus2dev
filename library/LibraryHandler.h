@@ -502,7 +502,7 @@ private:
         bool isValid;                       //<! Flag for well-formed content.
 
         //! Constructor.
-        DocumentInfo(QString const& filePath = QString(), 
+        explicit DocumentInfo(QString const& filePath = QString(), 
             QSharedPointer<Document> doc = QSharedPointer<Document>(),
             bool valid = false): document(doc), path(filePath), isValid(valid) {}
     };

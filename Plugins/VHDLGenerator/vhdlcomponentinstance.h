@@ -58,7 +58,7 @@ public:
 	 *
 	 *      @param [in] stream  The text stream to write the instance into.
 	 */
-	void write(QTextStream& stream) const;
+	virtual void write(QTextStream& stream) const override final;
 
 	/*!
      *  Get the name of the component instance.

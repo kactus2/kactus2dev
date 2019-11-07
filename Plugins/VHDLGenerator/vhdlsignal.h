@@ -35,14 +35,14 @@ public:
 
 	
 	//! \brief The destructor
-	virtual ~VhdlSignal();
+	virtual ~VhdlSignal() = default;
 
 	/*! \brief Write the declaration of the signal to the text stream.
 	 *
 	 * \param stream The text stream to write the signal declaration into.
 	 *
 	*/
-	virtual void write(QTextStream& stream) const;
+	virtual void write(QTextStream& stream) const override final;
 
 	/*! \brief Get the left bound of the signal
 	 *

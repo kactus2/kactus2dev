@@ -42,10 +42,10 @@ public:
 		const QString& signalRight = "-1");
 
 	//! \brief Copy constructor
-	VhdlConnectionEndPoint(const VhdlConnectionEndPoint& other);
+	VhdlConnectionEndPoint(const VhdlConnectionEndPoint& other) = default;
 
 	//! \brief Assignment operator
-	VhdlConnectionEndPoint& operator=(const VhdlConnectionEndPoint& other);
+	VhdlConnectionEndPoint& operator=(const VhdlConnectionEndPoint& other) = default;
 
 	//! \brief The == operator
 	bool operator==(const VhdlConnectionEndPoint& other) const;
@@ -60,7 +60,7 @@ public:
 	bool operator>(const VhdlConnectionEndPoint& other) const;
 
 	//! \brief The destructor
-	virtual ~VhdlConnectionEndPoint();
+	virtual ~VhdlConnectionEndPoint() = default;
 
 	/*! \brief Get the instance name of the end point.
 	 *

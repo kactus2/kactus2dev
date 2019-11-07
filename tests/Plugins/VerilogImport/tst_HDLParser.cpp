@@ -236,18 +236,22 @@ void tst_HDLParser::init()
     dataAbstractionDefinition_ =  QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
     dataAbstractionDefinition_->setVlnv(*dataAbstractionVLNV_.data());
 
-    QSharedPointer<PortAbstraction> logicalPort (new PortAbstraction());
+    QSharedPointer<PortAbstraction> logicalPort(new PortAbstraction());
     logicalPort->setName("CLK");
+    logicalPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
     clkAbstractionDefinition_->getLogicalPorts()->append(logicalPort);
 
     logicalPort = QSharedPointer<PortAbstraction>(new PortAbstraction());
     logicalPort->setName("DATA");
+    logicalPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
     dataAbstractionDefinition_->getLogicalPorts()->append(logicalPort);
     logicalPort = QSharedPointer<PortAbstraction>(new PortAbstraction());
     logicalPort->setName("ENABLE");
+    logicalPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
     dataAbstractionDefinition_->getLogicalPorts()->append(logicalPort);
     logicalPort = QSharedPointer<PortAbstraction>(new PortAbstraction());
     logicalPort->setName("FULL");
+    logicalPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
     dataAbstractionDefinition_->getLogicalPorts()->append(logicalPort);
 
     library_.clear();

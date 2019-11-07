@@ -16,24 +16,6 @@ direction_(direction) {
 
 }
 
-VhdlPortSorter::VhdlPortSorter( const VhdlPortSorter& other ):
-interface_(other.interface_),
-name_(other.name_),
-direction_(other.direction_) {
-}
-
-VhdlPortSorter::~VhdlPortSorter() {
-}
-
-VhdlPortSorter& VhdlPortSorter::operator=( const VhdlPortSorter& other ) {
-
-	if (this != &other) {
-		interface_ = other.interface_;
-		name_ = other.name_;
-		direction_ = other.direction_;
-	}
-	return *this;
-}
 
 bool VhdlPortSorter::operator==( const VhdlPortSorter& other ) const {
 	return (0 == name_.compare(other.name_, Qt::CaseInsensitive));

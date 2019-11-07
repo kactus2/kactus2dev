@@ -13,36 +13,32 @@
 
 #include <IPXACTmodels/Component/Port.h>
 
-VhdlPort::VhdlPort(QSharedPointer<Port> port, QSharedPointer<ExpressionParser> parser):
-VhdlTypedObject(port->name(),
-		   port->getTypeName(),
-		   port->getDefaultValue(), 
-		   port->description()),
-direction_(port->getDirection()),
-left_(port->getLeftBound()),
-right_(port->getRightBound()),
-commentOut_(true),
-parser_(parser)
+VhdlPort::VhdlPort(QSharedPointer<Port> port, QSharedPointer<ExpressionParser> parser) :
+    VhdlTypedObject(port->name(), port->getTypeName(), port->getDefaultValue(), port->description()),
+    direction_(port->getDirection()),
+    left_(port->getLeftBound()),
+    right_(port->getRightBound()),
+    commentOut_(true),
+    parser_(parser)
 {
-	// if type is not set then use the defaults
-	if (port->getTypeName().isEmpty())
+    // if type is not set then use the defaults
+    if (port->getTypeName().isEmpty())
     {
-		if (size() == 1)
+        if (size() == 1)
         {
-			setType(QString("std_logic"));
-		}
-		else
+            setType(QString("std_logic"));
+        }
+        else
         {
-			setType(QString("std_logic_vector"));
-		}
-	}
+            setType(QString("std_logic_vector"));
+        }
+    }
 }
 
-VhdlPort::~VhdlPort() {
-}
-
-void VhdlPort::write( QTextStream& stream ) const {
-	if (commentOut_) {
+void VhdlPort::write( QTextStream& stream ) const
+{
+	if (commentOut_)
+    {
 		stream << "-- ";
 	}
 
@@ -52,29 +48,34 @@ void VhdlPort::write( QTextStream& stream ) const {
 	stream << VhdlGeneral::vhdlType2String(type(), parser_->parseExpression(left_).toInt(), parser_->parseExpression(right_).toInt());
 }
 
-int VhdlPort::size() const {
+int VhdlPort::size() const
+{
     return parser_->parseExpression(left_).toInt() - parser_->parseExpression(right_).toInt() + 1;
 }
 
-QString VhdlPort::left() const {
+QString VhdlPort::left() const
+{
 	return left_;
 }
 
-QString VhdlPort::right() const {
+QString VhdlPort::right() const
+{
 	return right_;
 }
 
-void VhdlPort::setCommented( bool commentOut ) {
+void VhdlPort::setCommented( bool commentOut )
+{
 	commentOut_ = commentOut;
 }
 
-bool VhdlPort::isCommented() const {
+bool VhdlPort::isCommented() const
+{
 	return commentOut_;
 }
 
 bool VhdlPort::hasRealPorts( const QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >& ports )
 {
-	foreach (QSharedPointer<VhdlPort> port, ports)
+    for (auto const& port : ports)
     {
 		// if at least one port that is uncommented is found
 		if (!port->isCommented())

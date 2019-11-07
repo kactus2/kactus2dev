@@ -35,14 +35,14 @@ public:
 	VhdlPort(QSharedPointer<Port> port, QSharedPointer<ExpressionParser> parser);
 	
 	//! \brief The destructor
-	virtual ~VhdlPort();
+	virtual ~VhdlPort() = default;
 
 	/*! \brief Write the contents of the port to the text stream.
 	 *
 	 * \param stream The text stream to write the port into.
 	 *
 	*/
-	virtual void write(QTextStream& stream) const;
+	virtual void write(QTextStream& stream) const override final;
 
 	/*! \brief Get the size of the port.
 	 * 
