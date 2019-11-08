@@ -24,11 +24,10 @@ class K2EnvVariableSettingsPage : public SettingsPage
 
 public:
 
-
 	K2EnvVariableSettingsPage(QSettings& settings);
 	
 	//! \brief The destructor.
-	virtual ~K2EnvVariableSettingsPage();
+	virtual ~K2EnvVariableSettingsPage() = default;
 
 	/*! \brief Apply the changes made in the settings page.
 	 *
@@ -37,7 +36,7 @@ public:
 	 * Access:		virtual public 
 	 *
 	*/
-	virtual void apply();
+	virtual void apply() override final;
 
     /*! \brief Checks that all variables have a defined name.
      *
@@ -48,7 +47,7 @@ public:
      *
      * \return False if at least one variable name is empty.
     */
-    virtual bool prevalidate() const;
+    virtual bool prevalidate() const override final;
 
     /*! \brief Checks that all variables have a defined name. 
      *
@@ -61,7 +60,7 @@ public:
      *
      * \return False if at least one variable name is empty.
     */
-    virtual bool validate();
+    virtual bool validate() override final;
 
 private:
 

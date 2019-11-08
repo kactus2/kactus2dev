@@ -39,7 +39,12 @@ public:
     /*!
      *  Destructor.
      */
-    virtual  ~PluginSettingsPage();
+    virtual  ~PluginSettingsPage() = default;
+
+    //! Disable copying.
+    PluginSettingsPage(PluginSettingsPage const& rhs) = delete;
+
+    PluginSettingsPage& operator=(PluginSettingsPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -48,12 +53,12 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    virtual bool validate() override final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    virtual void apply() override final;
 
 private slots:
     /*!
@@ -67,9 +72,6 @@ private slots:
     void onDirectoriesChanged();
 
 private:
-    //! Disable copying.
-    PluginSettingsPage(PluginSettingsPage const& rhs);
-
     //! Sets the page layout.
     void setupLayout();
 
@@ -84,7 +86,6 @@ private:
      */
     void resetStacks();
 
-    PluginSettingsPage& operator=(PluginSettingsPage const& rhs);
 
     /*!
      *  Creates a new category item to the tree.

@@ -27,7 +27,7 @@ public:
      *      @param [in] filename      The name of the destination file.
      *      @param [in] indentString  The indentation string.
      */
-    CSourceWriter(QString const& filename, QString const& indentString);
+    explicit CSourceWriter(QString const& filename, QString const& indentString);
 
     /*!
      *  Destructor.

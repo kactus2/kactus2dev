@@ -35,7 +35,11 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~GeneralSettingsPage();
+    virtual ~GeneralSettingsPage() = default;
+
+    // Disable copying.
+    GeneralSettingsPage(GeneralSettingsPage const& rhs) = delete;
+    GeneralSettingsPage& operator=(GeneralSettingsPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -44,21 +48,14 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    virtual bool validate() override final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    virtual void apply() override final;
 
 private:
-    // Disable copying.
-    GeneralSettingsPage(GeneralSettingsPage const& rhs);
-    GeneralSettingsPage& operator=(GeneralSettingsPage const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
 
     //! Username line edit.
     QLineEdit* usernameEdit_;

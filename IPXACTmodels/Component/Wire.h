@@ -65,27 +65,7 @@ public:
 	 *  The destructor.
 	 */
 	~Wire();
-
-	/*! \brief Check if the wire element is in valid state or not.
-	* 
-	* \param hasViews Must be true if component has at least one view. This is 
-	* needed because if port has a type specified then at least one view is needed.
-	* 
-	* \return True if wire is in valid state.
-	*/
-	//bool isValid(bool hasViews) const;
-
-	/*! \brief Check if the wire is in a valid state.
-	 * 
-	 * \param hasViews Must be true if component has at least one view. This is
-	 * needed because if port has a type specified then at least one view is needed.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	//bool isValid(bool hasViews, QStringList& errorList, const QString& parentIdentifier) const;
-
+	
 	/*!
 	 *  Get the value of all logical directions allowed element.
 	 *

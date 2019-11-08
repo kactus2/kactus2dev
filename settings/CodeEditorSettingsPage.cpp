@@ -75,8 +75,7 @@ SettingsPage(settings),
         highlightTypeList_->addItem(STYLE_NAMES[i]);
     }
 
-    previewBox_->setFixedSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
-    //previewBox_->setFixedHeight();
+    previewBox_->setFixedSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));    
     previewBox_->setColor(Qt::white);
     previewBox_->setText("AaBbCcXxYyZz");
 
@@ -96,13 +95,6 @@ SettingsPage(settings),
     loadSettings();
 
     highlightTypeList_->setCurrentRow(0);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~CodeEditorSettingsPage()
-//-----------------------------------------------------------------------------
-CodeEditorSettingsPage::~CodeEditorSettingsPage()
-{
 }
 
 //-----------------------------------------------------------------------------

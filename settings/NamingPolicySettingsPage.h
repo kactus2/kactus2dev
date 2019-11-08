@@ -41,12 +41,16 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~NamingPolicySettingsPage();
+    virtual ~NamingPolicySettingsPage() = default;
+
+    // Disable copying.
+    NamingPolicySettingsPage(NamingPolicySettingsPage const& rhs) = delete;
+    NamingPolicySettingsPage& operator=(NamingPolicySettingsPage const& rhs) = delete;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    virtual void apply() override final;
 
 private slots:
     /*!
@@ -62,9 +66,6 @@ private slots:
     void saveCurrentValues();
 
 private:
-    // Disable copying.
-    NamingPolicySettingsPage(NamingPolicySettingsPage const& rhs);
-    NamingPolicySettingsPage& operator=(NamingPolicySettingsPage const& rhs);
 
     //-----------------------------------------------------------------------------
     //! Policy type enumeration.
@@ -89,7 +90,7 @@ private:
         /*!
          *  Constructor.
          */
-        PolicyCategory(QString const& key, QString const& name, PolicyType type)
+        explicit PolicyCategory(QString const& key, QString const& name, PolicyType type)
             : key(key),
               name(name),
               type(type),

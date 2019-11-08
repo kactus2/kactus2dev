@@ -159,6 +159,7 @@ private:
 		//! Assignment operator.
 		PortConnection& operator=(const PortConnection& other) = default;
 
+        //! The destructor.
         ~PortConnection() = default;
 	};
 

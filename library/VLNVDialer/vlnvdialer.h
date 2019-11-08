@@ -43,7 +43,7 @@ public:
 	VLNVDialer(QWidget *parent);
 	
 	//! The destructor
-	virtual ~VLNVDialer();
+	virtual ~VLNVDialer() = default;
 
 	/*! Set the root item used to create the suggestions for dialer.
 	 *
@@ -96,6 +96,11 @@ public slots:
 
 	//! Refresh the list of vendors on the library
 	void refreshLibrary();
+
+protected:
+
+    //! Handler for close event.
+    virtual void closeEvent(QCloseEvent *event) override final;
 
 private slots:
 

@@ -30,23 +30,21 @@ public:
 	FileTypesView(QWidget *parent);
 	
 	//! \brief The destructor.
-	virtual ~FileTypesView();
+    virtual ~FileTypesView() = default;
+
+    //! \brief No copying
+    FileTypesView(const FileTypesView& other) = delete;
+
+    //! \brief No assignment
+    FileTypesView& operator=(const FileTypesView& other) = delete;
 
 protected:
 
 	//! \brief Handler for context menu events
-	virtual void contextMenuEvent(QContextMenuEvent* event);
+	virtual void contextMenuEvent(QContextMenuEvent* event) override final;
 
 	//! \brief Handler for key press events
-	virtual void keyPressEvent(QKeyEvent* event);
-
-private:
-	
-	//! \brief No copying
-	FileTypesView(const FileTypesView& other);
-
-	//! \brief No assignment
-	FileTypesView& operator=(const FileTypesView& other);
+	virtual void keyPressEvent(QKeyEvent* event) override final;
 
 };
 

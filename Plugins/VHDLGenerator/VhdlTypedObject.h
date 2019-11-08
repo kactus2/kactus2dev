@@ -44,12 +44,12 @@ public:
     //! Disable copying
     VhdlTypedObject(const VhdlTypedObject& other) = default;
 
-	/*! \brief Write the contents of the object to the text stream.
+	/*! Write the contents of the object to the text stream.
 	 *
 	 * This is a pure virtual function and must be implemented in all classes 
 	 * derived from this class.
 	 *
-	 * \param stream The text stream to write the object into.
+	 * @param [in] stream The text stream to write the object into.
 	 *
 	*/
 	virtual void write(QTextStream& stream) const override = 0;

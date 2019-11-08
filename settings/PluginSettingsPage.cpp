@@ -73,14 +73,6 @@ SettingsPage(settings),
 }
 
 //-----------------------------------------------------------------------------
-// Function: PluginSettingsPage::~PluginSettingsPage()
-//-----------------------------------------------------------------------------
-PluginSettingsPage::~PluginSettingsPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: PluginSettingsPage::validate()
 //-----------------------------------------------------------------------------
 bool PluginSettingsPage::validate()
@@ -133,11 +125,6 @@ void PluginSettingsPage::apply()
             // Retrieve the plugin pointer from the data.
             IPlugin* plugin = static_cast<IPlugin*>(item->data(0, PLUGIN_POINTER_ROLE).value<void*>());
             Q_ASSERT(plugin != 0);
-
-            // Retrieve the settings widget index from the data and save custom settings.
-            //int index = item->data(0, PLUGIN_STACK_INDEX_ROLE).toInt();
-            //QWidget* settingsWidget = settingsStack_.widget(index);
-            //Q_ASSERT(settingsWidget != 0);
 
             // Save the active state.
             settings_.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));

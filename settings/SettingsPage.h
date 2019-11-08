@@ -33,7 +33,11 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~SettingsPage();
+    virtual ~SettingsPage() = default;
+
+    // Disable copying.
+    SettingsPage(SettingsPage const& rhs) = delete;
+    SettingsPage& operator=(SettingsPage const& rhs) = delete;
 
     /*!
      *  Called when the page is to be changed and this page would be hidden.
@@ -51,9 +55,6 @@ protected:
     QSettings& settings() const;
 
 private:
-    // Disable copying.
-    SettingsPage(SettingsPage const& rhs);
-    SettingsPage& operator=(SettingsPage const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.

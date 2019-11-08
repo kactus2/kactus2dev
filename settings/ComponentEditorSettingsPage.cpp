@@ -33,14 +33,6 @@ currentWorkspaceIndex_(0)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorSettingsPage::~ComponentEditorSettingsPage()
-//-----------------------------------------------------------------------------
-ComponentEditorSettingsPage::~ComponentEditorSettingsPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentEditorSettingsPage::apply()
 //-----------------------------------------------------------------------------
 void ComponentEditorSettingsPage::apply()

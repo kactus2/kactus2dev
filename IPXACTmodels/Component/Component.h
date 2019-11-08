@@ -67,12 +67,7 @@ public:
 	 *
 	 *      param [in] vlnv     The vlnv that is set for the component.
 	 */
-	Component(const VLNV &vlnv);
-
-	/*!
-     *  The default constructor.
-	 */
-	Component();
+	explicit Component(const VLNV &vlnv = VLNV());
 
 	//! Copy constructor.
 	Component(const Component &other);
@@ -186,7 +181,6 @@ public:
 	 *
 	 *      @param [in] newChannels     A list containing the new channels to be set.
 	 */
-	//void setChannels(const QList<QSharedPointer<Channel> > &channels);
     void setChannels(QSharedPointer<QList<QSharedPointer<Channel> > > newChannels);
 
 	/*!

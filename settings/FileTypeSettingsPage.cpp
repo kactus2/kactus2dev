@@ -59,13 +59,6 @@ SettingsPage(settings),
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileTypeSettingsPage::~FileTypeSettingsPage()
-//-----------------------------------------------------------------------------
-FileTypeSettingsPage::~FileTypeSettingsPage()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileTypeSettingsPage::apply()
 //-----------------------------------------------------------------------------
 void FileTypeSettingsPage::apply()

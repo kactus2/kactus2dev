@@ -68,13 +68,6 @@ LanguageHighlighter::LanguageHighlighter(QTextDocument* parent): QSyntaxHighligh
 }
 
 //-----------------------------------------------------------------------------
-// Function: LanguageHighlighter::~LanguageHighlighter()
-//-----------------------------------------------------------------------------
-LanguageHighlighter::~LanguageHighlighter()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: LanguageHighlighter::setStyle()
 //-----------------------------------------------------------------------------
 void LanguageHighlighter::setStyle(StyleType type, HighlightStyleDesc const& styleDesc)
