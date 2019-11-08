@@ -327,7 +327,7 @@ bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::onDisconnect()
 //-----------------------------------------------------------------------------
-void SWInterfaceItem::onDisconnect(ConnectionEndpoint const*)
+void SWInterfaceItem::onDisconnect()
 {
     // Undefine the interface if it not typed.
     if (!isTypeLocked() && !isConnected())
@@ -663,13 +663,13 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
         if (conn->endpoint1() != this)
         {
             conn->endpoint1()->removeConnection(conn);
-            conn->endpoint1()->onDisconnect(this);
+            conn->endpoint1()->onDisconnect();
             conn->endpoint1()->addConnection(conn);
         }
         else
         {
             conn->endpoint2()->removeConnection(conn);
-            conn->endpoint2()->onDisconnect(this);
+            conn->endpoint2()->onDisconnect();
             conn->endpoint2()->addConnection(conn);
         }
     }

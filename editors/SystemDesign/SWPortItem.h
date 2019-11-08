@@ -157,10 +157,8 @@ public:
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
-     *
-     *      @param [in] other The other end point of the connection.
      */
-    virtual void onDisconnect(ConnectionEndpoint const* other);
+    virtual void onDisconnect() override final;
 
     /*!
      *  Returns true if a connection is valid between the two endpoints.

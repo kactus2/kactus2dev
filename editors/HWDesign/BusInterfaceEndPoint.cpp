@@ -368,14 +368,6 @@ bool BusInterfaceEndPoint::isConnectionValid(ConnectionEndpoint const* other) co
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::onDisconnect()
-//-----------------------------------------------------------------------------
-void BusInterfaceEndPoint::onDisconnect(ConnectionEndpoint const*)
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::onConnect()
 //-----------------------------------------------------------------------------
 bool BusInterfaceEndPoint::onConnect(ConnectionEndpoint const* other)

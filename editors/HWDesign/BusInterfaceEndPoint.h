@@ -130,13 +130,6 @@ public:
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
     /*!
-     *  Handles the disconnecting of the connection end points.
-     *
-     *      @param [in] other   The other end of the connection.
-     */
-    virtual void onDisconnect(ConnectionEndpoint const* other);
-
-    /*!
      *  Handles the connecting of the connection end points.
      *
      *      @param [in] other   The other end of the connection.

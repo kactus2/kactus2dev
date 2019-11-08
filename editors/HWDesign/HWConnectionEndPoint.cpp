@@ -147,14 +147,6 @@ GraphicsItemLabel* HWConnectionEndpoint::getNameLabel() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWConnectionEndpont::shortenNameLabel()
-//-----------------------------------------------------------------------------
-void HWConnectionEndpoint::shortenNameLabel(qreal /*width*/)
-{
-	
-}
-
-//-----------------------------------------------------------------------------
 // Function: HWConnectionEndPoint::getOwnerComponent()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> HWConnectionEndpoint::getOwnerComponent() const

@@ -95,11 +95,6 @@ public:
     virtual QString adHocIdentifier() const = 0;
 
     /*!
-     *  Returns true if the ad-hoc visibilities are protected.
-     */
-    //virtual bool isProtected() const = 0;
-
-    /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
     virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);

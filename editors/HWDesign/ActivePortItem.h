@@ -101,7 +101,7 @@ public:
 	 *
 	 *      @param [in] width   The width of the shortened name.
 	 */
-    void shortenNameLabel(qreal width);
+    virtual void shortenNameLabel(qreal width) override final;
 
 protected:
 
