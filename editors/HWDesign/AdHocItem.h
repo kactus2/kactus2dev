@@ -88,13 +88,6 @@ public:
     virtual bool onConnect(ConnectionEndpoint const* other);
 
     /*!
-     *  Called when a connection has been removed from between this and another end point.
-     *
-     *      @param [in] other The other end point of the connection.
-     */
-    virtual void onDisconnect(ConnectionEndpoint const* other);
-
-    /*!
      *  Check if the port is exclusive, i.e. can only have one connection.
      *
      *      @return False. Ad hoc ports are always non-exclusive.
@@ -129,13 +122,6 @@ public:
      *  Returns the type of the endpoint (API/COM/bus/ad-hoc/undefined).
      */
     virtual ConnectionEndpoint::EndpointType getType() const;
-
-	/*!
-     *  Sets the interface mode for the port.
-     *
-     *      @param [in] mode The mode to set.
-     */
-    virtual void setInterfaceMode(General::InterfaceMode mode);
 
     /*!
      *  Create or change the current tie off label.

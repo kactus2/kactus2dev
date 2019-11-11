@@ -148,7 +148,7 @@ bool GraphicsConnection::connectEnds()
 
     if (!endpoint2_->onConnect(endpoint1_))
     {
-        endpoint1_->onDisconnect(endpoint2_);
+        endpoint1_->onDisconnect();
         endpoint1_ = 0;
         endpoint2_ = 0;
         return false;
@@ -681,14 +681,14 @@ void GraphicsConnection::disconnectEnds()
     if (endpoint1_)
     {
         endpoint1_->removeConnection(this);
-        endpoint1_->onDisconnect(endpoint2_);
+        endpoint1_->onDisconnect();
         endpoint1_->setSelectionHighlight(false);
     }
 
     if (endpoint2_)
     {
         endpoint2_->removeConnection(this);
-        endpoint2_->onDisconnect(endpoint1_);
+        endpoint2_->onDisconnect();
         endpoint2_->setSelectionHighlight(false);
     }
 
@@ -1078,7 +1078,7 @@ void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
     {
         // Disconnect from the previous endpoint.
         endpoint1_->removeConnection(this);
-        endpoint1_->onDisconnect(endpoint2_);
+        endpoint1_->onDisconnect();
     }
 
     // Connect to the new endpoint.
@@ -1102,7 +1102,7 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
     {
         // Disconnect from the previous endpoint.
         endpoint2_->removeConnection(this);
-        endpoint2_->onDisconnect(endpoint1_);
+        endpoint2_->onDisconnect();
     }
 
     // Connect to the new endpoint.

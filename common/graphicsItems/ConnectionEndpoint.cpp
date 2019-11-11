@@ -117,6 +117,14 @@ bool ConnectionEndpoint::isConnected() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::onDisconnect()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::onDisconnect()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::canConnect()
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const

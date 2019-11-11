@@ -32,9 +32,8 @@ class AdHocConnectionItem : public GraphicsConnection
 public:
     enum { Type = GFX_TYPE_DIAGRAM_ADHOC_CONNECTION };
   
-    AdHocConnectionItem(QPointF const& p1, QVector2D const& dir1,
-                           QPointF const& p2, QVector2D const& dir2,
-                           DesignDiagram* parent);
+    explicit AdHocConnectionItem(QPointF const& p1, QVector2D const& dir1, QPointF const& p2,
+        QVector2D const& dir2, DesignDiagram* parent);
 
     AdHocConnectionItem(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
         QSharedPointer<AdHocConnection> adhocConnection, QSharedPointer<ConnectionRoute> route,

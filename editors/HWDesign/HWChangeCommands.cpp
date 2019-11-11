@@ -678,11 +678,11 @@ void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
         {
             if (conn->endpoint1() != endpoint_)
             {
-                conn->endpoint1()->onDisconnect(endpoint_);
+                conn->endpoint1()->onDisconnect();
             }
             else
             {
-                conn->endpoint2()->onDisconnect(endpoint_);
+                conn->endpoint2()->onDisconnect();
             }
         }
     }

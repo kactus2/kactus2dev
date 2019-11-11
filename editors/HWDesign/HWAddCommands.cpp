@@ -86,10 +86,7 @@ void PortAddCommand::redo()
 
     del_ = false;
 
-    // Child commands need not be executed because the other ports change their position
-    // in a deterministic way.
-    //QUndoCommand::redo();
-
+    // Child commands need not be executed because the other ports change their position in a deterministic way.
     if (port_->scenePos().y() + GraphicsColumnConstants::MIN_Y_PLACEMENT > diagram_->sceneRect().height())
     {
         diagram_->resetSceneRectangleForItems();

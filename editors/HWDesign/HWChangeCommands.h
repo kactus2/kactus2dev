@@ -240,6 +240,10 @@ public:
      */
     ~ComponentActiveViewChangeCommand();
 
+    // Disable copying.
+    ComponentActiveViewChangeCommand(ComponentChangeNameCommand const& rhs) = delete;
+    ComponentActiveViewChangeCommand& operator=(ComponentChangeNameCommand const& rhs) = delete;
+
     /*!
      *  Undoes the command.
      */
@@ -251,9 +255,6 @@ public:
     virtual void redo();
 
 private:
-    // Disable copying.
-    ComponentActiveViewChangeCommand(ComponentChangeNameCommand const& rhs);
-    ComponentActiveViewChangeCommand& operator=(ComponentChangeNameCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
