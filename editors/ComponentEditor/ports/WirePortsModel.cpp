@@ -320,7 +320,6 @@ int WirePortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString cons
 //-----------------------------------------------------------------------------
 void WirePortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int row)
 {
-//     QModelIndex index = QAbstractTableModel::index(row, WirePortColumns::TYPE_NAME);
     QModelIndex index = QAbstractTableModel::index(row, typeColumn());
 
     int calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toInt();

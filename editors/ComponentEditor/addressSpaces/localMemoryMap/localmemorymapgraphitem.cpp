@@ -39,7 +39,7 @@ unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const
 //-----------------------------------------------------------------------------
 void LocalMemoryMapGraphItem::refresh()
 {
-    QString name = memoryMap_->name();
+    QString name = getMemoryMap()->name();
     if (name.isEmpty())
     {
         name = "Local memory map";

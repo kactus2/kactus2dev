@@ -158,7 +158,7 @@ protected:
      *
      *      return      True, if column can have expressions, false otherwise.
      */
-    virtual bool isValidExpressionColumn(QModelIndex const& index) const = 0;
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const override = 0;
 
     /*!
      *  Gets the expression for the given index, or plain value if there is no expression.
@@ -167,7 +167,7 @@ protected:
      *
      *      return      Expression in the given index, or plain value.
      */
-    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const override;
 
     /*!
      *  Gets the value for the given index.
@@ -185,7 +185,7 @@ protected:
      *
      *      return      True, if the data in the parameter is valid, false otherwise.
      */
-    virtual bool validateIndex(QModelIndex const& index) const;
+    virtual bool validateIndex(QModelIndex const& index) const override;
 
     /*!
      *  Get all the references made to the selected parameter from the selected row.
@@ -195,7 +195,7 @@ protected:
      *
      *      @return Number of references made to the selected id from the selected row.
      */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const&  valueID) const;
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const&  valueID) const override;
 
     /*!
      *  Gets the port in a given row.

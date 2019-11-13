@@ -309,24 +309,10 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     busIf->setBusType(busVLNV);
 
     // Open the bus interface wizard.
-    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this, absVLNV, 
-        dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION);
-    component_->getBusInterfaces()->append(busIf);   
+    BusInterfaceWizard* wizard(new BusInterfaceWizard(component_, busIf, handler_, selectedPorts, this, absVLNV,
+        dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION));
 
-    connect(&wizard, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&wizard, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-
-    if (wizard.exec() == QWizard::Accepted)
-    {
-        emit createInterface();
-        emit contentChanged();         
-    }
-    else
-    {
-        component_->getBusInterfaces()->removeAll(busIf);
-    }
+    openBusInterfaceWizard(busIf, wizard);
 }
 
 //-----------------------------------------------------------------------------
@@ -344,18 +330,27 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
     busIf->getAbstractionTypes()->append(abstraction);
 
     // Open the bus interface wizard.
-    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this);
-    component_->getBusInterfaces()->append(busIf);   
+    BusInterfaceWizard* wizard(new BusInterfaceWizard(component_, busIf, handler_, selectedPorts, this));
 
-    connect(&wizard, SIGNAL(increaseReferences(QString)),
+    openBusInterfaceWizard(busIf, wizard);
+}
+
+//-----------------------------------------------------------------------------
+// Function: portseditor::connectBusInterfaceWizard()
+//-----------------------------------------------------------------------------
+void PortsEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard* wizard)
+{
+    component_->getBusInterfaces()->append(busIf);
+
+    connect(wizard, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&wizard, SIGNAL(decreaseReferences(QString)),
+    connect(wizard, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    if (wizard.exec() == QWizard::Accepted)
+    if (wizard->exec() == QWizard::Accepted)
     {
         emit createInterface();
-        emit contentChanged();         
+        emit contentChanged();
     }
     else
     {

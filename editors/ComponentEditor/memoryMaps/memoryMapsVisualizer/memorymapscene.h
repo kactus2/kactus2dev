@@ -37,7 +37,7 @@ public:
 	 *
 	 *      @param [in] parent  Pointer to the owner of the graphics scene.
 	 */
-	MemoryMapScene(QObject *parent);
+	explicit MemoryMapScene(QObject *parent);
 	
 	//! The destructor.
 	virtual ~MemoryMapScene();

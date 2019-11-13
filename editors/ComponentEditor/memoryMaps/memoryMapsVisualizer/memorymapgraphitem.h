@@ -104,6 +104,15 @@ public:
 
 protected:
 
+    /*!
+     *  Get the displayed memory remap.
+     *
+     *      @return The displayed memory remap.
+     */
+    QSharedPointer<MemoryMapBase> getMemoryMap() const;
+
+private:
+
 	//! Pointer to the memory remap that is shown
     QSharedPointer<MemoryMapBase> memoryMap_;
 

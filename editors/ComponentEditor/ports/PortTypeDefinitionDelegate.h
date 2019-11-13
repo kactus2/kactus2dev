@@ -29,7 +29,7 @@ public:
      *
      *      @param [in] parent  The parent object.
      */
-    PortTypeDefinitionDelegate(QObject* parent = 0);
+    explicit PortTypeDefinitionDelegate(QObject* parent = 0);
 	
 	/*!
      *  The destructor.

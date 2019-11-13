@@ -16,12 +16,14 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/itemeditor.h>
 
+#include <QTabWidget>
+
+class BusInterface;
+class BusInterfaceWizard;
 class Component;
 class LibraryInterface;
 class PortValidator;
 class MasterPortsEditor;
-
-#include <QTabWidget>
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
@@ -132,6 +134,14 @@ private slots:
     void redefineTabText();
 
 private:
+
+    /*!
+     *  Open the bus interface wizard.
+     *
+     *      @param [in] busIf   The new bus interface.
+     *      @param [in] wizard  The selected interface wizard.
+     */
+    void openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard* wizard);
 
     /*!
      *  Connect the signals.

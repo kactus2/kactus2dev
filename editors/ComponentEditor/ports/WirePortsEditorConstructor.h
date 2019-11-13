@@ -59,7 +59,7 @@ public:
     virtual PortsModel* constructModel(QSharedPointer<Component> component,
         QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<PortValidator> portValidator,
-        QSortFilterProxyModel* filter, QObject* parent = 0) const;
+        QSortFilterProxyModel* filter, QObject* parent = 0) const override final;
 
     /*!
      *  Construct a filter.
@@ -68,7 +68,7 @@ public:
      *
      *      @return The created ports filter.
      */
-    virtual PortsFilter* constructFilter(QObject* parent = 0) const;
+    virtual PortsFilter* constructFilter(QObject* parent = 0) const override final;
 
     /*!
      *  Construct a view.
@@ -78,7 +78,7 @@ public:
      *
      *      @return The created view.
      */
-    virtual PortsView* constructView(QString const& defaultPath, QWidget* parent) const;
+    virtual PortsView* constructView(QString const& defaultPath, QWidget* parent) const override final;
 
     /*!
      *  Construct a delegate.
@@ -93,7 +93,7 @@ public:
      */
     virtual PortsDelegate* constructDelegate(QSharedPointer<Component> component,
         ParameterCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const;
+        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const override final;
 
     //! No copying
     WirePortsEditorConstructor(const WirePortsEditorConstructor& other) = delete;

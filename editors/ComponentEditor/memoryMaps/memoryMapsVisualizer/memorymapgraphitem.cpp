@@ -154,3 +154,11 @@ bool MemoryMapGraphItem::isPresent() const
 {
     return memoryMap_->getIsPresent().isEmpty() || parseExpression(memoryMap_->getIsPresent()) == 1;
 }
+
+//-----------------------------------------------------------------------------
+// Function: memorymapgraphitem::getMemoryMap()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryMapBase> MemoryMapGraphItem::getMemoryMap() const
+{
+    return memoryMap_;
+}

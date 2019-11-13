@@ -87,7 +87,7 @@ protected:
      *
      *      return True, if column can have expressions, false otherwise.
      */
-    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const override final;
 
     /*!
      *  Gets the expression for the given index, or plain value if there is no expression.
@@ -96,7 +96,7 @@ protected:
      *
      *      return Expression in the given index, or plain value.
      */
-    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const override final;
 
     /*!
      *  Gets the value for the given index.
@@ -105,7 +105,7 @@ protected:
      *
      *      return The data in the given index.
      */
-    virtual QVariant valueForIndex(QModelIndex const& index) const;
+    virtual QVariant valueForIndex(QModelIndex const& index) const override final;
 
     /*!
      *  Validates the data in the cell given by the column.
@@ -114,7 +114,7 @@ protected:
      *
      *      return True, if the data in the parameter is valid, false otherwise.
      */
-    virtual bool validateIndex(QModelIndex const& index) const;
+    virtual bool validateIndex(QModelIndex const& index) const override final;
 
     /*!
      *  Get all the references made to the selected parameter from the selected row.
@@ -124,7 +124,7 @@ protected:
      *
      *      @return Number of references made to the selected id from the selected row.
      */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const&  valueID) const;
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const&  valueID) const override final;
 
 private:
 
