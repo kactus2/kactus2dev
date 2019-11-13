@@ -41,13 +41,6 @@ FileTypesModel::FileTypesModel(QSettings& settings, QObject *parent): QAbstractT
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileTypesModel::~FileTypesModel()
-//-----------------------------------------------------------------------------
-FileTypesModel::~FileTypesModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileTypesModel::rowCount()
 //-----------------------------------------------------------------------------
 int FileTypesModel::rowCount(QModelIndex const& parent) const

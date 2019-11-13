@@ -28,13 +28,6 @@ FileTypesDelegate::FileTypesDelegate(QObject* parent): QStyledItemDelegate(paren
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileTypesDelegate::~FileTypesDelegate()
-//-----------------------------------------------------------------------------
-FileTypesDelegate::~FileTypesDelegate()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileTypesDelegate::createEditor()
 //-----------------------------------------------------------------------------
 QWidget* FileTypesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index) const

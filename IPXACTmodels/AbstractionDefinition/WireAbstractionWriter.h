@@ -27,7 +27,7 @@ class WireAbstractionWriter
 {
 public:
     
-    //! The constructor;
+    //! The constructor.
     WireAbstractionWriter();
     
     //! The destructor.

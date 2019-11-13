@@ -414,6 +414,9 @@ namespace General
         */
         LibraryFilePair(const QString filePath, const QString libraryName);
 
+        //! The destructor.
+        ~LibraryFilePair() = default;
+        
         /*! The == operator
         *
         *      @param [in] other The other LibaryFilePair to check
@@ -427,7 +430,7 @@ namespace General
         *      @param [in] other Reference to the LibraryFilePair to copy
         *
         */
-        LibraryFilePair(const LibraryFilePair& other);
+        LibraryFilePair(const LibraryFilePair& other) = default;
 
         /*! The assignment operator
         *
@@ -435,7 +438,7 @@ namespace General
         *
         *      @return Reference to this LibraryFilePair.
         */
-        LibraryFilePair& operator=(const LibraryFilePair& other);
+        LibraryFilePair& operator=(const LibraryFilePair& other) = default;
     };
 
     /*! Get a relative file path from one location to another.

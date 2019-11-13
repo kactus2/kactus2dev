@@ -39,14 +39,6 @@ SettingsPage(settings),
 }
 
 //-----------------------------------------------------------------------------
-// Function: K2EnvVariableSettingsPage::~K2EnvVariableSettingsPage()
-//-----------------------------------------------------------------------------
-K2EnvVariableSettingsPage::~K2EnvVariableSettingsPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: K2EnvVariableSettingsPage::apply()
 //-----------------------------------------------------------------------------
 void K2EnvVariableSettingsPage::apply()

@@ -63,12 +63,12 @@ public:
      *
      *      @param [in] parent The parent text document.
      */
-    LanguageHighlighter(QTextDocument* parent);
+    explicit LanguageHighlighter(QTextDocument* parent);
 
     /*!
      *  Destructor.
      */
-    virtual ~LanguageHighlighter();
+    virtual ~LanguageHighlighter() = default;
 
     /*!
      *  Sets the highlight style as a global style for all MCAPI highlighters.

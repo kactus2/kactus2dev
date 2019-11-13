@@ -29,14 +29,6 @@ libraryInterface_(libraryInterface),
 }
 
 //-----------------------------------------------------------------------------
-// Function: PluginUtilityAdapter::~PluginUtilityAdapter()
-//-----------------------------------------------------------------------------
-PluginUtilityAdapter::~PluginUtilityAdapter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: PluginUtilityAdapter::printError()
 //-----------------------------------------------------------------------------
 void PluginUtilityAdapter::printError(QString const& message)

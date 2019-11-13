@@ -152,7 +152,7 @@ void VhdlComponentInstance::write( QTextStream& stream ) const
 	// print the generic map
 	if (!genericMap_.isEmpty())
     {
-		stream << "  " << "  " << "generic map (" << endl;
+		stream << "    generic map (" << endl;
 		for (QMap<QString, QString>::const_iterator i = genericMap_.begin(); i != genericMap_.end(); ++i)
         {
 			stream << "  " << "  " << "  ";
@@ -171,14 +171,13 @@ void VhdlComponentInstance::write( QTextStream& stream ) const
 	// print the port map
 	if (!portMap_.isEmpty())
     {
-		stream << "  " << "  " << "port map (" << endl;
+		stream << "    port map (" << endl;
 
         for (QMap<VhdlPortMap, VhdlPortMap>::const_iterator i = portMap_.begin(); i != portMap_.end(); ++i)
         {
 			stream << "  " << "  " << "  " ;
-			i.key().write(stream);
-			stream << " => ";
-			stream << i.value().toString();
+            stream << i.key().mappingWith(i.value());
+		
 
 			// if this is not the last port map to print, add comma (,)
 			if (i + 1 != portMap_.end())
@@ -232,13 +231,13 @@ void VhdlComponentInstance::addMapping(const VhdlPortMap &instancePort, const Vh
 
 		// inform user that the mapping for those bits already existed.
 		emit noticeMessage(tr("The instance %1:%2 already contains mapping \"%3 => %4\"").
-            arg(componentModuleName_).arg(instanceName_).arg(instancePort.toString()).
-            arg(previousValue.toString()));
+            arg(componentModuleName_).arg(instanceName_).arg(instancePort.name()).
+            arg(previousValue.name()));
 
 		// inform user that the new mapping is also added
 		emit noticeMessage(tr("Instance %1:%2 now has also port mapping \"%3 => %4\"").
-            arg(componentModuleName_).arg(instanceName_).arg(instancePort.toString()).
-            arg(signalMapping.toString()));
+            arg(componentModuleName_).arg(instanceName_).arg(instancePort.name()).
+            arg(signalMapping.name()));
 	}
 
 	portMap_.insertMulti(instancePort, signalMapping);
@@ -305,7 +304,7 @@ void VhdlComponentInstance::useDefaultsForOtherPorts()
             continue;
         }
 
-		VhdlPortMap port(i.key());
+        VhdlPortMap port(i.key(), QString(), QString(), QString());
 
 		// get the type of the port
 		QString portTypeStr(portType(i.key()));
@@ -313,7 +312,7 @@ void VhdlComponentInstance::useDefaultsForOtherPorts()
 		// make sure the default value is in correct form
 		QString defaultStr = VhdlGeneral::convertDefaultValue(i.value(), portTypeStr);
 
-		VhdlPortMap defaultValue(defaultStr);
+		VhdlPortMap defaultValue(defaultStr, QString(), QString(), QString());
 		addMapping(port, defaultValue);
 	}
 }

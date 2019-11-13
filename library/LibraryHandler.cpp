@@ -180,7 +180,7 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
     // the hierarchy model must be re-built
     hierarchyModel_->onResetModel();
     treeModel_->onAddVLNV(vlnv);
-
+    
     return true;
 }
 
@@ -618,7 +618,6 @@ void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv, QString const& activeV
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
 {
-    //TODO: view selection.
     QSharedPointer<const Component> component = getModelReadOnly(vlnv).dynamicCast<const Component>();
     if (component.isNull())
     {

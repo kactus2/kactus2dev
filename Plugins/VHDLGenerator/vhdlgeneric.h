@@ -17,7 +17,7 @@
 class ModuleParameter;
 class ExpressionFormatter;
 
-/*! \brief VhdlGeneric represents a vhdl generic in a component or entity declaration.
+/*! VhdlGeneric represents a vhdl generic in a component or entity declaration.
  *
  */
 class VhdlGeneric : public VhdlTypedObject
@@ -25,32 +25,33 @@ class VhdlGeneric : public VhdlTypedObject
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param generic   The module parameter to create the generic from.
-	 * \param formatter The formatter to use for expressions in the value.
+	 * @param [in] generic   The module parameter to create the generic from.
+	 * @param [in] formatter The formatter to use for expressions in the value.
 	 *
 	*/
 	VhdlGeneric(QSharedPointer<ModuleParameter> generic, QSharedPointer<ExpressionFormatter> formatter);
-	
-	//! \brief The destructor
-	virtual ~VhdlGeneric();
 
-	/*! \brief Write the contents of the generic into text stream.
+    //! No copying
+    VhdlGeneric(const VhdlGeneric& other) = delete;
+
+    //! No assignment
+    VhdlGeneric& operator=(const VhdlGeneric& other) = delete;
+
+	//! The destructor
+	virtual ~VhdlGeneric() = default;
+
+	/*! Write the contents of the generic into text stream.
 	 *
-	 * \param stream The text stream to write the generic into.
+	 * @param [in] stream The text stream to write the generic into.
 	 *
 	*/
-	virtual void write(QTextStream& stream) const;
+	virtual void write(QTextStream& stream) const override final;
 
 private:
-	
-	//! No copying
-	VhdlGeneric(const VhdlGeneric& other);
 
-	//! No assignment
-	VhdlGeneric& operator=(const VhdlGeneric& other);
-
+    // Formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;
 };
 

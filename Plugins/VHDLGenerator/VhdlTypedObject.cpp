@@ -24,14 +24,6 @@ defaultValue_(defaultValue)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlTypedObject::~VhdlTypedObject()
-//-----------------------------------------------------------------------------
-VhdlTypedObject::~VhdlTypedObject()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: VhdlTypedObject::VhdlTypedObject()
 //-----------------------------------------------------------------------------
 QString VhdlTypedObject::type() const

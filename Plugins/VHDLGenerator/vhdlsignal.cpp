@@ -25,8 +25,6 @@ right_(rightBound) {
 	Q_ASSERT(!type().isEmpty());
 }
 
-VhdlSignal::~VhdlSignal() {
-}
 
 void VhdlSignal::write( QTextStream& stream ) const {
 	Q_ASSERT(!name().isEmpty());

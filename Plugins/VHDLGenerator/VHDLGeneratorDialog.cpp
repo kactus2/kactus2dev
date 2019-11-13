@@ -100,15 +100,15 @@ void VHDLGeneratorDialog::setupLayout()
     settingsLayout->addWidget(viewSelector_);
     settingsLayout->addLayout(fileLayout);
 
-    QDialogButtonBox* buttons = new QDialogButtonBox(Qt::Horizontal, this);
-    buttons->addButton(tr("Write file"), QDialogButtonBox::AcceptRole);
-    buttons->addButton(QDialogButtonBox::Cancel);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox->addButton(tr("Write file"), QDialogButtonBox::AcceptRole);
+    buttonBox->addButton(QDialogButtonBox::Cancel);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);  
     topLayout->addWidget(settingsGroup);
-    topLayout->addWidget(buttons);
+    topLayout->addWidget(buttonBox);
 
     connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
-    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
-    connect(buttons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 }
