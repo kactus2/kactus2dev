@@ -114,8 +114,8 @@ bool BusIfInterfaceMaster::isValid() const
 	}
 	
 	// if the selected address space does not belong to component
-	QStringList addrSpaceNames = component_->getAddressSpaceNames();
-	if (!addrSpaceNames.contains(selectedAddrSpace))
+    QStringList addrSpaceNames = getComponent()->getAddressSpaceNames();
+    if (!addrSpaceNames.contains(selectedAddrSpace))
     {
 		return false;
 	}
@@ -129,10 +129,10 @@ bool BusIfInterfaceMaster::isValid() const
 void BusIfInterfaceMaster::refresh()
 {
 	// if the model contains master-element
-	if (busif_->getMaster())
+    if (getBusInterface()->getMaster())
     {
-		master_ = busif_->getMaster();
-	}
+        master_ = getBusInterface()->getMaster();
+    }
 	else
     {
 		master_.clear();
@@ -140,7 +140,7 @@ void BusIfInterfaceMaster::refresh()
 	}
 
 	// update the selectable items
-	addressSpaceReferenceSelector_.refresh(component_->getAddressSpaceNames());
+    addressSpaceReferenceSelector_.refresh(getComponent()->getAddressSpaceNames());
 
 	QString addrSpaceRef = master_->getAddressSpaceRef();
 
@@ -211,7 +211,7 @@ void BusIfInterfaceMaster::onBaseAddressChange()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMaster::saveModeSpecific()
 {
-	busif_->setMaster(master_);
+    getBusInterface()->setMaster(master_);
 }
 
 //-----------------------------------------------------------------------------

@@ -86,8 +86,8 @@ void BusIfInterfaceSystem::refresh()
 	groupEditor_.clear();
 
 	// the selected bus definition defines the groups that can be used
-	VLNV busDefVLNV = busif_->getBusType();
-	
+    VLNV busDefVLNV = getBusInterface()->getBusType();
+
 	// if there is no bus definition specified there is nothing to select
 	if (!busDefVLNV.isValid()) {
 		return;
@@ -119,7 +119,7 @@ void BusIfInterfaceSystem::refresh()
 
     if (oldText.isEmpty())
     {
-         index = groupEditor_.findText(busif_->getSystem());
+        index = groupEditor_.findText(getBusInterface()->getSystem());
     }
     else
     {
@@ -146,8 +146,8 @@ General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSystem::onGroupChange(QString const&)
 {
-	busif_->setSystem(groupEditor_.currentText());
-	emit contentChanged();
+    getBusInterface()->setSystem(groupEditor_.currentText());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -155,5 +155,5 @@ void BusIfInterfaceSystem::onGroupChange(QString const&)
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSystem::saveModeSpecific()
 {
-	busif_->setSystem(groupEditor_.currentText());
+    getBusInterface()->setSystem(groupEditor_.currentText());
 }

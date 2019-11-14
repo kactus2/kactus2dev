@@ -38,7 +38,7 @@ public:
 		QString const& title, QWidget *parent);
 	
 	//! The destructor
-	virtual ~BusIfInterfaceModeEditor();
+	virtual ~BusIfInterfaceModeEditor() = default;
 
 	/*! Check for the validity of the mode specific items.
 	*
@@ -60,6 +60,10 @@ public:
 	//! Save the interface mode-specific details to the bus interface.
 	virtual void saveModeSpecific() = 0;
 
+    //! No copying. No assignment.
+    BusIfInterfaceModeEditor(const BusIfInterfaceModeEditor& other) = delete;
+    BusIfInterfaceModeEditor& operator=(const BusIfInterfaceModeEditor& other) = delete;
+
 signals:
 
 	//! Emitted when contents of the model change
@@ -73,19 +77,25 @@ signals:
 
 protected:
 
+    /*!
+     *  Get the containing bus interface.
+     */
+    QSharedPointer<BusInterface> getBusInterface();
+
+    /*!
+     *  Get the containing component.
+     */
+    QSharedPointer<Component> getComponent() const;
+
+private:
+
 	//! The bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 
 	//! The component being edited.
 	QSharedPointer<Component> component_;
 
-private:
 
-	//! No copying
-	BusIfInterfaceModeEditor(const BusIfInterfaceModeEditor& other);
-
-	//! No assignment
-	BusIfInterfaceModeEditor& operator=(const BusIfInterfaceModeEditor& other);
 };
 
 #endif // BUSIFINTERFACEMODEEDITOR_H

@@ -83,18 +83,18 @@ bool BusIfInterfaceSlave::isValid() const
 void BusIfInterfaceSlave::refresh()
 {
 	// if the model contains slave-element
-	if (busif_->getSlave())
+    if (getBusInterface()->getSlave())
     {
-		slave_ = busif_->getSlave();
-	}
+        slave_ = getBusInterface()->getSlave();
+    }
 	else 
     {
 		slave_.clear();
 		slave_ = QSharedPointer<SlaveInterface>(new SlaveInterface());
 	}
 
-	memoryMapReferenceSelector_.refresh(component_->getMemoryMapNames());
-	memoryMapReferenceSelector_.selectItem(slave_->getMemoryMapRef());
+    memoryMapReferenceSelector_.refresh(getComponent()->getMemoryMapNames());
+    memoryMapReferenceSelector_.selectItem(slave_->getMemoryMapRef());
     memoryMapBox_->setChecked(!slave_->getMemoryMapRef().isEmpty());
 
     setupFileSetReferences();
@@ -222,7 +222,7 @@ void BusIfInterfaceSlave::onFileSetReferencesChanged()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::saveModeSpecific()
 {
-	busif_->setSlave(slave_);
+    getBusInterface()->setSlave(slave_);
 }
 
 //-----------------------------------------------------------------------------

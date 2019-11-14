@@ -23,8 +23,17 @@ QGroupBox(title, parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceModeEditor::~BusIfInterfaceModeEditor()
+// Function: busifinterfacemodeeditor::getBusInterface()
 //-----------------------------------------------------------------------------
-BusIfInterfaceModeEditor::~BusIfInterfaceModeEditor()
+QSharedPointer<BusInterface> BusIfInterfaceModeEditor::getBusInterface()
 {
+    return busif_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifinterfacemodeeditor::getComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> BusIfInterfaceModeEditor::getComponent() const
+{
+    return component_;
 }

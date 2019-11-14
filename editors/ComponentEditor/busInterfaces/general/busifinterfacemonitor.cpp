@@ -83,10 +83,10 @@ bool BusIfInterfaceMonitor::isValid() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMonitor::refresh()
 {
-	if (busif_->getMonitor())
+    if (getBusInterface()->getMonitor())
     {
-		monitor_ = busif_->getMonitor();
-	}
+        monitor_ = getBusInterface()->getMonitor();
+    }
 	else
     {
 		monitor_ = QSharedPointer<BusInterface::MonitorInterface>(new BusInterface::MonitorInterface());
@@ -113,8 +113,8 @@ void BusIfInterfaceMonitor::refresh()
 			systemGroup_.setEnabled(true);
 
 			// find the current bus definition
-			VLNV busDefVLNV = busif_->getBusType();
-			
+            VLNV busDefVLNV = getBusInterface()->getBusType();
+
 			// if there is no bus definition
 			if (!libHandler_->contains(busDefVLNV))
             {
@@ -157,15 +157,27 @@ void BusIfInterfaceMonitor::refresh()
 		this, SLOT(onSystemGroupChange(QString const&)), Qt::UniqueConnection);	
 }
 
-General::InterfaceMode BusIfInterfaceMonitor::getInterfaceMode() const {
+//-----------------------------------------------------------------------------
+// Function: busifinterfacemonitor::getInterfaceMode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode BusIfInterfaceMonitor::getInterfaceMode() const
+{
 	return General::MONITOR;
 }
 
-void BusIfInterfaceMonitor::saveModeSpecific() {
-	busif_->setMonitor(monitor_);
+//-----------------------------------------------------------------------------
+// Function: busifinterfacemonitor::saveModeSpecific()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMonitor::saveModeSpecific()
+{
+    getBusInterface()->setMonitor(monitor_);
 }
 
-void BusIfInterfaceMonitor::onSystemGroupChange( QString const& groupName ) {
+//-----------------------------------------------------------------------------
+// Function: busifinterfacemonitor::onSystemGroupChange()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMonitor::onSystemGroupChange( QString const& groupName )
+{
 	monitor_->group_ = groupName;
 	emit contentChanged();
 }
@@ -190,7 +202,7 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
     {
         systemGroup_.setEnabled(true);
         // find the current bus definition
-        VLNV busDefVLNV = busif_->getBusType();
+        VLNV busDefVLNV = getBusInterface()->getBusType();
 
 			// if there is no bus definition
         if (libHandler_->contains(busDefVLNV))

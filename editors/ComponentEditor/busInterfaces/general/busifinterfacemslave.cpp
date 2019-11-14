@@ -102,10 +102,10 @@ bool BusIfInterfaceMSlave::isValid() const
 void BusIfInterfaceMSlave::refresh()
 {
 	// if the model contains master-element
-	if (busif_->getMirroredSlave())
+    if (getBusInterface()->getMirroredSlave())
     {
-		mirroredSlave_ = busif_->getMirroredSlave();
-	}
+        mirroredSlave_ = getBusInterface()->getMirroredSlave();
+    }
 	else
     {
 		mirroredSlave_.clear();
@@ -148,7 +148,7 @@ General::InterfaceMode BusIfInterfaceMSlave::getInterfaceMode() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMSlave::saveModeSpecific()
 {
-	busif_->setMirroredSlave(mirroredSlave_);
+    getBusInterface()->setMirroredSlave(mirroredSlave_);
 }
 
 //-----------------------------------------------------------------------------
