@@ -297,26 +297,14 @@ namespace General
         //! The right bound of the port.
         int right_;
 
-        //! Default constructor
-         PortBounds();
-
-        /*! The constructor
-        *
-        * Constructs a port with given name and both bounds set to 0.
-        *
-        *      @param [in] portName The name of the port.
-        *
-        */
-        explicit PortBounds(const QString& portName);
-
         /*! The constructor
         *
         *      @param [in] portName The name of the port.
-        *      @param [in] left The left bound of the port.
-        *      @param [in] right The right bound of the port.
+        *      @param [in] left     The left bound of the port.
+        *      @param [in] right    The right bound of the port.
         *
         */
-        PortBounds(const QString& portName, const int left, const int right);
+        PortBounds(const QString& portName, const int left = 0, const int right = 0);
 
         //! Copy constructor
         PortBounds(const PortBounds& other) = default;
@@ -333,16 +321,6 @@ namespace General
         //! Operator !=
         bool operator!=(const PortBounds& other) const;
     };
-
-    /*! Convert the info into string.
-    *
-    *      @param [in] portName The name of the port.
-    *      @param [in] leftBound The left bound of the port.
-    *      @param [in] rightBound The right bound of the port.
-    *
-    *      @return QString String that matches the info ( <portName>[<left>..<right>] )
-    */
-    IPXACTMODELS_EXPORT QString port2String(const QString& portName, int leftBound, int rightBound);
 
     //! Port alignment is used to contain the physical bounds of two ports.
     struct IPXACTMODELS_EXPORT PortAlignment {
