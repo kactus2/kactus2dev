@@ -16,15 +16,17 @@ TARGET = tst_<Module>
 QT += core xml gui testlib
 CONFIG += c++11 testcase console
 
-win32:CONFIG(release, debug|release) {
-    DESTDIR = ./release
+# Remove the following, if IP-XACT models library is not needed.
+linux-g++ | linux-g++-64 | linux-g++-32 {
+ LIBS += -L../../../executable \
+     -lIPXACTmodels
 }
-else:win32:CONFIG(debug, debug|release) {
-    DESTDIR = ./debug
+win64 | win32 {
+ LIBS += -L../../../x64/executable \
+     -lIPXACTmodelsd
 }
-else:unix {
-    DESTDIR = ./release
-}
+
+DESTDIR = ./release
 
 INCLUDEPATH += $$DESTDIR
 

@@ -4,65 +4,7 @@
 
 HEADERS += ../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/Component/WireTypeDef.h \
-    ../../../IPXACTmodels/Component/View.h \
-    ../../../IPXACTmodels/Component/validators/ViewValidator.h \
-    ../../../IPXACTmodels/Component/ComponentInstantiation.h \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.h \
-    ../../../IPXACTmodels/Component/DesignInstantiation.h \
-    ../../../IPXACTmodels/common/Parameter.h \
-    ../../../IPXACTmodels/common/Extendable.h \
-    ../../../IPXACTmodels/common/Range.h \
-    ../../../IPXACTmodels/common/VLNV.h \
-    ../../../IPXACTmodels/common/Array.h \
-    ../../../IPXACTmodels/common/ModuleParameter.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ../../../IPXACTmodels/common/FileBuilder.h \
-    ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/common/ConfigurableElementValue.h \
-    ../../../IPXACTmodels/common/ConfigurableVLNVReference.h \
-    ../../../IPXACTmodels/Component/Transactional.h \
-    ../../../IPXACTmodels/Component/Wire.h \
-    ../../../IPXACTmodels/Component/Model.h \
-    ../../../IPXACTmodels/Component/Port.h \
-    ../../../IPXACTmodels/common/TransactionalTypes.h \
-    ../../../IPXACTmodels/common/DirectionTypes.h \
-    ../../../IPXACTmodels/common/FileTypes.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
-    ../../../IPXACTmodels/common/Protocol.h \
-    ../../../IPXACTmodels/common/BuildModel.h
+	
 SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./tst_ViewValidator.cpp \
-    ../../../IPXACTmodels/common/NameGroup.cpp \
-    ../../../IPXACTmodels/Component/WireTypeDef.cpp \
-    ../../../IPXACTmodels/Component/View.cpp \
-    ../../../IPXACTmodels/Component/validators/ViewValidator.cpp \
-    ../../../IPXACTmodels/Component/ComponentInstantiation.cpp \
-    ../../../IPXACTmodels/Component/DesignConfigurationInstantiation.cpp \
-    ../../../IPXACTmodels/Component/DesignInstantiation.cpp \
-    ../../../IPXACTmodels/common/Parameter.cpp \
-    ../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../IPXACTmodels/common/Range.cpp \
-    ../../../IPXACTmodels/common/VLNV.cpp \
-    ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/common/ModuleParameter.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ../../../IPXACTmodels/common/FileBuilder.cpp \
-    ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
-    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
-    ../../../IPXACTmodels/Component/Transactional.cpp \
-    ../../../IPXACTmodels/Component/Wire.cpp \
-    ../../../IPXACTmodels/Component/Model.cpp \
-    ../../../IPXACTmodels/Component/Port.cpp \
-    ../../../IPXACTmodels/common/TransactionalTypes.cpp \
-    ../../../IPXACTmodels/common/DirectionTypes.cpp \
-    ../../../IPXACTmodels/common/FileTypes.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
-    ../../../IPXACTmodels/common/Protocol.cpp \
-    ../../../IPXACTmodels/common/BuildModel.cpp
+    ./tst_ViewValidator.cpp 
+	

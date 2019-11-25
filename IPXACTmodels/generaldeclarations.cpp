@@ -288,6 +288,9 @@ QVector<General::InterfaceMode> General::getCompatibleInterfaceModeForHierarchic
     return compatibleModes;
 }
 
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getRelativePath()
+//-----------------------------------------------------------------------------
 QString General::getRelativePath(QString from, QString to)  
 {
     if (from.isEmpty() || to.isEmpty())
@@ -336,6 +339,9 @@ QString General::getRelativePath(QString from, QString to)
     return relPath;
 }
 
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getRelativeSavePath()
+//-----------------------------------------------------------------------------
 QString General::getRelativeSavePath( const QString& from, const QString& to )
 {
 	if (from.isEmpty() || to.isEmpty())
@@ -369,6 +375,9 @@ QString General::getRelativeSavePath( const QString& from, const QString& to )
 	return ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
 }
 
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getAbsolutePath()
+//-----------------------------------------------------------------------------
 QString General::getAbsolutePath(const QString& originalPath, const QString& relativePath)
 {
 	if (originalPath.isEmpty() || relativePath.isEmpty())
