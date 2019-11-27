@@ -1,0 +1,32 @@
+name: Build.Linux
+
+on: [push]
+
+jobs:
+  build_linux:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+    - name: Configure build
+      run: ./configure
+    - name: Build sources
+      run: make -j4
+    - name: Install
+      run: sudo make install
+      
+  build_win64:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup MSBuild
+      uses: warrenbuckley/Setup-MSBuild@v1
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+    - name: Build sources
+      run: msbuild -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln
