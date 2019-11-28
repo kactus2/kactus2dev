@@ -28,5 +28,9 @@ jobs:
       uses: warrenbuckley/Setup-MSBuild@v1
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
+    - name: Check environmnent
+      run: |
+        set
+        setx QTDIR "%Qt5_Dir%"
     - name: Build sources
-      run: msbuild -p:Configuration=Release -p:Platform=x64 -p:PlatformToolset=v142 Kactus2_Solution_vs2017.sln
+      run: msbuild -p:Configuration=Release -p:Platform=x64 -p:PlatformToolset=v142 Kactus2_Solution_vs2017.sln      
