@@ -1,4 +1,4 @@
-name: Build.Linux
+name: Check.Build
 
 on: [push]
 
@@ -29,4 +29,4 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Build sources
-      run: msbuild -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln
+      run: msbuild -p:Configuration=Release -p:Platform=x64 -p:PlatformToolset=v142 Kactus2_Solution_vs2017.sln
