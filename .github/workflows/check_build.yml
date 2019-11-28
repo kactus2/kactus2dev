@@ -30,7 +30,7 @@ jobs:
       uses: jurplel/install-qt-action@v2
     - name: Check environmnent
       run: |
-        set
+        Get-ChildItem Env:
         setx QTDIR "%Qt5_Dir%"
     - name: Build sources
       run: msbuild -p:Configuration=Release -p:Platform=x64 -p:PlatformToolset=v142 Kactus2_Solution_vs2017.sln      
