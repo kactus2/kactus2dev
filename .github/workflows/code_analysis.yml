@@ -1,0 +1,26 @@
+name: Code.Analysis
+
+on: [push]
+
+jobs:
+  sonar_analysis:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+    - name: Setup build wrapper for sonar-scanner
+      run: |
+        wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+        unzip build-wrapper-linux-x86        
+    - name: Configure build
+      run: ./configure
+    - name: Build sources
+      run: build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make -j4
+    - name: Run sonar-scanner
+      run: sonar-scanner -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=$SONARQUBE_CLOUD_LOGIN -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,GeneratedFiles/*
+      env:
+        SONARQUBE_CLOUD_LOGIN: ${{ secrets.SonarcloudLogin }}
+    
