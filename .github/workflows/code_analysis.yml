@@ -28,4 +28,5 @@ jobs:
       run: sonar-scanner -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=$SONARQUBE_CLOUD_LOGIN -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,GeneratedFiles/*
       env:
         SONARQUBE_CLOUD_LOGIN: ${{ secrets.SonarcloudLogin }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
