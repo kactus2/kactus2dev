@@ -25,7 +25,7 @@ jobs:
     - name: Build sources
       run: build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make -j4
     - name: Run sonar-scanner
-      run: sonar-scanner -Dsonar.cfamily.threads=2 -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=$SONARQUBE_CLOUD_LOGIN -Dsonar.language=c++ -Dsonar.cxx.suffixes.sources=.cxx,.cpp,.cc,.c,.inl -Dsonar.sources=. -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,GeneratedFiles/*
+      run: sonar-scanner -Dsonar.cfamily.threads=2 -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=$SONARQUBE_CLOUD_LOGIN -Dsonar.language=c++ -Dsonar.cxx.suffixes.sources=.cxx,.cpp,.cc,.c,.inl -Dsonar.sources=. -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,**/GeneratedFiles/*
       env:
         SONARQUBE_CLOUD_LOGIN: ${{ secrets.SonarcloudLogin }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
