@@ -83,8 +83,6 @@ absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressio
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(&absDefGroup_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(&absDefGroup_, SIGNAL(portRenamed(const QString&, const QString&)), 
-        this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
     connect(&absDefGroup_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), 
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 }
