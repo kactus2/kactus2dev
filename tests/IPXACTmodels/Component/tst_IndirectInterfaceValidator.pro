@@ -16,7 +16,15 @@ TARGET = tst_IndirectInterfaceValidator
 QT += core gui xml testlib
 
 CONFIG += c++11 testcase console
-DEFINES += IPXACTMODELS_LIB
+
+linux-g++ | linux-g++-64 | linux-g++-32 {
+ LIBS += -L../../../executable \
+     -lIPXACTmodels
+}
+win64 | win32 {
+ LIBS += -L../../../x64/executable \
+     -lIPXACTmodelsd
+}
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../

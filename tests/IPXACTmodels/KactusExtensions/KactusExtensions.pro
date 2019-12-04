@@ -17,4 +17,4 @@ SUBDIRS += tst_ComDefinitionWriter.pro \
 		   tst_ComDefinitionValidator.pro \
 		   tst_ApiDefinitionWriter.pro \
 		   tst_ApiDefinitionReader.pro \
-		   tst_ApiDefinitionValidator.pro \
+		   tst_ApiDefinitionValidator.pro 

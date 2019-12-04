@@ -3,12 +3,8 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../IPXACTmodels/Component/Choice.h \
-    ../../../IPXACTmodels/Component/validators/ChoiceValidator.h \
-    ../../../IPXACTmodels/common/Enumeration.h
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h 
+  
 SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./tst_ChoiceValidator.cpp \
-    ../../../IPXACTmodels/Component/Choice.cpp \
-    ../../../IPXACTmodels/Component/validators/ChoiceValidator.cpp \
-    ../../../IPXACTmodels/common/Enumeration.cpp
+    ./tst_ChoiceValidator.cpp 
+   
