@@ -23,30 +23,13 @@ class AbstractionDefinitionPortsSortFilter : public QSortFilterProxyModel
 
 public:
 
-    //! Storage for the column indexes.
-    struct ColumnHandles
-    {
-        //! Index of the name column.
-        int nameColumn_;
-
-        //! Index of the mode column.
-        int modeColumn_;
-
-        //! Index of the system group column.
-        int systemGroupColumn_;
-
-        //! Index of the description column.
-        int descriptionColumn_;
-    };
-
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] columns     Storage for the column indexes.
-     *      @param [in] parent      Pointer to the owner of this model.
+     *      @param [in] parent  Pointer to the owner of this model.
 	 */
-	AbstractionDefinitionPortsSortFilter(ColumnHandles columns, QObject *parent);
-	
+    AbstractionDefinitionPortsSortFilter(QObject *parent);
+
 	/*!
 	 *  The destructor.
 	 */
@@ -87,12 +70,14 @@ private:
      */
     bool isSystemGroupMandatory(QModelIndex const& index) const;
 
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! Storage for the used column indexes.
-    ColumnHandles columns_;
+    /*!
+     *  Check if the selected signal has an undefined mode.
+     *
+     *      @param [in] index   Model index of the selected signal.
+     *
+     *      @return True, if the selected signal has an undefined mode, false otherwise.
+     */
+    bool undefinedMode(QModelIndex const& index) const;
 };
 
 #endif // ABSTRACTIONDEFINITIONPORTSSORTFILTER_H

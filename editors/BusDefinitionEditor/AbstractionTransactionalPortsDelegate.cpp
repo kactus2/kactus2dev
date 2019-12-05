@@ -11,7 +11,7 @@
 
 #include "AbstractionTransactionalPortsDelegate.h"
 
-#include <editors/BusDefinitionEditor/AbstractionTransactionalPortColumns.h>
+#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 #include <QComboBox>
 #include <QStringList>
@@ -33,7 +33,7 @@ AbstractionPortsDelegate(libraryAccess, parent)
 QWidget* AbstractionTransactionalPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     const QModelIndex& index ) const
 {
-    if (index.column() == AbstractionTransactionalPortColumns::INITIATIVE)
+    if (index.column() == LogicalPortColumns::INITIATIVE)
     {
         QComboBox* initiativeCombo = new QComboBox(parent);
 
@@ -43,7 +43,7 @@ QWidget* AbstractionTransactionalPortsDelegate::createEditor(QWidget* parent, QS
         connect(initiativeCombo, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return initiativeCombo;
     }
-    else if (index.column() == AbstractionTransactionalPortColumns::KIND)
+    else if (index.column() == LogicalPortColumns::KIND)
     {
         QComboBox* kindCombo = new QComboBox(parent);
         kindCombo->setEditable(true);
@@ -54,7 +54,7 @@ QWidget* AbstractionTransactionalPortsDelegate::createEditor(QWidget* parent, QS
         connect(kindCombo, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return kindCombo;
     }
-    else if (index.column() == AbstractionTransactionalPortColumns::PROTOCOLTYPE)
+    else if (index.column() == LogicalPortColumns::PROTOCOLTYPE)
     {
         QComboBox* protocolTypeCombo = new QComboBox(parent);
         protocolTypeCombo->setEditable(true);
@@ -65,7 +65,7 @@ QWidget* AbstractionTransactionalPortsDelegate::createEditor(QWidget* parent, QS
         connect(protocolTypeCombo, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return protocolTypeCombo;
     }
-    else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADTYPE)
+    else if (index.column() == LogicalPortColumns::PAYLOADTYPE)
     {
         QComboBox* payloadTypeCombo = new QComboBox(parent);
 
@@ -79,82 +79,4 @@ QWidget* AbstractionTransactionalPortsDelegate::createEditor(QWidget* parent, QS
     {
         return AbstractionPortsDelegate::createEditor(parent, option, index);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::qualifierColumn()
-//-----------------------------------------------------------------------------
-int AbstractionTransactionalPortsDelegate::qualifierColumn() const
-{
-    return AbstractionTransactionalPortColumns::QUALIFIER;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::widthColumn()
-//-----------------------------------------------------------------------------
-int AbstractionTransactionalPortsDelegate::widthColumn() const
-{
-    return AbstractionTransactionalPortColumns::BUSWIDTH;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::modeColum()
-//-----------------------------------------------------------------------------
-int AbstractionTransactionalPortsDelegate::modeColum() const
-{
-    return AbstractionTransactionalPortColumns::MODE;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::presenceColumn()
-//-----------------------------------------------------------------------------
-int AbstractionTransactionalPortsDelegate::presenceColumn() const
-{
-    return AbstractionTransactionalPortColumns::PRESENCE;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::systemGroupColumn()
-//-----------------------------------------------------------------------------
-int AbstractionTransactionalPortsDelegate::systemGroupColumn() const
-{
-    return AbstractionTransactionalPortColumns::SYSTEM_GROUP;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::nameColumn()
-//-----------------------------------------------------------------------------
-int AbstractionTransactionalPortsDelegate::nameColumn() const
-{
-    return AbstractionTransactionalPortColumns::NAME;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::descriptionColumn()
-//-----------------------------------------------------------------------------
-int AbstractionTransactionalPortsDelegate::descriptionColumn() const
-{
-    return AbstractionTransactionalPortColumns::DESCRIPTION;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::editorIsLineEditor()
-//-----------------------------------------------------------------------------
-bool AbstractionTransactionalPortsDelegate::editorIsLineEditor(int indexColumn) const
-{
-    return AbstractionPortsDelegate::editorIsLineEditor(indexColumn) ||
-        indexColumn == AbstractionTransactionalPortColumns::PAYLOADNAME ||
-        indexColumn == AbstractionTransactionalPortColumns::PAYLOADEXTENSION;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsDelegate::editorIsComboBox()
-//-----------------------------------------------------------------------------
-bool AbstractionTransactionalPortsDelegate::editorIsComboBox(int indexColumn) const
-{
-    return AbstractionPortsDelegate::editorIsComboBox(indexColumn) ||
-        indexColumn == AbstractionTransactionalPortColumns::INITIATIVE ||
-        indexColumn == AbstractionTransactionalPortColumns::KIND ||
-        indexColumn == AbstractionTransactionalPortColumns::PROTOCOLTYPE ||
-        indexColumn == AbstractionTransactionalPortColumns::PAYLOADTYPE;
 }

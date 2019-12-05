@@ -12,14 +12,16 @@
 #ifndef ABSTRACTIONWIREPORTSEDITOR_H
 #define ABSTRACTIONWIREPORTSEDITOR_H
 
-#include <editors/BusDefinitionEditor/AbstractionWirePortsModel.h>
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h>
 #include <editors/BusDefinitionEditor/AbstractionPortsView.h>
 
 #include <QWidget>
 #include <QObject>
 
-class AbstractionDefinitionPortsSortFilter;
+class AbstractionPortsModel;
+class AbstractionWirePortsSortFilter;
 class AbstractionDefinition;
 class BusDefinition;
 
@@ -35,10 +37,11 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] portsModel      Model for this editor.
      *      @param [in] libraryAccess   Interface to the library.
      *      @param [in] parent          The owner of the editor.
      */
-    AbstractionWirePortsEditor(LibraryInterface* libaryAccess, QWidget *parent);
+    AbstractionWirePortsEditor(AbstractionPortsModel* portsModel, LibraryInterface* libaryAccess, QWidget *parent);
 
     /*!
      *  The destructor.
@@ -80,14 +83,6 @@ signals:
      *  Emitted when a notification should be printed to user.
      */
     void noticeMessage(QString const& message);
-
-    /*!
-     *  Inform that a port abstraction has been renamed.
-     *
-     *      @param [in] oldName     Old name of the port abstraction.
-     *      @param [in] newName     New name for the port abstraction.
-     */
-    void portRenamed(QString const& oldName, QString const& newName);
 
     /*!
      *  Inform that a port abstraction has been removed.
@@ -136,6 +131,11 @@ private:
      */
     QModelIndexList getSelectedIndexes();
 
+    /*!
+     *  Hide the transactional columns
+     */
+    void hideTransactionalColumns();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -144,10 +144,10 @@ private:
     AbstractionPortsView portView_;
 
     //! Proxy model for sorting abstract ports.
-    AbstractionDefinitionPortsSortFilter* portProxy_;
+    AbstractionWirePortsSortFilter* portProxy_;
 
     //! The model that contains the logical signals of Abstraction Definition.
-    AbstractionWirePortsModel portModel_;
+    AbstractionPortsModel* portModel_;
 
     //! The item delegate for portView_.
     AbstractionWirePortsDelegate portDelegate_;

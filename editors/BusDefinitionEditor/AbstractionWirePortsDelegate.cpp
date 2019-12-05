@@ -65,14 +65,6 @@ QWidget* AbstractionWirePortsDelegate::createEditor(QWidget* parent, QStyleOptio
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::qualifierColumn()
-//-----------------------------------------------------------------------------
-int AbstractionWirePortsDelegate::qualifierColumn() const
-{
-    return LogicalPortColumns::QUALIFIER;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsDelegate::getQualifierList()
 //-----------------------------------------------------------------------------
 QStringList AbstractionWirePortsDelegate::getQualifierList() const
@@ -82,54 +74,6 @@ QStringList AbstractionWirePortsDelegate::getQualifierList() const
     qualifierList.append("reset");
 
     return qualifierList;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::widthColumn()
-//-----------------------------------------------------------------------------
-int AbstractionWirePortsDelegate::widthColumn() const
-{
-    return LogicalPortColumns::WIDTH;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::modeColum()
-//-----------------------------------------------------------------------------
-int AbstractionWirePortsDelegate::modeColum() const
-{
-    return LogicalPortColumns::MODE;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::presenceColumn()
-//-----------------------------------------------------------------------------
-int AbstractionWirePortsDelegate::presenceColumn() const
-{
-    return LogicalPortColumns::PRESENCE;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::systemGroupColumn()
-//-----------------------------------------------------------------------------
-int AbstractionWirePortsDelegate::systemGroupColumn() const
-{
-    return LogicalPortColumns::SYSTEM_GROUP;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::nameColumn()
-//-----------------------------------------------------------------------------
-int AbstractionWirePortsDelegate::nameColumn() const
-{
-    return LogicalPortColumns::NAME;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::descriptionColumn()
-//-----------------------------------------------------------------------------
-int AbstractionWirePortsDelegate::descriptionColumn() const
-{
-    return LogicalPortColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
