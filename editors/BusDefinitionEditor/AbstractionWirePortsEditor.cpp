@@ -125,16 +125,6 @@ void AbstractionWirePortsEditor::save()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsEditor::setAbsDef()
-//-----------------------------------------------------------------------------
-void AbstractionWirePortsEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
-{
-    portModel_->setAbsDef(absDef);
-
-    hideTransactionalColumns();
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsEditor::setBusDef()
 //-----------------------------------------------------------------------------
 void AbstractionWirePortsEditor::setBusDef(QSharedPointer<BusDefinition> busDefinition)

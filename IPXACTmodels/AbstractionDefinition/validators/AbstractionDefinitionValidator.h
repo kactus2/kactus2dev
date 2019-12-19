@@ -186,6 +186,64 @@ private:
     void findErrorsInSystemGroup(QVector<QString>& errors, QString const& systemGroup, QString const& context,
         QStringList const& availableSystemNames, QString const& busDefinitionIdentifier) const;
 
+    /*!
+     *  Check if the extend is valid.
+     *
+     *      @param [in] abstraction     The selected abstraction definition.
+     *
+     *      @return True, if the extend is valid, false otherwise.
+     */
+    bool hasValidExtend(QSharedPointer<AbstractionDefinition> abstraction) const;
+
+    /*!
+     *  Check if the contained bus type defines the bus type of the extended abstraction definition.
+     *
+     *      @param [in] abstraction     The selected abstraction definition.
+     *
+     *      @return True, if the bus type defines the extend abstraction definition bus type, false otherwise.
+     */
+    bool busTypeDefinesExtendedAbstractionBusType(QSharedPointer<AbstractionDefinition> abstraction) const;
+
+    /*!
+     *  Check if the selected bus type is extended from the other bus type.
+     *
+     *      @param [in] busType         The selected bus type.
+     *      @param [in] extendBustype   The target bus type.
+     *
+     *      @return True, if the bus type is extended from the other bus type, false otherwise.
+     */
+    bool busTypeIsExtendedFromExtendBusType(QSharedPointer<const BusDefinition> busType,
+        QSharedPointer<const BusDefinition> extendBustype) const;
+
+    /*!
+     *  Get the extend abstraction definition.
+     *
+     *      @param [in] abstraction     The selected abstraction definition.
+     *
+     *      @return The extend abstraction definition.
+     */
+    QSharedPointer<AbstractionDefinition> getExtendedAbstractionDefinition(
+        QSharedPointer<AbstractionDefinition> abstraction) const;
+
+    /*!
+     *  Get the bus type extended bus definition.
+     *
+     *      @param [in] busType     The selected bus type.
+     *
+     *      @return The extend bus definition of the selected bus type.
+     */
+    QSharedPointer<const BusDefinition> getBusTypeExtend(QSharedPointer<const BusDefinition> busType) const;
+
+    /*!
+     *   Find possible errors in extend of the selected abstraction definition and create a list of them.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] context         Context to help locate the errors.
+     *      @param [in] abstraction     The selected abstraction definition.
+     */
+    void findErrorsInExtend(QVector<QString>& errors, QString const& context,
+        QSharedPointer<AbstractionDefinition> abstraction) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

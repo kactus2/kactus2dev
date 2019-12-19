@@ -30,6 +30,7 @@ class VLNVDisplayer;
 class VLNVEditor;
 class LibraryInterface;
 class AbstractionDefinitionPortsSortFilter;
+class AbstractionPortsModel;
 
 //-----------------------------------------------------------------------------
 //! Editor for the logical ports of an abstraction definition.
@@ -139,6 +140,22 @@ private:
     QSharedPointer<const AbstractionDefinition> getExtendedAbstraction() const;
 
     /*!
+     *  Remove extend port abstractions.
+     */
+    void removeSignalsFromExtendedDefinition();
+
+    /*!
+     *  Check if a port abstractions is within a list of port abstractions.
+     *
+     *      @param [in] logicalPort     The selected port abstraction.
+     *      @param [in] currentPorts    List of port abstractions.
+     *
+     *      @return True, if the selected port is within the list of port abstractions, false otherwise.
+     */
+    bool portIsWithinPorts(QSharedPointer<PortAbstraction> logicalPort,
+        QList<QSharedPointer<PortAbstraction> > const& currentPorts);
+
+    /*!
      *  Extend the contained signals.
      *
      *       @param [in] extendAbstraction  The extended abstraction definition.
@@ -172,6 +189,9 @@ private:
 
     //! The library interface.
     LibraryInterface* libraryHandler_;
+
+    //! The abstraction definition ports model.
+    AbstractionPortsModel* portModel_;
 };
 
 #endif // ABSDEFGROUP_H

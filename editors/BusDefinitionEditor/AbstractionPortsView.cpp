@@ -11,6 +11,8 @@
 
 #include "AbstractionPortsView.h"
 
+#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+
 #include <QMenu>
 
 //-----------------------------------------------------------------------------
@@ -54,6 +56,24 @@ void AbstractionPortsView::contextMenuEvent(QContextMenuEvent* event)
 
     QModelIndex index = indexAt(pressedPoint_);
 
+    if (index.data(AbstractionPortsModel::isExtendLockedRole).toBool())
+    {
+        removeAction_.setDisabled(true);
+    }
+    else
+    {
+        removeAction_.setEnabled(true);
+    }
+
+    if (!(index.flags() & Qt::ItemIsEditable))
+    {
+        clearAction_.setDisabled(true);
+    }
+    else
+    {
+        clearAction_.setEnabled(true);
+    }
+
     QMenu menu(this);
     if (index.isValid())
     {
@@ -66,7 +86,8 @@ void AbstractionPortsView::contextMenuEvent(QContextMenuEvent* event)
     menu.addAction(&addAction_);
     
     // if at least one valid item is selected
-    if (index.isValid()) {        
+    if (index.isValid())
+    {
         menu.addAction(&removeAction_);
         menu.addAction(&clearAction_);
         menu.addAction(&copyAction_);    

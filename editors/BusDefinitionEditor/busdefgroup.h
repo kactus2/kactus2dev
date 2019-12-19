@@ -138,6 +138,11 @@ private:
     void extendBusDefinition(QSharedPointer<const BusDefinition> extendedBus);
 
     /*!
+     *  Remove extend system groups.
+     */
+    void removeSystemGroupsFromExtendedDefinition();
+
+    /*!
      *  Remove the lock on editors caused by the previous extended bus definition.
      */
     void removeBusExtension();

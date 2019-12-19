@@ -38,6 +38,7 @@ private slots:
 	void vlnvFail();
 	void busFail();
 	void extendFail();
+    void extendedBusType();
 	void paraFail();
 	void portFail();
 	void wireFail();
@@ -154,8 +155,59 @@ void tst_AbstractionDefinitionValidator::extendFail()
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, abs);
 
-	QCOMPARE(errorList.size(), 1);
+	QCOMPARE(errorList.size(), 2);
+    QCOMPARE(errorList.first(), QLatin1String("The bus definition vendor:library:bogus:version extended in "
+        "abstraction definition vendor:library:name:version is not found in the library"));
+    QCOMPARE(errorList.last(), QLatin1String("The bus definition vendor:library:test_bus_def:version extended in "
+        "abstraction definition vendor:library:name:version does not define extended abstraction definition bus type"));
 	QVERIFY(!validator.validate(abs));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::extendedBusType()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::extendedBusType()
+{
+    VLNV extendBusVLNV(VLNV::BUSDEFINITION, "vendor", "library", "extend_test_bus_def", "version");
+    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition);
+    extendBusDef->setVlnv(extendBusVLNV);
+
+    VLNV busVLNV(VLNV::BUSDEFINITION, "vendor", "library", "test_bus_def", "version");
+    QSharedPointer<BusDefinition> busDef(new BusDefinition);
+    busDef->setVlnv(busVLNV);
+
+    VLNV extendAbsVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "bogus", "version");
+    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition());
+    extendAbs->setVlnv(extendAbsVLNV);
+    extendAbs->setBusType(extendBusVLNV);
+
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
+    abs->setBusType(busVLNV);
+    abs->getLogicalPorts()->append(port_);
+    abs->setExtends(extendAbsVLNV);
+
+    library_->addComponent(extendBusDef);
+    library_->addComponent(extendAbs);
+    library_->addComponent(busDef);
+    library_->addComponent(abs);
+    
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    QString extendError = "The bus definition vendor:library:test_bus_def:version extended in abstraction "
+        "definition vendor:library:name:version does not define extended abstraction definition bus type";
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abs);
+    QCOMPARE(errorList.size(), 1);
+    QCOMPARE(errorList.last(), extendError);
+    QVERIFY(!validator.validate(abs));
+
+    busDef->setExtends(extendBusVLNV);
+    errorList.clear();
+    validator.findErrorsIn(errorList, abs);
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abs));
 }
 
 //-----------------------------------------------------------------------------

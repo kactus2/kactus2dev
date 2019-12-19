@@ -40,7 +40,8 @@ busDefGroup_(libHandler, this),
 absDefGroup_(libHandler, this),
 expressionParser_(new SystemVerilogExpressionParser()),
 busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_)),
-absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
+absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_)),
+busDefinitionSaved_(false)
 {
     if (absDef_)
     {
@@ -197,16 +198,27 @@ void BusDefinitionEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef
 //-----------------------------------------------------------------------------
 bool BusDefinitionEditor::validate(QVector<QString>& errorList)
 {    
+    // if bus definition is being edited
+    if (busDefGroup_.isEnabled())
+    {
+        QVector<QString> busDefinitionErrors;
+        busDefinitionValidator_->findErrorsIn(busDefinitionErrors, busDef_);
+
+        if (busDefinitionErrors.isEmpty())
+        {
+            libHandler_->writeModelToFile(busDef_);
+            busDefinitionSaved_ = true;
+        }
+        else
+        {
+            errorList.append(busDefinitionErrors);
+        }
+    }
+
     // if abstraction definition is being edited
     if (absDefGroup_.isEnabled())
     {
         absDefinitionValidator_->findErrorsIn(errorList, absDef_);
-    }
-
-    // if bus definition is being edited
-    if (busDefGroup_.isEnabled())
-    {
-        busDefinitionValidator_->findErrorsIn(errorList, busDef_);
     }
 
     return errorList.isEmpty();
@@ -217,17 +229,22 @@ bool BusDefinitionEditor::validate(QVector<QString>& errorList)
 //-----------------------------------------------------------------------------
 bool BusDefinitionEditor::save()
 {
-	// If abstraction definition is being edited, save it.
+    // If bus definition is being edited, save it.
+    if (busDefGroup_.isEnabled())
+    {
+        if (busDefinitionSaved_ == false)
+        {
+            libHandler_->writeModelToFile(busDef_);
+        }
+
+        busDefinitionSaved_ = false;
+    }
+    
+    // If abstraction definition is being edited, save it.
 	if (absDefGroup_.isEnabled())
     {
 		absDefGroup_.save();
 		libHandler_->writeModelToFile(absDef_);
-	}
-
-	// If bus definition is being edited, save it.
-	if (busDefGroup_.isEnabled())
-    {
-		libHandler_->writeModelToFile(busDef_);
 	}
 
 	return TabDocument::save();
