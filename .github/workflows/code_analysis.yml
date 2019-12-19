@@ -26,7 +26,7 @@ jobs:
       run: |
         build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make -j4
         cd IPXACTmodels
-        make install
+        sudo make install
     - name: Run tests
       run : make check
     - name: Run sonar-scanner
