@@ -21,7 +21,7 @@ jobs:
         wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
         unzip build-wrapper-linux-x86        
     - name: Configure build
-      run: qmake CONFIG+=test Kactus2_Solution.pro
+      run: qmake CONFIG+=test TESTARGS+="-platform offscreen" Kactus2_Solution.pro
     - name: Build sources
       run: |
         build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make -j4
