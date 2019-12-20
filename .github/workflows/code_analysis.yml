@@ -3,7 +3,7 @@ name: Code.Analysis
 on: [push]
 
 jobs:
-  test_with_sonar_analysis:
+  test_and_sonar_analysis:
     
     runs-on: ubuntu-latest
 
@@ -21,14 +21,14 @@ jobs:
         wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
         unzip build-wrapper-linux-x86        
     - name: Configure build
-      run: qmake CONFIG+=test TESTARGS+="-platform offscreen" Kactus2_Solution.pro
+      run: qmake CONFIG+=test Kactus2_Solution.pro
     - name: Build sources
       run: |
         build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make -j4
         cd IPXACTmodels
         sudo make install
     - name: Run tests
-      run : make check
+      run : make check TESTARGS="-silent -platform offscreen"
     - name: Run sonar-scanner
       run: sonar-scanner -Dsonar.cfamily.threads=2 -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=$SONARQUBE_CLOUD_LOGIN -Dsonar.language=c++ -Dsonar.cxx.suffixes.sources=.cxx,.cpp,.cc,.c,.inl -Dsonar.sources=. -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,**/?eneratedFiles/**/*
       env:
