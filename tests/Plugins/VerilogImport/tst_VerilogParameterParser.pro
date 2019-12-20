@@ -16,6 +16,10 @@ TARGET = tst_VerilogParameterParser
 QT += core xml gui testlib
 CONFIG += c++11 testcase console
 
+QMAKE_EXPORTED_VARIABLES += MAKE_TESTARGS
+MAKE_TESTARGS.name = TESTARGS
+MAKE_TESTARGS.value = "-platform offscreen"
+
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release

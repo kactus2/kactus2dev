@@ -15,6 +15,10 @@ TARGET = tst_MemoryMapValidator
 
 QT += core gui xml testlib
 
+QMAKE_EXPORTED_VARIABLES += MAKE_TESTARGS
+MAKE_TESTARGS.name = TESTARGS
+MAKE_TESTARGS.value = "-platform offscreen"
+
 CONFIG += c++11 testcase console
 
 linux-g++ | linux-g++-64 | linux-g++-32 {
