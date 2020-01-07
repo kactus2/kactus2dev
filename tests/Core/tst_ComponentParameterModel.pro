@@ -15,10 +15,6 @@ TARGET = tst_ComponentParameterModel
 
 QT += core gui xml testlib
 
-QMAKE_EXPORTED_VARIABLES += MAKE_TESTARGS
-MAKE_TESTARGS.name = TESTARGS
-MAKE_TESTARGS.value = "-platform offscreen"
-
 CONFIG += c++11 testcase console
 DEFINES += IPXACTMODELS_LIB
 
