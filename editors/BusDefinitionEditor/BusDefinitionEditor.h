@@ -172,6 +172,8 @@ private:
     //! Validator for abstraction definition.
     QSharedPointer<AbstractionDefinitionValidator> absDefinitionValidator_;
 
+    //! Flag for save status on bus definition.
+    bool busDefinitionSaved_;
 };
 
 #endif // BUSDEFINITIONEDITOR_H

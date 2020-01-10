@@ -19,6 +19,6 @@
 NameValidator::NameValidator(QObject* parent):
 QRegularExpressionValidator(parent)
 {
-    QRegularExpression nameExpression(QStringLiteral("^[a-zA-Z:_]+[a-zA-Z0-9:_.-]*$"));
-	setRegularExpression(nameExpression);
+    QRegularExpression nameExpression(QStringLiteral("(^[a-zA-Z:_]+[a-zA-Z0-9:_.-]*$)|(^$)"));
+    setRegularExpression(nameExpression);
 }

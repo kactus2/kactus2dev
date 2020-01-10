@@ -13,6 +13,7 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 //-----------------------------------------------------------------------------
@@ -33,7 +34,10 @@ QVariant AbstractionDefinitionPortsSortFilter::data(const QModelIndex &index, in
     {
         return getBackgroundColorForIndex(index);
     }
-
+    else if (role == Qt::ForegroundRole && isExtendPort(index))
+    {
+        return KactusColors::DISABLED_TEXT;
+    }
     else
     {
         return QSortFilterProxyModel::data(index, role);
@@ -70,9 +74,8 @@ QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIn
     }
 
     QModelIndex nameIndex = index.sibling(index.row(), LogicalPortColumns::NAME);
-    QModelIndex previousColorIndex = index.sibling(previousRow, LogicalPortColumns::DESCRIPTION);
     QString name = nameIndex.data(Qt::DisplayRole).toString();
-    previousColor = previousColorIndex.data(Qt::BackgroundRole).value<QColor>();
+    previousColor = getPreviousColor(previousRow, index);
 
     if (name.compare(previousName) == 0)
     {
@@ -84,6 +87,23 @@ QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIn
     }
     
     return KactusColors::REGULAR_FIELD;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionPortsSortFilter::getPreviousColor()
+//-----------------------------------------------------------------------------
+QColor AbstractionDefinitionPortsSortFilter::getPreviousColor(int const& previousRow, QModelIndex const& index)
+    const
+{
+    QModelIndex previousColorIndex = index.sibling(previousRow, LogicalPortColumns::PRESENCE);
+    QColor previousColor = previousColorIndex.data(Qt::BackgroundRole).value<QColor>();
+    if (previousColor == KactusColors::DISABLED_FIELD)
+    {
+        previousColorIndex = index.sibling(previousRow, LogicalPortColumns::DESCRIPTION);
+        previousColor = previousColorIndex.data(Qt::BackgroundRole).value<QColor>();
+    }
+
+    return previousColor;
 }
 
 //-----------------------------------------------------------------------------
@@ -124,6 +144,29 @@ bool AbstractionDefinitionPortsSortFilter::undefinedMode(QModelIndex const& inde
         {
             return true;
         }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionPortsSortFilter::isExtendPort()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionPortsSortFilter::isExtendPort(QModelIndex const& index) const
+{
+    if ((index.data(AbstractionPortsModel::isExtendLockedRole).toBool() &&
+            (index.column() == LogicalPortColumns::MODE || index.column() == LogicalPortColumns::DIRECTION ||
+            index.column() == LogicalPortColumns::INITIATIVE || index.column() == LogicalPortColumns::KIND ||
+            index.column() == LogicalPortColumns::BUSWIDTH ||
+            index.column() == LogicalPortColumns::PROTOCOLTYPE ||
+            index.column() == LogicalPortColumns::PAYLOADNAME ||
+            index.column() == LogicalPortColumns::PAYLOADTYPE ||
+            index.column() == LogicalPortColumns::PAYLOADEXTENSION)) ||
+        (index.data(AbstractionPortsModel::isPortLockedRole).toBool() &&
+            (index.column() == LogicalPortColumns::NAME || index.column() == LogicalPortColumns::QUALIFIER ||
+            index.column() == LogicalPortColumns::DESCRIPTION)))
+    {
+        return true;
     }
 
     return false;

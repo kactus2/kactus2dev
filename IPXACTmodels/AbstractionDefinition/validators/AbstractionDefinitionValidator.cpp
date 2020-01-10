@@ -68,7 +68,7 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
     }
 
 	// If this is an extension to another abstraction definition, it must exist.
-	if (!abstractionDefinition->getExtends().isEmpty() && !library_->contains(abstractionDefinition->getExtends()))
+    if (!hasValidExtend(abstractionDefinition))
 	{
 		return false;
 	}
@@ -132,15 +132,12 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
             .arg(abstractionDefinition->getBusType().toString(), abstractionDefinition->getVlnv().toString()));
     }
 
-	// If this is an extension to another abstraction definition, it must exist.
-	if (!abstractionDefinition->getExtends().isEmpty() && !library_->contains(abstractionDefinition->getExtends()))
-	{
-		errors.append(QObject::tr("The bus definition %1 extended in %2 is not found in the library").arg(
-            abstractionDefinition->getExtends().toString(), abstractionDefinition->getVlnv().toString()));
-	}
-
     QString context = QObject::tr("abstraction definition %1").arg(abstractionDefinition->getVlnv().toString());
-	// Any parameters must be valid.
+
+    // If this is an extension to another abstraction definition, it must exist.
+    findErrorsInExtend(errors, context, abstractionDefinition);
+    
+    // Any parameters must be valid.
 	foreach (QSharedPointer<Parameter> currentPara, *abstractionDefinition->getParameters())
 	{
 		parameterValidator_.findErrorsIn(errors, currentPara, context);
@@ -655,5 +652,125 @@ void AbstractionDefinitionValidator::findErrorsInSystemGroup(QVector<QString>& e
         errors.append(QObject::tr(
             "The system group %1 in %2 is not defined in system groups of bus definition %3.")
             .arg(systemGroup, context, busDefinitionIdentifier));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::hasValidExtend()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionValidator::hasValidExtend(QSharedPointer<AbstractionDefinition> abstraction) const
+{
+    if (!abstraction->getExtends().isEmpty() && (!library_->contains(abstraction->getExtends()) ||
+        !busTypeDefinesExtendedAbstractionBusType(abstraction)))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::busTypeDefinesExtendedAbstractionBusType()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionValidator::busTypeDefinesExtendedAbstractionBusType(
+    QSharedPointer<AbstractionDefinition> abstraction) const
+{
+    QSharedPointer<AbstractionDefinition> extendAbstraction =
+        getExtendedAbstractionDefinition(abstraction);
+    if (!extendAbstraction)
+    {
+        return false;
+    }
+
+    return busTypeIsExtendedFromExtendBusType(getBusDefinition(abstraction), getBusDefinition(extendAbstraction));
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::getExtendedAbstractionDefinition()
+//-----------------------------------------------------------------------------
+QSharedPointer<AbstractionDefinition> AbstractionDefinitionValidator::getExtendedAbstractionDefinition(
+    QSharedPointer<AbstractionDefinition> abstraction) const
+{
+    QSharedPointer<Document> extendDocument = library_->getModel(abstraction->getExtends());
+    if (extendDocument)
+    {
+        QSharedPointer<AbstractionDefinition> extendAbstraction =
+            extendDocument.dynamicCast<AbstractionDefinition>();
+        if (extendAbstraction)
+        {
+            return extendAbstraction;
+        }
+    }
+
+    return QSharedPointer<AbstractionDefinition>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::busTypeIsExtendedFrom()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionValidator::busTypeIsExtendedFromExtendBusType(
+    QSharedPointer<const BusDefinition> busType, QSharedPointer<const BusDefinition> extendBustype) const
+{
+    if (busType == extendBustype)
+    {
+        return true;
+    }
+
+    QSharedPointer<const BusDefinition> busTypeExtend = getBusTypeExtend(busType);
+    if (busTypeExtend && busTypeIsExtendedFromExtendBusType(busTypeExtend, extendBustype))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::getBusTypeExtend()
+//-----------------------------------------------------------------------------
+QSharedPointer<const BusDefinition> AbstractionDefinitionValidator::getBusTypeExtend(
+    QSharedPointer<const BusDefinition> busType) const
+{
+    if (!busType->getExtends().isEmpty() && busType->getExtends().isValid() &&
+        busType->getExtends().getType() == VLNV::BUSDEFINITION)
+    {
+        QSharedPointer<const Document> extendDocument = library_->getModelReadOnly(busType->getExtends());
+        if (extendDocument)
+        {
+            QSharedPointer<const BusDefinition> extendBusType = extendDocument.dynamicCast<const BusDefinition>();
+            if (extendBusType)
+            {
+                return extendBusType;
+            }
+        }
+    }
+
+    return QSharedPointer<const BusDefinition>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::findErrorsInExtend()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionValidator::findErrorsInExtend(QVector<QString>& errors, QString const& context,
+    QSharedPointer<AbstractionDefinition> abstraction) const
+{
+    VLNV extendVLNV = abstraction->getExtends();
+    if (!extendVLNV.isEmpty())
+    {
+        if (!library_->contains(extendVLNV))
+        {
+            errors.append(QObject::tr("The bus definition %1 extended in %2 is not found in the library")
+                .arg(extendVLNV.toString(), context));
+        }
+
+        if (!busTypeDefinesExtendedAbstractionBusType(abstraction))
+        {
+            errors.append(
+                QObject::tr("The bus definition %1 extended in %2 does not define extended abstraction definition"
+                    " bus type").arg(abstraction->getBusType().toString(), context));
+        }
     }
 }

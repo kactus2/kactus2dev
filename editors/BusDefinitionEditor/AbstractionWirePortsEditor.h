@@ -54,11 +54,9 @@ public:
     void save();
 
     /*!
-     *  Set the abstraction definition for the editor.
-     *
-     *      @param [in] absDef  The Abstraction definition to edit.
+     *  Hide the transactional columns
      */
-    void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
+    void hideTransactionalColumns();
 
     /*!
      *  Set the bus definition referenced by the abstraction definition.
@@ -130,11 +128,6 @@ private:
      *      @return List of the selected indexes.
      */
     QModelIndexList getSelectedIndexes();
-
-    /*!
-     *  Hide the transactional columns
-     */
-    void hideTransactionalColumns();
 
     //-----------------------------------------------------------------------------
     // Data.

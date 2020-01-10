@@ -14,13 +14,14 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 
 //-----------------------------------------------------------------------------
 //! NMTokenValidator class.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT NMTokenValidator : public QRegExpValidator {
-	Q_OBJECT
+class IPXACTMODELS_EXPORT NMTokenValidator : public QRegularExpressionValidator
+{
+    Q_OBJECT
 
 public:
 

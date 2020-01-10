@@ -43,7 +43,9 @@ public:
     enum portTypeRoles
     {
         isWireRole = Qt::UserRole,
-        isTransactionalRole = Qt::UserRole + 1
+        isTransactionalRole = Qt::UserRole + 1,
+        isExtendLockedRole = Qt::UserRole + 2,
+        isPortLockedRole = Qt::UserRole + 3
     };
 
 	/*!
@@ -125,6 +127,20 @@ public:
 	 */
 	void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
     
+    /*!
+     *  Set the extend port abstractions.
+     *
+     *      @param [in] extendPorts     List of new extend port abstractions.
+     */
+    void setExtendedPorts(QList<QSharedPointer<PortAbstraction> > const& extendPorts);
+
+    /*!
+     *  Remove the extend port abstractions.
+     *
+     *      @param [in] extendPorts     List of the extend port abstractions.
+     */
+    void removeExtendedPorts(QSharedPointer<QList<QSharedPointer<PortAbstraction> > > const& extendPorts);
+
 	/*!
 	 *  Set the bus definition for the model.
 	 *
@@ -232,6 +248,12 @@ private:
 
         //! Defines the transactional port represented on the row.
         QSharedPointer<TransactionalPort> transactional_;
+
+        //! Flag for locking columns for extend signals.
+        bool lockExtendData_;
+
+        //! Flag for locking port abstraction columns.
+        bool lockPortData_;
 
         /*!
          *  The default constructor.
@@ -343,9 +365,11 @@ private:
 	 *      @param [in] portAbs             The port abstraction of the port.
 	 *      @param [in] modeSpesificWire    The mode specific wire definition of the port.
 	 *      @param [in] mode                The mode of the port to be created.
+     *      @param [in] lockExtendData      Lock the columns for extend signals.
+     *      @param [in] lockPortData        Lock the port abstraction data columns.
 	 */
     void createWireRow(QSharedPointer<PortAbstraction> portAbs, QSharedPointer<WirePort> modeSpesificWire,
-        General::InterfaceMode mode);
+        General::InterfaceMode mode, bool lockExtendData, bool lockPortData);
 
     /*!
      *  Creates a single transactional signal for the table from port abstraction.
@@ -353,9 +377,12 @@ private:
      *      @param [in] portAbs                     The port abstraction of the port.
      *      @param [in] modeSpesificTransactional   The mode specific transactional definition of the port.
      *      @param [in] mode                        The mode of the port to be created.
+     *      @param [in] lockExtendData              Lock the columns for extend signals.
+     *      @param [in] lockPortData                Lock the port abstraction data columns.
      */
     void createTransactionalRow(QSharedPointer<PortAbstraction> portAbs,
-        QSharedPointer<TransactionalPort> modeSpecificTransactional, General::InterfaceMode mode);
+        QSharedPointer<TransactionalPort> modeSpecificTransactional, General::InterfaceMode mode,
+        bool lockExtendData, bool lockPortData);
 
 	/*!
      *  Convert PortQualifier to string.
@@ -524,6 +551,55 @@ private:
      *      @return True, if the data change was successful, false otherwise.
      */
     bool changeTransactionalData(QModelIndex const& index, QVariant const& value, SignalRow& port);
+
+    /*!
+     *  Create signal rows from the selected port abstraction.
+     *
+     *      @param [in] portAbs             The selected port abstraction.
+     *      @param [in] lockExtendData      Lock the columns for extend signals.
+     *      @param [in] lockPortData        Lock the port abstraction data columns.
+     */
+    void createRowsForPortAbstraction(QSharedPointer<PortAbstraction> portAbs, bool lockExtendData,
+        bool lockPortData);
+
+    /*!
+     *  Get the number of signals in the selected extend port abstractions.
+     *
+     *      @param [in] extendPorts     List of the selected extend port abstractions.
+     *
+     *      @return Number of signals.
+     */
+    int getExtendRowCount(QList<QSharedPointer<PortAbstraction> > const& extendPorts) const;
+
+    /*!
+     *  Get the extend signal rows.
+     *
+     *      @param [in] extendPorts     List of extend port abstractions.
+     *
+     *      @return List of extend signals.
+     */
+    QList<SignalRow> getCurrentExtendRows(QList<QSharedPointer<PortAbstraction> > const& extendPorts);
+
+    /*!
+     *  Check if a signal row is an extend port abstraction.
+     *
+     *      @param [in] signal          The selected signal row.
+     *      @param [in] extendPorts     List of extend port abstractions.
+     *
+     *      @return True, if the selected signal is an extend port abstraction, false otherwise.
+     */
+    bool signalRowIsExtend(SignalRow signal, QList<QSharedPointer<PortAbstraction> > const& extendPorts) const;
+
+    /*!
+     *  Get the extend port abstractions with data edited by the signals and the leftover extend signals.
+     *
+     *      @param [in] oldExtendSignals    The current extend signals.
+     *      @param [in] newExtends          List of extend port abstractions.
+     *
+     *      @return The extend port abstractions with the leftover extend signals.
+     */
+    QPair<QList<QSharedPointer<PortAbstraction> >, QList<SignalRow> > getEditedNewExtends(
+        QList<SignalRow> const& oldExtendSignals, QList<QSharedPointer<PortAbstraction> > const& newExtends);
 
     //-----------------------------------------------------------------------------
     // Data.
