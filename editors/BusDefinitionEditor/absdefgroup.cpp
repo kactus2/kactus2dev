@@ -28,17 +28,17 @@
 //-----------------------------------------------------------------------------
 // Function: AbsDefGroup::AbsDefGroup()
 //-----------------------------------------------------------------------------
-AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, QWidget *parent):
-QGroupBox(tr("Signals (Abstraction Definition)"), parent),
-vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
-extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, parent, this)),
-descriptionEditor_(new QPlainTextEdit(this)),
-portTabs_(this),
-wirePortsEditor_(0),
-transactionalPortsEditor_(0),
-abstraction_(),
-libraryHandler_(libraryHandler),
-portModel_(new AbstractionPortsModel(libraryHandler, &portTabs_))
+AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, QWidget *parent) :
+    QGroupBox(tr("Signals (Abstraction Definition)"), parent),
+    vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
+    extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, parent, this)),
+    descriptionEditor_(new QPlainTextEdit(this)),
+    portTabs_(this),
+    wirePortsEditor_(0),
+    transactionalPortsEditor_(0),
+    abstraction_(),
+    libraryHandler_(libraryHandler),
+    portModel_(new AbstractionPortsModel(libraryHandler, &portTabs_))
 {
     wirePortsEditor_ = new AbstractionWirePortsEditor(portModel_, libraryHandler, &portTabs_),
     transactionalPortsEditor_ = new AbstractionTransactionalPortsEditor(portModel_, libraryHandler, &portTabs_),

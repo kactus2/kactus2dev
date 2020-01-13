@@ -142,7 +142,8 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
 bool AbstractionPortsDelegate::editorIsLineEditor(int indexColumn) const
 {
     return indexColumn == LogicalPortColumns::NAME || indexColumn == LogicalPortColumns::WIDTH ||
-        indexColumn == LogicalPortColumns::BUSWIDTH || indexColumn == LogicalPortColumns::DESCRIPTION;
+        indexColumn == LogicalPortColumns::BUSWIDTH || indexColumn == LogicalPortColumns::DESCRIPTION ||
+        indexColumn == LogicalPortColumns::PAYLOADNAME || indexColumn == LogicalPortColumns::PAYLOADEXTENSION;
 }
 
 //-----------------------------------------------------------------------------
@@ -151,7 +152,8 @@ bool AbstractionPortsDelegate::editorIsLineEditor(int indexColumn) const
 bool AbstractionPortsDelegate::editorIsComboBox(int indexColumn) const
 {
     return indexColumn == LogicalPortColumns::QUALIFIER || indexColumn == LogicalPortColumns::MODE ||
-        indexColumn == LogicalPortColumns::PRESENCE || indexColumn == LogicalPortColumns::SYSTEM_GROUP;
+        indexColumn == LogicalPortColumns::PRESENCE || indexColumn == LogicalPortColumns::SYSTEM_GROUP ||
+        indexColumn == LogicalPortColumns::PROTOCOLTYPE || indexColumn == LogicalPortColumns::PAYLOADTYPE;
 }
 
 //-----------------------------------------------------------------------------
