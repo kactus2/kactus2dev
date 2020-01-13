@@ -39,6 +39,7 @@ HEADERS += ./generaldeclarations.h \
     ./kactusExtensions/ComDefinitionReader.h \
     ./kactusExtensions/validators/SystemDesignConfigurationValidator.h \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.h \
+    ./common/TagData.h \
     ./common/AccessTypes.h \
     ./common/Array.h \
     ./common/Assertion.h \
@@ -257,8 +258,8 @@ HEADERS += ./generaldeclarations.h \
     ./Catalog/CatalogReader.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
-    ./utilities/XmlUtils.h \
-    ./utilities/BusDefinitionUtils.h
+    ./utilities/BusDefinitionUtils.h \
+    ./utilities/XmlUtils.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -506,5 +507,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/CatalogWriter.cpp \
     ./Catalog/IpxactFile.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
-    ./utilities/XmlUtils.cpp \
-    ./utilities/BusDefinitionUtils.cpp
+    ./utilities/BusDefinitionUtils.cpp \
+    ./utilities/XmlUtils.cpp

@@ -3,12 +3,12 @@ name: Code.Analysis
 on: [push]
 
 jobs:
-  sonar_analysis:
-
+  test_and_sonar_analysis:
+    
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Setup sonar-scanner
@@ -19,14 +19,24 @@ jobs:
     - name: Setup build wrapper for sonar-scanner
       run: |
         wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
-        unzip build-wrapper-linux-x86        
+        unzip build-wrapper-linux-x86
     - name: Configure build
       run: ./configure
     - name: Build sources
       run: build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make -j4
+    - name: Install shared libraries
+      run: sudo make -C IPXACTmodels install
+    - name: Build tests
+      # Build without -j to avoid colliding on compiling objects shared between tests.
+      run: |
+        cd tests
+        qmake test_all.pro
+        make
+    - name: Run tests
+      run : make -C tests check 
     - name: Run sonar-scanner
-      run: sonar-scanner -Dsonar.cfamily.threads=2 -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=$SONARQUBE_CLOUD_LOGIN -Dsonar.language=c++ -Dsonar.cxx.suffixes.sources=.cxx,.cpp,.cc,.c,.inl -Dsonar.sources=. -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,**/?eneratedFiles/**/*
+      run: sonar-scanner -Dsonar.cfamily.threads=2 -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=$SONARQUBE_LOGIN -Dsonar.language=c++ -Dsonar.cxx.suffixes.sources=.cxx,.cpp,.cc,.c,.inl -Dsonar.sources=. -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,tests/**/*,**/?eneratedFiles/**/*
       env:
-        SONARQUBE_CLOUD_LOGIN: ${{ secrets.SonarcloudLogin }}
+        SONARQUBE_LOGIN: ${{ secrets.SONAR_LOGIN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
