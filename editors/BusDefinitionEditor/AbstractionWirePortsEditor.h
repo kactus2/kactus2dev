@@ -49,11 +49,6 @@ public:
     virtual ~AbstractionWirePortsEditor() = default;
 
     /*!
-     *  Saves the changes made in the editor.
-     */
-    void save();
-
-    /*!
      *  Hide the transactional columns
      */
     void hideTransactionalColumns();

@@ -47,6 +47,7 @@ portDelegate_(libaryAccess, this)
     connect(&portView_, SIGNAL(addSlave()), this, SLOT(onAddSlave()), Qt::UniqueConnection);
     connect(&portView_, SIGNAL(addSystem()), this, SLOT(onAddSystem()), Qt::UniqueConnection);
     connect(&portView_, SIGNAL(addAllSystems()), this, SLOT(onAddAllSystems()), Qt::UniqueConnection);
+    connect(&portView_, SIGNAL(resetExtendPorts()), portModel_, SLOT(onResetExtendPorts()), Qt::UniqueConnection);
 
     connect(portModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -114,14 +115,6 @@ QModelIndexList AbstractionWirePortsEditor::getSelectedIndexes()
     }
 
     return selection;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsEditor::save()
-//-----------------------------------------------------------------------------
-void AbstractionWirePortsEditor::save()
-{
-    portModel_->save();
 }
 
 //-----------------------------------------------------------------------------

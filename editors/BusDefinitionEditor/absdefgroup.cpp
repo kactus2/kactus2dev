@@ -87,8 +87,7 @@ AbsDefGroup::~AbsDefGroup()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::save()
 {
-    wirePortsEditor_->save();
-    transactionalPortsEditor_->save();
+    portModel_->save();
 }
 
 //-----------------------------------------------------------------------------
@@ -252,10 +251,13 @@ void AbsDefGroup::extendSignals(QSharedPointer<const AbstractionDefinition> exte
 //-----------------------------------------------------------------------------
 void AbsDefGroup::removeSignalsFromExtendedDefinition()
 {
-    QSharedPointer<const AbstractionDefinition> extendedAbstraction = getExtendedAbstraction();
-    if (extendedAbstraction)
+    if (abstraction_->getExtends() != extendEditor_->getVLNV())
     {
-        portModel_->removeExtendedPorts(extendedAbstraction->getLogicalPorts());
+        QSharedPointer<const AbstractionDefinition> extendedAbstraction = getExtendedAbstraction();
+        if (extendedAbstraction)
+        {
+            portModel_->removeExtendedPorts(extendedAbstraction->getLogicalPorts());
+        }
     }
 }
 

@@ -78,8 +78,8 @@ busDefinitionSaved_(false)
     setupLayout();
 
     connect(&busDefGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
     connect(&absDefGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
     connect(&absDefGroup_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(&absDefGroup_, SIGNAL(noticeMessage(const QString&)),

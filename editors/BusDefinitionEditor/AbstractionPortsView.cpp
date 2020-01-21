@@ -23,12 +23,14 @@ EditableTableView(parent),
 addMasterAction_(tr("Add master signal"), this),
 addSlaveAction_(tr("Add slave signal"), this),
 addSystemAction_(tr("Add system signal"), this),
-addAllSystemsAction_(tr("Add all unconnected system signals"), this)
+addAllSystemsAction_(tr("Add all unconnected system signals"), this),
+resetExtendPortsAction_(tr("Reset extend ports"), this)
 {
     connect(&addMasterAction_, SIGNAL(triggered()), this, SIGNAL(addMaster()), Qt::UniqueConnection);
     connect(&addSlaveAction_, SIGNAL(triggered()), this, SIGNAL(addSlave()), Qt::UniqueConnection);
     connect(&addSystemAction_, SIGNAL(triggered()), this, SIGNAL(addSystem()), Qt::UniqueConnection);
     connect(&addAllSystemsAction_, SIGNAL(triggered()), this, SIGNAL(addAllSystems()), Qt::UniqueConnection);
+    connect(&resetExtendPortsAction_, SIGNAL(triggered()), this, SIGNAL(resetExtendPorts()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,6 +85,10 @@ void AbstractionPortsView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction(&addAllSystemsAction_);
         menu.addSeparator();
     }
+
+    menu.addAction(&resetExtendPortsAction_);
+    menu.addSeparator();
+
     menu.addAction(&addAction_);
     
     // if at least one valid item is selected

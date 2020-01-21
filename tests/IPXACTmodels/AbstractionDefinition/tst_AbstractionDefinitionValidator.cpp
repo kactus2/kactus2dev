@@ -159,11 +159,9 @@ void tst_AbstractionDefinitionValidator::extendFail()
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, abs);
 
-	QCOMPARE(errorList.size(), 2);
+    QCOMPARE(errorList.size(), 1);
     QCOMPARE(errorList.first(), QLatin1String("The bus definition vendor:library:bogus:version extended in "
         "abstraction definition vendor:library:name:version is not found in the library"));
-    QCOMPARE(errorList.last(), QLatin1String("The bus definition vendor:library:test_bus_def:version extended in "
-        "abstraction definition vendor:library:name:version does not define extended abstraction definition bus type"));
 	QVERIFY(!validator.validate(abs));
 }
 

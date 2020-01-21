@@ -47,6 +47,7 @@ portDelegate_(libraryAccess, this)
     connect(&portView_, SIGNAL(addSlave()), this, SLOT(onAddSlave()), Qt::UniqueConnection);
     connect(&portView_, SIGNAL(addSystem()), this, SLOT(onAddSystem()), Qt::UniqueConnection);
     connect(&portView_, SIGNAL(addAllSystems()), this, SLOT(onAddAllSystems()), Qt::UniqueConnection);
+    connect(&portView_, SIGNAL(resetExtendPorts()), portModel_, SLOT(onResetExtendPorts()), Qt::UniqueConnection);
 
     connect(portModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -114,14 +115,6 @@ QModelIndexList AbstractionTransactionalPortsEditor::getSelectedIndexes()
     }
 
     return selection;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::save()
-//-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::save()
-{
-    portModel_->save();
 }
 
 //-----------------------------------------------------------------------------

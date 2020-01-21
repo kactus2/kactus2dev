@@ -848,14 +848,17 @@ bool AbstractionDefinitionValidator::busTypeDefinesExtendedAbstractionBusType(
 QSharedPointer<AbstractionDefinition> AbstractionDefinitionValidator::getExtendedAbstractionDefinition(
     QSharedPointer<AbstractionDefinition> abstraction) const
 {
-    QSharedPointer<Document> extendDocument = library_->getModel(abstraction->getExtends());
-    if (extendDocument)
+    if (abstraction->getExtends().isValid())
     {
-        QSharedPointer<AbstractionDefinition> extendAbstraction =
-            extendDocument.dynamicCast<AbstractionDefinition>();
-        if (extendAbstraction)
+        QSharedPointer<Document> extendDocument = library_->getModel(abstraction->getExtends());
+        if (extendDocument)
         {
-            return extendAbstraction;
+            QSharedPointer<AbstractionDefinition> extendAbstraction =
+                extendDocument.dynamicCast<AbstractionDefinition>();
+            if (extendAbstraction)
+            {
+                return extendAbstraction;
+            }
         }
     }
 
@@ -920,16 +923,18 @@ void AbstractionDefinitionValidator::findErrorsInExtend(QVector<QString>& errors
             errors.append(QObject::tr("The bus definition %1 extended in %2 is not found in the library")
                 .arg(extendVLNV.toString(), context));
         }
-
-        if (!busTypeDefinesExtendedAbstractionBusType(abstraction))
+        else
         {
-            errors.append(
-                QObject::tr("The bus definition %1 extended in %2 does not define extended abstraction definition"
-                    " bus type").arg(abstraction->getBusType().toString(), context));
+            if (!busTypeDefinesExtendedAbstractionBusType(abstraction))
+            {
+                errors.append(
+                    QObject::tr("The bus definition %1 extended in %2 does not define extended abstraction definition"
+                        " bus type").arg(abstraction->getBusType().toString(), context));
+            }
+
+            findErrorsInExtendPorts(errors, context, abstraction);
         }
     }
-
-    findErrorsInExtendPorts(errors, context, abstraction);
 }
 
 //-----------------------------------------------------------------------------

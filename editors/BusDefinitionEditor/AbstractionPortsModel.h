@@ -24,6 +24,8 @@
 #include <QSharedPointer>
 #include <QString>
 
+#include <editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.h>
+
 class BusDefinition;
 class LibraryInterface;
 class Protocol;
@@ -200,6 +202,11 @@ public slots:
      */
     void onRemoveItem(QModelIndex const& index);
    
+    /*!
+     *  Handle the reloading of extend ports.
+     */
+    void onResetExtendPorts();
+
 signals:
 
 	/*!
@@ -234,84 +241,17 @@ private:
     AbstractionPortsModel(const AbstractionPortsModel& other);
     AbstractionPortsModel& operator=(const AbstractionPortsModel& other);
     
-    //! SignalRow represents a single row in the table by grouping the Port, Wire and WirePort elements.
-    struct SignalRow
-    {
-        //! Defines the Port represented in the row.
-        QSharedPointer<PortAbstraction> abstraction_;
-
-        //! Defines the mode of the wirePort (master, slave or system).
-        General::InterfaceMode mode_;
-
-        //! Defines the wire port represented on the row.
-        QSharedPointer<WirePort> wire_;
-
-        //! Defines the transactional port represented on the row.
-        QSharedPointer<TransactionalPort> transactional_;
-
-        //! Flag for locking columns for extend signals.
-        bool lockExtendData_;
-
-        //! Flag for locking port abstraction columns.
-        bool lockPortData_;
-
-        /*!
-         *  The default constructor.
-         */
-        SignalRow();
-
-        /*!
-         *  Copy constructor
-         */
-        SignalRow(SignalRow const& other) = default;
-
-        /*!
-         *  Comparison of two SignalRows.
-         *
-         *      @param [in] other   The SignalRow to compare this to.
-         *
-         *      @return True, if the SignalRows are equal, otherwise false.
-         */
-        bool operator==(SignalRow const& other) const;
-
-        /*!
-         *  Comparison of two SignalRows.
-         *
-         *      @param [in] other   The SignalRow to compare this to.
-         *
-         *      @return True, if the SignalRows are not equal, otherwise false.
-         */
-        bool operator!=(SignalRow const& other) const;
-
-        /*!
-         *  Less than comparison of two SignalRows for table ordering.
-         *
-         *      @param [in] other   The SignalRow to compare this to.
-         *
-         *      @return True, if this precedes other, otherwise false.
-         */
-        bool operator<(SignalRow const& other) const;
-
-        /*!
-         *  Get the current system group of the selected signal.
-         *
-         *      @param [in] signal  The selected signal.
-         *
-         *      @return The system group of the selected signal.
-         */
-        QString getSystemGroup(AbstractionPortsModel::SignalRow const& signal) const;
-
-        /*!
-         *  Check if the compared signal is of the same type.
-         *
-         *      @param [in] comparisonSignal    The selected comparison signal.
-         *
-         *      @return True, if the signals are of the same type, false otherwise.
-         */
-        bool comparedSignalIsSameType(AbstractionPortsModel::SignalRow const& comparisonSignal) const;
-    };
-
-    QVariant valueForIndexedItem(QModelIndex const& index, AbstractionPortsModel::SignalRow const& port,
+    /*!
+     *  Get the value of the selected index.
+     *
+     *      @param [in] index                   The selected index.
+     *      @param [in] port                    The indexed signal row.
+     *      @param [in] portWireAbs             Wire abstraction of the selected signal.
+     *      @param [in] portTransactionalAbs    Transactional abstraction of the selected signal.
+     *
+     *      @return Value of the selected index.
+     */
+    QVariant valueForIndexedItem(QModelIndex const& index, AbstractionDefinitionSignalRow const& port,
         QSharedPointer<WireAbstraction> portWireAbs, QSharedPointer<TransactionalAbstraction> portTransactionalAbs)
         const;
 
@@ -425,7 +365,7 @@ private:
      *
      *      @return List of ports contained within the selected indexes.
      */
-    QVector<AbstractionPortsModel::SignalRow> getIndexedPorts(QModelIndexList const& selection);
+    QVector<AbstractionDefinitionSignalRow> getIndexedPorts(QModelIndexList const& selection);
 
     /*!
      *  Check if selected signaled port has already been selected.
@@ -435,8 +375,8 @@ private:
      *
      *      @return True, if the signaled port has been selected, false otherwise.
      */
-    bool portHasBeenSelected(AbstractionPortsModel::SignalRow const& portSignal,
-        QVector<AbstractionPortsModel::SignalRow> const& selectedPorts) const;
+    bool portHasBeenSelected(AbstractionDefinitionSignalRow const& portSignal,
+        QVector<AbstractionDefinitionSignalRow> const& selectedPorts) const;
 
     /*!
      *  Check if the selected port already contains the selected signal.
@@ -466,7 +406,7 @@ private:
      *
      *      @return The system groups that have not been connected to the system signals of the selected port.
      */
-    QStringList getMissingSystemGroupsForSignal(AbstractionPortsModel::SignalRow const& signal) const;
+    QStringList getMissingSystemGroupsForSignal(AbstractionDefinitionSignalRow const& signal) const;
 
     /*!
      *  Check if the selected port contains other signals.
@@ -475,7 +415,7 @@ private:
      *
      *      @return True, if the selected port contains other signals, false otherwise.
      */
-    bool portHasOtherSignals(AbstractionPortsModel::SignalRow const& portSignal) const;
+    bool portHasOtherSignals(AbstractionDefinitionSignalRow const& portSignal) const;
 
     /*!
      *  Construct a copy of the port abstraction of the selected signal.
@@ -484,7 +424,7 @@ private:
      *
      *      @return The constructed copy of the signal.
      */
-    AbstractionPortsModel::SignalRow constructCopySignal(AbstractionPortsModel::SignalRow signal) const;
+    AbstractionDefinitionSignalRow constructCopySignal(AbstractionDefinitionSignalRow const& signal) const;
 
     /*!
      *  Change the name of the selected signal.
@@ -492,7 +432,7 @@ private:
      *      @param [in] value   New name of the signal.
      *      @param [in] port    The selected signal.
      */
-    void changePortName(QVariant const& value, SignalRow& port);
+    void changePortName(QVariant const& value, AbstractionDefinitionSignalRow& port);
 
     /*!
      *  Get the matching port abstraction with the required type for the selected signal name.
@@ -512,7 +452,7 @@ private:
      *      @param [in] value   The new qualifier value.
      *      @param [in] port    The selected signal.
      */
-    void changeQualifier(QVariant const& value, SignalRow& port);
+    void changeQualifier(QVariant const& value, AbstractionDefinitionSignalRow& port);
 
     /*!
      *  Change the system group of the selected signal.
@@ -520,7 +460,7 @@ private:
      *      @param [in] value   The new system group value.
      *      @param [in] port    The selected signal.
      */
-    void changeSystemGroup(QVariant const& value, SignalRow& port);
+    void changeSystemGroup(QVariant const& value, AbstractionDefinitionSignalRow& port);
 
     /*!
      *  Change the presence of the selected signal.
@@ -528,7 +468,7 @@ private:
      *      @param [in] value   The new presence value.
      *      @param [in] port    The selected signal.
      */
-    void changePresence(QVariant const& value, SignalRow& port);
+    void changePresence(QVariant const& value, AbstractionDefinitionSignalRow& port);
 
     /*!
      *  Change the miscellaneous wire data of the selected signal.
@@ -539,7 +479,7 @@ private:
      *
      *      @return True, if the data change was successful, false otherwise.
      */
-    bool changeWireData(QModelIndex const& index, QVariant const& value, SignalRow& port);
+    bool changeWireData(QModelIndex const& index, QVariant const& value, AbstractionDefinitionSignalRow& port);
 
     /*!
      *  Change the miscellaneous transactional data of the selected signal.
@@ -550,7 +490,8 @@ private:
      *
      *      @return True, if the data change was successful, false otherwise.
      */
-    bool changeTransactionalData(QModelIndex const& index, QVariant const& value, SignalRow& port);
+    bool changeTransactionalData(QModelIndex const& index, QVariant const& value,
+        AbstractionDefinitionSignalRow& port);
 
     /*!
      *  Create signal rows from the selected port abstraction.
@@ -563,43 +504,14 @@ private:
         bool lockPortData);
 
     /*!
-     *  Get the number of signals in the selected extend port abstractions.
-     *
-     *      @param [in] extendPorts     List of the selected extend port abstractions.
-     *
-     *      @return Number of signals.
-     */
-    int getExtendRowCount(QList<QSharedPointer<PortAbstraction> > const& extendPorts) const;
-
-    /*!
      *  Get the extend signal rows.
      *
      *      @param [in] extendPorts     List of extend port abstractions.
      *
      *      @return List of extend signals.
      */
-    QList<SignalRow> getCurrentExtendRows(QList<QSharedPointer<PortAbstraction> > const& extendPorts);
-
-    /*!
-     *  Check if a signal row is an extend port abstraction.
-     *
-     *      @param [in] signal          The selected signal row.
-     *      @param [in] extendPorts     List of extend port abstractions.
-     *
-     *      @return True, if the selected signal is an extend port abstraction, false otherwise.
-     */
-    bool signalRowIsExtend(SignalRow signal, QList<QSharedPointer<PortAbstraction> > const& extendPorts) const;
-
-    /*!
-     *  Get the extend port abstractions with data edited by the signals and the leftover extend signals.
-     *
-     *      @param [in] oldExtendSignals    The current extend signals.
-     *      @param [in] newExtends          List of extend port abstractions.
-     *
-     *      @return The extend port abstractions with the leftover extend signals.
-     */
-    QPair<QList<QSharedPointer<PortAbstraction> >, QList<SignalRow> > getEditedNewExtends(
-        QList<SignalRow> const& oldExtendSignals, QList<QSharedPointer<PortAbstraction> > const& newExtends);
+    QVector<AbstractionDefinitionSignalRow> getCurrentExtendRows(
+        QList<QSharedPointer<PortAbstraction> > const& extendPorts);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -612,7 +524,7 @@ private:
     QSharedPointer<BusDefinition> busDefinition_;
 
 	//! Contains the rows in the table.
-	QList<SignalRow> table_;
+    QList<AbstractionDefinitionSignalRow> table_;
 
     //! Interface to the library.
     LibraryInterface* libraryAccess_;

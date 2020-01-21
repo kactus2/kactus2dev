@@ -27,6 +27,8 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/BusDefinitionEditor/AbstractionExtendHandler.h>
+
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
@@ -78,12 +80,12 @@ Qt::ItemFlags AbstractionPortsModel::flags(const QModelIndex& index) const
         return Qt::NoItemFlags;
     }
     
-    const AbstractionPortsModel::SignalRow& signal = table_.at(index.row());
+    const AbstractionDefinitionSignalRow& signal = table_.at(index.row());
 
-    if ((index.column() == LogicalPortColumns::SYSTEM_GROUP &&
-            signal.mode_ != General::SYSTEM && ((signal.wire_ && signal.wire_->getSystemGroup().isEmpty()) ||
-            (signal.transactional_ && signal.transactional_->getSystemGroup().isEmpty()))) ||
-        (signal.mode_ == General::INTERFACE_MODE_COUNT && (index.column() == LogicalPortColumns::PRESENCE ||
+    if ((index.column() == LogicalPortColumns::SYSTEM_GROUP && signal.getMode() != General::SYSTEM && (
+            (signal.getWire() && signal.getWire()->getSystemGroup().isEmpty()) ||
+            (signal.getTransactional() && signal.getTransactional()->getSystemGroup().isEmpty()))) ||
+        (signal.getMode() == General::INTERFACE_MODE_COUNT && (index.column() == LogicalPortColumns::PRESENCE ||
             index.column() == LogicalPortColumns::DIRECTION || index.column() == LogicalPortColumns::WIDTH ||
             index.column() == LogicalPortColumns::DEFAULT_VALUE ||
             index.column() == LogicalPortColumns::INITIATIVE || index.column() == LogicalPortColumns::KIND ||
@@ -91,14 +93,14 @@ Qt::ItemFlags AbstractionPortsModel::flags(const QModelIndex& index) const
             index.column() == LogicalPortColumns::PAYLOADNAME ||
             index.column() == LogicalPortColumns::PAYLOADTYPE ||
             index.column() == LogicalPortColumns::PAYLOADEXTENSION)) ||
-        (signal.lockExtendData_ && (index.column() == LogicalPortColumns::MODE ||
+        (signal.isExtendDataLocked() && (index.column() == LogicalPortColumns::MODE ||
             index.column() == LogicalPortColumns::DIRECTION || index.column() == LogicalPortColumns::INITIATIVE ||
             index.column() == LogicalPortColumns::KIND || index.column() == LogicalPortColumns::BUSWIDTH ||
             index.column() == LogicalPortColumns::PROTOCOLTYPE ||
             index.column() == LogicalPortColumns::PAYLOADNAME ||
             index.column() == LogicalPortColumns::PAYLOADTYPE ||
             index.column() == LogicalPortColumns::PAYLOADEXTENSION)) ||
-        (signal.lockPortData_ && (index.column() == LogicalPortColumns::NAME ||
+        (signal.isPortDataLocked() && (index.column() == LogicalPortColumns::NAME ||
             index.column() == LogicalPortColumns::QUALIFIER || index.column() == LogicalPortColumns::DESCRIPTION)))
     {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -203,9 +205,9 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
 		return QVariant();
     }
             
-    AbstractionPortsModel::SignalRow const& port = table_.at(index.row());
-    QSharedPointer<WireAbstraction> portWireAbs = port.abstraction_->getWire();
-    QSharedPointer<TransactionalAbstraction> portTransactionalAbs = port.abstraction_->getTransactional();
+    AbstractionDefinitionSignalRow const& port = table_.at(index.row());
+    QSharedPointer<WireAbstraction> portWireAbs = port.getPortAbstraction()->getWire();
+    QSharedPointer<TransactionalAbstraction> portTransactionalAbs = port.getPortAbstraction()->getTransactional();
 
     if (role == portTypeRoles::isWireRole)
     {
@@ -231,11 +233,11 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
     }
     else if (role == portTypeRoles::isExtendLockedRole)
     {
-        return port.lockExtendData_;
+        return port.isExtendDataLocked();
     }
     else if (role == portTypeRoles::isPortLockedRole)
     {
-        return port.lockPortData_;
+        return port.isPortDataLocked();
     }
 	else if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
     {
@@ -243,19 +245,20 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::ForegroundRole)
     {
-        if ((index.column() == LogicalPortColumns::NAME && port.abstraction_->getLogicalName().isEmpty()) ||
+        if ((index.column() == LogicalPortColumns::NAME &&
+                port.getPortAbstraction()->getLogicalName().isEmpty()) ||
             (index.column() == LogicalPortColumns::MODE && 
-                (port.mode_ == General::INTERFACE_MODE_COUNT || table_.count(port) > 1)))
+                (port.getMode() == General::INTERFACE_MODE_COUNT || table_.count(port) > 1)))
         {
             return  KactusColors::ERROR;
         }
         else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
         {
-            if (!busDefinition_ || (port.mode_ == General::SYSTEM &&
-                (port.wire_ && !BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_).
-                    contains(port.wire_->getSystemGroup()))) ||
-                (port.transactional_ && !BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_).
-                    contains(port.transactional_->getSystemGroup())))
+            if (!busDefinition_ || (port.getMode() == General::SYSTEM &&
+                (port.getWire() && !BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_).
+                    contains(port.getWire()->getSystemGroup()))) ||
+                (port.getTransactional() && !BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_).
+                    contains(port.getTransactional()->getSystemGroup())))
             {
                 return  KactusColors::ERROR;
             }
@@ -273,18 +276,18 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
 // Function: AbstractionPortsModel::valueForIndexedItem()
 //-----------------------------------------------------------------------------
 QVariant AbstractionPortsModel::valueForIndexedItem(QModelIndex const& index,
-    AbstractionPortsModel::SignalRow const& port, QSharedPointer<WireAbstraction> portWireAbs,
+    AbstractionDefinitionSignalRow const& port, QSharedPointer<WireAbstraction> portWireAbs,
     QSharedPointer<TransactionalAbstraction> portTransactionalAbs) const
 {
     if (index.column() == LogicalPortColumns::NAME)
     {
-        if (port.abstraction_->getLogicalName().isEmpty())
+        if (port.getPortAbstraction()->getLogicalName().isEmpty())
         {
             return "unnamed";
         }
         else
         {
-            return port.abstraction_->getLogicalName();
+            return port.getPortAbstraction()->getLogicalName();
         }
     }
     else if (index.column() == LogicalPortColumns::QUALIFIER)
@@ -300,73 +303,73 @@ QVariant AbstractionPortsModel::valueForIndexedItem(QModelIndex const& index,
     }
     else if (index.column() == LogicalPortColumns::MODE)
     {
-        return General::interfaceMode2Str(port.mode_);
+        return General::interfaceMode2Str(port.getMode());
     }
     else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
     {
-        if (port.wire_)
+        if (port.getWire())
         {
-            return port.wire_->getSystemGroup();
+            return port.getWire()->getSystemGroup();
         }
-        else if (port.transactional_)
+        else if (port.getTransactional())
         {
-            return port.transactional_->getSystemGroup();
+            return port.getTransactional()->getSystemGroup();
         }
     }
     else if (index.column() == LogicalPortColumns::PRESENCE)
     {
-        if (port.wire_)
+        if (port.getWire())
         {
-            return presence2Str(port.wire_->getPresence());
+            return presence2Str(port.getWire()->getPresence());
         }
-        else if (port.transactional_)
+        else if (port.getTransactional())
         {
-            return presence2Str(port.transactional_->getPresence());
+            return presence2Str(port.getTransactional()->getPresence());
         }
     }
     else if (index.column() == LogicalPortColumns::DESCRIPTION)
     {
-        return port.abstraction_->description();
+        return port.getPortAbstraction()->description();
     }
     else if (portWireAbs)
     {
         if (index.column() == LogicalPortColumns::WIDTH)
         {
-            return port.wire_->getWidth();
+            return port.getWire()->getWidth();
         }
         else if (index.column() == LogicalPortColumns::DIRECTION)
         {
-            return DirectionTypes::direction2Str(port.wire_->getDirection());
+            return DirectionTypes::direction2Str(port.getWire()->getDirection());
         }
         else if (index.column() == LogicalPortColumns::DEFAULT_VALUE)
         {
-            return port.abstraction_->getWire()->getDefaultValue();
+            return port.getPortAbstraction()->getWire()->getDefaultValue();
         }
         else if (index.column() == LogicalPortColumns::DRIVER)
         {
-            return General::driverType2Str(port.abstraction_->getWire()->getDriverType());
+            return General::driverType2Str(port.getPortAbstraction()->getWire()->getDriverType());
         }
     }
     else if (portTransactionalAbs)
     {
         if (index.column() == LogicalPortColumns::INITIATIVE)
         {
-            return getInitiativeForData(port.transactional_);
+            return getInitiativeForData(port.getTransactional());
         }
         else if (index.column() == LogicalPortColumns::KIND)
         {
-            return port.transactional_->getKind();
+            return port.getTransactional()->getKind();
         }
         else if (index.column() == LogicalPortColumns::BUSWIDTH)
         {
-            return port.transactional_->getBusWidth();
+            return port.getTransactional()->getBusWidth();
         }
         else if ((index.column() == LogicalPortColumns::PROTOCOLTYPE ||
             index.column() == LogicalPortColumns::PAYLOADNAME ||
             index.column() == LogicalPortColumns::PAYLOADTYPE ||
-            index.column() == LogicalPortColumns::PAYLOADEXTENSION) && port.transactional_->getProtocol())
+            index.column() == LogicalPortColumns::PAYLOADEXTENSION) && port.getTransactional()->getProtocol())
         {
-            QSharedPointer<Protocol> portProtocol = port.transactional_->getProtocol();
+            QSharedPointer<Protocol> portProtocol = port.getTransactional()->getProtocol();
             if (index.column() == LogicalPortColumns::PROTOCOLTYPE)
             {
                 return getProtocolTypeText(portProtocol);
@@ -437,7 +440,7 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
         return false;
     }
 
-    AbstractionPortsModel::SignalRow& port = table_[index.row()];
+    AbstractionDefinitionSignalRow& port = table_[index.row()];
     if (index.column() == LogicalPortColumns::NAME)
     {
         changePortName(value, port);
@@ -448,7 +451,7 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::MODE)
     {
-        port.mode_ = General::str2Interfacemode(value.toString(), General::INTERFACE_MODE_COUNT);
+        port.setMode(General::str2Interfacemode(value.toString(), General::INTERFACE_MODE_COUNT));
     }
     else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
     {
@@ -460,16 +463,16 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::DESCRIPTION)
     {
-        port.abstraction_->setDescription(value.toString());
+        port.getPortAbstraction()->setDescription(value.toString());
     }
-    else if (port.wire_)
+    else if (port.getWire())
     {
         if (changeWireData(index, value, port) == false)
         {
             return false;
         }
     }
-    else if (port.transactional_)
+    else if (port.getTransactional())
     {
         if (changeTransactionalData(index, value, port) == false)
         {
@@ -490,10 +493,10 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     {
         for (int i = 0; i < table_.size(); ++i)
         {
-            AbstractionPortsModel::SignalRow signal = table_.at(i);
+            AbstractionDefinitionSignalRow const& signal = table_.at(i);
 
-            if (signal.abstraction_->getLogicalName().compare(port.abstraction_->getLogicalName()) == 0 &&
-                signal != port)
+            if (signal.getPortAbstraction()->getLogicalName().compare(
+                    port.getPortAbstraction()->getLogicalName()) == 0 && signal != port)
             {
                 QModelIndex signalIndex = index.sibling(i, index.column());
                 indexList.append(signalIndex);
@@ -508,14 +511,14 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::changePortName()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::changePortName(QVariant const& value, SignalRow& port)
+void AbstractionPortsModel::changePortName(QVariant const& value, AbstractionDefinitionSignalRow& port)
 {
     QString newName = value.toString();
     bool portIsTransactional = false;
     bool portIsWire = false;
-    if (port.abstraction_)
+    if (port.getPortAbstraction())
     {
-        if (port.abstraction_->hasTransactional())
+        if (port.getPortAbstraction()->hasTransactional())
         {
             portIsTransactional = true;
         }
@@ -531,7 +534,7 @@ void AbstractionPortsModel::changePortName(QVariant const& value, SignalRow& por
     QSharedPointer<PortAbstraction> selectedPort = nameAbstractionPair.second;
     if (!selectedPort)
     {
-        selectedPort = QSharedPointer<PortAbstraction>(new PortAbstraction(*port.abstraction_.data()));
+        selectedPort = QSharedPointer<PortAbstraction>(new PortAbstraction(*port.getPortAbstraction().data()));
         selectedPort->setLogicalName(newName);
 
         if (portIsWire)
@@ -554,10 +557,10 @@ void AbstractionPortsModel::changePortName(QVariant const& value, SignalRow& por
 
     if (!portHasOtherSignals(port))
     {
-        absDef_->getLogicalPorts()->removeOne(port.abstraction_);
+        absDef_->getLogicalPorts()->removeOne(port.getPortAbstraction());
     }
 
-    port.abstraction_ = selectedPort;
+    port.setPortAbstraction(selectedPort);
 }
 
 //-----------------------------------------------------------------------------
@@ -593,73 +596,75 @@ QPair<QString, QSharedPointer<PortAbstraction> > AbstractionPortsModel::getNameA
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::changeQualifier()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::changeQualifier(QVariant const& value, SignalRow& port)
+void AbstractionPortsModel::changeQualifier(QVariant const& value, AbstractionDefinitionSignalRow& port)
 {
     Qualifier::Type newQualifier = toQualifier(value.toString());
 
-    if (port.abstraction_->getWire())
+    if (port.getPortAbstraction()->getWire())
     {
-        port.abstraction_->getWire()->setQualifier(newQualifier);
+        port.getPortAbstraction()->getWire()->setQualifier(newQualifier);
     }
-    else if (port.abstraction_->getTransactional())
+    else if (port.getPortAbstraction()->getTransactional())
     {
-        port.abstraction_->getTransactional()->setQualifier(newQualifier);
+        port.getPortAbstraction()->getTransactional()->setQualifier(newQualifier);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::changeSystemGroup()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::changeSystemGroup(QVariant const& value, SignalRow& port)
+void AbstractionPortsModel::changeSystemGroup(QVariant const& value, AbstractionDefinitionSignalRow& port)
 {
-    if (port.wire_)
+    if (port.getWire())
     {
-        port.wire_->setSystemGroup(value.toString());
+        port.getWire()->setSystemGroup(value.toString());
     }
-    else if (port.transactional_)
+    else if (port.getTransactional())
     {
-        port.transactional_->setSystemGroup(value.toString());
+        port.getTransactional()->setSystemGroup(value.toString());
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::changePresence()
 //-----------------------------------------------------------------------------
-void AbstractionPortsModel::changePresence(QVariant const& value, SignalRow& port)
+void AbstractionPortsModel::changePresence(QVariant const& value, AbstractionDefinitionSignalRow& port)
 {
     PresenceTypes::Presence newPresence = PresenceTypes::str2Presence(value.toString(), PresenceTypes::UNKNOWN);
 
-    if (port.wire_)
+    if (port.getWire())
     {
-        port.wire_->setPresence(newPresence);
+        port.getWire()->setPresence(newPresence);
     }
-    else if (port.transactional_)
+    else if (port.getTransactional())
     {
-        port.transactional_->setPresence(newPresence);
+        port.getTransactional()->setPresence(newPresence);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::changeWireData()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::changeWireData(QModelIndex const& index, QVariant const& value, SignalRow& port)
+bool AbstractionPortsModel::changeWireData(QModelIndex const& index, QVariant const& value,
+    AbstractionDefinitionSignalRow& port)
 {
     if (index.column() == LogicalPortColumns::WIDTH)
     {
-        port.wire_->setWidth(value.toString());
+        port.getWire()->setWidth(value.toString());
     }
     else if (index.column() == LogicalPortColumns::DEFAULT_VALUE)
     {
-        port.abstraction_->getWire()->setDefaultValue(value.toString());
+        port.getPortAbstraction()->getWire()->setDefaultValue(value.toString());
     }
     else if (index.column() == LogicalPortColumns::DIRECTION)
     {
-        port.wire_->setDirection(DirectionTypes::str2Direction(value.toString(),
+        port.getWire()->setDirection(DirectionTypes::str2Direction(value.toString(),
             DirectionTypes::DIRECTION_INVALID));
     }
     else if (index.column() == LogicalPortColumns::DRIVER)
     {
-        port.abstraction_->getWire()->setDriverType(General::str2DriverType(value.toString(), General::NO_DRIVER));
+        port.getPortAbstraction()->getWire()->setDriverType(
+            General::str2DriverType(value.toString(), General::NO_DRIVER));
     }
     else
     {
@@ -673,26 +678,26 @@ bool AbstractionPortsModel::changeWireData(QModelIndex const& index, QVariant co
 // Function: AbstractionPortsModel::changeTransactionalData()
 //-----------------------------------------------------------------------------
 bool AbstractionPortsModel::changeTransactionalData(QModelIndex const& index, QVariant const& value,
-    SignalRow& port)
+    AbstractionDefinitionSignalRow& port)
 {
     if (index.column() == LogicalPortColumns::INITIATIVE)
     {
-        port.transactional_->setInitiative(getInitiativeForSetData(value.toString()));
+        port.getTransactional()->setInitiative(getInitiativeForSetData(value.toString()));
     }
     else if (index.column() == LogicalPortColumns::KIND)
     {
-        port.transactional_->setKind(value.toString());
+        port.getTransactional()->setKind(value.toString());
     }
     else if (index.column() == LogicalPortColumns::BUSWIDTH)
     {
-        port.transactional_->setBusWidth(value.toString());
+        port.getTransactional()->setBusWidth(value.toString());
     }
     else if (index.column() == LogicalPortColumns::PROTOCOLTYPE ||
         index.column() == LogicalPortColumns::PAYLOADNAME ||
         index.column() == LogicalPortColumns::PAYLOADTYPE ||
         index.column() == LogicalPortColumns::PAYLOADEXTENSION)
     {
-        QSharedPointer<Protocol> portProtocol = port.transactional_->getProtocol();
+        QSharedPointer<Protocol> portProtocol = port.getTransactional()->getProtocol();
         if (!portProtocol)
         {
             if (value.toString().isEmpty())
@@ -702,7 +707,7 @@ bool AbstractionPortsModel::changeTransactionalData(QModelIndex const& index, QV
             else
             {
                 portProtocol = QSharedPointer<Protocol>(new Protocol());
-                port.transactional_->setProtocol(portProtocol);
+                port.getTransactional()->setProtocol(portProtocol);
             }
         }
 
@@ -732,7 +737,7 @@ bool AbstractionPortsModel::changeTransactionalData(QModelIndex const& index, QV
             portProtocol->getPayloadName().isEmpty() && portProtocol->getPayloadType().isEmpty() &&
             portProtocol->getPayloadExtension().isEmpty())
         {
-            port.transactional_->setProtocol(QSharedPointer<Protocol>());
+            port.getTransactional()->setProtocol(QSharedPointer<Protocol>());
         }
     }
     else
@@ -776,11 +781,12 @@ bool AbstractionPortsModel::portProcotolTypeIsEmpty(QSharedPointer<Protocol> por
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::portHasOtherSignals()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::portHasOtherSignals(AbstractionPortsModel::SignalRow const& portSignal) const
+bool AbstractionPortsModel::portHasOtherSignals(AbstractionDefinitionSignalRow const& portSignal) const
 {
-    General::InterfaceMode portMode = portSignal.mode_;
-    QSharedPointer<WireAbstraction> portWire = portSignal.abstraction_->getWire();
-    QSharedPointer<TransactionalAbstraction> portTransactional = portSignal.abstraction_->getTransactional();
+    General::InterfaceMode portMode = portSignal.getMode();
+    QSharedPointer<WireAbstraction> portWire = portSignal.getPortAbstraction()->getWire();
+    QSharedPointer<TransactionalAbstraction> portTransactional =
+        portSignal.getPortAbstraction()->getTransactional();
 
     if (portWire)
     {
@@ -934,7 +940,7 @@ void AbstractionPortsModel::setExtendedPorts(QList<QSharedPointer<PortAbstractio
         return;
     }
 
-    QList<AbstractionPortsModel::SignalRow> extendRows = getCurrentExtendRows(extendPorts);
+    QVector<AbstractionDefinitionSignalRow> extendRows = getCurrentExtendRows(extendPorts);
 
     QList<QSharedPointer<PortAbstraction> > editedExtendPorts;
     for (auto extendPort : extendPorts)
@@ -944,20 +950,14 @@ void AbstractionPortsModel::setExtendedPorts(QList<QSharedPointer<PortAbstractio
 
     if (!editedExtendPorts.isEmpty())
     {
-        if (!extendRows.isEmpty())
-        {
-            QPair<QList<QSharedPointer<PortAbstraction> >, QList<SignalRow> > editedSignalData =
-                getEditedNewExtends(extendRows, editedExtendPorts);
 
-            editedExtendPorts = editedSignalData.first;
-            extendRows = editedSignalData.second;
-        }
+        extendRows = AbstractionExtendHandler::getEditedExtendSignals(extendRows, editedExtendPorts);
 
         absDef_->getLogicalPorts()->append(editedExtendPorts);
 
         int itemCount = table_.count();
-        beginInsertRows(
-            QModelIndex(), itemCount, itemCount + getExtendRowCount(editedExtendPorts) - 1 + extendRows.count());
+        beginInsertRows(QModelIndex(), itemCount, itemCount +
+            AbstractionExtendHandler::getPortAbstractionRowCount(editedExtendPorts) - 1 + extendRows.count());
 
         for (auto logicalPort : editedExtendPorts)
         {
@@ -966,7 +966,8 @@ void AbstractionPortsModel::setExtendedPorts(QList<QSharedPointer<PortAbstractio
 
         for (auto additionalRow : extendRows)
         {
-            additionalRow.lockPortData_ = true;
+            AbstractionExtendHandler::addSignalRowToPortAbstraction(additionalRow, absDef_);
+            additionalRow.lockPortData(true);
             table_.append(additionalRow);
         }
 
@@ -977,24 +978,19 @@ void AbstractionPortsModel::setExtendedPorts(QList<QSharedPointer<PortAbstractio
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::getCurrentExtendPorts()
 //-----------------------------------------------------------------------------
-QList<AbstractionPortsModel::SignalRow> AbstractionPortsModel::getCurrentExtendRows(
+QVector<AbstractionDefinitionSignalRow> AbstractionPortsModel::getCurrentExtendRows(
     QList<QSharedPointer<PortAbstraction>> const& extendPorts)
 {
-    QList<AbstractionPortsModel::SignalRow> currentRows;
+    QVector<AbstractionDefinitionSignalRow> currentRows;
 
     for (int i = table_.count() - 1; i >= 0; i--)
     {
-        AbstractionPortsModel::SignalRow currentSignal = table_.at(i);
-        if (signalRowIsExtend(currentSignal, extendPorts))
+        AbstractionDefinitionSignalRow currentSignal = table_.at(i);
+        if (AbstractionExtendHandler::removeExtendSignalFromAbstraction(currentSignal, extendPorts, absDef_))
         {
-            QSharedPointer<PortAbstraction> signalAbstraction = currentSignal.abstraction_;
             if (!currentRows.contains(currentSignal))
             {
                 currentRows.append(currentSignal);
-            }
-            if (absDef_->getLogicalPorts()->contains(signalAbstraction))
-            {
-                absDef_->getLogicalPorts()->removeAll(signalAbstraction);
             }
 
             beginRemoveRows(QModelIndex(), i, i);
@@ -1004,175 +1000,6 @@ QList<AbstractionPortsModel::SignalRow> AbstractionPortsModel::getCurrentExtendR
     }
 
     return currentRows;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::signalRowIsExtend()
-//-----------------------------------------------------------------------------
-bool AbstractionPortsModel::signalRowIsExtend(SignalRow signal,
-    QList<QSharedPointer<PortAbstraction>> const& extendPorts) const
-{
-    for (auto extendPort : extendPorts)
-    {
-        if (signal.abstraction_->name() == extendPort->name())
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::getEditedNewExtends()
-//-----------------------------------------------------------------------------
-QPair<QList<QSharedPointer<PortAbstraction> >, QList<AbstractionPortsModel::SignalRow> > AbstractionPortsModel::
-    getEditedNewExtends(QList<AbstractionPortsModel::SignalRow> const& oldExtendSignals,
-        QList<QSharedPointer<PortAbstraction> > const& newExtends)
-{
-    QList<AbstractionPortsModel::SignalRow> existingSignals = oldExtendSignals;
-    QList<QSharedPointer<PortAbstraction> > editedExtends = newExtends;
-    for (auto extendPort : editedExtends)
-    {
-        QSharedPointer<WireAbstraction> extendWire = extendPort->getWire();
-        QSharedPointer<TransactionalAbstraction> extendTransactional = extendPort->getTransactional();
-
-        for (auto signalRow : oldExtendSignals)
-        {
-            QSharedPointer<PortAbstraction> oldAbstraction = signalRow.abstraction_;
-            if (oldAbstraction->name() == extendPort->name())
-            {
-                bool signalIsRedifined = false;
-
-                if (extendPort->hasWire())
-                {
-                    QSharedPointer<WireAbstraction> oldWire = oldAbstraction->getWire();
-                    extendWire->setDefaultValue(oldWire->getDefaultValue());
-                    extendWire->setDriverType(oldWire->getDriverType());
-
-                    if (signalRow.mode_ == General::MASTER && extendWire->hasMasterPort())
-                    {
-                        QSharedPointer<WirePort> extendWirePort = extendWire->getMasterPort();
-                        extendWirePort->setWidth(signalRow.wire_->getWidth());
-                        extendWirePort->setPresence(signalRow.wire_->getPresence());
-
-                        signalIsRedifined = true;
-                    }
-                    else if (signalRow.mode_ == General::SLAVE && extendWire->hasSlavePort())
-                    {
-                        QSharedPointer<WirePort> extendWirePort = extendWire->getSlavePort();
-                        extendWirePort->setWidth(signalRow.wire_->getWidth());
-                        extendWirePort->setPresence(signalRow.wire_->getPresence());
-
-                        signalIsRedifined = true;
-                    }
-                    else if (signalRow.mode_ == General::SYSTEM && extendWire->getSystemPorts() &&
-                        extendWire->getSystemPorts()->size() > 0)
-                    {
-                        QSharedPointer<WirePort> extendWirePort =
-                            extendWire->findSystemPort(signalRow.wire_->getSystemGroup());
-                        if (extendWirePort)
-                        {
-                            extendWirePort->setWidth(signalRow.wire_->getWidth());
-                            extendWirePort->setPresence(signalRow.wire_->getPresence());
- 
-                            signalIsRedifined = true;
-                        }
-                    }
-                }
-                
-                if (extendPort->hasTransactional())
-                {
-                    if (signalRow.mode_ == General::MASTER && extendTransactional->hasMasterPort())
-                    {
-                        extendTransactional->getMasterPort()->setPresence(signalRow.transactional_->getPresence());
-
-                        signalIsRedifined = true;
-                    }
-                    else if (signalRow.mode_ == General::SLAVE && extendTransactional->hasSlavePort())
-                    {
-                        extendTransactional->getMasterPort()->setPresence(signalRow.transactional_->getPresence());
-
-                        signalIsRedifined = true;
-                    }
-                    else if (signalRow.mode_ == General::SYSTEM && extendWire->getSystemPorts() &&
-                        extendWire->getSystemPorts()->size() > 0)
-                    {
-                        QSharedPointer<TransactionalPort> extendTransactionalPort =
-                            extendTransactional->findSystemPort(signalRow.transactional_->getSystemGroup());
-                        if (extendTransactionalPort)
-                        {
-                            extendTransactionalPort->setPresence(signalRow.transactional_->getPresence());
-
-                            signalIsRedifined = true;
-                        }
-                    }
-                }
-
-                if (signalIsRedifined)
-                {
-                    existingSignals.removeAll(signalRow);
-                }
-                else 
-                {
-                    signalRow.abstraction_ = extendPort;
-                    existingSignals.replace(existingSignals.indexOf(signalRow), signalRow);
-                }
-            }
-        }
-    }
-
-    QPair<QList<QSharedPointer<PortAbstraction> >, QList<AbstractionPortsModel::SignalRow> > signalData;
-    signalData.first = editedExtends;
-    signalData.second = existingSignals;
-
-    return signalData;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::getExtendRowCount()
-//-----------------------------------------------------------------------------
-int AbstractionPortsModel::getExtendRowCount(QList<QSharedPointer<PortAbstraction>> const& extendPorts) const
-{
-    int extendRows = 0;
-
-    for (auto logicalPort : extendPorts)
-    {
-        if (logicalPort->hasWire())
-        {
-            QSharedPointer<WireAbstraction> logicalWire = logicalPort->getWire();
-            if (logicalWire->hasMasterPort())
-            {
-                extendRows++;
-            }
-            if (logicalWire->hasSlavePort())
-            {
-                extendRows++;
-            }
-            for (auto systemPort : *logicalWire->getSystemPorts())
-            {
-                extendRows++;
-            }
-        }
-        if (logicalPort->hasTransactional())
-        {
-            QSharedPointer<TransactionalAbstraction> logicalTransactional = logicalPort->getTransactional();
-            if (logicalTransactional->hasMasterPort())
-            {
-                extendRows++;
-            }
-            if (logicalTransactional->hasSlavePort())
-            {
-                extendRows++;
-            }
-            for (auto systemPort : *logicalTransactional->getSystemPorts())
-            {
-                extendRows++;
-            }
-        }
-    }
-
-    return extendRows;
 }
 
 //-----------------------------------------------------------------------------
@@ -1186,16 +1013,34 @@ void AbstractionPortsModel::removeExtendedPorts(
         return;
     }
 
-    for (auto port : *extendPorts)
+    AbstractionExtendHandler::removeExtendedPortsFromAbstraction(absDef_, *extendPorts.data());
+    setAbsDef(absDef_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::onResetExtendPorts()
+//-----------------------------------------------------------------------------
+void AbstractionPortsModel::onResetExtendPorts()
+{
+    QList<QSharedPointer<PortAbstraction> > extendPorts =
+        AbstractionExtendHandler::getAllExtendPorts(absDef_, libraryAccess_);
+
+    AbstractionExtendHandler::removeExtendedPortsFromAbstraction(absDef_, extendPorts);
+    setAbsDef(absDef_);
+
+    int itemCount = table_.count();
+    beginInsertRows(QModelIndex(), itemCount,
+        itemCount + AbstractionExtendHandler::getPortAbstractionRowCount(extendPorts) - 1);
+
+    absDef_->getLogicalPorts()->append(extendPorts);
+    for (auto logicalPort : extendPorts)
     {
-        QSharedPointer<PortAbstraction> logicalPort = absDef_->getPort(port->name());
-        if (logicalPort)
-        {
-            absDef_->getLogicalPorts()->removeAll(logicalPort);
-        }
+        createRowsForPortAbstraction(logicalPort, true, true);
     }
 
-    setAbsDef(absDef_);
+    endInsertRows();
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -1215,9 +1060,8 @@ void AbstractionPortsModel::save()
 
     for (int i = 0; i < table_.size(); i++) 
     {
-        AbstractionPortsModel::SignalRow portOnRow = table_.at(i);
-
-        QSharedPointer<PortAbstraction> portAbs = portOnRow.abstraction_;
+        AbstractionDefinitionSignalRow portOnRow = table_.at(i);
+        QSharedPointer<PortAbstraction> portAbs = portOnRow.getPortAbstraction();
 
         if (!savedPorts.contains(portAbs))
         {
@@ -1240,7 +1084,7 @@ void AbstractionPortsModel::save()
             // Save different modes for the port abstraction.
             for (int j = i + 1; j < table_.size(); j++)
             {
-                if (table_.at(j).abstraction_ == portAbs)
+                if (table_.at(j).getPortAbstraction() == portAbs)
                 {                    
                     savePort(portAbs, j);
                 }
@@ -1256,12 +1100,12 @@ void AbstractionPortsModel::save()
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::addWireSignal()
 {
-    AbstractionPortsModel::SignalRow port;
-    port.abstraction_ = QSharedPointer<PortAbstraction>(new PortAbstraction());
-    port.abstraction_->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
-    port.wire_ = QSharedPointer<WirePort>(new WirePort());
+    AbstractionDefinitionSignalRow port;
+    port.setPortAbstraction(QSharedPointer<PortAbstraction>(new PortAbstraction()));
+    port.getPortAbstraction()->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
+    port.setWire(QSharedPointer<WirePort>(new WirePort()));
 
-    absDef_->getLogicalPorts()->append(port.abstraction_);
+    absDef_->getLogicalPorts()->append(port.getPortAbstraction());
 
     beginInsertRows(QModelIndex(), table_.count(), table_.count());
     table_.append(port);
@@ -1275,12 +1119,13 @@ void AbstractionPortsModel::addWireSignal()
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::addTransactionalSignal()
 {
-    AbstractionPortsModel::SignalRow port;
-    port.abstraction_ = QSharedPointer<PortAbstraction>(new PortAbstraction());
-    port.abstraction_->setTransactional(QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction()));
-    port.transactional_ = QSharedPointer<TransactionalPort>(new TransactionalPort());
+    AbstractionDefinitionSignalRow port;
+    port.setPortAbstraction(QSharedPointer<PortAbstraction>(new PortAbstraction()));
+    port.getPortAbstraction()->setTransactional(
+        QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction()));
+    port.setTransactional(QSharedPointer<TransactionalPort>(new TransactionalPort()));
 
-    absDef_->getLogicalPorts()->append(port.abstraction_);
+    absDef_->getLogicalPorts()->append(port.getPortAbstraction());
 
     beginInsertRows(QModelIndex(), table_.count(), table_.count());
     table_.append(port);
@@ -1310,20 +1155,20 @@ void AbstractionPortsModel::addSlave(QModelIndexList const& indexes)
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::createNewSignal(General::InterfaceMode newSignalMode, QModelIndexList const& selection)
 {
-    QVector<AbstractionPortsModel::SignalRow> targetPorts = getIndexedPorts(selection);
+    QVector<AbstractionDefinitionSignalRow> targetPorts = getIndexedPorts(selection);
 
     beginResetModel();
 
-    foreach(AbstractionPortsModel::SignalRow signal, targetPorts)
+    foreach(AbstractionDefinitionSignalRow signal, targetPorts)
     {
-        if (!modeExistsForPort(newSignalMode, signal.abstraction_->getLogicalName()))
+        if (!modeExistsForPort(newSignalMode, signal.getPortAbstraction()->getLogicalName()))
         {
-            AbstractionPortsModel::SignalRow newSignal = constructCopySignal(signal);
-            newSignal.mode_ = newSignalMode;
+            AbstractionDefinitionSignalRow newSignal = constructCopySignal(signal);
+            newSignal.setMode(newSignalMode);
 
-            if (newSignal.wire_)
+            if (newSignal.getWire())
             {
-                newSignal.wire_->setSystemGroup("");
+                newSignal.getWire()->setSystemGroup("");
 
                 General::InterfaceMode opposingSignal = General::MASTER;
                 if (newSignalMode == General::MASTER)
@@ -1332,15 +1177,15 @@ void AbstractionPortsModel::createNewSignal(General::InterfaceMode newSignalMode
                 }
 
                 DirectionTypes::Direction mirroredDirection =
-                    getMirroredDirectionForSignal(signal.abstraction_->getLogicalName(), opposingSignal);
+                    getMirroredDirectionForSignal(signal.getPortAbstraction()->getLogicalName(), opposingSignal);
                 if (mirroredDirection != DirectionTypes::DIRECTION_INVALID)
                 {
-                    newSignal.wire_->setDirection(mirroredDirection);
+                    newSignal.getWire()->setDirection(mirroredDirection);
                 }
             }
-            else if (newSignal.transactional_)
+            else if (newSignal.getTransactional())
             {
-                newSignal.transactional_->setSystemGroup("");
+                newSignal.getTransactional()->setSystemGroup("");
             }
 
             table_.append(newSignal);
@@ -1355,21 +1200,21 @@ void AbstractionPortsModel::createNewSignal(General::InterfaceMode newSignalMode
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::constructCopySignal()
 //-----------------------------------------------------------------------------
-AbstractionPortsModel::SignalRow AbstractionPortsModel::constructCopySignal(
-    AbstractionPortsModel::SignalRow signal) const
+AbstractionDefinitionSignalRow AbstractionPortsModel::constructCopySignal(
+    AbstractionDefinitionSignalRow const& signal) const
 {
-    AbstractionPortsModel::SignalRow newSignal;
-    newSignal.abstraction_ = signal.abstraction_;
+    AbstractionDefinitionSignalRow newSignal;
+    newSignal.setPortAbstraction(signal.getPortAbstraction());
 
-    newSignal.lockPortData_ = signal.lockPortData_;
+    newSignal.lockPortData(signal.isPortDataLocked());
 
-    if (signal.wire_)
+    if (signal.getWire())
     {
-        newSignal.wire_ = QSharedPointer<WirePort>(new WirePort());
+        newSignal.setWire(QSharedPointer<WirePort>(new WirePort()));
     }
-    else if (signal.transactional_)
+    else if (signal.getTransactional())
     {
-        newSignal.transactional_ = QSharedPointer<TransactionalPort>(new TransactionalPort());
+        newSignal.setTransactional(QSharedPointer<TransactionalPort>(new TransactionalPort()));
     }
 
 
@@ -1381,22 +1226,22 @@ AbstractionPortsModel::SignalRow AbstractionPortsModel::constructCopySignal(
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::addSystem(QModelIndexList const& indexes)
 {
-    QVector<AbstractionPortsModel::SignalRow> targetPorts = getIndexedPorts(indexes);
+    QVector<AbstractionDefinitionSignalRow> targetPorts = getIndexedPorts(indexes);
     
     beginResetModel();
 
-    foreach(AbstractionPortsModel::SignalRow signal, targetPorts)
+    foreach(AbstractionDefinitionSignalRow signal, targetPorts)
     {
-        AbstractionPortsModel::SignalRow newSystemSignal = constructCopySignal(signal);
-        newSystemSignal.mode_ = General::SYSTEM;
+        AbstractionDefinitionSignalRow newSystemSignal = constructCopySignal(signal);
+        newSystemSignal.setMode(General::SYSTEM);
 
-        if (newSystemSignal.wire_)
+        if (newSystemSignal.getWire())
         {
-            newSystemSignal.wire_->setSystemGroup("");
+            newSystemSignal.getWire()->setSystemGroup("");
         }
-        else if (newSystemSignal.transactional_)
+        else if (newSystemSignal.getTransactional())
         {
-            newSystemSignal.transactional_->setSystemGroup("");
+            newSystemSignal.getTransactional()->setSystemGroup("");
         }
 
         table_.append(newSystemSignal);
@@ -1411,24 +1256,24 @@ void AbstractionPortsModel::addSystem(QModelIndexList const& indexes)
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::addAllSystems(QModelIndexList const& indexes)
 {
-    QVector<AbstractionPortsModel::SignalRow> targetPorts = getIndexedPorts(indexes);
+    QVector<AbstractionDefinitionSignalRow> targetPorts = getIndexedPorts(indexes);
 
     beginResetModel();
 
-    foreach(AbstractionPortsModel::SignalRow signal, targetPorts)
+    foreach(AbstractionDefinitionSignalRow signal, targetPorts)
     {
         QStringList systemGroups = getMissingSystemGroupsForSignal(signal);
         foreach(QString group, systemGroups)
         {
-            AbstractionPortsModel::SignalRow newSystemSignal = constructCopySignal(signal);
-            newSystemSignal.mode_ = General::SYSTEM;
-            if (newSystemSignal.wire_)
+            AbstractionDefinitionSignalRow newSystemSignal = constructCopySignal(signal);
+            newSystemSignal.setMode(General::SYSTEM);
+            if (newSystemSignal.getWire())
             {
-                newSystemSignal.wire_->setSystemGroup(group);
+                newSystemSignal.getWire()->setSystemGroup(group);
             }
-            else if (newSystemSignal.transactional_)
+            else if (newSystemSignal.getTransactional())
             {
-                newSystemSignal.transactional_->setSystemGroup(group);
+                newSystemSignal.getTransactional()->setSystemGroup(group);
             }
 
             table_.append(newSystemSignal);
@@ -1442,7 +1287,7 @@ void AbstractionPortsModel::addAllSystems(QModelIndexList const& indexes)
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::getMissingSystemGroupsForSignal()
 //-----------------------------------------------------------------------------
-QStringList AbstractionPortsModel::getMissingSystemGroupsForSignal(AbstractionPortsModel::SignalRow const& signal)
+QStringList AbstractionPortsModel::getMissingSystemGroupsForSignal(AbstractionDefinitionSignalRow const& signal)
     const
 {
     QStringList missingSystemGroups;
@@ -1451,18 +1296,18 @@ QStringList AbstractionPortsModel::getMissingSystemGroupsForSignal(AbstractionPo
         missingSystemGroups = busDefinition_->getSystemGroupNames();
     }
 
-    foreach(AbstractionPortsModel::SignalRow const& comparisonSignal, table_)
+    foreach(AbstractionDefinitionSignalRow const& comparisonSignal, table_)
     {
-        if (comparisonSignal.abstraction_->getLogicalName() == signal.abstraction_->getLogicalName() &&
-            comparisonSignal.mode_ == General::SYSTEM)
+        if (comparisonSignal.getPortAbstraction()->getLogicalName() ==
+                signal.getPortAbstraction()->getLogicalName() && comparisonSignal.getMode() == General::SYSTEM)
         {
-            if (comparisonSignal.wire_)
+            if (comparisonSignal.getWire())
             {
-                missingSystemGroups.removeAll(comparisonSignal.wire_->getSystemGroup());
+                missingSystemGroups.removeAll(comparisonSignal.getWire()->getSystemGroup());
             }
-            else if (comparisonSignal.transactional_)
+            else if (comparisonSignal.getTransactional())
             {
-                missingSystemGroups.removeAll(comparisonSignal.transactional_->getSystemGroup());
+                missingSystemGroups.removeAll(comparisonSignal.getTransactional()->getSystemGroup());
             }
         }
     }
@@ -1473,15 +1318,15 @@ QStringList AbstractionPortsModel::getMissingSystemGroupsForSignal(AbstractionPo
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::getIndexedPorts()
 //-----------------------------------------------------------------------------
-QVector<AbstractionPortsModel::SignalRow> AbstractionPortsModel::getIndexedPorts(QModelIndexList const& selection)
+QVector<AbstractionDefinitionSignalRow> AbstractionPortsModel::getIndexedPorts(QModelIndexList const& selection)
 {
-    QVector<AbstractionPortsModel::SignalRow> targetPorts;
+    QVector<AbstractionDefinitionSignalRow> targetPorts;
 
     foreach(QModelIndex index, selection)
     {
         if (0 <= index.row() && index.row() <= table_.size())
         {
-            AbstractionPortsModel::SignalRow temp = table_.at(index.row());
+            AbstractionDefinitionSignalRow temp = table_.at(index.row());
             if (!portHasBeenSelected(temp, targetPorts))
             {
                 targetPorts.append(temp);
@@ -1495,12 +1340,12 @@ QVector<AbstractionPortsModel::SignalRow> AbstractionPortsModel::getIndexedPorts
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::portHasBeenSelected()
 //-----------------------------------------------------------------------------
-bool AbstractionPortsModel::portHasBeenSelected(AbstractionPortsModel::SignalRow const& portSignal,
-    QVector<AbstractionPortsModel::SignalRow> const& selectedPorts) const
+bool AbstractionPortsModel::portHasBeenSelected(AbstractionDefinitionSignalRow const& portSignal,
+    QVector<AbstractionDefinitionSignalRow> const& selectedPorts) const
 {
-    foreach(AbstractionPortsModel::SignalRow const& signal, selectedPorts)
+    foreach(AbstractionDefinitionSignalRow const& signal, selectedPorts)
     {
-        if (signal.abstraction_->getLogicalName() == portSignal.abstraction_->getLogicalName())
+        if (signal.getPortAbstraction()->getLogicalName() == portSignal.getPortAbstraction()->getLogicalName())
         {
             return true;
         }
@@ -1514,9 +1359,9 @@ bool AbstractionPortsModel::portHasBeenSelected(AbstractionPortsModel::SignalRow
 //-----------------------------------------------------------------------------
 bool AbstractionPortsModel::modeExistsForPort(General::InterfaceMode const& mode, QString const& portName) const
 {
-    foreach(AbstractionPortsModel::SignalRow signal, table_)
+    foreach(AbstractionDefinitionSignalRow signal, table_)
     {
-        if (signal.abstraction_->getLogicalName().compare(portName) == 0 && signal.mode_ == mode)
+        if (signal.getPortAbstraction()->getLogicalName().compare(portName) == 0 && signal.getMode() == mode)
         {
             return true;
         }
@@ -1531,11 +1376,12 @@ bool AbstractionPortsModel::modeExistsForPort(General::InterfaceMode const& mode
 DirectionTypes::Direction AbstractionPortsModel::getMirroredDirectionForSignal(QString const& portName,
     General::InterfaceMode const& opposingMode) const
 {
-    foreach(AbstractionPortsModel::SignalRow signal, table_)
+    foreach(AbstractionDefinitionSignalRow signal, table_)
     {
-        if (signal.mode_ == opposingMode && signal.abstraction_->getLogicalName().compare(portName) == 0)
+        if (signal.getMode() == opposingMode &&
+            signal.getPortAbstraction()->getLogicalName().compare(portName) == 0)
         {
-            return DirectionTypes::convert2Mirrored(signal.wire_->getDirection());
+            return DirectionTypes::convert2Mirrored(signal.getWire()->getDirection());
         }
     }
 
@@ -1549,26 +1395,27 @@ void AbstractionPortsModel::onRemoveItem(QModelIndex const& index)
 {
     if (0 <= index.row() && index.row() <= table_.size()) 
     {
-        AbstractionPortsModel::SignalRow portToRemove = table_.at(index.row());
+        AbstractionDefinitionSignalRow portToRemove = table_.at(index.row());
 
-        QString removedName = portToRemove.abstraction_->getLogicalName();
-        General::InterfaceMode removedMode = portToRemove.mode_;
+        QString removedName = portToRemove.getPortAbstraction()->getLogicalName();
+        General::InterfaceMode removedMode = portToRemove.getMode();
 
         beginRemoveRows(QModelIndex(), index.row(), index.row());
         table_.removeAt(table_.indexOf(portToRemove));
         
         bool removeAbstraction = true;
-        foreach (AbstractionPortsModel::SignalRow const& row, table_)
+        foreach (AbstractionDefinitionSignalRow const& row, table_)
         {
-            if (row.abstraction_ == portToRemove.abstraction_)
+            if (row.getPortAbstraction() == portToRemove.getPortAbstraction())
             {
                 removeAbstraction = false;
+                break;
             }
         }
 
         if (removeAbstraction)
         {
-            absDef_->getLogicalPorts()->removeOne(portToRemove.abstraction_);
+            absDef_->getLogicalPorts()->removeOne(portToRemove.getPortAbstraction());
         }
 
         endRemoveRows();
@@ -1583,36 +1430,36 @@ void AbstractionPortsModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i)
 {
-    AbstractionPortsModel::SignalRow sourcePort = table_.at(i);
+    AbstractionDefinitionSignalRow sourcePort = table_.at(i);
 
     if (portAbs->getWire())
     {
-        if (sourcePort.mode_ == General::MASTER)
+        if (sourcePort.getMode() == General::MASTER)
         {
-            portAbs->getWire()->setMasterPort(sourcePort.wire_);
+            portAbs->getWire()->setMasterPort(sourcePort.getWire());
         }
-        else if (sourcePort.mode_ == General::SLAVE)
+        else if (sourcePort.getMode() == General::SLAVE)
         {
-            portAbs->getWire()->setSlavePort(sourcePort.wire_);
+            portAbs->getWire()->setSlavePort(sourcePort.getWire());
         }
-        else if (sourcePort.mode_ == General::SYSTEM)
+        else if (sourcePort.getMode() == General::SYSTEM)
         {
-            portAbs->getWire()->addSystemPort(sourcePort.wire_);
+            portAbs->getWire()->addSystemPort(sourcePort.getWire());
         }
     }
     else if (portAbs->getTransactional())
     {
-        if (sourcePort.mode_ == General::MASTER)
+        if (sourcePort.getMode() == General::MASTER)
         {
-            portAbs->getTransactional()->setMasterPort(sourcePort.transactional_);
+            portAbs->getTransactional()->setMasterPort(sourcePort.getTransactional());
         }
-        else if (sourcePort.mode_ == General::SLAVE)
+        else if (sourcePort.getMode() == General::SLAVE)
         {
-            portAbs->getTransactional()->setSlavePort(sourcePort.transactional_);
+            portAbs->getTransactional()->setSlavePort(sourcePort.getTransactional());
         }
-        else if (sourcePort.mode_ == General::SYSTEM)
+        else if (sourcePort.getMode() == General::SYSTEM)
         {
-            portAbs->getTransactional()->addSystemPort(sourcePort.transactional_);
+            portAbs->getTransactional()->addSystemPort(sourcePort.getTransactional());
         }
     }
 }
@@ -1625,12 +1472,12 @@ void AbstractionPortsModel::createWireRow(QSharedPointer<PortAbstraction> portAb
 {
     Q_ASSERT_X(portAbs, "BusPortsModel::createRow", "Null Port Abstraction pointer given as parameter");
 
-    AbstractionPortsModel::SignalRow port;
-    port.mode_ = mode;
-    port.abstraction_ = portAbs;
-    port.wire_ = modeSpesificWire;
-    port.lockExtendData_ = lockExtendData;
-    port.lockPortData_ = lockPortData;
+    AbstractionDefinitionSignalRow port;
+    port.setMode(mode);
+    port.setPortAbstraction(portAbs);
+    port.setWire(modeSpesificWire);
+    port.lockExtendData(lockExtendData);
+    port.lockPortData(lockPortData);
 
     table_.append(port);
 }
@@ -1644,12 +1491,12 @@ void AbstractionPortsModel::createTransactionalRow(QSharedPointer<PortAbstractio
 {
     Q_ASSERT_X(portAbs, "BusPortsModel::createRow", "Null Port Abstraction pointer given as parameter");
 
-    AbstractionPortsModel::SignalRow port;
-    port.mode_ = mode;
-    port.abstraction_ = portAbs;
-    port.transactional_ = modeSpecificTransactional;
-    port.lockExtendData_ = lockExtendData;
-    port.lockPortData_ = lockPortData;
+    AbstractionDefinitionSignalRow port;
+    port.setMode(mode);
+    port.setPortAbstraction(portAbs);
+    port.setTransactional(modeSpecificTransactional);
+    port.lockExtendData(lockExtendData);
+    port.lockPortData(lockPortData);
 
     table_.append(port);
 }
@@ -1713,99 +1560,5 @@ Qualifier::Type AbstractionPortsModel::toQualifier(QString const& str) const
     else
     {
         return Qualifier::Any;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::SignalRow()
-//-----------------------------------------------------------------------------
-AbstractionPortsModel::SignalRow::SignalRow():
-abstraction_(QSharedPointer<PortAbstraction>(new PortAbstraction())),
-mode_(General::INTERFACE_MODE_COUNT),
-wire_(),
-transactional_(),
-lockExtendData_(false),
-lockPortData_(false)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::operator==()
-//-----------------------------------------------------------------------------
-bool AbstractionPortsModel::SignalRow::operator==(SignalRow const& other) const
-{
-    return  abstraction_->getLogicalName() == other.abstraction_->getLogicalName() &&
-        mode_ == other.mode_ && comparedSignalIsSameType(other) &&
-        lockExtendData_ == other.lockExtendData_ && lockPortData_ == other.lockPortData_ &&
-        (mode_ != General::SYSTEM || getSystemGroup(*this) == getSystemGroup(other));
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::getSystemGroup()
-//-----------------------------------------------------------------------------
-QString AbstractionPortsModel::SignalRow::getSystemGroup(AbstractionPortsModel::SignalRow const& signal) const
-{
-    if (signal.mode_ == General::SYSTEM)
-    {
-        if (signal.wire_)
-        {
-            return signal.wire_->getSystemGroup();
-        }
-        else if (signal.transactional_)
-        {
-            return signal.transactional_->getSystemGroup();
-        }
-    }
-
-    return QString("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::comparedSignalIsSameType()
-//-----------------------------------------------------------------------------
-bool AbstractionPortsModel::SignalRow::comparedSignalIsSameType(
-    AbstractionPortsModel::SignalRow const& comparisonSignal) const
-{
-    if ((wire_ && comparisonSignal.wire_) || (transactional_ && comparisonSignal.transactional_))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::operator!=()
-//-----------------------------------------------------------------------------
-bool AbstractionPortsModel::SignalRow::operator!=(SignalRow const& other) const
-{
-    return  abstraction_->getLogicalName() != other.abstraction_->getLogicalName() ||
-        mode_ != other.mode_ ||
-        !comparedSignalIsSameType(other) ||
-        getSystemGroup(*this) != getSystemGroup(other) ||
-        lockExtendData_ != other.lockExtendData_ || lockPortData_ != other.lockPortData_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::SignalRow::operator<()
-//-----------------------------------------------------------------------------
-bool AbstractionPortsModel::SignalRow::operator<( const SignalRow& other ) const
-{
-	// Order by name, mode and system group.
-	if (abstraction_->getLogicalName() == other.abstraction_->getLogicalName()) 
-    {
-        if (mode_ == other.mode_)
-        {
-            return getSystemGroup(*this) < getSystemGroup(other);
-        }
-
-		return mode_ < other.mode_;
-	}
-	else
-    {
-		return abstraction_->getLogicalName() < other.abstraction_->getLogicalName();
     }
 }

@@ -1054,7 +1054,7 @@ bool LibraryHandler::addObject(QSharedPointer<Document> model, QString const& fi
 
     TagManager::getInstance().addNewTags(model->getTags());
 
-    documentCache_.insert(model->getVlnv(), DocumentInfo(targetPath, model, validateDocument(model, targetPath)));
+    documentCache_.insert(model->getVlnv(), DocumentInfo(targetPath, model->clone(), validateDocument(model, targetPath)));
 
     return true;
 }
