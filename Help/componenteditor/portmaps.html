@@ -31,8 +31,8 @@
         </li>
         <li>
             <b>Auto connect.</b> Creates a single port map for each logical signal that does not have a port map.
-            A suitable physical port is selected by matching the direction, size and the name of the logical signal
-            to physical ports. If <b>Physical port prefix</b> has been set, physical ports starting with the
+            A suitable physical port is selected by matching the direction, type, size and the name of the logical
+            signal to physical ports. If <b>Physical port prefix</b> has been set, physical ports starting with the
             given string will be prioritized in the connections. For example using prefix "master" will connect
             logical port 'CLK' to physical port 'master_clk' over ports 'clk', 'slave_clk' etc.
         </li>
@@ -58,6 +58,9 @@
             <b>Name</b> allows regular expressions to filter ports not matching the given expression.
         </li>
         <li>
+            <b>Type</b> selects whether to display wire ports or transactional ports.
+        </li>
+        <li>
             <b>Direction</b> allows the selection of a port direction and filtering all the other ports with
             different directions.
         </li>
@@ -72,7 +75,7 @@
         The port maps table consists of both the <i>logical signals</i> and the <i>port maps</i> referencing
         logical signals. The table is constructed as a tree, where the port maps are child items of a logical
         signal. Values for columns with an f(x) symbol can be given as expressions.
-        <br />If a logical signal has been referenced only was in the port maps of the bus interface, information
+        <br />If a logical signal has been referenced only once in the port maps of the bus interface, information
         of the port map is displayed on the same row as the logical signal.
         <br />If a single physical port is referenced in all the port maps referencing the logical signal, the
         physical port name is displayed on the same row as the logical signal. If multiple port maps referencing
@@ -90,8 +93,7 @@
     </p>
     <p>
         <b>Requirement</b> informs the user of the port map requirement of the logical signal. The requirement is
-        set in the abstraction abstraction definition of a bus definition, and cannot be edited here. The possible
-        values are:
+        set in the abstraction definition of a bus definition, and cannot be edited here. The possible values are:
     </p>
     <ul>
         <li>
@@ -113,20 +115,24 @@
     <h4>Port maps context menu (right mouse button)</h4>
     <ul>
         <li>
-            <b>Expand all.</b> Show the port maps connected to each logical signal.
-        </li>
-        <li>
-            <b>Collapse all.</b> Hide the port maps connected to each logical signal.
-        </li>
-        <li>
             <b>Add port map</b> (logical signal / port map). Add a port map to the selected logical signal.
+        </li>
+        <li>
+            <b>Remove port map</b> (port map). Remove the selected port map.
         </li>
         <li>
             <b>Remove all port maps</b> (logical signal). Remove all the port maps referencing the selected
             logical signal.
         </li>
         <li>
-            <b>Remove port map</b> (port map). Remove the selected port map.
+            <b>Auto connect</b> (port map). Automatically tries to connect the selected port by locating a suitable
+            physical port matching the direction, type, size and the name of the logical signal to physical ports.
+        </li>
+        <li>
+            <b>Expand all.</b> Show the port maps connected to each logical signal.
+        </li>
+        <li>
+            <b>Collapse all.</b> Hide the port maps connected to each logical signal.
         </li>
     </ul>
     

@@ -133,8 +133,8 @@ QVector<AbstractionDefinitionSignalRow> AbstractionExtendHandler::getEditedExten
 
                         signalIsRedifined = true;
                     }
-                    else if (signalRow.getMode() == General::SYSTEM && extendWire->getSystemPorts() &&
-                        extendWire->getSystemPorts()->size() > 0)
+                    else if (signalRow.getMode() == General::SYSTEM && extendTransactional->getSystemPorts() &&
+                        extendTransactional->getSystemPorts()->size() > 0)
                     {
                         QSharedPointer<TransactionalPort> extendTransactionalPort =
                             extendTransactional->findSystemPort(signalRow.getTransactional()->getSystemGroup());
