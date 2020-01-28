@@ -25,6 +25,7 @@
           <section title="Colors" ref="general/colors.html"/>
           <section title="Workspace" ref="general/workSpace.html"/>
           <section title="Default Applications" ref="general/defaultApplication.html"/>
+          <section title="Windows" ref="general/windows.html"/>
         </section>
         <section title="Bus Definition" ref="definitions/busdefinition.html"/>
         <section title="Catalog" ref="definitions/catalog.html" />
