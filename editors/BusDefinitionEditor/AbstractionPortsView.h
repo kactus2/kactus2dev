@@ -69,6 +69,11 @@ signals:
      */
     void addAllSystems();
 
+    /*!
+     *  Emitted when the extend ports need to be reloaded from the extend abstraction definition.
+     */
+    void resetExtendPorts();
+
 protected:
 
 	//! Handler for context menu events
@@ -96,6 +101,9 @@ private:
 
     //! Action for adding the missing system modes for a signal.
     QAction addAllSystemsAction_;
+
+    //! Action for reloading the extended abstraction definition ports.
+    QAction resetExtendPortsAction_;
 };
 
 #endif // ABSTRACTIONPORTSVIEW_H

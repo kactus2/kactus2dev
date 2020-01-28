@@ -17,8 +17,10 @@
 #include <QSharedPointer>
 #include <QString>
 
-class LibraryInterface;
+class AbstractionDefinition;
 class BusDefinition;
+class PortAbstraction;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Utilities for Bus Definitions and abstraction definitions.
@@ -35,6 +37,17 @@ namespace BusDefinitionUtils
      */
     IPXACTMODELS_EXPORT QStringList getSystemGroups(QSharedPointer<const BusDefinition> bus,
         LibraryInterface* libraryAccess);
+
+    /*!
+     *  Get a list of the extended port abstractions of the selected abstraction definition.
+     *
+     *      @param [in] abstraction     The selected abstraction definition.
+     *      @param [in] libraryAccess   Interface to the library.
+     *
+     *      @return List of extended port abstractions.
+     */
+    IPXACTMODELS_EXPORT QList<QSharedPointer<PortAbstraction> > getExtendedLogicalSignals(
+        QSharedPointer<const AbstractionDefinition> abstraction, LibraryInterface* libraryAccess);
 };
 
 //-----------------------------------------------------------------------------

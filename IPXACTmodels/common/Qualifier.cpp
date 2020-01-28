@@ -100,3 +100,12 @@ Qualifier& Qualifier::operator=(Qualifier const& other)
     }
     return *this;
 }
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::operator!=()
+//-----------------------------------------------------------------------------
+bool Qualifier::operator!=(Qualifier const& other)
+{
+    return isAddress_ != other.isAddress_ || isData_ != other.isData_ || isClock_ != other.isClock_ ||
+        isReset_ != other.isReset_;
+}

@@ -102,9 +102,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinuxDeviceTreeGenerator", "Plugins\LinuxDeviceTree\LinuxDeviceTreeGenerator.vcxproj", "{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
@@ -490,11 +487,14 @@ Global
 		{E5EC0C47-17DE-4E2F-8F13-731D5EECB70B} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.10.1
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_UpdateAssemblyVersion = True
-		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
 		SolutionGuid = {7616A0E1-C309-4245-8839-FDBE7354DBC5}
+		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
+		Qt5Version = 5.10.1
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

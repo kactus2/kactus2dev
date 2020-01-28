@@ -1429,9 +1429,6 @@
     <ClInclude Include="Component\validators\OtherClockDriverValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
-    <ClInclude Include="Component\validators\BuildCommandValidator.h">
-      <Filter>Header Files\Component\validators</Filter>
-    </ClInclude>
     <ClInclude Include="Component\validators\PortMapValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>

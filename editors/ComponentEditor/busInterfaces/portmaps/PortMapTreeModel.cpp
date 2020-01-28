@@ -505,13 +505,14 @@ QIcon PortMapTreeModel::getIconForPhysicalPort(QModelIndex const& index, QShared
     if (!physicalPortName.isEmpty() && physicalPortName.compare(MULTIPLE_SELECTED, Qt::CaseSensitive) != 0)
     {
         QSharedPointer<Port> physicalPort = component_->getPort(physicalPortName);
-        if (physicalPort->getWire())
+
+        if (physicalPort.isNull())
         {
-            DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
-            if (physicalPort)
-            {
-                direction = physicalPort->getDirection();
-            }
+            return getIconForDirection(DirectionTypes::DIRECTION_INVALID);
+        }
+        else if (physicalPort->getWire())
+        {
+            DirectionTypes::Direction direction = physicalPort->getDirection();                            
 
             return getIconForDirection(direction);
         }

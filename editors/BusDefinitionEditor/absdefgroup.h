@@ -30,6 +30,7 @@ class VLNVDisplayer;
 class VLNVEditor;
 class LibraryInterface;
 class AbstractionDefinitionPortsSortFilter;
+class AbstractionPortsModel;
 
 //-----------------------------------------------------------------------------
 //! Editor for the logical ports of an abstraction definition.
@@ -90,14 +91,6 @@ signals:
 	void noticeMessage(QString const& message);
 
     /*!
-     *  Inform that a port abstraction has been renamed.
-     *
-     *      @param [in] oldName     Old name of the port abstraction.
-     *      @param [in] newName     New name for the port abstraction.
-     */
-    void portRenamed(QString const& oldName, QString const& newName);
-
-    /*!
      *  Inform that a port abstraction has been removed.
      *
      *      @param [in] portName    Name of the removed port abstraction.
@@ -111,6 +104,11 @@ private slots:
      *  Handler for changing the description of the abstraction definition.
      */
     void onDescriptionChanged();
+
+    /*!
+     *  Handle the change in abstraction definition extend.
+     */
+    void onExtendChanged();
 
 private:
 	//! No copying. No assignment.
@@ -129,6 +127,41 @@ private:
      */
     bool abstractionContainsTransactionalPorts() const;
 
+    /*!
+     *  Setup the extended abstraction definition.
+     */
+    void setupExtendedAbstraction();
+
+    /*!
+     *  Get the extended abstraction definition.
+     *
+     *       @return The extended abstraction definition.
+     */
+    QSharedPointer<const AbstractionDefinition> getExtendedAbstraction() const;
+
+    /*!
+     *  Remove extend port abstractions.
+     */
+    void removeSignalsFromExtendedDefinition();
+
+    /*!
+     *  Check if a port abstractions is within a list of port abstractions.
+     *
+     *      @param [in] logicalPort     The selected port abstraction.
+     *      @param [in] currentPorts    List of port abstractions.
+     *
+     *      @return True, if the selected port is within the list of port abstractions, false otherwise.
+     */
+    bool portIsWithinPorts(QSharedPointer<PortAbstraction> logicalPort,
+        QList<QSharedPointer<PortAbstraction> > const& currentPorts);
+
+    /*!
+     *  Extend the contained signals.
+     *
+     *       @param [in] extendAbstraction  The extended abstraction definition.
+     */
+    void extendSignals(QSharedPointer<const AbstractionDefinition> extendAbstraction);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -137,7 +170,7 @@ private:
     VLNVDisplayer* vlnvDisplay_;
 
     //! Editor for the abstraction definition extend.
-    VLNVEditor* extendVLNVEditor_;
+    VLNVEditor* extendEditor_;
 
     //! Editor for the description of the abstraction definition.
     QPlainTextEdit* descriptionEditor_;
@@ -146,13 +179,19 @@ private:
     QTabWidget portTabs_;
 
     //! Editor for wire ports.
-    AbstractionWirePortsEditor wirePortsEditor_;
+    AbstractionWirePortsEditor* wirePortsEditor_;
 
     //! Editor for transactional ports.
-    AbstractionTransactionalPortsEditor transactionalPortsEditor_;
+    AbstractionTransactionalPortsEditor* transactionalPortsEditor_;
 
     //! The edited abstraction definition.
     QSharedPointer<AbstractionDefinition> abstraction_;
+
+    //! The library interface.
+    LibraryInterface* libraryHandler_;
+
+    //! The abstraction definition ports model.
+    AbstractionPortsModel* portModel_;
 };
 
 #endif // ABSDEFGROUP_H

@@ -13,14 +13,14 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/BusDefinitionEditor/AbstractionTransactionalPortColumns.h>
+#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter()
 //-----------------------------------------------------------------------------
-AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter(
-    AbstractionDefinitionPortsSortFilter::ColumnHandles columns, QObject *parent):
-AbstractionDefinitionPortsSortFilter(columns, parent)
+AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter(QObject *parent):
+AbstractionDefinitionPortsSortFilter(parent)
 {
 
 }
@@ -30,12 +30,8 @@ AbstractionDefinitionPortsSortFilter(columns, parent)
 //-----------------------------------------------------------------------------
 QColor AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
 {
-    if (index.column() == AbstractionTransactionalPortColumns::PROTOCOLTYPE && indexedRowContainsPayload(index))
-    {
-        return KactusColors::MANDATORY_FIELD;
-    }
-    else if (index.column() == AbstractionTransactionalPortColumns::PAYLOADTYPE &&
-        indexedRowContainsPayload(index))
+    if ((index.column() == LogicalPortColumns::PROTOCOLTYPE || index.column() == LogicalPortColumns::PAYLOADTYPE)
+        && indexedRowContainsPayload(index))
     {
         return KactusColors::MANDATORY_FIELD;
     }
@@ -48,12 +44,26 @@ QColor AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex(QMode
 //-----------------------------------------------------------------------------
 bool AbstractionTransactionalPortsSortFilter::indexedRowContainsPayload(QModelIndex const& index) const
 {
-    QModelIndex payloadNameIndex = index.sibling(index.row(), AbstractionTransactionalPortColumns::PAYLOADNAME);
-    QModelIndex payloadTypeIndex = index.sibling(index.row(), AbstractionTransactionalPortColumns::PAYLOADTYPE);
-    QModelIndex payloadExtensionIndex =
-        index.sibling(index.row(), AbstractionTransactionalPortColumns::PAYLOADEXTENSION);
+    QModelIndex payloadNameIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADNAME);
+    QModelIndex payloadTypeIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADTYPE);
+    QModelIndex payloadExtensionIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADEXTENSION);
 
     return !payloadNameIndex.data(Qt::DisplayRole).toString().isEmpty() ||
         !payloadTypeIndex.data(Qt::DisplayRole).toString().isEmpty() ||
         !payloadExtensionIndex.data(Qt::DisplayRole).toString().isEmpty();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTransactionalPortsSortFilter::filterAcceptsRow()
+//-----------------------------------------------------------------------------
+bool AbstractionTransactionalPortsSortFilter::filterAcceptsRow(int source_row, const QModelIndex &source_parent)
+    const
+{
+    if (!source_parent.isValid())
+    {
+        QModelIndex categoryIndex = sourceModel()->index(source_row, 0, QModelIndex());
+        return categoryIndex.data(AbstractionPortsModel::isTransactionalRole).toBool();
+    }
+
+    return AbstractionDefinitionPortsSortFilter::filterAcceptsRow(source_row, source_parent);
 }

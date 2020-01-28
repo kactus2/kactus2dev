@@ -118,14 +118,6 @@ public slots:
 signals:
 
     /*!
-     *  Inform that a port abstraction has been renamed.
-     *
-     *      @param [in] oldName     Old name of the port abstraction.
-     *      @param [in] newName     New name for the port abstraction.
-     */
-    void portRenamed(QString const& oldName, QString const& newName);
-
-    /*!
      *  Inform that a port abstraction has been removed.
      *
      *      @param [in] portName    Name of the removed port abstraction.
@@ -180,6 +172,8 @@ private:
     //! Validator for abstraction definition.
     QSharedPointer<AbstractionDefinitionValidator> absDefinitionValidator_;
 
+    //! Flag for save status on bus definition.
+    bool busDefinitionSaved_;
 };
 
 #endif // BUSDEFINITIONEDITOR_H

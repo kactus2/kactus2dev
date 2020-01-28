@@ -12,8 +12,8 @@
 #ifndef ABSTRACTIOTRANSACTIONALPORTSEDITOR_H
 #define ABSTRACTIOTRANSACTIONALPORTSEDITOR_H
 
+#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
 #include <editors/BusDefinitionEditor/AbstractionPortsView.h>
-#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.h>
 #include <editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h>
 
 #include <QWidget>
@@ -36,10 +36,12 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] portModel       Model for this editor.
      *      @param [in] libraryAccess   Interface to the library.
      *      @param [in] parent          The owner of the editor.
      */
-    AbstractionTransactionalPortsEditor(LibraryInterface* libraryAccess, QWidget *parent);
+    AbstractionTransactionalPortsEditor(AbstractionPortsModel* portModel, LibraryInterface* libraryAccess,
+        QWidget *parent);
 
     /*!
      *  The destructor.
@@ -47,16 +49,9 @@ public:
     virtual ~AbstractionTransactionalPortsEditor() = default;
 
     /*!
-     *  Saves the changes made in the editor.
+     *  Hide the wire columns.
      */
-    void save();
-
-    /*!
-     *  Set the abstraction definition for the editor.
-     *
-     *      @param [in] absDef  The Abstraction definition to edit.
-     */
-    void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
+    void hideWireColumns();
 
     /*!
      *  Set the bus definition referenced by the abstraction definition.
@@ -140,7 +135,7 @@ private:
     AbstractionDefinitionPortsSortFilter* portProxy_;
 
     //! The model that contains the logical signals of Abstraction Definition.
-    AbstractionTransactionalPortsModel portModel_;
+    AbstractionPortsModel* portModel_;
 
     //! The item delegate for portView_.
     AbstractionTransactionalPortsDelegate portDelegate_;

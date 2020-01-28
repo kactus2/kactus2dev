@@ -11,14 +11,14 @@
 
 #include "NMTokenValidator.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: NMTokenValidator::NMTokenValidator()
 //-----------------------------------------------------------------------------
 NMTokenValidator::NMTokenValidator(QObject* parent):
-QRegExpValidator(parent)
+QRegularExpressionValidator(parent)
 {
-    QRegExp exp(QStringLiteral("[a-zA-Z0-9:_.-]*$"), Qt::CaseSensitive, QRegExp::W3CXmlSchema11);
-    setRegExp(exp);
+    QRegularExpression exp(QStringLiteral("([a-zA-Z0-9:_.-]*$)|(^$)"));
+    setRegularExpression(exp);
 }

@@ -11,6 +11,8 @@
 
 #include "busdefgroup.h"
 
+#include <IPXACTmodels/utilities/BusDefinitionUtils.h>
+
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
@@ -153,13 +155,10 @@ void BusDefGroup::onSystemNamesChanged()
     for (int i = 0; i < systemGroupEditor_.count(); ++i)
     {
         QListWidgetItem* systemItem = systemGroupEditor_.item(i);
-        if (systemItem->flags() & Qt::ItemIsEditable)
+        QString systemName = systemItem->text();
+        if (!systemGroupNames.contains(systemName))
         {
-            QString systemName = systemItem->text();
-            if (!systemGroupNames.contains(systemName))
-            {
-                systemGroupNames.append(systemName);
-            }
+            systemGroupNames.append(systemName);
         }
     }
 
@@ -182,6 +181,10 @@ void BusDefGroup::onDescriptionChanged()
 //-----------------------------------------------------------------------------
 void BusDefGroup::onExtendChanged()
 {
+    VLNV newExtendVLNV = extendEditor_->getVLNV();
+
+    removeSystemGroupsFromExtendedDefinition();
+
     busDef_->setExtends(extendEditor_->getVLNV());
     setupExtendedBus();
 
@@ -189,6 +192,28 @@ void BusDefGroup::onExtendChanged()
     onSystemNamesChanged();
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: busdefgroup::removeSystemGroupsFromExtendedDefinition()
+//-----------------------------------------------------------------------------
+void BusDefGroup::removeSystemGroupsFromExtendedDefinition()
+{
+    QSharedPointer<const BusDefinition> extendedBus = getExtendedBus(busDef_);
+    if (extendedBus)
+    {
+        QStringList currentSystemGroups = busDef_->getSystemGroupNames();
+        QStringList extendSystemGroups = BusDefinitionUtils::getSystemGroups(extendedBus, library_);
+        for (auto extendSystem : extendSystemGroups)
+        {
+            if (currentSystemGroups.contains(extendSystem))
+            {
+                currentSystemGroups.removeAll(extendSystem);
+            }
+        }
+
+        busDef_->setSystemGroupNames(currentSystemGroups);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -243,6 +268,7 @@ void BusDefGroup::setupExtendedBus()
     if (extendedBus)
     {
         extendBusDefinition(extendedBus);
+
 #if QT_VERSION > QT_VERSION_CHECK(5,3,0)
         descriptionEditor_.setPlaceholderText(extendedBus->getDescription());
 #endif
