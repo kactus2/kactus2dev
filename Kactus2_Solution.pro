@@ -37,7 +37,7 @@ Kactus2.depends = IPXACTmodels
 Kactus2.makefile = Makefile.Kactus2
 
 MCAPICodeGenerator.subdir = Plugins/MCAPICodeGenerator
-MCAPICodeGenerator.depends = IPXACTmodels
+MCAPICodeGenerator.depends = IPXACTmodels Kactus2
 
 CppSourceAnalyzer.subdir = Plugins/CppSourceAnalyzer
 CppSourceAnalyzer.depends = IPXACTmodels
@@ -67,7 +67,7 @@ VerilogGeneratorPlugin.file = Plugins/VerilogGenerator/VerilogGeneratorPlugin.pr
 VerilogGeneratorPlugin.depends = IPXACTmodels
 
 VHDLGenerator.subdir = Plugins/VHDLGenerator
-VHDLGenerator.depends = IPXACTmodels
+VHDLGenerator.depends = IPXACTmodels Kactus2
 
 VHDLimport.subdir = Plugins/VHDLimport
 VHDLimport.depends = IPXACTmodels
