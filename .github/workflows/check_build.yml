@@ -28,7 +28,9 @@ jobs:
       uses: warrenbuckley/Setup-MSBuild@v1
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.12.7
     - name: Build sources
       run: msbuild -m:4 -p:Configuration=Release -p:Platform=x64 -p:PlatformToolset=v142 Kactus2_Solution_vs2017.sln      
       env:
-        QTDIR: d:/a/kactus2dev/Qt/5.12.6/msvc2017_64
+        QTDIR: d:/a/kactus2dev/Qt/5.12.7/msvc2017_64
