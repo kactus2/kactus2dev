@@ -20,19 +20,27 @@ LIBS += -L./executable \
     -lIPXACTmodels
 
 DESTDIR = ./executable
-
 DEPENDPATH += .
-linux-g++*:QMAKE_CXXFLAGS += -fPIE
-linux-g++*:LIBS += -pie -rdynamic
-win32-g++*:LIBS += -Wl,--export-all-symbols,--out-implib,executable/libKactus2.a
+
 MOC_DIR += ./GeneratedFiles
 OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
+
 include(Kactus2.pri)
 
-win32:RC_FILE = Kactus2.rc
+linux-g++*:QMAKE_CXXFLAGS += -fPIE
+linux-g++*:LIBS += -pie -rdynamic
 unix:QMAKE_POST_LINK = ln -f -s kactus2 executable/libKactus2.so; ./createhelp
+
+win32:RC_FILE = Kactus2.rc
+win32-g++*:LIBS += -Wl,--export-all-symbols,--out-implib,executable/libKactus2.a
+
+config.path = /etc/xdg/TUT
+config.files = ./Administrative/releaseFiles/Kactus2.ini
+
+# bin_path and other install targets set in .qmake.conf
 target.path = $$bin_path
-INSTALLS += target
+
+INSTALLS += target help doc upgrade config library icons desktop
 
