@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E8D9DD36-B0CA-4043-9B08-CEA96BED5266}</ProjectGuid>
+    <Keyword>QtVS_v302</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtInstall>5.10.1</QtInstall>
+    <QtModules>core;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>5.10.1</QtInstall>
+    <QtModules>core;widgets;xml</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PreprocessorDefinitions>PYTHONAPI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat />
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PreprocessorDefinitions>PYTHONAPI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(PYTHON_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>_pythonAPI.pyd</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>$(PYTHON_LIB);C:\Apps\Python\libs\python37.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.cpp" />
+    <ClCompile Include="..\common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.cpp" />
+    <ClCompile Include="..\common\dialogs\newObjectDialog\newobjectdialog.cpp" />
+    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectExportDialog.cpp" />
+    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.cpp" />
+    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionListItem.cpp" />
+    <ClCompile Include="..\common\dialogs\ObjectRemoveDialog\objectremovedialog.cpp" />
+    <ClCompile Include="..\common\validators\LibraryPathValidator\librarypathvalidator.cpp" />
+    <ClCompile Include="..\common\widgets\assistedLineEdit\AssistedLineEdit.cpp" />
+    <ClCompile Include="..\common\widgets\assistedLineEdit\LineContentAssistWidget.cpp" />
+    <ClCompile Include="..\common\widgets\colorBox\ColorBox.cpp" />
+    <ClCompile Include="..\common\widgets\kactusAttributeEditor\KactusAttributeEditor.cpp" />
+    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.cpp" />
+    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.cpp" />
+    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp" />
+    <ClCompile Include="..\common\widgets\tagEditor\FlowLayout.cpp" />
+    <ClCompile Include="..\common\widgets\tagEditor\TagCompleterModel.cpp" />
+    <ClCompile Include="..\common\widgets\tagEditor\TagContainer.cpp" />
+    <ClCompile Include="..\common\widgets\tagEditor\TagDisplay.cpp" />
+    <ClCompile Include="..\common\widgets\tagEditor\TagEditor.cpp" />
+    <ClCompile Include="..\common\widgets\tagEditor\TagEditorContainer.cpp" />
+    <ClCompile Include="..\common\widgets\tagEditor\TagLabel.cpp" />
+    <ClCompile Include="..\common\widgets\tagEditor\TagManager.cpp" />
+    <ClCompile Include="..\common\widgets\vlnvEditor\VLNVContentMatcher.cpp" />
+    <ClCompile Include="..\common\widgets\vlnvEditor\VLNVDataTree.cpp" />
+    <ClCompile Include="..\common\widgets\vlnvEditor\vlnveditor.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\library\DocumentFileAccess.cpp" />
+    <ClCompile Include="..\library\DocumentValidator.cpp" />
+    <ClCompile Include="..\library\HierarchyView\hierarchyitem.cpp" />
+    <ClCompile Include="..\library\HierarchyView\hierarchymodel.cpp" />
+    <ClCompile Include="..\library\ItemExporter.cpp" />
+    <ClCompile Include="..\library\LibraryErrorModel.cpp" />
+    <ClCompile Include="..\library\LibraryHandler.cpp" />
+    <ClCompile Include="..\library\LibraryItem.cpp" />
+    <ClCompile Include="..\library\LibraryItemSelectionFactory.cpp" />
+    <ClCompile Include="..\library\LibraryLoader.cpp" />
+    <ClCompile Include="..\library\LibraryTreeModel.cpp" />
+    <ClCompile Include="..\library\TableViewDialog.cpp" />
+    <ClCompile Include="..\VersionHelper.cpp" />
+    <ClCompile Include="messageMediator\PythonMessageMediator.cpp" />
+    <ClCompile Include="PythonAPI.cpp" />
+    <ClCompile Include="PythonAPI_wrap.cxx" />
+    <ClCompile Include="simpleModels\SimpleNameGroup.cpp" />
+    <ClCompile Include="simpleModels\SimplePort.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="simpleModels\SimpleNameGroup.h" />
+    <ClInclude Include="simpleModels\SimplePort.h" />
+    <QtMoc Include="..\library\LibraryHandler.h" />
+    <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h" />
+    <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectExportDialog.h" />
+    <QtMoc Include="..\common\dialogs\newObjectDialog\newobjectdialog.h" />
+    <QtMoc Include="..\common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.h" />
+    <QtMoc Include="..\common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h" />
+    <ClInclude Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionListItem.h" />
+    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.h" />
+    <QtMoc Include="..\common\widgets\kactusAttributeEditor\KactusAttributeEditor.h" />
+    <QtMoc Include="..\common\widgets\vlnvEditor\vlnveditor.h" />
+    <QtMoc Include="..\common\widgets\tagEditor\TagEditorContainer.h" />
+    <QtMoc Include="..\common\widgets\tagEditor\TagContainer.h" />
+    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.h" />
+    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.h" />
+    <QtMoc Include="..\common\validators\LibraryPathValidator\librarypathvalidator.h" />
+    <QtMoc Include="..\common\widgets\tagEditor\TagLabel.h" />
+    <QtMoc Include="..\common\widgets\colorBox\ColorBox.h" />
+    <QtMoc Include="..\common\widgets\assistedLineEdit\AssistedLineEdit.h" />
+    <QtMoc Include="..\common\dialogs\ObjectRemoveDialog\objectremovedialog.h" />
+    <ClInclude Include="..\common\widgets\assistedLineEdit\LineContentAssistWidget.h" />
+    <ClInclude Include="..\common\widgets\tagEditor\FlowLayout.h" />
+    <QtMoc Include="..\common\widgets\tagEditor\TagEditor.h" />
+    <QtMoc Include="..\common\widgets\tagEditor\TagDisplay.h" />
+    <QtMoc Include="..\common\widgets\tagEditor\TagCompleterModel.h" />
+    <ClInclude Include="..\common\widgets\tagEditor\TagManager.h" />
+    <ClInclude Include="..\common\widgets\vlnvEditor\VLNVContentMatcher.h" />
+    <ClInclude Include="..\common\widgets\vlnvEditor\VLNVDataTree.h" />
+    <ClInclude Include="..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
+    <ClInclude Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
+    <ClInclude Include="..\editors\ComponentEditor\common\ListParameterFinder.h" />
+    <QtMoc Include="..\editors\ComponentEditor\common\ParameterCache.h" />
+    <ClInclude Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="..\library\DocumentFileAccess.h" />
+    <ClInclude Include="..\library\DocumentValidator.h" />
+    <QtMoc Include="..\library\HierarchyView\hierarchymodel.h" />
+    <QtMoc Include="..\library\HierarchyView\hierarchyitem.h" />
+    <QtMoc Include="..\library\LibraryErrorModel.h" />
+    <QtMoc Include="..\library\ItemExporter.h" />
+    <QtMoc Include="..\library\LibraryItem.h" />
+    <ClInclude Include="..\library\LibraryItemSelectionFactory.h" />
+    <ClInclude Include="..\library\LibraryLoader.h" />
+    <QtMoc Include="..\library\LibraryTreeModel.h" />
+    <ClInclude Include="..\library\TableViewDialog.h" />
+    <ClInclude Include="..\VersionHelper.h" />
+    <ClInclude Include="messageMediator\PythonMessageMediator.h" />
+    <ClInclude Include="PythonAPI.h" />
+    <ClInclude Include="pythonapi_global.h" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" MocOptions="" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
