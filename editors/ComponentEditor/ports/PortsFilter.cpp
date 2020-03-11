@@ -12,14 +12,16 @@
 #include "PortsFilter.h"
 
 #include <editors/ComponentEditor/ports/portsmodel.h>
+#include <editors/ComponentEditor/ports/PortsInterface.h>
 
 #include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortsFilter::PortsFilter()
 //-----------------------------------------------------------------------------
-PortsFilter::PortsFilter(QObject* parent):
-QSortFilterProxyModel(parent)
+PortsFilter::PortsFilter(QSharedPointer<PortsInterface> portInterface, QObject* parent):
+QSortFilterProxyModel(parent),
+portInterface_(portInterface)
 {
 
 }
@@ -29,11 +31,8 @@ QSortFilterProxyModel(parent)
 //-----------------------------------------------------------------------------
 bool PortsFilter::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
 {
-    QModelIndex portIndex = sourceModel()->index(source_row, 0, source_parent);
-    QVariant portData = sourceModel()->data(portIndex, PortsModel::portRoles::getPortRole);
-    
-    QSharedPointer<Port> port = portData.value<QSharedPointer<Port> >();
-    if (port && !portIsAccepted(port))
+    QModelIndex portNameIndex = sourceModel()->index(source_row, nameColumn(), source_parent);
+    if (!portIsAccepted(portNameIndex.data(Qt::DisplayRole).toString()))
     {
         return false;
     }
@@ -48,4 +47,12 @@ void PortsFilter::onHandleExtensionsEditorItemChange(QModelIndex const& index)
 {
     QModelIndex filteredIndex = mapToSource(index);
     emit changeExtensionsEditorItem(filteredIndex);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsFilter::getInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<PortsInterface> PortsFilter::getInterface() const
+{
+    return portInterface_;
 }

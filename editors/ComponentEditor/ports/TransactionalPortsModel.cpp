@@ -11,21 +11,17 @@
 
 #include "TransactionalPortsModel.h"
 
+#include <editors/ComponentEditor/ports/PortsInterface.h>
 #include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 
-#include <IPXACTmodels/Component/Port.h>
-#include <IPXACTmodels/Component/validators/PortValidator.h>
-
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsModel::TransactionalPortsModel()
 //-----------------------------------------------------------------------------
-TransactionalPortsModel::TransactionalPortsModel(QSharedPointer<Model> model,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<PortValidator> portValidator,
-    QSortFilterProxyModel* filter, QObject *parent):
-PortsModel(model, expressionParser, parameterFinder, expressionFormatter, portValidator, filter, parent)
+TransactionalPortsModel::TransactionalPortsModel(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<PortsInterface> portsInterface, QSortFilterProxyModel* filter, QObject *parent):
+PortsModel(parameterFinder, portsInterface, filter, parent)
 {
 
 }
@@ -96,7 +92,7 @@ bool TransactionalPortsModel::setData(QModelIndex const& index, QVariant const& 
 		return false;
     }
 
-    QSharedPointer<Port> port = portOnRow(index.row());
+    std::string portName = getInterface()->getIndexedPortName(index.row());
 
 	if (role == Qt::EditRole)
     {
@@ -108,10 +104,11 @@ bool TransactionalPortsModel::setData(QModelIndex const& index, QVariant const& 
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(port->getTransactional()->getBusWidth());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(getInterface()->getBusWidthExpression(portName)));
             }
 
-            port->getTransactional()->setBusWidth(value.toString());
+            getInterface()->setBusWidth(portName, value.toString().toStdString());
         }
         else if (index.column() == TransactionalPortColumns::INITIATIVE)
         {
@@ -121,29 +118,31 @@ bool TransactionalPortsModel::setData(QModelIndex const& index, QVariant const& 
                 newInitiative = TransactionalTypes::INITIATIVE_BOTH;
             }
 
-            port->getTransactional()->setInitiative(newInitiative);
+            getInterface()->setInitiative(portName, newInitiative.toStdString());
         }
         else if (index.column() == TransactionalPortColumns::KIND)
         {
-            port->getTransactional()->setKind(value.toString());
+            getInterface()->setKind(portName, value.toString().toStdString());
         }
         else if (index.column() == TransactionalPortColumns::MAX_CONNECTIONS)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(port->getTransactional()->getMaxConnections());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(getInterface()->getMaxConnectionsExpression(portName)));
             }
 
-            port->getTransactional()->setMaxConnections(value.toString());
+            getInterface()->setMaxConnections(portName, value.toString().toStdString());
         }
         else if (index.column() == TransactionalPortColumns::MIN_CONNECTIONS)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(port->getTransactional()->getMinConnections());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(getInterface()->getMinConnectionsExpression(portName)));
             }
 
-            port->getTransactional()->setMinConnections(value.toString());
+            getInterface()->setMinConnections(portName, value.toString().toStdString());
         }
         else
         {
@@ -164,50 +163,90 @@ bool TransactionalPortsModel::setData(QModelIndex const& index, QVariant const& 
 //-----------------------------------------------------------------------------
 QVariant TransactionalPortsModel::valueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Port> port = portOnRow(index.row());
-    QSharedPointer<Transactional> portTransactional = port->getTransactional();
-    if (portTransactional)
-    {
-        if (index.column() == TransactionalPortColumns::WIDTH)
-        {
-            return portTransactional->getBusWidth();
-        }
-        else if (index.column() == TransactionalPortColumns::INITIATIVE)
-        {
-            QString initiative = portTransactional->getInitiative();
-            if (initiative.compare(TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
-            {
-                initiative = TransactionalTypes::INITIATIVE_REQUIRES_PROVIDES;
-            }
+    std::string portName = getInterface()->getIndexedPortName(index.row());
 
-            return initiative;
-        }
-        else if (index.column() == TransactionalPortColumns::KIND)
+    if (index.column() == TransactionalPortColumns::WIDTH)
+    {
+        return QString::fromStdString(getInterface()->getBusWidthValue(portName));
+    }
+    else if (index.column() == TransactionalPortColumns::INITIATIVE)
+    {
+        QString initiative = QString::fromStdString(getInterface()->getInitiative(portName));
+        if (initiative.compare(TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
         {
-            return portTransactional->getKind();
+            initiative = TransactionalTypes::INITIATIVE_REQUIRES_PROVIDES;
         }
-        else if (index.column() == TransactionalPortColumns::PROTOCOL)
-        {
-            if (portTransactional->getProtocol())
-            {
-                return portTransactional->getProtocol()->getProtocolType();
-            }
-            else
-            {
-                return QVariant();
-            }
-        }
-        else if (index.column() == TransactionalPortColumns::MAX_CONNECTIONS)
-        {
-            return portTransactional->getMaxConnections();
-        }
-        else if (index.column() == TransactionalPortColumns::MIN_CONNECTIONS)
-        {
-            return portTransactional->getMinConnections();
-        }
+
+        return initiative;
+    }
+    else if (index.column() == TransactionalPortColumns::KIND)
+    {
+        return QString::fromStdString(getInterface()->getKind(portName));
+    }
+    else if (index.column() == TransactionalPortColumns::PROTOCOL)
+    {
+        return QString::fromStdString(getInterface()->getProtocolType(portName));
+    }
+    else if (index.column() == TransactionalPortColumns::MAX_CONNECTIONS)
+    {
+        return QString::fromStdString(getInterface()->getMaxConnectionsValue(portName));
+    }
+    else if (index.column() == TransactionalPortColumns::MIN_CONNECTIONS)
+    {
+        return QString::fromStdString(getInterface()->getMinConnectionsValue(portName));
     }
     
     return PortsModel::valueForIndex(index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalPortsModel::formattedExpressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant TransactionalPortsModel::formattedExpressionForIndex(QModelIndex const& index) const
+{
+    std::string portName = getInterface()->getIndexedPortName(index.row());
+
+    if (index.column() == TransactionalPortColumns::WIDTH)
+    {
+        return QString::fromStdString(getInterface()->getBusWidthFormattedExpression(portName));
+    }
+    else if (index.column() == TransactionalPortColumns::MAX_CONNECTIONS)
+    {
+        return QString::fromStdString(getInterface()->getMaxConnectionsFormattedExpression(portName));
+    }
+    else if (index.column() == TransactionalPortColumns::MIN_CONNECTIONS)
+    {
+        return QString::fromStdString(getInterface()->getMinConnectionsFormattedExpression(portName));
+    }
+    else
+    {
+        return PortsModel::formattedExpressionForIndex(index);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalPortsModel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant TransactionalPortsModel::expressionForIndex(QModelIndex const& index) const
+{
+    string portName = getInterface()->getIndexedPortName(index.row());
+
+    if (index.column() == TransactionalPortColumns::WIDTH)
+    {
+        return QString::fromStdString(getInterface()->getBusWidthExpression(portName));
+    }
+    else if (index.column() == TransactionalPortColumns::MAX_CONNECTIONS)
+    {
+        return QString::fromStdString(getInterface()->getMaxConnectionsExpression(portName));
+    }
+    else if (index.column() == TransactionalPortColumns::MIN_CONNECTIONS)
+    {
+        return QString::fromStdString(getInterface()->getMinConnectionsExpression(portName));
+    }
+    else
+    {
+        return PortsModel::expressionForIndex(index);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -227,23 +266,13 @@ bool TransactionalPortsModel::isValidExpressionColumn(QModelIndex const& index) 
 //-----------------------------------------------------------------------------
 QVariant TransactionalPortsModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Port> port = portOnRow(index.row());
-    QSharedPointer<Transactional> portTransactional = port->getTransactional();
-    if (index.column() == TransactionalPortColumns::WIDTH)
+    if (isValidExpressionColumn(index))
     {
-        return portTransactional->getBusWidth();
-    }
-    else if (index.column() == TransactionalPortColumns::MAX_CONNECTIONS)
-    {
-        return portTransactional->getMaxConnections();
-    }
-    else if (index.column() == TransactionalPortColumns::MIN_CONNECTIONS)
-    {
-        return portTransactional->getMinConnections();
+        return expressionForIndex(index);
     }
     else
     {
-        return PortsModel::expressionOrValueForIndex(index);
+        return valueForIndex(index);
     }
 }
 
@@ -252,58 +281,36 @@ QVariant TransactionalPortsModel::expressionOrValueForIndex(QModelIndex const& i
 //-----------------------------------------------------------------------------
 bool TransactionalPortsModel::validateIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Port> port = portOnRow(index.row());
-    QSharedPointer<Transactional> transactional = port->getTransactional();
-    if (!transactional)
-    {
-        return false;
-    }
+    std::string portName = getInterface()->getIndexedPortName(index.row());
 
     if (index.column() == TransactionalPortColumns::WIDTH)
     {
-        return getValidator()->hasValidTransactionalWidth(transactional);
+        return getInterface()->portHasValidBusWidth(portName);
     }
     else if (index.column() == TransactionalPortColumns::INITIATIVE)
 	{
-        return getValidator()->hasValidTransactionalInitiative(transactional);
+        return getInterface()->portHasValidInitiative(portName);
     }
     else if (index.column() == TransactionalPortColumns::KIND)
     {
-        return getValidator()->hasValidTransactionalKind(transactional);
+        return getInterface()->portHasValidKind(portName);
     }
     else if (index.column() == TransactionalPortColumns::PROTOCOL)
     {
-        return getValidator()->hasValidTransactionalProtocol(transactional);
+        return getInterface()->portHasValidProtocol(portName);
     }
     else if (index.column() == TransactionalPortColumns::MAX_CONNECTIONS)
     {
-        return getValidator()->hasValidTransactionalMaxConnections(transactional);
+        return getInterface()->portHasValidMaxConnections(portName);
     }
     else if (index.column() == TransactionalPortColumns::MIN_CONNECTIONS)
     {
-        return getValidator()->hasValidTransactionalMinConnections(transactional);
+        return getInterface()->portHasValidMinConnections(portName);
     }
     else
     {
         return PortsModel::validateIndex(index);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: TransactionalPortsModel::getAllReferencesToIdInItemOnRow()
-//-----------------------------------------------------------------------------
-int TransactionalPortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
-{
-    QSharedPointer<Port> port = portOnRow(row);
-    QSharedPointer<Transactional> transactional = port->getTransactional();
-
-    int refrencesInWidth = transactional->getBusWidth().count(valueID);
-    int referencesInMaxConnections = transactional->getMaxConnections().count(valueID);
-    int referencesInMinConnections = transactional->getMinConnections().count(valueID);
-
-    int  totalReferences = refrencesInWidth + referencesInMaxConnections + referencesInMinConnections +
-        PortsModel::getAllReferencesToIdInItemOnRow(row, valueID);
-    return totalReferences;
 }
 
 //-----------------------------------------------------------------------------
@@ -373,7 +380,7 @@ int TransactionalPortsModel::descriptionColumn() const
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsModel::indexedItemIsDisabled()
 //-----------------------------------------------------------------------------
-bool TransactionalPortsModel::indexedItemIsDisabled(QModelIndex const& index, QSharedPointer<Port>) const
+bool TransactionalPortsModel::indexedItemIsDisabled(QModelIndex const& index) const
 {
     return index.column() == TransactionalPortColumns::ROW_NUMBER ||
         index.column() == TransactionalPortColumns::PROTOCOL;
@@ -409,11 +416,9 @@ QModelIndexList TransactionalPortsModel::getLockedPortIndexes(QModelIndex const&
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsModel::finalizePort()
+// Function: TransactionalPortsModel::addNewPort()
 //-----------------------------------------------------------------------------
-void TransactionalPortsModel::finalizePort(QSharedPointer<Port> port)
+void TransactionalPortsModel::addNewPort()
 {
-    QSharedPointer<Transactional> newTransactional(new Transactional());
-
-    port->setTransactional(newTransactional);
+    getInterface()->addTransactionalPort();
 }

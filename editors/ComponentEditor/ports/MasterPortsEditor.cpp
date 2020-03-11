@@ -31,19 +31,17 @@
 // Function: MasterPortsEditor::MasterPortsEditor()
 //-----------------------------------------------------------------------------
 MasterPortsEditor::MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    PortsEditorConstructor* editorConstructor, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> formatter,
-    QSharedPointer<PortValidator> portValidator, ParameterCompleter* parameterCompleter,
-    QString const& defaultPath, QWidget *parent):
+    QSharedPointer<PortsInterface> portsInterface, PortsEditorConstructor* editorConstructor,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortValidator> portValidator,
+    ParameterCompleter* parameterCompleter, QString const& defaultPath, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(editorConstructor->constructView(defaultPath, this)),
 model_(0),
-proxy_(editorConstructor->constructFilter(this)),
+proxy_(editorConstructor->constructFilter(portsInterface, this)),
 delegate_(editorConstructor->constructDelegate(
     component, parameterCompleter, parameterFinder, portValidator, this))
 {
-    model_ = editorConstructor->constructModel(
-        component, expressionParser, parameterFinder, formatter, portValidator, proxy_, this);
+    model_ = editorConstructor->constructModel(parameterFinder, portsInterface, proxy_, this);
 
     view_->setItemDelegate(delegate_);
 
@@ -145,7 +143,7 @@ void MasterPortsEditor::setAllowImportExport(bool allow)
 //-----------------------------------------------------------------------------
 void MasterPortsEditor::setComponent(QSharedPointer<Component> component)
 {
-    model_->setModelAndLockCurrentPorts(component->getModel());
+    model_->resetModelAndLockCurrentPorts();
     delegate_->setComponent(component);
 }
 
@@ -154,5 +152,6 @@ void MasterPortsEditor::setComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> MasterPortsEditor::getIndexedPort(QModelIndex const& portIndex) const
 {
-    return model_->getPortAtIndex(portIndex);
+//     return model_->getPortAtIndex(portIndex);
+    return QSharedPointer<Port>();
 }

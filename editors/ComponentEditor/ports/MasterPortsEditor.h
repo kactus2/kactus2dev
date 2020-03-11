@@ -30,6 +30,7 @@ class PortValidator;
 class PortsDelegate;
 class PortsFilter;
 class PortsEditorConstructor;
+class PortsInterface;
 
 //-----------------------------------------------------------------------------
 //! Master editor for component ports.
@@ -45,21 +46,18 @@ public:
 	 *
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] handler             The instance that manages the library.
-	 *      @param [in] parameterFinder     The parameter finder.
+     *      @param [in] portsInterface      Interface for accessing the component ports.
      *      @param [in] editorConstructor   Constructor for required modules.
-     *      @param [in] expressionParser    Parser for expressions.
      *      @param [in] parameterFinder     Locates the different parameters of the containing component.
-	 *      @param [in] formatter           The expression formatter.
      *      @param [in] portValidator       Validator used for ports.
      *      @param [in] parameterCompleter  Completer for expressions.
      *      @param [in] defaultPath         The default import / export path.
 	 *      @param [in] parent              The owner of this widget.
 	 */
     MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-        PortsEditorConstructor* editorConstructor, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> formatter,
-        QSharedPointer<PortValidator> portValidator, ParameterCompleter* parameterCompleter,
-        QString const& defaultPath, QWidget *parent = 0);
+        QSharedPointer<PortsInterface> portsInterface, PortsEditorConstructor* editorConstructor,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortValidator> portValidator,
+        ParameterCompleter* parameterCompleter, QString const& defaultPath, QWidget *parent = 0);
 
 	/*!
      *  The destructor.

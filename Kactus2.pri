@@ -64,10 +64,16 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
+    ./common/widgets/tagEditor/TagManager.h \
     ./common/widgets/tagEditor/TagLabel.h \
     ./common/widgets/tagEditor/FlowLayout.h \
     ./common/widgets/tagEditor/TagContainer.h \
     ./common/widgets/tagEditor/TagEditor.h \
+    ./common/widgets/tagEditor/TagCompleterModel.h \
+    ./common/widgets/tagEditor/TagEditorContainer.h \
+    ./common/widgets/tagEditor/TagDisplay.h \
+    ./common/widgets/tagEditor/TagSelectorContainer.h \
+    ./common/widgets/tagEditor/TagSelector.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -216,9 +222,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Plugins/PluginSystem/ImportPlugin/ImportColors.h \
     ./Plugins/PluginSystem/ImportPlugin/Highlighter.h \
     ./Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
-    ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
+    ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./library/DocumentFileAccess.h \
@@ -622,8 +628,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/CatalogEditor/CatalogFileDelegate.h \
     ./editors/CatalogEditor/CatalogFileFilter.h \
     ./editors/CatalogEditor/CatalogFileView.h \
-    ./editors/BusDefinitionEditor/AbstractionTransactionalPortColumns.h \
+    ./editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.h \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.h \
     ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/absdefgroup.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
@@ -633,10 +640,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.h \
     ./editors/BusDefinitionEditor/AbstractionPortsDelegate.h \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsModel.h \
-    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.h \
+    ./editors/BusDefinitionEditor/AbstractionPortsModel.h \
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
+    ./editors/BusDefinitionEditor/AbstractionExtendHandler.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
     ./editors/common/BusInterfaceUtilities.h \
     ./editors/common/ColumnTypes.h \
@@ -713,6 +720,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorListFilter.h \
     ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
+    ./editors/common/FileHandler/FileHandler.h \
     ./editors/HWDesign/AdHocEnabled.h \
     ./editors/HWDesign/HWAddCommands.h \
     ./editors/HWDesign/HWMoveCommands.h \
@@ -839,12 +847,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./common/widgets/tagEditor/TagManager.h \
-    ./common/widgets/tagEditor/TagCompleterModel.h \
-    ./common/widgets/tagEditor/TagEditorContainer.h \
-    ./common/widgets/tagEditor/TagSelectorContainer.h \
-    ./common/widgets/tagEditor/TagDisplay.h \
-    ./common/widgets/tagEditor/TagSelector.h
+    ./editors/ComponentEditor/ports/PortsInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -908,9 +911,15 @@ SOURCES += ./VersionHelper.cpp \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.cpp \
     ./common/widgets/colorBox/ColorBox.cpp \
     ./common/widgets/tagEditor/FlowLayout.cpp \
+    ./common/widgets/tagEditor/TagCompleterModel.cpp \
     ./common/widgets/tagEditor/TagContainer.cpp \
+    ./common/widgets/tagEditor/TagDisplay.cpp \
     ./common/widgets/tagEditor/TagEditor.cpp \
+    ./common/widgets/tagEditor/TagEditorContainer.cpp \
     ./common/widgets/tagEditor/TagLabel.cpp \
+    ./common/widgets/tagEditor/TagManager.cpp \
+    ./common/widgets/tagEditor/TagSelector.cpp \
+    ./common/widgets/tagEditor/TagSelectorContainer.cpp \
     ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
@@ -1368,15 +1377,17 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./editors/BusDefinitionEditor/absdefgroup.cpp \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
+    ./editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.cpp \
+    ./editors/BusDefinitionEditor/AbstractionExtendHandler.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsDelegate.cpp \
+    ./editors/BusDefinitionEditor/AbstractionPortsModel.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsView.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.cpp \
-    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.cpp \
     ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.cpp \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsModel.cpp \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.cpp \
@@ -1451,6 +1462,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/TableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/TableItemMatcher.cpp \
+    ./editors/common/FileHandler/FileHandler.cpp \
     ./editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ./editors/HWDesign/ActivePortItem.cpp \
     ./editors/HWDesign/AdHocConnectionItem.cpp \
@@ -1571,10 +1583,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./common/widgets/tagEditor/TagManager.cpp \
-    ./common/widgets/tagEditor/TagCompleterModel.cpp \
-    ./common/widgets/tagEditor/TagEditorContainer.cpp \
-    ./common/widgets/tagEditor/TagSelectorContainer.cpp \
-    ./common/widgets/tagEditor/TagDisplay.cpp \
-    ./common/widgets/tagEditor/TagSelector.cpp
+    ./editors/ComponentEditor/ports/PortsInterface.cpp
 RESOURCES += kactus.qrc

@@ -18,14 +18,10 @@
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QSortFilterProxyModel>
 
-class Model;
-class Port;
-class PortValidator;
+class PortsInterface;
 
 //-----------------------------------------------------------------------------
 //! Table model that can be used to display ports to be edited.
@@ -36,26 +32,16 @@ class PortsModel : public ReferencingTableModel, public ParameterizableTable
 
 public:
 
-    //! Role for locating an indexed port.
-    enum portRoles
-    {
-        getPortRole = Qt::UserRole
-    };
-
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] model                   Pointer to the model being edited.
-     *      @param [in] expressionParser        Pointer to the expression parser.
-     *      @param [in] parameterFinder         Pointer to the parameter finder.
-     *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] portValidator           Validator used for ports.
-     *      @param [in] filter                  Filter used for ports.
-	 *      @param [in] parent                  Pointer to the owner of this model.
+     *      @param [in] parameterFinder     Pointer to the parameter finder.
+     *      @param [in] portsInterface      Interface for accessing the component ports.
+     *      @param [in] filter              Filter used for ports.
+	 *      @param [in] parent              Pointer to the owner of this model.
      */
-    PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<PortValidator> portValidator, QSortFilterProxyModel* filter, QObject *parent);
+    PortsModel(QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortsInterface> portInterface,
+        QSortFilterProxyModel* filter, QObject *parent);
 
 	/*!
      *  The destructor.
@@ -122,34 +108,29 @@ public:
 	/*!
      *  Get the index of the identified port.
 	 *
-	 *      @param [in] portName    Identifies the port.
+	 *      @param [in] portName    Name of the identified port.
 	 *
 	 *      @return QModelIndex of first column of the specified port. Invalid index if named port is not found.
      */
-	virtual QModelIndex index(QSharedPointer<Port> port) const;
-   
+    virtual QModelIndex index(QString const& portName) const;
+
     /*!
      *  Sets the edited model and locks all current ports.
-     *
-     *      @param [in] model   The model whose ports to edit.
      */
-    void setModelAndLockCurrentPorts(QSharedPointer<Model> model);
-
-    /*!
-     *  Get the port at the selected index.
-     *
-     *      @param [in] index   The index of the selected port.
-     *
-     *      @return Port at the selected index.
-     */
-    QSharedPointer<Port> getPortAtIndex(QModelIndex const& index) const;
-
+    void resetModelAndLockCurrentPorts();
 
     //! No copying. No assignment.
     PortsModel(const PortsModel& other) = delete;
     PortsModel& operator=(const PortsModel& other) = delete;
 
 protected:
+
+    /*!
+     *  Get the used port interface.
+     *
+     *      @return The port interface.
+     */
+    QSharedPointer<PortsInterface> getInterface() const;
 
     /*!
      *  Check if the column index is valid for containing expressions.
@@ -168,6 +149,24 @@ protected:
      *      return      Expression in the given index, or plain value.
      */
     virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the formatted value of an expression in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The formatted value of an expression in the selected index.
+     */
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const = 0;
+
+    /*!
+     *  Get the expression of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The expression of the selected index.
+     */
+    virtual QVariant expressionForIndex(QModelIndex const& index) const;
 
     /*!
      *  Gets the value for the given index.
@@ -198,15 +197,6 @@ protected:
     virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const&  valueID) const;
 
     /*!
-     *  Gets the port in a given row.
-     *
-     *      @param [in] row   The row to search for.
-     *
-     *      @return The port on the given row.
-     */
-    virtual QSharedPointer<Port> portOnRow(int row) const;
-
-    /*!
      *   Checks if given index is locked.
      *
      *      @param [in] index   The index to check.
@@ -214,13 +204,6 @@ protected:
      *      @return True if the index is locked, otherwise false.
      */
     bool isLocked(QModelIndex const& index) const;
-
-    /*!
-     *  Get the active port validator.
-     *
-     *      @return The port validator.
-     */
-    QSharedPointer<PortValidator> getValidator() const;
 
 public slots:
 
@@ -250,13 +233,6 @@ public slots:
 	 *      @param [in] index   Identifies the item that should be removed.
      */
 	void onRemoveItem(const QModelIndex& index);
-
-	/*!
-     *  Add a new port to the model.
-	 *
-	 *      @param [in] port    The port to be added to the model.
-     */
-	virtual void addPort(QSharedPointer<Port> port);
 
 signals:
 
@@ -354,11 +330,10 @@ private:
      *  Check if the selected item is disabled.
      *
      *      @param [in] index           Index of the selected item.
-     *      @param [in] indexedPort     The indexed port.
      *
      *      @return True, if the indexed item is disabled, false otherwise.
      */
-    virtual bool indexedItemIsDisabled(QModelIndex const& index, QSharedPointer<Port> indexedPort) const = 0;
+    virtual bool indexedItemIsDisabled(QModelIndex const& index) const = 0;
 
     /*!
      *  Check if the selected item is mandatory.
@@ -388,25 +363,25 @@ private:
     virtual QModelIndexList getLockedPortIndexes(QModelIndex const& portIndex) const = 0;
 
     /*!
-     *  Add the wire or transactional to a new port.
+     *  Add a new wire or transactional port.
      *
      *      @param [in] port    The selected port.
      */
-    virtual void finalizePort(QSharedPointer<Port> port) = 0;
+    virtual void addNewPort() = 0;
 
     /*!
      *   Locks the name, direction  and type columns of a port.
      *
-     *      @param [in] modelParam  The parameter model to lock.
+     *      @param [in] portName    Name of the selected port.
      */
-    void lockPort(QSharedPointer<Port> port);
+    void lockPort(QString const& portName);
 
     /*!
      *   Unlocks the name, direction and type columns of a port.
      *
-     *      @param [in] modelParam  The parameter model to lock.
+     *      @param [in] portName    Name of the selected port.
      */
-    void unlockPort(QSharedPointer<Port> port);
+    void unlockPort(QString const& portName);
 
     /*!
      *   Locks the given index disabling editing.
@@ -431,33 +406,15 @@ private:
      */
     bool rowIsLocked(int row);
 
-    /*!
-     *  Get the displayed names of the port types.
-     *
-     *      @param [in] port    The selected port.
-     *
-     *      @return Combination of the types contained within the selected port.
-     */
-    QString getTypeName(QSharedPointer<Port> port) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Pointer to the model being edited.
-    QSharedPointer<Model> model_;
+    //! Interface for accessing the component ports.
+    QSharedPointer<PortsInterface> portsInterface_;
 
     //! The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;
-
-    //! The parameter finder.
-    QSharedPointer<ParameterFinder> parameterFinder_;
-
-    //! Expression formatter, formats the referencing expressions to show parameter names.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
-
-    //! The validator used for ports.
-    QSharedPointer<PortValidator> portValidator_;
 
     //! The filter for ports.
     QSortFilterProxyModel* filter_;

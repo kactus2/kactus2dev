@@ -46,29 +46,27 @@ public:
     /*!
      *  Construct a ports model.
      *
-     *      @param [in] component               The component being edited.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] parameterFinder         Locates the different parameters of the containing component.
-     *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] portValidator           Validator used for ports.
-     *      @param [in] filter                  Filter for ports model.
-     *      @param [in] parent                  The owner of the constructed model.
+     *      @param [in] parameterFinder     Locates the different parameters of the containing component.
+     *      @param [in] portsInterface      Interface for accessing the component ports.
+     *      @param [in] filter              Filter for ports model.
+     *      @param [in] parent              The owner of the constructed model.
      *
      *      @return The created ports model.
      */
-    virtual PortsModel* constructModel(QSharedPointer<Component> component,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<PortValidator> portValidator,
-        QSortFilterProxyModel* filter, QObject* parent = 0) const;
+    virtual PortsModel* constructModel(QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<PortsInterface> portsInterface, QSortFilterProxyModel* filter, QObject* parent = 0)
+        const override final;
 
     /*!
      *  Construct a filter.
      *
-     *      @param [in] parent  Owner of the filter.
+     *      @param [in] portsInterface  Interface for accessing the component ports.
+     *      @param [in] parent          Owner of the filter.
      *
      *      @return The created ports filter.
      */
-    virtual PortsFilter* constructFilter(QObject* parent = 0) const;
+    virtual PortsFilter* constructFilter(QSharedPointer<PortsInterface> portsInterface, QObject* parent = 0) const
+        override final;
 
     /*!
      *  Construct a view.
@@ -78,7 +76,7 @@ public:
      *
      *      @return The created view.
      */
-    virtual PortsView* constructView(QString const& defaultPath, QWidget* parent) const;
+    virtual PortsView* constructView(QString const& defaultPath, QWidget* parent) const override final;
 
     /*!
      *  Construct a delegate.
@@ -93,7 +91,7 @@ public:
      */
     virtual PortsDelegate* constructDelegate(QSharedPointer<Component> component,
         ParameterCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const;
+        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const override final;
 
     //! No copying.
     TransactionalPortsEditorConstructor(const TransactionalPortsEditorConstructor& other) = delete;

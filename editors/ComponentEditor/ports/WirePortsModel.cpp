@@ -11,19 +11,17 @@
 
 #include "WirePortsModel.h"
 
+#include <editors/ComponentEditor/ports/PortsInterface.h>
 #include <editors/ComponentEditor/ports/WirePortColumns.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
-#include <IPXACTmodels/Component/Port.h>
-#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: WirePortsModel::WirePortsModel()
 //-----------------------------------------------------------------------------
-WirePortsModel::WirePortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<PortValidator> portValidator, QSortFilterProxyModel* filter, QObject *parent):
-PortsModel(model, expressionParser, parameterFinder, expressionFormatter, portValidator, filter, parent)
+WirePortsModel::WirePortsModel(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<PortsInterface> portsInterface, QSortFilterProxyModel* filter, QObject *parent):
+PortsModel(parameterFinder, portsInterface, filter, parent)
 {
 
 }
@@ -90,7 +88,7 @@ bool WirePortsModel::setData(QModelIndex const& index, QVariant const& value, in
 		return false;
     }
 
-    QSharedPointer<Port> port = portOnRow(index.row());
+    std::string portName = getInterface()->getIndexedPortName(index.row());
 
 	if (role == Qt::EditRole)
     {
@@ -101,65 +99,46 @@ bool WirePortsModel::setData(QModelIndex const& index, QVariant const& value, in
 
         else if (index.column() == WirePortColumns::DIRECTION)
         {
-            DirectionTypes::Direction direction = DirectionTypes::str2Direction(value.toString(),
-                DirectionTypes::DIRECTION_INVALID);
-
-            port->setDirection(direction);
+            getInterface()->setDirection(portName, value.toString().toStdString());
         }
         else if (index.column() == WirePortColumns::WIDTH)
         {
-            if (hasExpressionInLeftOrRightBound(port))
+            bool success = getInterface()->setWidth(portName, value.toString().toStdString());
+            if (success == false)
             {
                 return false;
             }
-
-            int size = value.toInt();
-            port->setPortSize(size);
-
-            QModelIndex widhtIndex = QAbstractTableModel::index(index.row(), WirePortColumns::WIDTH);
-            emit dataChanged(widhtIndex, widhtIndex);
-
-            setTypeNameAndDefinitionOnRow(port, index.row());
-
-            emit dataChanged(index, index);
-            return true;
         }
         else if (index.column() == WirePortColumns::LEFT_BOUND)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(port->getLeftBound());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(getInterface()->getLeftBoundExpression(portName)));
             }
 
-            port->setLeftBound(value.toString());
+            getInterface()->setLeftBound(portName, value.toString().toStdString());
 
-            setTypeNameAndDefinitionOnRow(port, index.row());
-
-            emit dataChanged(index, index);
-            return true;
         }
         else if (index.column() == WirePortColumns::RIGHT_BOUND)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(port->getRightBound());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(getInterface()->getRightBoundExpression(portName)));
             }
 
-            port->setRightBound(value.toString());
-
-            setTypeNameAndDefinitionOnRow(port, index.row());
-
-            emit dataChanged(index, index);
-            return true;
+            getInterface()->setRightBound(portName, value.toString().toStdString());
         }
         else if (index.column() == WirePortColumns::DEFAULT_VALUE)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(port->getDefaultValue());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(getInterface()->getDefaultValueExpression(portName)));
             }
 
-            port->setDefaultValue(value.toString());
+            getInterface()->setDefaultValue(portName, value.toString().toStdString());
         }
         else
         {
@@ -181,49 +160,26 @@ bool WirePortsModel::setData(QModelIndex const& index, QVariant const& value, in
 //-----------------------------------------------------------------------------
 QVariant WirePortsModel::valueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Port> port = portOnRow(index.row());
-    QSharedPointer<Wire> portWire = port->getWire();
-
-    if (portWire)
+    string portName = getInterface()->getIndexedPortName(index.row());
+    if (index.column() == WirePortColumns::DIRECTION)
     {
-        if (index.column() == WirePortColumns::DIRECTION)
-        {
-            return DirectionTypes::direction2Str(port->getDirection());
-        }
-        else if (index.column() == WirePortColumns::WIDTH)
-        {
-            int calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toInt();
-            int calculatedRightBound = parseExpressionToDecimal(port->getRightBound()).toInt();
-
-            int portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
-            return portWidth;
-        }
-        else if (index.column() == WirePortColumns::LEFT_BOUND)
-        {
-            QString leftBound = port->getLeftBound();
-
-            if (leftBound == "n/a")
-            {
-                port->setLeftBound(0);
-            }
-
-            return leftBound;
-        }
-        else if (index.column() == WirePortColumns::RIGHT_BOUND)
-        {
-            QString rightBound = port->getRightBound();
-
-            if (rightBound == "n/a")
-            {
-                port->setRightBound(0);
-            }
-
-            return rightBound;
-        }
-        else if (index.column() == WirePortColumns::DEFAULT_VALUE)
-        {
-            return port->getDefaultValue();
-        }
+        return QString::fromStdString(getInterface()->getDirection(portName));
+    }
+    else if (index.column() == WirePortColumns::WIDTH)
+    {
+        return QString::fromStdString(getInterface()->getWidth(portName));
+    }
+    else if (index.column() == WirePortColumns::LEFT_BOUND)
+    {
+        return QString::fromStdString(getInterface()->getLeftBoundValue(portName));
+    }
+    else if (index.column() == WirePortColumns::RIGHT_BOUND)
+    {
+        return QString::fromStdString(getInterface()->getRightBoundValue(portName));
+    }
+    else if (index.column() == WirePortColumns::DEFAULT_VALUE)
+    {
+        return QString::fromStdString(getInterface()->getDefaultValue(portName));
     }
     
     return PortsModel::valueForIndex(index);
@@ -240,27 +196,67 @@ bool WirePortsModel::isValidExpressionColumn(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: WirePortsModel::formattedExpressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant WirePortsModel::formattedExpressionForIndex(QModelIndex const& index) const
+{
+    string portName = getInterface()->getIndexedPortName(index.row());
+
+    if (index.column() == WirePortColumns::LEFT_BOUND)
+    {
+        return QString::fromStdString(getInterface()->getLeftBoundFormattedExpression(portName));
+    }
+    else if (index.column() == WirePortColumns::RIGHT_BOUND)
+    {
+        return QString::fromStdString(getInterface()->getRightBoundFormattedExpression(portName));
+    }
+    else if (index.column() == WirePortColumns::DEFAULT_VALUE)
+    {
+        return QString::fromStdString(getInterface()->getDefaultValueFormattedExpression(portName));
+    }
+    else
+    {
+        return PortsModel::formattedExpressionForIndex(index);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: WirePortsModel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant WirePortsModel::expressionForIndex(QModelIndex const& index) const
+{
+    std::string portName = getInterface()->getIndexedPortName(index.row());
+    
+    if (index.column() == WirePortColumns::LEFT_BOUND)
+    {
+        return QString::fromStdString(getInterface()->getLeftBoundExpression(portName));
+    }
+    else if (index.column() == WirePortColumns::RIGHT_BOUND)
+    {
+        return QString::fromStdString(getInterface()->getRightBoundExpression(portName));
+    }
+    else if (index.column() == WirePortColumns::DEFAULT_VALUE)
+    {
+        return QString::fromStdString(getInterface()->getDefaultValueExpression(portName));
+    }
+    else
+    {
+        return PortsModel::expressionForIndex(index);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: WirePortsModel::expressionOrValueForIndex()
 //-----------------------------------------------------------------------------
 QVariant WirePortsModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Port> port = portOnRow(index.row());
-
-    if (index.column() == WirePortColumns::LEFT_BOUND)
+    if (isValidExpressionColumn(index))
     {
-        return port->getLeftBound();
-    }
-    else if (index.column() == WirePortColumns::RIGHT_BOUND)
-    {
-        return port->getRightBound();
-    }
-    else if (index.column() == WirePortColumns::DEFAULT_VALUE)
-    {
-        return port->getDefaultValue();
+        return expressionForIndex(index);
     }
     else
     {
-        return PortsModel::expressionOrValueForIndex(index);
+        return valueForIndex(index);
     }
 }
 
@@ -269,101 +265,24 @@ QVariant WirePortsModel::expressionOrValueForIndex(QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 bool WirePortsModel::validateIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Port> port = portOnRow(index.row());
+    std::string portName = getInterface()->getIndexedPortName(index.row());
 
     if (index.column() == WirePortColumns::LEFT_BOUND)
     {
-		if (port->getLeftBound().isEmpty() && port->getRightBound().isEmpty())
-		{
-			return true;
-		}
-
-        return getValidator()->portBoundIsValid(port->getLeftBound());
+        return getInterface()->portHasValidLeftBound(portName);
     }
     else if (index.column() == WirePortColumns::RIGHT_BOUND)
 	{
-		if (port->getLeftBound().isEmpty() && port->getRightBound().isEmpty())
-		{
-			return true;
-		}
-
-        return getValidator()->portBoundIsValid(port->getRightBound());
+        return getInterface()->portHasValidRightBound(portName);
     }
     else if (index.column() == WirePortColumns::DEFAULT_VALUE)
     {
-        return getValidator()->hasValidDefaultValue(port);
+        return getInterface()->portHasValidDefaultValue(portName);
     }
     else
     {
         return PortsModel::validateIndex(index);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: WirePortsModel::getAllReferencesToIdInItemOnRow()
-//-----------------------------------------------------------------------------
-int WirePortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
-{
-    QSharedPointer<Port> port = portOnRow(row);
-
-    int referencesInLeftBound = port->getLeftBound().count(valueID);
-    int referencesInRightbount = port->getRightBound().count(valueID);
-    int referencesInDefaultValue = port->getDefaultValue().count(valueID);
-
-    int  totalReferences = referencesInLeftBound + referencesInRightbount + referencesInDefaultValue +
-        PortsModel::getAllReferencesToIdInItemOnRow(row, valueID);
-    return totalReferences;
-}
-
-//-----------------------------------------------------------------------------
-// Function: WirePortsModel::updatePortType()
-//-----------------------------------------------------------------------------
-void WirePortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int row)
-{
-//     QModelIndex index = QAbstractTableModel::index(row, WirePortColumns::TYPE_NAME);
-    QModelIndex index = QAbstractTableModel::index(row, typeColumn());
-
-    int calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toInt();
-    int calculatedRightBound = parseExpressionToDecimal(port->getRightBound()).toInt();
-
-    int portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
-    // if port is vectored and previous type was std_logic
-    if (portWidth > 1 && port->getTypeName() == QString("std_logic")) 
-    {
-        // change the type to vectored
-        port->setTypeName("std_logic_vector");
-        port->setTypeDefinition("std_logic_vector", "IEEE.std_logic_1164.all");
-    }
-    // if port is not vectored but previous type was std_logic_vector
-    else if (portWidth < 2 && port->getTypeName() == QString("std_logic_vector")) 
-    {
-        port->setTypeName("std_logic");
-        port->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
-    }
-
-    emit dataChanged(index, index);
-}
-
-//-----------------------------------------------------------------------------
-// Function: WirePortsModel::hasExpressionInLeftOrRightBound()
-//-----------------------------------------------------------------------------
-bool WirePortsModel::hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) const
-{
-    QString left = port->getLeftBound();
-    QString right = port->getRightBound();
-
-	if (left.isEmpty() && right.isEmpty())
-	{
-		return false;
-	}
-
-    bool leftNumber = false;
-    bool rightNumber = false;
-
-    left.toInt(&leftNumber);
-    right.toInt(&rightNumber);
-
-    return leftNumber || rightNumber;
 }
 
 //-----------------------------------------------------------------------------
@@ -433,12 +352,15 @@ int WirePortsModel::descriptionColumn() const
 //-----------------------------------------------------------------------------
 // Function: WirePortsModel::indexedItemIsDisabled()
 //-----------------------------------------------------------------------------
-bool WirePortsModel::indexedItemIsDisabled(QModelIndex const& index, QSharedPointer<Port> indexedPort) const
+bool WirePortsModel::indexedItemIsDisabled(QModelIndex const& index) const
 {
+    std::string portName = getInterface()->getIndexedPortName(index.row());
+
     return (index.column() == WirePortColumns::ROW_NUMBER ||
-        (index.column() == WirePortColumns::DEFAULT_VALUE && (indexedPort->getDirection() != DirectionTypes::IN &&
-            indexedPort->getDirection() != DirectionTypes::INOUT)) ||
-        (index.column() == WirePortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row()))));
+        (index.column() == WirePortColumns::DEFAULT_VALUE &&
+        (QString::fromStdString(getInterface()->getDirection(portName)) != DirectionTypes::IN &&
+        QString::fromStdString(getInterface()->getDirection(portName)) != DirectionTypes::INOUT)) ||
+        (index.column() == WirePortColumns::WIDTH && getInterface()->hasExpressionInLeftOrRightBound(portName)));
 }
 
 //-----------------------------------------------------------------------------
@@ -455,7 +377,8 @@ bool WirePortsModel::indexedItemIsMandatory(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool WirePortsModel::indexedItemIsLocked(QModelIndex const& index) const
 {
-    return index.column() == WirePortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row()));
+    return index.column() == WirePortColumns::WIDTH &&
+        getInterface()->hasExpressionInLeftOrRightBound(getInterface()->getIndexedPortName(index.row()));
 }
 
 //-----------------------------------------------------------------------------
@@ -477,11 +400,9 @@ QModelIndexList WirePortsModel::getLockedPortIndexes(QModelIndex const& portInde
 }
 
 //-----------------------------------------------------------------------------
-// Function: WirePortsModel::finalizePort()
+// Function: WirePortsModel::addNewPort()
 //-----------------------------------------------------------------------------
-void WirePortsModel::finalizePort(QSharedPointer<Port> port)
+void WirePortsModel::addNewPort()
 {
-    QSharedPointer<Wire> newWire(new Wire());
-    newWire->setDirection(DirectionTypes::IN);
-    port->setWire(newWire);
+    getInterface()->addWirePort();
 }

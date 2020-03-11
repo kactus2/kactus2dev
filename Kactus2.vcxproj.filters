@@ -4852,6 +4852,9 @@
     <ClCompile Include="GeneratedFiles\moc_ConsoleEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortsInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6644,6 +6647,9 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\PythonConsole\ConsoleEditor.h">
       <Filter>Header Files\mainwindow\PythonConsole</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\ports\PortsInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
