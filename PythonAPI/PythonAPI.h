@@ -22,8 +22,11 @@
 class LibraryInterface;
 class MessageMediator;
 class Component;
-
-class SimplePort;
+class PortsInterface;
+class ComponentParameterFinder;
+class ExpressionParser;
+class PortValidator;
+class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data through python.
@@ -99,24 +102,11 @@ public:
     void saveComponent();
 
     /*!
-     *  List the ports in the active component.
-     */
-    void listComponentPorts();
-
-    /*!
-     *  Set a new name for the selected port.
+     *  Get the interface for accessing the component ports.
      *
-     *      @param [in] currentPortName     Name of the selected port.
-     *      @param [in] newPortName         New name for the port.
+     *      @return Interface for accessing the component ports.
      */
-    void setPortName(QString const& currentPortName, QString const& newPortName);
-
-    /*!
-     *  Create simple ports from the active component.
-     *
-     *      @return Simple ports created from the ports of the active component.
-     */
-    std::vector<SimplePort*> createSimplePortsForComponent();
+    PortsInterface* getPortsInterface() const;
 
 private:
 
@@ -128,4 +118,19 @@ private:
 
     //! Currently active component.
     QSharedPointer<Component> activeComponent_;
+
+    //! Interface for accessing the component ports.
+    PortsInterface* portsInterface_;
+
+    //! Component parameter finder.
+    QSharedPointer<ComponentParameterFinder> parameterFinder_;
+
+    //! Parser for expressions.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Formatter for expressions.
+    QSharedPointer<ExpressionFormatter>expressionFormatter_;
+
+    //! Validator for ports.
+    QSharedPointer<PortValidator> portValidator_;
 };

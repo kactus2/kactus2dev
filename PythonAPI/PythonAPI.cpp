@@ -13,13 +13,20 @@
 
 #include <library/LibraryHandler.h>
 
+#include <editors/ComponentEditor/ports/PortsInterface.h>
+
+#include <editors/ComponentEditor/common/ParameterCache.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <PythonAPI/messageMediator/PythonMessageMediator.h>
-#include <PythonAPI/simpleModels/SimplePort.h>
 
 #include <VersionHelper.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 #include <QCoreApplication>
 
@@ -29,8 +36,16 @@
 PythonAPI::PythonAPI():
 library_(),
 messager_(new PythonMessageMediator()),
-activeComponent_()
+activeComponent_(),
+portsInterface_(new PortsInterface()),
+parameterFinder_(new ParameterCache(QSharedPointer<Component>())),
+expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
+expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
+portValidator_(new PortValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<View> > >()))
 {
+    portsInterface_->setExpressionParser(expressionParser_);
+    portsInterface_->setExprressionFormatter(expressionFormatter_);
+    portsInterface_->setValidator(portValidator_);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,6 +136,10 @@ bool PythonAPI::openComponent(QString const& componentVLNV)
         QSharedPointer<Component> component = componentDocument.dynamicCast<Component>();
         if (component)
         {
+            parameterFinder_->setComponent(component);
+            portValidator_->componentChange(component->getViews());
+            portsInterface_->setPorts(component);
+
             activeComponent_ = component;
             messager_->showMessage(QString("Component %1 is open").arg(componentVLNV));
             return true;
@@ -180,52 +199,9 @@ void PythonAPI::saveComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::listComponentPorts()
+// Function: PythonAPI::getPortsInterface()
 //-----------------------------------------------------------------------------
-void PythonAPI::listComponentPorts()
+PortsInterface* PythonAPI::getPortsInterface() const
 {
-    for (auto port : activeComponent_->getPortNames())
-    {
-        messager_->showMessage(port);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::setPortName()
-//-----------------------------------------------------------------------------
-void PythonAPI::setPortName(QString const& currentPortName, QString const& newPortName)
-{
-    QSharedPointer<Port> selectedPort = activeComponent_->getPort(currentPortName);
-    if (!selectedPort)
-    {
-        messager_->showError(QString("Could not find port %1").arg(currentPortName));
-        return;
-    }
-
-    selectedPort->setName(newPortName);
-    messager_->showMessage(QString("Changed port %1 name to %2").arg(currentPortName).arg(newPortName));
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::createSimplePortsForComponent()
-//-----------------------------------------------------------------------------
-std::vector<SimplePort*> PythonAPI::createSimplePortsForComponent()
-{
-    std::vector<SimplePort*> pythonPorts;
-
-    for (auto port : *activeComponent_->getPorts())
-    {
-        if (port->getWire())
-        {
-            QString portName = port->name();
-            QString portDescription = port->description();
-            int bitWidth;
-            QString portDirection = DirectionTypes::direction2Str(port->getDirection());
-            QString dataType;
-
-            pythonPorts.push_back(new SimplePort(portName, portDescription, bitWidth, portDirection, dataType));
-        }
-    }
-
-    return pythonPorts;
+    return portsInterface_;
 }

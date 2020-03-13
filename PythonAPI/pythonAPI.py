@@ -175,111 +175,111 @@ class NameGroup(object):
 # Register NameGroup in _pythonAPI:
 _pythonAPI.NameGroup_swigregister(NameGroup)
 
-class portsVector(object):
+class stringVector(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def iterator(self):
-        return _pythonAPI.portsVector_iterator(self)
+        return _pythonAPI.stringVector_iterator(self)
     def __iter__(self):
         return self.iterator()
 
     def __nonzero__(self):
-        return _pythonAPI.portsVector___nonzero__(self)
+        return _pythonAPI.stringVector___nonzero__(self)
 
     def __bool__(self):
-        return _pythonAPI.portsVector___bool__(self)
+        return _pythonAPI.stringVector___bool__(self)
 
     def __len__(self):
-        return _pythonAPI.portsVector___len__(self)
+        return _pythonAPI.stringVector___len__(self)
 
     def __getslice__(self, i, j):
-        return _pythonAPI.portsVector___getslice__(self, i, j)
+        return _pythonAPI.stringVector___getslice__(self, i, j)
 
     def __setslice__(self, *args):
-        return _pythonAPI.portsVector___setslice__(self, *args)
+        return _pythonAPI.stringVector___setslice__(self, *args)
 
     def __delslice__(self, i, j):
-        return _pythonAPI.portsVector___delslice__(self, i, j)
+        return _pythonAPI.stringVector___delslice__(self, i, j)
 
     def __delitem__(self, *args):
-        return _pythonAPI.portsVector___delitem__(self, *args)
+        return _pythonAPI.stringVector___delitem__(self, *args)
 
     def __getitem__(self, *args):
-        return _pythonAPI.portsVector___getitem__(self, *args)
+        return _pythonAPI.stringVector___getitem__(self, *args)
 
     def __setitem__(self, *args):
-        return _pythonAPI.portsVector___setitem__(self, *args)
+        return _pythonAPI.stringVector___setitem__(self, *args)
 
     def pop(self):
-        return _pythonAPI.portsVector_pop(self)
+        return _pythonAPI.stringVector_pop(self)
 
     def append(self, x):
-        return _pythonAPI.portsVector_append(self, x)
+        return _pythonAPI.stringVector_append(self, x)
 
     def empty(self):
-        return _pythonAPI.portsVector_empty(self)
+        return _pythonAPI.stringVector_empty(self)
 
     def size(self):
-        return _pythonAPI.portsVector_size(self)
+        return _pythonAPI.stringVector_size(self)
 
     def swap(self, v):
-        return _pythonAPI.portsVector_swap(self, v)
+        return _pythonAPI.stringVector_swap(self, v)
 
     def begin(self):
-        return _pythonAPI.portsVector_begin(self)
+        return _pythonAPI.stringVector_begin(self)
 
     def end(self):
-        return _pythonAPI.portsVector_end(self)
+        return _pythonAPI.stringVector_end(self)
 
     def rbegin(self):
-        return _pythonAPI.portsVector_rbegin(self)
+        return _pythonAPI.stringVector_rbegin(self)
 
     def rend(self):
-        return _pythonAPI.portsVector_rend(self)
+        return _pythonAPI.stringVector_rend(self)
 
     def clear(self):
-        return _pythonAPI.portsVector_clear(self)
+        return _pythonAPI.stringVector_clear(self)
 
     def get_allocator(self):
-        return _pythonAPI.portsVector_get_allocator(self)
+        return _pythonAPI.stringVector_get_allocator(self)
 
     def pop_back(self):
-        return _pythonAPI.portsVector_pop_back(self)
+        return _pythonAPI.stringVector_pop_back(self)
 
     def erase(self, *args):
-        return _pythonAPI.portsVector_erase(self, *args)
+        return _pythonAPI.stringVector_erase(self, *args)
 
     def __init__(self, *args):
-        _pythonAPI.portsVector_swiginit(self, _pythonAPI.new_portsVector(*args))
+        _pythonAPI.stringVector_swiginit(self, _pythonAPI.new_stringVector(*args))
 
     def push_back(self, x):
-        return _pythonAPI.portsVector_push_back(self, x)
+        return _pythonAPI.stringVector_push_back(self, x)
 
     def front(self):
-        return _pythonAPI.portsVector_front(self)
+        return _pythonAPI.stringVector_front(self)
 
     def back(self):
-        return _pythonAPI.portsVector_back(self)
+        return _pythonAPI.stringVector_back(self)
 
     def assign(self, n, x):
-        return _pythonAPI.portsVector_assign(self, n, x)
+        return _pythonAPI.stringVector_assign(self, n, x)
 
     def resize(self, *args):
-        return _pythonAPI.portsVector_resize(self, *args)
+        return _pythonAPI.stringVector_resize(self, *args)
 
     def insert(self, *args):
-        return _pythonAPI.portsVector_insert(self, *args)
+        return _pythonAPI.stringVector_insert(self, *args)
 
     def reserve(self, n):
-        return _pythonAPI.portsVector_reserve(self, n)
+        return _pythonAPI.stringVector_reserve(self, n)
 
     def capacity(self):
-        return _pythonAPI.portsVector_capacity(self)
-    __swig_destroy__ = _pythonAPI.delete_portsVector
+        return _pythonAPI.stringVector_capacity(self)
+    __swig_destroy__ = _pythonAPI.delete_stringVector
 
-# Register portsVector in _pythonAPI:
-_pythonAPI.portsVector_swigregister(portsVector)
+# Register stringVector in _pythonAPI:
+_pythonAPI.stringVector_swigregister(stringVector)
 
 class PythonAPI(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
@@ -316,54 +316,262 @@ class PythonAPI(object):
     def saveComponent(self):
         return _pythonAPI.PythonAPI_saveComponent(self)
 
-    def listComponentPorts(self):
-        return _pythonAPI.PythonAPI_listComponentPorts(self)
-
-    def setPortName(self, currentPortName, newPortName):
-        return _pythonAPI.PythonAPI_setPortName(self, currentPortName, newPortName)
-
-    def createSimplePortsForComponent(self):
-        return _pythonAPI.PythonAPI_createSimplePortsForComponent(self)
+    def getPortsInterface(self):
+        return _pythonAPI.PythonAPI_getPortsInterface(self)
 
 # Register PythonAPI in _pythonAPI:
 _pythonAPI.PythonAPI_swigregister(PythonAPI)
 
-class SimpleNameGroup(object):
+class PortsInterface(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
-    def __init__(self, name, description):
-        _pythonAPI.SimpleNameGroup_swiginit(self, _pythonAPI.new_SimpleNameGroup(name, description))
-    __swig_destroy__ = _pythonAPI.delete_SimpleNameGroup
+    def __init__(self):
+        _pythonAPI.PortsInterface_swiginit(self, _pythonAPI.new_PortsInterface())
+    __swig_destroy__ = _pythonAPI.delete_PortsInterface
 
-    def getName(self):
-        return _pythonAPI.SimpleNameGroup_getName(self)
+    def setPorts(self, component):
+        return _pythonAPI.PortsInterface_setPorts(self, component)
 
-    def getDescription(self):
-        return _pythonAPI.SimpleNameGroup_getDescription(self)
+    def setValidator(self, validator):
+        return _pythonAPI.PortsInterface_setValidator(self, validator)
 
-# Register SimpleNameGroup in _pythonAPI:
-_pythonAPI.SimpleNameGroup_swigregister(SimpleNameGroup)
+    def setExpressionParser(self, parser):
+        return _pythonAPI.PortsInterface_setExpressionParser(self, parser)
 
-class SimplePort(SimpleNameGroup):
-    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
-    __repr__ = _swig_repr
+    def setExprressionFormatter(self, formatter):
+        return _pythonAPI.PortsInterface_setExprressionFormatter(self, formatter)
 
-    def __init__(self, *args):
-        _pythonAPI.SimplePort_swiginit(self, _pythonAPI.new_SimplePort(*args))
-    __swig_destroy__ = _pythonAPI.delete_SimplePort
+    def getPortIndex(self, portName):
+        return _pythonAPI.PortsInterface_getPortIndex(self, portName)
 
-    def getDataType(self):
-        return _pythonAPI.SimplePort_getDataType(self)
+    def getIndexedPortName(self, portIndex):
+        return _pythonAPI.PortsInterface_getIndexedPortName(self, portIndex)
 
-    def getBitWidth(self):
-        return _pythonAPI.SimplePort_getBitWidth(self)
+    def getPortCount(self):
+        return _pythonAPI.PortsInterface_getPortCount(self)
 
-    def getDirection(self):
-        return _pythonAPI.SimplePort_getDirection(self)
+    def getPortNames(self):
+        return _pythonAPI.PortsInterface_getPortNames(self)
 
-# Register SimplePort in _pythonAPI:
-_pythonAPI.SimplePort_swigregister(SimplePort)
+    def setName(self, currentPortName, newPortName):
+        return _pythonAPI.PortsInterface_setName(self, currentPortName, newPortName)
+
+    def getDescription(self, portName):
+        return _pythonAPI.PortsInterface_getDescription(self, portName)
+
+    def setDescription(self, portName, newDescription):
+        return _pythonAPI.PortsInterface_setDescription(self, portName, newDescription)
+
+    def getTypeName(self, portName):
+        return _pythonAPI.PortsInterface_getTypeName(self, portName)
+
+    def setTypeName(self, portName, newType):
+        return _pythonAPI.PortsInterface_setTypeName(self, portName, newType)
+
+    def getArrayLeftValue(self, portName, baseNumber=0):
+        return _pythonAPI.PortsInterface_getArrayLeftValue(self, portName, baseNumber)
+
+    def getArrayLeftFormattedExpression(self, portName):
+        return _pythonAPI.PortsInterface_getArrayLeftFormattedExpression(self, portName)
+
+    def getArrayLeftExpression(self, portName):
+        return _pythonAPI.PortsInterface_getArrayLeftExpression(self, portName)
+
+    def setArrayLeft(self, portName, newArrayLeft):
+        return _pythonAPI.PortsInterface_setArrayLeft(self, portName, newArrayLeft)
+
+    def getArrayRightValue(self, portName, baseNumber=0):
+        return _pythonAPI.PortsInterface_getArrayRightValue(self, portName, baseNumber)
+
+    def getArrayRightFormattedExpression(self, portName):
+        return _pythonAPI.PortsInterface_getArrayRightFormattedExpression(self, portName)
+
+    def getArrayRightExpression(self, portName):
+        return _pythonAPI.PortsInterface_getArrayRightExpression(self, portName)
+
+    def setArrayRight(self, portName, newArrayRight):
+        return _pythonAPI.PortsInterface_setArrayRight(self, portName, newArrayRight)
+
+    def getTags(self, portName):
+        return _pythonAPI.PortsInterface_getTags(self, portName)
+
+    def setTags(self, portName, tagList):
+        return _pythonAPI.PortsInterface_setTags(self, portName, tagList)
+
+    def isAdHoc(self, portName):
+        return _pythonAPI.PortsInterface_isAdHoc(self, portName)
+
+    def setAdHoc(self, portName, newAdHocVisibility):
+        return _pythonAPI.PortsInterface_setAdHoc(self, portName, newAdHocVisibility)
+
+    def getDirection(self, portName):
+        return _pythonAPI.PortsInterface_getDirection(self, portName)
+
+    def setDirection(self, portName, newDirection):
+        return _pythonAPI.PortsInterface_setDirection(self, portName, newDirection)
+
+    def getLeftBoundValue(self, portName, baseNumber=0):
+        return _pythonAPI.PortsInterface_getLeftBoundValue(self, portName, baseNumber)
+
+    def getLeftBoundFormattedExpression(self, portName):
+        return _pythonAPI.PortsInterface_getLeftBoundFormattedExpression(self, portName)
+
+    def getLeftBoundExpression(self, portName):
+        return _pythonAPI.PortsInterface_getLeftBoundExpression(self, portName)
+
+    def setLeftBound(self, portName, newLeftBound):
+        return _pythonAPI.PortsInterface_setLeftBound(self, portName, newLeftBound)
+
+    def getRightBoundValue(self, portName, baseNumber=0):
+        return _pythonAPI.PortsInterface_getRightBoundValue(self, portName, baseNumber)
+
+    def getRightBoundFormattedExpression(self, portName):
+        return _pythonAPI.PortsInterface_getRightBoundFormattedExpression(self, portName)
+
+    def getRightBoundExpression(self, portName):
+        return _pythonAPI.PortsInterface_getRightBoundExpression(self, portName)
+
+    def setRightBound(self, portName, newRightBound):
+        return _pythonAPI.PortsInterface_setRightBound(self, portName, newRightBound)
+
+    def hasExpressionInLeftOrRightBound(self, portName):
+        return _pythonAPI.PortsInterface_hasExpressionInLeftOrRightBound(self, portName)
+
+    def getWidth(self, portName):
+        return _pythonAPI.PortsInterface_getWidth(self, portName)
+
+    def setWidth(self, portName, newWidth):
+        return _pythonAPI.PortsInterface_setWidth(self, portName, newWidth)
+
+    def getDefaultValue(self, portName, baseNumber=0):
+        return _pythonAPI.PortsInterface_getDefaultValue(self, portName, baseNumber)
+
+    def getDefaultValueFormattedExpression(self, portName):
+        return _pythonAPI.PortsInterface_getDefaultValueFormattedExpression(self, portName)
+
+    def getDefaultValueExpression(self, portName):
+        return _pythonAPI.PortsInterface_getDefaultValueExpression(self, portName)
+
+    def setDefaultValue(self, portName, newDefaultValue):
+        return _pythonAPI.PortsInterface_setDefaultValue(self, portName, newDefaultValue)
+
+    def getBusWidthValue(self, portName, baseNumber=0):
+        return _pythonAPI.PortsInterface_getBusWidthValue(self, portName, baseNumber)
+
+    def getBusWidthFormattedExpression(self, portName):
+        return _pythonAPI.PortsInterface_getBusWidthFormattedExpression(self, portName)
+
+    def getBusWidthExpression(self, portName):
+        return _pythonAPI.PortsInterface_getBusWidthExpression(self, portName)
+
+    def setBusWidth(self, portName, newBusWidth):
+        return _pythonAPI.PortsInterface_setBusWidth(self, portName, newBusWidth)
+
+    def getInitiative(self, portName):
+        return _pythonAPI.PortsInterface_getInitiative(self, portName)
+
+    def setInitiative(self, portName, newInitiative):
+        return _pythonAPI.PortsInterface_setInitiative(self, portName, newInitiative)
+
+    def getKind(self, portName):
+        return _pythonAPI.PortsInterface_getKind(self, portName)
+
+    def setKind(self, portName, newKind):
+        return _pythonAPI.PortsInterface_setKind(self, portName, newKind)
+
+    def getProtocolType(self, portName):
+        return _pythonAPI.PortsInterface_getProtocolType(self, portName)
+
+    def setProtocolType(self, portName, newProtocolType):
+        return _pythonAPI.PortsInterface_setProtocolType(self, portName, newProtocolType)
+
+    def getMaxConnectionsValue(self, portName, baseNumber=0):
+        return _pythonAPI.PortsInterface_getMaxConnectionsValue(self, portName, baseNumber)
+
+    def getMaxConnectionsFormattedExpression(self, portName):
+        return _pythonAPI.PortsInterface_getMaxConnectionsFormattedExpression(self, portName)
+
+    def getMaxConnectionsExpression(self, portName):
+        return _pythonAPI.PortsInterface_getMaxConnectionsExpression(self, portName)
+
+    def setMaxConnections(self, portName, newMaxConnections):
+        return _pythonAPI.PortsInterface_setMaxConnections(self, portName, newMaxConnections)
+
+    def getMinConnectionsValue(self, portName, baseNumber=0):
+        return _pythonAPI.PortsInterface_getMinConnectionsValue(self, portName, baseNumber)
+
+    def getMinConnectionsFormattedExpression(self, portName):
+        return _pythonAPI.PortsInterface_getMinConnectionsFormattedExpression(self, portName)
+
+    def getMinConnectionsExpression(self, portName):
+        return _pythonAPI.PortsInterface_getMinConnectionsExpression(self, portName)
+
+    def setMinConnections(self, portName, newMinConnections):
+        return _pythonAPI.PortsInterface_setMinConnections(self, portName, newMinConnections)
+
+    def getAllReferencesToIdInPort(self, portName, valueID):
+        return _pythonAPI.PortsInterface_getAllReferencesToIdInPort(self, portName, valueID)
+
+    def addWirePort(self, *args):
+        return _pythonAPI.PortsInterface_addWirePort(self, *args)
+
+    def addTransactionalPort(self, *args):
+        return _pythonAPI.PortsInterface_addTransactionalPort(self, *args)
+
+    def removePort(self, portName):
+        return _pythonAPI.PortsInterface_removePort(self, portName)
+
+    def validatePorts(self):
+        return _pythonAPI.PortsInterface_validatePorts(self)
+
+    def portHasValidName(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidName(self, portName)
+
+    def portLeftArrayValueIsValid(self, portName):
+        return _pythonAPI.PortsInterface_portLeftArrayValueIsValid(self, portName)
+
+    def portRightArrayValueIsValid(self, portName):
+        return _pythonAPI.PortsInterface_portRightArrayValueIsValid(self, portName)
+
+    def portHasValidTypes(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidTypes(self, portName)
+
+    def portIsWire(self, portName):
+        return _pythonAPI.PortsInterface_portIsWire(self, portName)
+
+    def portHasValidLeftBound(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidLeftBound(self, portName)
+
+    def portHasValidRightBound(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidRightBound(self, portName)
+
+    def portHasValidDefaultValue(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidDefaultValue(self, portName)
+
+    def portIsTransactional(self, portName):
+        return _pythonAPI.PortsInterface_portIsTransactional(self, portName)
+
+    def portHasValidBusWidth(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidBusWidth(self, portName)
+
+    def portHasValidInitiative(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidInitiative(self, portName)
+
+    def portHasValidKind(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidKind(self, portName)
+
+    def portHasValidProtocol(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidProtocol(self, portName)
+
+    def portHasValidMaxConnections(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidMaxConnections(self, portName)
+
+    def portHasValidMinConnections(self, portName):
+        return _pythonAPI.PortsInterface_portHasValidMinConnections(self, portName)
+
+# Register PortsInterface in _pythonAPI:
+_pythonAPI.PortsInterface_swigregister(PortsInterface)
 
 
 

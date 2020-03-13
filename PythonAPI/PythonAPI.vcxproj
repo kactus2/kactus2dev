@@ -112,10 +112,12 @@
     <ClCompile Include="..\common\widgets\vlnvEditor\VLNVDataTree.cpp" />
     <ClCompile Include="..\common\widgets\vlnvEditor\vlnveditor.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\ports\PortsInterface.cpp" />
     <ClCompile Include="..\library\DocumentFileAccess.cpp" />
     <ClCompile Include="..\library\DocumentValidator.cpp" />
     <ClCompile Include="..\library\HierarchyView\hierarchyitem.cpp" />
@@ -132,12 +134,10 @@
     <ClCompile Include="messageMediator\PythonMessageMediator.cpp" />
     <ClCompile Include="PythonAPI.cpp" />
     <ClCompile Include="PythonAPI_wrap.cxx" />
-    <ClCompile Include="simpleModels\SimpleNameGroup.cpp" />
-    <ClCompile Include="simpleModels\SimplePort.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="simpleModels\SimpleNameGroup.h" />
-    <ClInclude Include="simpleModels\SimplePort.h" />
+    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h" />
+    <ClInclude Include="..\editors\ComponentEditor\ports\PortsInterface.h" />
     <QtMoc Include="..\library\LibraryHandler.h" />
     <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h" />
     <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectExportDialog.h" />

@@ -54,7 +54,8 @@ HEADERS += ./PythonAPI.h \
     ../common/widgets/tagEditor/TagCompleterModel.h \
     ../common/validators/LibraryPathValidator/librarypathvalidator.h \
     ../VersionHelper.h \
-    ./simpleModels/SimpleNameGroup.h
+    ../editors/ComponentEditor/ports/PortsInterface.h \
+    ../editors/ComponentEditor/common/ExpressionFormatter.h
 SOURCES += ./PythonAPI.cpp \
     ./PythonAPI_wrap.cxx \
     ./messageMediator/PythonMessageMediator.cpp \
@@ -102,4 +103,5 @@ SOURCES += ./PythonAPI.cpp \
     ../common/widgets/vlnvEditor/vlnveditor.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ../VersionHelper.cpp \
-    ./simpleModels/SimpleNameGroup.cpp
+    ../editors/ComponentEditor/ports/PortsInterface.cpp \
+    ../editors/ComponentEditor/common/ExpressionFormatter.cpp

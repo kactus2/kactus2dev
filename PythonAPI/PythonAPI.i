@@ -9,16 +9,19 @@
 
 %{
 #include "PythonAPI.h"
-#include "simpleModels\SimpleNameGroup.h"
-#include "simpleModels\SimplePort.h"
+#include "..\editors\ComponentEditor\ports\PortsInterface.h"
+//#include "simpleModels\SimpleNameGroup.h"
+//#include "simpleModels\SimplePort.h"
 %}
 
 
 namespace std {
-	%template(portsVector) vector<SimplePort*>;
+//	%template(portsVector) vector<SimplePort*>;
+	%template(stringVector) vector<string>;
 };
 
 /* Let's just grab the original header file here */
 %include "PythonAPI.h"
-%include "simpleModels\SimpleNameGroup.h"
-%include "simpleModels\SimplePort.h"
+%include "..\editors\ComponentEditor\ports\PortsInterface.h"
+//%include "simpleModels\SimpleNameGroup.h"
+//%include "simpleModels\SimplePort.h"

@@ -6,6 +6,7 @@ import pythonAPI
 print ("\n", end='')
 print ("Starting python program")
 api = pythonAPI.PythonAPI()
+portsInterface = api.getPortsInterface()
 
 def handleCommandsForOpenComponent(componentName):
 	pythonHelps.componentHelpText()
@@ -19,13 +20,21 @@ def handleCommandsForOpenComponent(componentName):
 			componentCommand = commandArray.pop(0)
 			
 		if (componentCommand == pythonHelps.portsWord):
-			api.listComponentPorts()
+			listOfPortNames = portsInterface.getPortNames()
+			for portName in portsInterface.getPortNames():
+				print (portName)
 		elif (componentCommand == pythonHelps.portWord and len(commandArray) == 3 and commandArray[1] == pythonHelps.setNameCommandWord):
-			api.setPortName(pythonAPI.QString.fromStdString(commandArray[0]), pythonAPI.QString.fromStdString(commandArray[2]));
+			currentPortName = commandArray[0]
+			newPortName = commandArray[2]
+			portsInterface.setName(currentPortName, newPortName);
+
+			print ("Changed port %s name to %s" % (currentPortName, newPortName))
+			
 		elif (componentCommand == pythonHelps.saveWord):
 			api.saveComponent()
 		elif (componentCommand == pythonHelps.migrateWord):
-			pythonComponent = createComponent(api)
+			pythonComponent = createComponent(api, portsInterface)
+			print ()
 			pythonComponent.printer()
 		elif (componentCommand == pythonHelps.helpWord):
 			pythonHelps.componentHelpText()

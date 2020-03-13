@@ -73,11 +73,11 @@
     <Filter Include="Source Files\versionHelper">
       <UniqueIdentifier>{b833d652-10f3-412f-8458-c70aed4b2768}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\simpleModels">
-      <UniqueIdentifier>{298964c4-0186-4edd-9516-79e87e896639}</UniqueIdentifier>
+    <Filter Include="Source Files\interfaces">
+      <UniqueIdentifier>{d7eb4d19-a61b-4d3e-87ed-745ae7fd56ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\simpleModels">
-      <UniqueIdentifier>{b5901550-0b29-49a1-b370-34b9bfe16642}</UniqueIdentifier>
+    <Filter Include="Header Files\interfaces">
+      <UniqueIdentifier>{96cb2a96-9473-4438-84b9-abaecd81d2c8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -222,11 +222,11 @@
     <ClCompile Include="..\VersionHelper.cpp">
       <Filter>Source Files\versionHelper</Filter>
     </ClCompile>
-    <ClCompile Include="simpleModels\SimpleNameGroup.cpp">
-      <Filter>Source Files\simpleModels</Filter>
+    <ClCompile Include="..\editors\ComponentEditor\ports\PortsInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="simpleModels\SimplePort.cpp">
-      <Filter>Source Files\simpleModels</Filter>
+    <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -284,11 +284,11 @@
     <ClInclude Include="..\VersionHelper.h">
       <Filter>Header Files\versionHelper</Filter>
     </ClInclude>
-    <ClInclude Include="simpleModels\SimpleNameGroup.h">
-      <Filter>Header Files\simpleModels</Filter>
+    <ClInclude Include="..\editors\ComponentEditor\ports\PortsInterface.h">
+      <Filter>Header Files\interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="simpleModels\SimplePort.h">
-      <Filter>Header Files\simpleModels</Filter>
+    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h">
+      <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

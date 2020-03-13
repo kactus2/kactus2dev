@@ -2661,21 +2661,25 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 /* -------- TYPES TABLE (BEGIN) -------- */
 
 #define SWIGTYPE_p_NameGroup swig_types[0]
-#define SWIGTYPE_p_PythonAPI swig_types[1]
-#define SWIGTYPE_p_QString swig_types[2]
-#define SWIGTYPE_p_SimpleNameGroup swig_types[3]
-#define SWIGTYPE_p_SimplePort swig_types[4]
-#define SWIGTYPE_p_allocator_type swig_types[5]
-#define SWIGTYPE_p_char swig_types[6]
-#define SWIGTYPE_p_difference_type swig_types[7]
-#define SWIGTYPE_p_p_PyObject swig_types[8]
-#define SWIGTYPE_p_size_type swig_types[9]
-#define SWIGTYPE_p_std__allocatorT_SimplePort_p_t swig_types[10]
-#define SWIGTYPE_p_std__invalid_argument swig_types[11]
-#define SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t swig_types[12]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[13]
-static swig_type_info *swig_types[15];
-static swig_module_info swig_module = {swig_types, 14, 0, 0, 0, 0};
+#define SWIGTYPE_p_PortsInterface swig_types[1]
+#define SWIGTYPE_p_PythonAPI swig_types[2]
+#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[3]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[4]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[5]
+#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[6]
+#define SWIGTYPE_p_QString swig_types[7]
+#define SWIGTYPE_p_allocator_type swig_types[8]
+#define SWIGTYPE_p_char swig_types[9]
+#define SWIGTYPE_p_difference_type swig_types[10]
+#define SWIGTYPE_p_p_PyObject swig_types[11]
+#define SWIGTYPE_p_size_type swig_types[12]
+#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[13]
+#define SWIGTYPE_p_std__invalid_argument swig_types[14]
+#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[15]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[16]
+#define SWIGTYPE_p_value_type swig_types[17]
+static swig_type_info *swig_types[19];
+static swig_module_info swig_module = {swig_types, 18, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3493,8 +3497,9 @@ SWIGINTERNINLINE PyObject*
 
 
 #include "PythonAPI.h"
-#include "simpleModels\SimpleNameGroup.h"
-#include "simpleModels\SimplePort.h"
+#include "..\editors\ComponentEditor\ports\PortsInterface.h"
+//#include "simpleModels\SimpleNameGroup.h"
+//#include "simpleModels\SimplePort.h"
 
 
 namespace swig {
@@ -4573,12 +4578,42 @@ namespace swig
 }
 
 
-  namespace swig {
-    template <>  struct traits< SimplePort > {
-      typedef pointer_category category;
-      static const char* type_name() { return"SimplePort"; }
-    };
+SWIGINTERN int
+SWIG_AsVal_std_string (PyObject * obj, std::string *val)
+{
+  std::string* v = (std::string *) 0;
+  int res = SWIG_AsPtr_std_string (obj, &v);
+  if (!SWIG_IsOK(res)) return res;
+  if (v) {
+    if (val) *val = *v;
+    if (SWIG_IsNewObj(res)) {
+      delete v;
+      res = SWIG_DelNewMask(res);
+    }
+    return res;
   }
+  return SWIG_ERROR;
+}
+
+
+namespace swig {
+  template <> struct traits< std::string > {
+    typedef value_category category;
+    static const char* type_name() { return"std::string"; }
+  };
+  template <>  struct traits_asval< std::string > {
+    typedef std::string value_type;
+    static int asval(PyObject *obj, value_type *val) {
+      return SWIG_AsVal_std_string (obj, val);
+    }
+  };
+  template <>  struct traits_from< std::string > {
+    typedef std::string value_type;
+    static PyObject *from(const value_type& val) {
+      return SWIG_From_std_string  (val);
+    }
+  };
+}
 
 
 namespace swig {
@@ -4686,24 +4721,24 @@ namespace swig {
 
 
       namespace swig {
-	template <>  struct traits<std::vector< SimplePort*, std::allocator< SimplePort * > > > {
-	  typedef value_category category;
+	template <>  struct traits<std::vector< std::string, std::allocator< std::string > > > {
+	  typedef pointer_category category;
 	  static const char* type_name() {
-	    return "std::vector<" "SimplePort" " *," "std::allocator< SimplePort * >" " >";
+	    return "std::vector<" "std::string" "," "std::allocator< std::string >" " >";
 	  }
 	};
       }
     
-SWIGINTERN swig::SwigPyIterator *std_vector_Sl_SimplePort_Sm__Sg__iterator(std::vector< SimplePort * > *self,PyObject **PYTHON_SELF){
+SWIGINTERN swig::SwigPyIterator *std_vector_Sl_std_string_Sg__iterator(std::vector< std::string > *self,PyObject **PYTHON_SELF){
       return swig::make_output_iterator(self->begin(), self->begin(), self->end(), *PYTHON_SELF);
     }
-SWIGINTERN bool std_vector_Sl_SimplePort_Sm__Sg____nonzero__(std::vector< SimplePort * > const *self){
+SWIGINTERN bool std_vector_Sl_std_string_Sg____nonzero__(std::vector< std::string > const *self){
       return !(self->empty());
     }
-SWIGINTERN bool std_vector_Sl_SimplePort_Sm__Sg____bool__(std::vector< SimplePort * > const *self){
+SWIGINTERN bool std_vector_Sl_std_string_Sg____bool__(std::vector< std::string > const *self){
       return !(self->empty());
     }
-SWIGINTERN std::vector< SimplePort * >::size_type std_vector_Sl_SimplePort_Sm__Sg____len__(std::vector< SimplePort * > const *self){
+SWIGINTERN std::vector< std::string >::size_type std_vector_Sl_std_string_Sg____len__(std::vector< std::string > const *self){
       return self->size();
     }
 
@@ -4740,85 +4775,121 @@ SWIG_From_size_t  (size_t value)
 #endif
 }
 
-SWIGINTERN std::vector< SimplePort *,std::allocator< SimplePort * > > *std_vector_Sl_SimplePort_Sm__Sg____getslice__(std::vector< SimplePort * > *self,std::vector< SimplePort * >::difference_type i,std::vector< SimplePort * >::difference_type j){
+SWIGINTERN std::vector< std::string,std::allocator< std::string > > *std_vector_Sl_std_string_Sg____getslice__(std::vector< std::string > *self,std::vector< std::string >::difference_type i,std::vector< std::string >::difference_type j){
       return swig::getslice(self, i, j, 1);
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg____setslice____SWIG_0(std::vector< SimplePort * > *self,std::vector< SimplePort * >::difference_type i,std::vector< SimplePort * >::difference_type j){
-      swig::setslice(self, i, j, 1, std::vector< SimplePort*,std::allocator< SimplePort * > >());
+SWIGINTERN void std_vector_Sl_std_string_Sg____setslice____SWIG_0(std::vector< std::string > *self,std::vector< std::string >::difference_type i,std::vector< std::string >::difference_type j){
+      swig::setslice(self, i, j, 1, std::vector< std::string,std::allocator< std::string > >());
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg____setslice____SWIG_1(std::vector< SimplePort * > *self,std::vector< SimplePort * >::difference_type i,std::vector< SimplePort * >::difference_type j,std::vector< SimplePort *,std::allocator< SimplePort * > > const &v){
+SWIGINTERN void std_vector_Sl_std_string_Sg____setslice____SWIG_1(std::vector< std::string > *self,std::vector< std::string >::difference_type i,std::vector< std::string >::difference_type j,std::vector< std::string,std::allocator< std::string > > const &v){
       swig::setslice(self, i, j, 1, v);
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg____delslice__(std::vector< SimplePort * > *self,std::vector< SimplePort * >::difference_type i,std::vector< SimplePort * >::difference_type j){
+SWIGINTERN void std_vector_Sl_std_string_Sg____delslice__(std::vector< std::string > *self,std::vector< std::string >::difference_type i,std::vector< std::string >::difference_type j){
       swig::delslice(self, i, j, 1);
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg____delitem____SWIG_0(std::vector< SimplePort * > *self,std::vector< SimplePort * >::difference_type i){
+SWIGINTERN void std_vector_Sl_std_string_Sg____delitem____SWIG_0(std::vector< std::string > *self,std::vector< std::string >::difference_type i){
       swig::erase(self, swig::getpos(self, i));
     }
-SWIGINTERN std::vector< SimplePort *,std::allocator< SimplePort * > > *std_vector_Sl_SimplePort_Sm__Sg____getitem____SWIG_0(std::vector< SimplePort * > *self,PySliceObject *slice){
+SWIGINTERN std::vector< std::string,std::allocator< std::string > > *std_vector_Sl_std_string_Sg____getitem____SWIG_0(std::vector< std::string > *self,PySliceObject *slice){
       Py_ssize_t i, j, step;
       if( !PySlice_Check(slice) ) {
         SWIG_Error(SWIG_TypeError, "Slice object expected.");
         return NULL;
       }
       PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::difference_type id = i;
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::difference_type jd = j;
+      std::vector< std::string,std::allocator< std::string > >::difference_type id = i;
+      std::vector< std::string,std::allocator< std::string > >::difference_type jd = j;
       return swig::getslice(self, id, jd, step);
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg____setitem____SWIG_0(std::vector< SimplePort * > *self,PySliceObject *slice,std::vector< SimplePort *,std::allocator< SimplePort * > > const &v){
+SWIGINTERN void std_vector_Sl_std_string_Sg____setitem____SWIG_0(std::vector< std::string > *self,PySliceObject *slice,std::vector< std::string,std::allocator< std::string > > const &v){
       Py_ssize_t i, j, step;
       if( !PySlice_Check(slice) ) {
         SWIG_Error(SWIG_TypeError, "Slice object expected.");
         return;
       }
       PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::difference_type id = i;
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::difference_type jd = j;
+      std::vector< std::string,std::allocator< std::string > >::difference_type id = i;
+      std::vector< std::string,std::allocator< std::string > >::difference_type jd = j;
       swig::setslice(self, id, jd, step, v);
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg____setitem____SWIG_1(std::vector< SimplePort * > *self,PySliceObject *slice){
+SWIGINTERN void std_vector_Sl_std_string_Sg____setitem____SWIG_1(std::vector< std::string > *self,PySliceObject *slice){
       Py_ssize_t i, j, step;
       if( !PySlice_Check(slice) ) {
         SWIG_Error(SWIG_TypeError, "Slice object expected.");
         return;
       }
       PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::difference_type id = i;
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::difference_type jd = j;
+      std::vector< std::string,std::allocator< std::string > >::difference_type id = i;
+      std::vector< std::string,std::allocator< std::string > >::difference_type jd = j;
       swig::delslice(self, id, jd, step);
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg____delitem____SWIG_1(std::vector< SimplePort * > *self,PySliceObject *slice){
+SWIGINTERN void std_vector_Sl_std_string_Sg____delitem____SWIG_1(std::vector< std::string > *self,PySliceObject *slice){
       Py_ssize_t i, j, step;
       if( !PySlice_Check(slice) ) {
         SWIG_Error(SWIG_TypeError, "Slice object expected.");
         return;
       }
       PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::difference_type id = i;
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::difference_type jd = j;
+      std::vector< std::string,std::allocator< std::string > >::difference_type id = i;
+      std::vector< std::string,std::allocator< std::string > >::difference_type jd = j;
       swig::delslice(self, id, jd, step);
     }
-SWIGINTERN std::vector< SimplePort * >::value_type std_vector_Sl_SimplePort_Sm__Sg____getitem____SWIG_1(std::vector< SimplePort * > *self,std::vector< SimplePort * >::difference_type i){
+SWIGINTERN std::vector< std::string >::value_type const &std_vector_Sl_std_string_Sg____getitem____SWIG_1(std::vector< std::string > const *self,std::vector< std::string >::difference_type i){
       return *(swig::cgetpos(self, i));
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg____setitem____SWIG_2(std::vector< SimplePort * > *self,std::vector< SimplePort * >::difference_type i,std::vector< SimplePort * >::value_type x){
+
+namespace swig {
+  static PyObject* container_owner_attribute() {
+    static PyObject* attr = SWIG_Python_str_FromChar("__swig_container");
+    return attr;
+  }
+
+  template <typename T>
+  struct container_owner {
+    // By default, do not add the back-reference (for value types)
+    // Specialization below will check the reference for pointer types.
+    static bool back_reference(PyObject* child, PyObject* owner) {
+      return false;
+    }
+  };
+
+  template <>
+  struct container_owner<swig::pointer_category> {  
+    /*
+     * Call to add a back-reference to the owning object when returning a 
+     * reference from a container.  Will only set the reference if child
+     * is a SWIG wrapper object that does not own the pointer.
+     *
+     * returns whether the reference was set or not
+     */
+    static bool back_reference(PyObject* child, PyObject* owner) {
+      SwigPyObject* swigThis = SWIG_Python_GetSwigThis(child);
+      if (swigThis && (swigThis->own & SWIG_POINTER_OWN) != SWIG_POINTER_OWN) {
+        PyObject_SetAttr(child, container_owner_attribute(), owner);
+        return true;
+      }
+      return false;
+    }
+  };
+}
+
+SWIGINTERN void std_vector_Sl_std_string_Sg____setitem____SWIG_2(std::vector< std::string > *self,std::vector< std::string >::difference_type i,std::vector< std::string >::value_type const &x){
       *(swig::getpos(self,i)) = x;
     }
-SWIGINTERN std::vector< SimplePort * >::value_type std_vector_Sl_SimplePort_Sm__Sg__pop(std::vector< SimplePort * > *self){
+SWIGINTERN std::vector< std::string >::value_type std_vector_Sl_std_string_Sg__pop(std::vector< std::string > *self){
       if (self->size() == 0)
 	throw std::out_of_range("pop from empty container");
-      std::vector< SimplePort*,std::allocator< SimplePort * > >::value_type x = self->back();
+      std::vector< std::string,std::allocator< std::string > >::value_type x = self->back();
       self->pop_back();
       return x;
     }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg__append(std::vector< SimplePort * > *self,std::vector< SimplePort * >::value_type x){
+SWIGINTERN void std_vector_Sl_std_string_Sg__append(std::vector< std::string > *self,std::vector< std::string >::value_type const &x){
       self->push_back(x);
     }
-SWIGINTERN std::vector< SimplePort * >::iterator std_vector_Sl_SimplePort_Sm__Sg__erase__SWIG_0(std::vector< SimplePort * > *self,std::vector< SimplePort * >::iterator pos){ return self->erase(pos); }
-SWIGINTERN std::vector< SimplePort * >::iterator std_vector_Sl_SimplePort_Sm__Sg__erase__SWIG_1(std::vector< SimplePort * > *self,std::vector< SimplePort * >::iterator first,std::vector< SimplePort * >::iterator last){ return self->erase(first, last); }
-SWIGINTERN std::vector< SimplePort * >::iterator std_vector_Sl_SimplePort_Sm__Sg__insert__SWIG_0(std::vector< SimplePort * > *self,std::vector< SimplePort * >::iterator pos,std::vector< SimplePort * >::value_type x){ return self->insert(pos, x); }
-SWIGINTERN void std_vector_Sl_SimplePort_Sm__Sg__insert__SWIG_1(std::vector< SimplePort * > *self,std::vector< SimplePort * >::iterator pos,std::vector< SimplePort * >::size_type n,std::vector< SimplePort * >::value_type x){ self->insert(pos, n, x); }
+SWIGINTERN std::vector< std::string >::iterator std_vector_Sl_std_string_Sg__erase__SWIG_0(std::vector< std::string > *self,std::vector< std::string >::iterator pos){ return self->erase(pos); }
+SWIGINTERN std::vector< std::string >::iterator std_vector_Sl_std_string_Sg__erase__SWIG_1(std::vector< std::string > *self,std::vector< std::string >::iterator first,std::vector< std::string >::iterator last){ return self->erase(first, last); }
+SWIGINTERN std::vector< std::string >::iterator std_vector_Sl_std_string_Sg__insert__SWIG_0(std::vector< std::string > *self,std::vector< std::string >::iterator pos,std::vector< std::string >::value_type const &x){ return self->insert(pos, x); }
+SWIGINTERN void std_vector_Sl_std_string_Sg__insert__SWIG_1(std::vector< std::string > *self,std::vector< std::string >::iterator pos,std::vector< std::string >::size_type n,std::vector< std::string >::value_type const &x){ self->insert(pos, n, x); }
 
 SWIGINTERN int
 SWIG_AsVal_int (PyObject * obj, int *val)
@@ -4833,6 +4904,20 @@ SWIG_AsVal_int (PyObject * obj, int *val)
     }
   }  
   return res;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r;
+  if (!PyBool_Check(obj))
+    return SWIG_ERROR;
+  r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
 }
 
 #ifdef __cplusplus
@@ -6147,9 +6232,9 @@ SWIGINTERN PyObject *NameGroup_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject
   return SWIG_Python_InitShadowInstance(args);
 }
 
-SWIGINTERN PyObject *_wrap_portsVector_iterator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_iterator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   PyObject **arg2 = (PyObject **) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -6159,12 +6244,12 @@ SWIGINTERN PyObject *_wrap_portsVector_iterator(PyObject *SWIGUNUSEDPARM(self), 
   arg2 = &swig_obj[0];
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_iterator" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_iterator" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = (swig::SwigPyIterator *)std_vector_Sl_SimplePort_Sm__Sg__iterator(arg1,arg2);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = (swig::SwigPyIterator *)std_vector_Sl_std_string_Sg__iterator(arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -6172,9 +6257,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___nonzero__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___nonzero__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -6182,12 +6267,12 @@ SWIGINTERN PyObject *_wrap_portsVector___nonzero__(PyObject *SWIGUNUSEDPARM(self
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___nonzero__" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___nonzero__" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = (bool)std_vector_Sl_SimplePort_Sm__Sg____nonzero__((std::vector< SimplePort * > const *)arg1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = (bool)std_vector_Sl_std_string_Sg____nonzero__((std::vector< std::string > const *)arg1);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6195,9 +6280,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___bool__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___bool__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -6205,12 +6290,12 @@ SWIGINTERN PyObject *_wrap_portsVector___bool__(PyObject *SWIGUNUSEDPARM(self), 
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___bool__" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___bool__" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = (bool)std_vector_Sl_SimplePort_Sm__Sg____bool__((std::vector< SimplePort * > const *)arg1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = (bool)std_vector_Sl_std_string_Sg____bool__((std::vector< std::string > const *)arg1);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6218,22 +6303,22 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___len__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___len__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::size_type result;
+  std::vector< std::string >::size_type result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___len__" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___len__" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = std_vector_Sl_SimplePort_Sm__Sg____len__((std::vector< SimplePort * > const *)arg1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = std_vector_Sl_std_string_Sg____len__((std::vector< std::string > const *)arg1);
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -6241,11 +6326,11 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___getslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___getslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::difference_type arg2 ;
-  std::vector< SimplePort * >::difference_type arg3 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::difference_type arg2 ;
+  std::vector< std::string >::difference_type arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   ptrdiff_t val2 ;
@@ -6253,43 +6338,43 @@ SWIGINTERN PyObject *_wrap_portsVector___getslice__(PyObject *SWIGUNUSEDPARM(sel
   ptrdiff_t val3 ;
   int ecode3 = 0 ;
   PyObject *swig_obj[3] ;
-  std::vector< SimplePort *,std::allocator< SimplePort * > > *result = 0 ;
+  std::vector< std::string,std::allocator< std::string > > *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "portsVector___getslice__", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "stringVector___getslice__", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___getslice__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___getslice__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector___getslice__" "', argument " "2"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector___getslice__" "', argument " "2"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::difference_type >(val2);
+  arg2 = static_cast< std::vector< std::string >::difference_type >(val2);
   ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "portsVector___getslice__" "', argument " "3"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "stringVector___getslice__" "', argument " "3"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg3 = static_cast< std::vector< SimplePort * >::difference_type >(val3);
+  arg3 = static_cast< std::vector< std::string >::difference_type >(val3);
   try {
-    result = (std::vector< SimplePort *,std::allocator< SimplePort * > > *)std_vector_Sl_SimplePort_Sm__Sg____getslice__(arg1,arg2,arg3);
+    result = (std::vector< std::string,std::allocator< std::string > > *)std_vector_Sl_std_string_Sg____getslice__(arg1,arg2,arg3);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, SWIG_POINTER_OWN |  0 );
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___setslice____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___setslice____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::difference_type arg2 ;
-  std::vector< SimplePort * >::difference_type arg3 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::difference_type arg2 ;
+  std::vector< std::string >::difference_type arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   ptrdiff_t val2 ;
@@ -6298,23 +6383,23 @@ SWIGINTERN PyObject *_wrap_portsVector___setslice____SWIG_0(PyObject *SWIGUNUSED
   int ecode3 = 0 ;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___setslice__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___setslice__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector___setslice__" "', argument " "2"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector___setslice__" "', argument " "2"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::difference_type >(val2);
+  arg2 = static_cast< std::vector< std::string >::difference_type >(val2);
   ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "portsVector___setslice__" "', argument " "3"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "stringVector___setslice__" "', argument " "3"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg3 = static_cast< std::vector< SimplePort * >::difference_type >(val3);
+  arg3 = static_cast< std::vector< std::string >::difference_type >(val3);
   try {
-    std_vector_Sl_SimplePort_Sm__Sg____setslice____SWIG_0(arg1,arg2,arg3);
+    std_vector_Sl_std_string_Sg____setslice____SWIG_0(arg1,arg2,arg3);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
@@ -6327,12 +6412,12 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___setslice____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___setslice____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::difference_type arg2 ;
-  std::vector< SimplePort * >::difference_type arg3 ;
-  std::vector< SimplePort *,std::allocator< SimplePort * > > *arg4 = 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::difference_type arg2 ;
+  std::vector< std::string >::difference_type arg3 ;
+  std::vector< std::string,std::allocator< std::string > > *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   ptrdiff_t val2 ;
@@ -6342,34 +6427,34 @@ SWIGINTERN PyObject *_wrap_portsVector___setslice____SWIG_1(PyObject *SWIGUNUSED
   int res4 = SWIG_OLDOBJ ;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___setslice__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___setslice__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector___setslice__" "', argument " "2"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector___setslice__" "', argument " "2"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::difference_type >(val2);
+  arg2 = static_cast< std::vector< std::string >::difference_type >(val2);
   ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "portsVector___setslice__" "', argument " "3"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "stringVector___setslice__" "', argument " "3"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg3 = static_cast< std::vector< SimplePort * >::difference_type >(val3);
+  arg3 = static_cast< std::vector< std::string >::difference_type >(val3);
   {
-    std::vector< SimplePort*,std::allocator< SimplePort * > > *ptr = (std::vector< SimplePort*,std::allocator< SimplePort * > > *)0;
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
     res4 = swig::asptr(swig_obj[3], &ptr);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "portsVector___setslice__" "', argument " "4"" of type '" "std::vector< SimplePort *,std::allocator< SimplePort * > > const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "stringVector___setslice__" "', argument " "4"" of type '" "std::vector< std::string,std::allocator< std::string > > const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "portsVector___setslice__" "', argument " "4"" of type '" "std::vector< SimplePort *,std::allocator< SimplePort * > > const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector___setslice__" "', argument " "4"" of type '" "std::vector< std::string,std::allocator< std::string > > const &""'"); 
     }
     arg4 = ptr;
   }
   try {
-    std_vector_Sl_SimplePort_Sm__Sg____setslice____SWIG_1(arg1,arg2,arg3,(std::vector< SimplePort *,std::allocator< SimplePort * > > const &)*arg4);
+    std_vector_Sl_std_string_Sg____setslice____SWIG_1(arg1,arg2,arg3,(std::vector< std::string,std::allocator< std::string > > const &)*arg4);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
@@ -6384,17 +6469,17 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___setslice__(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___setslice__(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[5] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "portsVector___setslice__", 0, 4, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector___setslice__", 0, 4, argv))) SWIG_fail;
   --argc;
   if (argc == 3) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
@@ -6407,14 +6492,14 @@ SWIGINTERN PyObject *_wrap_portsVector___setslice__(PyObject *self, PyObject *ar
           _v = SWIG_CheckState(res);
         }
         if (_v) {
-          return _wrap_portsVector___setslice____SWIG_0(self, argc, argv);
+          return _wrap_stringVector___setslice____SWIG_0(self, argc, argv);
         }
       }
     }
   }
   if (argc == 4) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
@@ -6427,10 +6512,10 @@ SWIGINTERN PyObject *_wrap_portsVector___setslice__(PyObject *self, PyObject *ar
           _v = SWIG_CheckState(res);
         }
         if (_v) {
-          int res = swig::asptr(argv[3], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+          int res = swig::asptr(argv[3], (std::vector< std::string,std::allocator< std::string > >**)(0));
           _v = SWIG_CheckState(res);
           if (_v) {
-            return _wrap_portsVector___setslice____SWIG_1(self, argc, argv);
+            return _wrap_stringVector___setslice____SWIG_1(self, argc, argv);
           }
         }
       }
@@ -6438,19 +6523,19 @@ SWIGINTERN PyObject *_wrap_portsVector___setslice__(PyObject *self, PyObject *ar
   }
   
 fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'portsVector___setslice__'.\n"
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'stringVector___setslice__'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    std::vector< SimplePort * >::__setslice__(std::vector< SimplePort * >::difference_type,std::vector< SimplePort * >::difference_type)\n"
-    "    std::vector< SimplePort * >::__setslice__(std::vector< SimplePort * >::difference_type,std::vector< SimplePort * >::difference_type,std::vector< SimplePort *,std::allocator< SimplePort * > > const &)\n");
+    "    std::vector< std::string >::__setslice__(std::vector< std::string >::difference_type,std::vector< std::string >::difference_type)\n"
+    "    std::vector< std::string >::__setslice__(std::vector< std::string >::difference_type,std::vector< std::string >::difference_type,std::vector< std::string,std::allocator< std::string > > const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___delslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___delslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::difference_type arg2 ;
-  std::vector< SimplePort * >::difference_type arg3 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::difference_type arg2 ;
+  std::vector< std::string >::difference_type arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   ptrdiff_t val2 ;
@@ -6459,24 +6544,24 @@ SWIGINTERN PyObject *_wrap_portsVector___delslice__(PyObject *SWIGUNUSEDPARM(sel
   int ecode3 = 0 ;
   PyObject *swig_obj[3] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "portsVector___delslice__", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "stringVector___delslice__", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___delslice__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___delslice__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector___delslice__" "', argument " "2"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector___delslice__" "', argument " "2"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::difference_type >(val2);
+  arg2 = static_cast< std::vector< std::string >::difference_type >(val2);
   ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "portsVector___delslice__" "', argument " "3"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "stringVector___delslice__" "', argument " "3"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg3 = static_cast< std::vector< SimplePort * >::difference_type >(val3);
+  arg3 = static_cast< std::vector< std::string >::difference_type >(val3);
   try {
-    std_vector_Sl_SimplePort_Sm__Sg____delslice__(arg1,arg2,arg3);
+    std_vector_Sl_std_string_Sg____delslice__(arg1,arg2,arg3);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
@@ -6489,28 +6574,28 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___delitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___delitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::difference_type arg2 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::difference_type arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   ptrdiff_t val2 ;
   int ecode2 = 0 ;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___delitem__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___delitem__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector___delitem__" "', argument " "2"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector___delitem__" "', argument " "2"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::difference_type >(val2);
+  arg2 = static_cast< std::vector< std::string >::difference_type >(val2);
   try {
-    std_vector_Sl_SimplePort_Sm__Sg____delitem____SWIG_0(arg1,arg2);
+    std_vector_Sl_std_string_Sg____delitem____SWIG_0(arg1,arg2);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
@@ -6523,74 +6608,74 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___getitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___getitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   PySliceObject *arg2 = (PySliceObject *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  std::vector< SimplePort *,std::allocator< SimplePort * > > *result = 0 ;
+  std::vector< std::string,std::allocator< std::string > > *result = 0 ;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___getitem__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___getitem__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   {
     if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector___getitem__" "', argument " "2"" of type '" "PySliceObject *""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector___getitem__" "', argument " "2"" of type '" "PySliceObject *""'");
     }
     arg2 = (PySliceObject *) swig_obj[1];
   }
   try {
-    result = (std::vector< SimplePort *,std::allocator< SimplePort * > > *)std_vector_Sl_SimplePort_Sm__Sg____getitem____SWIG_0(arg1,arg2);
+    result = (std::vector< std::string,std::allocator< std::string > > *)std_vector_Sl_std_string_Sg____getitem____SWIG_0(arg1,arg2);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, SWIG_POINTER_OWN |  0 );
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___setitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___setitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   PySliceObject *arg2 = (PySliceObject *) 0 ;
-  std::vector< SimplePort *,std::allocator< SimplePort * > > *arg3 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res3 = SWIG_OLDOBJ ;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___setitem__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___setitem__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   {
     if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
     }
     arg2 = (PySliceObject *) swig_obj[1];
   }
   {
-    std::vector< SimplePort*,std::allocator< SimplePort * > > *ptr = (std::vector< SimplePort*,std::allocator< SimplePort * > > *)0;
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
     res3 = swig::asptr(swig_obj[2], &ptr);
     if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "portsVector___setitem__" "', argument " "3"" of type '" "std::vector< SimplePort *,std::allocator< SimplePort * > > const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "stringVector___setitem__" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "portsVector___setitem__" "', argument " "3"" of type '" "std::vector< SimplePort *,std::allocator< SimplePort * > > const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector___setitem__" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const &""'"); 
     }
     arg3 = ptr;
   }
   try {
-    std_vector_Sl_SimplePort_Sm__Sg____setitem____SWIG_0(arg1,arg2,(std::vector< SimplePort *,std::allocator< SimplePort * > > const &)*arg3);
+    std_vector_Sl_std_string_Sg____setitem____SWIG_0(arg1,arg2,(std::vector< std::string,std::allocator< std::string > > const &)*arg3);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
@@ -6605,27 +6690,27 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___setitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___setitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   PySliceObject *arg2 = (PySliceObject *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___setitem__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___setitem__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   {
     if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
     }
     arg2 = (PySliceObject *) swig_obj[1];
   }
   try {
-    std_vector_Sl_SimplePort_Sm__Sg____setitem____SWIG_1(arg1,arg2);
+    std_vector_Sl_std_string_Sg____setitem____SWIG_1(arg1,arg2);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
@@ -6638,27 +6723,27 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___delitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___delitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   PySliceObject *arg2 = (PySliceObject *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___delitem__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___delitem__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   {
     if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector___delitem__" "', argument " "2"" of type '" "PySliceObject *""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector___delitem__" "', argument " "2"" of type '" "PySliceObject *""'");
     }
     arg2 = (PySliceObject *) swig_obj[1];
   }
   try {
-    std_vector_Sl_SimplePort_Sm__Sg____delitem____SWIG_1(arg1,arg2);
+    std_vector_Sl_std_string_Sg____delitem____SWIG_1(arg1,arg2);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   } catch(std::invalid_argument &_e) {
@@ -6671,30 +6756,30 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___delitem__(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___delitem__(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "portsVector___delitem__", 0, 2, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector___delitem__", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
         _v = PySlice_Check(argv[1]);
       }
       if (_v) {
-        return _wrap_portsVector___delitem____SWIG_1(self, argc, argv);
+        return _wrap_stringVector___delitem____SWIG_1(self, argc, argv);
       }
     }
   }
   if (argc == 2) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
@@ -6702,77 +6787,78 @@ SWIGINTERN PyObject *_wrap_portsVector___delitem__(PyObject *self, PyObject *arg
         _v = SWIG_CheckState(res);
       }
       if (_v) {
-        return _wrap_portsVector___delitem____SWIG_0(self, argc, argv);
+        return _wrap_stringVector___delitem____SWIG_0(self, argc, argv);
       }
     }
   }
   
 fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'portsVector___delitem__'.\n"
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'stringVector___delitem__'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    std::vector< SimplePort * >::__delitem__(std::vector< SimplePort * >::difference_type)\n"
-    "    std::vector< SimplePort * >::__delitem__(PySliceObject *)\n");
+    "    std::vector< std::string >::__delitem__(std::vector< std::string >::difference_type)\n"
+    "    std::vector< std::string >::__delitem__(PySliceObject *)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___getitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___getitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::difference_type arg2 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::difference_type arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   ptrdiff_t val2 ;
   int ecode2 = 0 ;
-  std::vector< SimplePort * >::value_type result;
+  std::vector< std::string >::value_type *result = 0 ;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___getitem__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___getitem__" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector___getitem__" "', argument " "2"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector___getitem__" "', argument " "2"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::difference_type >(val2);
+  arg2 = static_cast< std::vector< std::string >::difference_type >(val2);
   try {
-    result = (std::vector< SimplePort * >::value_type)std_vector_Sl_SimplePort_Sm__Sg____getitem____SWIG_1(arg1,arg2);
+    result = (std::vector< std::string >::value_type *) &std_vector_Sl_std_string_Sg____getitem____SWIG_1((std::vector< std::string > const *)arg1,arg2);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SimplePort, 0 |  0 );
+  resultobj = SWIG_From_std_string(static_cast< std::string >(*result));
+  (void)swig::container_owner<swig::traits<std::vector< std::string >::value_type>::category>::back_reference(resultobj, swig_obj[0]);
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___getitem__(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___getitem__(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "portsVector___getitem__", 0, 2, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector___getitem__", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
         _v = PySlice_Check(argv[1]);
       }
       if (_v) {
-        return _wrap_portsVector___getitem____SWIG_0(self, argc, argv);
+        return _wrap_stringVector___getitem____SWIG_0(self, argc, argv);
       }
     }
   }
   if (argc == 2) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
@@ -6780,101 +6866,108 @@ SWIGINTERN PyObject *_wrap_portsVector___getitem__(PyObject *self, PyObject *arg
         _v = SWIG_CheckState(res);
       }
       if (_v) {
-        return _wrap_portsVector___getitem____SWIG_1(self, argc, argv);
+        return _wrap_stringVector___getitem____SWIG_1(self, argc, argv);
       }
     }
   }
   
 fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'portsVector___getitem__'.\n"
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'stringVector___getitem__'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    std::vector< SimplePort * >::__getitem__(PySliceObject *)\n"
-    "    std::vector< SimplePort * >::__getitem__(std::vector< SimplePort * >::difference_type)\n");
+    "    std::vector< std::string >::__getitem__(PySliceObject *)\n"
+    "    std::vector< std::string >::__getitem__(std::vector< std::string >::difference_type) const\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___setitem____SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector___setitem____SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::difference_type arg2 ;
-  std::vector< SimplePort * >::value_type arg3 = (std::vector< SimplePort * >::value_type) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::difference_type arg2 ;
+  std::vector< std::string >::value_type *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   ptrdiff_t val2 ;
   int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector___setitem__" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector___setitem__" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector___setitem__" "', argument " "2"" of type '" "std::vector< SimplePort * >::difference_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector___setitem__" "', argument " "2"" of type '" "std::vector< std::string >::difference_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::difference_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_SimplePort, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "portsVector___setitem__" "', argument " "3"" of type '" "std::vector< SimplePort * >::value_type""'"); 
+  arg2 = static_cast< std::vector< std::string >::difference_type >(val2);
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "stringVector___setitem__" "', argument " "3"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector___setitem__" "', argument " "3"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    arg3 = ptr;
   }
-  arg3 = reinterpret_cast< std::vector< SimplePort * >::value_type >(argp3);
   try {
-    std_vector_Sl_SimplePort_Sm__Sg____setitem____SWIG_2(arg1,arg2,arg3);
+    std_vector_Sl_std_string_Sg____setitem____SWIG_2(arg1,arg2,(std::string const &)*arg3);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   }
   resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector___setitem__(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector___setitem__(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[4] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "portsVector___setitem__", 0, 3, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector___setitem__", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
         _v = PySlice_Check(argv[1]);
       }
       if (_v) {
-        return _wrap_portsVector___setitem____SWIG_1(self, argc, argv);
+        return _wrap_stringVector___setitem____SWIG_1(self, argc, argv);
       }
     }
   }
   if (argc == 3) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
         _v = PySlice_Check(argv[1]);
       }
       if (_v) {
-        int res = swig::asptr(argv[2], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+        int res = swig::asptr(argv[2], (std::vector< std::string,std::allocator< std::string > >**)(0));
         _v = SWIG_CheckState(res);
         if (_v) {
-          return _wrap_portsVector___setitem____SWIG_0(self, argc, argv);
+          return _wrap_stringVector___setitem____SWIG_0(self, argc, argv);
         }
       }
     }
   }
   if (argc == 3) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
@@ -6882,115 +6975,121 @@ SWIGINTERN PyObject *_wrap_portsVector___setitem__(PyObject *self, PyObject *arg
         _v = SWIG_CheckState(res);
       }
       if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SimplePort, 0);
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
         _v = SWIG_CheckState(res);
         if (_v) {
-          return _wrap_portsVector___setitem____SWIG_2(self, argc, argv);
+          return _wrap_stringVector___setitem____SWIG_2(self, argc, argv);
         }
       }
     }
   }
   
 fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'portsVector___setitem__'.\n"
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'stringVector___setitem__'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    std::vector< SimplePort * >::__setitem__(PySliceObject *,std::vector< SimplePort *,std::allocator< SimplePort * > > const &)\n"
-    "    std::vector< SimplePort * >::__setitem__(PySliceObject *)\n"
-    "    std::vector< SimplePort * >::__setitem__(std::vector< SimplePort * >::difference_type,std::vector< SimplePort * >::value_type)\n");
+    "    std::vector< std::string >::__setitem__(PySliceObject *,std::vector< std::string,std::allocator< std::string > > const &)\n"
+    "    std::vector< std::string >::__setitem__(PySliceObject *)\n"
+    "    std::vector< std::string >::__setitem__(std::vector< std::string >::difference_type,std::vector< std::string >::value_type const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_pop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_pop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::value_type result;
+  std::vector< std::string >::value_type result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_pop" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_pop" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   try {
-    result = (std::vector< SimplePort * >::value_type)std_vector_Sl_SimplePort_Sm__Sg__pop(arg1);
+    result = std_vector_Sl_std_string_Sg__pop(arg1);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SimplePort, 0 |  0 );
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_append(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_append(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::value_type arg2 = (std::vector< SimplePort * >::value_type) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::value_type *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "portsVector_append", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "stringVector_append", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_append" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_append" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_SimplePort, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "portsVector_append" "', argument " "2"" of type '" "std::vector< SimplePort * >::value_type""'"); 
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "stringVector_append" "', argument " "2"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector_append" "', argument " "2"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    arg2 = ptr;
   }
-  arg2 = reinterpret_cast< std::vector< SimplePort * >::value_type >(argp2);
-  std_vector_Sl_SimplePort_Sm__Sg__append(arg1,arg2);
+  std_vector_Sl_std_string_Sg__append(arg1,(std::string const &)*arg2);
   resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_portsVector__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
+SWIGINTERN PyObject *_wrap_new_stringVector__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *result = 0 ;
+  std::vector< std::string > *result = 0 ;
   
   if ((nobjs < 0) || (nobjs > 0)) SWIG_fail;
-  result = (std::vector< SimplePort * > *)new std::vector< SimplePort * >();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, SWIG_POINTER_NEW |  0 );
+  result = (std::vector< std::string > *)new std::vector< std::string >();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_portsVector__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_new_stringVector__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = 0 ;
+  std::vector< std::string > *arg1 = 0 ;
   int res1 = SWIG_OLDOBJ ;
-  std::vector< SimplePort * > *result = 0 ;
+  std::vector< std::string > *result = 0 ;
   
   if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
   {
-    std::vector< SimplePort*,std::allocator< SimplePort * > > *ptr = (std::vector< SimplePort*,std::allocator< SimplePort * > > *)0;
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
     res1 = swig::asptr(swig_obj[0], &ptr);
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_portsVector" "', argument " "1"" of type '" "std::vector< SimplePort * > const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_stringVector" "', argument " "1"" of type '" "std::vector< std::string > const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_portsVector" "', argument " "1"" of type '" "std::vector< SimplePort * > const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_stringVector" "', argument " "1"" of type '" "std::vector< std::string > const &""'"); 
     }
     arg1 = ptr;
   }
-  result = (std::vector< SimplePort * > *)new std::vector< SimplePort * >((std::vector< SimplePort * > const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, SWIG_POINTER_NEW |  0 );
+  result = (std::vector< std::string > *)new std::vector< std::string >((std::vector< std::string > const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, SWIG_POINTER_NEW |  0 );
   if (SWIG_IsNewObj(res1)) delete arg1;
   return resultobj;
 fail:
@@ -6999,9 +7098,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_empty(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_empty(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -7009,12 +7108,12 @@ SWIGINTERN PyObject *_wrap_portsVector_empty(PyObject *SWIGUNUSEDPARM(self), PyO
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_empty" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_empty" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = (bool)((std::vector< SimplePort * > const *)arg1)->empty();
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = (bool)((std::vector< std::string > const *)arg1)->empty();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -7022,22 +7121,22 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::size_type result;
+  std::vector< std::string >::size_type result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_size" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_size" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = ((std::vector< SimplePort * > const *)arg1)->size();
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = ((std::vector< std::string > const *)arg1)->size();
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -7045,30 +7144,30 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_swap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_swap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * > *arg2 = 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string > *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "portsVector_swap", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "stringVector_swap", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_swap" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_swap" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t,  0 );
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t,  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "portsVector_swap" "', argument " "2"" of type '" "std::vector< SimplePort * > &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "stringVector_swap" "', argument " "2"" of type '" "std::vector< std::string > &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "portsVector_swap" "', argument " "2"" of type '" "std::vector< SimplePort * > &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector_swap" "', argument " "2"" of type '" "std::vector< std::string > &""'"); 
   }
-  arg2 = reinterpret_cast< std::vector< SimplePort * > * >(argp2);
+  arg2 = reinterpret_cast< std::vector< std::string > * >(argp2);
   (arg1)->swap(*arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -7077,23 +7176,23 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_begin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_begin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::iterator result;
+  std::vector< std::string >::iterator result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_begin" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_begin" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   result = (arg1)->begin();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< SimplePort * >::iterator & >(result)),
+  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< std::string >::iterator & >(result)),
     swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
   return resultobj;
 fail:
@@ -7101,23 +7200,23 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_end(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_end(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::iterator result;
+  std::vector< std::string >::iterator result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_end" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_end" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   result = (arg1)->end();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< SimplePort * >::iterator & >(result)),
+  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< std::string >::iterator & >(result)),
     swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
   return resultobj;
 fail:
@@ -7125,23 +7224,23 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_rbegin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_rbegin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::reverse_iterator result;
+  std::vector< std::string >::reverse_iterator result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_rbegin" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_rbegin" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   result = (arg1)->rbegin();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< SimplePort * >::reverse_iterator & >(result)),
+  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< std::string >::reverse_iterator & >(result)),
     swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
   return resultobj;
 fail:
@@ -7149,23 +7248,23 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_rend(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_rend(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::reverse_iterator result;
+  std::vector< std::string >::reverse_iterator result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_rend" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_rend" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   result = (arg1)->rend();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< SimplePort * >::reverse_iterator & >(result)),
+  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< std::string >::reverse_iterator & >(result)),
     swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
   return resultobj;
 fail:
@@ -7173,20 +7272,20 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_clear(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_clear(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_clear" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_clear" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   (arg1)->clear();
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -7195,64 +7294,64 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_get_allocator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_get_allocator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  SwigValueWrapper< std::allocator< SimplePort * > > result;
+  SwigValueWrapper< std::allocator< std::string > > result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_get_allocator" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_get_allocator" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = ((std::vector< SimplePort * > const *)arg1)->get_allocator();
-  resultobj = SWIG_NewPointerObj((new std::vector< SimplePort * >::allocator_type(static_cast< const std::vector< SimplePort * >::allocator_type& >(result))), SWIGTYPE_p_std__allocatorT_SimplePort_p_t, SWIG_POINTER_OWN |  0 );
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = ((std::vector< std::string > const *)arg1)->get_allocator();
+  resultobj = SWIG_NewPointerObj((new std::vector< std::string >::allocator_type(static_cast< const std::vector< std::string >::allocator_type& >(result))), SWIGTYPE_p_std__allocatorT_std__string_t, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_portsVector__SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_new_stringVector__SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * >::size_type arg1 ;
+  std::vector< std::string >::size_type arg1 ;
   size_t val1 ;
   int ecode1 = 0 ;
-  std::vector< SimplePort * > *result = 0 ;
+  std::vector< std::string > *result = 0 ;
   
   if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
   ecode1 = SWIG_AsVal_size_t(swig_obj[0], &val1);
   if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_portsVector" "', argument " "1"" of type '" "std::vector< SimplePort * >::size_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_stringVector" "', argument " "1"" of type '" "std::vector< std::string >::size_type""'");
   } 
-  arg1 = static_cast< std::vector< SimplePort * >::size_type >(val1);
-  result = (std::vector< SimplePort * > *)new std::vector< SimplePort * >(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, SWIG_POINTER_NEW |  0 );
+  arg1 = static_cast< std::vector< std::string >::size_type >(val1);
+  result = (std::vector< std::string > *)new std::vector< std::string >(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_pop_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_pop_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_pop_back" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_pop_back" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   (arg1)->pop_back();
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -7261,26 +7360,26 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_resize__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector_resize__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::size_type arg2 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::size_type arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   size_t val2 ;
   int ecode2 = 0 ;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_resize" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_resize" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector_resize" "', argument " "2"" of type '" "std::vector< SimplePort * >::size_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector_resize" "', argument " "2"" of type '" "std::vector< std::string >::size_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::size_type >(val2);
+  arg2 = static_cast< std::vector< std::string >::size_type >(val2);
   (arg1)->resize(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -7289,35 +7388,35 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_erase__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector_erase__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::iterator arg2 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::iterator arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   swig::SwigPyIterator *iter2 = 0 ;
   int res2 ;
-  std::vector< SimplePort * >::iterator result;
+  std::vector< std::string >::iterator result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_erase" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_erase" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
   if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_erase" "', argument " "2"" of type '" "std::vector< SimplePort * >::iterator""'");
+    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_erase" "', argument " "2"" of type '" "std::vector< std::string >::iterator""'");
   } else {
-    swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter2);
+    swig::SwigPyIterator_T<std::vector< std::string >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter2);
     if (iter_t) {
       arg2 = iter_t->get_current();
     } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_erase" "', argument " "2"" of type '" "std::vector< SimplePort * >::iterator""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_erase" "', argument " "2"" of type '" "std::vector< std::string >::iterator""'");
     }
   }
-  result = std_vector_Sl_SimplePort_Sm__Sg__erase__SWIG_0(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< SimplePort * >::iterator & >(result)),
+  result = std_vector_Sl_std_string_Sg__erase__SWIG_0(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< std::string >::iterator & >(result)),
     swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
   return resultobj;
 fail:
@@ -7325,49 +7424,49 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_erase__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector_erase__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::iterator arg2 ;
-  std::vector< SimplePort * >::iterator arg3 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::iterator arg2 ;
+  std::vector< std::string >::iterator arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   swig::SwigPyIterator *iter2 = 0 ;
   int res2 ;
   swig::SwigPyIterator *iter3 = 0 ;
   int res3 ;
-  std::vector< SimplePort * >::iterator result;
+  std::vector< std::string >::iterator result;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_erase" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_erase" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
   if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_erase" "', argument " "2"" of type '" "std::vector< SimplePort * >::iterator""'");
+    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_erase" "', argument " "2"" of type '" "std::vector< std::string >::iterator""'");
   } else {
-    swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter2);
+    swig::SwigPyIterator_T<std::vector< std::string >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter2);
     if (iter_t) {
       arg2 = iter_t->get_current();
     } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_erase" "', argument " "2"" of type '" "std::vector< SimplePort * >::iterator""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_erase" "', argument " "2"" of type '" "std::vector< std::string >::iterator""'");
     }
   }
   res3 = SWIG_ConvertPtr(swig_obj[2], SWIG_as_voidptrptr(&iter3), swig::SwigPyIterator::descriptor(), 0);
   if (!SWIG_IsOK(res3) || !iter3) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_erase" "', argument " "3"" of type '" "std::vector< SimplePort * >::iterator""'");
+    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_erase" "', argument " "3"" of type '" "std::vector< std::string >::iterator""'");
   } else {
-    swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter3);
+    swig::SwigPyIterator_T<std::vector< std::string >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter3);
     if (iter_t) {
       arg3 = iter_t->get_current();
     } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_erase" "', argument " "3"" of type '" "std::vector< SimplePort * >::iterator""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_erase" "', argument " "3"" of type '" "std::vector< std::string >::iterator""'");
     }
   }
-  result = std_vector_Sl_SimplePort_Sm__Sg__erase__SWIG_1(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< SimplePort * >::iterator & >(result)),
+  result = std_vector_Sl_std_string_Sg__erase__SWIG_1(arg1,arg2,arg3);
+  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< std::string >::iterator & >(result)),
     swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
   return resultobj;
 fail:
@@ -7375,94 +7474,101 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_erase(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_erase(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[4] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "portsVector_erase", 0, 3, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector_erase", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       swig::SwigPyIterator *iter = 0;
       int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter) != 0));
+      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
       if (_v) {
-        return _wrap_portsVector_erase__SWIG_0(self, argc, argv);
+        return _wrap_stringVector_erase__SWIG_0(self, argc, argv);
       }
     }
   }
   if (argc == 3) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       swig::SwigPyIterator *iter = 0;
       int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter) != 0));
+      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
       if (_v) {
         swig::SwigPyIterator *iter = 0;
         int res = SWIG_ConvertPtr(argv[2], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-        _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter) != 0));
+        _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
         if (_v) {
-          return _wrap_portsVector_erase__SWIG_1(self, argc, argv);
+          return _wrap_stringVector_erase__SWIG_1(self, argc, argv);
         }
       }
     }
   }
   
 fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'portsVector_erase'.\n"
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'stringVector_erase'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    std::vector< SimplePort * >::erase(std::vector< SimplePort * >::iterator)\n"
-    "    std::vector< SimplePort * >::erase(std::vector< SimplePort * >::iterator,std::vector< SimplePort * >::iterator)\n");
+    "    std::vector< std::string >::erase(std::vector< std::string >::iterator)\n"
+    "    std::vector< std::string >::erase(std::vector< std::string >::iterator,std::vector< std::string >::iterator)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_portsVector__SWIG_3(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_new_stringVector__SWIG_3(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * >::size_type arg1 ;
-  std::vector< SimplePort * >::value_type arg2 = (std::vector< SimplePort * >::value_type) 0 ;
+  std::vector< std::string >::size_type arg1 ;
+  std::vector< std::string >::value_type *arg2 = 0 ;
   size_t val1 ;
   int ecode1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  std::vector< SimplePort * > *result = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::vector< std::string > *result = 0 ;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
   ecode1 = SWIG_AsVal_size_t(swig_obj[0], &val1);
   if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_portsVector" "', argument " "1"" of type '" "std::vector< SimplePort * >::size_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_stringVector" "', argument " "1"" of type '" "std::vector< std::string >::size_type""'");
   } 
-  arg1 = static_cast< std::vector< SimplePort * >::size_type >(val1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_SimplePort, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_portsVector" "', argument " "2"" of type '" "std::vector< SimplePort * >::value_type""'"); 
+  arg1 = static_cast< std::vector< std::string >::size_type >(val1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_stringVector" "', argument " "2"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_stringVector" "', argument " "2"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    arg2 = ptr;
   }
-  arg2 = reinterpret_cast< std::vector< SimplePort * >::value_type >(argp2);
-  result = (std::vector< SimplePort * > *)new std::vector< SimplePort * >(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, SWIG_POINTER_NEW |  0 );
+  result = (std::vector< std::string > *)new std::vector< std::string >(arg1,(std::vector< std::string >::value_type const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, SWIG_POINTER_NEW |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_portsVector(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_stringVector(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_portsVector", 0, 2, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "new_stringVector", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 0) {
-    return _wrap_new_portsVector__SWIG_0(self, argc, argv);
+    return _wrap_new_stringVector__SWIG_0(self, argc, argv);
   }
   if (argc == 1) {
     int _v;
@@ -7471,15 +7577,15 @@ SWIGINTERN PyObject *_wrap_new_portsVector(PyObject *self, PyObject *args) {
       _v = SWIG_CheckState(res);
     }
     if (_v) {
-      return _wrap_new_portsVector__SWIG_2(self, argc, argv);
+      return _wrap_new_stringVector__SWIG_2(self, argc, argv);
     }
   }
   if (argc == 1) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_portsVector__SWIG_1(self, argc, argv);
+      return _wrap_new_stringVector__SWIG_1(self, argc, argv);
     }
   }
   if (argc == 2) {
@@ -7489,185 +7595,207 @@ SWIGINTERN PyObject *_wrap_new_portsVector(PyObject *self, PyObject *args) {
       _v = SWIG_CheckState(res);
     }
     if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_SimplePort, 0);
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_portsVector__SWIG_3(self, argc, argv);
+        return _wrap_new_stringVector__SWIG_3(self, argc, argv);
       }
     }
   }
   
 fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_portsVector'.\n"
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_stringVector'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    std::vector< SimplePort * >::vector()\n"
-    "    std::vector< SimplePort * >::vector(std::vector< SimplePort * > const &)\n"
-    "    std::vector< SimplePort * >::vector(std::vector< SimplePort * >::size_type)\n"
-    "    std::vector< SimplePort * >::vector(std::vector< SimplePort * >::size_type,std::vector< SimplePort * >::value_type)\n");
+    "    std::vector< std::string >::vector()\n"
+    "    std::vector< std::string >::vector(std::vector< std::string > const &)\n"
+    "    std::vector< std::string >::vector(std::vector< std::string >::size_type)\n"
+    "    std::vector< std::string >::vector(std::vector< std::string >::size_type,std::vector< std::string >::value_type const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_push_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_push_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::value_type arg2 = (std::vector< SimplePort * >::value_type) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::value_type *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "portsVector_push_back", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "stringVector_push_back", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_push_back" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_push_back" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_SimplePort, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "portsVector_push_back" "', argument " "2"" of type '" "std::vector< SimplePort * >::value_type""'"); 
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "stringVector_push_back" "', argument " "2"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector_push_back" "', argument " "2"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    arg2 = ptr;
   }
-  arg2 = reinterpret_cast< std::vector< SimplePort * >::value_type >(argp2);
-  (arg1)->push_back(arg2);
+  (arg1)->push_back((std::vector< std::string >::value_type const &)*arg2);
   resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_front(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_front(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::value_type result;
+  std::vector< std::string >::value_type *result = 0 ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_front" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_front" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = (std::vector< SimplePort * >::value_type)((std::vector< SimplePort * > const *)arg1)->front();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SimplePort, 0 |  0 );
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = (std::vector< std::string >::value_type *) &((std::vector< std::string > const *)arg1)->front();
+  resultobj = SWIG_From_std_string(static_cast< std::string >(*result));
+  (void)swig::container_owner<swig::traits<std::vector< std::string >::value_type>::category>::back_reference(resultobj, swig_obj[0]);
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::value_type result;
+  std::vector< std::string >::value_type *result = 0 ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_back" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_back" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = (std::vector< SimplePort * >::value_type)((std::vector< SimplePort * > const *)arg1)->back();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SimplePort, 0 |  0 );
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = (std::vector< std::string >::value_type *) &((std::vector< std::string > const *)arg1)->back();
+  resultobj = SWIG_From_std_string(static_cast< std::string >(*result));
+  (void)swig::container_owner<swig::traits<std::vector< std::string >::value_type>::category>::back_reference(resultobj, swig_obj[0]);
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_assign(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_assign(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::size_type arg2 ;
-  std::vector< SimplePort * >::value_type arg3 = (std::vector< SimplePort * >::value_type) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::size_type arg2 ;
+  std::vector< std::string >::value_type *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   size_t val2 ;
   int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
   PyObject *swig_obj[3] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "portsVector_assign", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "stringVector_assign", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_assign" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_assign" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector_assign" "', argument " "2"" of type '" "std::vector< SimplePort * >::size_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector_assign" "', argument " "2"" of type '" "std::vector< std::string >::size_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::size_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_SimplePort, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "portsVector_assign" "', argument " "3"" of type '" "std::vector< SimplePort * >::value_type""'"); 
+  arg2 = static_cast< std::vector< std::string >::size_type >(val2);
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "stringVector_assign" "', argument " "3"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector_assign" "', argument " "3"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    arg3 = ptr;
   }
-  arg3 = reinterpret_cast< std::vector< SimplePort * >::value_type >(argp3);
-  (arg1)->assign(arg2,arg3);
+  (arg1)->assign(arg2,(std::vector< std::string >::value_type const &)*arg3);
   resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_resize__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector_resize__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::size_type arg2 ;
-  std::vector< SimplePort * >::value_type arg3 = (std::vector< SimplePort * >::value_type) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::size_type arg2 ;
+  std::vector< std::string >::value_type *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   size_t val2 ;
   int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_resize" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_resize" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector_resize" "', argument " "2"" of type '" "std::vector< SimplePort * >::size_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector_resize" "', argument " "2"" of type '" "std::vector< std::string >::size_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::size_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_SimplePort, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "portsVector_resize" "', argument " "3"" of type '" "std::vector< SimplePort * >::value_type""'"); 
+  arg2 = static_cast< std::vector< std::string >::size_type >(val2);
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "stringVector_resize" "', argument " "3"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector_resize" "', argument " "3"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    arg3 = ptr;
   }
-  arg3 = reinterpret_cast< std::vector< SimplePort * >::value_type >(argp3);
-  (arg1)->resize(arg2,arg3);
+  (arg1)->resize(arg2,(std::vector< std::string >::value_type const &)*arg3);
   resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_resize(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_resize(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[4] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "portsVector_resize", 0, 3, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector_resize", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
@@ -7675,13 +7803,13 @@ SWIGINTERN PyObject *_wrap_portsVector_resize(PyObject *self, PyObject *args) {
         _v = SWIG_CheckState(res);
       }
       if (_v) {
-        return _wrap_portsVector_resize__SWIG_0(self, argc, argv);
+        return _wrap_stringVector_resize__SWIG_0(self, argc, argv);
       }
     }
   }
   if (argc == 3) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       {
@@ -7689,164 +7817,175 @@ SWIGINTERN PyObject *_wrap_portsVector_resize(PyObject *self, PyObject *args) {
         _v = SWIG_CheckState(res);
       }
       if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SimplePort, 0);
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
         _v = SWIG_CheckState(res);
         if (_v) {
-          return _wrap_portsVector_resize__SWIG_1(self, argc, argv);
+          return _wrap_stringVector_resize__SWIG_1(self, argc, argv);
         }
       }
     }
   }
   
 fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'portsVector_resize'.\n"
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'stringVector_resize'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    std::vector< SimplePort * >::resize(std::vector< SimplePort * >::size_type)\n"
-    "    std::vector< SimplePort * >::resize(std::vector< SimplePort * >::size_type,std::vector< SimplePort * >::value_type)\n");
+    "    std::vector< std::string >::resize(std::vector< std::string >::size_type)\n"
+    "    std::vector< std::string >::resize(std::vector< std::string >::size_type,std::vector< std::string >::value_type const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_insert__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector_insert__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::iterator arg2 ;
-  std::vector< SimplePort * >::value_type arg3 = (std::vector< SimplePort * >::value_type) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::iterator arg2 ;
+  std::vector< std::string >::value_type *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   swig::SwigPyIterator *iter2 = 0 ;
   int res2 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  std::vector< SimplePort * >::iterator result;
+  int res3 = SWIG_OLDOBJ ;
+  std::vector< std::string >::iterator result;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_insert" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_insert" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
   if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_insert" "', argument " "2"" of type '" "std::vector< SimplePort * >::iterator""'");
+    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_insert" "', argument " "2"" of type '" "std::vector< std::string >::iterator""'");
   } else {
-    swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter2);
+    swig::SwigPyIterator_T<std::vector< std::string >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter2);
     if (iter_t) {
       arg2 = iter_t->get_current();
     } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_insert" "', argument " "2"" of type '" "std::vector< SimplePort * >::iterator""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_insert" "', argument " "2"" of type '" "std::vector< std::string >::iterator""'");
     }
   }
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_SimplePort, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "portsVector_insert" "', argument " "3"" of type '" "std::vector< SimplePort * >::value_type""'"); 
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "stringVector_insert" "', argument " "3"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector_insert" "', argument " "3"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    arg3 = ptr;
   }
-  arg3 = reinterpret_cast< std::vector< SimplePort * >::value_type >(argp3);
-  result = std_vector_Sl_SimplePort_Sm__Sg__insert__SWIG_0(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< SimplePort * >::iterator & >(result)),
+  result = std_vector_Sl_std_string_Sg__insert__SWIG_0(arg1,arg2,(std::string const &)*arg3);
+  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< std::string >::iterator & >(result)),
     swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_insert__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_stringVector_insert__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::iterator arg2 ;
-  std::vector< SimplePort * >::size_type arg3 ;
-  std::vector< SimplePort * >::value_type arg4 = (std::vector< SimplePort * >::value_type) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::iterator arg2 ;
+  std::vector< std::string >::size_type arg3 ;
+  std::vector< std::string >::value_type *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   swig::SwigPyIterator *iter2 = 0 ;
   int res2 ;
   size_t val3 ;
   int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
+  int res4 = SWIG_OLDOBJ ;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_insert" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_insert" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
   if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_insert" "', argument " "2"" of type '" "std::vector< SimplePort * >::iterator""'");
+    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_insert" "', argument " "2"" of type '" "std::vector< std::string >::iterator""'");
   } else {
-    swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter2);
+    swig::SwigPyIterator_T<std::vector< std::string >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter2);
     if (iter_t) {
       arg2 = iter_t->get_current();
     } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "portsVector_insert" "', argument " "2"" of type '" "std::vector< SimplePort * >::iterator""'");
+      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "stringVector_insert" "', argument " "2"" of type '" "std::vector< std::string >::iterator""'");
     }
   }
   ecode3 = SWIG_AsVal_size_t(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "portsVector_insert" "', argument " "3"" of type '" "std::vector< SimplePort * >::size_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "stringVector_insert" "', argument " "3"" of type '" "std::vector< std::string >::size_type""'");
   } 
-  arg3 = static_cast< std::vector< SimplePort * >::size_type >(val3);
-  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_SimplePort, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "portsVector_insert" "', argument " "4"" of type '" "std::vector< SimplePort * >::value_type""'"); 
+  arg3 = static_cast< std::vector< std::string >::size_type >(val3);
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "stringVector_insert" "', argument " "4"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "stringVector_insert" "', argument " "4"" of type '" "std::vector< std::string >::value_type const &""'"); 
+    }
+    arg4 = ptr;
   }
-  arg4 = reinterpret_cast< std::vector< SimplePort * >::value_type >(argp4);
-  std_vector_Sl_SimplePort_Sm__Sg__insert__SWIG_1(arg1,arg2,arg3,arg4);
+  std_vector_Sl_std_string_Sg__insert__SWIG_1(arg1,arg2,arg3,(std::string const &)*arg4);
   resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res4)) delete arg4;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res4)) delete arg4;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_insert(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_insert(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[5] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "portsVector_insert", 0, 4, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector_insert", 0, 4, argv))) SWIG_fail;
   --argc;
   if (argc == 3) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       swig::SwigPyIterator *iter = 0;
       int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter) != 0));
+      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
       if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SimplePort, 0);
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
         _v = SWIG_CheckState(res);
         if (_v) {
-          return _wrap_portsVector_insert__SWIG_0(self, argc, argv);
+          return _wrap_stringVector_insert__SWIG_0(self, argc, argv);
         }
       }
     }
   }
   if (argc == 4) {
     int _v;
-    int res = swig::asptr(argv[0], (std::vector< SimplePort*,std::allocator< SimplePort * > >**)(0));
+    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
       swig::SwigPyIterator *iter = 0;
       int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< SimplePort * >::iterator > *>(iter) != 0));
+      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
       if (_v) {
         {
           int res = SWIG_AsVal_size_t(argv[2], NULL);
           _v = SWIG_CheckState(res);
         }
         if (_v) {
-          void *vptr = 0;
-          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_SimplePort, 0);
+          int res = SWIG_AsPtr_std_string(argv[3], (std::string**)(0));
           _v = SWIG_CheckState(res);
           if (_v) {
-            return _wrap_portsVector_insert__SWIG_1(self, argc, argv);
+            return _wrap_stringVector_insert__SWIG_1(self, argc, argv);
           }
         }
       }
@@ -7854,35 +7993,35 @@ SWIGINTERN PyObject *_wrap_portsVector_insert(PyObject *self, PyObject *args) {
   }
   
 fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'portsVector_insert'.\n"
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'stringVector_insert'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    std::vector< SimplePort * >::insert(std::vector< SimplePort * >::iterator,std::vector< SimplePort * >::value_type)\n"
-    "    std::vector< SimplePort * >::insert(std::vector< SimplePort * >::iterator,std::vector< SimplePort * >::size_type,std::vector< SimplePort * >::value_type)\n");
+    "    std::vector< std::string >::insert(std::vector< std::string >::iterator,std::vector< std::string >::value_type const &)\n"
+    "    std::vector< std::string >::insert(std::vector< std::string >::iterator,std::vector< std::string >::size_type,std::vector< std::string >::value_type const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_reserve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_reserve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
-  std::vector< SimplePort * >::size_type arg2 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
+  std::vector< std::string >::size_type arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   size_t val2 ;
   int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "portsVector_reserve", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "stringVector_reserve", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_reserve" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_reserve" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "portsVector_reserve" "', argument " "2"" of type '" "std::vector< SimplePort * >::size_type""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "stringVector_reserve" "', argument " "2"" of type '" "std::vector< std::string >::size_type""'");
   } 
-  arg2 = static_cast< std::vector< SimplePort * >::size_type >(val2);
+  arg2 = static_cast< std::vector< std::string >::size_type >(val2);
   (arg1)->reserve(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -7891,22 +8030,22 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_portsVector_capacity(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_stringVector_capacity(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< SimplePort * >::size_type result;
+  std::vector< std::string >::size_type result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "portsVector_capacity" "', argument " "1"" of type '" "std::vector< SimplePort * > const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "stringVector_capacity" "', argument " "1"" of type '" "std::vector< std::string > const *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
-  result = ((std::vector< SimplePort * > const *)arg1)->capacity();
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
+  result = ((std::vector< std::string > const *)arg1)->capacity();
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -7914,20 +8053,20 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_portsVector(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_stringVector(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  std::vector< SimplePort * > *arg1 = (std::vector< SimplePort * > *) 0 ;
+  std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, SWIG_POINTER_DISOWN |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_portsVector" "', argument " "1"" of type '" "std::vector< SimplePort * > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_stringVector" "', argument " "1"" of type '" "std::vector< std::string > *""'"); 
   }
-  arg1 = reinterpret_cast< std::vector< SimplePort * > * >(argp1);
+  arg1 = reinterpret_cast< std::vector< std::string > * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -7936,14 +8075,14 @@ fail:
 }
 
 
-SWIGINTERN PyObject *portsVector_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *stringVector_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *portsVector_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *stringVector_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   return SWIG_Python_InitShadowInstance(args);
 }
 
@@ -8273,88 +8412,23 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PythonAPI_listComponentPorts(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PythonAPI_getPortsInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
+  PortsInterface *result = 0 ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_listComponentPorts" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getPortsInterface" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  (arg1)->listComponentPorts();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PythonAPI_setPortName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PythonAPI *arg1 = (PythonAPI *) 0 ;
-  QString *arg2 = 0 ;
-  QString *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setPortName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setPortName" "', argument " "1"" of type '" "PythonAPI *""'"); 
-  }
-  arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setPortName" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setPortName" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  arg2 = reinterpret_cast< QString * >(argp2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_setPortName" "', argument " "3"" of type '" "QString const &""'"); 
-  }
-  if (!argp3) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setPortName" "', argument " "3"" of type '" "QString const &""'"); 
-  }
-  arg3 = reinterpret_cast< QString * >(argp3);
-  (arg1)->setPortName((QString const &)*arg2,(QString const &)*arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PythonAPI_createSimplePortsForComponent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PythonAPI *arg1 = (PythonAPI *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< SimplePort *,std::allocator< SimplePort * > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_createSimplePortsForComponent" "', argument " "1"" of type '" "PythonAPI *""'"); 
-  }
-  arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  result = (arg1)->createSimplePortsForComponent();
-  resultobj = swig::from(static_cast< std::vector< SimplePort*,std::allocator< SimplePort * > > >(result));
+  result = (PortsInterface *)((PythonAPI const *)arg1)->getPortsInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PortsInterface, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -8372,57 +8446,71 @@ SWIGINTERN PyObject *PythonAPI_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject
   return SWIG_Python_InitShadowInstance(args);
 }
 
-SWIGINTERN PyObject *_wrap_new_SimpleNameGroup(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_PortsInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  QString *arg1 = 0 ;
-  QString *arg2 = 0 ;
+  PortsInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "new_PortsInterface", 0, 0, 0)) SWIG_fail;
+  result = (PortsInterface *)new PortsInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PortsInterface, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_PortsInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_PortsInterface" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setPorts(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< Component > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
   int res2 = 0 ;
   PyObject *swig_obj[2] ;
-  SimpleNameGroup *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "new_SimpleNameGroup", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QString,  0  | 0);
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setPorts", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_SimpleNameGroup" "', argument " "1"" of type '" "QString const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setPorts" "', argument " "1"" of type '" "PortsInterface *""'"); 
   }
-  if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimpleNameGroup" "', argument " "1"" of type '" "QString const &""'"); 
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_Component_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setPorts" "', argument " "2"" of type '" "QSharedPointer< Component >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setPorts" "', argument " "2"" of type '" "QSharedPointer< Component >""'");
+    } else {
+      QSharedPointer< Component > * temp = reinterpret_cast< QSharedPointer< Component > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< QString * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_SimpleNameGroup" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimpleNameGroup" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  arg2 = reinterpret_cast< QString * >(argp2);
-  result = (SimpleNameGroup *)new SimpleNameGroup((QString const &)*arg1,(QString const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SimpleNameGroup, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_SimpleNameGroup(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SimpleNameGroup *arg1 = (SimpleNameGroup *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_SimpleNameGroup, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SimpleNameGroup" "', argument " "1"" of type '" "SimpleNameGroup *""'"); 
-  }
-  arg1 = reinterpret_cast< SimpleNameGroup * >(argp1);
-  delete arg1;
+  (arg1)->setPorts(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -8430,267 +8518,36 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SimpleNameGroup_getName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_setValidator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  SimpleNameGroup *arg1 = (SimpleNameGroup *) 0 ;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< PortValidator > > arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  QString result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_SimpleNameGroup, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimpleNameGroup_getName" "', argument " "1"" of type '" "SimpleNameGroup const *""'"); 
-  }
-  arg1 = reinterpret_cast< SimpleNameGroup * >(argp1);
-  result = ((SimpleNameGroup const *)arg1)->getName();
-  resultobj = SWIG_NewPointerObj((new QString(static_cast< const QString& >(result))), SWIGTYPE_p_QString, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SimpleNameGroup_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SimpleNameGroup *arg1 = (SimpleNameGroup *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  QString result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_SimpleNameGroup, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimpleNameGroup_getDescription" "', argument " "1"" of type '" "SimpleNameGroup const *""'"); 
-  }
-  arg1 = reinterpret_cast< SimpleNameGroup * >(argp1);
-  result = ((SimpleNameGroup const *)arg1)->getDescription();
-  resultobj = SWIG_NewPointerObj((new QString(static_cast< const QString& >(result))), SWIGTYPE_p_QString, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *SimpleNameGroup_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_SimpleNameGroup, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
-SWIGINTERN PyObject *SimpleNameGroup_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  return SWIG_Python_InitShadowInstance(args);
-}
-
-SWIGINTERN PyObject *_wrap_new_SimplePort__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  QString *arg1 = 0 ;
-  QString *arg2 = 0 ;
-  int *arg3 = 0 ;
-  QString *arg4 = 0 ;
-  QString *arg5 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
+  void *argp2 ;
   int res2 = 0 ;
-  int temp3 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  void *argp5 = 0 ;
-  int res5 = 0 ;
-  SimplePort *result = 0 ;
+  PyObject *swig_obj[2] ;
   
-  if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QString,  0  | 0);
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setValidator", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_SimplePort" "', argument " "1"" of type '" "QString const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setValidator" "', argument " "1"" of type '" "PortsInterface *""'"); 
   }
-  if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimplePort" "', argument " "1"" of type '" "QString const &""'"); 
-  }
-  arg1 = reinterpret_cast< QString * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_SimplePort" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimplePort" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  arg2 = reinterpret_cast< QString * >(argp2);
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_SimplePort" "', argument " "3"" of type '" "int""'");
-  } 
-  temp3 = static_cast< int >(val3);
-  arg3 = &temp3;
-  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_SimplePort" "', argument " "4"" of type '" "QString const &""'"); 
-  }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimplePort" "', argument " "4"" of type '" "QString const &""'"); 
-  }
-  arg4 = reinterpret_cast< QString * >(argp4);
-  res5 = SWIG_ConvertPtr(swig_obj[4], &argp5, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res5)) {
-    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "new_SimplePort" "', argument " "5"" of type '" "QString const &""'"); 
-  }
-  if (!argp5) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimplePort" "', argument " "5"" of type '" "QString const &""'"); 
-  }
-  arg5 = reinterpret_cast< QString * >(argp5);
-  result = (SimplePort *)new SimplePort((QString const &)*arg1,(QString const &)*arg2,(int const &)*arg3,(QString const &)*arg4,(QString const &)*arg5);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SimplePort, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_SimplePort__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  QString *arg1 = 0 ;
-  QString *arg2 = 0 ;
-  int *arg3 = 0 ;
-  QString *arg4 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  int temp3 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  SimplePort *result = 0 ;
-  
-  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_SimplePort" "', argument " "1"" of type '" "QString const &""'"); 
-  }
-  if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimplePort" "', argument " "1"" of type '" "QString const &""'"); 
-  }
-  arg1 = reinterpret_cast< QString * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_SimplePort" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimplePort" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  arg2 = reinterpret_cast< QString * >(argp2);
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_SimplePort" "', argument " "3"" of type '" "int""'");
-  } 
-  temp3 = static_cast< int >(val3);
-  arg3 = &temp3;
-  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_SimplePort" "', argument " "4"" of type '" "QString const &""'"); 
-  }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SimplePort" "', argument " "4"" of type '" "QString const &""'"); 
-  }
-  arg4 = reinterpret_cast< QString * >(argp4);
-  result = (SimplePort *)new SimplePort((QString const &)*arg1,(QString const &)*arg2,(int const &)*arg3,(QString const &)*arg4);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SimplePort, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_SimplePort(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[6] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_SimplePort", 0, 5, argv))) SWIG_fail;
-  --argc;
-  if (argc == 4) {
-    int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          int res = SWIG_ConvertPtr(argv[3], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_new_SimplePort__SWIG_1(self, argc, argv);
-          }
-        }
-      }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_PortValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< PortValidator >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< PortValidator >""'");
+    } else {
+      QSharedPointer< PortValidator > * temp = reinterpret_cast< QSharedPointer< PortValidator > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
     }
   }
-  if (argc == 5) {
-    int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          int res = SWIG_ConvertPtr(argv[3], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            int res = SWIG_ConvertPtr(argv[4], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-            _v = SWIG_CheckState(res);
-            if (_v) {
-              return _wrap_new_SimplePort__SWIG_0(self, argc, argv);
-            }
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_SimplePort'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    SimplePort::SimplePort(QString const &,QString const &,int const &,QString const &,QString const &)\n"
-    "    SimplePort::SimplePort(QString const &,QString const &,int const &,QString const &)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_SimplePort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SimplePort *arg1 = (SimplePort *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_SimplePort, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SimplePort" "', argument " "1"" of type '" "SimplePort *""'"); 
-  }
-  arg1 = reinterpret_cast< SimplePort * >(argp1);
-  delete arg1;
+  (arg1)->setValidator(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -8698,32 +8555,152 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SimplePort_getDataType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_setExpressionParser(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  SimplePort *arg1 = (SimplePort *) 0 ;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  QString result;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
   
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_SimplePort, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setExpressionParser", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimplePort_getDataType" "', argument " "1"" of type '" "SimplePort const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setExpressionParser" "', argument " "1"" of type '" "PortsInterface *""'"); 
   }
-  arg1 = reinterpret_cast< SimplePort * >(argp1);
-  result = ((SimplePort const *)arg1)->getDataType();
-  resultobj = SWIG_NewPointerObj((new QString(static_cast< const QString& >(result))), SWIGTYPE_p_QString, SWIG_POINTER_OWN |  0 );
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setExpressionParser" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setExpressionParser" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setExpressionParser(arg2);
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_SimplePort_getBitWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_setExprressionFormatter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  SimplePort *arg1 = (SimplePort *) 0 ;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setExprressionFormatter", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setExprressionFormatter" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setExprressionFormatter" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setExprressionFormatter" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setExprressionFormatter(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getPortIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getPortIndex", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getPortIndex" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getPortIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getPortIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (int)((PortsInterface const *)arg1)->getPortIndex((std::string const &)*arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getIndexedPortName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getIndexedPortName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getIndexedPortName" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PortsInterface_getIndexedPortName" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((PortsInterface const *)arg1)->getIndexedPortName((int const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getPortCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -8731,12 +8708,12 @@ SWIGINTERN PyObject *_wrap_SimplePort_getBitWidth(PyObject *SWIGUNUSEDPARM(self)
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_SimplePort, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimplePort_getBitWidth" "', argument " "1"" of type '" "SimplePort const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getPortCount" "', argument " "1"" of type '" "PortsInterface const *""'"); 
   }
-  arg1 = reinterpret_cast< SimplePort * >(argp1);
-  result = (int)((SimplePort const *)arg1)->getBitWidth();
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  result = (int)((PortsInterface const *)arg1)->getPortCount();
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -8744,37 +8721,3841 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SimplePort_getDirection(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_getPortNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  SimplePort *arg1 = (SimplePort *) 0 ;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  QString result;
+  std::vector< std::string > result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_SimplePort, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimplePort_getDirection" "', argument " "1"" of type '" "SimplePort const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getPortNames" "', argument " "1"" of type '" "PortsInterface const *""'"); 
   }
-  arg1 = reinterpret_cast< SimplePort * >(argp1);
-  result = ((SimplePort const *)arg1)->getDirection();
-  resultobj = SWIG_NewPointerObj((new QString(static_cast< const QString& >(result))), SWIGTYPE_p_QString, SWIG_POINTER_OWN |  0 );
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  result = ((PortsInterface const *)arg1)->getPortNames();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *SimplePort_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setName" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getDescription" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getDescription((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setDescription" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getTypeName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getTypeName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getTypeName" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getTypeName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getTypeName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (arg1)->getTypeName((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setTypeName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setTypeName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setTypeName" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setTypeName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setTypeName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setTypeName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setTypeName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setTypeName((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayLeftValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getArrayLeftValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_getArrayLeftValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((PortsInterface const *)arg1)->getArrayLeftValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayLeftValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getArrayLeftValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getArrayLeftValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayLeftValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getArrayLeftValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_getArrayLeftValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_PortsInterface_getArrayLeftValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_getArrayLeftValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::getArrayLeftValue(std::string const &,int const &) const\n"
+    "    PortsInterface::getArrayLeftValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayLeftFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getArrayLeftFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getArrayLeftFormattedExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getArrayLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getArrayLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getArrayLeftFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayLeftExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getArrayLeftExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getArrayLeftExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getArrayLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getArrayLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getArrayLeftExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setArrayLeft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setArrayLeft", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setArrayLeft" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setArrayLeft" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setArrayLeft" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setArrayLeft" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setArrayLeft" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setArrayLeft((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayRightValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getArrayRightValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_getArrayRightValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((PortsInterface const *)arg1)->getArrayRightValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayRightValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getArrayRightValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getArrayRightValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayRightValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getArrayRightValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_getArrayRightValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_PortsInterface_getArrayRightValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_getArrayRightValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::getArrayRightValue(std::string const &,int const &) const\n"
+    "    PortsInterface::getArrayRightValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayRightFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getArrayRightFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getArrayRightFormattedExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getArrayRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getArrayRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getArrayRightFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getArrayRightExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getArrayRightExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getArrayRightExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getArrayRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getArrayRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getArrayRightExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setArrayRight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setArrayRight", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setArrayRight" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setArrayRight" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setArrayRight" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setArrayRight" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setArrayRight" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setArrayRight((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getTags(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getTags", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getTags" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getTags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getTags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getTags((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setTags(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setTags", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setTags" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setTags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setTags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setTags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setTags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setTags((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_isAdHoc(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_isAdHoc", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_isAdHoc" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_isAdHoc" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_isAdHoc" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->isAdHoc((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setAdHoc(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setAdHoc", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setAdHoc" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setAdHoc" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setAdHoc" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_setAdHoc" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (bool)(arg1)->setAdHoc((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getDirection(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getDirection", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getDirection" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getDirection" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getDirection" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getDirection((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setDirection(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setDirection", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setDirection" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setDirection" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setDirection" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setDirection" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setDirection" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDirection((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getLeftBoundValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getLeftBoundValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getLeftBoundValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getLeftBoundValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_getLeftBoundValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((PortsInterface const *)arg1)->getLeftBoundValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getLeftBoundValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getLeftBoundValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getLeftBoundValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getLeftBoundValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getLeftBoundValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getLeftBoundValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getLeftBoundValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_getLeftBoundValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_PortsInterface_getLeftBoundValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_getLeftBoundValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::getLeftBoundValue(std::string const &,int const &) const\n"
+    "    PortsInterface::getLeftBoundValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getLeftBoundFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getLeftBoundFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getLeftBoundFormattedExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getLeftBoundFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getLeftBoundFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getLeftBoundFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getLeftBoundExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getLeftBoundExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getLeftBoundExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getLeftBoundExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getLeftBoundExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getLeftBoundExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setLeftBound(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setLeftBound", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setLeftBound" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setLeftBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setLeftBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setLeftBound" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setLeftBound" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setLeftBound((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getRightBoundValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getRightBoundValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getRightBoundValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getRightBoundValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_getRightBoundValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((PortsInterface const *)arg1)->getRightBoundValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getRightBoundValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getRightBoundValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getRightBoundValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getRightBoundValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getRightBoundValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getRightBoundValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getRightBoundValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_getRightBoundValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_PortsInterface_getRightBoundValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_getRightBoundValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::getRightBoundValue(std::string const &,int const &) const\n"
+    "    PortsInterface::getRightBoundValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getRightBoundFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getRightBoundFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getRightBoundFormattedExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getRightBoundFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getRightBoundFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getRightBoundFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getRightBoundExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getRightBoundExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getRightBoundExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getRightBoundExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getRightBoundExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getRightBoundExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setRightBound(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setRightBound", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setRightBound" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setRightBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setRightBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setRightBound" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setRightBound" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setRightBound((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_hasExpressionInLeftOrRightBound(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_hasExpressionInLeftOrRightBound", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_hasExpressionInLeftOrRightBound" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_hasExpressionInLeftOrRightBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_hasExpressionInLeftOrRightBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->hasExpressionInLeftOrRightBound((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getWidth", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getWidth" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getWidth((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setWidth", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setWidth" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setWidth" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setWidth" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setWidth((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getDefaultValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getDefaultValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getDefaultValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getDefaultValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_getDefaultValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((PortsInterface const *)arg1)->getDefaultValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getDefaultValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getDefaultValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getDefaultValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getDefaultValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getDefaultValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getDefaultValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getDefaultValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_getDefaultValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_PortsInterface_getDefaultValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_getDefaultValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::getDefaultValue(std::string const &,int const &) const\n"
+    "    PortsInterface::getDefaultValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getDefaultValueFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getDefaultValueFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getDefaultValueFormattedExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getDefaultValueFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getDefaultValueFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getDefaultValueFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getDefaultValueExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getDefaultValueExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getDefaultValueExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getDefaultValueExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getDefaultValueExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getDefaultValueExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setDefaultValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setDefaultValue", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setDefaultValue" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setDefaultValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setDefaultValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setDefaultValue" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setDefaultValue" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDefaultValue((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getBusWidthValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getBusWidthValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getBusWidthValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getBusWidthValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_getBusWidthValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((PortsInterface const *)arg1)->getBusWidthValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getBusWidthValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getBusWidthValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getBusWidthValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getBusWidthValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getBusWidthValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getBusWidthValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getBusWidthValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_getBusWidthValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_PortsInterface_getBusWidthValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_getBusWidthValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::getBusWidthValue(std::string const &,int const &) const\n"
+    "    PortsInterface::getBusWidthValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getBusWidthFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getBusWidthFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getBusWidthFormattedExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getBusWidthFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getBusWidthFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getBusWidthFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getBusWidthExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getBusWidthExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getBusWidthExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getBusWidthExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getBusWidthExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getBusWidthExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setBusWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setBusWidth", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setBusWidth" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setBusWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setBusWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setBusWidth" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setBusWidth" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setBusWidth((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getInitiative(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getInitiative", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getInitiative" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getInitiative" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getInitiative" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getInitiative((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setInitiative(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setInitiative", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setInitiative" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setInitiative" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setInitiative" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setInitiative" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setInitiative" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setInitiative((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getKind(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getKind", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getKind" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getKind" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getKind" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getKind((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setKind(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setKind", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setKind" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setKind" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setKind" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setKind" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setKind" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setKind((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getProtocolType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getProtocolType", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getProtocolType" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getProtocolType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getProtocolType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getProtocolType((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setProtocolType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setProtocolType", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setProtocolType" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setProtocolType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setProtocolType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setProtocolType" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setProtocolType" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setProtocolType((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMaxConnectionsValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getMaxConnectionsValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getMaxConnectionsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getMaxConnectionsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_getMaxConnectionsValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((PortsInterface const *)arg1)->getMaxConnectionsValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMaxConnectionsValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getMaxConnectionsValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getMaxConnectionsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getMaxConnectionsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getMaxConnectionsValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMaxConnectionsValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getMaxConnectionsValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_getMaxConnectionsValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_PortsInterface_getMaxConnectionsValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_getMaxConnectionsValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::getMaxConnectionsValue(std::string const &,int const &) const\n"
+    "    PortsInterface::getMaxConnectionsValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMaxConnectionsFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getMaxConnectionsFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getMaxConnectionsFormattedExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getMaxConnectionsFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getMaxConnectionsFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getMaxConnectionsFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMaxConnectionsExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getMaxConnectionsExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getMaxConnectionsExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getMaxConnectionsExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getMaxConnectionsExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getMaxConnectionsExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setMaxConnections(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setMaxConnections", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setMaxConnections" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setMaxConnections" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setMaxConnections" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setMaxConnections" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setMaxConnections" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->setMaxConnections((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMinConnectionsValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getMinConnectionsValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getMinConnectionsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getMinConnectionsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PortsInterface_getMinConnectionsValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((PortsInterface const *)arg1)->getMinConnectionsValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMinConnectionsValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getMinConnectionsValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getMinConnectionsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getMinConnectionsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getMinConnectionsValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMinConnectionsValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getMinConnectionsValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_getMinConnectionsValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_PortsInterface_getMinConnectionsValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_getMinConnectionsValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::getMinConnectionsValue(std::string const &,int const &) const\n"
+    "    PortsInterface::getMinConnectionsValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMinConnectionsFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getMinConnectionsFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getMinConnectionsFormattedExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getMinConnectionsFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getMinConnectionsFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getMinConnectionsFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getMinConnectionsExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getMinConnectionsExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getMinConnectionsExpression" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getMinConnectionsExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getMinConnectionsExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getMinConnectionsExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_setMinConnections(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setMinConnections", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setMinConnections" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setMinConnections" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setMinConnections" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setMinConnections" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setMinConnections" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->setMinConnections((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getAllReferencesToIdInPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getAllReferencesToIdInPort", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (int)((PortsInterface const *)arg1)->getAllReferencesToIdInPort((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_addWirePort__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_addWirePort" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_addWirePort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_addWirePort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->addWirePort((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_addWirePort__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_addWirePort" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  (arg1)->addWirePort();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_addWirePort(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_addWirePort", 0, 2, argv))) SWIG_fail;
+  --argc;
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_PortsInterface_addWirePort__SWIG_1(self, argc, argv);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_addWirePort__SWIG_0(self, argc, argv);
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_addWirePort'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::addWirePort(std::string const &)\n"
+    "    PortsInterface::addWirePort()\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_addTransactionalPort__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_addTransactionalPort" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_addTransactionalPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_addTransactionalPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->addTransactionalPort((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_addTransactionalPort__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_addTransactionalPort" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  (arg1)->addTransactionalPort();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_addTransactionalPort(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_addTransactionalPort", 0, 2, argv))) SWIG_fail;
+  --argc;
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_PortsInterface_addTransactionalPort__SWIG_1(self, argc, argv);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PortsInterface_addTransactionalPort__SWIG_0(self, argc, argv);
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PortsInterface_addTransactionalPort'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PortsInterface::addTransactionalPort(std::string const &)\n"
+    "    PortsInterface::addTransactionalPort()\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_removePort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_removePort", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_removePort" "', argument " "1"" of type '" "PortsInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_removePort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_removePort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)(arg1)->removePort((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_validatePorts(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_validatePorts" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  result = (bool)((PortsInterface const *)arg1)->validatePorts();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidName" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidName((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portLeftArrayValueIsValid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portLeftArrayValueIsValid", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portLeftArrayValueIsValid" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portLeftArrayValueIsValid" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portLeftArrayValueIsValid" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portLeftArrayValueIsValid((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portRightArrayValueIsValid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portRightArrayValueIsValid", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portRightArrayValueIsValid" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portRightArrayValueIsValid" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portRightArrayValueIsValid" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portRightArrayValueIsValid((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidTypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidTypes", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidTypes" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidTypes((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portIsWire(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portIsWire", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portIsWire" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portIsWire" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portIsWire" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portIsWire((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidLeftBound(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidLeftBound", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidLeftBound" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidLeftBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidLeftBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidLeftBound((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidRightBound(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidRightBound", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidRightBound" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidRightBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidRightBound" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidRightBound((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidDefaultValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidDefaultValue", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidDefaultValue" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidDefaultValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidDefaultValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidDefaultValue((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portIsTransactional(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portIsTransactional", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portIsTransactional" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portIsTransactional" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portIsTransactional" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portIsTransactional((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidBusWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidBusWidth", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidBusWidth" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidBusWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidBusWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidBusWidth((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidInitiative(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidInitiative", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidInitiative" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidInitiative" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidInitiative" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidInitiative((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidKind(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidKind", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidKind" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidKind" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidKind" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidKind((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidProtocol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidProtocol", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidProtocol" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidProtocol" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidProtocol" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidProtocol((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidMaxConnections(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidMaxConnections", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidMaxConnections" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidMaxConnections" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidMaxConnections" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidMaxConnections((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidMinConnections(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidMinConnections", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidMinConnections" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidMinConnections" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidMinConnections" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portHasValidMinConnections((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *PortsInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_SimplePort, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_PortsInterface, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *SimplePort_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *PortsInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   return SWIG_Python_InitShadowInstance(args);
 }
 
@@ -8815,41 +12596,41 @@ static PyMethodDef SwigMethods[] = {
 	 { "NameGroup_description", _wrap_NameGroup_description, METH_O, NULL},
 	 { "NameGroup_swigregister", NameGroup_swigregister, METH_O, NULL},
 	 { "NameGroup_swiginit", NameGroup_swiginit, METH_VARARGS, NULL},
-	 { "portsVector_iterator", _wrap_portsVector_iterator, METH_O, NULL},
-	 { "portsVector___nonzero__", _wrap_portsVector___nonzero__, METH_O, NULL},
-	 { "portsVector___bool__", _wrap_portsVector___bool__, METH_O, NULL},
-	 { "portsVector___len__", _wrap_portsVector___len__, METH_O, NULL},
-	 { "portsVector___getslice__", _wrap_portsVector___getslice__, METH_VARARGS, NULL},
-	 { "portsVector___setslice__", _wrap_portsVector___setslice__, METH_VARARGS, NULL},
-	 { "portsVector___delslice__", _wrap_portsVector___delslice__, METH_VARARGS, NULL},
-	 { "portsVector___delitem__", _wrap_portsVector___delitem__, METH_VARARGS, NULL},
-	 { "portsVector___getitem__", _wrap_portsVector___getitem__, METH_VARARGS, NULL},
-	 { "portsVector___setitem__", _wrap_portsVector___setitem__, METH_VARARGS, NULL},
-	 { "portsVector_pop", _wrap_portsVector_pop, METH_O, NULL},
-	 { "portsVector_append", _wrap_portsVector_append, METH_VARARGS, NULL},
-	 { "portsVector_empty", _wrap_portsVector_empty, METH_O, NULL},
-	 { "portsVector_size", _wrap_portsVector_size, METH_O, NULL},
-	 { "portsVector_swap", _wrap_portsVector_swap, METH_VARARGS, NULL},
-	 { "portsVector_begin", _wrap_portsVector_begin, METH_O, NULL},
-	 { "portsVector_end", _wrap_portsVector_end, METH_O, NULL},
-	 { "portsVector_rbegin", _wrap_portsVector_rbegin, METH_O, NULL},
-	 { "portsVector_rend", _wrap_portsVector_rend, METH_O, NULL},
-	 { "portsVector_clear", _wrap_portsVector_clear, METH_O, NULL},
-	 { "portsVector_get_allocator", _wrap_portsVector_get_allocator, METH_O, NULL},
-	 { "portsVector_pop_back", _wrap_portsVector_pop_back, METH_O, NULL},
-	 { "portsVector_erase", _wrap_portsVector_erase, METH_VARARGS, NULL},
-	 { "new_portsVector", _wrap_new_portsVector, METH_VARARGS, NULL},
-	 { "portsVector_push_back", _wrap_portsVector_push_back, METH_VARARGS, NULL},
-	 { "portsVector_front", _wrap_portsVector_front, METH_O, NULL},
-	 { "portsVector_back", _wrap_portsVector_back, METH_O, NULL},
-	 { "portsVector_assign", _wrap_portsVector_assign, METH_VARARGS, NULL},
-	 { "portsVector_resize", _wrap_portsVector_resize, METH_VARARGS, NULL},
-	 { "portsVector_insert", _wrap_portsVector_insert, METH_VARARGS, NULL},
-	 { "portsVector_reserve", _wrap_portsVector_reserve, METH_VARARGS, NULL},
-	 { "portsVector_capacity", _wrap_portsVector_capacity, METH_O, NULL},
-	 { "delete_portsVector", _wrap_delete_portsVector, METH_O, NULL},
-	 { "portsVector_swigregister", portsVector_swigregister, METH_O, NULL},
-	 { "portsVector_swiginit", portsVector_swiginit, METH_VARARGS, NULL},
+	 { "stringVector_iterator", _wrap_stringVector_iterator, METH_O, NULL},
+	 { "stringVector___nonzero__", _wrap_stringVector___nonzero__, METH_O, NULL},
+	 { "stringVector___bool__", _wrap_stringVector___bool__, METH_O, NULL},
+	 { "stringVector___len__", _wrap_stringVector___len__, METH_O, NULL},
+	 { "stringVector___getslice__", _wrap_stringVector___getslice__, METH_VARARGS, NULL},
+	 { "stringVector___setslice__", _wrap_stringVector___setslice__, METH_VARARGS, NULL},
+	 { "stringVector___delslice__", _wrap_stringVector___delslice__, METH_VARARGS, NULL},
+	 { "stringVector___delitem__", _wrap_stringVector___delitem__, METH_VARARGS, NULL},
+	 { "stringVector___getitem__", _wrap_stringVector___getitem__, METH_VARARGS, NULL},
+	 { "stringVector___setitem__", _wrap_stringVector___setitem__, METH_VARARGS, NULL},
+	 { "stringVector_pop", _wrap_stringVector_pop, METH_O, NULL},
+	 { "stringVector_append", _wrap_stringVector_append, METH_VARARGS, NULL},
+	 { "stringVector_empty", _wrap_stringVector_empty, METH_O, NULL},
+	 { "stringVector_size", _wrap_stringVector_size, METH_O, NULL},
+	 { "stringVector_swap", _wrap_stringVector_swap, METH_VARARGS, NULL},
+	 { "stringVector_begin", _wrap_stringVector_begin, METH_O, NULL},
+	 { "stringVector_end", _wrap_stringVector_end, METH_O, NULL},
+	 { "stringVector_rbegin", _wrap_stringVector_rbegin, METH_O, NULL},
+	 { "stringVector_rend", _wrap_stringVector_rend, METH_O, NULL},
+	 { "stringVector_clear", _wrap_stringVector_clear, METH_O, NULL},
+	 { "stringVector_get_allocator", _wrap_stringVector_get_allocator, METH_O, NULL},
+	 { "stringVector_pop_back", _wrap_stringVector_pop_back, METH_O, NULL},
+	 { "stringVector_erase", _wrap_stringVector_erase, METH_VARARGS, NULL},
+	 { "new_stringVector", _wrap_new_stringVector, METH_VARARGS, NULL},
+	 { "stringVector_push_back", _wrap_stringVector_push_back, METH_VARARGS, NULL},
+	 { "stringVector_front", _wrap_stringVector_front, METH_O, NULL},
+	 { "stringVector_back", _wrap_stringVector_back, METH_O, NULL},
+	 { "stringVector_assign", _wrap_stringVector_assign, METH_VARARGS, NULL},
+	 { "stringVector_resize", _wrap_stringVector_resize, METH_VARARGS, NULL},
+	 { "stringVector_insert", _wrap_stringVector_insert, METH_VARARGS, NULL},
+	 { "stringVector_reserve", _wrap_stringVector_reserve, METH_VARARGS, NULL},
+	 { "stringVector_capacity", _wrap_stringVector_capacity, METH_O, NULL},
+	 { "delete_stringVector", _wrap_delete_stringVector, METH_O, NULL},
+	 { "stringVector_swigregister", stringVector_swigregister, METH_O, NULL},
+	 { "stringVector_swiginit", stringVector_swiginit, METH_VARARGS, NULL},
 	 { "new_PythonAPI", _wrap_new_PythonAPI, METH_NOARGS, NULL},
 	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, NULL},
 	 { "PythonAPI_setupLibrary", _wrap_PythonAPI_setupLibrary, METH_VARARGS, NULL},
@@ -8861,24 +12642,93 @@ static PyMethodDef SwigMethods[] = {
 	 { "PythonAPI_getComponentName", _wrap_PythonAPI_getComponentName, METH_O, NULL},
 	 { "PythonAPI_getComponentDescription", _wrap_PythonAPI_getComponentDescription, METH_O, NULL},
 	 { "PythonAPI_saveComponent", _wrap_PythonAPI_saveComponent, METH_O, NULL},
-	 { "PythonAPI_listComponentPorts", _wrap_PythonAPI_listComponentPorts, METH_O, NULL},
-	 { "PythonAPI_setPortName", _wrap_PythonAPI_setPortName, METH_VARARGS, NULL},
-	 { "PythonAPI_createSimplePortsForComponent", _wrap_PythonAPI_createSimplePortsForComponent, METH_O, NULL},
+	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, NULL},
 	 { "PythonAPI_swigregister", PythonAPI_swigregister, METH_O, NULL},
 	 { "PythonAPI_swiginit", PythonAPI_swiginit, METH_VARARGS, NULL},
-	 { "new_SimpleNameGroup", _wrap_new_SimpleNameGroup, METH_VARARGS, NULL},
-	 { "delete_SimpleNameGroup", _wrap_delete_SimpleNameGroup, METH_O, NULL},
-	 { "SimpleNameGroup_getName", _wrap_SimpleNameGroup_getName, METH_O, NULL},
-	 { "SimpleNameGroup_getDescription", _wrap_SimpleNameGroup_getDescription, METH_O, NULL},
-	 { "SimpleNameGroup_swigregister", SimpleNameGroup_swigregister, METH_O, NULL},
-	 { "SimpleNameGroup_swiginit", SimpleNameGroup_swiginit, METH_VARARGS, NULL},
-	 { "new_SimplePort", _wrap_new_SimplePort, METH_VARARGS, NULL},
-	 { "delete_SimplePort", _wrap_delete_SimplePort, METH_O, NULL},
-	 { "SimplePort_getDataType", _wrap_SimplePort_getDataType, METH_O, NULL},
-	 { "SimplePort_getBitWidth", _wrap_SimplePort_getBitWidth, METH_O, NULL},
-	 { "SimplePort_getDirection", _wrap_SimplePort_getDirection, METH_O, NULL},
-	 { "SimplePort_swigregister", SimplePort_swigregister, METH_O, NULL},
-	 { "SimplePort_swiginit", SimplePort_swiginit, METH_VARARGS, NULL},
+	 { "new_PortsInterface", _wrap_new_PortsInterface, METH_NOARGS, NULL},
+	 { "delete_PortsInterface", _wrap_delete_PortsInterface, METH_O, NULL},
+	 { "PortsInterface_setPorts", _wrap_PortsInterface_setPorts, METH_VARARGS, NULL},
+	 { "PortsInterface_setValidator", _wrap_PortsInterface_setValidator, METH_VARARGS, NULL},
+	 { "PortsInterface_setExpressionParser", _wrap_PortsInterface_setExpressionParser, METH_VARARGS, NULL},
+	 { "PortsInterface_setExprressionFormatter", _wrap_PortsInterface_setExprressionFormatter, METH_VARARGS, NULL},
+	 { "PortsInterface_getPortIndex", _wrap_PortsInterface_getPortIndex, METH_VARARGS, NULL},
+	 { "PortsInterface_getIndexedPortName", _wrap_PortsInterface_getIndexedPortName, METH_VARARGS, NULL},
+	 { "PortsInterface_getPortCount", _wrap_PortsInterface_getPortCount, METH_O, NULL},
+	 { "PortsInterface_getPortNames", _wrap_PortsInterface_getPortNames, METH_O, NULL},
+	 { "PortsInterface_setName", _wrap_PortsInterface_setName, METH_VARARGS, NULL},
+	 { "PortsInterface_getDescription", _wrap_PortsInterface_getDescription, METH_VARARGS, NULL},
+	 { "PortsInterface_setDescription", _wrap_PortsInterface_setDescription, METH_VARARGS, NULL},
+	 { "PortsInterface_getTypeName", _wrap_PortsInterface_getTypeName, METH_VARARGS, NULL},
+	 { "PortsInterface_setTypeName", _wrap_PortsInterface_setTypeName, METH_VARARGS, NULL},
+	 { "PortsInterface_getArrayLeftValue", _wrap_PortsInterface_getArrayLeftValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getArrayLeftFormattedExpression", _wrap_PortsInterface_getArrayLeftFormattedExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_getArrayLeftExpression", _wrap_PortsInterface_getArrayLeftExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_setArrayLeft", _wrap_PortsInterface_setArrayLeft, METH_VARARGS, NULL},
+	 { "PortsInterface_getArrayRightValue", _wrap_PortsInterface_getArrayRightValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getArrayRightFormattedExpression", _wrap_PortsInterface_getArrayRightFormattedExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_getArrayRightExpression", _wrap_PortsInterface_getArrayRightExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_setArrayRight", _wrap_PortsInterface_setArrayRight, METH_VARARGS, NULL},
+	 { "PortsInterface_getTags", _wrap_PortsInterface_getTags, METH_VARARGS, NULL},
+	 { "PortsInterface_setTags", _wrap_PortsInterface_setTags, METH_VARARGS, NULL},
+	 { "PortsInterface_isAdHoc", _wrap_PortsInterface_isAdHoc, METH_VARARGS, NULL},
+	 { "PortsInterface_setAdHoc", _wrap_PortsInterface_setAdHoc, METH_VARARGS, NULL},
+	 { "PortsInterface_getDirection", _wrap_PortsInterface_getDirection, METH_VARARGS, NULL},
+	 { "PortsInterface_setDirection", _wrap_PortsInterface_setDirection, METH_VARARGS, NULL},
+	 { "PortsInterface_getLeftBoundValue", _wrap_PortsInterface_getLeftBoundValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getLeftBoundFormattedExpression", _wrap_PortsInterface_getLeftBoundFormattedExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_getLeftBoundExpression", _wrap_PortsInterface_getLeftBoundExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_setLeftBound", _wrap_PortsInterface_setLeftBound, METH_VARARGS, NULL},
+	 { "PortsInterface_getRightBoundValue", _wrap_PortsInterface_getRightBoundValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getRightBoundFormattedExpression", _wrap_PortsInterface_getRightBoundFormattedExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_getRightBoundExpression", _wrap_PortsInterface_getRightBoundExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_setRightBound", _wrap_PortsInterface_setRightBound, METH_VARARGS, NULL},
+	 { "PortsInterface_hasExpressionInLeftOrRightBound", _wrap_PortsInterface_hasExpressionInLeftOrRightBound, METH_VARARGS, NULL},
+	 { "PortsInterface_getWidth", _wrap_PortsInterface_getWidth, METH_VARARGS, NULL},
+	 { "PortsInterface_setWidth", _wrap_PortsInterface_setWidth, METH_VARARGS, NULL},
+	 { "PortsInterface_getDefaultValue", _wrap_PortsInterface_getDefaultValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getDefaultValueFormattedExpression", _wrap_PortsInterface_getDefaultValueFormattedExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_getDefaultValueExpression", _wrap_PortsInterface_getDefaultValueExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_setDefaultValue", _wrap_PortsInterface_setDefaultValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getBusWidthValue", _wrap_PortsInterface_getBusWidthValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getBusWidthFormattedExpression", _wrap_PortsInterface_getBusWidthFormattedExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_getBusWidthExpression", _wrap_PortsInterface_getBusWidthExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_setBusWidth", _wrap_PortsInterface_setBusWidth, METH_VARARGS, NULL},
+	 { "PortsInterface_getInitiative", _wrap_PortsInterface_getInitiative, METH_VARARGS, NULL},
+	 { "PortsInterface_setInitiative", _wrap_PortsInterface_setInitiative, METH_VARARGS, NULL},
+	 { "PortsInterface_getKind", _wrap_PortsInterface_getKind, METH_VARARGS, NULL},
+	 { "PortsInterface_setKind", _wrap_PortsInterface_setKind, METH_VARARGS, NULL},
+	 { "PortsInterface_getProtocolType", _wrap_PortsInterface_getProtocolType, METH_VARARGS, NULL},
+	 { "PortsInterface_setProtocolType", _wrap_PortsInterface_setProtocolType, METH_VARARGS, NULL},
+	 { "PortsInterface_getMaxConnectionsValue", _wrap_PortsInterface_getMaxConnectionsValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getMaxConnectionsFormattedExpression", _wrap_PortsInterface_getMaxConnectionsFormattedExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_getMaxConnectionsExpression", _wrap_PortsInterface_getMaxConnectionsExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_setMaxConnections", _wrap_PortsInterface_setMaxConnections, METH_VARARGS, NULL},
+	 { "PortsInterface_getMinConnectionsValue", _wrap_PortsInterface_getMinConnectionsValue, METH_VARARGS, NULL},
+	 { "PortsInterface_getMinConnectionsFormattedExpression", _wrap_PortsInterface_getMinConnectionsFormattedExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_getMinConnectionsExpression", _wrap_PortsInterface_getMinConnectionsExpression, METH_VARARGS, NULL},
+	 { "PortsInterface_setMinConnections", _wrap_PortsInterface_setMinConnections, METH_VARARGS, NULL},
+	 { "PortsInterface_getAllReferencesToIdInPort", _wrap_PortsInterface_getAllReferencesToIdInPort, METH_VARARGS, NULL},
+	 { "PortsInterface_addWirePort", _wrap_PortsInterface_addWirePort, METH_VARARGS, NULL},
+	 { "PortsInterface_addTransactionalPort", _wrap_PortsInterface_addTransactionalPort, METH_VARARGS, NULL},
+	 { "PortsInterface_removePort", _wrap_PortsInterface_removePort, METH_VARARGS, NULL},
+	 { "PortsInterface_validatePorts", _wrap_PortsInterface_validatePorts, METH_O, NULL},
+	 { "PortsInterface_portHasValidName", _wrap_PortsInterface_portHasValidName, METH_VARARGS, NULL},
+	 { "PortsInterface_portLeftArrayValueIsValid", _wrap_PortsInterface_portLeftArrayValueIsValid, METH_VARARGS, NULL},
+	 { "PortsInterface_portRightArrayValueIsValid", _wrap_PortsInterface_portRightArrayValueIsValid, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidTypes", _wrap_PortsInterface_portHasValidTypes, METH_VARARGS, NULL},
+	 { "PortsInterface_portIsWire", _wrap_PortsInterface_portIsWire, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidLeftBound", _wrap_PortsInterface_portHasValidLeftBound, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidRightBound", _wrap_PortsInterface_portHasValidRightBound, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidDefaultValue", _wrap_PortsInterface_portHasValidDefaultValue, METH_VARARGS, NULL},
+	 { "PortsInterface_portIsTransactional", _wrap_PortsInterface_portIsTransactional, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidBusWidth", _wrap_PortsInterface_portHasValidBusWidth, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidInitiative", _wrap_PortsInterface_portHasValidInitiative, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidKind", _wrap_PortsInterface_portHasValidKind, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidProtocol", _wrap_PortsInterface_portHasValidProtocol, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidMaxConnections", _wrap_PortsInterface_portHasValidMaxConnections, METH_VARARGS, NULL},
+	 { "PortsInterface_portHasValidMinConnections", _wrap_PortsInterface_portHasValidMinConnections, METH_VARARGS, NULL},
+	 { "PortsInterface_swigregister", PortsInterface_swigregister, METH_O, NULL},
+	 { "PortsInterface_swiginit", PortsInterface_swiginit, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -8889,71 +12739,84 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static void *_p_SimplePortTo_p_SimpleNameGroup(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SimpleNameGroup *)  ((SimplePort *) x));
-}
 static swig_type_info _swigt__p_NameGroup = {"_p_NameGroup", "NameGroup *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_PortsInterface = {"_p_PortsInterface", "PortsInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PythonAPI = {"_p_PythonAPI", "PythonAPI *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_Component_t = {"_p_QSharedPointerT_Component_t", "QSharedPointer< Component > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_ExpressionFormatter_t = {"_p_QSharedPointerT_ExpressionFormatter_t", "QSharedPointer< ExpressionFormatter > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_ExpressionParser_t = {"_p_QSharedPointerT_ExpressionParser_t", "QSharedPointer< ExpressionParser > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_PortValidator_t = {"_p_QSharedPointerT_PortValidator_t", "QSharedPointer< PortValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QString = {"_p_QString", "QString *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_SimpleNameGroup = {"_p_SimpleNameGroup", "SimpleNameGroup *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_SimplePort = {"_p_SimplePort", "std::vector< SimplePort * >::value_type|SimplePort *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_allocator_type = {"_p_allocator_type", "allocator_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_difference_type = {"_p_difference_type", "difference_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_PyObject = {"_p_p_PyObject", "PyObject **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_size_type = {"_p_size_type", "size_type *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__allocatorT_SimplePort_p_t = {"_p_std__allocatorT_SimplePort_p_t", "std::vector< SimplePort * >::allocator_type *|std::allocator< SimplePort * > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__allocatorT_std__string_t = {"_p_std__allocatorT_std__string_t", "std::vector< std::string >::allocator_type *|std::allocator< std::string > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__invalid_argument = {"_p_std__invalid_argument", "std::invalid_argument *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t = {"_p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t", "std::vector< SimplePort *,std::allocator< SimplePort * > > *|std::vector< SimplePort * > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t = {"_p_std__vectorT_std__string_std__allocatorT_std__string_t_t", "std::vector< std::string,std::allocator< std::string > > *|std::vector< std::string > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__SwigPyIterator = {"_p_swig__SwigPyIterator", "swig::SwigPyIterator *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_value_type = {"_p_value_type", "value_type *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_NameGroup,
+  &_swigt__p_PortsInterface,
   &_swigt__p_PythonAPI,
+  &_swigt__p_QSharedPointerT_Component_t,
+  &_swigt__p_QSharedPointerT_ExpressionFormatter_t,
+  &_swigt__p_QSharedPointerT_ExpressionParser_t,
+  &_swigt__p_QSharedPointerT_PortValidator_t,
   &_swigt__p_QString,
-  &_swigt__p_SimpleNameGroup,
-  &_swigt__p_SimplePort,
   &_swigt__p_allocator_type,
   &_swigt__p_char,
   &_swigt__p_difference_type,
   &_swigt__p_p_PyObject,
   &_swigt__p_size_type,
-  &_swigt__p_std__allocatorT_SimplePort_p_t,
+  &_swigt__p_std__allocatorT_std__string_t,
   &_swigt__p_std__invalid_argument,
-  &_swigt__p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t,
+  &_swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t,
   &_swigt__p_swig__SwigPyIterator,
+  &_swigt__p_value_type,
 };
 
 static swig_cast_info _swigc__p_NameGroup[] = {  {&_swigt__p_NameGroup, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_PortsInterface[] = {  {&_swigt__p_PortsInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PythonAPI[] = {  {&_swigt__p_PythonAPI, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_Component_t[] = {  {&_swigt__p_QSharedPointerT_Component_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_ExpressionFormatter_t[] = {  {&_swigt__p_QSharedPointerT_ExpressionFormatter_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_ExpressionParser_t[] = {  {&_swigt__p_QSharedPointerT_ExpressionParser_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_PortValidator_t[] = {  {&_swigt__p_QSharedPointerT_PortValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QString[] = {  {&_swigt__p_QString, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_SimpleNameGroup[] = {  {&_swigt__p_SimplePort, _p_SimplePortTo_p_SimpleNameGroup, 0, 0},  {&_swigt__p_SimpleNameGroup, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_SimplePort[] = {  {&_swigt__p_SimplePort, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_allocator_type[] = {  {&_swigt__p_allocator_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_difference_type[] = {  {&_swigt__p_difference_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_PyObject[] = {  {&_swigt__p_p_PyObject, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_size_type[] = {  {&_swigt__p_size_type, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__allocatorT_SimplePort_p_t[] = {  {&_swigt__p_std__allocatorT_SimplePort_p_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__allocatorT_std__string_t[] = {  {&_swigt__p_std__allocatorT_std__string_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__invalid_argument[] = {  {&_swigt__p_std__invalid_argument, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t[] = {  {&_swigt__p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__vectorT_std__string_std__allocatorT_std__string_t_t[] = {  {&_swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__SwigPyIterator[] = {  {&_swigt__p_swig__SwigPyIterator, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_value_type[] = {  {&_swigt__p_value_type, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_NameGroup,
+  _swigc__p_PortsInterface,
   _swigc__p_PythonAPI,
+  _swigc__p_QSharedPointerT_Component_t,
+  _swigc__p_QSharedPointerT_ExpressionFormatter_t,
+  _swigc__p_QSharedPointerT_ExpressionParser_t,
+  _swigc__p_QSharedPointerT_PortValidator_t,
   _swigc__p_QString,
-  _swigc__p_SimpleNameGroup,
-  _swigc__p_SimplePort,
   _swigc__p_allocator_type,
   _swigc__p_char,
   _swigc__p_difference_type,
   _swigc__p_p_PyObject,
   _swigc__p_size_type,
-  _swigc__p_std__allocatorT_SimplePort_p_t,
+  _swigc__p_std__allocatorT_std__string_t,
   _swigc__p_std__invalid_argument,
-  _swigc__p_std__vectorT_SimplePort_p_std__allocatorT_SimplePort_p_t_t,
+  _swigc__p_std__vectorT_std__string_std__allocatorT_std__string_t_t,
   _swigc__p_swig__SwigPyIterator,
+  _swigc__p_value_type,
 };
 
 
@@ -9682,6 +13545,10 @@ SWIG_init(void) {
 #endif
   
   SWIG_InstallConstants(d,swig_const_table);
+  
+  
+  // thread safe initialization
+  swig::container_owner_attribute();
   
 #if PY_VERSION_HEX >= 0x03000000
   return m;
