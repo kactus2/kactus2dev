@@ -20,8 +20,7 @@ def handleCommandsForOpenComponent(componentName):
 			componentCommand = commandArray.pop(0)
 			
 		if (componentCommand == pythonHelps.portsWord):
-			listOfPortNames = portsInterface.getPortNames()
-			for portName in portsInterface.getPortNames():
+			for portName in portsInterface.getItemNames():
 				print (portName)
 		elif (componentCommand == pythonHelps.portWord and len(commandArray) == 3 and commandArray[1] == pythonHelps.setNameCommandWord):
 			currentPortName = commandArray[0]

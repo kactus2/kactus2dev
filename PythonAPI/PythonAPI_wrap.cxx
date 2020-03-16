@@ -2661,25 +2661,26 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 /* -------- TYPES TABLE (BEGIN) -------- */
 
 #define SWIGTYPE_p_NameGroup swig_types[0]
-#define SWIGTYPE_p_PortsInterface swig_types[1]
-#define SWIGTYPE_p_PythonAPI swig_types[2]
-#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[3]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[4]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[5]
-#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[6]
-#define SWIGTYPE_p_QString swig_types[7]
-#define SWIGTYPE_p_allocator_type swig_types[8]
-#define SWIGTYPE_p_char swig_types[9]
-#define SWIGTYPE_p_difference_type swig_types[10]
-#define SWIGTYPE_p_p_PyObject swig_types[11]
-#define SWIGTYPE_p_size_type swig_types[12]
-#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[13]
-#define SWIGTYPE_p_std__invalid_argument swig_types[14]
-#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[15]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[16]
-#define SWIGTYPE_p_value_type swig_types[17]
-static swig_type_info *swig_types[19];
-static swig_module_info swig_module = {swig_types, 18, 0, 0, 0, 0};
+#define SWIGTYPE_p_ParameterizableInterface swig_types[1]
+#define SWIGTYPE_p_PortsInterface swig_types[2]
+#define SWIGTYPE_p_PythonAPI swig_types[3]
+#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[4]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[5]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[6]
+#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[7]
+#define SWIGTYPE_p_QString swig_types[8]
+#define SWIGTYPE_p_allocator_type swig_types[9]
+#define SWIGTYPE_p_char swig_types[10]
+#define SWIGTYPE_p_difference_type swig_types[11]
+#define SWIGTYPE_p_p_PyObject swig_types[12]
+#define SWIGTYPE_p_size_type swig_types[13]
+#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[14]
+#define SWIGTYPE_p_std__invalid_argument swig_types[15]
+#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[16]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[17]
+#define SWIGTYPE_p_value_type swig_types[18]
+static swig_type_info *swig_types[20];
+static swig_module_info swig_module = {swig_types, 19, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3497,6 +3498,7 @@ SWIGINTERNINLINE PyObject*
 
 
 #include "PythonAPI.h"
+#include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
 #include "..\editors\ComponentEditor\ports\PortsInterface.h"
 //#include "simpleModels\SimpleNameGroup.h"
 //#include "simpleModels\SimplePort.h"
@@ -8446,6 +8448,477 @@ SWIGINTERN PyObject *PythonAPI_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject
   return SWIG_Python_InitShadowInstance(args);
 }
 
+SWIGINTERN PyObject *_wrap_delete_ParameterizableInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ParameterizableInterface" "', argument " "1"" of type '" "ParameterizableInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_setExpressionParser(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_setExpressionParser", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_setExpressionParser" "', argument " "1"" of type '" "ParameterizableInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_setExpressionParser" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_setExpressionParser" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setExpressionParser(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_setExprressionFormatter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_setExprressionFormatter", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_setExprressionFormatter" "', argument " "1"" of type '" "ParameterizableInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_setExprressionFormatter" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_setExprressionFormatter" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setExprressionFormatter(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_getItemIndex" "', argument " "1"" of type '" "ParameterizableInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (int)((ParameterizableInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_getIndexedItemName" "', argument " "1"" of type '" "ParameterizableInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ParameterizableInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((ParameterizableInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  int result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_itemCount" "', argument " "1"" of type '" "ParameterizableInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  result = (int)((ParameterizableInterface const *)arg1)->itemCount();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::vector< std::string > result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_getItemNames" "', argument " "1"" of type '" "ParameterizableInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  result = ((ParameterizableInterface const *)arg1)->getItemNames();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_setName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_setName" "', argument " "1"" of type '" "ParameterizableInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParameterizableInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_getDescription" "', argument " "1"" of type '" "ParameterizableInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((ParameterizableInterface const *)arg1)->getDescription((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_setDescription" "', argument " "1"" of type '" "ParameterizableInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParameterizableInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "ParameterizableInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParameterizableInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (int)((ParameterizableInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_validateItems" "', argument " "1"" of type '" "ParameterizableInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  result = (bool)((ParameterizableInterface const *)arg1)->validateItems();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ParameterizableInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_itemHasValidName" "', argument " "1"" of type '" "ParameterizableInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((ParameterizableInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ParameterizableInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_ParameterizableInterface, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_new_PortsInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PortsInterface *result = 0 ;
@@ -8555,81 +9028,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PortsInterface_setExpressionParser(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setExpressionParser", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setExpressionParser" "', argument " "1"" of type '" "PortsInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setExpressionParser" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setExpressionParser" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
-    } else {
-      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setExpressionParser(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_setExprressionFormatter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setExprressionFormatter", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setExprressionFormatter" "', argument " "1"" of type '" "PortsInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setExprressionFormatter" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setExprressionFormatter" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'");
-    } else {
-      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setExprressionFormatter(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_getPortIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PortsInterface *arg1 = (PortsInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -8639,24 +9038,24 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getPortIndex(PyObject *SWIGUNUSEDPARM(
   PyObject *swig_obj[2] ;
   int result;
   
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getPortIndex", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getPortIndex" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getItemIndex" "', argument " "1"" of type '" "PortsInterface const *""'"); 
   }
   arg1 = reinterpret_cast< PortsInterface * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getPortIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getPortIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     arg2 = ptr;
   }
-  result = (int)((PortsInterface const *)arg1)->getPortIndex((std::string const &)*arg2);
+  result = (int)((PortsInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
   resultobj = SWIG_From_int(static_cast< int >(result));
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
@@ -8666,7 +9065,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PortsInterface_getIndexedPortName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PortsInterface *arg1 = (PortsInterface *) 0 ;
   int *arg2 = 0 ;
@@ -8678,19 +9077,19 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getIndexedPortName(PyObject *SWIGUNUSE
   PyObject *swig_obj[2] ;
   std::string result;
   
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getIndexedPortName", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getIndexedPortName" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getIndexedItemName" "', argument " "1"" of type '" "PortsInterface const *""'"); 
   }
   arg1 = reinterpret_cast< PortsInterface * >(argp1);
   ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PortsInterface_getIndexedPortName" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PortsInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  result = ((PortsInterface const *)arg1)->getIndexedPortName((int const &)*arg2);
+  result = ((PortsInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
@@ -8698,7 +9097,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PortsInterface_getPortCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PortsInterface *arg1 = (PortsInterface *) 0 ;
   void *argp1 = 0 ;
@@ -8710,10 +9109,10 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getPortCount(PyObject *SWIGUNUSEDPARM(
   swig_obj[0] = args;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getPortCount" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_itemCount" "', argument " "1"" of type '" "PortsInterface const *""'"); 
   }
   arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  result = (int)((PortsInterface const *)arg1)->getPortCount();
+  result = (int)((PortsInterface const *)arg1)->itemCount();
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -8721,7 +9120,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PortsInterface_getPortNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PortsInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PortsInterface *arg1 = (PortsInterface *) 0 ;
   void *argp1 = 0 ;
@@ -8733,10 +9132,10 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getPortNames(PyObject *SWIGUNUSEDPARM(
   swig_obj[0] = args;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getPortNames" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getItemNames" "', argument " "1"" of type '" "PortsInterface const *""'"); 
   }
   arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  result = ((PortsInterface const *)arg1)->getPortNames();
+  result = ((PortsInterface const *)arg1)->getItemNames();
   resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
@@ -8881,6 +9280,118 @@ SWIGINTERN PyObject *_wrap_PortsInterface_setDescription(PyObject *SWIGUNUSEDPAR
 fail:
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (int)((PortsInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_validateItems" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  result = (bool)((PortsInterface const *)arg1)->validateItems();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_itemHasValidName" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -11691,58 +12202,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PortsInterface_getAllReferencesToIdInPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getAllReferencesToIdInPort", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getAllReferencesToIdInPort" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((PortsInterface const *)arg1)->getAllReferencesToIdInPort((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_PortsInterface_addWirePort__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   PortsInterface *arg1 = (PortsInterface *) 0 ;
@@ -11961,66 +12420,6 @@ SWIGINTERN PyObject *_wrap_PortsInterface_removePort(PyObject *SWIGUNUSEDPARM(se
     arg2 = ptr;
   }
   result = (bool)(arg1)->removePort((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_validatePorts(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_validatePorts" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  result = (bool)((PortsInterface const *)arg1)->validatePorts();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portHasValidName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portHasValidName" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((PortsInterface const *)arg1)->portHasValidName((std::string const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
@@ -12645,19 +13044,34 @@ static PyMethodDef SwigMethods[] = {
 	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, NULL},
 	 { "PythonAPI_swigregister", PythonAPI_swigregister, METH_O, NULL},
 	 { "PythonAPI_swiginit", PythonAPI_swiginit, METH_VARARGS, NULL},
+	 { "delete_ParameterizableInterface", _wrap_delete_ParameterizableInterface, METH_O, NULL},
+	 { "ParameterizableInterface_setExpressionParser", _wrap_ParameterizableInterface_setExpressionParser, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_setExprressionFormatter", _wrap_ParameterizableInterface_setExprressionFormatter, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_getItemIndex", _wrap_ParameterizableInterface_getItemIndex, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_getIndexedItemName", _wrap_ParameterizableInterface_getIndexedItemName, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_itemCount", _wrap_ParameterizableInterface_itemCount, METH_O, NULL},
+	 { "ParameterizableInterface_getItemNames", _wrap_ParameterizableInterface_getItemNames, METH_O, NULL},
+	 { "ParameterizableInterface_setName", _wrap_ParameterizableInterface_setName, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_getDescription", _wrap_ParameterizableInterface_getDescription, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_setDescription", _wrap_ParameterizableInterface_setDescription, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_getAllReferencesToIdInItem", _wrap_ParameterizableInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_validateItems", _wrap_ParameterizableInterface_validateItems, METH_O, NULL},
+	 { "ParameterizableInterface_itemHasValidName", _wrap_ParameterizableInterface_itemHasValidName, METH_VARARGS, NULL},
+	 { "ParameterizableInterface_swigregister", ParameterizableInterface_swigregister, METH_O, NULL},
 	 { "new_PortsInterface", _wrap_new_PortsInterface, METH_NOARGS, NULL},
 	 { "delete_PortsInterface", _wrap_delete_PortsInterface, METH_O, NULL},
 	 { "PortsInterface_setPorts", _wrap_PortsInterface_setPorts, METH_VARARGS, NULL},
 	 { "PortsInterface_setValidator", _wrap_PortsInterface_setValidator, METH_VARARGS, NULL},
-	 { "PortsInterface_setExpressionParser", _wrap_PortsInterface_setExpressionParser, METH_VARARGS, NULL},
-	 { "PortsInterface_setExprressionFormatter", _wrap_PortsInterface_setExprressionFormatter, METH_VARARGS, NULL},
-	 { "PortsInterface_getPortIndex", _wrap_PortsInterface_getPortIndex, METH_VARARGS, NULL},
-	 { "PortsInterface_getIndexedPortName", _wrap_PortsInterface_getIndexedPortName, METH_VARARGS, NULL},
-	 { "PortsInterface_getPortCount", _wrap_PortsInterface_getPortCount, METH_O, NULL},
-	 { "PortsInterface_getPortNames", _wrap_PortsInterface_getPortNames, METH_O, NULL},
+	 { "PortsInterface_getItemIndex", _wrap_PortsInterface_getItemIndex, METH_VARARGS, NULL},
+	 { "PortsInterface_getIndexedItemName", _wrap_PortsInterface_getIndexedItemName, METH_VARARGS, NULL},
+	 { "PortsInterface_itemCount", _wrap_PortsInterface_itemCount, METH_O, NULL},
+	 { "PortsInterface_getItemNames", _wrap_PortsInterface_getItemNames, METH_O, NULL},
 	 { "PortsInterface_setName", _wrap_PortsInterface_setName, METH_VARARGS, NULL},
 	 { "PortsInterface_getDescription", _wrap_PortsInterface_getDescription, METH_VARARGS, NULL},
 	 { "PortsInterface_setDescription", _wrap_PortsInterface_setDescription, METH_VARARGS, NULL},
+	 { "PortsInterface_getAllReferencesToIdInItem", _wrap_PortsInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
+	 { "PortsInterface_validateItems", _wrap_PortsInterface_validateItems, METH_O, NULL},
+	 { "PortsInterface_itemHasValidName", _wrap_PortsInterface_itemHasValidName, METH_VARARGS, NULL},
 	 { "PortsInterface_getTypeName", _wrap_PortsInterface_getTypeName, METH_VARARGS, NULL},
 	 { "PortsInterface_setTypeName", _wrap_PortsInterface_setTypeName, METH_VARARGS, NULL},
 	 { "PortsInterface_getArrayLeftValue", _wrap_PortsInterface_getArrayLeftValue, METH_VARARGS, NULL},
@@ -12707,12 +13121,9 @@ static PyMethodDef SwigMethods[] = {
 	 { "PortsInterface_getMinConnectionsFormattedExpression", _wrap_PortsInterface_getMinConnectionsFormattedExpression, METH_VARARGS, NULL},
 	 { "PortsInterface_getMinConnectionsExpression", _wrap_PortsInterface_getMinConnectionsExpression, METH_VARARGS, NULL},
 	 { "PortsInterface_setMinConnections", _wrap_PortsInterface_setMinConnections, METH_VARARGS, NULL},
-	 { "PortsInterface_getAllReferencesToIdInPort", _wrap_PortsInterface_getAllReferencesToIdInPort, METH_VARARGS, NULL},
 	 { "PortsInterface_addWirePort", _wrap_PortsInterface_addWirePort, METH_VARARGS, NULL},
 	 { "PortsInterface_addTransactionalPort", _wrap_PortsInterface_addTransactionalPort, METH_VARARGS, NULL},
 	 { "PortsInterface_removePort", _wrap_PortsInterface_removePort, METH_VARARGS, NULL},
-	 { "PortsInterface_validatePorts", _wrap_PortsInterface_validatePorts, METH_O, NULL},
-	 { "PortsInterface_portHasValidName", _wrap_PortsInterface_portHasValidName, METH_VARARGS, NULL},
 	 { "PortsInterface_portLeftArrayValueIsValid", _wrap_PortsInterface_portLeftArrayValueIsValid, METH_VARARGS, NULL},
 	 { "PortsInterface_portRightArrayValueIsValid", _wrap_PortsInterface_portRightArrayValueIsValid, METH_VARARGS, NULL},
 	 { "PortsInterface_portHasValidTypes", _wrap_PortsInterface_portHasValidTypes, METH_VARARGS, NULL},
@@ -12739,7 +13150,11 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
+static void *_p_PortsInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ParameterizableInterface *)  ((PortsInterface *) x));
+}
 static swig_type_info _swigt__p_NameGroup = {"_p_NameGroup", "NameGroup *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ParameterizableInterface = {"_p_ParameterizableInterface", "ParameterizableInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PortsInterface = {"_p_PortsInterface", "PortsInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PythonAPI = {"_p_PythonAPI", "PythonAPI *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_Component_t = {"_p_QSharedPointerT_Component_t", "QSharedPointer< Component > *", 0, 0, (void*)0, 0};
@@ -12760,6 +13175,7 @@ static swig_type_info _swigt__p_value_type = {"_p_value_type", "value_type *", 0
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_NameGroup,
+  &_swigt__p_ParameterizableInterface,
   &_swigt__p_PortsInterface,
   &_swigt__p_PythonAPI,
   &_swigt__p_QSharedPointerT_Component_t,
@@ -12780,6 +13196,7 @@ static swig_type_info *swig_type_initial[] = {
 };
 
 static swig_cast_info _swigc__p_NameGroup[] = {  {&_swigt__p_NameGroup, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PortsInterface[] = {  {&_swigt__p_PortsInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PythonAPI[] = {  {&_swigt__p_PythonAPI, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_Component_t[] = {  {&_swigt__p_QSharedPointerT_Component_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -12800,6 +13217,7 @@ static swig_cast_info _swigc__p_value_type[] = {  {&_swigt__p_value_type, 0, 0, 
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_NameGroup,
+  _swigc__p_ParameterizableInterface,
   _swigc__p_PortsInterface,
   _swigc__p_PythonAPI,
   _swigc__p_QSharedPointerT_Component_t,

@@ -11,10 +11,6 @@
 
 #include "PortsInterface.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-
-#include <IPXACTmodels/common/validators/ValueFormatter.h>
 #include <IPXACTmodels/common/TransactionalTypes.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -27,10 +23,7 @@
 //-----------------------------------------------------------------------------
 PortsInterface::PortsInterface() :
 ports_(),
-expressionParser_(),
-portValidator_(),
-formatter_(),
-valueFormatter_(new ValueFormatter())
+portValidator_()
 {
 
 }
@@ -52,29 +45,13 @@ void PortsInterface::setValidator(QSharedPointer<PortValidator> validator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsInterface::setExpressionParser()
-//-----------------------------------------------------------------------------
-void PortsInterface::setExpressionParser(QSharedPointer<ExpressionParser> parser)
-{
-    expressionParser_ = parser;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsInterface::setExprressionFormatter()
-//-----------------------------------------------------------------------------
-void PortsInterface::setExprressionFormatter(QSharedPointer<ExpressionFormatter> formatter)
-{
-    formatter_ = formatter;
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortsInterface::getPortIndex()
 //-----------------------------------------------------------------------------
-int PortsInterface::getPortIndex(string const& portName) const
+int PortsInterface::getItemIndex(string const& itemName) const
 {
     for (int i = 0; i < ports_->size(); ++i)
     {
-        if (ports_->at(i)->name().toStdString() == portName)
+        if (ports_->at(i)->name().toStdString() == itemName)
         {
             return i;
         }
@@ -86,29 +63,29 @@ int PortsInterface::getPortIndex(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getIndexedPortName()
 //-----------------------------------------------------------------------------
-string PortsInterface::getIndexedPortName(int const& portIndex) const
+string PortsInterface::getIndexedItemName(int const& itemIndex) const
 {
     string portName = "";
-    if (portIndex >= 0 && portIndex < ports_->size())
+    if (itemIndex >= 0 && itemIndex < ports_->size())
     {
-        portName = ports_->at(portIndex)->name().toStdString();
+        portName = ports_->at(itemIndex)->name().toStdString();
     }
 
     return portName;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsInterface::getPortCount()
+// Function: PortsInterface::itemCount()
 //-----------------------------------------------------------------------------
-int PortsInterface::getPortCount() const
+int PortsInterface::itemCount() const
 {
     return ports_->count();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsInterface::getPortNames()
+// Function: PortsInterface::getItemNames()
 //-----------------------------------------------------------------------------
-vector<string> PortsInterface::getPortNames() const
+vector<string> PortsInterface::getItemNames() const
 {
     vector<string> portNames;
     for (auto port : *ports_)
@@ -133,14 +110,6 @@ QSharedPointer<Port> PortsInterface::getPort(string const& portName) const
     }
 
     return QSharedPointer<Port>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsInterface::formattedValueFor()
-//-----------------------------------------------------------------------------
-QString PortsInterface::formattedValueFor(QString const& expression) const
-{
-    return formatter_->formatReferringExpression(expression);
 }
 
 //-----------------------------------------------------------------------------
@@ -637,29 +606,6 @@ string PortsInterface::getWidth(string const& portName) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsInterface::parseExpressionToDecimal()
-//-----------------------------------------------------------------------------
-QString PortsInterface::parseExpressionToDecimal(QString const& expression) const
-{
-    return expressionParser_->parseExpression(expression);
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsInterface::parseExpressionToBaseNumber()
-//-----------------------------------------------------------------------------
-QString PortsInterface::parseExpressionToBaseNumber(QString const& expression, int const& baseNumber) const
-{
-    if (baseNumber == 0)
-    {
-        return ExpressionFormatter::format(expression, expressionParser_);
-    }
-    else
-    {
-        return valueFormatter_->format(parseExpressionToDecimal(expression), baseNumber);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortsInterface::setWidth()
 //-----------------------------------------------------------------------------
 bool PortsInterface::setWidth(string const& portName, string const& newWidth)
@@ -1075,9 +1021,9 @@ bool PortsInterface::setMinConnections(string const& portName, string const& new
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getAllReferencesToIdInPort()
 //-----------------------------------------------------------------------------
-int PortsInterface::getAllReferencesToIdInPort(const string& portName, string const&  valueID) const
+int PortsInterface::getAllReferencesToIdInItem(const string& itemName, string const& valueID) const
 {
-    QSharedPointer<Port> port = getPort(portName);
+    QSharedPointer<Port> port = getPort(itemName);
     if (!port)
     {
         return 0;
@@ -1090,7 +1036,7 @@ int PortsInterface::getAllReferencesToIdInPort(const string& portName, string co
 
     int totalReferences = referencesInArrayLeft + referencesInArrayRight;
 
-    if (portIsWire(portName))
+    if (portIsWire(itemName))
     {
         QSharedPointer<Wire> portWire = port->getWire();
 
@@ -1100,7 +1046,7 @@ int PortsInterface::getAllReferencesToIdInPort(const string& portName, string co
 
         totalReferences += referencesInLeftBound + referencesInRightBound + referencesInDefaultValue;
     }
-    else if (portIsTransactional(portName))
+    else if (portIsTransactional(itemName))
     {
         QSharedPointer<Transactional> portTransactional = port->getTransactional();
 
@@ -1119,7 +1065,7 @@ int PortsInterface::getAllReferencesToIdInPort(const string& portName, string co
 //-----------------------------------------------------------------------------
 void PortsInterface::addWirePort(string const& newPortName)
 {
-    QString portName = getUniqueName(newPortName);
+    QString portName = getUniqueName(newPortName, "port");
 
     QSharedPointer<Port> newPort(new Port(portName));
     newPort->setWire(QSharedPointer<Wire>(new Wire()));
@@ -1132,56 +1078,12 @@ void PortsInterface::addWirePort(string const& newPortName)
 //-----------------------------------------------------------------------------
 void PortsInterface::addTransactionalPort(string const& newPortName)
 {
-    QString portName = getUniqueName(newPortName);
+    QString portName = getUniqueName(newPortName, "port");
 
     QSharedPointer<Port> newPort(new Port(portName));
     newPort->setTransactional(QSharedPointer<Transactional>(new Transactional()));
 
     ports_->append(newPort);
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsInterface::getUniqueName()
-//-----------------------------------------------------------------------------
-QString PortsInterface::getUniqueName(string const& newName) const
-{
-    QString referencePortName = QString::fromStdString(newName);
-    if (referencePortName.isEmpty())
-    {
-        referencePortName = QLatin1String("port");
-    }
-
-    QString newPortName = referencePortName;
-
-    QString format = "$portName$_$portNumber$";
-    int runningNumber = 0;
-    while (!nameIsUnique(newPortName))
-    {
-        newPortName = format;
-        newPortName.replace("$portName$", referencePortName);
-        newPortName.replace("$portNumber$", QString::number(runningNumber));
-
-        runningNumber++;
-    }
-
-    return newPortName;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsInterface::nameIsUnique()
-//-----------------------------------------------------------------------------
-bool PortsInterface::nameIsUnique(QString const& portName) const
-{
-    for (auto containedName : getPortNames())
-    {
-        QString convertedName = QString::fromStdString(containedName);
-        if (convertedName == portName)
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1199,9 +1101,9 @@ bool PortsInterface::removePort(string const& portName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsInterface::validatePorts()
+// Function: PortsInterface::validateItems()
 //-----------------------------------------------------------------------------
-bool PortsInterface::validatePorts() const
+bool PortsInterface::validateItems() const
 {
     for(auto port : *ports_)
     {
@@ -1215,9 +1117,9 @@ bool PortsInterface::validatePorts() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsInterface::portHasValidName()
+// Function: PortsInterface::itemHasValidName()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidName(string const& portName) const
+bool PortsInterface::itemHasValidName(string const& portName) const
 {
     return portValidator_->hasValidName(QString::fromStdString(portName));
 }

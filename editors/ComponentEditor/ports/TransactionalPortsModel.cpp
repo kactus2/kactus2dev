@@ -92,7 +92,7 @@ bool TransactionalPortsModel::setData(QModelIndex const& index, QVariant const& 
 		return false;
     }
 
-    std::string portName = getInterface()->getIndexedPortName(index.row());
+    std::string portName = getInterface()->getIndexedItemName(index.row());
 
 	if (role == Qt::EditRole)
     {
@@ -163,7 +163,7 @@ bool TransactionalPortsModel::setData(QModelIndex const& index, QVariant const& 
 //-----------------------------------------------------------------------------
 QVariant TransactionalPortsModel::valueForIndex(QModelIndex const& index) const
 {
-    std::string portName = getInterface()->getIndexedPortName(index.row());
+    std::string portName = getInterface()->getIndexedItemName(index.row());
 
     if (index.column() == TransactionalPortColumns::WIDTH)
     {
@@ -204,7 +204,7 @@ QVariant TransactionalPortsModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant TransactionalPortsModel::formattedExpressionForIndex(QModelIndex const& index) const
 {
-    std::string portName = getInterface()->getIndexedPortName(index.row());
+    std::string portName = getInterface()->getIndexedItemName(index.row());
 
     if (index.column() == TransactionalPortColumns::WIDTH)
     {
@@ -229,7 +229,7 @@ QVariant TransactionalPortsModel::formattedExpressionForIndex(QModelIndex const&
 //-----------------------------------------------------------------------------
 QVariant TransactionalPortsModel::expressionForIndex(QModelIndex const& index) const
 {
-    string portName = getInterface()->getIndexedPortName(index.row());
+    string portName = getInterface()->getIndexedItemName(index.row());
 
     if (index.column() == TransactionalPortColumns::WIDTH)
     {
@@ -281,7 +281,7 @@ QVariant TransactionalPortsModel::expressionOrValueForIndex(QModelIndex const& i
 //-----------------------------------------------------------------------------
 bool TransactionalPortsModel::validateIndex(QModelIndex const& index) const
 {
-    std::string portName = getInterface()->getIndexedPortName(index.row());
+    std::string portName = getInterface()->getIndexedItemName(index.row());
 
     if (index.column() == TransactionalPortColumns::WIDTH)
     {

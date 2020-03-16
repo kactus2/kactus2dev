@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
-    ./VersionHelper.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
@@ -152,6 +151,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.h \
     ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.h \
+    ./mainwindow/PythonConsole/PythonConsole.h \
+    ./mainwindow/PythonConsole/ConsoleEditor.h \
     ./settings/FileTypeColumns.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
@@ -222,9 +223,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Plugins/PluginSystem/ImportPlugin/ImportColors.h \
     ./Plugins/PluginSystem/ImportPlugin/Highlighter.h \
     ./Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
+    ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
-    ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./library/DocumentFileAccess.h \
@@ -284,6 +285,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/PortWireTypeDelegate.h \
     ./editors/ComponentEditor/ports/PortsEditorConstructor.h \
     ./editors/ComponentEditor/ports/PortsFilter.h \
+    ./editors/ComponentEditor/ports/PortsInterface.h \
     ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeView.h \
     ./editors/ComponentEditor/ports/WirePortsEditorConstructor.h \
@@ -628,9 +630,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/CatalogEditor/CatalogFileDelegate.h \
     ./editors/CatalogEditor/CatalogFileFilter.h \
     ./editors/CatalogEditor/CatalogFileView.h \
-    ./editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.h \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortColumns.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.h \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.h \
     ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/absdefgroup.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
@@ -640,10 +641,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.h \
     ./editors/BusDefinitionEditor/AbstractionPortsDelegate.h \
-    ./editors/BusDefinitionEditor/AbstractionPortsModel.h \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsModel.h \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.h \
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
-    ./editors/BusDefinitionEditor/AbstractionExtendHandler.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
     ./editors/common/BusInterfaceUtilities.h \
     ./editors/common/ColumnTypes.h \
@@ -720,7 +721,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorListFilter.h \
     ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
-    ./editors/common/FileHandler/FileHandler.h \
     ./editors/HWDesign/AdHocEnabled.h \
     ./editors/HWDesign/HWAddCommands.h \
     ./editors/HWDesign/HWMoveCommands.h \
@@ -847,7 +847,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/ports/PortsInterface.h
+    ./editors/ComponentEditor/parameters/ParametersInterface.h \
+    ./editors/ComponentEditor/common/ParameterizableInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -970,6 +971,8 @@ SOURCES += ./VersionHelper.cpp \
     ./mainwindow/SaveHierarchy/SaveAsItem.cpp \
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.cpp \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.cpp \
+    ./mainwindow/PythonConsole/ConsoleEditor.cpp \
+    ./mainwindow/PythonConsole/PythonConsole.cpp \
     ./settings/ComponentEditorSettingsPage.cpp \
     ./settings/FileTypesDelegate.cpp \
     ./settings/FileTypeSettingsPage.cpp \
@@ -1146,6 +1149,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/portsdelegate.cpp \
     ./editors/ComponentEditor/ports/portseditor.cpp \
     ./editors/ComponentEditor/ports/PortsFilter.cpp \
+    ./editors/ComponentEditor/ports/PortsInterface.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
@@ -1377,17 +1381,15 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./editors/BusDefinitionEditor/absdefgroup.cpp \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
-    ./editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.cpp \
-    ./editors/BusDefinitionEditor/AbstractionExtendHandler.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsDelegate.cpp \
-    ./editors/BusDefinitionEditor/AbstractionPortsModel.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsView.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.cpp \
+    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.cpp \
     ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.cpp \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsModel.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.cpp \
@@ -1462,7 +1464,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/TableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/TableItemMatcher.cpp \
-    ./editors/common/FileHandler/FileHandler.cpp \
     ./editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ./editors/HWDesign/ActivePortItem.cpp \
     ./editors/HWDesign/AdHocConnectionItem.cpp \
@@ -1583,5 +1584,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/ports/PortsInterface.cpp
+    ./editors/ComponentEditor/parameters/ParametersInterface.cpp \
+    ./editors/ComponentEditor/common/ParameterizableInterface.cpp
 RESOURCES += kactus.qrc

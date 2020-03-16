@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./PythonAPI.h \
+HEADERS += ../editors/ComponentEditor/common/ParameterizableInterface.h \
+    ./PythonAPI.h \
     ./pythonapi_global.h \
     ./messageMediator/PythonMessageMediator.h \
     ../library/DocumentFileAccess.h \
@@ -103,5 +104,6 @@ SOURCES += ./PythonAPI.cpp \
     ../common/widgets/vlnvEditor/vlnveditor.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ../VersionHelper.cpp \
+    ../editors/ComponentEditor/common/ParameterizableInterface.cpp \
     ../editors/ComponentEditor/ports/PortsInterface.cpp \
     ../editors/ComponentEditor/common/ExpressionFormatter.cpp

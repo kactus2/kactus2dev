@@ -21,21 +21,18 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <IPXACTmodels/common/VLNV.h>
+#include <editors/ComponentEditor/common/ParameterizableInterface.h>
 
 class Component;
-class Model;
 class Port;
 class PortValidator;
-class ExpressionFormatter;
-class ValueFormatter;
 
 using namespace std;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing component ports.
 //-----------------------------------------------------------------------------
-class PortsInterface
+class PortsInterface : public ParameterizableInterface
 {
 public:
 
@@ -64,27 +61,13 @@ public:
     void setValidator(QSharedPointer<PortValidator> validator);
 
     /*!
-     *  Set expression parser.
-     *
-     *      @param [in] parser  Parser for expressions.
-     */
-    void setExpressionParser(QSharedPointer<ExpressionParser> parser);
-
-    /*!
-     *  Set expression formatter.
-     *
-     *      @param [in] formatter   Formatter for expressions.
-     */
-    void setExprressionFormatter(QSharedPointer<ExpressionFormatter> formatter);
-
-    /*!
      *  Get index of the selected port.
      *
      *      @param [in] portName    Name of the selected port.
      *
      *      @return Index of the selected port.
      */
-    int getPortIndex(string const& portName) const;
+    virtual int getItemIndex(string const& itemName) const override final;
 
     /*!
      *  Get name of the indexed port.
@@ -93,21 +76,21 @@ public:
      *
      *      @return Name of the selected port.
      */
-    string getIndexedPortName(int const& portIndex) const;
+    virtual string getIndexedItemName(int const& itemIndex) const override final;
 
     /*!
      *  Get the number of available ports.
      *
      *      @return Number of available ports.
      */
-    int getPortCount() const;
+    virtual int itemCount() const override final;
 
     /*!
      *  Get the names of the available ports.
      *
      *      @return Names of the available ports.
      */
-    vector<string> getPortNames() const;
+    virtual vector<string> getItemNames() const override final;
 
     /*!
      *  Set a new name for the selected port.
@@ -117,7 +100,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setName(string const& currentPortName, string const& newPortName);
+    virtual bool setName(string const& currentName, string const& newName) override final;
 
     /*!
      *  Get the description of the selected port.
@@ -126,7 +109,7 @@ public:
      *
      *      @return Description of the selected port.
      */
-    string getDescription(string const& portName) const;
+    virtual string getDescription(string const& itemName) const override final;
 
     /*!
      *  Set a new description for the selected port.
@@ -136,7 +119,33 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setDescription(string const& portName, string const& newDescription);
+    virtual bool setDescription(string const& itemName, string const& newDescription) override final;
+
+    /*!
+     *  Calculate all the references to the selected ID in the selected port.
+     *
+     *      @param [in] portName    Name of the selected port.
+     *      @param [in] valueID     The selected ID.
+     *
+     *      @return Number of references to the selected ID in the selected port.
+     */
+    virtual int getAllReferencesToIdInItem(const string& itemName, string const&  valueID) const override final;
+
+    /*!
+     *  Validates the contained ports.
+     *
+     *      @return True, if all the ports are valid, false otherwise.
+     */
+    virtual bool validateItems() const override final;
+
+    /*!
+     *  Check if the selected port has a valid name.
+     *
+     *      @param [in] portName    Name of the selected port.
+     *
+     *      @return True, if the name is valid, false otherwise.
+     */
+    bool itemHasValidName(string const& itemName) const override final;
 
     /*!
      *  Get the type name of the selected port.
@@ -603,16 +612,6 @@ public:
      */
     bool setMinConnections(string const& portName, string const& newMinConnections) const;
 
-    /*!
-     *  Calculate all the references to the selected ID in the selected port.
-     *
-     *      @param [in] portName    Name of the selected port.
-     *      @param [in] valueID     The selected ID.
-     *
-     *      @return Number of references to the selected ID in the selected port.
-     */
-    int getAllReferencesToIdInPort(const string& portName, string const&  valueID) const;
-
 	/*!
 	 *  Add a wire port.
 	 *
@@ -633,22 +632,6 @@ public:
 	 *      @param [in] portName    Name of the selected port.
      */
     bool removePort(string const& portName);
-
-    /*!
-     *  Validates the contained ports.
-     *
-     *      @return True, if all the ports are valid, false otherwise.
-     */
-    bool validatePorts() const;
-
-    /*!
-     *  Check if the selected port has a valid name.
-     *
-     *      @param [in] portName    Name of the selected port.
-     *
-     *      @return True, if the name is valid, false otherwise.
-     */
-    bool portHasValidName(string const& portName) const;
 
     /*!
      *  Check if the selected port has a valid left array value.
@@ -792,57 +775,11 @@ private:
     QSharedPointer<Port> getPort(string const& portName) const;
 
     /*!
-     *  Get the formatted value for the given expression.
-     *
-     *      @param [in] expression  The selected expression.
-     *
-     *      @return The formatted expression.
-     */
-    QString formattedValueFor(QString const& expression) const;
-
-    /*!
      *  Set the type name and definition of a port.
      *
      *      @param [in] port    The selected port.
      */
     void setTypeNameAndDefinition(QSharedPointer<Port> port);
-
-    /*!
-     *  Parse the selected expression to decimal.
-     *
-     *      @param [in] expression  The selected expression.
-     *
-     *      @return The value of the expression in decimal form.
-     */
-    QString parseExpressionToDecimal(QString const& expression) const;
-
-    /*!
-     *  Parse the selected expression to the selected base number.
-     *
-     *      @param [in] expression  The selected expression.
-     *      @param [in] baseNumber  The selected base number.
-     *
-     *      @return The value of the expression in the base number form.
-     */
-    QString parseExpressionToBaseNumber(QString const& expression, int const& baseNumber) const;
-
-    /*!
-     *  Transform the selected name to a unique port name.
-     *
-     *      @param [in] newName     The selected name.
-     *
-     *      @return A unique name derived from the selected name.
-     */
-    QString getUniqueName(string const& newName) const;
-
-    /*!
-     *  Check if the selected name is unique.
-     *
-     *      @param [in] portName    The selected name.
-     *
-     *      @return True, if the selected name is unique, false otherwise.
-     */
-    bool nameIsUnique(QString const& portName) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -853,15 +790,6 @@ private:
 
     //! The validator used for ports.
     QSharedPointer<PortValidator> portValidator_;
-
-    //! Expression parser for solving expressions.
-    QSharedPointer<ExpressionParser> expressionParser_;
-
-    //! Expression formatter, formats the referencing expressions to show parameter names.
-    QSharedPointer<ExpressionFormatter> formatter_;
-
-    //! Formatter for values.
-    QSharedPointer<ValueFormatter> valueFormatter_;
 };
 
 #endif // PORTSMODEL_H

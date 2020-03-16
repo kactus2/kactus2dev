@@ -9,6 +9,7 @@
 
 %{
 #include "PythonAPI.h"
+#include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
 #include "..\editors\ComponentEditor\ports\PortsInterface.h"
 //#include "simpleModels\SimpleNameGroup.h"
 //#include "simpleModels\SimplePort.h"
@@ -22,6 +23,7 @@ namespace std {
 
 /* Let's just grab the original header file here */
 %include "PythonAPI.h"
+%include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
 %include "..\editors\ComponentEditor\ports\PortsInterface.h"
 //%include "simpleModels\SimpleNameGroup.h"
 //%include "simpleModels\SimplePort.h"

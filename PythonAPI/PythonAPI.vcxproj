@@ -116,6 +116,7 @@
     <ClCompile Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\common\ParameterizableInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\ports\PortsInterface.cpp" />
     <ClCompile Include="..\library\DocumentFileAccess.cpp" />
@@ -137,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h" />
+    <ClInclude Include="..\editors\ComponentEditor\common\ParameterizableInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\ports\PortsInterface.h" />
     <QtMoc Include="..\library\LibraryHandler.h" />
     <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h" />

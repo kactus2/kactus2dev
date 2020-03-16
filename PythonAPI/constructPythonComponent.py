@@ -7,7 +7,7 @@ def createComponent(api, portsInterface):
 	
 	newComponent = Component(componentName, componentDescription)
 	
-	for portName in portsInterface.getPortNames():
+	for portName in portsInterface.getItemNames():
 		if portsInterface.portIsWire(portName):
 			portDescription = portsInterface.getDescription(portName)
 			portDataType = ""

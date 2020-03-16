@@ -2641,9 +2641,6 @@
     <ClCompile Include="editors\ComponentEditor\parameters\parametersmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
@@ -4855,6 +4852,15 @@
     <ClCompile Include="editors\ComponentEditor\ports\PortsInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\ParametersInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ParameterizableInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6651,6 +6657,9 @@
     <CustomBuild Include="editors\ComponentEditor\ports\PortsInterface.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\ParametersInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7426,6 +7435,9 @@
     </ClInclude>
     <ClInclude Include="common\widgets\tagEditor\TagManager.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ParameterizableInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

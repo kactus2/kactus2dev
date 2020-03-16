@@ -322,7 +322,54 @@ class PythonAPI(object):
 # Register PythonAPI in _pythonAPI:
 _pythonAPI.PythonAPI_swigregister(PythonAPI)
 
-class PortsInterface(object):
+class ParameterizableInterface(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _pythonAPI.delete_ParameterizableInterface
+
+    def setExpressionParser(self, parser):
+        return _pythonAPI.ParameterizableInterface_setExpressionParser(self, parser)
+
+    def setExprressionFormatter(self, formatter):
+        return _pythonAPI.ParameterizableInterface_setExprressionFormatter(self, formatter)
+
+    def getItemIndex(self, itemName):
+        return _pythonAPI.ParameterizableInterface_getItemIndex(self, itemName)
+
+    def getIndexedItemName(self, itemIndex):
+        return _pythonAPI.ParameterizableInterface_getIndexedItemName(self, itemIndex)
+
+    def itemCount(self):
+        return _pythonAPI.ParameterizableInterface_itemCount(self)
+
+    def getItemNames(self):
+        return _pythonAPI.ParameterizableInterface_getItemNames(self)
+
+    def setName(self, currentName, newName):
+        return _pythonAPI.ParameterizableInterface_setName(self, currentName, newName)
+
+    def getDescription(self, itemName):
+        return _pythonAPI.ParameterizableInterface_getDescription(self, itemName)
+
+    def setDescription(self, itemName, newDescription):
+        return _pythonAPI.ParameterizableInterface_setDescription(self, itemName, newDescription)
+
+    def getAllReferencesToIdInItem(self, itemName, valueID):
+        return _pythonAPI.ParameterizableInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+
+    def validateItems(self):
+        return _pythonAPI.ParameterizableInterface_validateItems(self)
+
+    def itemHasValidName(self, itemName):
+        return _pythonAPI.ParameterizableInterface_itemHasValidName(self, itemName)
+
+# Register ParameterizableInterface in _pythonAPI:
+_pythonAPI.ParameterizableInterface_swigregister(ParameterizableInterface)
+
+class PortsInterface(ParameterizableInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
@@ -336,32 +383,35 @@ class PortsInterface(object):
     def setValidator(self, validator):
         return _pythonAPI.PortsInterface_setValidator(self, validator)
 
-    def setExpressionParser(self, parser):
-        return _pythonAPI.PortsInterface_setExpressionParser(self, parser)
+    def getItemIndex(self, itemName):
+        return _pythonAPI.PortsInterface_getItemIndex(self, itemName)
 
-    def setExprressionFormatter(self, formatter):
-        return _pythonAPI.PortsInterface_setExprressionFormatter(self, formatter)
+    def getIndexedItemName(self, itemIndex):
+        return _pythonAPI.PortsInterface_getIndexedItemName(self, itemIndex)
 
-    def getPortIndex(self, portName):
-        return _pythonAPI.PortsInterface_getPortIndex(self, portName)
+    def itemCount(self):
+        return _pythonAPI.PortsInterface_itemCount(self)
 
-    def getIndexedPortName(self, portIndex):
-        return _pythonAPI.PortsInterface_getIndexedPortName(self, portIndex)
+    def getItemNames(self):
+        return _pythonAPI.PortsInterface_getItemNames(self)
 
-    def getPortCount(self):
-        return _pythonAPI.PortsInterface_getPortCount(self)
+    def setName(self, currentName, newName):
+        return _pythonAPI.PortsInterface_setName(self, currentName, newName)
 
-    def getPortNames(self):
-        return _pythonAPI.PortsInterface_getPortNames(self)
+    def getDescription(self, itemName):
+        return _pythonAPI.PortsInterface_getDescription(self, itemName)
 
-    def setName(self, currentPortName, newPortName):
-        return _pythonAPI.PortsInterface_setName(self, currentPortName, newPortName)
+    def setDescription(self, itemName, newDescription):
+        return _pythonAPI.PortsInterface_setDescription(self, itemName, newDescription)
 
-    def getDescription(self, portName):
-        return _pythonAPI.PortsInterface_getDescription(self, portName)
+    def getAllReferencesToIdInItem(self, itemName, valueID):
+        return _pythonAPI.PortsInterface_getAllReferencesToIdInItem(self, itemName, valueID)
 
-    def setDescription(self, portName, newDescription):
-        return _pythonAPI.PortsInterface_setDescription(self, portName, newDescription)
+    def validateItems(self):
+        return _pythonAPI.PortsInterface_validateItems(self)
+
+    def itemHasValidName(self, itemName):
+        return _pythonAPI.PortsInterface_itemHasValidName(self, itemName)
 
     def getTypeName(self, portName):
         return _pythonAPI.PortsInterface_getTypeName(self, portName)
@@ -510,9 +560,6 @@ class PortsInterface(object):
     def setMinConnections(self, portName, newMinConnections):
         return _pythonAPI.PortsInterface_setMinConnections(self, portName, newMinConnections)
 
-    def getAllReferencesToIdInPort(self, portName, valueID):
-        return _pythonAPI.PortsInterface_getAllReferencesToIdInPort(self, portName, valueID)
-
     def addWirePort(self, *args):
         return _pythonAPI.PortsInterface_addWirePort(self, *args)
 
@@ -521,12 +568,6 @@ class PortsInterface(object):
 
     def removePort(self, portName):
         return _pythonAPI.PortsInterface_removePort(self, portName)
-
-    def validatePorts(self):
-        return _pythonAPI.PortsInterface_validatePorts(self)
-
-    def portHasValidName(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidName(self, portName)
 
     def portLeftArrayValueIsValid(self, portName):
         return _pythonAPI.PortsInterface_portLeftArrayValueIsValid(self, portName)

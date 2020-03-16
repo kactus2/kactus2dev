@@ -88,7 +88,7 @@ bool WirePortsModel::setData(QModelIndex const& index, QVariant const& value, in
 		return false;
     }
 
-    std::string portName = getInterface()->getIndexedPortName(index.row());
+    std::string portName = getInterface()->getIndexedItemName(index.row());
 
 	if (role == Qt::EditRole)
     {
@@ -160,7 +160,7 @@ bool WirePortsModel::setData(QModelIndex const& index, QVariant const& value, in
 //-----------------------------------------------------------------------------
 QVariant WirePortsModel::valueForIndex(QModelIndex const& index) const
 {
-    string portName = getInterface()->getIndexedPortName(index.row());
+    string portName = getInterface()->getIndexedItemName(index.row());
     if (index.column() == WirePortColumns::DIRECTION)
     {
         return QString::fromStdString(getInterface()->getDirection(portName));
@@ -200,7 +200,7 @@ bool WirePortsModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant WirePortsModel::formattedExpressionForIndex(QModelIndex const& index) const
 {
-    string portName = getInterface()->getIndexedPortName(index.row());
+    string portName = getInterface()->getIndexedItemName(index.row());
 
     if (index.column() == WirePortColumns::LEFT_BOUND)
     {
@@ -225,8 +225,8 @@ QVariant WirePortsModel::formattedExpressionForIndex(QModelIndex const& index) c
 //-----------------------------------------------------------------------------
 QVariant WirePortsModel::expressionForIndex(QModelIndex const& index) const
 {
-    std::string portName = getInterface()->getIndexedPortName(index.row());
-    
+    std::string portName = getInterface()->getIndexedItemName(index.row());
+
     if (index.column() == WirePortColumns::LEFT_BOUND)
     {
         return QString::fromStdString(getInterface()->getLeftBoundExpression(portName));
@@ -265,7 +265,7 @@ QVariant WirePortsModel::expressionOrValueForIndex(QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 bool WirePortsModel::validateIndex(QModelIndex const& index) const
 {
-    std::string portName = getInterface()->getIndexedPortName(index.row());
+    std::string portName = getInterface()->getIndexedItemName(index.row());
 
     if (index.column() == WirePortColumns::LEFT_BOUND)
     {
@@ -354,7 +354,7 @@ int WirePortsModel::descriptionColumn() const
 //-----------------------------------------------------------------------------
 bool WirePortsModel::indexedItemIsDisabled(QModelIndex const& index) const
 {
-    std::string portName = getInterface()->getIndexedPortName(index.row());
+    std::string portName = getInterface()->getIndexedItemName(index.row());
 
     return (index.column() == WirePortColumns::ROW_NUMBER ||
         (index.column() == WirePortColumns::DEFAULT_VALUE &&
@@ -378,7 +378,7 @@ bool WirePortsModel::indexedItemIsMandatory(QModelIndex const& index) const
 bool WirePortsModel::indexedItemIsLocked(QModelIndex const& index) const
 {
     return index.column() == WirePortColumns::WIDTH &&
-        getInterface()->hasExpressionInLeftOrRightBound(getInterface()->getIndexedPortName(index.row()));
+        getInterface()->hasExpressionInLeftOrRightBound(getInterface()->getIndexedItemName(index.row()));
 }
 
 //-----------------------------------------------------------------------------

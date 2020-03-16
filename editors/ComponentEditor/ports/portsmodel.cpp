@@ -45,7 +45,7 @@ int PortsModel::rowCount(QModelIndex const& parent) const
 		return 0;
     }
 
-    return portsInterface_->getPortCount();
+    return portsInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ int PortsModel::rowCount(QModelIndex const& parent) const
 //-----------------------------------------------------------------------------
 QVariant PortsModel::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= portsInterface_->getPortCount())
+    if (!index.isValid() || index.row() < 0 || index.row() >= portsInterface_->itemCount())
     {
 		return QVariant();
 	}
@@ -119,7 +119,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == adHocColumn())
         {
-            std::string portName = portsInterface_->getIndexedPortName(index.row());
+            std::string portName = portsInterface_->getIndexedItemName(index.row());
             if (portsInterface_->isAdHoc(portName))
             {
                 return Qt::Checked;
@@ -152,7 +152,7 @@ QVariant PortsModel::headerData(int section, Qt::Orientation orientation, int ro
     {
         if (orientation == Qt::Vertical)
         {
-            return QString::fromStdString(portsInterface_->getIndexedPortName(section));
+            return QString::fromStdString(portsInterface_->getIndexedItemName(section));
         }
 
         else if (orientation == Qt::Horizontal)
@@ -207,12 +207,12 @@ QVariant PortsModel::headerData(int section, Qt::Orientation orientation, int ro
 //-----------------------------------------------------------------------------
 bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {	
-    if (!index.isValid() || index.row() < 0 || index.row() >= portsInterface_->getPortCount())
+    if (!index.isValid() || index.row() < 0 || index.row() >= portsInterface_->itemCount())
     {
 		return false;
     }
 
-    std::string portName = portsInterface_->getIndexedPortName(index.row());
+    std::string portName = portsInterface_->getIndexedItemName(index.row());
     if (role == Qt::EditRole)
     {
         if (isLocked(index))
@@ -335,7 +335,7 @@ Qt::ItemFlags PortsModel::flags(QModelIndex const& index) const
 bool PortsModel::isValid() const
 {	
 	// check all ports in the table
-    return portsInterface_->validatePorts();
+    return portsInterface_->validateItems();
 }
 
 //-----------------------------------------------------------------------------
@@ -344,12 +344,12 @@ bool PortsModel::isValid() const
 void PortsModel::onRemoveRow(int row)
 {
 	// if row is invalid
-    if (row < 0 || row >= portsInterface_->getPortCount() || rowIsLocked(row))
+    if (row < 0 || row >= portsInterface_->itemCount() || rowIsLocked(row))
     {
 		return;
     }
 
-    string portName = portsInterface_->getIndexedPortName(row);
+    string portName = portsInterface_->getIndexedItemName(row);
 
     beginRemoveRows(QModelIndex(), row, row);
     portsInterface_->removePort(portName);
@@ -369,14 +369,14 @@ void PortsModel::onRemoveRow(int row)
 void PortsModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-    if (!index.isValid() || index.row() < 0 || index.row() >= portsInterface_->getPortCount() ||
+    if (!index.isValid() || index.row() < 0 || index.row() >= portsInterface_->itemCount() ||
         rowIsLocked(index.row()))
     {
 		return;
 	}
 
     int portRow = index.row();
-    string portName = portsInterface_->getIndexedPortName(portRow);
+    string portName = portsInterface_->getIndexedItemName(portRow);
 
     beginRemoveRows(QModelIndex(), portRow, portRow);
 
@@ -397,7 +397,7 @@ void PortsModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void PortsModel::onAddRow()
 {
-    int lastRow = portsInterface_->getPortCount();
+    int lastRow = portsInterface_->itemCount();
 
  	beginInsertRows(QModelIndex(), lastRow, lastRow);
 
@@ -417,7 +417,7 @@ void PortsModel::onAddRow()
 //-----------------------------------------------------------------------------
 void PortsModel::onAddItem(QModelIndex const& index)
 {
-    int row = portsInterface_->getPortCount();
+    int row = portsInterface_->itemCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -442,7 +442,7 @@ void PortsModel::onAddItem(QModelIndex const& index)
 QModelIndex PortsModel::index(QString const& portName) const
 {
 	// find the correct row
-    int row = portsInterface_->getPortIndex(portName.toStdString());
+    int row = portsInterface_->getItemIndex(portName.toStdString());
 
 	// if the named port is not found
 	if (row < 0)
@@ -465,7 +465,7 @@ void PortsModel::resetModelAndLockCurrentPorts()
 
     endResetModel();
 
-    for (auto portName : getInterface()->getPortNames())
+    for (auto portName : getInterface()->getItemNames())
     {
         DirectionTypes::Direction portDirection = DirectionTypes::str2Direction(QString::fromStdString(
             portsInterface_->getDirection(portName)), DirectionTypes::DIRECTION_INVALID);
@@ -553,7 +553,7 @@ bool PortsModel::rowIsLocked(int row)
 //-----------------------------------------------------------------------------
 QVariant PortsModel::formattedExpressionForIndex(QModelIndex const& index) const
 {
-    std::string portName = portsInterface_->getIndexedPortName(index.row());
+    std::string portName = portsInterface_->getIndexedItemName(index.row());
 
     if (index.column() == arrayLeftColumn())
     {
@@ -574,7 +574,7 @@ QVariant PortsModel::formattedExpressionForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant PortsModel::expressionForIndex(QModelIndex const& index) const
 {
-    std::string portName = portsInterface_->getIndexedPortName(index.row());
+    std::string portName = portsInterface_->getIndexedItemName(index.row());
 
     if (index.column() == arrayLeftColumn())
     {
@@ -595,7 +595,7 @@ QVariant PortsModel::expressionForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant PortsModel::valueForIndex(QModelIndex const& index) const
 {
-    string portName = portsInterface_->getPortNames().at(index.row());
+    string portName = portsInterface_->getItemNames().at(index.row());
 
     if (index.column() == rowNumberColumn())
     {
@@ -656,11 +656,11 @@ QVariant PortsModel::expressionOrValueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool PortsModel::validateIndex(QModelIndex const& index) const
 {
-    string portName = portsInterface_->getIndexedPortName(index.row());
+    string portName = portsInterface_->getIndexedItemName(index.row());
 
     if (index.column() == nameColumn())
     {
-        return portsInterface_->portHasValidName(portName);
+        return portsInterface_->itemHasValidName(portName);
     }
     else if (index.column() == arrayLeftColumn())
     {
@@ -685,8 +685,8 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    return portsInterface_->getAllReferencesToIdInPort(
-        portsInterface_->getIndexedPortName(row), valueID.toStdString());
+    return portsInterface_->getAllReferencesToIdInItem(
+        portsInterface_->getIndexedItemName(row), valueID.toStdString());
 }
 
 //-----------------------------------------------------------------------------
