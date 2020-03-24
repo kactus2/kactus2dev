@@ -42,7 +42,7 @@ public:
 		DEFAULT_HEIGHT = 40,    //! The height of a single item
 		MIN_WIDTH = 90,			//! The minimum width of an item
 		DEFAULT_WIDTH = 200,	//! The default width of a single item
-		NAME_INDENTATION = 20,  //! How much space the name leaves for left corners
+		NAME_INDENTATION = 15,  //! How much space the name leaves for left corners
         CORNER_INDENTATION = 4
 	};
 
@@ -51,6 +51,14 @@ public:
 		FONT_NAMESIZE = 10,		//! The size for name field
 		FONT_CORNERSIZE = 10	//! The size for corner texts
 	};
+
+    //! The address label position.
+    enum LabelPosition
+    {
+        LABELS_LEFT = 0,
+        LABELS_RIGHT,
+        LABELS_TOP
+    };
 
 	/*! The constructor.
 	 *
@@ -104,8 +112,11 @@ public:
 	 * \param namePos The position to be used.
 	 *
 	*/
-	virtual void setNamePosition(const NameHorizontalAlign hPos, const NameVerticalAlign vPos);
+	void setNamePosition(const NameHorizontalAlign hPos, const NameVerticalAlign vPos);
     
+    
+    void setAddressPosition(VisualizerItem::LabelPosition position);
+
 protected slots:
 
 	/*! Set new positions for child items.
@@ -137,34 +148,17 @@ protected:
 	*/
 	virtual void setLeftBottomCorner(QString const& text);
 
-	/*! Set text to the top right corner.
-	 *
-	 * \param text The text to display in the corner.
-	 *
-	*/
-	virtual void setRightTopCorner(QString const& text);
-
-	/*! Set text to the bottom right corner.
-	 *
-	 * \param text The text to display in the corner.
-	 *
-	*/
-	virtual void setRightBottomCorner(QString const& text);
-
 	//! Set the position for text in the top left corner.
-    virtual void setLeftTopPosition();
+    virtual void setLeftTopPosition(QGraphicsSimpleTextItem* label);
 
     //! Set the position for text in the bottom left corner.
-    virtual void setLeftBottomPosition();
+    virtual void setLeftBottomPosition(QGraphicsSimpleTextItem* label);
 
     //! Set the position for text in the top right corner.
-    virtual void setRightTopPosition();
+    virtual void setRightTopPosition(QGraphicsSimpleTextItem* label);
 
     //! Set the position for text in the bottom right corner.
-    virtual void setRightBottomPosition();
-
-    //! Set the position for name text.
-    virtual void setNameLabelPosition();
+    virtual void setRightBottomPosition(QGraphicsSimpleTextItem* label);
 
 	/*! Get the minimum rectangle of the item.
 	 *
@@ -184,10 +178,8 @@ protected:
      *
      *      @return [in] brush   The default brush.
      */
-    virtual QBrush defaultBrush();
+    QBrush defaultBrush();
 
-	//! Default brush for item coloring.
-    QBrush defaultBrush_;  
 
 private:
 
@@ -206,24 +198,24 @@ private:
     //! The name of the item.
     QString name_;
 
+    //! Default brush for item coloring.
+    QBrush defaultBrush_;
+
 	//! Defines where the name label is positioned.
 	NameHorizontalAlign nameHorizontalPos_;
     NameVerticalAlign nameVerticalPos_;
 
+    LabelPosition addressPosition_;
+
 	//! The label to display the name of the memory map.
-	QGraphicsTextItem nameLabel_;
+    QGraphicsSimpleTextItem nameLabel_;
 
 	//! The label to display text in the left top corner.
-	QGraphicsSimpleTextItem leftTopText_;
+	QGraphicsSimpleTextItem topText_;
 
 	//! The label to display text in the left bottom corner.
-	QGraphicsSimpleTextItem leftBottomText_;
+	QGraphicsSimpleTextItem bottomText_;
 
-	//! The label to display text in the right top corner.
-	QGraphicsSimpleTextItem rightTopText_;
-
-	//! The label to display text in the right bottom corner.
-	QGraphicsSimpleTextItem rightBottomText_;
 };
 
 #endif // VISUALIZERITEM_H

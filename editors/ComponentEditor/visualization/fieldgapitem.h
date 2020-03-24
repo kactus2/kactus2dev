@@ -30,75 +30,37 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] parser  Pointer to the used expression parser.
-	 *      @param [in] parent  Pointer to the parent graphics item.
-	 *
-	*/
-	FieldGapItem(QSharedPointer<ExpressionParser> parser, QGraphicsItem* parent);
-	
-	/*!
-     *  The constructor.
-	 *
      *      @param [in] name    Name to display for the gap item.
-	 *      @param [in] parent  Pointer to the parent graphics item.
+	 *      @param [in] parent  The parent graphics item.
 	 */
 	FieldGapItem(QString const& name, QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent);
 
 	//! The destructor.
-	virtual ~FieldGapItem();
+	virtual ~FieldGapItem() = default;
+
+    //! No copying.
+    FieldGapItem(const FieldGapItem& other) = delete;
+
+    //! No assignment.
+    FieldGapItem& operator=(const FieldGapItem& other) = delete;
 
 	//! Refresh the gap item.
-	virtual void refresh();
+	virtual void updateDisplay() override final;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
 	 */
-	virtual int getBitWidth() const;
+	virtual int getBitWidth() const override final;
 
 	/*!
      *  Get the width of the item.
 	 *
 	 *      @return The width of the gap item.
 	 */
-	virtual qreal itemTotalWidth() const;
+	virtual qreal itemTotalWidth() const override final;
 
-    /*!
-     *  Set lowest bit for the gap.
-	 *
-	 *      @param [in] address     The lowest bit that limits the gap.
-	 */
-	void setStartAddress(quint64 address);
-
-	/*!
-     *  Set highest bit for the gap.
-	 *
-	 *      @param [in] address     The highest bit that limits the gap end.
-	 */
-	void setEndAddress(quint64 address);
-
-	/*!
-     *  Sets the first non-overlapping address to display.
-	 *
-	 *      @param [in] address     The first address to set.
-	 */
-    virtual void setDisplayOffset(quint64 const& address);
-
-	/*!
-     *  Sets the last non-overlapping address to display.
-	 *
-	 *      @param [in] The last address to set.
-	 */
-    virtual void setDisplayLastAddress(quint64 const& address);
-
-private:
-
-	//! No copying.
-	FieldGapItem(const FieldGapItem& other);
-
-	//! No assignment.
-	FieldGapItem& operator=(const FieldGapItem& other);
 };
 
 #endif // FIELDGAPITEM_H

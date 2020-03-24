@@ -80,24 +80,24 @@ protected:
 	 * \param brush The brush to use.
 	 *
 	*/
-    virtual void setExpansionBrush(QBrush const& brush);
+    void setExpansionBrush(QBrush const& brush);
 
     /*!
      *  Sets the default coloring brush for the item.
      *
      *      @param [in] brush   The brush to set.
      */
-    virtual void setDefaultBrush(QBrush brush);
+    virtual void setDefaultBrush(QBrush brush) override final;
 
 
-    virtual void setExpansionPen(QPen const& pen);
+    void setExpansionPen(QPen const& pen);
 
 	/*! Hide/show the rectangle that contains the expand/collapse icon.
 	 *
 	 * \param visible If true then the rectangle is shown.
 	 *
 	*/
-	virtual void setExpansionRectVisible(bool visible);
+	void setExpansionRectVisible(bool visible);
 
 private:	
 

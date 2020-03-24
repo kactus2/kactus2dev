@@ -21,7 +21,7 @@ expansionArrow_(new QGraphicsPixmapItem(this))
 
     setShowExpandableItem(false);
 
-    expandCollapseItem_->show();
+    //expandCollapseItem_->show();
 
     QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_right.png"));
     QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
@@ -30,6 +30,10 @@ expansionArrow_(new QGraphicsPixmapItem(this))
 
     expansionArrow_->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
     expansionArrow_->setZValue(1);
+    
+    // Set the position for the expand/collapse item with the icon.
+    expansionArrow_->setPos(-GraphicsExpandCollapseItem::SIDE, 
+        GraphicsExpandCollapseItem::SIDE / 2 + VisualizerItem::CORNER_INDENTATION);
 }
 
 //-----------------------------------------------------------------------------
@@ -140,7 +144,4 @@ void ExpandableItem::updateRectangle()
     expandCollapseItem_->setRect(-GraphicsExpandCollapseItem::SIDE, 0, 
         GraphicsExpandCollapseItem::SIDE, totalRect.height());
 
-    // Set the position for the expand/collapse item with the icon.
-    expansionArrow_->setPos(-GraphicsExpandCollapseItem::SIDE, 
-        GraphicsExpandCollapseItem::SIDE / 2 + VisualizerItem::CORNER_INDENTATION);
 }

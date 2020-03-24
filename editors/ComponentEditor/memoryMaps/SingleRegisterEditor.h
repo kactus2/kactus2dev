@@ -64,12 +64,23 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~SingleRegisterEditor();
+    virtual ~SingleRegisterEditor() = default;
+
+    //! No copying
+    SingleRegisterEditor(const SingleRegisterEditor& other) = delete;
+
+    //! No assignment
+    SingleRegisterEditor& operator=(const SingleRegisterEditor& other) = delete;
 
     /*!
 	 *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
+signals:
+    void childGraphicsChanged(int);
+
+    void childAddressInfoChanged(int);
 
 protected:
 
@@ -117,12 +128,6 @@ private slots:
     void onAccessSelected(QString const& newAccessValue);
 
 private:
-
-	//! No copying
-    SingleRegisterEditor(const SingleRegisterEditor& other);
-
-	//! No assignment
-    SingleRegisterEditor& operator=(const SingleRegisterEditor& other);
 
     /*!
      *  Setup the layout for this editor.

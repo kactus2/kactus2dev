@@ -40,7 +40,7 @@ public:
 	 *      @param [in] expressionParser    The used expression parser.
 	 *      @param [in] parent              Pointer to the parent graph item.
 	 */
-	AddressSpaceGapItem(AddressPosition addrPos,
+	AddressSpaceGapItem(VisualizerItem::LabelPosition addrPos,
         QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
@@ -89,13 +89,6 @@ public:
 	 */
 	void setEndAddress(quint64 address, bool contains = true);
 
-	/*!
-     *  Specify if the address limits are displayed on right or left side.
-	 *
-	 *      @param [in] pos     The position where limits are drawn.
-	 */
-	void setAddressAlign(AddressPosition pos);
-
     /*!
      *  Sets the first non-overlapping address to display.
 	 *
@@ -119,7 +112,7 @@ private:
 	quint64 end_;
 
 	//! Defines where the address limits are aligned.
-	AddressPosition addrPosition_;
+    VisualizerItem::LabelPosition addrPosition_;
 };
 
 #endif // ADDRESSSPACEGAPITEM_H

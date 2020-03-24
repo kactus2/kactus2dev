@@ -31,7 +31,8 @@ segment_(segment)
 
 	QBrush brush(KactusColors::ADDRESS_SEGMENT);
 	setDefaultBrush(brush);
-	setNamePosition(VisualizerItem::NAME_RIGHT_ALIGN, VisualizerItem::NAME_MIDDLE);
+	//setNamePosition(VisualizerItem::NAME_RIGHT_ALIGN, VisualizerItem::NAME_MIDDLE);
+    setAddressPosition(LABELS_RIGHT);
 }
 
 //-----------------------------------------------------------------------------
@@ -99,7 +100,7 @@ void SegmentGraphItem::setOverlappingTop(quint64 const& address)
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {
-        VisualizerItem::setRightBottomCorner("");
+        VisualizerItem::setLeftBottomCorner("");
     }
     else
     {
@@ -116,7 +117,7 @@ void SegmentGraphItem::setOverlappingBottom(quint64 const& address)
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {
-        VisualizerItem::setRightBottomCorner("");
+        VisualizerItem::setLeftBottomCorner("");
     }
     else
     {

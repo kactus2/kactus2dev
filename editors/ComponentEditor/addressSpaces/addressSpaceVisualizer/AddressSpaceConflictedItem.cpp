@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceConflictedItem()
 //-----------------------------------------------------------------------------
-AddressSpaceConflictedItem::AddressSpaceConflictedItem(AddressSpaceConflictedItem::AddressPosition addrPos,
+AddressSpaceConflictedItem::AddressSpaceConflictedItem(VisualizerItem::LabelPosition addrPos,
                                                        QString const& addressSpaceWidth,
                                                        QSharedPointer<ExpressionParser> expressionParser,
                                                        QGraphicsItem* parent):

@@ -43,14 +43,6 @@ fieldValidator_(fieldValidator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: registertablemodel::~RegisterTableModel()
-//-----------------------------------------------------------------------------
-RegisterTableModel::~RegisterTableModel() 
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: registertablemodel::rowCount()
 //-----------------------------------------------------------------------------
 int RegisterTableModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
@@ -391,7 +383,7 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
             fields_->at(index.row())->setName(value.toString());
 
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
         }
         else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
         {
@@ -406,7 +398,8 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
 
             fields_->at(index.row())->setBitOffset(value.toString());
 
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
+            emit addressInfoChanged(index.row());
         }
         else if (index.column() == RegisterColumns::WIDTH_COLUMN)
         {
@@ -417,7 +410,8 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
 
             fields_->at(index.row())->setBitWidth(value.toString());
 
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
+            emit addressInfoChanged(index.row());
         }
         else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
         {
@@ -478,7 +472,8 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
 
             fields_->at(index.row())->setIsPresent(value.toString());
 
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
+            emit addressInfoChanged(index.row());
         }
         else
         {

@@ -55,7 +55,7 @@ void AddressSpaceVisualizationItem::setLeftTopCorner(quint64 address)
 void AddressSpaceVisualizationItem::setRightTopCorner(quint64 address)
 {
 	QString padded = addr2Str(address, getBitWidth());
-	VisualizerItem::setRightTopCorner(padded);
+	VisualizerItem::setLeftTopCorner(padded);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void AddressSpaceVisualizationItem::setLeftBottomCorner(quint64 address)
 void AddressSpaceVisualizationItem::setRightBottomCorner(quint64 address)
 {
 	QString padded = addr2Str(address, getBitWidth());
-	VisualizerItem::setRightBottomCorner(padded);
+	VisualizerItem::setLeftBottomCorner(padded);
 }
 
 //-----------------------------------------------------------------------------

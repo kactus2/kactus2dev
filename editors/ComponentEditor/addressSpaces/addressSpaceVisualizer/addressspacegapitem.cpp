@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGapItem()
 //-----------------------------------------------------------------------------
-AddressSpaceGapItem::AddressSpaceGapItem(AddressSpaceGapItem::AddressPosition addrPos,
+AddressSpaceGapItem::AddressSpaceGapItem(VisualizerItem::LabelPosition addrPos,
                                          QString const& addressSpaceWidth,
                                          QSharedPointer<ExpressionParser> expressionParser,
 										 QGraphicsItem* parent):
@@ -28,14 +28,8 @@ end_(0),
 addrPosition_(addrPos) 
 {
     setDefaultBrush(QBrush(Qt::white));
-    if (addrPos == AddressSpaceGapItem::ALIGN_LEFT)
-    {
-        setNamePosition(VisualizerItem::NAME_LEFT_ALIGN, VisualizerItem::NAME_MIDDLE);
-    }
-    else //if (addrPos == AddressSpaceGapItem::ALIGN_RIGHT)
-    {
-        setNamePosition(VisualizerItem::NAME_RIGHT_ALIGN, VisualizerItem::NAME_MIDDLE);
-    }
+
+    setAddressPosition(addrPos);
 	setName("...");
     setToolTip("This memory block is unassigned.");
 }
@@ -67,7 +61,7 @@ void AddressSpaceGapItem::refresh()
         }
         else
         {
-            VisualizerItem::setRightBottomCorner("");
+            VisualizerItem::setLeftBottomCorner("");
         }
     }
 
@@ -126,15 +120,6 @@ void AddressSpaceGapItem::setEndAddress( quint64 address, bool contains /*= true
 }
 
 //-----------------------------------------------------------------------------
-// Function: setAddressAlign()
-//-----------------------------------------------------------------------------
-void AddressSpaceGapItem::setAddressAlign(AddressSpaceGapItem::AddressPosition pos )
-{
-	addrPosition_ = pos;
-	refresh();
-}
-
-//-----------------------------------------------------------------------------
 // Function: setOverlappingTop()
 //-----------------------------------------------------------------------------
 void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
@@ -161,7 +146,7 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
 
         if (firstFreeAddress_ == lastFreeAddress_)
         {        
-            VisualizerItem::setRightBottomCorner("");
+            VisualizerItem::setLeftBottomCorner("");
         }
         else
         {
@@ -193,7 +178,7 @@ void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
     {  
         if (firstFreeAddress_ == lastFreeAddress_)
         {
-            VisualizerItem::setRightBottomCorner("");
+            VisualizerItem::setLeftBottomCorner("");
         }
         else
         {

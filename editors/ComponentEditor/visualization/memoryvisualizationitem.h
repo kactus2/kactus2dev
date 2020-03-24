@@ -59,6 +59,8 @@ public:
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() = 0;
 
+    virtual void redoChildLayout() { Q_ASSERT(false); };
+
 	/*!
      *  Get the offset of the item. 
 	 *
@@ -272,10 +274,10 @@ protected:
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
 
     //! The first non-overlapping address.
-    quint64 firstFreeAddress_;
+    quint64 firstFreeAddress_ = 0;
 
     //! The last non-overlapping address.
-    quint64 lastFreeAddress_;
+    quint64 lastFreeAddress_ = 0;
 
     //! Width for child items.
     qreal childWidth_;

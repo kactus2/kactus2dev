@@ -26,8 +26,6 @@ MemoryVisualizationItem::MemoryVisualizationItem(QSharedPointer<ExpressionParser
     QGraphicsItem* parent):
 ExpandableItem(parent),
     childItems_(),
-    firstFreeAddress_(-1),
-    lastFreeAddress_(-1),
     childWidth_(VisualizerItem::DEFAULT_WIDTH),
     conflicted_(false),
     overlapped_(false),
@@ -55,8 +53,7 @@ MemoryVisualizationItem::~MemoryVisualizationItem()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::setBrush(QBrush const& brush)
 {
-    defaultBrush_ = brush;
-    QAbstractGraphicsShapeItem::setBrush(brush);
+    setDefaultBrush(brush);
 }
 
 //-----------------------------------------------------------------------------
@@ -104,9 +101,9 @@ void MemoryVisualizationItem::setWidth(qreal width)
         childWidth_ = newChildWidth;
 
         VisualizerItem::setWidth(width);
-        ExpandableItem::reorganizeChildren();
+        //ExpandableItem::reorganizeChildren();
         
-        for (auto& child : childItems_)
+        for (auto child : childItems_)
         {
             child->setWidth(newChildWidth);
         }
@@ -191,17 +188,16 @@ bool MemoryVisualizationItem::isCompletelyOverlapped() const
 void MemoryVisualizationItem::setConflicted(bool conflicted)
 {
     conflicted_ = conflicted;
+    overlapped_ = conflicted;
+
+    QBrush colorBrush = defaultBrush();
     if (conflicted)
     {
-        QAbstractGraphicsShapeItem::setBrush(KactusColors::MISSING_COMPONENT);
-        setExpansionBrush(KactusColors::MISSING_COMPONENT);        
+        colorBrush = KactusColors::MISSING_COMPONENT;
     }
-    else
-    {
-        QAbstractGraphicsShapeItem::setBrush(defaultBrush());
-        setExpansionBrush(defaultBrush());  
-        overlapped_ = false;
-    }
+
+    QAbstractGraphicsShapeItem::setBrush(colorBrush);
+    setExpansionBrush(colorBrush);
 }
 
 //-----------------------------------------------------------------------------
@@ -334,7 +330,7 @@ void MemoryVisualizationItem::updateChildMap()
 
     quint64 lastAddressInUse = getOffset();    
 
-    MemoryGapItem* previousOverlap = 0;
+    MemoryGapItem const* previousOverlap = 0;
     MemoryVisualizationItem* previous = 0;
     quint64 previousLastAddress = lastAddressInUse;
 
@@ -526,28 +522,24 @@ bool MemoryVisualizationItem::childrenOverlap(MemoryVisualizationItem* current, 
 //-----------------------------------------------------------------------------
 MemoryGapItem* MemoryVisualizationItem::createConflictItem(qint64 offset, qint64 lastAddress)
 {
-    MemoryGapItem* gap = new MemoryGapItem(expressionParser_, this);
-    gap->setWidth(childWidth_);
+    MemoryGapItem* gap = createMemoryGap(offset, lastAddress);
     gap->setConflicted(true);
     gap->setName(QStringLiteral("conflicted"));
-    gap->setStartAddress(offset);
-    gap->setEndAddress(lastAddress);               
-    gap->setVisible(isExpanded());
 
-    childItems_.insert(gap->getOffset(), gap);
     return gap;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::createMemoryGap()
 //-----------------------------------------------------------------------------
-MemoryGapItem* MemoryVisualizationItem::createMemoryGap(quint64 offset, quint64 lastAddress)
+MemoryGapItem* MemoryVisualizationItem::createMemoryGap(quint64 startAddress, quint64 endAddress)
 {
     MemoryGapItem* gap = new MemoryGapItem(expressionParser_, this);
     gap->setWidth(childWidth_);
-    gap->setStartAddress(offset);
-    gap->setEndAddress(lastAddress);
+    gap->setDisplayOffset(startAddress);
+    gap->setDisplayOffset(endAddress);
     gap->setVisible(isExpanded());
+    gap->updateDisplay();
 
     childItems_.insert(gap->getOffset(), gap);
     return gap;

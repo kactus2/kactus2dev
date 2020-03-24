@@ -29,11 +29,10 @@ field_(field)
 	Q_ASSERT(field_);
 
     setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
+	
+	setDefaultBrush(QBrush(KactusColors::FIELD_COLOR));
 
-	QBrush brush(KactusColors::FIELD_COLOR);
-	setDefaultBrush(brush);
-
-	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
+    setAddressPosition(VisualizerItem::LABELS_TOP);
 
 	setShowExpandableItem(false);
 	setExpansionRectVisible(false);
@@ -47,7 +46,7 @@ field_(field)
 void FieldGraphItem::refresh()
 {
     updateDisplay();
-    ExpandableItem::reorganizeChildren();
+    //ExpandableItem::reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,9 +58,6 @@ void FieldGraphItem::updateDisplay()
 
     quint64 leftBound = getLastAddress();
     quint64 rightBound = getOffset();
-
-    setLeftTopCorner(QString::number(leftBound));
-    setRightTopCorner(QString::number(rightBound));
 
     setDisplayOffset(leftBound);
     setDisplayLastAddress(rightBound);
@@ -106,13 +102,7 @@ void FieldGraphItem::setWidth(qreal width)
 quint64 FieldGraphItem::getLastAddress() const
 {
     const int MSB = getOffset() + getBitWidth();
-
-    if (MSB == 0)
-    {
-        return 0;
-    }
-
-    return MSB -1;
+    return qMax(0, MSB - 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +111,7 @@ quint64 FieldGraphItem::getLastAddress() const
 void FieldGraphItem::setDisplayOffset(quint64 const& address)
 {
     firstFreeAddress_ = address;
-    setLeftTopCorner(QString::number(firstFreeAddress_));
+    VisualizerItem::setLeftTopCorner(QString::number(firstFreeAddress_));
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +120,7 @@ void FieldGraphItem::setDisplayOffset(quint64 const& address)
 void FieldGraphItem::setDisplayLastAddress(quint64 const& address)
 {
     lastFreeAddress_ = address;
-    setRightTopCorner(QString::number(lastFreeAddress_));
+    VisualizerItem::setLeftBottomCorner(QString::number(lastFreeAddress_));
 }
 
 //-----------------------------------------------------------------------------

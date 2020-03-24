@@ -87,14 +87,6 @@ registerValidator_(registerValidator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::~SingleRegisterEditor()
-//-----------------------------------------------------------------------------
-SingleRegisterEditor::~SingleRegisterEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleRegisterEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void SingleRegisterEditor::setupLayout()
@@ -233,7 +225,10 @@ void SingleRegisterEditor::connectSignals()
     connect(sizeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(fieldsEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(fieldsEditor_, SIGNAL(graphicsChanged(int)), 
+        this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
+    connect(fieldsEditor_, SIGNAL(addressInfoChanged(int)), 
+        this, SIGNAL(childAddressInfoChanged(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
