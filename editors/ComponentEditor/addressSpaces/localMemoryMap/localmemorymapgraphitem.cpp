@@ -50,8 +50,8 @@ void LocalMemoryMapGraphItem::refresh()
     quint64 offset = getOffset();
     quint64 lastAddress = getLastAddress();
 
-    setLeftTopCorner(offset);
-    setLeftBottomCorner(lastAddress);
+    setTopLabelText(offset);
+    setBottomLabelText(lastAddress);
 
     setToolTip("<b>Name: </b>" + name + "<br>" +
         "<b>AUB: </b>" + QString::number(getAddressUnitSize()) + "<br>" +

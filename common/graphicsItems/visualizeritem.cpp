@@ -18,30 +18,112 @@ VisualizerItem::VisualizerItem(QGraphicsItem* parent /*= 0*/) :
     QGraphicsRectItem(parent),
     name_(),
     defaultBrush_(),
-    nameHorizontalPos_(VisualizerItem::NAME_LEFT_ALIGN),
-    nameVerticalPos_(VisualizerItem::NAME_MIDDLE),
-    addressPosition_(VisualizerItem::LABELS_LEFT),
-    nameLabel_(this),
-    topText_(this),
-    bottomText_(this)
+    labelPositioning_(VisualizerItem::UNDEFINED),
+    nameItem_(this),
+    topTextItem_(this),
+    bottomTextItem_(this)
 {
 	setRect(0, 0, VisualizerItem::DEFAULT_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
 
-	QFont font = nameLabel_.font();
+	QFont font = nameItem_.font();
 	font.setPointSize(VisualizerItem::FONT_NAMESIZE);
 
-	nameLabel_.setFont(font);
+	nameItem_.setFont(font);
 
 	// set the fonts for the corner labels
-	QFont cornerFont = topText_.font();
+	QFont cornerFont = topTextItem_.font();
 	cornerFont.setPointSize(VisualizerItem::FONT_CORNERSIZE);
-	topText_.setFont(cornerFont);
-	bottomText_.setFont(cornerFont);
+	topTextItem_.setFont(cornerFont);
+	bottomTextItem_.setFont(cornerFont);
 	
 	setFlags(QGraphicsItem::ItemIsSelectable);    
 
-    setAddressPosition(LABELS_LEFT);
+    setLayoutType(LABELS_LEFT);
 	VisualizerItem::reorganizeChildren();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::itemTotalRect()
+//-----------------------------------------------------------------------------
+QRectF VisualizerItem::itemTotalRect() const
+{
+    // the rectangle that contains this item
+    QRectF totalRect(rect());
+
+    // if there are children	
+    for (QGraphicsItem const* child : childItems())
+    {
+        // the rectangle must contain this item and also the child item
+        VisualizerItem const* childItem = dynamic_cast<VisualizerItem const*>(child);
+        if (childItem && childItem->isVisible())
+        {
+            totalRect = totalRect.united(mapRectFromItem(child, childItem->itemTotalRect()));
+        }
+    }
+    return totalRect;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::name()
+//-----------------------------------------------------------------------------
+QString VisualizerItem::name() const
+{
+    return name_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::setWidth()
+//-----------------------------------------------------------------------------
+void VisualizerItem::setWidth(qreal width)
+{
+    setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
+    VisualizerItem::reorganizeChildren();
+
+    if (clipText_)
+    {
+        clipName();
+        clipAddress(topText_, &topTextItem_);
+        clipAddress(bottomText_, &bottomTextItem_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::itemTotalWidth()
+//-----------------------------------------------------------------------------
+qreal VisualizerItem::itemTotalWidth() const
+{
+    return VisualizerItem::DEFAULT_WIDTH;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::reorganizeChildren()
+//-----------------------------------------------------------------------------
+void VisualizerItem::reorganizeChildren()
+{
+    if (labelPositioning_ == LABELS_LEFT)
+    {
+        setLeftBottomPosition(&bottomTextItem_);
+
+        int xCoordinate = rect().width() / 3 + VisualizerItem::NAME_INDENTATION;
+        int yCoordinate = (rect().height() - nameItem_.boundingRect().height()) / 2;
+
+        nameItem_.setPos(xCoordinate, yCoordinate);
+    }
+    else if (labelPositioning_ == LABELS_RIGHT)
+    {
+        setRightTopPosition(&topTextItem_);
+        setRightBottomPosition(&bottomTextItem_);
+    }
+    else // TOP
+    {
+        setRightTopPosition(&bottomTextItem_);
+
+        int xCoordinate = qMax(qreal(0), rect().center().x() - (nameItem_.boundingRect().width() / 2));
+        int yCoordinate = rect().bottomRight().y() - VisualizerItem::FONT_NAMESIZE -
+            3 * VisualizerItem::CORNER_INDENTATION;
+        nameItem_.setPos(xCoordinate, yCoordinate);
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -50,60 +132,69 @@ VisualizerItem::VisualizerItem(QGraphicsItem* parent /*= 0*/) :
 void VisualizerItem::setName(QString const& name)
 {	
     name_ = name;
-    nameLabel_.setText(name);
-
-    //TODO: CLIP
+    if (clipText_)
+    {
+        clipName();
+    }
+    else
+    {
+        nameItem_.setText(name);
+    }    
 }
 
 //-----------------------------------------------------------------------------
-// Function: VisualizerItem::setLeftTopCorner()
+// Function: VisualizerItem::setTopLabelText()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setLeftTopCorner(QString const& text) 
+void VisualizerItem::setTopLabelText(QString const& text) 
 {
-    topText_.setText(text);
+    topText_ = text;
+    if (clipText_)
+    {
+        clipAddress(text, &topTextItem_);
+
+    }
+    else
+    {
+        topTextItem_.setText(text);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: VisualizerItem::setLeftBottomCorner()
+// Function: VisualizerItem::setBottomLabelText()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setLeftBottomCorner(QString const& text) 
+void VisualizerItem::setBottomLabelText(QString const& text) 
 {
-    bottomText_.setText(text);
+    bottomText_ = text;
+    if (clipText_)
+    {
+        clipAddress(text, &bottomTextItem_);
+    }
+    else
+    {
+        bottomTextItem_.setText(text);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: VisualizerItem::setLeftTopPosition()
+// Function: VisualizerItem::setLayoutType()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setLeftTopPosition(QGraphicsSimpleTextItem* label)
+void VisualizerItem::setLayoutType(LabelLayout labelLayout)
 {
-    label->setPos(VisualizerItem::CORNER_INDENTATION, VisualizerItem::CORNER_INDENTATION);
+    bool changed = labelLayout != labelPositioning_;
+    labelPositioning_ = labelLayout;
+
+    if (changed)
+    {
+        setLabelPositions();
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: VisualizerItem::setLeftBottomPosition()
+// Function: VisualizerItem::setClipText()
 //-----------------------------------------------------------------------------
-void VisualizerItem::setLeftBottomPosition(QGraphicsSimpleTextItem* label)
+void VisualizerItem::setClipText(bool enableClip)
 {
-    label->setPos(VisualizerItem::CORNER_INDENTATION,
-        rect().bottomLeft().y() - label->boundingRect().height() - VisualizerItem::CORNER_INDENTATION);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::setRightTopPosition()
-//-----------------------------------------------------------------------------
-void VisualizerItem::setRightTopPosition(QGraphicsSimpleTextItem* label)
-{
-    label->setPos(rect().topRight().x() - label->boundingRect().width() -
-        VisualizerItem::CORNER_INDENTATION, VisualizerItem::CORNER_INDENTATION);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::setRightBottomPosition()
-//-----------------------------------------------------------------------------
-void VisualizerItem::setRightBottomPosition(QGraphicsSimpleTextItem* label)
-{
-    label->setPos(rect().topRight().x() - label->boundingRect().width() - VisualizerItem::CORNER_INDENTATION,
-		rect().bottomRight().y() - label->boundingRect().height() - VisualizerItem::CORNER_INDENTATION);
+    clipText_ = enableClip;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,14 +205,6 @@ QRectF VisualizerItem::minimumRect() const
 	return QRectF(0, 0, VisualizerItem::DEFAULT_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
 }
 
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::reorganizeChildren()
-//-----------------------------------------------------------------------------
-void VisualizerItem::reorganizeChildren()
-{
-    setAddressPosition(addressPosition_);
-    resizeLabels();
-}
 
 //-----------------------------------------------------------------------------
 // Function: VisualizerItem::setDefaultBrush()
@@ -141,169 +224,122 @@ QBrush VisualizerItem::defaultBrush()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VisualizerItem::itemTotalRect()
+// Function: VisualizerItem::setLabelPositions()
 //-----------------------------------------------------------------------------
-QRectF VisualizerItem::itemTotalRect() const
+void VisualizerItem::setLabelPositions()
 {
-	// the rectangle that contains this item
-	QRectF totalRect(rect());
-
-	// if there are children	
-	for (QGraphicsItem const* child : childItems())
+    if (labelPositioning_ == VisualizerItem::LABELS_LEFT)
     {
-		// the rectangle must contain this item and also the child item
-		VisualizerItem const* childItem = dynamic_cast<VisualizerItem const*>(child);
-		if (childItem && childItem->isVisible())
-        {
-			totalRect = totalRect.united(mapRectFromItem(child, childItem->itemTotalRect()));
-		}
-	}
-	return totalRect;
-}
+        setLeftTopPosition(&topTextItem_);
+        setLeftBottomPosition(&bottomTextItem_);
 
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::itemTotalWidth()
-//-----------------------------------------------------------------------------
-qreal VisualizerItem::itemTotalWidth() const
-{
-	return VisualizerItem::DEFAULT_WIDTH;
-}
+        int xCoordinate = rect().width() / 3 + VisualizerItem::NAME_INDENTATION;
+        int yCoordinate = (rect().height() - nameItem_.boundingRect().height()) / 2;
 
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::setWidth()
-//-----------------------------------------------------------------------------
-void VisualizerItem::setWidth(qreal width)
-{
-	setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
-	VisualizerItem::reorganizeChildren();
-}
-
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::name()
-//-----------------------------------------------------------------------------
-QString VisualizerItem::name() const
-{
-	return name_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::setNamePosition()
-//-----------------------------------------------------------------------------
-void VisualizerItem::setNamePosition( const NameHorizontalAlign hPos, const NameVerticalAlign vPos ) 
-{
-	nameHorizontalPos_ = hPos;
-    nameVerticalPos_ = vPos;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::setAddressPosition()
-//-----------------------------------------------------------------------------
-void VisualizerItem::setAddressPosition(LabelPosition position)
-{
-    addressPosition_ = position;
-
-    if (position == VisualizerItem::LABELS_LEFT)
-    {
-        setLeftTopPosition(&topText_);
-        setLeftBottomPosition(&bottomText_);
-
-        int xCoordinate = topText_.x() + topText_.boundingRect().width() + VisualizerItem::NAME_INDENTATION;
-        int yCoordinate = (rect().height() - nameLabel_.boundingRect().height())/2;
-        nameLabel_.setPos(xCoordinate, yCoordinate);
+        nameItem_.setPos(xCoordinate, yCoordinate);
     }
-    else if (position == VisualizerItem::LABELS_RIGHT)
+    else if (labelPositioning_ == VisualizerItem::LABELS_RIGHT)
     {
-        setRightTopPosition(&topText_);
-        setRightBottomPosition(&bottomText_);
+        setRightTopPosition(&topTextItem_);
+        setRightBottomPosition(&bottomTextItem_);
 
-       int xCoordinate = topText_.x() - nameLabel_.boundingRect().width() - VisualizerItem::NAME_INDENTATION;
-       int yCoordinate = (rect().height() - nameLabel_.boundingRect().height())/2;
-       nameLabel_.setPos(xCoordinate, yCoordinate);
+        int xCoordinate = NAME_INDENTATION;
+        int yCoordinate = (rect().height() - nameItem_.boundingRect().height()) / 2;
+        nameItem_.setPos(xCoordinate, yCoordinate);
     }
     else
     {
-        setLeftTopPosition(&topText_);
-        setRightTopPosition(&bottomText_);
+        setLeftTopPosition(&topTextItem_);
+        setRightTopPosition(&bottomTextItem_);
 
-        int xCoordinate = rect().center().x() - (nameLabel_.boundingRect().width() / 2);
-        int yCoordinate = rect().bottomRight().y() - VisualizerItem::FONT_NAMESIZE - 
-            3*VisualizerItem::CORNER_INDENTATION;
-        nameLabel_.setPos(xCoordinate, yCoordinate);
+        int xCoordinate = qMax(qreal(0), rect().center().x() - (nameItem_.boundingRect().width() / 2));
+        int yCoordinate = rect().bottomRight().y() - VisualizerItem::FONT_NAMESIZE -
+            3 * VisualizerItem::CORNER_INDENTATION;
+        nameItem_.setPos(xCoordinate, yCoordinate);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: VisualizerItem::resizeLabels()
+// Function: VisualizerItem::setLeftTopPosition()
 //-----------------------------------------------------------------------------
-void VisualizerItem::resizeLabels()
-{    
-    qreal topLeft = 0;
-    qreal topRight = 0;
-    qreal topSize = 0;
+void VisualizerItem::setLeftTopPosition(QGraphicsSimpleTextItem* label)
+{
+    label->setPos(VisualizerItem::CORNER_INDENTATION, VisualizerItem::CORNER_INDENTATION);
+}
 
-    qreal bottomLeft = 0;
-    qreal bottomRight = 0;
-    qreal bottomSize = 0;
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::setLeftBottomPosition()
+//-----------------------------------------------------------------------------
+void VisualizerItem::setLeftBottomPosition(QGraphicsSimpleTextItem* label)
+{
+    label->setPos(VisualizerItem::CORNER_INDENTATION,
+        VisualizerItem::DEFAULT_HEIGHT - VisualizerItem::NAME_INDENTATION - VisualizerItem::CORNER_INDENTATION);
+}
 
-    qreal nameLeft = 0;
-    qreal nameRight = 0;
-    qreal nameSize = 0;
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::setRightTopPosition()
+//-----------------------------------------------------------------------------
+void VisualizerItem::setRightTopPosition(QGraphicsSimpleTextItem* label)
+{
+    label->setPos(rect().topRight().x() - label->boundingRect().width() -
+        VisualizerItem::CORNER_INDENTATION, VisualizerItem::CORNER_INDENTATION);
+}
 
-    const unsigned int MARGIN = VisualizerItem::CORNER_INDENTATION;
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::setRightBottomPosition()
+//-----------------------------------------------------------------------------
+void VisualizerItem::setRightBottomPosition(QGraphicsSimpleTextItem* label)
+{
+    label->setPos(rect().topRight().x() - label->boundingRect().width() - VisualizerItem::CORNER_INDENTATION,
+        rect().bottomRight().y() - label->boundingRect().height() - VisualizerItem::CORNER_INDENTATION);
+}
 
-    if (addressPosition_ == LABELS_LEFT)
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::clipName()
+//-----------------------------------------------------------------------------
+void VisualizerItem::clipName()
+{
+    int maxLength = 0;
+
+    if (labelPositioning_ == LABELS_TOP)
     {
-        topLeft = MARGIN;
-        topRight = rect().width() / 3;
-        topSize = qMax(0.0, rect().width() / 3 - MARGIN);
-
-        bottomLeft = MARGIN; 
-        bottomRight = rect().width() / 3;
-        bottomSize = qMax(0.0, rect().width() / 3 - MARGIN);
-
-        nameLeft = rect().width() / 3 + VisualizerItem::NAME_INDENTATION;
-        nameRight = rect().width() - VisualizerItem::NAME_INDENTATION;
-        nameSize = qMax(0.0, rect().width() - rect().width() / 3 - 2* VisualizerItem::NAME_INDENTATION);
-    }
-    else if (addressPosition_ == LABELS_RIGHT)
-    {
-        topLeft = 2 * rect().width() / 3;
-        topRight = rect().width() - MARGIN; 
-        topSize = qMax(0.0, rect().width() /3 - MARGIN);
-
-        bottomLeft = 2 * rect().width() / 3;
-        bottomRight = rect().width() - MARGIN;
-        bottomSize = qMax(0.0, rect().width() / 3 - MARGIN);
-
-        nameLeft = MARGIN;
-        nameRight = 2*rect().width() / 3 - VisualizerItem::NAME_INDENTATION;
-        nameSize = qMax(0.0, 2 * rect().width() / 3 - VisualizerItem::NAME_INDENTATION - MARGIN);
+        maxLength = rect().width() - 2 * CORNER_INDENTATION;
     }
     else
     {
-        topLeft = MARGIN;
-        topRight = rect().width() / 2 - MARGIN;
-        topSize = qMax(0.0, rect().width() / 2 - MARGIN);
-
-        bottomLeft = rect().width() / 2 + MARGIN;
-        bottomRight = rect().width() - MARGIN;
-        bottomSize = qMax(0.0, rect().width() / 2 - MARGIN);
-
-        nameLeft = VisualizerItem::NAME_INDENTATION;
-        nameRight = rect().width() - VisualizerItem::NAME_INDENTATION;
-        nameSize = qMax(0.0, rect().width() - 2*VisualizerItem::NAME_INDENTATION);
+        maxLength = 2 * rect().width() / 3 - 2 * NAME_INDENTATION;
     }
 
-    QFontMetrics labelMetrics(topText_.font());
-    int topCharaters = qMax(0.0, topRight - topLeft)/labelMetrics.width("x");
-    int bottomCharacters = qMax(0.0, bottomRight - bottomLeft)/ labelMetrics.width("x");
+    QFontMetrics fontMetrics(nameItem_.font());
+    int charCount = qMax(int(0), maxLength) / fontMetrics.width("x");
 
-    QFontMetrics fontMetrics(nameLabel_.font());
-    int charCount = qMax(0.0, nameRight - nameLeft)/fontMetrics.width("x");
+    nameItem_.setText(clipText(name_, charCount));
+}
 
-    topText_.setText(clipText(topText_.text(), topCharaters));
-    bottomText_.setText(clipText(bottomText_.text(), bottomCharacters));
-    nameLabel_.setText(clipText(name_, charCount));
+//-----------------------------------------------------------------------------
+// Function: VisualizerItem::clipAddress()
+//-----------------------------------------------------------------------------
+void VisualizerItem::clipAddress(QString const& text, QGraphicsSimpleTextItem* item)
+{
+    int maxLength = 0;
+
+    if (labelPositioning_ == LABELS_LEFT)
+    {
+        maxLength = rect().width() / 3 - NAME_INDENTATION;
+    }
+    else if (labelPositioning_ == LABELS_RIGHT)
+    {
+        maxLength = rect().width() / 3 - NAME_INDENTATION;
+    }
+    else
+    {
+        maxLength = rect().width() / 2 * VisualizerItem::CORNER_INDENTATION;
+    }
+
+    QFontMetrics labelMetrics(item->font());
+    int maxCharacters = qMax(int(0), maxLength) / labelMetrics.width("x");
+
+    item->setText(clipText(text, maxCharacters));
 }
 
 //-----------------------------------------------------------------------------
@@ -312,7 +348,7 @@ void VisualizerItem::resizeLabels()
 QString VisualizerItem::clipText(QString const& text, int maxChars) const
 {
     // if the text is too wide to be displayed at all.
-    if (maxChars < 2)
+    if (maxChars < 3)
     {
         return QString();
     }
@@ -323,6 +359,5 @@ QString VisualizerItem::clipText(QString const& text, int maxChars) const
     }
 
     // add "..." to the end to indicate the text has been partly hidden.
-    QString chopped(text.left(maxChars - 3) % QStringLiteral("..."));
-    return chopped;
+    return text.left(maxChars - 3) % QStringLiteral("...");
 }

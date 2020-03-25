@@ -33,7 +33,6 @@ addrBlock_(block)
 
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
 	setDefaultBrush(brush);
-	setNamePosition(VisualizerItem::NAME_LEFT_ALIGN, VisualizerItem::NAME_MIDDLE);
 }
 
 //-----------------------------------------------------------------------------

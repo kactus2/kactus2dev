@@ -43,10 +43,10 @@ int AddressSpaceVisualizationItem::getBitWidth() const
 //-----------------------------------------------------------------------------
 // Function: setLeftTopCorner()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setLeftTopCorner(quint64 address)
+void AddressSpaceVisualizationItem::setTopLabelText(quint64 address)
 {
 	QString padded = addr2Str(address, getBitWidth());
-	VisualizerItem::setLeftTopCorner(padded);
+	VisualizerItem::setTopLabelText(padded);
 }
 
 //-----------------------------------------------------------------------------
@@ -55,16 +55,16 @@ void AddressSpaceVisualizationItem::setLeftTopCorner(quint64 address)
 void AddressSpaceVisualizationItem::setRightTopCorner(quint64 address)
 {
 	QString padded = addr2Str(address, getBitWidth());
-	VisualizerItem::setLeftTopCorner(padded);
+	VisualizerItem::setTopLabelText(padded);
 }
 
 //-----------------------------------------------------------------------------
 // Function: setLeftBottomCorner()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setLeftBottomCorner(quint64 address)
+void AddressSpaceVisualizationItem::setBottomLabelText(quint64 address)
 {
 	QString padded = addr2Str(address, getBitWidth());
-	VisualizerItem::setLeftBottomCorner(padded);
+	VisualizerItem::setBottomLabelText(padded);
 }	
 
 //-----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void AddressSpaceVisualizationItem::setLeftBottomCorner(quint64 address)
 void AddressSpaceVisualizationItem::setRightBottomCorner(quint64 address)
 {
 	QString padded = addr2Str(address, getBitWidth());
-	VisualizerItem::setLeftBottomCorner(padded);
+	VisualizerItem::setBottomLabelText(padded);
 }
 
 //-----------------------------------------------------------------------------
@@ -105,11 +105,11 @@ void AddressSpaceVisualizationItem::setHeight(qreal height)
 void AddressSpaceVisualizationItem::setOverlappingTop(quint64 const& address)
 {
     firstFreeAddress_ = address;
-    setLeftTopCorner(firstFreeAddress_);
+    setTopLabelText(firstFreeAddress_);
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {        
-        VisualizerItem::setLeftBottomCorner("");
+        VisualizerItem::setBottomLabelText("");
     }
 }
 
@@ -127,11 +127,11 @@ quint64 AddressSpaceVisualizationItem::getOverlappingTop()
 void AddressSpaceVisualizationItem::setOverlappingBottom(quint64 const& address)
 {
     lastFreeAddress_ = address;
-    setLeftBottomCorner(lastFreeAddress_);
+    setBottomLabelText(lastFreeAddress_);
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {
-        VisualizerItem::setLeftBottomCorner("");
+        VisualizerItem::setBottomLabelText("");
     }
 }
 

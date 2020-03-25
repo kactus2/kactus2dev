@@ -124,11 +124,11 @@ QRectF MemoryVisualizationItem::boundingRect() const
 void MemoryVisualizationItem::setDisplayOffset(quint64 const& address)
 {
     firstFreeAddress_ = address;
-    setLeftTopCorner(firstFreeAddress_);
+    setTopLabelText(firstFreeAddress_);
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {        
-        setLeftBottomCorner(QString());
+        setBottomLabelText(QString());
     }
 }
 
@@ -146,11 +146,11 @@ quint64 MemoryVisualizationItem::getDisplayOffset()
 void MemoryVisualizationItem::setDisplayLastAddress(quint64 const& address)
 {
     lastFreeAddress_ = address;
-    setLeftBottomCorner(lastFreeAddress_);
+    setBottomLabelText(lastFreeAddress_);
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {
-        setLeftBottomCorner(QString());
+        setBottomLabelText(QString());
     }
 }
 
@@ -170,8 +170,8 @@ void MemoryVisualizationItem::setCompleteOverlap()
     overlapped_ = true;
     setConflicted(true);
     
-    setLeftTopCorner(QString());
-    setLeftBottomCorner(QString());
+    setTopLabelText(QString());
+    setBottomLabelText(QString());
 }
 
 //-----------------------------------------------------------------------------
@@ -444,17 +444,17 @@ void MemoryVisualizationItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::setLeftTopCorner()
 //-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setLeftTopCorner(QString const& text) 
+void MemoryVisualizationItem::setTopLabelText(QString const& text) 
 {
-    VisualizerItem::setLeftTopCorner(groupByFourDigits(text));
+    VisualizerItem::setTopLabelText(groupByFourDigits(text));
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::setLeftTopCorner()
 //-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setLeftTopCorner(quint64 address)
+void MemoryVisualizationItem::setTopLabelText(quint64 address)
 {
-    VisualizerItem::setLeftTopCorner(toHexString(address));
+    VisualizerItem::setTopLabelText(toHexString(address));
 }
 
 //-----------------------------------------------------------------------------
@@ -481,17 +481,17 @@ QString MemoryVisualizationItem::toHexString(quint64 address)
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::setLeftBottomCorner()
 //-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setLeftBottomCorner(QString const& text)
+void MemoryVisualizationItem::setBottomLabelText(QString const& text)
 {
-    VisualizerItem::setLeftBottomCorner(groupByFourDigits(text));
+    VisualizerItem::setBottomLabelText(groupByFourDigits(text));
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::setLeftBottomCorner()
 //-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setLeftBottomCorner(quint64 address)
+void MemoryVisualizationItem::setBottomLabelText(quint64 address)
 {
-    VisualizerItem::setLeftBottomCorner(toHexString(address));
+    VisualizerItem::setBottomLabelText(toHexString(address));
 }
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::emptySpaceBeforeFirstChild()

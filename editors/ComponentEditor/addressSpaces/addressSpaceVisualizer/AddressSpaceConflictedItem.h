@@ -32,7 +32,7 @@ public:
 	 *      @param [in] expressionParser    The used expression parser.
 	 *      @param [in] parent              Pointer to the parent graph item.
 	 */
-	AddressSpaceConflictedItem(VisualizerItem::LabelPosition addrPos,
+	AddressSpaceConflictedItem(VisualizerItem::LabelLayout addrPos,
         QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);

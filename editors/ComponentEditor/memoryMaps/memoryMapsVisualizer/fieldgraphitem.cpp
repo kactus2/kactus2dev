@@ -32,7 +32,8 @@ field_(field)
 	
 	setDefaultBrush(QBrush(KactusColors::FIELD_COLOR));
 
-    setAddressPosition(VisualizerItem::LABELS_TOP);
+    setLayoutType(VisualizerItem::LABELS_TOP);
+    setClipText(true);
 
 	setShowExpandableItem(false);
 	setExpansionRectVisible(false);
@@ -111,7 +112,7 @@ quint64 FieldGraphItem::getLastAddress() const
 void FieldGraphItem::setDisplayOffset(quint64 const& address)
 {
     firstFreeAddress_ = address;
-    VisualizerItem::setLeftTopCorner(QString::number(firstFreeAddress_));
+    VisualizerItem::setTopLabelText(QString::number(firstFreeAddress_));
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +121,7 @@ void FieldGraphItem::setDisplayOffset(quint64 const& address)
 void FieldGraphItem::setDisplayLastAddress(quint64 const& address)
 {
     lastFreeAddress_ = address;
-    VisualizerItem::setLeftBottomCorner(QString::number(lastFreeAddress_));
+    VisualizerItem::setBottomLabelText(QString::number(lastFreeAddress_));
 }
 
 //-----------------------------------------------------------------------------

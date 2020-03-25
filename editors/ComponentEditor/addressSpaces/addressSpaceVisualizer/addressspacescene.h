@@ -83,7 +83,7 @@ private:
      */
 	void updateMaps(QMultiMap<quint64, AddressSpaceVisualizationItem*>& itemMap, 
         QMultiMap<quint64, AddressSpaceVisualizationItem*> const& exceedingItemMap, 
-        VisualizerItem::LabelPosition const align);
+        VisualizerItem::LabelLayout const align);
 
     /*!
      *   Positions segments and address blocks outside address space.
@@ -105,7 +105,7 @@ private:
     virtual void resolveConflicts(AddressSpaceVisualizationItem* currentItem, 
         AddressSpaceVisualizationItem*& topItem, 
         AddressSpaceVisualizationItem*& prevConflict,
-        VisualizerItem::LabelPosition const align,
+        VisualizerItem::LabelLayout const align,
         QMultiMap<quint64, AddressSpaceVisualizationItem*>& map);
 
     //-----------------------------------------------------------------------------

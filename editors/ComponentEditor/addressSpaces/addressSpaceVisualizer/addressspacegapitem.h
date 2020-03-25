@@ -40,7 +40,7 @@ public:
 	 *      @param [in] expressionParser    The used expression parser.
 	 *      @param [in] parent              Pointer to the parent graph item.
 	 */
-	AddressSpaceGapItem(VisualizerItem::LabelPosition addrPos,
+	AddressSpaceGapItem(VisualizerItem::LabelLayout addrPos,
         QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
@@ -112,7 +112,7 @@ private:
 	quint64 end_;
 
 	//! Defines where the address limits are aligned.
-    VisualizerItem::LabelPosition addrPosition_;
+    VisualizerItem::LabelLayout addrPosition_;
 };
 
 #endif // ADDRESSSPACEGAPITEM_H

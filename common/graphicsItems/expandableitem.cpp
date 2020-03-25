@@ -143,5 +143,4 @@ void ExpandableItem::updateRectangle()
     // the rectangle is on the left side of the parent and children
     expandCollapseItem_->setRect(-GraphicsExpandCollapseItem::SIDE, 0, 
         GraphicsExpandCollapseItem::SIDE, totalRect.height());
-
 }

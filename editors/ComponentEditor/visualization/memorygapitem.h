@@ -75,8 +75,6 @@ public:
 	 */
 	virtual unsigned int getAddressUnitSize() const override;
 
-    //! Set the item into conflicted (overlapping memory) state.
-    virtual void setConflicted(bool conflicted) override final;
 };
 
 #endif // MEMORYGAPITEM_H

@@ -236,14 +236,14 @@ protected:
 	 *
 	 *       @param [in] text The text to display in the corner.
 	 */
-	virtual void setLeftTopCorner(QString const& text);
+	virtual void setTopLabelText(QString const& text);
 
 	/*!
      *  Set the address to be shown on the top left corner.
 	 *
 	 *       @param [in] address The address to be shown in hexadecimal form.
 	 */
-	virtual void setLeftTopCorner(quint64 address);
+	virtual void setTopLabelText(quint64 address);
 
     /*!
      *  Converts an address to hexadecimal string.
@@ -261,14 +261,14 @@ protected:
 	 *
 	 *       @param [in] text The text to display in the corner.
 	 */
-	virtual void setLeftBottomCorner(QString const& text);
+	virtual void setBottomLabelText(QString const& text);
 
 	/*!
      *  Set the address to be shown on the bottom left corner.
 	 *
 	 *       @param [in] address The address to be shown in hexadecimal form.
 	 */
-	virtual void setLeftBottomCorner(quint64 address);
+	virtual void setBottomLabelText(quint64 address);
 
 	//! Contains the child memory items. The offset of the child is the key.
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;

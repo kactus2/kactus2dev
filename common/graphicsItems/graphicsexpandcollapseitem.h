@@ -42,7 +42,13 @@ public:
 	GraphicsExpandCollapseItem(QGraphicsItem* parent = 0);
 	
 	//! The destructor.
-	virtual ~GraphicsExpandCollapseItem();
+	virtual ~GraphicsExpandCollapseItem() = default;
+
+    //! No copying.
+    GraphicsExpandCollapseItem(const GraphicsExpandCollapseItem& other) = delete;
+
+    //! No assignment.
+    GraphicsExpandCollapseItem& operator=(const GraphicsExpandCollapseItem& other) = delete;
 
 	//! Set the item to expanded state.
 	virtual void expand();
@@ -87,15 +93,9 @@ protected:
 	 virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-	
-	//! No copying.
-	GraphicsExpandCollapseItem(const GraphicsExpandCollapseItem& other);
-
-	//! No assignment.
-	GraphicsExpandCollapseItem& operator=(const GraphicsExpandCollapseItem& other);
 
 	//! Contains the current state of the item.
-	bool expanded_;
+	bool expanded_ = false;
 };
 
 #endif // GRAPHICSEXPANDCOLLAPSEITEM_H

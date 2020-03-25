@@ -19,7 +19,9 @@ FieldGapItem::FieldGapItem(QString const& name, QSharedPointer<ExpressionParser>
 MemoryGapItem(expressionParser, parent)
 {
     // fields show name in the middle
-    setAddressPosition(LABELS_TOP);
+    setLayoutType(LABELS_TOP);
+    setClipText(true);
+
     setName(name);
 
     // fields can never be expanded
@@ -32,10 +34,10 @@ MemoryGapItem(expressionParser, parent)
 void FieldGapItem::updateDisplay()
 {
 	QString startStr = QString::number(firstFreeAddress_);
-    VisualizerItem::setLeftBottomCorner(startStr);
+    VisualizerItem::setBottomLabelText(startStr);
 
 	QString endStr = QString::number(lastFreeAddress_);
-    VisualizerItem::setLeftTopCorner(endStr);
+    VisualizerItem::setTopLabelText(endStr);
     setToolTip("<b>" + name() + "</b> [" + endStr + ".." + startStr + "]");
 }
 
@@ -53,4 +55,12 @@ int FieldGapItem::getBitWidth() const
 qreal FieldGapItem::itemTotalWidth() const
 {
 	return rect().width();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGapItem::setConflicted()
+//-----------------------------------------------------------------------------
+void FieldGapItem::setConflicted(bool /*conflicted*/)
+{
+    // Do nothing.
 }

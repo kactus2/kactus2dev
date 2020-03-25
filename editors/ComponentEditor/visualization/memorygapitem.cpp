@@ -25,7 +25,7 @@ MemoryVisualizationItem(expressionParser, parent)
 	ExpandableItem::setExpansionBrush(QBrush(QColor(Qt::white)));
 
     setShowExpandableItem(false);
-    setAddressPosition(LABELS_LEFT);
+    setLayoutType(LABELS_LEFT);
 
 	setName("Reserved");	
     setToolTip("This memory block is reserved for future use.");
@@ -44,9 +44,9 @@ void MemoryGapItem::refresh()
 //-----------------------------------------------------------------------------
 void MemoryGapItem::updateDisplay()
 {
-    setLeftTopCorner(QString::number(firstFreeAddress_));
+    setTopLabelText(QString::number(firstFreeAddress_));
 
-    setLeftBottomCorner(QString::number(lastFreeAddress_));
+    setBottomLabelText(QString::number(lastFreeAddress_));
 }
 
 //-----------------------------------------------------------------------------
@@ -83,12 +83,4 @@ unsigned int MemoryGapItem::getAddressUnitSize() const
 	auto memItem = static_cast<MemoryVisualizationItem const*>(parentItem());
 	Q_ASSERT(memItem);
 	return memItem->getAddressUnitSize();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryGapItem::setConflicted()
-//-----------------------------------------------------------------------------
-void MemoryGapItem::setConflicted(bool conflicted)
-{
-    // Nothing to do.
 }

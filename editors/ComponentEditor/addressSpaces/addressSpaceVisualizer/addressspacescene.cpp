@@ -447,7 +447,7 @@ void AddressSpaceScene::rePosition()
 //-----------------------------------------------------------------------------
 void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationItem*>& itemMap, 
     QMultiMap<quint64, AddressSpaceVisualizationItem*> const& exceedingItemMap, 
-    VisualizerItem::LabelPosition const align)
+    VisualizerItem::LabelLayout const align)
 {
     quint64 addressSpaceEnd = addressSpaceLastAddress();
 
@@ -590,7 +590,7 @@ void AddressSpaceScene::rePositionExceeding(qreal const yStart)
 //-----------------------------------------------------------------------------
 void AddressSpaceScene::resolveConflicts(AddressSpaceVisualizationItem* currentItem, 
     AddressSpaceVisualizationItem*& topItem, AddressSpaceVisualizationItem*& prevConflict,
-    VisualizerItem::LabelPosition const align,
+    VisualizerItem::LabelLayout const align,
     QMultiMap<quint64, AddressSpaceVisualizationItem*>& map)
 {
     Q_ASSERT(currentItem);

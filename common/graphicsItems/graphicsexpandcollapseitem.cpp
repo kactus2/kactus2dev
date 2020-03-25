@@ -18,15 +18,7 @@
 // Function: graphicsexpandcollapseitem::GraphicsExpandCollapseItem()
 //-----------------------------------------------------------------------------
 GraphicsExpandCollapseItem::GraphicsExpandCollapseItem( QGraphicsItem* parent /*= 0*/ ):
-QGraphicsRectItem(parent),
-expanded_(false)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: graphicsexpandcollapseitem::~GraphicsExpandCollapseItem()
-//-----------------------------------------------------------------------------
-GraphicsExpandCollapseItem::~GraphicsExpandCollapseItem()
+QGraphicsRectItem(parent)
 {
 
 }
@@ -37,7 +29,6 @@ GraphicsExpandCollapseItem::~GraphicsExpandCollapseItem()
 void GraphicsExpandCollapseItem::expand()
 {
 	expanded_ = true;
-
     emit stateChanged(expanded_);
 }
 
@@ -55,7 +46,6 @@ bool GraphicsExpandCollapseItem::isExpanded() const
 void GraphicsExpandCollapseItem::collapse()
 {
 	expanded_ = false;
-
     emit stateChanged(expanded_);
 }
 

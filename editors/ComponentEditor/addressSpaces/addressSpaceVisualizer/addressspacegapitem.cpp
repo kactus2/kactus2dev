@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGapItem()
 //-----------------------------------------------------------------------------
-AddressSpaceGapItem::AddressSpaceGapItem(VisualizerItem::LabelPosition addrPos,
+AddressSpaceGapItem::AddressSpaceGapItem(VisualizerItem::LabelLayout addrPos,
                                          QString const& addressSpaceWidth,
                                          QSharedPointer<ExpressionParser> expressionParser,
 										 QGraphicsItem* parent):
@@ -29,7 +29,7 @@ addrPosition_(addrPos)
 {
     setDefaultBrush(QBrush(Qt::white));
 
-    setAddressPosition(addrPos);
+    setLayoutType(addrPos);
 	setName("...");
     setToolTip("This memory block is unassigned.");
 }
@@ -41,14 +41,14 @@ void AddressSpaceGapItem::refresh()
 {
     if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT)
     {
-        setLeftTopCorner(start_);
+        setTopLabelText(start_);
         if (end_ != start_)
         {
-            setLeftBottomCorner(end_);
+            setBottomLabelText(end_);
         }
         else
         {
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
     }
 
@@ -61,7 +61,7 @@ void AddressSpaceGapItem::refresh()
         }
         else
         {
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
     }
 
@@ -128,15 +128,15 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
 
     if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT)
     {
-        setLeftTopCorner(firstFreeAddress_);
+        setTopLabelText(firstFreeAddress_);
 
         if (firstFreeAddress_ == lastFreeAddress_)
         {
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
         else
         {
-            setLeftBottomCorner(lastFreeAddress_);
+            setBottomLabelText(lastFreeAddress_);
         }
     }
 
@@ -146,7 +146,7 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
 
         if (firstFreeAddress_ == lastFreeAddress_)
         {        
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
         else
         {
@@ -166,11 +166,11 @@ void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
     {
         if (firstFreeAddress_ == lastFreeAddress_)
         {
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
         else
         {
-            setLeftBottomCorner(lastFreeAddress_);
+            setBottomLabelText(lastFreeAddress_);
         }
     }
 
@@ -178,7 +178,7 @@ void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
     {  
         if (firstFreeAddress_ == lastFreeAddress_)
         {
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
         else
         {
