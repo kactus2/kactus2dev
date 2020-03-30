@@ -14,6 +14,8 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceCounter::ParameterReferenceCounter()
 //-----------------------------------------------------------------------------
@@ -116,4 +118,47 @@ int ParameterReferenceCounter::countReferencesInExpression(QString const& parame
     QString const& expression) const
 {
     return expression.count(parameterID);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceCounter::recalculateReferencesToParameters()
+//-----------------------------------------------------------------------------
+void ParameterReferenceCounter::recalculateReferencesToParameters(QVector<QString> const& parameterList,
+    QSharedPointer<ParametersInterface> parameterInterface)
+{
+    for (auto parameterName : parameterList)
+    {
+        QString parameterID = QString::fromStdString(parameterInterface->getID(parameterName.toStdString()));
+        if (!parameterID.isEmpty())
+        {
+            int referenceCount = countReferencesInInterfacedParameters(parameterID, parameterInterface);
+
+            parameterInterface->setUsageCount(parameterName.toStdString(), referenceCount);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceCounter::countReferencesInInterfacedParameters()
+//-----------------------------------------------------------------------------
+int ParameterReferenceCounter::countReferencesInInterfacedParameters(QString const& parameterID,
+    QSharedPointer<ParametersInterface> parameterInterface) const
+{
+    int referenceCount = 0;
+
+    for (auto parameter : parameterInterface->getItemNames())
+    {
+        referenceCount += countReferencesInExpression(
+            parameterID, QString::fromStdString(parameterInterface->getValueExpression(parameter)));
+        referenceCount += countReferencesInExpression(
+            parameterID, QString::fromStdString(parameterInterface->getBitWidthLeftExpression(parameter)));
+        referenceCount += countReferencesInExpression(
+            parameterID, QString::fromStdString(parameterInterface->getBitWidthRightExpression(parameter)));
+        referenceCount += countReferencesInExpression(
+            parameterID, QString::fromStdString(parameterInterface->getArrayLeftExpression(parameter)));
+        referenceCount += countReferencesInExpression(
+            parameterID, QString::fromStdString(parameterInterface->getArrayRightExpression(parameter)));
+    }
+
+    return referenceCount;
 }

@@ -123,7 +123,9 @@ bool PortsInterface::setName(string const& currentPortName, string const& newPor
         return false;
     }
 
-    editedPort->setName(QString::fromStdString(newPortName));
+    QString uniqueNewName = getUniqueName(newPortName, "port");
+
+    editedPort->setName(uniqueNewName);
     return true;
 }
 

@@ -15,18 +15,12 @@
 #include "ParameterizableTable.h"
 #include "ReferencingTableModel.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-
-#include <IPXACTmodels/common/Parameter.h>
-
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include <QList>
 
-class Choice;
-class Component;
-class ParameterValidator;
+class ParametersInterface;
+
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
@@ -39,72 +33,84 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] choices                 The choices available for the parameter values.
-	 *      @param [in] validator               The validator to use for checking parameter validity.
-	 *      @param [in] expressionParser        Expression parser for configurable elements.
-	 *      @param [in] parameterFinder         Pointer to the instance for finding parameters.
-	 *      @param [in] expressionFormatter     The expression formatter.
-	 *      @param [in] parent                  The parent object.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *      @param [in] expressionParser    Expression parser for configurable elements.
+	 *      @param [in] parameterFinder     Pointer to the instance for finding parameters.
+	 *      @param [in] parent              The parent object.
 	 */
-	AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-        QSharedPointer<ParameterValidator> validator,
-	    QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QObject *parent);
-	
-    //! The destructor.
-	virtual ~AbstractParameterModel();
+    AbstractParameterModel(QSharedPointer<ParametersInterface> parameterInterface,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 
-	/*! Get the data for the specified item for specified role.
+    /*!
+     *  The destructor.
+     */
+	virtual ~AbstractParameterModel() = default;
+
+    /*!
+     *  Get the number of rows in the model.
+	 *
+	 *      @param [in]  parent Model index of the parent of the item.
+	 *
+	 *      @return  Number of rows currently in the model.
+	 */
+	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
+
+	/*!
+     *  Get the data for the specified item for specified role.
 	 *
 	 *      @param [in]  index  Identifies the item that's data is wanted.
 	 *      @param [in]  role   Specifies what kind of data is wanted.
 	 *
 	 *      @return  The data for the given index.
-	*/
+     */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole ) const;
 
-	/*! Get the data for the headers
+	/*!
+     *  Get the data for the headers.
 	 *
 	 *      @param [in]  section        The column that's header is wanted.
 	 *      @param [in]  orientation    The orientation of the header data.
 	 *      @param [in]  role           Specified the type of data that is wanted.
 	 *
 	 *      @return  The header data for the given section.
-	*/
+     */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-	/*! Set the data for specified item.
+	/*!
+     *  Set the data for specified item.
 	 *
 	 *      @param [in]  index  Specifies the item that's data is modified
 	 *      @param [in]  value  The value to be set.
 	 *      @param [in]  role   The role that is trying to modify the data. Only Qt::EditRole is supported.
 	 *
 	 *      @return  True, if data was successfully set, otherwise false.
-	*/
+     */
 	virtual bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole );
 
-	/*! Get information on how specified item can be handled.
+	/*!
+     *  Get information on how specified item can be handled.
 	 *
 	 *      @param [in]  index Specifies the item that's flags are wanted.
 	 *
 	 *      @return  Qt::ItemFlags that define how object can be handled.
-	*/
+     */
 	virtual Qt::ItemFlags flags(QModelIndex const& index) const;
 
 public slots:
 
-	/*! A new item should be added to given index.
+	/*!
+     *  A new item should be added to given index.
 	 *
 	 *      @param [in]  index The position where new item should be added at.
-	*/
+     */
 	virtual void onAddItem(QModelIndex const& index) = 0;
 
-	/*! An item should be removed from the model.
+	/*!
+     *  An item should be removed from the model.
 	 * 
 	 *      @param [in]  index Identifies the item that should be removed.
-	*/
+     */
 	virtual void onRemoveItem(QModelIndex const& index) = 0;
 
     /*!
@@ -116,32 +122,38 @@ public slots:
 
 signals:
 
-	//! Emitted when contents of the model change.
+	/*!
+     *  Emitted when contents of the model change.
+     */
 	void contentChanged();
 
-	//! Prints an error message to the user.
+	/*!
+     *  Prints an error message to the user.
+     */
 	void errorMessage(const QString& msg) const;
 	
-	//! Prints a notification to user.
+	/*!
+     *  Prints a notification to user.
+     */
 	void noticeMessage(const QString& msg) const;
 
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameters  The selected parameters.
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
      */
-    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
+    void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        QSharedPointer<ParametersInterface> parameterInterface);
 
 protected:
                   
     /*!
-     *  Gets the parameter on the given row.
+     *  Get the interface for accessing parameters.
      *
-     *      @param [in] row   The row number where to get the parameter from.
-     *
-     *      @return The parameter on the given row.
-     */  
-    virtual QSharedPointer<Parameter> getParameterOnRow(int row) const = 0;
+     *      @return Interface for accessing parameters.
+     */
+    QSharedPointer<ParametersInterface> getInterface() const;
 
     /*!
      *  Gets the column for name.
@@ -258,34 +270,6 @@ protected:
     virtual bool isMandatoryColumn(int column) const;
 
     /*!
-     *  Finds the value for the given model parameter using either selected choice or model parameter value.
-     *
-     *      @param [in] modelParameter   The model parameter whose value to find.
-     *
-     *      @return The value to display for the model parameter.
-     */
-    QString evaluateValueFor(QSharedPointer<Parameter> parameter) const;
-
-    /*!
-     *  Finds the choice with the given name.
-     *
-     *      @param [in] choiceName   The name of the choice to find.
-     *
-     *      @return The found choice.
-     */
-    QSharedPointer<Choice> findChoice(QString const& choiceName) const;
-
-    /*!
-     *  Finds a human-readable value to display for a given enumeration.
-     *
-     *      @param [in] choice              The choice whose enumeration to find.
-     *      @param [in] enumerationValue    The value used to search the enumeration.
-     *
-     *      @return A value for the enumeration to display.
-     */
-    QString findDisplayValueForEnumeration(QSharedPointer<Choice> choice, QString const& enumerationValue) const;
-    
-    /*!
      *  Validates the data in a parameter corresponding to a given column.
      *
      *      @param [in] column      The column whose data to validate.
@@ -339,6 +323,24 @@ private:
 
 	//! No assignment.
 	AbstractParameterModel& operator=(const AbstractParameterModel& other);
+    
+    /*!
+     *  Get the formatted value of an expression in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The formatted value of an expression in the selected index.
+     */
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the expression of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The expression of the selected index.
+     */
+    virtual QVariant expressionForIndex(QModelIndex const& index) const;
 
     /*!
      *  Gets the value for the given index.
@@ -358,28 +360,12 @@ private:
      */
     QVariant backgroundColorForIndex(QModelIndex const& index) const;
 
-    /*!
-     *  Changes the array value to match the current choice.
-     *
-     *      @param [in] choice          The currently active choice.
-     *      @param [in] arrayValue      The array value to be changed.
-     *
-     *      @return Array whose values have been changed to match the currently selected choice
-     */
-    QString matchArrayValuesToSelectedChoice(QSharedPointer<Choice> choice, QString const& arrayValue) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The choices available for model parameter values.
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
-
-    //! Validator for parameters.
-    QSharedPointer<ParameterValidator> validator_;
-
-    //! Formatter for parameter expressions.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+    //! Interface for accessing parameters.
+    QSharedPointer<ParametersInterface> parameterInterface_;
 };
 
 #endif // ABSTRACTPARAMETERMODEL_H

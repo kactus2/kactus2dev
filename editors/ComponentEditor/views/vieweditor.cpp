@@ -42,17 +42,17 @@ ViewEditor::ViewEditor(QSharedPointer<Component> component, QSharedPointer<View>
     LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
 ItemEditor(component, libHandler, parent),
-    view_(view),
-    nameEditor_(new NameGroupEditor(view, this, tr("View name and description"))),
-    envIdentifier_(new EnvIdentifierEditor(view, this)),
-    componentInstantiationSelector_(new ReferenceSelector(this)),
-    designConfigurationInstantiationSelector_(new ReferenceSelector(this)),
-    designInstantiationSelector_(new ReferenceSelector(this)),
-    componentInstantiationDisplay_(new ComponentInstantiationDisplayer(this)),
-    hierarchyGroup_(new QGroupBox(tr("Design and configuration"), this)),
-    designConfigurationDisplay_(new VLNVDisplayer(this, VLNV())),
-    designDisplay_(new VLNVDisplayer(this, VLNV())),
-    moduleParameterEditor_(new ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > >(
+view_(view),
+nameEditor_(new NameGroupEditor(view, this, tr("View name and description"))),
+envIdentifier_(new EnvIdentifierEditor(view, this)),
+componentInstantiationSelector_(new ReferenceSelector(this)),
+designConfigurationInstantiationSelector_(new ReferenceSelector(this)),
+designInstantiationSelector_(new ReferenceSelector(this)),
+componentInstantiationDisplay_(new ComponentInstantiationDisplayer(this)),
+hierarchyGroup_(new QGroupBox(tr("Design and configuration"), this)),
+designConfigurationDisplay_(new VLNVDisplayer(this, VLNV())),
+designDisplay_(new VLNVDisplayer(this, VLNV())),
+moduleParameterEditor_(new ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > >(
     new QList<QSharedPointer<ModuleParameter> >()), component->getChoices(), parameterFinder, expressionFormatter,
     this))
 {
@@ -75,14 +75,6 @@ ItemEditor(component, libHandler, parent),
         this, SLOT(onDesignConfigurationInstanceChanged(QString const&)), Qt::UniqueConnection);
     connect(designInstantiationSelector_, SIGNAL(itemSelected(QString const&)),
         this, SLOT(onDesignInstanceChanged(QString const&)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewEditor::~ViewEditor()
-//-----------------------------------------------------------------------------
-ViewEditor::~ViewEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------

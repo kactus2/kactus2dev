@@ -568,7 +568,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser_, root)));
 
         QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
-            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser_, 
+            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser_,
             expressionFormatter_, root));
 
         root->addChildItem(parametersItem);
@@ -586,9 +586,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             expressionParser_, root)));
     }
 
-    QSharedPointer<InstantiationsItem> instantiationsItem (
-        new InstantiationsItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
-        expressionFormatter_, expressionParser_, root));
+    QSharedPointer<InstantiationsItem> instantiationsItem (new InstantiationsItem(&navigationModel_, libHandler_,
+        component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, root));
 
     root->addChildItem(instantiationsItem);
 
@@ -611,8 +610,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
     if (component->getImplementation() == KactusAttribute::HW)
     {
-        QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(&navigationModel_, libHandler_,
-            component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, root));
+        QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(
+            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+            expressionParser_, root));
 
         root->addChildItem(portsItem);
         connect(portsItem.data(), SIGNAL(createInterface()), root, SLOT(onInterfaceAdded()), Qt::UniqueConnection);

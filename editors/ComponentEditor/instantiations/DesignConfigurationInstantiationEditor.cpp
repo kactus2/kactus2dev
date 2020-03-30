@@ -37,19 +37,18 @@
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationEditor::DesignConfigurationInstantiationEditor()
 //-----------------------------------------------------------------------------
-DesignConfigurationInstantiationEditor::DesignConfigurationInstantiationEditor(QSharedPointer<Component> component, 
+DesignConfigurationInstantiationEditor::DesignConfigurationInstantiationEditor(QSharedPointer<Component> component,
     QSharedPointer<DesignConfigurationInstantiation> instantiation,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     LibraryInterface* libHandler, QWidget* parent):
 ParameterItemEditor(component, libHandler, parent), 
-    instantiation_(instantiation),
-    nameGroupEditor_(new NameGroupEditor(instantiation, this,
+instantiation_(instantiation),
+nameGroupEditor_(new NameGroupEditor(instantiation, this,
     tr("Design configuration instance name and description"))),
-    designConfigurationEditor_(0),
-    parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
-    elementEditor_(0),
-    designConfigurationParameterFinder_(new ListParameterFinder())
+designConfigurationEditor_(0),
+parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
+elementEditor_(0),
+designConfigurationParameterFinder_(new ListParameterFinder())
 {
     // find the main window for VLNV editor.
     QWidget* parentW = nullptr;
@@ -77,8 +76,11 @@ ParameterItemEditor(component, libHandler, parent),
     connect(&parameters_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
-    connect(&parameters_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+    connect(&parameters_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        Qt::UniqueConnection);
 
     connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 

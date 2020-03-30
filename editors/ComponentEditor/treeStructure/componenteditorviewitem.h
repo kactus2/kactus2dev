@@ -26,6 +26,7 @@ class DesignConfigurationInstantiation;
 class ViewValidator;
 class InstantiationsValidator;
 class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! The item for a single view in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -48,18 +49,14 @@ public:
      *      @param [in] viewValidator           Validator used for views.
 	 *      @param [in] parent                  The parent item.
 	 */
-	ComponentEditorViewItem(QSharedPointer<View> view,
-        ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ViewValidator> viewValidator,
+	ComponentEditorViewItem(QSharedPointer<View> view, ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler, QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ViewValidator> viewValidator,
         ComponentEditorItem* parent);
 
 	//! The destructor.
-	virtual ~ComponentEditorViewItem();
+	virtual ~ComponentEditorViewItem() = default;
 
 	/*!
      *  Get the tool tip for the item.

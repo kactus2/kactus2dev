@@ -31,6 +31,7 @@ class ParameterFinder;
 class ReferenceSelector;
 class View;
 class VLNVDisplayer;
+
 //-----------------------------------------------------------------------------
 //! Editor to edit a view within a component.
 //-----------------------------------------------------------------------------
@@ -50,15 +51,14 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] parent                  The owner of this editor.
 	 */
-	ViewEditor(QSharedPointer<Component> component,
-        QSharedPointer<View> view,
-        LibraryInterface* libHandler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
+	ViewEditor(QSharedPointer<Component> component, QSharedPointer<View> view, LibraryInterface* libHandler,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent = 0);
 	
-	//! The destructor.
-	virtual ~ViewEditor();
+	/*!
+     *  The destructor.
+     */
+	virtual ~ViewEditor() = default;
 
 	/*!
      *  Reload the information from the model to the editor.

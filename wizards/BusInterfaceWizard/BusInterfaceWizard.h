@@ -22,6 +22,7 @@ class BusInterfaceValidator;
 class Component;
 class LibraryInterface;
 class ExpressionParser;
+class ParameterValidator;
 
 //-----------------------------------------------------------------------------
 //! Bus wizard dialog.
@@ -90,12 +91,14 @@ private:
     /*!
      *  Create the validator for bus interfaces.
      *
-     *      @param [in] component   Component containing the bus interfaces.
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] handler     Library handler.
+     *      @param [in] component           Component containing the bus interfaces.
+     *      @param [in] parser              The used expression parser.
+     *      @param [in] parameterValidator  Validator for parameters.
+     *      @param [in] handler             Library handler.
      */
     QSharedPointer<BusInterfaceValidator> createBusInterfaceValidator(QSharedPointer<Component> component,
-        QSharedPointer<ExpressionParser> parser, LibraryInterface* handler);
+        QSharedPointer<ExpressionParser> parser, QSharedPointer<ParameterValidator> parameterValidator,
+        LibraryInterface* handler);
 };
 
 #endif // BUSINTERFACEWIZARD_H

@@ -22,6 +22,7 @@ class View;
 class ExpressionParser;
 class ViewValidator;
 class InstantiationsValidator;
+
 //-----------------------------------------------------------------------------
 //! The design configuration instantiations-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------

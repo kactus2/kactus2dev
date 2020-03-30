@@ -32,6 +32,8 @@
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceCounter::ComponentParameterReferenceCounter()
 //-----------------------------------------------------------------------------
@@ -54,24 +56,26 @@ void ComponentParameterReferenceCounter::setComponent(QSharedPointer<Component> 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceCounter::recalculateReferencesToParameters()
 //-----------------------------------------------------------------------------
-void ComponentParameterReferenceCounter::recalculateReferencesToParameters(
-    QVector<QSharedPointer<Parameter> > parameterList)
+void ComponentParameterReferenceCounter::recalculateReferencesToParameters(QVector<QString> const& parameterList,
+    QSharedPointer<ParametersInterface> parameterInterface)
 {
-    foreach (QSharedPointer<Parameter> parameter, parameterList)
+    for (auto parameterName : parameterList)
     {
         int referenceCount = 0;
-        QString parameterID = parameter->getValueId();
+        QString parameterID = QString::fromStdString(parameterInterface->getID(parameterName.toStdString()));
+        if (!parameterID.isEmpty())
+        {
+            referenceCount += countReferencesInFileSets(parameterID);
+            referenceCount += countReferencesInParameters(parameterID, component_->getParameters());
+            referenceCount += countReferencesInMemoryMaps(parameterID);
+            referenceCount += countReferencesInAddressSpaces(parameterID);
+            referenceCount += countReferencesInInstantiations(parameterID);
+            referenceCount += countReferencesInPorts(parameterID);
+            referenceCount += countReferencesInBusInterfaces(parameterID);
+            referenceCount += countReferencesInRemapStates(parameterID);
 
-        referenceCount += countReferencesInFileSets(parameterID);
-        referenceCount += countReferencesInParameters(parameterID, component_->getParameters());
-        referenceCount += countReferencesInMemoryMaps(parameterID);
-        referenceCount += countReferencesInAddressSpaces(parameterID);
-        referenceCount += countReferencesInInstantiations(parameterID);
-        referenceCount += countReferencesInPorts(parameterID);
-        referenceCount += countReferencesInBusInterfaces(parameterID);
-        referenceCount += countReferencesInRemapStates(parameterID);
-
-        parameter->setUsageCount(referenceCount);
+            parameterInterface->setUsageCount(parameterName.toStdString(), referenceCount);
+        }
     }
 }
 

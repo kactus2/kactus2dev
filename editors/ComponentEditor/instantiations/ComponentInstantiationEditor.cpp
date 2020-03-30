@@ -26,9 +26,9 @@
 // Function: ComponentInstantiationEditor::ComponentInstantiationEditor()
 //-----------------------------------------------------------------------------
 ComponentInstantiationEditor::ComponentInstantiationEditor(QSharedPointer<Component> component,
-        LibraryInterface* library, QSharedPointer<ComponentInstantiation> componentInstantiation,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+    LibraryInterface* library, QSharedPointer<ComponentInstantiation> componentInstantiation,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
 ParameterItemEditor(component, library, parent),
 component_(component),
 componentInstantiation_(componentInstantiation),
@@ -44,7 +44,7 @@ fileSetRefs_(component, tr("File set references"), this),
 fileBuilders_(componentInstantiation->getDefaultFileBuilders(), parameterFinder, expressionParser,
               expressionFormatter, this),
 moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
-expressionFormatter, this),
+    expressionFormatter, this),
 parameters_(componentInstantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this)
 {
     fileSetRefs_.initialize();
@@ -88,8 +88,11 @@ parameters_(componentInstantiation->getParameters(), component->getChoices(), pa
     connect(&moduleParameters_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
-    connect(&moduleParameters_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+    connect(&moduleParameters_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        Qt::UniqueConnection);
 
     connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&parameters_, SIGNAL(increaseReferences(QString)),
@@ -99,8 +102,11 @@ parameters_(componentInstantiation->getParameters(), component->getChoices(), pa
     connect(&parameters_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
-    connect(&parameters_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+    connect(&parameters_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        Qt::UniqueConnection);
 
     setupLayout();
 }

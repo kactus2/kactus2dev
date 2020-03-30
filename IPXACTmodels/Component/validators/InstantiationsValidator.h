@@ -182,6 +182,13 @@ public:
     virtual void findErrorsInComponentInstantiation(QVector<QString>& errors,
         QSharedPointer<ComponentInstantiation> instantiation, QString const& context) const;
 
+    /*!
+     *  Get the assigned parameter validator.
+     *
+     *      @return The assigned parameter validator.
+     */
+    QSharedPointer<ParameterValidator> getParameterValidator() const;
+
 private:
 
     /*!

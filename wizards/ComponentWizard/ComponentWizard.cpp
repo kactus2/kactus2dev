@@ -56,11 +56,11 @@ referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
 
     setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
-    setPage(ComponentWizardPages::FILE_DEPENDENCY, new ComponentWizardDependencyPage(component, parameterFinder_,
-        basePath, this));
+    setPage(ComponentWizardPages::FILE_DEPENDENCY, new ComponentWizardDependencyPage(
+        component, parameterFinder_, basePath, this));
     setPage(ComponentWizardPages::IMPORT, importPage);
-    setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(handler, parameterFinder_,
-        expressionFormatter_, this));
+    setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(
+        handler, parameterFinder_, expressionFormatter_, this));
     setPage(ComponentWizardPages::CONCLUSION, conclusionPage);
 
     connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 

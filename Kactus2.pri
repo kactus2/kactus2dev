@@ -307,6 +307,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/parameters/ParameterDelegate.h \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
     ./editors/ComponentEditor/parameters/ParametersView.h \
+    ./editors/ComponentEditor/parameters/ParametersInterface.h \
     ./editors/ComponentEditor/parameters/parameterseditor.h \
     ./editors/ComponentEditor/parameters/Array/ArrayColumns.h \
     ./editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
@@ -509,6 +510,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/MultipleParameterFinder.h \
     ./editors/ComponentEditor/common/NullParser.h \
     ./editors/ComponentEditor/common/ParameterFinder.h \
+    ./editors/ComponentEditor/common/ParameterizableInterface.h \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
@@ -846,9 +848,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/parameters/ParametersInterface.h \
-    ./editors/ComponentEditor/common/ParameterizableInterface.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1140,6 +1140,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
+    ./editors/ComponentEditor/parameters/ParametersInterface.cpp \
     ./editors/ComponentEditor/parameters/parametersmodel.cpp \
     ./editors/ComponentEditor/parameters/ParametersView.cpp \
     ./editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
@@ -1329,6 +1330,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/common/NullParser.cpp \
     ./editors/ComponentEditor/common/ParameterCache.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
+    ./editors/ComponentEditor/common/ParameterizableInterface.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
@@ -1583,7 +1585,5 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/parameters/ParametersInterface.cpp \
-    ./editors/ComponentEditor/common/ParameterizableInterface.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
 RESOURCES += kactus.qrc

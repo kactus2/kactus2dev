@@ -21,6 +21,7 @@ class Parameter;
 class ComponentInstance;
 class AdHocConnection;
 class PartSelect;
+class ParametersInterface;
 
 //-----------------------------------------------------------------------------
 //! Calculates the amount of references made to design parameters.
@@ -41,7 +42,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~DesignParameterReferenceCounter();
+    ~DesignParameterReferenceCounter() = default;
 
     /*!
      *  Set a new design for the reference counter.
@@ -105,11 +106,13 @@ public:
 public slots:
 
     /*!
-     *  Recalculate the references made to the selected parameters.
+     *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList   List of the selected parameters.
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
      */
-    virtual void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameterList);
+    virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        QSharedPointer<ParametersInterface> parameterInterface);
 
 private:
 

@@ -12,6 +12,7 @@
 #include "ParameterizableItem.h"
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterizableItem::ParameterizableItem()
@@ -48,8 +49,12 @@ void ParameterizableItem::connectItemEditorToReferenceCounter()
 {
     ComponentEditorItem::connectItemEditorToReferenceCounter();
 
-    connect(editor_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        referenceCounter_.data(), SLOT(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+    void recalculateReferencesToParameters(std::vector<std::string> const& parameterList);
+
+    connect(editor_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        referenceCounter_.data(),
+        SLOT(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
         Qt::UniqueConnection);
 }
 

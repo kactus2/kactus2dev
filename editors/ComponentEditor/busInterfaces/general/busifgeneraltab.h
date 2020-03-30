@@ -59,7 +59,9 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<BusInterfaceValidator> busValidator, QWidget* parent, QWidget* parentWnd);
 	
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~BusIfGeneralTab();
 
 	/*!
@@ -83,16 +85,24 @@ public:
 
 signals:
 
-	//! Emitted when contents of the model change
+	/*!
+     *  Emitted when contents of the model change
+     */
 	void contentChanged();
 
-	//! Prints an error message to the user.
+	/*!
+     *  Prints an error message to the user.
+     */
 	void errorMessage(const QString& msg) const;
 
-	//! Prints a notification to user.
+	/*!
+     *  Prints a notification to user.
+     */
 	void noticeMessage(const QString& msg) const;
 
-	//! Emitted when a help page should be changed in the context help window.
+	/*!
+     *  Emitted when a help page should be changed in the context help window.
+     */
 	void helpUrlRequested(QString const& url);
 
     /*!
@@ -118,32 +128,42 @@ signals:
     void openReferenceTree(QString const& id, QString const& parameterName) const;
 
     /*!
-     *  Calculate the references made to the selected parameters.
+     *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameters  The selected parameters.
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
      */
-    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
+    void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        QSharedPointer<ParametersInterface> parameterInterface);
 
 protected:
 
-	//! Handler for widget's show event
+	/*!
+     *  Handler for widget's show event
+     */
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! Handler for changes in the bus type.
+	/*!
+     *  Handler for changes in the bus type.
+     */
 	void onBusTypeChanged();
 
-	//! Handler for changes in interface mode.
+	/*!
+     *  Handler for changes in interface mode.
+     */
 	void onModeChanged(General::InterfaceMode mode);
 
-	/*! Set the bus type for the bus interface.
+	/*!
+     *  Set the bus type for the bus interface.
 	 *
 	 *      @param [in] busDefVLNV The vlnv identifying the bus type.
 	 */
 	void onSetBusType(const VLNV& busDefVLNV);
 
-	/*! Set the abstraction type for the bus interface.
+	/*!
+     *  Set the abstraction type for the bus interface.
 	 *
 	 *      @param [in] absDefVLNV The vlnv identifying the abstraction definition.
 	 */

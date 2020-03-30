@@ -70,7 +70,7 @@ portsInterface_()
     portsInterface_->setPorts(component);
     portsInterface_->setValidator(portValidator);
     portsInterface_->setExpressionParser(expressionParser);
-    portsInterface_->setExprressionFormatter(expressionFormatter);
+    portsInterface_->setExpressionFormatter(expressionFormatter);
 
     wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, new WirePortsEditorConstructor(),
         parameterFinder, portValidator, parameterCompleter, defaultPath, this);

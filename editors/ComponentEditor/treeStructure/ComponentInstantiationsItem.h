@@ -20,6 +20,9 @@ class Component;
 class ComponentInstantiation;
 class ExpressionParser;
 class InstantiationsValidator;
+class ParametersInterface;
+class SingleComponentInstantiationItem;
+
 //-----------------------------------------------------------------------------
 //! The component instantiations-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -87,6 +90,10 @@ private:
 	//! No copying.
 	ComponentInstantiationsItem(const ComponentInstantiationsItem& other);
 	ComponentInstantiationsItem& operator=(const ComponentInstantiationsItem& other);
+
+    //! Create a child component instantiation item.
+    QSharedPointer<SingleComponentInstantiationItem> createChildItem(
+        QSharedPointer<ComponentInstantiation> instantiation);
 
     //! Validator for component instantiations.
     QSharedPointer<InstantiationsValidator> validator_;

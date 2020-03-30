@@ -13,6 +13,9 @@
 #define REFERENCECOUNTER_H
 
 #include <QObject>
+#include <QSharedPointer>
+
+class ParametersInterface;
 
 //-----------------------------------------------------------------------------
 //! ParameterCounter interface. 
@@ -40,6 +43,15 @@ public slots:
      *      @param [in] id      The id of the parameter which was referenced.
      */
     virtual void decreaseReferenceCount(QString const& id) = 0;
+
+    /*!
+     *  Recalculate references made to the selected parameters.
+     *
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
+     */
+    virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        QSharedPointer<ParametersInterface> parameterInterface) = 0;
 };
 
 #endif // REFERENCECOUNTER_H

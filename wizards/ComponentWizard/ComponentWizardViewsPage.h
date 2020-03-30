@@ -47,13 +47,13 @@ public:
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] parent                  The parent wizard.
      */
-    ComponentWizardViewsPage(LibraryInterface* lh,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        ComponentWizard* parent);
+    ComponentWizardViewsPage(LibraryInterface* lh, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentWizard* parent);
 
-    //! The destructor.     
-    ~ComponentWizardViewsPage();
+    /*!
+     *  The destructor.
+     */
+    ~ComponentWizardViewsPage() = default;
 
     /*!
     *  Returns the ID of the next page.

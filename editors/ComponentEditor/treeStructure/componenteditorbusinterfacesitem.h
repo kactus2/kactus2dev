@@ -40,18 +40,15 @@ public:
 	 *      @param [in] parent                  The owner of this item.
 	 *      @param [in] parentWnd               The parent window.
 	 */
-	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-		ComponentEditorItem* parent,
-        QWidget* parentWnd);
+	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+		QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent, QWidget* parentWnd);
 
-	//! The destructor
-	virtual ~ComponentEditorBusInterfacesItem();
+	/*!
+     *  The destructor
+     */
+	virtual ~ComponentEditorBusInterfacesItem() = default;
 
 	/*! Get the font to be used for text of this item.
 	*

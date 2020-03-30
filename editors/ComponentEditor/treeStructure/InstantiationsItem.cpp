@@ -36,8 +36,9 @@ validator_(new InstantiationsValidator(expressionParser, component->getFileSets(
     libHandler)),
 componentInstantiationsItem_(new ComponentInstantiationsItem(model, libHandler, component, validator_,
     referenceCounter, parameterFinder, expressionFormatter, expressionParser, this)),
-designConfigurationInstantiationsItem_(new DesignConfigurationInstantiationsItem(model, libHandler, component,
-    validator_, referenceCounter, parameterFinder, expressionFormatter, expressionParser, this)),
+designConfigurationInstantiationsItem_(
+    new DesignConfigurationInstantiationsItem(model, libHandler, component, validator_, referenceCounter,
+        parameterFinder, expressionFormatter, expressionParser, this)),
 designInstantiationsItem_(new DesignInstantiationsItem(model, libHandler, component, validator_, parameterFinder,
     referenceCounter, this))
 {

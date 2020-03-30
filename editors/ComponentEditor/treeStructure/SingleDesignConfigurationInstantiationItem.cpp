@@ -20,31 +20,19 @@
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
 //-----------------------------------------------------------------------------
 SingleDesignConfigurationInstantiationItem::SingleDesignConfigurationInstantiationItem(
-    ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component, 
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<DesignConfigurationInstantiation> instantiation,
-    QSharedPointer<InstantiationsValidator> validator,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    ComponentEditorItem* parent):
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent):
 ParameterizableItem(model, libHandler, component, parent),
-    instantiation_(instantiation),
-    validator_(validator),
-    parameterFinder_(parameterFinder),
-    expressionFormatter_(expressionFormatter)
+instantiation_(instantiation),
+validator_(validator),
+parameterFinder_(parameterFinder),
+expressionFormatter_(expressionFormatter)
 {
     setObjectName(tr("ComponentInstantiationsItem"));
     setReferenceCounter(referenceCounter);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiationsItem::~ComponentInstantiationsItem()
-//-----------------------------------------------------------------------------
-SingleDesignConfigurationInstantiationItem::~SingleDesignConfigurationInstantiationItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------

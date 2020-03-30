@@ -10,11 +10,12 @@
 //-----------------------------------------------------------------------------
 
 #include "ModuleParameterModel.h"
-
 #include "ModuleParameterColumns.h"
 
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
 #include <common/KactusColors.h>
 
@@ -23,41 +24,13 @@
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterModel::ModuleParameterModel()
 //-----------------------------------------------------------------------------
-ModuleParameterModel::ModuleParameterModel(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
+ModuleParameterModel::ModuleParameterModel(QSharedPointer<ParametersInterface> parameterInterface,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
     QObject *parent):
-AbstractParameterModel(choices, 
-    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, choices)),
-    expressionParser, parameterFinder, expressionFormatter, parent),
-    moduleParameters_(moduleParameters), 
-    editingDisabled_(false)
+AbstractParameterModel(parameterInterface, expressionParser, parameterFinder, parent),
+editingDisabled_(false)
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::~ModuleParameterModel()
-//-----------------------------------------------------------------------------
-ModuleParameterModel::~ModuleParameterModel()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::rowCount()
-//-----------------------------------------------------------------------------
-int ModuleParameterModel::rowCount(QModelIndex const& parent) const 
-{
-	// not hierarchical model
-	if (parent.isValid())
-    {
-		return 0;
-    }
-
-	return moduleParameters_->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -84,17 +57,17 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
 		return QVariant();
     }
 
-    QSharedPointer<ModuleParameter> moduleParameter = getParameterOnRow(index.row()).dynamicCast<ModuleParameter>();
+    std::string parameterName = getInterface()->getIndexedItemName(index.row());
 
     if (role == Qt::DisplayRole)
     {
         if (index.column() == ModuleParameterColumns::DATA_TYPE)
         {
-            return moduleParameter->getDataType();
+            return QString::fromStdString(getInterface()->getDataType(parameterName));
         }
         else if (index.column() ==  ModuleParameterColumns::USAGE_TYPE)
         {
-            return moduleParameter->getUsageType();
+            return QString::fromStdString(getInterface()->getUsageType(parameterName));
         }
     }
 
@@ -145,18 +118,20 @@ bool ModuleParameterModel::setData(QModelIndex const& index, QVariant const& val
 
 	if (role == Qt::EditRole)
     {
-        QSharedPointer<ModuleParameter> moduleParameter = 
-            getParameterOnRow(index.row()).dynamicCast<ModuleParameter>();
+        std::string parameterName = getInterface()->getIndexedItemName(index.row());
 
-        if (index.column() == ModuleParameterColumns::DATA_TYPE)
+        if (index.column() == ModuleParameterColumns::DATA_TYPE ||
+            index.column() == ModuleParameterColumns::USAGE_TYPE)
         {
-            moduleParameter->setDataType(value.toString());
-            emit dataChanged(index, index);
-            return true;
-        }
-        else if (index.column() == ModuleParameterColumns::USAGE_TYPE)
-        {
-            moduleParameter->setUsageType(value.toString());
+            if (index.column() == ModuleParameterColumns::DATA_TYPE)
+            {
+                getInterface()->setDataType(parameterName, value.toString().toStdString());
+            }
+            else if (index.column() == ModuleParameterColumns::USAGE_TYPE)
+            {
+                getInterface()->setUsageType(parameterName, value.toString().toStdString());
+            }
+
             emit dataChanged(index, index);
             return true;
         }
@@ -208,7 +183,7 @@ void ModuleParameterModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
-    moduleParameters_->insert(row, QSharedPointer<ModuleParameter>(new ModuleParameter()));
+    getInterface()->addModuleParameter(row);
     endInsertRows();
 
     // tell also parent widget that contents have been changed
@@ -220,30 +195,26 @@ void ModuleParameterModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void ModuleParameterModel::onRemoveItem(QModelIndex const& index)
 {
+    int indexRow = index.row();
+
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount() || editingDisabled_)
+    if (!index.isValid() || indexRow < 0 || indexRow >= rowCount() || editingDisabled_)
     {
 		return;
 	}
 
-    if (canRemoveRow(index.row()))
+    if (canRemoveRow(indexRow))
     {
+        std::string parameterName = getInterface()->getIndexedItemName(indexRow);
+
         // remove the specified item
-        beginRemoveRows(QModelIndex(), index.row(), index.row());
-        moduleParameters_->removeAt(index.row());
+        beginRemoveRows(QModelIndex(), indexRow, indexRow);
+        getInterface()->removeModuleParameter(parameterName);
         endRemoveRows();
         
         // tell also parent widget that contents have been changed
         emit contentChanged();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::getParameterOnRow()
-//-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ModuleParameterModel::getParameterOnRow(int row) const
-{
-    return moduleParameters_->at(row);
 }
 
 //-----------------------------------------------------------------------------
@@ -367,22 +338,11 @@ int ModuleParameterModel::usageCountColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::getParameter()
+// Function: ModuleParameterModel::resetModelItems()
 //-----------------------------------------------------------------------------
-QSharedPointer<ModuleParameter> ModuleParameterModel::getParameter(QModelIndex const& index) const
-{
-	Q_ASSERT(index.isValid());
-    return  moduleParameters_->at(index.row());
-}   
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::setModelParameters()
-//-----------------------------------------------------------------------------
-void ModuleParameterModel::setModelParameters(
-    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters)
+void ModuleParameterModel::resetModelItems()
 {
     beginResetModel();
-    moduleParameters_ = moduleParameters;
     endResetModel();
 
     emit contentChanged();
@@ -402,40 +362,4 @@ void ModuleParameterModel::enableEditing()
 void ModuleParameterModel::disableEditing()
 {
     editingDisabled_ = true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::validateIndex()
-//-----------------------------------------------------------------------------
-bool ModuleParameterModel::validateIndex(QModelIndex const& index) const
-{
-    QSharedPointer <Parameter> parameter = getParameterOnRow(index.row());
-
-    /*if (index.column() == ModelParameterColumns::USAGE_TYPE)
-    {
-        ModelParameterValidator validator;
-        return validator.hasValidUsageType(parameter.dynamicCast<ModuleParameter>().data());
-    }
-    else
-    {*/
-
-    return AbstractParameterModel::validateIndex(index);
-//     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::indexFor()
-//-----------------------------------------------------------------------------
-QModelIndex ModuleParameterModel::indexFor(QSharedPointer<ModuleParameter> moduleParameter) const
-{
-    // find the correct row
-    int row =  moduleParameters_->indexOf(moduleParameter);
-
-    if (row < 0)
-    {
-        return QModelIndex();
-    }
-
-    // The base class creates the index for the row.
-    return QAbstractTableModel::index(row, 0, QModelIndex());
 }

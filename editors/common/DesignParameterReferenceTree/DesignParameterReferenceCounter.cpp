@@ -14,20 +14,14 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Design/Design.h>
 
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: DesignParameterReferenceCounter::DesignParameterReferenceCounter()
 //-----------------------------------------------------------------------------
 DesignParameterReferenceCounter::DesignParameterReferenceCounter(QSharedPointer<ParameterFinder> parameterFinder):
 ParameterReferenceCounter(parameterFinder),
 design_(0)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignParameterReferenceCounter::~DesignParameterReferenceCounter()
-//-----------------------------------------------------------------------------
-DesignParameterReferenceCounter::~DesignParameterReferenceCounter()
 {
 
 }
@@ -43,19 +37,19 @@ void DesignParameterReferenceCounter::setDesign(QSharedPointer<Design> newDesign
 //-----------------------------------------------------------------------------
 // Function: DesignParameterReferenceCounter::recalculateReferencesToParameters()
 //-----------------------------------------------------------------------------
-void DesignParameterReferenceCounter::recalculateReferencesToParameters(
-    QVector<QSharedPointer<Parameter> > parameterList)
+void DesignParameterReferenceCounter::recalculateReferencesToParameters(QVector<QString> const& parameterList,
+    QSharedPointer<ParametersInterface> parameterInterface)
 {
-    foreach (QSharedPointer<Parameter> parameter, parameterList)
+    for (auto parameterName : parameterList)
     {
         int referenceCount = 0;
-        QString parameterID = parameter->getValueId();
+        QString parameterID = QString::fromStdString(parameterInterface->getID(parameterName.toStdString()));
 
         referenceCount += countReferencesInParameters(parameterID, design_->getParameters());
         referenceCount += countReferencesInComponentInstances(parameterID);
         referenceCount += countReferencesInAdHocConnections(parameterID, design_->getAdHocConnections());
 
-        parameter->setUsageCount(referenceCount);
+        parameterInterface->setUsageCount(parameterName.toStdString(), referenceCount);
     }
 }
 

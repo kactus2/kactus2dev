@@ -18,6 +18,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 class ConfigurableElementValue;
+class ParametersInterface;
 
 //-----------------------------------------------------------------------------
 //! ParameterReferenceCounter class. 
@@ -117,7 +118,27 @@ public slots:
      */
     virtual void decreaseReferenceCount(QString const& id) override;
 
+    /*!
+     *  Recalculate references made to the selected parameters.
+     *
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
+     */
+    virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        QSharedPointer<ParametersInterface> parameterInterface) override;
+
 private:
+
+    /*!
+     *  Count references made in the selected parameter interface to the selected ID.
+     *
+     *      @param [in] parameterID         The selected parameter ID.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *
+     *      @return The number of references made.
+     */
+    int countReferencesInInterfacedParameters(QString const& parameterID,
+        QSharedPointer<ParametersInterface> parameterInterface) const;
 
     //-----------------------------------------------------------------------------
     // Data.

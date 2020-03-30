@@ -38,7 +38,7 @@ void ParameterizableInterface::setExpressionParser(QSharedPointer<ExpressionPars
 //-----------------------------------------------------------------------------
 // Function: ParameterizableInterface::setExprressionFormatter()
 //-----------------------------------------------------------------------------
-void ParameterizableInterface::setExprressionFormatter(QSharedPointer<ExpressionFormatter> formatter)
+void ParameterizableInterface::setExpressionFormatter(QSharedPointer<ExpressionFormatter> formatter)
 {
     formatter_ = formatter;
 }

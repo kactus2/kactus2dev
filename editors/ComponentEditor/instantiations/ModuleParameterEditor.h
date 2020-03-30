@@ -21,6 +21,8 @@ class ModuleParameterModel;
 class ParameterFinder;
 class ExpressionFormatter;
 class Parameter;
+class ParametersInterface;
+class ParametersView;
 
 //-----------------------------------------------------------------------------
 //! Editor for module parameters.
@@ -95,9 +97,11 @@ signals:
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameters  The selected parameters.
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
      */
-    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
+    void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        QSharedPointer<ParametersInterface> parameterInterface);
 
 private:
 
@@ -110,6 +114,12 @@ private:
 
     //! Used for editing model parameters.
     ModuleParameterModel* model_;
+
+    //! Interface for accessing parameters.
+    QSharedPointer<ParametersInterface> parameterInterface_;
+
+    //! The parameters view.
+    ParametersView* view_;
 };
 
 #endif // MODULEPARAMETEREDITOR_H

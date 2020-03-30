@@ -49,7 +49,7 @@ public:
      *
      *      @param [in] formatter   Formatter for expressions.
      */
-    void setExprressionFormatter(QSharedPointer<ExpressionFormatter> formatter);
+    void setExpressionFormatter(QSharedPointer<ExpressionFormatter> formatter);
 
     /*!
      *  Get index of the selected item.

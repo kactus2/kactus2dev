@@ -42,22 +42,15 @@ validator_()
 
 	foreach (QSharedPointer<BusInterface> busif, *busifs_)
     {
-		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-            new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd));
+		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
+            busif, model, libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+            expressionParser_, validator_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
             this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 		childItems_.append(busifItem);
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorbusinterfacesitem::~ComponentEditorBusInterfacesItem()
-//-----------------------------------------------------------------------------
-ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() 
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -128,9 +121,9 @@ QString ComponentEditorBusInterfacesItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorBusInterfacesItem::createChild(int index)
 {
-	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-		new ComponentEditorBusInterfaceItem(busifs_->at(index), model_, libHandler_, component_, referenceCounter_,
-        parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
+	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
+        busifs_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
+        expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),

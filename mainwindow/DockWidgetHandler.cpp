@@ -31,6 +31,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
 #include <editors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h>
 #include <editors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h>
@@ -281,9 +282,10 @@ void DockWidgetHandler::setupDesignParametersEditor()
         Qt::UniqueConnection);
 
     connect(designParametersEditor_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
         designParameterReferenceCounter_.data(),
-        SLOT(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+        SLOT(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

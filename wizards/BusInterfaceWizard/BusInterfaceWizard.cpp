@@ -48,6 +48,9 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(
+        expressionParser, component->getChoices()));
+
     BusInterfaceWizardBusDefinitionEditorPage::SignalNamingPolicy namingPolicy =
         BusInterfaceWizardBusDefinitionEditorPage::NAME;
     if (descriptionAsLogicalName)
@@ -56,7 +59,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     }
 
     QSharedPointer<BusInterfaceValidator> busValidator =
-        createBusInterfaceValidator(component, expressionParser, handler);
+        createBusInterfaceValidator(component, expressionParser, parameterValidator, handler);
 
     BusInterfaceWizardGeneralOptionsPage* optionsPage =
         new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, !absDefVLNV.isValid(), parameterFinder,
@@ -88,12 +91,10 @@ BusInterfaceWizard::~BusInterfaceWizard()
 // Function: BusInterfaceWizard::createBusInterfaceValidator()
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterfaceValidator> BusInterfaceWizard::createBusInterfaceValidator(
-    QSharedPointer<Component> component, QSharedPointer<ExpressionParser> parser, LibraryInterface* handler)
+    QSharedPointer<Component> component, QSharedPointer<ExpressionParser> parser,
+    QSharedPointer<ParameterValidator> parameterValidator, LibraryInterface* handler)
 {
     QSharedPointer<PortMapValidator> portMapValidator(new PortMapValidator(parser, component->getPorts(), handler));
-
-    QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, component->getChoices()));
 
     QSharedPointer<BusInterfaceValidator> validator = QSharedPointer<BusInterfaceValidator>(
         new BusInterfaceValidator(parser, component->getChoices(), component->getViews(), component->getPorts(),

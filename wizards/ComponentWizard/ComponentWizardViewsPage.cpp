@@ -35,9 +35,8 @@
 // Function: ComponentWizardViewsPage::ComponentWizardViewsPage()
 //-----------------------------------------------------------------------------
 ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh,
-                                                   QSharedPointer<ParameterFinder> parameterFinder,
-                                                   QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                                   ComponentWizard* parent):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentWizard* parent):
 QWizardPage(parent),
 library_(lh),
 parent_(parent),
@@ -68,14 +67,6 @@ validator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parame
     connect(removeButton_, SIGNAL(clicked()), this, SLOT(onViewRemoved()), Qt::UniqueConnection);
     connect(viewList_, SIGNAL(clicked(QModelIndex const&)), 
         this, SLOT(onViewSelected(QModelIndex const&)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentWizardViewsPage::~ComponentWizardViewsPage()
-//-----------------------------------------------------------------------------
-ComponentWizardViewsPage::~ComponentWizardViewsPage()
-{
-
 }
 
 //-----------------------------------------------------------------------------

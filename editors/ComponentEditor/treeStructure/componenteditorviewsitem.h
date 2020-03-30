@@ -22,6 +22,7 @@ class View;
 class ExpressionParser;
 class ViewValidator;
 class InstantiationsValidator;
+
 //-----------------------------------------------------------------------------
 //! The Views-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -43,17 +44,15 @@ public:
      *      @param [in] expressionParser        The used expression parser.
 	 *      @param [in] parent                  Pointer to the parent item.
 	 */
-	ComponentEditorViewsItem(ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        ComponentEditorItem* parent);
+	ComponentEditorViewsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+        QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent);
 
-	//! The destructor.
-	virtual ~ComponentEditorViewsItem();
+	/*!
+     *  The destructor.
+     */
+	virtual ~ComponentEditorViewsItem() = default;
 
 	/*!
      *  Get the tool tip for the item.

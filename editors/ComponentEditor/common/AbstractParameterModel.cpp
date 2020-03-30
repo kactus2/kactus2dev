@@ -11,44 +11,41 @@
 
 #include "AbstractParameterModel.h"
 
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/common/Enumeration.h>
-
-#include <IPXACTmodels/common/validators/ValueFormatter.h>
-#include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
 #include <common/KactusColors.h>
-
-#include <QApplication>
 
 #include <QFont>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::AbstractParameterModel()
 //-----------------------------------------------------------------------------
-AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QSharedPointer<ParameterValidator> validator,
+AbstractParameterModel::AbstractParameterModel(QSharedPointer<ParametersInterface> parameterInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent): 
+    QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-choices_(choices), 
-validator_(validator),
-expressionFormatter_(expressionFormatter)
+parameterInterface_(parameterInterface)
 {
     setExpressionParser(expressionParser);
     parameterFinder->registerParameterModel(this);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::~AbstractParameterModel()
+// Function: AbstractParameterModel::rowCount()
 //-----------------------------------------------------------------------------
-AbstractParameterModel::~AbstractParameterModel()
+int AbstractParameterModel::rowCount(QModelIndex const& parent) const
 {
+    // not hierarchical model
+    if (parent.isValid())
+    {
+        return 0;
+    }
 
+    return parameterInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +64,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
             index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn() ||
             index.column() == arrayLeftColumn() || index.column() == arrayRightColumn())
         {
-            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+            return formattedExpressionForIndex(index);
         }
         else if (index.column() == descriptionColumn())
         {
@@ -81,29 +78,18 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     }
     else if (role == Qt::EditRole)
     {
-        return expressionOrValueForIndex(index);
-    }
-    else if (role == Qt::ToolTipRole)
-    {
-        if (index.column() == valueColumn() && !index.sibling(index.row(), choiceColumn()).data().toString().isEmpty())
+        if (isValidExpressionColumn(index))
         {
-            QString choiceText = index.sibling(index.row(), choiceColumn()).data(Qt::DisplayRole).toString();
-            if (!choiceText.isEmpty())
-            {
-                return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
-            }
-        }
-
-        if (index.column() == valueColumn() ||
-            index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn() ||
-            index.column() == arrayLeftColumn() || index.column() == arrayRightColumn())
-        {
-            return formattedValueFor(valueForIndex(index).toString());
+            return expressionForIndex(index);
         }
         else
         {
             return valueForIndex(index);
         }
+    }
+    else if (role == Qt::ToolTipRole)
+    {
+        return valueForIndex(index);
     }
     else if (role == Qt::BackgroundRole) 
     {
@@ -117,7 +103,6 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     {
         return italicForEvaluatedValue(index);
     }
-
     else // if unsupported role
     {
 		return QVariant();
@@ -131,7 +116,7 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
 {
     if (role == Qt::DisplayRole && orientation == Qt::Vertical)
     {
-        return getParameterOnRow(section)->name();
+        return QString::fromStdString(parameterInterface_->getIndexedItemName(section));
     }
 
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) 
@@ -227,126 +212,129 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
 
     if (role == Qt::EditRole)
     {
-        QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+        std::string parameterName = parameterInterface_->getIndexedItemName(index.row());
 
         if (index.column() == nameColumn())
         {
-            parameter->setName(value.toString());
+            parameterInterface_->setName(parameterName, value.toString().toStdString());
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
         }
         else if (index.column() == displayNameColumn())
         {
-            parameter->setDisplayName(value.toString());
+            parameterInterface_->setDisplayName(parameterName, value.toString().toStdString());
         }
         else if (index.column() == typeColumn())
         {
-            parameter->setType(value.toString());
+            parameterInterface_->setType(parameterName, value.toString().toStdString());
         }
         else if (index.column() == bitWidthLeftColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getVectorLeft());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(parameterInterface_->getBitWidthLeftExpression(parameterName)));
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setVectorLeft(value.toString());
+            parameterInterface_->setBitWidthLeft(parameterName, value.toString().toStdString());
 
-            if (value.isValid() && parameter->getVectorRight().isEmpty() && !value.toString().isEmpty())
+            if (value.isValid() && parameterInterface_->getBitWidthRightExpression(parameterName).empty() &&
+                !value.toString().isEmpty())
             {
-                parameter->setVectorRight("0");
+                parameterInterface_->setBitWidthRight(parameterName, "0");
             }
         }
         else if (index.column() == bitWidthRightColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getVectorRight());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(parameterInterface_->getBitWidthRightExpression(parameterName)));
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setVectorRight(value.toString());
+            parameterInterface_->setBitWidthRight(parameterName, value.toString().toStdString());
 
-            if (value.isValid() && parameter->getVectorLeft().isEmpty() && !value.toString().isEmpty())
+            if (value.isValid() && parameterInterface_->getBitWidthLeftExpression(parameterName).empty() &&
+                !value.toString().isEmpty())
             {
-                parameter->setVectorLeft("0");
+                parameterInterface_->setBitWidthLeft(parameterName, "0");
             }
         }
         else if (index.column() == minimumColumn())
         {
-            parameter->setMinimumValue(value.toString());
+            parameterInterface_->setMinimum(parameterName, value.toString().toStdString());
         }
         else if (index.column() == maximumColumn())
         {
-            parameter->setMaximumValue(value.toString());
+            parameterInterface_->setMaximum(parameterName, value.toString().toStdString());
         }
         else if (index.column() == choiceColumn())
         {
-            parameter->setChoiceRef(value.toString());
+            parameterInterface_->setChoice(parameterName, value.toString().toStdString());
         }
         else if (index.column() == valueColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getValue());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(parameterInterface_->getValue(parameterName)));
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setValue(value.toString());
+            parameterInterface_->setValue(parameterName, value.toString().toStdString());
         }
         else if (index.column() == resolveColumn())
         {
-            parameter->setValueResolve(value.toString());
+            parameterInterface_->setResolve(parameterName, value.toString().toStdString());
         }
         else if (index.column() == arrayLeftColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getAttribute("kactus2:arrayLeft"));
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(parameterInterface_->getArrayLeftExpression(parameterName)));
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setAttribute("kactus2:arrayLeft", value.toString());
+            parameterInterface_->setArrayLeft(parameterName, value.toString().toStdString());
 
-            if (value.isValid() && parameter->getAttribute("kactus2:arrayRight").isEmpty() &&
-                !parameter->getAttribute("kactus2:arrayLeft").isEmpty())
+            if (value.isValid() && parameterInterface_->getArrayRightExpression(parameterName).empty() &&
+                !parameterInterface_->getArrayLeftExpression(parameterName).empty())
             {
-                parameter->setAttribute("kactus2:arrayRight", QString::number(0));
+                parameterInterface_->setArrayRight(parameterName, "0");
             }
         }
         else if (index.column() == arrayRightColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getAttribute("kactus2:arrayRight"));
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(parameterInterface_->getArrayRightExpression(parameterName)));
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setAttribute("kactus2:arrayRight", value.toString());
+            parameterInterface_->setArrayRight(parameterName, value.toString().toStdString());
 
-            if (value.isValid() && parameter->getAttribute("kactus2:arrayLeft").isEmpty() &&
-                !parameter->getAttribute("kactus2:arrayRight").isEmpty())
+            if (value.isValid() && parameterInterface_->getArrayLeftExpression(parameterName).empty() &&
+                !parameterInterface_->getArrayRightExpression(parameterName).empty())
             {
-                parameter->setAttribute("kactus2:arrayLeft", QString::number(0));
+                parameterInterface_->setArrayLeft(parameterName, "0");
             }
         }
         else if (index.column() == descriptionColumn())
         {
-            parameter->setDescription(value.toString());
-        }
-        else if (index.column() == idColumn())
-        {
-            return false;
+            parameterInterface_->setDescription(parameterName, value.toString().toStdString());
         }
         else
         {
@@ -385,146 +373,55 @@ bool AbstractParameterModel::isMandatoryColumn(int column) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::evaluateValueFor()
-//-----------------------------------------------------------------------------
-QString AbstractParameterModel::evaluateValueFor(QSharedPointer<Parameter> parameter) const
-{
-    if (!parameter->getChoiceRef().isEmpty())
-    {
-        QSharedPointer<Choice> choice = findChoice(parameter->getChoiceRef());
-
-        if(parameter->getValue().contains('{') && parameter->getValue().contains('}'))
-        {
-            return matchArrayValuesToSelectedChoice(choice, parameter->getValue());
-        }
-
-        else
-        {
-            return findDisplayValueForEnumeration(choice, parameter->getValue());
-        }
-    }
-    else
-    {
-        return parameter->getValue();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::findChoice()
-//-----------------------------------------------------------------------------
-QSharedPointer<Choice> AbstractParameterModel::findChoice(QString const& choiceName) const
-{
-    if (choices_)
-    {
-        foreach(QSharedPointer<Choice> choice, *choices_)
-        {
-            if (choice->name() == choiceName)
-            {
-                return choice;
-            }
-        }
-    }
-
-    return QSharedPointer<Choice>(new Choice());
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::findDisplayValueForEnumeration()
-//-----------------------------------------------------------------------------
-QString AbstractParameterModel::findDisplayValueForEnumeration(QSharedPointer<Choice> choice,
-    QString const& enumerationValue) const
-{
-    QString value = parseExpressionToDecimal(enumerationValue);
-
-    foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
-    {
-        if (enumeration->getValue() == value && !enumeration->getText().isEmpty())
-        {
-            return enumeration->getText();
-        }
-    }
-
-    return value;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::matchArrayValuesToSelectedChoice()
-//-----------------------------------------------------------------------------
-QString AbstractParameterModel::matchArrayValuesToSelectedChoice(QSharedPointer<Choice> choice,
-    QString const& arrayValue) const
-{
-    QStringList parameterArray = arrayValue.split(',');
-    parameterArray.first().remove('{');
-    parameterArray.last().remove('}');
-
-    QStringList resultingArray;
-
-    foreach (QString value, parameterArray)
-    {
-        resultingArray.append(findDisplayValueForEnumeration(choice, value));
-    }
-    QString choiceValue = resultingArray.join(',');
-    choiceValue.prepend('{');
-    choiceValue.append('}');
-
-    return choiceValue;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::validateIndex()
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+    std::string parameterName = parameterInterface_->getIndexedItemName(index.row());
 
     if (index.column() == nameColumn())
     {
-        return validator_->hasValidName(parameter);
+        return parameterInterface_->itemHasValidName(parameterName);
     }
     else if (index.column() == typeColumn())
     {
-        return validator_->hasValidValueForType(parameter->getValue(), parameter->getType());
+        return parameterInterface_->hasValidType(parameterName);
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return validator_->hasValidVector(parameter);
+        return parameterInterface_->hasValidBitWidth(parameterName);
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return validator_->hasValidVector(parameter);
+        return parameterInterface_->hasValidBitWidth(parameterName);
     }
     else if (index.column() == minimumColumn())
     {
-        return validator_->hasValidMinimumValue(parameter) && 
-            !validator_->valueIsLessThanMinimum(parameter);
+        return parameterInterface_->hasValidMinimum(parameterName);
     }
     else if (index.column() == maximumColumn())
     {
-        return validator_->hasValidMaximumValue(parameter) && 
-            !validator_->valueIsGreaterThanMaximum(parameter);
+        return parameterInterface_->hasValidMaximum(parameterName);
     }
     else if (index.column() == choiceColumn())
     {
-        return validator_->hasValidChoice(parameter) &&
-            validator_->hasValidValueForChoice(parameter);
+        return parameterInterface_->hasValidChoice(parameterName);
     }
     else if (index.column() == valueColumn())
     {
-        return validator_->hasValidValue(parameter);
+        return parameterInterface_->hasValidValue(parameterName);
     }
     else if (index.column() == resolveColumn())
     {
-        return validator_->hasValidResolve(parameter);
+        return parameterInterface_->hasValidResolve(parameterName);
     }
     else if (index.column() == arrayLeftColumn())
     {
-        return validator_->validateArrayValues(parameter->getAttribute("kactus2:arrayLeft"),
-            parameter->getAttribute("kactus2:arrayRight"));
+        return parameterInterface_->hasValidArrayValues(parameterName);
     }
     else if (index.column() == arrayRightColumn())
     {
-        return validator_->validateArrayValues(parameter->getAttribute("kactus2:arrayLeft"),
-            parameter->getAttribute("kactus2:arrayRight"));
+        return parameterInterface_->hasValidArrayValues(parameterName);
     }
 
     return true;
@@ -535,9 +432,9 @@ bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-     QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+    std::string parameterName = parameterInterface_->getIndexedItemName(index.row());
 
-    if ((index.column() == valueColumn() && parameter->getType() != "string") ||
+    if ((index.column() == valueColumn() && parameterInterface_->getType(parameterName) != "string") ||
         index.column() == arrayLeftColumn() || index.column() == arrayRightColumn() ||
         index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn())
     {
@@ -550,71 +447,135 @@ bool AbstractParameterModel::isValidExpressionColumn(QModelIndex const& index) c
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::formattedExpressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractParameterModel::formattedExpressionForIndex(QModelIndex const& index) const
+{
+    std::string parameterName = parameterInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == bitWidthLeftColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getBitWidthLeftFormattedExpression(parameterName));
+    }
+    else if (index.column() == bitWidthRightColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getBitWidthRightFormattedExpression(parameterName));
+    }
+    else if (index.column() == valueColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getValueFormattedExpression(parameterName));
+    }
+    else if (index.column() == arrayLeftColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getArrayLeftFormattedExpression(parameterName));
+    }
+    else if (index.column() == arrayRightColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getArrayRightFormattedExpression(parameterName));
+    }
+    
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractParameterModel::expressionForIndex(QModelIndex const& index) const
+{
+    std::string parameterName = parameterInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == bitWidthLeftColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getBitWidthLeftExpression(parameterName));
+    }
+    else if (index.column() == bitWidthRightColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getBitWidthRightExpression(parameterName));
+    }
+    else if (index.column() == valueColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getValueExpression(parameterName));
+    }
+    else if (index.column() == arrayLeftColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getArrayLeftExpression(parameterName));
+    }
+    else if (index.column() == arrayRightColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getArrayRightExpression(parameterName));
+    }
+    else
+    {
+        return QVariant();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::valueForIndex()
 //-----------------------------------------------------------------------------
 QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+    std::string parameterName = parameterInterface_->getIndexedItemName(index.row());
 
     if (index.column() == nameColumn())
     {
-        return parameter->name();
+        return QString::fromStdString(parameterName);
     }
     else if (index.column() == displayNameColumn())
     {
-        return parameter->displayName();
+        return QString::fromStdString(parameterInterface_->getDisplayName(parameterName));
     }
     else if (index.column() == typeColumn())
     {
-        return parameter->getType();
+        return QString::fromStdString(parameterInterface_->getType(parameterName));
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return parameter->getVectorLeft();
+        return QString::fromStdString(parameterInterface_->getBitWidthLeftValue(parameterName));
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return parameter->getVectorRight();
+        return QString::fromStdString(parameterInterface_->getBitWidthRightValue(parameterName));
     }
     else if (index.column() == minimumColumn())
     {
-        return parameter->getMinimumValue();
+        return QString::fromStdString(parameterInterface_->getMinimum(parameterName));
     }
     else if (index.column() == maximumColumn())
     {
-        return parameter->getMaximumValue();
+        return QString::fromStdString(parameterInterface_->getMaximum(parameterName));
     }
     else if (index.column() == choiceColumn())
     {
-        return parameter->getChoiceRef();
+        return QString::fromStdString(parameterInterface_->getChoice(parameterName));
     }
     else if (index.column() == valueColumn())
     {
-        return evaluateValueFor(parameter);
+        return QString::fromStdString(parameterInterface_->getValue(parameterName));
     }
     else if (index.column() == resolveColumn())
     {
-        return parameter->getValueResolve();
+        return QString::fromStdString(parameterInterface_->getResolve(parameterName));
     }
     else if (index.column() == arrayLeftColumn())
     {
-        return parameter->getAttribute("kactus2:arrayLeft");
+        return QString::fromStdString(parameterInterface_->getArrayLeftValue(parameterName));
     }
     else if (index.column() == arrayRightColumn())
     {
-        return parameter->getAttribute("kactus2:arrayRight");
+        return QString::fromStdString(parameterInterface_->getArrayRightValue(parameterName));
     }
     else if (index.column() == descriptionColumn())
     {
-        return parameter->description();
+        return QString::fromStdString(parameterInterface_->getDescription(parameterName));
     }
     else if (index.column() == idColumn())
     {
-        return parameter->getValueId();
+        return QString::fromStdString(parameterInterface_->getID(parameterName));
     }
     else if (index.column() == usageCountColumn())
     {
-        return parameter->getUsageCount();
+        return parameterInterface_->getUsageCount(parameterName);
     }
     else 
     {
@@ -627,43 +588,13 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
-
-    if (index.column() == valueColumn())
+    if (isValidExpressionColumn(index))
     {
-        return parameter->getValue();
-    }
-    else if (index.column() == minimumColumn())
-    {
-        return parameter->getMinimumValue();
-    }
-    else if (index.column() == maximumColumn())
-    {
-        return parameter->getMaximumValue();
-    }
-    else if (index.column() == arrayLeftColumn())
-    {
-        return parameter->getAttribute("kactus2:arrayLeft");
-    }
-    else if (index.column() == arrayRightColumn())
-    {
-        return parameter->getAttribute("kactus2:arrayRight");
-    }
-    else if (index.column() == bitWidthLeftColumn())
-    {
-        return parameter->getVectorLeft();
-    }
-    else if (index.column() == bitWidthRightColumn())
-    {
-        return parameter->getVectorRight();
-    }
-    else if (index.column() == descriptionColumn())
-    {
-        return parameter->description();
+        return expressionForIndex(index);
     }
     else
     {
-        return data(index, Qt::DisplayRole);
+        return valueForIndex(index);
     }
 }
 
@@ -672,15 +603,15 @@ QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& in
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::canRemoveRow(int const& row) const
 {
-    QSharedPointer<Parameter> parameter = getParameterOnRow(row);
+    std::string parameterName = parameterInterface_->getIndexedItemName(row);
+    int parameterUsageCount = parameterInterface_->getUsageCount(parameterName);
 
-    if (parameter->getUsageCount() > 0)
+    if (parameterUsageCount > 0)
     {
         QMessageBox removeWarning;
-        removeWarning.setText("Are you sure you want to remove " + parameter->name()
-            + "? There are " + QString::number(parameter->getUsageCount()) + " references to it." +
-            " \n\nTo see where " + parameter->name() + 
-            " has been referenced, double click its usage count.");
+        removeWarning.setText("Are you sure you want to remove " + QString::fromStdString(parameterName) +
+            "? There are " + QString::number(parameterUsageCount) + " references to it. \n\nTo see where " +
+            QString::fromStdString(parameterName) + " has been referenced, double click its usage count.");
         removeWarning.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         removeWarning.setDefaultButton(QMessageBox::No);
         removeWarning.setIcon(QMessageBox::Warning);
@@ -706,17 +637,17 @@ bool AbstractParameterModel::canRemoveRow(int const& row) const
 //-----------------------------------------------------------------------------
 QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+    std::string parameterName = parameterInterface_->getIndexedItemName(index.row());
+    std::string parameterType = parameterInterface_->getType(parameterName);
 
     if (isMandatoryColumn(index.column())) 
     {
         return KactusColors::MANDATORY_FIELD;
     }
     else if (((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
-        (parameter->getType().isEmpty() || parameter->getType() == "bit" || parameter->getType() == "string"))
-        ||
+        (parameterType.empty() || parameterType == "bit" || parameterType == "string")) ||
         ((index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn()) &&
-        parameter->getType() != "bit"))
+            parameterType != "bit"))
     {
         return KactusColors::DISABLED_FIELD;
     }
@@ -731,18 +662,8 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
 //-----------------------------------------------------------------------------
 int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    QSharedPointer<Parameter> parameter = getParameterOnRow(row);
-
-    int referencesInValue = parameter->getValue().count(valueID);
-    int referencesInBitWidthLeft = parameter->getVectorLeft().count(valueID);
-    int referencesInBitWidthRight = parameter->getVectorRight().count(valueID);
-    int referencesInArrayLeft = parameter->getAttribute("kactus2:arrayLeft").count(valueID);
-    int referencesinArrayRight = parameter->getAttribute("kactus2:arrayRight").count(valueID);
-
-    int totalReferencesToParameter = referencesInValue + referencesInBitWidthLeft + referencesInBitWidthRight +
-        referencesInArrayLeft + referencesinArrayRight;
-
-    return totalReferencesToParameter;
+    return parameterInterface_->getAllReferencesToIdInItem(
+        parameterInterface_->getIndexedItemName(row), valueID.toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -750,20 +671,26 @@ int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QStr
 //-----------------------------------------------------------------------------
 void AbstractParameterModel::onGetParametersMachingIndexes(QModelIndexList indexes)
 {
-    QVector<QSharedPointer<Parameter> > selectedParameters;
-    foreach (QModelIndex index, indexes)
+    QVector<QString> parameterNames;
+    for (auto index : indexes)
     {
-        QSharedPointer<Parameter> indexedParameter = getParameterOnRow(index.row());
-        selectedParameters.append(indexedParameter);
+        std::string indexedName = parameterInterface_->getIndexedItemName(index.row());
+        parameterNames.append(QString::fromStdString(indexedName));
     }
-
-    QList<QSharedPointer<Parameter> > parameterList = selectedParameters.toList();
 
     beginResetModel();
 
-    emit recalculateReferencesToParameters(selectedParameters);
+    emit recalculateReferencesToParameters(parameterNames, parameterInterface_);
 
     endResetModel();
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::getInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<ParametersInterface> AbstractParameterModel::getInterface() const
+{
+    return parameterInterface_;
 }
