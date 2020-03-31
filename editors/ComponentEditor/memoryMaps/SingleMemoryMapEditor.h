@@ -63,7 +63,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~SingleMemoryMapEditor();
+    virtual ~SingleMemoryMapEditor() = default;
 
 	/*!
 	 *  Reload the information from the model to the editor.

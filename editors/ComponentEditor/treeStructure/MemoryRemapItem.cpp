@@ -266,7 +266,7 @@ void MemoryRemapItem::changeAdressUnitBitsOnAddressBlocks()
 {
     QString addressUnitBits = parentMemoryMap_->getAddressUnitBits();
 
-    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    for (QSharedPointer<ComponentEditorItem> childItem : childItems_)
     {
         QSharedPointer<ComponentEditorAddrBlockItem> castChildItem = 
             qobject_cast<QSharedPointer<ComponentEditorAddrBlockItem> >(childItem);
@@ -280,8 +280,8 @@ void MemoryRemapItem::changeAdressUnitBitsOnAddressBlocks()
         emit assignNewAddressUnitBits(addressUnitBits);
     }
 
-    if (graphItem_)
+  /*  if (graphItem_)
     {
         graphItem_->recursiveRefresh();
-    }
+    }*/
 }

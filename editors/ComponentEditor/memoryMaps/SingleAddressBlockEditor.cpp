@@ -91,14 +91,6 @@ ItemEditor(component, handler, parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleAddressBlockEditor::~SingleAddressBlockEditor()
-//-----------------------------------------------------------------------------
-SingleAddressBlockEditor::~SingleAddressBlockEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleAddressBlockEditor::showEvent()
 //-----------------------------------------------------------------------------
 void SingleAddressBlockEditor::showEvent(QShowEvent* event)
@@ -364,19 +356,28 @@ void SingleAddressBlockEditor::connectSignals() const
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registersEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(registersEditor_, SIGNAL(childAddressInfoChanged(int)), this, SIGNAL(childAddressInfoChanged(int)), Qt::UniqueConnection);
+
     connect(registerFilesEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
 
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
 
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         registersEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         registerFilesEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
+    connect(registerFilesEditor_, SIGNAL(childAddressInfoChanged(int)), this, SIGNAL(childAddressInfoChanged(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

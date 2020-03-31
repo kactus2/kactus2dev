@@ -340,12 +340,7 @@ bool RegisterFileModel::setData(QModelIndex const& index, QVariant const& value,
 
             regFile->setIsPresent(value.toString());
         }
-        else
-        {
-            changed = false;
-        }
-
-        if (index.column() == RegisterFileColumns::RANGE)
+        else if (index.column() == RegisterFileColumns::RANGE)
         {
             if (!value.isValid())
             {
@@ -355,7 +350,10 @@ bool RegisterFileModel::setData(QModelIndex const& index, QVariant const& value,
             regFile->setRange(value.toString());
             changed = true;
         }
-
+        else
+        {
+            changed = false;
+        }
 
         if (changed)
         {
@@ -366,6 +364,11 @@ bool RegisterFileModel::setData(QModelIndex const& index, QVariant const& value,
                 index.column() == RegisterFileColumns::IS_PRESENT)
             {
                 emit graphicsChanged();
+
+                if (index.column() != RegisterFileColumns::NAME)
+                {
+                    emit childAddressInfoChanged(registerData_->indexOf(regFile));
+                }
             }
 
             emit dataChanged(index, index);

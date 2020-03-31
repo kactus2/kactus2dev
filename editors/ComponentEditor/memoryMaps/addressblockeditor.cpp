@@ -84,12 +84,13 @@ QGroupBox(tr("Registers summary"), parent),
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);
-     
+
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         model_, SLOT(addressUnitBitsChanged(int)), Qt::UniqueConnection);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(model_, SIGNAL(childAddressInfoChanged(int)), this, SIGNAL(childAddressInfoChanged(int)), Qt::UniqueConnection);
     connect(model_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);

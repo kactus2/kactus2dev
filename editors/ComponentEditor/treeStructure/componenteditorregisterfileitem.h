@@ -98,6 +98,8 @@ public:
     */
     virtual void createChild(int index) override final;
 
+    virtual void removeChild(int index) override final;
+
     /*!
     *  Get the visualizer graphics item for the memory map.
     *
@@ -120,6 +122,10 @@ public:
 
     void setVisualizer(MemoryMapsVisualizer* visualizer);
 
+signals:
+
+    void addressInfoChanged();
+
 protected slots:
 
     /*!
@@ -130,16 +136,19 @@ protected slots:
     //!  Handler for editor's contentChanged signal.
     virtual void onGraphicsChanged() override final;
 
+    void onAddressInfoChanged();
+
+    void onChildAddressInfoChanged(int index);
 private:
 
     //! The register file being edited.
     QSharedPointer<RegisterFile> registerFile_;
 
     //! The visualizer for memory maps.
-    MemoryMapsVisualizer* visualizer_;
+    MemoryMapsVisualizer* visualizer_ = nullptr;
 
     //! The graph item that visualizes the register file and its dimensions.
-    RegisterFileGraphItem* registerFileItem_;
+    RegisterFileGraphItem* registerFileItem_ = nullptr;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

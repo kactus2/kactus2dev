@@ -106,29 +106,35 @@ public:
 	 * 
 	 *      @return Pointer to the visualizer to use for this item.
 	 */
-	virtual ItemVisualizer* visualizer();
+	virtual ItemVisualizer* visualizer() override final;
 
 	/*! Set the visualizer for this item.
 	 *
 	 *      @param [in] visualizer Pointer to the visualizer.
 	 */
-	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
+    void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*! Get the visualizer graphics item for the register.
 	 *
 	 *      @return QGraphicsItem* Pointer to the graphics item.
 	 */
-	virtual QGraphicsItem* getGraphicsItem();
+	virtual QGraphicsItem* getGraphicsItem() override final;
 
 
 	//! Remove the graphics item of the register.
-	virtual void removeGraphicsItem();
+	virtual void removeGraphicsItem() override final;
 
+signals:
+
+    void addressInfoChanged();
+
+public slots:
+
+    void onAddressInfoChanged();
+
+    void onChildAddressInfoChanged();
 
 protected slots:
-
-	//! Handler for editor's contentChanged signal.
-	virtual void onEditorChanged();
 
     //! Update the graphics item of the register.
     virtual void updateGraphics();
@@ -139,7 +145,9 @@ protected slots:
     virtual void onGraphicsChanged();
 
     void onChildGraphicsChanged(int index);
-    void onChildAddressInfoChanged();
+
+
+   
 private:
 	
 

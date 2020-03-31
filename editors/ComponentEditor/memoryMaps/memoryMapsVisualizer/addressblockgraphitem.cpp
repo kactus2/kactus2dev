@@ -24,8 +24,7 @@
 AddressBlockGraphItem::AddressBlockGraphItem(QSharedPointer<AddressBlock> addrBlock,
     QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem *parent ):
 MemoryVisualizationItem(expressionParser, parent),
-addrBlock_(addrBlock),
-addrssableUnitBits_(0)
+addrBlock_(addrBlock)
 {
 	Q_ASSERT(addrBlock_);
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
@@ -39,8 +38,8 @@ addrssableUnitBits_(0)
 //-----------------------------------------------------------------------------
 void AddressBlockGraphItem::refresh() 
 {
-    updateDisplay();
-    reorganizeChildren();
+   // updateDisplay();
+  //  reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -61,6 +60,17 @@ void AddressBlockGraphItem::updateDisplay()
         "<b>Offset: </b>" % toHexString(offset) % "<br>" %
         "<b>Last address: </b>" % toHexString(lastAddress) % "<br>" %
         "<b>Size [AUB]: </b>" % QString::number(parseExpression(addrBlock_->getRange())));
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::redoChildLayout()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphItem::redoChildLayout()
+{
+    reorganizeChildren();
+    ExpandableItem::reorganizeChildren();
+
+    setShowExpandableItem(childItems_.isEmpty() == false);
 }
 
 //-----------------------------------------------------------------------------
@@ -117,5 +127,6 @@ quint64 AddressBlockGraphItem::getLastAddress() const
     {
         return 0;
     }
+
     return lastAddr -1;
 }

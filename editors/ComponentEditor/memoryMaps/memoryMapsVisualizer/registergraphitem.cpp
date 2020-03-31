@@ -174,6 +174,9 @@ void RegisterGraphItem::addChild(MemoryVisualizationItem* childItem)
 void RegisterGraphItem::redoChildLayout()
 {
     reorganizeChildren();
+    ExpandableItem::reorganizeChildren();
+    
+    setShowExpandableItem(childItems_.isEmpty() == false);
 }
 
 //-----------------------------------------------------------------------------
@@ -207,6 +210,8 @@ void RegisterGraphItem::repositionChildren()
             resizeAndPositionChild(current, highestBitInUse);
         }
     }
+
+    ExpandableItem::reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -315,7 +320,7 @@ void RegisterGraphItem::fillGapsBetweenChildren(unsigned int highestReservedBit)
     }
 
     // If there is a gap between the LSB of the register and the right-most item.
-    if (childItems_.isEmpty() == false && lowestBitHandled > 0)
+    if (lowestBitHandled > 0)
     {
         addMemoryGap(0, lowestBitHandled - 1);
     }

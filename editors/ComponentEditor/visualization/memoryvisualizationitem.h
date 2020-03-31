@@ -44,7 +44,7 @@ public:
 	MemoryVisualizationItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent = 0);
 	
 	//! The destructor.
-	virtual ~MemoryVisualizationItem();
+	virtual ~MemoryVisualizationItem() = default;
 
     /*!
      *  Set the item brush and store it as default brush.
@@ -182,7 +182,7 @@ public:
 public slots:
 
     //! Refresh the item and all the sub items.
-    virtual void recursiveRefresh();
+   // virtual void recursiveRefresh();
 
 signals:
 

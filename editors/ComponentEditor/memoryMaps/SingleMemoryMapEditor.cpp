@@ -96,14 +96,6 @@ ItemEditor(component, libHandler, parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleMemoryMapEditor::~SingleMemoryMapEditor()
-//-----------------------------------------------------------------------------
-SingleMemoryMapEditor::~SingleMemoryMapEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleMemoryMapEditor::refresh()
 //-----------------------------------------------------------------------------
 void SingleMemoryMapEditor::refresh()
@@ -231,7 +223,6 @@ void SingleMemoryMapEditor::onIsPresentEdited()
     isPresentEditor_->finishEditingCurrentWord();
 
     QString newIsPresent = isPresentEditor_->getExpression();
-    //isPresentEditor_->setToolTip(formattedValueFor(newIsPresent));
 
     if (isMemoryMap())
     {
@@ -250,7 +241,7 @@ void SingleMemoryMapEditor::refreshRemapStateSelector()
 {
     QStringList remapStateNames;
 
-    foreach (QSharedPointer<RemapState> remapState, *component()->getRemapStates())
+    for (QSharedPointer<RemapState> remapState : *component()->getRemapStates())
     {
         remapStateNames.append(remapState->name());
     }
@@ -278,14 +269,7 @@ bool SingleMemoryMapEditor::isMemoryMap() const
 {
     QSharedPointer<MemoryMap> transFormedMemoryRemap = memoryRemap_.dynamicCast<MemoryMap>();
 
-    if (transFormedMemoryRemap && transFormedMemoryRemap == parentMemoryMap_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (transFormedMemoryRemap && transFormedMemoryRemap == parentMemoryMap_);
 }
 
 //-----------------------------------------------------------------------------

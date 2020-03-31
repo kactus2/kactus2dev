@@ -403,6 +403,10 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
                 index.column() == AddressBlockColumns::IS_PRESENT)
             {
                 emit graphicsChanged();
+                if (index.column() != AddressBlockColumns::NAME)
+                {
+                    emit childAddressInfoChanged(registerData_->indexOf(reg));
+                }
             }
 
             emit dataChanged(index, index);

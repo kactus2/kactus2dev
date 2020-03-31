@@ -103,7 +103,8 @@ void MemoryMapsVisualizer::showEvent(QShowEvent* event)
     {
         if (memoryMap->isPresent())
         {
-            memoryMap->recursiveRefresh();
+            memoryMap->updateDisplay();
+//            memoryMap->recursiveRefresh();
         }
     }
     scene_->rePosition();

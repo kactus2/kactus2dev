@@ -62,7 +62,7 @@ public:
     RegisterFileEditor& operator=(const RegisterFileEditor& other) = delete;
 
     //! Refresh the editor content.
-    virtual void refresh();
+    void refresh();
 
 signals:
     /*!
@@ -118,6 +118,8 @@ signals:
     void childRemoved(int index);
 
     void addressUnitBitsChanged(int);
+
+    void childAddressInfoChanged(int index);
 
 private:
 

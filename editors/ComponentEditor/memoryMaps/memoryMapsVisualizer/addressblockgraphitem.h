@@ -55,6 +55,8 @@ public:
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override final;
 
+    void redoChildLayout();
+
 	/*!
      *  Get the offset of the item. 
 	 *
@@ -103,7 +105,7 @@ private:
 	QSharedPointer<AddressBlock> addrBlock_;
 
     //! The number of bits in an address unit.
-    int addrssableUnitBits_;
+    int addrssableUnitBits_ = 0;
 };
 
 #endif // ADDRESSBLOCKGRAPHITEM_H

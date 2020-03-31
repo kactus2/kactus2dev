@@ -37,18 +37,6 @@ ExpandableItem(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::~MemoryVisualizationItem()
-//-----------------------------------------------------------------------------
-MemoryVisualizationItem::~MemoryVisualizationItem()
-{
-    for (auto const& childItem : childItems_)
-    {
-        disconnect(childItem, SIGNAL(destroyed(QObject*)), this, SLOT(reorganizeChildren()));
-        disconnect(childItem, SIGNAL(destroyed(QObject*)), this, SIGNAL(expandStateChanged()));
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::setBrush()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::setBrush(QBrush const& brush)
@@ -67,13 +55,9 @@ void MemoryVisualizationItem::addChild(MemoryVisualizationItem* childItem)
     childItem->setVisible(isExpanded());
 
     reorganizeChildren();
-    emit expandStateChanged();
 
-    connect(childItem, SIGNAL(expandStateChanged()), this, SLOT(reorganizeChildren()), Qt::UniqueConnection);
+    connect(childItem, SIGNAL(expandStateChanged()), this, SLOT(repositionChildren()), Qt::UniqueConnection);
     connect(childItem, SIGNAL(expandStateChanged()), this, SIGNAL(expandStateChanged()), Qt::UniqueConnection);
-
-    connect(childItem, SIGNAL(destroyed(QObject*)), this, SLOT(reorganizeChildren()), Qt::UniqueConnection);
-    connect(childItem, SIGNAL(destroyed(QObject*)), this, SIGNAL(expandStateChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,6 +69,9 @@ void MemoryVisualizationItem::removeChild(MemoryVisualizationItem* childItem)
 
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
+
+    disconnect(childItem, SIGNAL(expandStateChanged()), this, SLOT(repositionChildren()));
+    disconnect(childItem, SIGNAL(expandStateChanged()), this, SIGNAL(expandStateChanged()));
 
     showExpandIconIfHasChildren();
 }
@@ -215,25 +202,9 @@ void MemoryVisualizationItem::reorganizeChildren()
 {
     showExpandIconIfHasChildren();
 
-    if (mustRepositionChildren())
-    {
-        // Note: Set this item visible before reorganizing, otherwise childs will return false on isVisible().
-        // This will be reset when the parent reorganizes this item.
-        setVisible(true); 
+    updateChildMap();
 
-        int childCountBeforeUpdate = childItems_.count();
-        updateChildMap();
-        int childCountAfterUpdate = childItems_.count();
-
-        repositionChildren();
-
-        if (childCountBeforeUpdate != childCountAfterUpdate)
-        {
-            emit expandStateChanged();
-        }
-    }
-
-    ExpandableItem::reorganizeChildren();
+    repositionChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -265,17 +236,7 @@ QSharedPointer<ExpressionParser> MemoryVisualizationItem::getExpressionParser() 
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::showExpandIconIfHasChildren()
 {    
-    for (MemoryVisualizationItem* item : childItems_)
-    {        
-        MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(item);
-        if (!gap)
-        {
-            ExpandableItem::setShowExpandableItem(true);
-            return;
-        }
-    }
-
-    ExpandableItem::setShowExpandableItem(false);
+    ExpandableItem::setShowExpandableItem(childItems_.isEmpty() == false);
 }
 
 //-----------------------------------------------------------------------------
@@ -416,20 +377,8 @@ void MemoryVisualizationItem::repositionChildren()
             yCoordinate = mapRectFromItem(current, current->itemTotalRect()).bottom();
         }
     }
-}
 
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::recursiveRefresh()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::recursiveRefresh()
-{
-    // Note: Refreshing children may change memory gap items, foreach for childItems_ will not work.
-    for (auto& child : childItems_)
-    {
-        child->recursiveRefresh();
-    }
-
-    refresh();
+    ExpandableItem::reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------

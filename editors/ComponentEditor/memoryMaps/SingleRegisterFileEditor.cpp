@@ -286,6 +286,16 @@ void SingleRegisterFileEditor::connectSignals()
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registersEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registerFileEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+
+    connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    
+    connect(registersEditor_, SIGNAL(childAddressInfoChanged(int)),
+        this, SIGNAL(childAddressInfoChanged(int)), Qt::UniqueConnection);
+    connect(registerFileEditor_, SIGNAL(childAddressInfoChanged(int)),
+        this, SIGNAL(childAddressInfoChanged(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

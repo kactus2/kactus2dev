@@ -129,6 +129,8 @@ signals:
      */
     void childRemoved(int index);
 
+    void childAddressInfoChanged(int index);
+
 private:
 	
 
