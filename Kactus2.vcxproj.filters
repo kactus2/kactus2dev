@@ -4861,6 +4861,9 @@
     <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7437,6 +7440,9 @@
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ParameterizableInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>

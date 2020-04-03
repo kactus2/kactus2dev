@@ -41,6 +41,7 @@ class BusInterface;
 class RemapState;
 class RemapPort;
 class ParametersInterface;
+class IndirectInterface;
 
 //-----------------------------------------------------------------------------
 //! Calculates the amount of references made to component parameters.
@@ -498,6 +499,26 @@ public:
      *      @return The amount of references made to the selected parameter in the selected remap port.
      */
     int countReferencesInSingleRemapPort(QString const& parameterID, QSharedPointer<RemapPort> port) const;
+
+    /*!
+     *  Count the references made to the selected parameter in indirect interfaces.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *
+     *      @return The amount of references made to the selected parameter in the indirect interfaces.
+     */
+    int countReferencesInIndirectInterfaces(QString const& parameterID) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected indirect interface.
+     *
+     *      @param [in] parameterID         ID of the selected parameter.
+     *      @param [in] indirectInterface   The selected indirect interface.
+     *
+     *      @return The amount of references made to the selected parameter in the selected indirect interface.
+     */
+    int countRefrencesInSingleIndirectInterface(QString const& parameterID,
+        QSharedPointer<IndirectInterface> indirectInterface) const;
 
 public slots:
 

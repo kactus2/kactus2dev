@@ -39,6 +39,7 @@
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceTree::ComponentParameterReferenceTree()
@@ -115,6 +116,11 @@ void ComponentParameterReferenceTree::setupTree()
         if (referenceCounter_->countReferencesInRemapStates(getTargetID()) > 0)
         {
             createReferencesForRemapStates();
+        }
+
+        if (referenceCounter_->countReferencesInIndirectInterfaces(getTargetID()) > 0)
+        {
+            createReferencesForIndirectInterfaces();
         }
 
         if (topLevelItemCount() == 0)
@@ -712,6 +718,27 @@ void ComponentParameterReferenceTree::createReferencesForRemapStates()
                     createItem(itemName, remapPort->getValue(), remapPortsItem);
                 }
             }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createReferencesForIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createReferencesForIndirectInterfaces()
+{
+    QTreeWidgetItem* topIndirectInterfacesItem = createTopItem("Indirect Interfaces");
+    QString targetID = getTargetID();
+
+    for (auto indirectInterface : *component_->getIndirectInterfaces())
+    {
+        if (referenceCounter_->countRefrencesInSingleIndirectInterface(targetID, indirectInterface) > 0)
+        {
+            QTreeWidgetItem* interfaceItem = createMiddleItem(indirectInterface->name(), topIndirectInterfacesItem);
+
+            QTreeWidgetItem* parametersItem = createMiddleItem(QLatin1String("Parameters"), interfaceItem);
+            colourItemGrey(parametersItem);
+            createParameterReferences(indirectInterface->getParameters(), parametersItem);
         }
     }
 }

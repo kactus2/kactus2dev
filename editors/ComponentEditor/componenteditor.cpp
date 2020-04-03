@@ -45,6 +45,7 @@
 
 #include <editors/ComponentEditor/common/ParameterCache.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>
@@ -81,13 +82,25 @@ proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_),
 parameterFinder_(new ParameterCache(component_)),
-referenceCounter_(new ComponentParameterReferenceCounter(parameterFinder_, component_)),
+fullParameterFinder_(),
+referenceCounter_(0),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 validator_(expressionParser_, libHandler_),
-parameterReferenceTree_(new ComponentParameterReferenceTree(component_, expressionFormatter_, referenceCounter_)),
-parameterReferenceWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_, this))
+parameterReferenceTree_(0),
+parameterReferenceWindow_()
 {
+    fullParameterFinder_ = QSharedPointer<ComponentAndInstantiationsParameterFinder>(
+        new ComponentAndInstantiationsParameterFinder(component));
+
+    referenceCounter_ = QSharedPointer<ComponentParameterReferenceCounter>(
+        new ComponentParameterReferenceCounter(fullParameterFinder_, component_));
+
+    QSharedPointer<ExpressionFormatter> fullFormatter(new ExpressionFormatter(fullParameterFinder_));
+    parameterReferenceTree_ =
+        new ComponentParameterReferenceTree(component_, fullFormatter, referenceCounter_);
+    parameterReferenceWindow_ = new ParameterReferenceTreeWindow(parameterReferenceTree_, this);
+
     supportedWindows_ |= TabDocument::VENDOREXTENSIONWINDOW;
 
     // these can be used when debugging to identify the objects
@@ -231,6 +244,7 @@ void ComponentEditor::refresh()
     parameterReferenceTree_->setComponent(component_);
 
     parameterFinder_->setComponent(comp);
+    fullParameterFinder_->setComponent(comp);
 
 	// open the general editor.
 	onItemActivated(proxy_.index(0, 0, QModelIndex()));

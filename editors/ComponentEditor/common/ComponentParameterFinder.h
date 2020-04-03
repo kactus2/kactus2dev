@@ -134,12 +134,28 @@ public:
      */
     QList<QSharedPointer<Parameter> > allRegisterParameters() const;
 
-private:
+    /*!
+     *  Get all the parameters in indirect interfaces.
+     *
+     *      @return The parameters in indirect interfaces.
+     */
+    QList<QSharedPointer<Parameter> > allIndirectInterfacesParameters() const;
 
-	/*!
-	 *  Returns a parameter corresponding given id, if any exists.
-	*/
-	QSharedPointer<Parameter> searchParameter(QString const& parameterId) const;
+protected:
+
+    /*!
+     *  Returns a parameter corresponding given id, if any exists.
+     */
+    virtual QSharedPointer<Parameter> searchParameter(QString const& parameterId) const;
+
+    /*!
+     *  Get the component.
+     *
+     *      @return The contained component.
+     */
+    QSharedPointer<const Component> getComponent() const;
+
+private:
     
     /*!
      *  Returns number of parameters in bus interfaces.

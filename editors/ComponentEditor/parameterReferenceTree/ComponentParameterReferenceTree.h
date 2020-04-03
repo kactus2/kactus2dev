@@ -242,6 +242,11 @@ private:
     void createReferencesForRemapStates();
 
     /*!
+     *  Create references for indirect interfaces.
+     */
+    void createReferencesForIndirectInterfaces();
+
+    /*!
      *  Create tree items for a port that is referencing this parameter.
      *
      *      @param [in] port        The referencing port.

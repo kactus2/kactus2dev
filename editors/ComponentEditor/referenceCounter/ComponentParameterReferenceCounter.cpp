@@ -31,6 +31,7 @@
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
@@ -73,6 +74,7 @@ void ComponentParameterReferenceCounter::recalculateReferencesToParameters(QVect
             referenceCount += countReferencesInPorts(parameterID);
             referenceCount += countReferencesInBusInterfaces(parameterID);
             referenceCount += countReferencesInRemapStates(parameterID);
+            referenceCount += countReferencesInIndirectInterfaces(parameterID);
 
             parameterInterface->setUsageCount(parameterName.toStdString(), referenceCount);
         }
@@ -732,4 +734,28 @@ int ComponentParameterReferenceCounter::countReferencesInSingleRemapPort(QString
     QSharedPointer<RemapPort> port) const
 {
     return countReferencesInExpression(parameterID, port->getValue());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInIndirectInterfaces()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInIndirectInterfaces(QString const& parameterID) const
+{
+    int referenceCounter = 0;
+
+    for (auto singleInterface : *component_->getIndirectInterfaces())
+    {
+        referenceCounter += countRefrencesInSingleIndirectInterface(parameterID, singleInterface);
+    }
+
+    return referenceCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countRefrencesInSingleIndirectInterface()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countRefrencesInSingleIndirectInterface(QString const& parameterID,
+    QSharedPointer<IndirectInterface> indirectInterface) const
+{
+    return countReferencesInParameters(parameterID, indirectInterface->getParameters());
 }
