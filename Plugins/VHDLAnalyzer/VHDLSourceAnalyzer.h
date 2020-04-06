@@ -6,7 +6,7 @@
 // Date: 18.1.2013
 //
 // Description:
-// C/C++ source analyzer plugin.
+// VHDL source analyzer plugin.
 //-----------------------------------------------------------------------------
 
 #ifndef VHDLSOURCEANALYZER_H
@@ -19,7 +19,7 @@
 class IPluginUtility;
 
 //-----------------------------------------------------------------------------
-//! MCAPI code generator.
+//! VHDLSourceAnalyzer
 //-----------------------------------------------------------------------------
 class VHDLSourceAnalyzer : public QObject, public ISourceAnalyzerPlugin
 {
@@ -31,7 +31,12 @@ class VHDLSourceAnalyzer : public QObject, public ISourceAnalyzerPlugin
 
 public:
     VHDLSourceAnalyzer();
-    ~VHDLSourceAnalyzer();
+
+    virtual ~VHDLSourceAnalyzer() = default;
+
+	// Disable copying.
+	VHDLSourceAnalyzer(VHDLSourceAnalyzer const& rhs) = delete;
+	VHDLSourceAnalyzer& operator=(VHDLSourceAnalyzer const& rhs) = delete;
 
     /*!
      *  Returns the name of the plugin.
@@ -71,7 +76,7 @@ public:
     /*!
      *  This is used to access the settings modified by function getSettingsWidget().
      */
-    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
+    virtual PluginSettingsModel* getSettingsModel(){return nullptr;}
 
     /*!
      *  Returns the list of file types this plugin can run analysis for.
@@ -89,7 +94,6 @@ public:
      */
     virtual QString calculateHash(QString const& filename);
 
-    
     /*!
      *  Begins the analysis for the given component.
      *
@@ -116,28 +120,25 @@ public:
      *      @param [in]  component      The component to which the dependency scan is being run.
      *      @param [in]  componentPath  The path to the directory where the component is located.
      *      @param [in]  filename       The name of the file to which the analysis is run.
-     *      @param [out] dependencies   The list of found dependencies.
+     *
+	 *      @return The list of found dependencies.
      */
-    virtual QList<FileDependencyDesc> getFileDependencies(Component const* component,
-                                     QString const& componentPath,
-                                     QString const& filename);
+	virtual QList<FileDependencyDesc> getFileDependencies(Component const* component,
+		QString const& componentPath, QString const& filename);
 
     //! \brief Returns the external program requirements of the plugin.
 	virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
 private:
-    // Disable copying.
-    VHDLSourceAnalyzer(VHDLSourceAnalyzer const& rhs);
-    VHDLSourceAnalyzer& operator=(VHDLSourceAnalyzer const& rhs);
 
     /*!
-     *  Reads source file data from given file. Used by calulateHash and getFileDependencies.
+     *  Reads source file data from given file.
      *
-     *      @param [in] file    The file that is read.
+     *      @param [in] filename    The file that is read.
      *
      *      @return The meaningful source data of the file, with comments and empty lines removed.
      */
-    QString getSourceData(QFile& file);
+    QString getSourceData(QString const& filename);
 
     /*!
      *
@@ -174,6 +175,7 @@ private:
     void scanEntityReferences(QString const& source, QString const& filename,
                               QList<FileDependencyDesc>& dependencies);
 
+
     /*!
      *  Scans package references in the source string.
      *
@@ -203,6 +205,8 @@ private:
      */
     void addPackageDependency(QString const& packageName, QString const& filename,
                               QList<FileDependencyDesc> &dependencies);
+
+	void addUniqueDependency(FileDependencyDesc& dependency, QList<FileDependencyDesc>& dependencies);
 
     //-----------------------------------------------------------------------------
     // Data.

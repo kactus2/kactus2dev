@@ -5,7 +5,7 @@
 TEMPLATE = lib
 TARGET = VHDLSourceAnalyzer
 
-QT += core xml widgets gui help
+QT += core widgets
 CONFIG += c++11 plugin release
 
 DEFINES += VHDLSOURCEANALYZER_LIB
