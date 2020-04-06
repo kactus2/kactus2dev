@@ -168,6 +168,16 @@ private:
 	QMap<QString, QString> findItemsInFilesets(Component const* component, QString const& componentPath);
 
 	/*!
+	 *  Finds the items (modules, include files) already available in the file content.
+	 *
+	 *      @param [in] content		The file content.
+	 *      @param [in] filePath	The path to the given file.
+	 *
+	 *      @return Found items in file content where key is the item identifier and value the path to the file.
+	 */
+	QMap<QString, QString> findItemsInFileContent(QString const& content, QString const& filePath);
+
+	/*!
 	 *  Check if the given file is of supported file type.
 	 *
 	 *      @param [in] file        The file to check.

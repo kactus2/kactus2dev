@@ -30,8 +30,10 @@ class VHDLSourceAnalyzer : public QObject, public ISourceAnalyzerPlugin
     Q_INTERFACES(ISourceAnalyzerPlugin)
 
 public:
-    VHDLSourceAnalyzer();
+    //! The constructor.
+	VHDLSourceAnalyzer();
 
+	//! The destructor.
     virtual ~VHDLSourceAnalyzer() = default;
 
 	// Disable copying.
@@ -126,7 +128,7 @@ public:
 	virtual QList<FileDependencyDesc> getFileDependencies(Component const* component,
 		QString const& componentPath, QString const& filename);
 
-    //! \brief Returns the external program requirements of the plugin.
+    //! Returns the external program requirements of the plugin.
 	virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
 private:
@@ -205,15 +207,20 @@ private:
      */
     void addPackageDependency(QString const& packageName, QString const& filename,
                               QList<FileDependencyDesc> &dependencies);
-
-	void addUniqueDependency(FileDependencyDesc& dependency, QList<FileDependencyDesc>& dependencies);
+	/*!
+	 *  Adds a new dependency to the list of dependencies, if it is unique i.e. not in the list already.
+	 *
+	 *      @param [in] dependency		The dependency to add.
+	 *      @param [out] dependencies	The list of dependencies.
+	 */
+	void addUniqueDependency(FileDependencyDesc const& dependency, QList<FileDependencyDesc>& dependencies);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The supported file types.
-    QStringList fileTypes_;
+    QStringList fileTypes_ = QStringList("vhdlSource");
 
     //! The container used for caching scanned entities.
     QMap<QString, QStringList> cachedEntities_;

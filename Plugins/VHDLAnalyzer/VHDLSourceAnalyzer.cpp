@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::VHDLSourceAnalyzer()
 //-----------------------------------------------------------------------------
-VHDLSourceAnalyzer::VHDLSourceAnalyzer(): QObject(nullptr), fileTypes_("vhdlSource")
+VHDLSourceAnalyzer::VHDLSourceAnalyzer(): QObject(nullptr)
 {
     
 }
@@ -162,9 +162,9 @@ void VHDLSourceAnalyzer::endAnalysis(Component const* /*component*/, QString con
 void VHDLSourceAnalyzer::scanDefinitions(Component const* component, QString const& componentPath)
 {
     // Scan all the file sets.
-    for (auto& fileset : *component->getFileSets())
+    for (auto const& fileset : *component->getFileSets())
     {
-        for (auto& file : *fileset->getFiles())
+        for (auto const& file : *fileset->getFiles())
         {
             if (file->getFileTypes()->contains("vhdlSource"))
             {
@@ -282,7 +282,7 @@ void VHDLSourceAnalyzer::addEntityDependency(QString const& componentName, QStri
     if (cachedEntities_.contains(lowCase))
     {
         // Add all existing entities to the return value list.
-        for (auto& cachedFile : cachedEntities_[lowCase])
+        for (auto const& cachedFile : cachedEntities_[lowCase])
         {
 			FileDependencyDesc dependency;
 			dependency.description = description.arg(componentName);
@@ -313,7 +313,7 @@ void VHDLSourceAnalyzer::addPackageDependency(QString const& packageName, QStrin
     if (cachedPackages_.contains(lowCase))
     {
         // Add all existing entities to the return value list.
-        for (auto& cachedFile : cachedPackages_[lowCase])
+        for (auto const& cachedFile : cachedPackages_[lowCase])
         {
 			FileDependencyDesc dependency;
 			dependency.description = description.arg(packageName);
@@ -335,7 +335,7 @@ void VHDLSourceAnalyzer::addPackageDependency(QString const& packageName, QStrin
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::addUniqueDependency()
 //-----------------------------------------------------------------------------
-void VHDLSourceAnalyzer::addUniqueDependency(FileDependencyDesc& dependency,
+void VHDLSourceAnalyzer::addUniqueDependency(FileDependencyDesc const& dependency,
 	QList<FileDependencyDesc>& dependencies)
 {
 	// Discard if this is a duplicate.
