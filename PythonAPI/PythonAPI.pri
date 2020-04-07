@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../editors/ComponentEditor/common/ParameterizableInterface.h \
-    ./PythonAPI.h \
+HEADERS += ./PythonAPI.h \
     ./pythonapi_global.h \
     ./messageMediator/PythonMessageMediator.h \
     ../library/DocumentFileAccess.h \
@@ -23,6 +22,7 @@ HEADERS += ../editors/ComponentEditor/common/ParameterizableInterface.h \
     ../library/LibraryTreeModel.h \
     ../library/HierarchyView/hierarchymodel.h \
     ../library/HierarchyView/hierarchyitem.h \
+    ../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../editors/ComponentEditor/common/ListParameterFinder.h \
@@ -55,8 +55,10 @@ HEADERS += ../editors/ComponentEditor/common/ParameterizableInterface.h \
     ../common/widgets/tagEditor/TagCompleterModel.h \
     ../common/validators/LibraryPathValidator/librarypathvalidator.h \
     ../VersionHelper.h \
+    ../editors/ComponentEditor/common/ParameterizableInterface.h \
     ../editors/ComponentEditor/ports/PortsInterface.h \
-    ../editors/ComponentEditor/common/ExpressionFormatter.h
+    ../editors/ComponentEditor/parameters/ParametersInterface.h \
+    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h
 SOURCES += ./PythonAPI.cpp \
     ./PythonAPI_wrap.cxx \
     ./messageMediator/PythonMessageMediator.cpp \
@@ -73,6 +75,7 @@ SOURCES += ./PythonAPI.cpp \
     ../library/HierarchyView/hierarchyitem.cpp \
     ../library/HierarchyView/hierarchymodel.cpp \
     ../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../editors/ComponentEditor/common/ParameterCache.cpp \
@@ -106,4 +109,5 @@ SOURCES += ./PythonAPI.cpp \
     ../VersionHelper.cpp \
     ../editors/ComponentEditor/common/ParameterizableInterface.cpp \
     ../editors/ComponentEditor/ports/PortsInterface.cpp \
-    ../editors/ComponentEditor/common/ExpressionFormatter.cpp
+    ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
+    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp

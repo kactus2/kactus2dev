@@ -111,6 +111,7 @@
     <ClCompile Include="..\common\widgets\vlnvEditor\VLNVContentMatcher.cpp" />
     <ClCompile Include="..\common\widgets\vlnvEditor\VLNVDataTree.cpp" />
     <ClCompile Include="..\common\widgets\vlnvEditor\vlnveditor.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
@@ -118,6 +119,7 @@
     <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ParameterizableInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\ports\PortsInterface.cpp" />
     <ClCompile Include="..\library\DocumentFileAccess.cpp" />
     <ClCompile Include="..\library\DocumentValidator.cpp" />
@@ -137,8 +139,10 @@
     <ClCompile Include="PythonAPI_wrap.cxx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\ParameterizableInterface.h" />
+    <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\ports\PortsInterface.h" />
     <QtMoc Include="..\library\LibraryHandler.h" />
     <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h" />

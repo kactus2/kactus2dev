@@ -11,6 +11,7 @@
 #include "PythonAPI.h"
 #include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
 #include "..\editors\ComponentEditor\ports\PortsInterface.h"
+#include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
 //#include "simpleModels\SimpleNameGroup.h"
 //#include "simpleModels\SimplePort.h"
 %}
@@ -25,5 +26,6 @@ namespace std {
 %include "PythonAPI.h"
 %include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
 %include "..\editors\ComponentEditor\ports\PortsInterface.h"
+%include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
 //%include "simpleModels\SimpleNameGroup.h"
 //%include "simpleModels\SimplePort.h"

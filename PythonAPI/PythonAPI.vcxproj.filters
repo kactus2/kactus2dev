@@ -231,6 +231,12 @@
     <ClCompile Include="..\editors\ComponentEditor\common\ParameterizableInterface.cpp">
       <Filter>Source Files\interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PythonAPI.h">
@@ -295,6 +301,12 @@
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\common\ParameterizableInterface.h">
       <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
+      <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

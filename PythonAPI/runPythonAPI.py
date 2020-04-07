@@ -7,6 +7,7 @@ print ("\n", end='')
 print ("Starting python program")
 api = pythonAPI.PythonAPI()
 portsInterface = api.getPortsInterface()
+parameterInterface = api.getComponentParameterInterface()
 
 def handleCommandsForOpenComponent(componentName):
 	pythonHelps.componentHelpText()
@@ -32,9 +33,11 @@ def handleCommandsForOpenComponent(componentName):
 		elif (componentCommand == pythonHelps.saveWord):
 			api.saveComponent()
 		elif (componentCommand == pythonHelps.migrateWord):
-			pythonComponent = createComponent(api, portsInterface)
+			pythonComponent = createComponent(api, portsInterface, parameterInterface)
 			print ()
 			pythonComponent.printer()
+			for parameter in pythonComponent.parameters:
+				parameter.printer()
 		elif (componentCommand == pythonHelps.helpWord):
 			pythonHelps.componentHelpText()
 		else:

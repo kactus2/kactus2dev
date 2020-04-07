@@ -27,6 +27,8 @@ class ComponentParameterFinder;
 class ExpressionParser;
 class PortValidator;
 class ExpressionFormatter;
+class ParametersInterface;
+class ParameterValidator;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data through python.
@@ -108,6 +110,13 @@ public:
      */
     PortsInterface* getPortsInterface() const;
 
+    /*!
+     *  Get the interface for accessing the component parameters.
+     *
+     *      @return Interface for accessing the component parameters.
+     */
+    ParametersInterface* getComponentParameterInterface() const;
+
 private:
 
     //! Interface to the library.
@@ -122,6 +131,9 @@ private:
     //! Interface for accessing the component ports.
     PortsInterface* portsInterface_;
 
+    //! Interface for accessing the component parameters.
+    ParametersInterface* componentParameterInterface_;
+
     //! Component parameter finder.
     QSharedPointer<ComponentParameterFinder> parameterFinder_;
 
@@ -133,4 +145,7 @@ private:
 
     //! Validator for ports.
     QSharedPointer<PortValidator> portValidator_;
+
+    //! Validator for parameters.
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };

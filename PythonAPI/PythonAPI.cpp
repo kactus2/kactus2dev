@@ -14,14 +14,17 @@
 #include <library/LibraryHandler.h>
 
 #include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
-#include <editors/ComponentEditor/common/ParameterCache.h>
+#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <PythonAPI/messageMediator/PythonMessageMediator.h>
 
 #include <VersionHelper.h>
+
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -38,14 +41,20 @@ library_(),
 messager_(new PythonMessageMediator()),
 activeComponent_(),
 portsInterface_(new PortsInterface()),
-parameterFinder_(new ParameterCache(QSharedPointer<Component>())),
+componentParameterInterface_(new ParametersInterface()),
+parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Component>())),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
-portValidator_(new PortValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<View> > >()))
+portValidator_(new PortValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<View> > >())),
+parameterValidator_(new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >()))
 {
     portsInterface_->setExpressionParser(expressionParser_);
-    portsInterface_->setExprressionFormatter(expressionFormatter_);
+    portsInterface_->setExpressionFormatter(expressionFormatter_);
     portsInterface_->setValidator(portValidator_);
+
+    componentParameterInterface_->setExpressionParser(expressionParser_);
+    componentParameterInterface_->setExpressionFormatter(expressionFormatter_);
+    componentParameterInterface_->setValidator(parameterValidator_);
 }
 
 //-----------------------------------------------------------------------------
@@ -140,6 +149,10 @@ bool PythonAPI::openComponent(QString const& componentVLNV)
             portValidator_->componentChange(component->getViews());
             portsInterface_->setPorts(component);
 
+            parameterValidator_->componentChange(component->getChoices());
+            componentParameterInterface_->setParameters(component->getParameters());
+            componentParameterInterface_->setChoices(component->getChoices());
+
             activeComponent_ = component;
             messager_->showMessage(QString("Component %1 is open").arg(componentVLNV));
             return true;
@@ -204,4 +217,12 @@ void PythonAPI::saveComponent()
 PortsInterface* PythonAPI::getPortsInterface() const
 {
     return portsInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getComponentParameterInterface()
+//-----------------------------------------------------------------------------
+ParametersInterface* PythonAPI::getComponentParameterInterface() const
+{
+    return componentParameterInterface_;
 }
