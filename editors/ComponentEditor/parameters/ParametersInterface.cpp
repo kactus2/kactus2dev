@@ -27,6 +27,7 @@ namespace
 // Function: ParametersInterface::ParametersInterface()
 //-----------------------------------------------------------------------------
 ParametersInterface::ParametersInterface():
+ParameterizableInterface(),
 parameters_(),
 moduleParameters_(),
 parameterValidator_(),

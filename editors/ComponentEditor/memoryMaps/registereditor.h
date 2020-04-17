@@ -24,6 +24,7 @@ class ParameterFinder;
 class EditableTableView;
 class ExpressionFormatter;
 class FieldValidator;
+class FieldInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of fields in a register.
@@ -45,15 +46,13 @@ public:
      *      @param [in] fieldValidator          Validator used for fields.
 	 *      @param [in] parent                  Pointer to the parent of this editor.
 	 */
-	RegisterEditor(QSharedPointer<Register> reg,
-		QSharedPointer<Component> component,
-		LibraryInterface* handler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<FieldValidator> fieldValidator,
-		QWidget* parent = 0);
+	RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Component> component, LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<FieldValidator> fieldValidator, QWidget* parent = 0);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~RegisterEditor();
 
 	/*!
@@ -123,11 +122,18 @@ private:
 	//! No assignment.
 	RegisterEditor& operator=(const RegisterEditor& other);
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! Pointer to the view that displays the items.
     EditableTableView* view_;
 
 	//! Pointer to the model that manages the details of items.
 	RegisterTableModel* model_;
+
+    //! The interface for fields.
+    QSharedPointer<FieldInterface> fieldInterface_;
 };
 
 #endif // REGISTEREDITOR_H

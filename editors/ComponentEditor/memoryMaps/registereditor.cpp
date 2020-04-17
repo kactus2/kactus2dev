@@ -23,6 +23,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/FieldInterface.h>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -35,18 +36,23 @@ RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Comp
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
     QWidget* parent /* = 0 */):
 QGroupBox(tr("Fields summary"), parent),
-    view_(new EditableTableView(this)),
-    model_(0)
+view_(new EditableTableView(this)),
+model_(0),
+fieldInterface_(new FieldInterface())
 {
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
+    fieldInterface_->setFields(reg->getFields());
+    fieldInterface_->setValidator(fieldValidator);
+    fieldInterface_->setExpressionParser(expressionParser);
+    fieldInterface_->setExpressionFormatter(expressionFormatter);
+
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
     view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
     view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-
-    model_ = new RegisterTableModel(reg, expressionParser, parameterFinder, expressionFormatter, fieldValidator,
-        this);
+    model_ = new RegisterTableModel(fieldInterface_, expressionParser, parameterFinder, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);

@@ -16,9 +16,9 @@
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+#include <editors/ComponentEditor/memoryMaps/FieldInterface.h>
 
 #include <common/KactusColors.h>
-
 
 #include <QRegularExpression>
 #include <QApplication>
@@ -28,26 +28,14 @@
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::RegisterTableModel()
 //-----------------------------------------------------------------------------
-RegisterTableModel::RegisterTableModel(QSharedPointer<Register> reg,
+RegisterTableModel::RegisterTableModel(QSharedPointer<FieldInterface> fieldInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-reg_(reg),
-fields_(reg->getFields()),
-expressionFormatter_(expressionFormatter),
-fieldValidator_(fieldValidator)
+fieldInterface_(fieldInterface)
 {
     setExpressionParser(expressionParser);
-}
-
-//-----------------------------------------------------------------------------
-// Function: registertablemodel::~RegisterTableModel()
-//-----------------------------------------------------------------------------
-RegisterTableModel::~RegisterTableModel() 
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -55,11 +43,7 @@ RegisterTableModel::~RegisterTableModel()
 //-----------------------------------------------------------------------------
 int RegisterTableModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
 {
-	if (parent.isValid()) 
-    {
-		return 0;
-	}
-	return fields_->size();
+    return fieldInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -83,8 +67,10 @@ Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const
     {
 		return Qt::NoItemFlags;
 	}
+
+    std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
 	// if the field is not testable then the test constraint can not be set
-    if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN && !fields_->at(index.row())->getTestable().toBool())
+    if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN && !fieldInterface_->getTestableBool(fieldName))
     {
         return Qt::NoItemFlags;
 	}
@@ -100,7 +86,7 @@ QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientatio
 {
     if (orientation == Qt::Vertical && role == Qt::DisplayRole) 
     {
-        return fields_->at(section)->name();
+        return QString::fromStdString(fieldInterface_->getIndexedItemName(section));
     }
 
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) 
@@ -175,16 +161,18 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
     {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= fields_->size()) 
+    else if (index.row() < 0 || index.row() >= fieldInterface_->itemCount()) 
     {
 		return QVariant();
 	}
+
+    std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
 
 	if (Qt::DisplayRole == role) 
     {
         if (isValidExpressionColumn(index))
         {
-            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+            return formattedExpressionForIndex(index);
         }
         else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
         {
@@ -199,11 +187,6 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
     else if (role == Qt::EditRole)
     {
-        if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
-        {
-            return valueForIndex(index);
-        }
-
         return expressionOrValueForIndex(index);
     }
 
@@ -211,15 +194,11 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
     {
         if (index.column() == RegisterColumns::RESETS_COLUMN)
         {
-            return toolTipValueForResets(index);
-        }
-        else if (isValidExpressionColumn(index))
-        {
-            return formattedValueFor(valueForIndex(index).toString());
+            return QString::fromStdString(fieldInterface_->getResetsToolTip(fieldName));
         }
         else
         {
-            return valueForIndex(index).toString();
+            return valueForIndex(index);
         }
     }
 
@@ -227,9 +206,12 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
     {
         if (validateIndex(index))
         {
-            QString isPresentValue = fields_->at(index.row())->getIsPresent();
-            if (index.column() != RegisterColumns::IS_PRESENT_COLUMN && 
-                (!isPresentValue.isEmpty() && parseExpressionToDecimal(isPresentValue).toInt() != 1))
+            std::string fieldPresence = fieldInterface_->getIsPresentExpression(fieldName);
+            qint64 fieldPresenceValue =
+                QString::fromStdString(fieldInterface_->getIsPresentValue(fieldName, 10)).toLongLong();
+
+            if (index.column() != RegisterColumns::IS_PRESENT_COLUMN &&
+                (!fieldPresence.empty() && fieldPresenceValue != 1))
             {
                 return KactusColors::DISABLED_TEXT;
             }
@@ -266,39 +248,51 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 }
 
 //-----------------------------------------------------------------------------
-// Function: registertablemodel::toolTipValueForResets()
+// Function: registertablemodel::formattedExpressionForIndex()
 //-----------------------------------------------------------------------------
-QVariant RegisterTableModel::toolTipValueForResets(QModelIndex const& index) const
+QVariant RegisterTableModel::formattedExpressionForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<QList<QSharedPointer<FieldReset> > > resets = fields_->at(index.row())->getResets();
-    if (resets && !resets->isEmpty())
+    std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == RegisterColumns::OFFSET_COLUMN)
     {
-        QString tooltip = "<html><head/><body><p>";
-        for (int i = 0; i < resets->size(); ++i)
-        {
-            if (i > 0)
-            {
-                tooltip.append("<br>");
-            }
-
-            QSharedPointer<FieldReset> fieldReset = resets->at(i);
-            QString resetReference = fieldReset->getResetTypeReference();
-            if (resetReference.isEmpty())
-            {
-                resetReference = "HARD";
-            }
-
-            QString resetValue = formattedValueFor(fieldReset->getResetValue());
-
-            tooltip.append(resetReference + " : " + resetValue);
-        }
-
-        tooltip.append("</p></body></html>");
-
-        return tooltip;
+        return QString::fromStdString(fieldInterface_->getOffsetFormattedExpression(fieldName));
+    }
+    else if (index.column() == RegisterColumns::WIDTH_COLUMN)
+    {
+        return QString::fromStdString(fieldInterface_->getWidthFormattedExpression(fieldName));
+    }
+    else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
+    {
+        return QString::fromStdString(fieldInterface_->getIsPresentFormattedExpression(fieldName));
     }
 
     return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant RegisterTableModel::expressionForIndex(QModelIndex const& index) const
+{
+    std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    {
+        return QString::fromStdString(fieldInterface_->getOffsetExpression(fieldName));
+    }
+    else if (index.column() == RegisterColumns::WIDTH_COLUMN)
+    {
+        return QString::fromStdString(fieldInterface_->getWidthExpression(fieldName));
+    }
+    else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
+    {
+        return QString::fromStdString(fieldInterface_->getIsPresentExpression(fieldName));
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -306,67 +300,55 @@ QVariant RegisterTableModel::toolTipValueForResets(QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
 {
+    std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
+
     if (index.column() == RegisterColumns::NAME_COLUMN)
     {
-        return fields_->at(index.row())->name();
+        return QString::fromStdString(fieldName);
     }
     else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
     {
-        return fields_->at(index.row())->description();
+        return QString::fromStdString(fieldInterface_->getDescription(fieldName));
     }
     else if (index.column() == RegisterColumns::OFFSET_COLUMN)
     {
-        QString bitOffset = fields_->at(index.row())->getBitOffset();
-        return bitOffset;
+        return QString::fromStdString(fieldInterface_->getOffsetValue(fieldName));
     }
     else if (index.column() == RegisterColumns::WIDTH_COLUMN)
     {
-        QString bitWidth = fields_->at(index.row())->getBitWidth();
-        return bitWidth;
+        return QString::fromStdString(fieldInterface_->getWidthValue(fieldName));
     }
     else if (index.column() == RegisterColumns::RESETS_COLUMN)
     {
-        QSharedPointer<QList<QSharedPointer<FieldReset> > > indexedResets = fields_->at(index.row())->getResets();
-        if (indexedResets->isEmpty())
-        {
-            return QVariant();
-        }
-        else if (indexedResets->count() == 1)
-        {
-            return indexedResets->first()->getResetValue();
-        }
-        else
-        {
-            return tr("[multiple]");
-        }
+        return QString::fromStdString(fieldInterface_->getResets(fieldName));
     }
     else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
     {
-        return fields_->at(index.row())->getVolatile().toString();
+        return QString::fromStdString(fieldInterface_->getVolatile(fieldName));
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        return AccessTypes::access2Str(fields_->at(index.row())->getAccess());
+        return QString::fromStdString(fieldInterface_->getAccess(fieldName));
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {
-        return General::modifiedWrite2Str(fields_->at(index.row())->getModifiedWrite());
+        return QString::fromStdString(fieldInterface_->getModifiedWrite(fieldName));
     }
     else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
     {
-        return General::readAction2Str(fields_->at(index.row())->getReadAction());
+        return QString::fromStdString(fieldInterface_->getReadAction(fieldName));
     }
     else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
     {
-        return fields_->at(index.row())->getTestable().toString();
+        return QString::fromStdString(fieldInterface_->getTestableValue(fieldName));
     }
     else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
     {
-        return General::testConstraint2Str(fields_->at(index.row())->getTestConstraint());
+        return QString::fromStdString(fieldInterface_->getTestConstraint(fieldName));
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
-        return fields_->at(index.row())->getIsPresent();
+        return QString::fromStdString(fieldInterface_->getIsPresentValue(fieldName));
     }
     else
     {
@@ -379,32 +361,35 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value, int role) 
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= fields_->size()) 
+    if (!index.isValid() || index.row() < 0 || index.row() >= fieldInterface_->itemCount()) 
     {
 		return false;
 	}
+
+    std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
 
 	if (role == Qt::EditRole) 
     {
         if (index.column() == RegisterColumns::NAME_COLUMN)
         {
-            fields_->at(index.row())->setName(value.toString());
+            fieldInterface_->setName(fieldName, value.toString().toStdString());
 
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
             emit graphicsChanged();
         }
         else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
         {
-            fields_->at(index.row())->setDescription(value.toString());
+            fieldInterface_->setDescription(fieldName, value.toString().toStdString());
         }
         else if (index.column() == RegisterColumns::OFFSET_COLUMN)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(fields_->at(index.row())->getBitOffset());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(fieldInterface_->getOffsetExpression(fieldName)));
             }
 
-            fields_->at(index.row())->setBitOffset(value.toString());
+            fieldInterface_->setOffset(fieldName, value.toString().toStdString());
 
             emit graphicsChanged();
         }
@@ -412,71 +397,52 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(fields_->at(index.row())->getBitWidth());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(fieldInterface_->getWidthExpression(fieldName)));
             }
 
-            fields_->at(index.row())->setBitWidth(value.toString());
+            fieldInterface_->setWidth(fieldName, value.toString().toStdString());
 
             emit graphicsChanged();
         }
         else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
         {
-            if (value.toString() == QLatin1String("true"))
-            {
-                fields_->at(index.row())->setVolatile(true);
-            }
-            else if (value.toString() == QLatin1String("false"))
-            {
-                fields_->at(index.row())->setVolatile(false);
-            }
-            else
-            {
-                fields_->at(index.row())->clearVolatile();
-            }
+            fieldInterface_->setVolatile(fieldName, value.toString().toStdString());
         }
         else if (index.column() == RegisterColumns::ACCESS_COLUMN)
         {
-            fields_->at(index.row())->setAccess(
-                AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
+            fieldInterface_->setAccess(fieldName, value.toString().toStdString());
         }
         else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
         {
-            fields_->at(index.row())->setModifiedWrite(General::str2ModifiedWrite(value.toString()));
+            fieldInterface_->setModifiedWrite(fieldName, value.toString().toStdString());
         }
         else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
         {
-            fields_->at(index.row())->setReadAction(General::str2ReadAction(value.toString()));
+            fieldInterface_->setReadAction(fieldName, value.toString().toStdString());
         }
         else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
         {
-            if (value.toString() == QLatin1String("true"))
+            fieldInterface_->setTestable(fieldName, value.toString().toStdString());
+            if (value.toString() == QLatin1String("false"))
             {
-                fields_->at(index.row())->setTestable(true);
-            }
-            else if (value.toString() == QLatin1String("false"))
-            {
-                fields_->at(index.row())->setTestable(false);
-                fields_->at(index.row())->setTestConstraint(General::TESTCONSTRAINT_COUNT);
                 QModelIndex constrIndex = createIndex(index.row(), index.column() + 1, index.internalPointer());
                 emit dataChanged(constrIndex, constrIndex);
-            }
-            else
-            {
-                fields_->at(index.row())->clearTestable();
             }
         }
         else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
         {
-            fields_->at(index.row())->setTestConstraint(General::str2TestConstraint(value.toString()));
+            fieldInterface_->setTestConstraint(fieldName, value.toString().toStdString());
         }
         else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(fields_->at(index.row())->getIsPresent());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(fieldInterface_->getIsPresentExpression(fieldName)));
             }
 
-            fields_->at(index.row())->setIsPresent(value.toString());
+            fieldInterface_->setIsPresent(fieldName, value.toString().toStdString());
 
             emit graphicsChanged();
         }
@@ -516,20 +482,15 @@ bool RegisterTableModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN ||
+        index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
-        return fields_->at(index.row())->getBitOffset();
+        return expressionForIndex(index);
     }
-    else if (index.column() == RegisterColumns::WIDTH_COLUMN)
+    else
     {
-        return fields_->at(index.row())->getBitWidth();
+        return valueForIndex(index);
     }
-    else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
-    {
-        return fields_->at(index.row())->getIsPresent();
-    }
-
-    return data(index, Qt::DisplayRole);
 }
 
 //-----------------------------------------------------------------------------
@@ -537,31 +498,31 @@ QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Field> field = fields_->at(index.row());
+    std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
 
     if (index.column() == RegisterColumns::NAME_COLUMN)
     {
-        return fieldValidator_->hasValidName(field);
+        return fieldInterface_->itemHasValidName(fieldName);
     }
     else if (index.column() == RegisterColumns::OFFSET_COLUMN)
     {
-        return fieldValidator_->hasValidBitOffset(field);
+        return fieldInterface_->hasValidOffset(fieldName);
     }
     else if (index.column() == RegisterColumns::WIDTH_COLUMN)
     {
-        return fieldValidator_->hasValidBitWidth(field);
+        return fieldInterface_->hasValidWidth(fieldName);
     }
     else if (index.column() == RegisterColumns::RESETS_COLUMN)
     {
-        return fieldValidator_->hasValidResets(field);
+        return fieldInterface_->hasValidResets(fieldName);
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
-        return fieldValidator_->hasValidIsPresent(field);
+        return fieldInterface_->hasValidIsPresent(fieldName);
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        return fieldValidator_->hasValidAccess(field);
+        return fieldInterface_->hasValidAccess(fieldName);
     }
 
     return true;
@@ -572,23 +533,8 @@ bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    int referencesInBitOffset = fields_->at(row)->getBitOffset().count(valueID);
-    int referencesInBitWidth = fields_->at(row)->getBitWidth().count(valueID);
-    int referencesInIsPresent = fields_->at(row)->getIsPresent().count(valueID);
-
-    int referencesInResetValues = 0;
-    int referencesInResetMasks = 0;
-
-    for (auto resetField : *fields_->at(row)->getResets())
-    {
-        referencesInResetValues += resetField->getResetValue().count(valueID);
-        referencesInResetMasks += resetField->getResetMask().count(valueID);
-    }
-
-    int totalReferences = referencesInBitOffset + referencesInBitWidth + referencesInIsPresent +
-        referencesInResetValues + referencesInResetMasks;
-
-    return totalReferences;
+    return fieldInterface_->getAllReferencesToIdInItem(
+        fieldInterface_->getIndexedItemName(row), valueID.toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -596,7 +542,7 @@ int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString 
 //-----------------------------------------------------------------------------
 void RegisterTableModel::onAddItem( const QModelIndex& index )
 {
-	int row = fields_->size();
+    int row = fieldInterface_->itemCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -605,8 +551,9 @@ void RegisterTableModel::onAddItem( const QModelIndex& index )
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-    QSharedPointer<Field> field(new Field());
-	fields_->insert(row, field);
+
+    fieldInterface_->addField(row);
+
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -626,17 +573,22 @@ void RegisterTableModel::onRemoveItem( const QModelIndex& index )
     {
 		return;
 	}
+
+    int itemRow = index.row();
+
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= fields_->size())
+    if (itemRow < 0 || itemRow >= fieldInterface_->itemCount())
     {
 		return;
 	}
 
-	// remove the specified item
-	beginRemoveRows(QModelIndex(), index.row(), index.row());
+    std::string fieldName = fieldInterface_->getIndexedItemName(itemRow);
 
-    removeReferencesInItemOnRow(index.row());
-	fields_->removeAt(index.row());
+	// remove the specified item
+    beginRemoveRows(QModelIndex(), itemRow, itemRow);
+
+    removeReferencesInItemOnRow(itemRow);
+    fieldInterface_->removeField(fieldName);
 
     endRemoveRows();
 
@@ -652,21 +604,13 @@ void RegisterTableModel::onRemoveItem( const QModelIndex& index )
 //-----------------------------------------------------------------------------
 void RegisterTableModel::onCopyRows(QModelIndexList indexList)
 {
-    QList<QSharedPointer<Field> > copiedFields;
-    foreach (QModelIndex index, indexList)
+    std::vector<int> fieldIndexes;
+    for (auto index : indexList)
     {
-        QSharedPointer<Field> field = fields_->at(index.row());
-        copiedFields.append(field);
+        fieldIndexes.push_back(index.row());
     }
 
-    QVariant fieldVariant;
-    fieldVariant.setValue(copiedFields);
-
-    QMimeData* newMimeData = new QMimeData();
-    newMimeData->setData("text/xml/ipxact:field", QByteArray());
-    newMimeData->setImageData(fieldVariant);
-
-    QApplication::clipboard()->setMimeData(newMimeData);
+    fieldInterface_->copyRows(fieldIndexes);
 }
 
 //-----------------------------------------------------------------------------
@@ -674,67 +618,38 @@ void RegisterTableModel::onCopyRows(QModelIndexList indexList)
 //-----------------------------------------------------------------------------
 void RegisterTableModel::onPasteRows()
 {
-    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
-
-    if (pasteData->hasImage())
+    int pastedFieldCount = fieldInterface_->getPasteRowCount();
+    if (pastedFieldCount == 0)
     {
-        QVariant pasteVariant = pasteData->imageData();
-        if (pasteVariant.canConvert<QList<QSharedPointer<Field> > >())
-        {
-            FieldExpressionsGatherer gatherer;
-            ReferenceCalculator referenceCalculator(getParameterFinder());
-
-            QList<QSharedPointer<Field> > newFields = pasteVariant.value<QList<QSharedPointer<Field> > >();
-
-            int rowBegin = fields_->size();
-            int rowEnd = rowBegin + newFields.size() - 1;
-
-            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
-
-            foreach(QSharedPointer<Field> copiedField, newFields)
-            {
-                QSharedPointer<Field> newField (new Field(*copiedField.data()));
-                newField->setName(getUniqueName(newField->name(), getCurrentItemNames()));
-
-                fields_->append(newField);
-
-                increaseReferencesInPastedField(newField, gatherer, referenceCalculator);
-
-                emit fieldAdded(fields_->size() - 1);
-            }
-
-            endInsertRows();
-
-            emit contentChanged();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: registertablemodel::getCurrentItemNames()
-//-----------------------------------------------------------------------------
-QStringList RegisterTableModel::getCurrentItemNames() const
-{
-    QStringList names;
-    foreach (QSharedPointer<Field> currentField, *fields_)
-    {
-        names.append(currentField->name());
+        return;
     }
 
-    return names;
-}
+    int fieldCount = fieldInterface_->itemCount();
 
-//-----------------------------------------------------------------------------
-// Function: registertablemodel::increaseReferencesInPastedField()
-//-----------------------------------------------------------------------------
-void RegisterTableModel::increaseReferencesInPastedField(QSharedPointer<Field> pastedField,
-    FieldExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator)
-{
-    QStringList fieldExpressions = gatherer.getExpressions(pastedField);
+    beginInsertRows(QModelIndex(), fieldCount, fieldCount + pastedFieldCount - 1);
 
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(fieldExpressions);
+    std::vector<std::string> insertedItemNames = fieldInterface_->pasteRows();
 
-    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    endInsertRows();
+
+    for (int i = 0; i < insertedItemNames.size(); ++i)
+    {
+        emit fieldAdded(fieldCount + i);
+    }
+
+    std::vector<std::string> pastedExpressions =
+        fieldInterface_->getExpressionsInSelectedFields(insertedItemNames);
+
+    QStringList pastedExpressionsQT;
+    for (auto expression : pastedExpressions)
+    {
+        pastedExpressionsQT.append(QString::fromStdString(expression));
+    }
+
+    ReferenceCalculator referenceCalculator(getParameterFinder());
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(pastedExpressionsQT);
+
+    QMapIterator<QString, int> refParameterIterator(referencedParameters);
     while (refParameterIterator.hasNext())
     {
         refParameterIterator.next();
@@ -743,6 +658,8 @@ void RegisterTableModel::increaseReferencesInPastedField(QSharedPointer<Field> p
             emit increaseReferences(refParameterIterator.key());
         }
     }
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

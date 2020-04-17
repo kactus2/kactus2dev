@@ -4864,6 +4864,9 @@
     <ClCompile Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7444,6 +7447,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\FieldInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

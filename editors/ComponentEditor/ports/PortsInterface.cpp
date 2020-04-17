@@ -22,6 +22,7 @@
 // Function: PortsInterface::PortsInterface()
 //-----------------------------------------------------------------------------
 PortsInterface::PortsInterface() :
+ParameterizableInterface(),
 ports_(),
 portValidator_()
 {
