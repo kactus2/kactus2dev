@@ -58,7 +58,9 @@ HEADERS += ./PythonAPI.h \
     ../editors/ComponentEditor/common/ParameterizableInterface.h \
     ../editors/ComponentEditor/ports/PortsInterface.h \
     ../editors/ComponentEditor/parameters/ParametersInterface.h \
-    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h
+    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h \
+    ../editors/ComponentEditor/memoryMaps/FieldInterface.h \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h
 SOURCES += ./PythonAPI.cpp \
     ./PythonAPI_wrap.cxx \
     ./messageMediator/PythonMessageMediator.cpp \
@@ -110,4 +112,6 @@ SOURCES += ./PythonAPI.cpp \
     ../editors/ComponentEditor/common/ParameterizableInterface.cpp \
     ../editors/ComponentEditor/ports/PortsInterface.cpp \
     ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
-    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp
+    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp \
+    ../editors/ComponentEditor/memoryMaps/FieldInterface.cpp \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp

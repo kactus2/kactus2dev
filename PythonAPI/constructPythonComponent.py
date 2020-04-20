@@ -32,5 +32,9 @@ def createComponent(api, portsInterface, parameterInterface):
 		value = parameterInterface.getValueFormattedExpression(parameterName)
 		
 		newComponent.add_parameter(Parameter(parameterName, description, dataType, bitWidth, value))
-		
+	
+	fieldInterfaceList = api.getFieldInterfaces()
+	for fieldInterface in fieldInterfaceList:
+		print (fieldInterface.getItemNames())
+	
 	return newComponent

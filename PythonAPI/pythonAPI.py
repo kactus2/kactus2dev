@@ -281,6 +281,112 @@ class stringVector(object):
 # Register stringVector in _pythonAPI:
 _pythonAPI.stringVector_swigregister(stringVector)
 
+class fieldInterfaceVector(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _pythonAPI.fieldInterfaceVector_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _pythonAPI.fieldInterfaceVector___nonzero__(self)
+
+    def __bool__(self):
+        return _pythonAPI.fieldInterfaceVector___bool__(self)
+
+    def __len__(self):
+        return _pythonAPI.fieldInterfaceVector___len__(self)
+
+    def __getslice__(self, i, j):
+        return _pythonAPI.fieldInterfaceVector___getslice__(self, i, j)
+
+    def __setslice__(self, *args):
+        return _pythonAPI.fieldInterfaceVector___setslice__(self, *args)
+
+    def __delslice__(self, i, j):
+        return _pythonAPI.fieldInterfaceVector___delslice__(self, i, j)
+
+    def __delitem__(self, *args):
+        return _pythonAPI.fieldInterfaceVector___delitem__(self, *args)
+
+    def __getitem__(self, *args):
+        return _pythonAPI.fieldInterfaceVector___getitem__(self, *args)
+
+    def __setitem__(self, *args):
+        return _pythonAPI.fieldInterfaceVector___setitem__(self, *args)
+
+    def pop(self):
+        return _pythonAPI.fieldInterfaceVector_pop(self)
+
+    def append(self, x):
+        return _pythonAPI.fieldInterfaceVector_append(self, x)
+
+    def empty(self):
+        return _pythonAPI.fieldInterfaceVector_empty(self)
+
+    def size(self):
+        return _pythonAPI.fieldInterfaceVector_size(self)
+
+    def swap(self, v):
+        return _pythonAPI.fieldInterfaceVector_swap(self, v)
+
+    def begin(self):
+        return _pythonAPI.fieldInterfaceVector_begin(self)
+
+    def end(self):
+        return _pythonAPI.fieldInterfaceVector_end(self)
+
+    def rbegin(self):
+        return _pythonAPI.fieldInterfaceVector_rbegin(self)
+
+    def rend(self):
+        return _pythonAPI.fieldInterfaceVector_rend(self)
+
+    def clear(self):
+        return _pythonAPI.fieldInterfaceVector_clear(self)
+
+    def get_allocator(self):
+        return _pythonAPI.fieldInterfaceVector_get_allocator(self)
+
+    def pop_back(self):
+        return _pythonAPI.fieldInterfaceVector_pop_back(self)
+
+    def erase(self, *args):
+        return _pythonAPI.fieldInterfaceVector_erase(self, *args)
+
+    def __init__(self, *args):
+        _pythonAPI.fieldInterfaceVector_swiginit(self, _pythonAPI.new_fieldInterfaceVector(*args))
+
+    def push_back(self, x):
+        return _pythonAPI.fieldInterfaceVector_push_back(self, x)
+
+    def front(self):
+        return _pythonAPI.fieldInterfaceVector_front(self)
+
+    def back(self):
+        return _pythonAPI.fieldInterfaceVector_back(self)
+
+    def assign(self, n, x):
+        return _pythonAPI.fieldInterfaceVector_assign(self, n, x)
+
+    def resize(self, *args):
+        return _pythonAPI.fieldInterfaceVector_resize(self, *args)
+
+    def insert(self, *args):
+        return _pythonAPI.fieldInterfaceVector_insert(self, *args)
+
+    def reserve(self, n):
+        return _pythonAPI.fieldInterfaceVector_reserve(self, n)
+
+    def capacity(self):
+        return _pythonAPI.fieldInterfaceVector_capacity(self)
+    __swig_destroy__ = _pythonAPI.delete_fieldInterfaceVector
+
+# Register fieldInterfaceVector in _pythonAPI:
+_pythonAPI.fieldInterfaceVector_swigregister(fieldInterfaceVector)
+
 class PythonAPI(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
@@ -321,6 +427,9 @@ class PythonAPI(object):
 
     def getComponentParameterInterface(self):
         return _pythonAPI.PythonAPI_getComponentParameterInterface(self)
+
+    def getFieldInterfaces(self):
+        return _pythonAPI.PythonAPI_getFieldInterfaces(self)
 
 # Register PythonAPI in _pythonAPI:
 _pythonAPI.PythonAPI_swigregister(PythonAPI)
@@ -831,6 +940,167 @@ class ParametersInterface(ParameterizableInterface):
 
 # Register ParametersInterface in _pythonAPI:
 _pythonAPI.ParametersInterface_swigregister(ParametersInterface)
+
+class FieldInterface(ParameterizableInterface):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self):
+        _pythonAPI.FieldInterface_swiginit(self, _pythonAPI.new_FieldInterface())
+    __swig_destroy__ = _pythonAPI.delete_FieldInterface
+
+    def setFields(self, newFields):
+        return _pythonAPI.FieldInterface_setFields(self, newFields)
+
+    def setValidator(self, validator):
+        return _pythonAPI.FieldInterface_setValidator(self, validator)
+
+    def getItemIndex(self, itemName):
+        return _pythonAPI.FieldInterface_getItemIndex(self, itemName)
+
+    def getIndexedItemName(self, itemIndex):
+        return _pythonAPI.FieldInterface_getIndexedItemName(self, itemIndex)
+
+    def itemCount(self):
+        return _pythonAPI.FieldInterface_itemCount(self)
+
+    def getItemNames(self):
+        return _pythonAPI.FieldInterface_getItemNames(self)
+
+    def setName(self, currentName, newName):
+        return _pythonAPI.FieldInterface_setName(self, currentName, newName)
+
+    def getDescription(self, itemName):
+        return _pythonAPI.FieldInterface_getDescription(self, itemName)
+
+    def setDescription(self, itemName, newDescription):
+        return _pythonAPI.FieldInterface_setDescription(self, itemName, newDescription)
+
+    def getOffsetValue(self, fieldName, baseNumber=0):
+        return _pythonAPI.FieldInterface_getOffsetValue(self, fieldName, baseNumber)
+
+    def getOffsetFormattedExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getOffsetFormattedExpression(self, fieldName)
+
+    def getOffsetExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getOffsetExpression(self, fieldName)
+
+    def setOffset(self, fieldName, newOffset):
+        return _pythonAPI.FieldInterface_setOffset(self, fieldName, newOffset)
+
+    def getWidthValue(self, fieldName, baseNumber=0):
+        return _pythonAPI.FieldInterface_getWidthValue(self, fieldName, baseNumber)
+
+    def getWidthFormattedExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getWidthFormattedExpression(self, fieldName)
+
+    def getWidthExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getWidthExpression(self, fieldName)
+
+    def setWidth(self, fieldName, newWidth):
+        return _pythonAPI.FieldInterface_setWidth(self, fieldName, newWidth)
+
+    def getResets(self, fieldName):
+        return _pythonAPI.FieldInterface_getResets(self, fieldName)
+
+    def getResetsToolTip(self, fieldName):
+        return _pythonAPI.FieldInterface_getResetsToolTip(self, fieldName)
+
+    def getVolatile(self, fieldName):
+        return _pythonAPI.FieldInterface_getVolatile(self, fieldName)
+
+    def setVolatile(self, fieldName, newVolatile):
+        return _pythonAPI.FieldInterface_setVolatile(self, fieldName, newVolatile)
+
+    def getAccess(self, fieldName):
+        return _pythonAPI.FieldInterface_getAccess(self, fieldName)
+
+    def setAccess(self, fieldName, newAccess):
+        return _pythonAPI.FieldInterface_setAccess(self, fieldName, newAccess)
+
+    def getModifiedWrite(self, fieldName):
+        return _pythonAPI.FieldInterface_getModifiedWrite(self, fieldName)
+
+    def setModifiedWrite(self, fieldName, newModifiedWrite):
+        return _pythonAPI.FieldInterface_setModifiedWrite(self, fieldName, newModifiedWrite)
+
+    def getReadAction(self, fieldName):
+        return _pythonAPI.FieldInterface_getReadAction(self, fieldName)
+
+    def setReadAction(self, fieldName, newReadAction):
+        return _pythonAPI.FieldInterface_setReadAction(self, fieldName, newReadAction)
+
+    def getTestableValue(self, fieldName):
+        return _pythonAPI.FieldInterface_getTestableValue(self, fieldName)
+
+    def getTestableBool(self, fieldName):
+        return _pythonAPI.FieldInterface_getTestableBool(self, fieldName)
+
+    def setTestable(self, fieldName, newTestable):
+        return _pythonAPI.FieldInterface_setTestable(self, fieldName, newTestable)
+
+    def getTestConstraint(self, fieldName):
+        return _pythonAPI.FieldInterface_getTestConstraint(self, fieldName)
+
+    def setTestConstraint(self, fieldName, newTestConstraint):
+        return _pythonAPI.FieldInterface_setTestConstraint(self, fieldName, newTestConstraint)
+
+    def getIsPresentValue(self, fieldName, baseNumber=0):
+        return _pythonAPI.FieldInterface_getIsPresentValue(self, fieldName, baseNumber)
+
+    def getIsPresentFormattedExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getIsPresentFormattedExpression(self, fieldName)
+
+    def getIsPresentExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getIsPresentExpression(self, fieldName)
+
+    def setIsPresent(self, fieldName, newIsPresent):
+        return _pythonAPI.FieldInterface_setIsPresent(self, fieldName, newIsPresent)
+
+    def getAllReferencesToIdInItem(self, itemName, valueID):
+        return _pythonAPI.FieldInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+
+    def validateItems(self):
+        return _pythonAPI.FieldInterface_validateItems(self)
+
+    def itemHasValidName(self, itemName):
+        return _pythonAPI.FieldInterface_itemHasValidName(self, itemName)
+
+    def hasValidOffset(self, fieldName):
+        return _pythonAPI.FieldInterface_hasValidOffset(self, fieldName)
+
+    def hasValidWidth(self, fieldName):
+        return _pythonAPI.FieldInterface_hasValidWidth(self, fieldName)
+
+    def hasValidResets(self, fieldName):
+        return _pythonAPI.FieldInterface_hasValidResets(self, fieldName)
+
+    def hasValidIsPresent(self, fieldName):
+        return _pythonAPI.FieldInterface_hasValidIsPresent(self, fieldName)
+
+    def hasValidAccess(self, fieldName):
+        return _pythonAPI.FieldInterface_hasValidAccess(self, fieldName)
+
+    def addField(self, *args):
+        return _pythonAPI.FieldInterface_addField(self, *args)
+
+    def removeField(self, fieldName):
+        return _pythonAPI.FieldInterface_removeField(self, fieldName)
+
+    def copyRows(self, selectedRows):
+        return _pythonAPI.FieldInterface_copyRows(self, selectedRows)
+
+    def pasteRows(self):
+        return _pythonAPI.FieldInterface_pasteRows(self)
+
+    def getPasteRowCount(self):
+        return _pythonAPI.FieldInterface_getPasteRowCount(self)
+
+    def getExpressionsInSelectedFields(self, fieldNames):
+        return _pythonAPI.FieldInterface_getExpressionsInSelectedFields(self, fieldNames)
+
+# Register FieldInterface in _pythonAPI:
+_pythonAPI.FieldInterface_swigregister(FieldInterface)
 
 
 

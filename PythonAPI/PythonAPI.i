@@ -12,14 +12,14 @@
 #include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
 #include "..\editors\ComponentEditor\ports\PortsInterface.h"
 #include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
-//#include "simpleModels\SimpleNameGroup.h"
-//#include "simpleModels\SimplePort.h"
+#include "..\editors\ComponentEditor\memoryMaps\FieldInterface.h"
 %}
 
 
 namespace std {
 //	%template(portsVector) vector<SimplePort*>;
 	%template(stringVector) vector<string>;
+	%template(fieldInterfaceVector) vector<FieldInterface*>;
 };
 
 /* Let's just grab the original header file here */
@@ -27,5 +27,4 @@ namespace std {
 %include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
 %include "..\editors\ComponentEditor\ports\PortsInterface.h"
 %include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
-//%include "simpleModels\SimpleNameGroup.h"
-//%include "simpleModels\SimplePort.h"
+%include "..\editors\ComponentEditor\memoryMaps\FieldInterface.h"

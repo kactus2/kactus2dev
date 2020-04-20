@@ -119,6 +119,8 @@
     <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ParameterizableInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\FieldInterface.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\ports\PortsInterface.cpp" />
     <ClCompile Include="..\library\DocumentFileAccess.cpp" />
@@ -142,6 +144,8 @@
     <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\ParameterizableInterface.h" />
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\FieldInterface.h" />
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\ports\PortsInterface.h" />
     <QtMoc Include="..\library\LibraryHandler.h" />

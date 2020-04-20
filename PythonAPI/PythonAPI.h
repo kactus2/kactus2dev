@@ -29,6 +29,8 @@ class PortValidator;
 class ExpressionFormatter;
 class ParametersInterface;
 class ParameterValidator;
+class FieldInterface;
+class FieldValidator;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data through python.
@@ -117,7 +119,25 @@ public:
      */
     ParametersInterface* getComponentParameterInterface() const;
 
+    /*!
+     *  Get the interfaces for accessing the address block fields.
+     *
+     *      @return Interface for accessing the address block fields.
+     */
+    std::vector<FieldInterface*> getFieldInterfaces() const;
+
 private:
+
+    /*!
+     *  Setup the field interfaces.
+     *
+     *      @param [in] component   Component containing the field interfaces.
+     */
+    void setupFieldInterfaces(QSharedPointer<Component> component);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! Interface to the library.
     LibraryInterface* library_;
@@ -134,6 +154,9 @@ private:
     //! Interface for accessing the component parameters.
     ParametersInterface* componentParameterInterface_;
 
+    //! List of the field interfaces.
+    std::vector<FieldInterface*> fieldInterfaces_;
+
     //! Component parameter finder.
     QSharedPointer<ComponentParameterFinder> parameterFinder_;
 
@@ -148,4 +171,7 @@ private:
 
     //! Validator for parameters.
     QSharedPointer<ParameterValidator> parameterValidator_;
+
+    //! Validator for fields.
+    QSharedPointer<FieldValidator> fieldValidator_;
 };
