@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 
+using namespace std;
+
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsModel::TransactionalPortsModel()
 //-----------------------------------------------------------------------------

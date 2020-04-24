@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 
+using namespace std;
+
 //-----------------------------------------------------------------------------
 // Function: WirePortsModel::WirePortsModel()
 //-----------------------------------------------------------------------------

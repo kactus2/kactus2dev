@@ -20,8 +20,7 @@
 #include <QSharedPointer>
 #include <QList>
 
-class FieldReset;
-class FieldValidator;
+class ResetInterface;
 
 //-----------------------------------------------------------------------------
 //! The model to manage the resets of a field.
@@ -35,17 +34,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] resets                  The resets of the selected field.
-     *      @param [in] expressionParser        Pointer to the expression parser.
-     *      @param [in] parameterFinder         Pointer to the parameter finder.
-     *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] fieldValidator          Validator used for fields.
-     *      @param [in] parent                  Pointer to the owner of the model.
+     *      @param [in] resetInterface      Interface for resets.
+     *      @param [in] expressionParser    Pointer to the expression parser.
+     *      @param [in] parameterFinder     Pointer to the parameter finder.
+     *      @param [in] parent              Pointer to the owner of the model.
      */
-    ResetsModel(QSharedPointer<QList<QSharedPointer<FieldReset> > > resets,
-        QSharedPointer <ExpressionParser> expressionParser, QSharedPointer <ParameterFinder> parameterFinder,
-        QSharedPointer <ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
-        QObject *parent);
+    ResetsModel(ResetInterface* resetInterface, QSharedPointer <ExpressionParser> expressionParser,
+        QSharedPointer <ParameterFinder> parameterFinder, QObject *parent);
 
     /*!
      *  The destructor.
@@ -178,6 +173,24 @@ private:
     //! No copying. No assignment.
     ResetsModel(const ResetsModel& other);
     ResetsModel& operator=(const ResetsModel& other);
+    
+    /*!
+     *  Get the formatted value of an expression in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The formatted value of an expression in the selected index.
+     */
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the expression of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The expression of the selected index.
+     */
+    virtual QVariant expressionForIndex(QModelIndex const& index) const;
 
     /*!
      *  Gets the value for the given index.
@@ -192,14 +205,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The resets being edited.
-    QSharedPointer<QList<QSharedPointer<FieldReset> > > resets_;
-
-    //! Expression formatter, formats the referencing expression to show parameter names.
-    QSharedPointer <ExpressionFormatter> expressionFormatter_;
-
-    //! The validator used for fields.
-    QSharedPointer<FieldValidator> fieldValidator_;
+    //! Interface for resets.
+    ResetInterface* resetInterface_;
 };
 
 #endif // RESETSMODEL_H

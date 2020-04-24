@@ -49,12 +49,12 @@
 //-----------------------------------------------------------------------------
 SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
     LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-    QSharedPointer<FieldValidator> fieldValidator, QWidget* parent):
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
+    ResetInterface* resetInterface, QWidget* parent):
 ItemEditor(component, handler, parent),
 nameEditor_(field, this, tr("Field name and description")),
-resetsEditor_(new ResetsEditor(field->getResets(), component->getResetTypes(), fieldValidator, expressionParser,
-    parameterFinder, formatter, this)),
+resetsEditor_(new ResetsEditor(resetInterface, component->getResetTypes(), expressionParser, parameterFinder,
+    this)),
 enumerationsEditor_(new FieldEditor(field->getEnumeratedValues(), fieldValidator->getEnumeratedValueValidator(),
                     component, handler, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),

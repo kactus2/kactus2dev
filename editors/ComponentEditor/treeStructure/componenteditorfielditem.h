@@ -24,6 +24,9 @@ class Field;
 class Register;
 class Component;
 class FieldValidator;
+class FieldInterface;
+class ResetInterface;
+
 //-----------------------------------------------------------------------------
 //! The item for single field in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -46,13 +49,15 @@ public:
      *      @param [in] expressionParser    Expression parser to use.
      *      @param [in] formatter           The expression formatter.
      *      @param [in] fieldValidator      Validator used for fields.
+     *      @param [in] fieldInterface      Interface for fields.
      *      @param [in] parent              The parent item.
 	 */
 	ComponentEditorFieldItem(QSharedPointer<Register> reg, QSharedPointer<Field> field,
         ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-        QSharedPointer<FieldValidator> fieldValidator, ComponentEditorItem* parent);
+        QSharedPointer<FieldValidator> fieldValidator, FieldInterface* fieldInterface,
+        ComponentEditorItem* parent);
 
 	/*!
      *  The destructor.
@@ -157,6 +162,12 @@ private:
 
     //! The used field validator.
     QSharedPointer<FieldValidator> fieldValidator_;
+
+    //! Interface for fields.
+    FieldInterface* fieldInterface_;
+
+    //! Interface for resets.
+    ResetInterface* resetInterface_;
 };
 
 #endif // COMPONENTEDITORFIELDITEM_H

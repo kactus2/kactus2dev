@@ -46,8 +46,7 @@ public:
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
 	 *      @param [in] parent              Pointer to the owner of the model.
 	 */
-    RegisterTableModel(QSharedPointer<FieldInterface> fieldInterface,
-        QSharedPointer <ExpressionParser> expressionParser,
+    RegisterTableModel(FieldInterface* fieldInterface, QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder, QObject *parent);
 
 	/*!
@@ -242,7 +241,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Interface for fields.
-    QSharedPointer<FieldInterface> fieldInterface_;
+    FieldInterface* fieldInterface_;
 };
 
 #endif // REGISTERTABLEMODEL_H

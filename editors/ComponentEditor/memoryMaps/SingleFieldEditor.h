@@ -28,11 +28,11 @@ class ReadActionComboBox;
 class TestConstraintComboBox;
 class ParameterFinder;
 class ExpressionParser;
-class ExpressionFormatter;
 
 class Field;
 class Component;
 class FieldValidator;
+class ResetInterface;
 
 #include <QComboBox>
 
@@ -53,14 +53,14 @@ public:
 	 *      @param [in] handler             The instance managing the library.
      *      @param [in] parameterFinder     The instance for finding parameter references.
      *      @param [in] expressionParser    The expression parser to use.
-     *      @param [in] formatter           Expression formatter.
      *      @param [in] fieldValidator      The used field validator.
+     *      @param [in] resetInterface      Interface for resets.
 	 *      @param [in] parent              The parent of this editor.
 	 */
-	SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
+    SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
         LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-        QSharedPointer<FieldValidator> fieldValidator, QWidget* parent = 0);
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
+        ResetInterface* resetInterface, QWidget* parent = 0);
 
     /*!
      *  The destructor.

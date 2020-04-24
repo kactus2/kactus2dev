@@ -12,7 +12,8 @@
 #ifndef PARAMETERSINTERFACE_H
 #define PARAMETERSINTERFACE_H
 
-#include <editors/ComponentEditor/common/ParameterizableInterface.h>
+#include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
+#include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
 class Choice;
 class Component;
@@ -23,7 +24,7 @@ class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Interface for editing parameters.
 //-----------------------------------------------------------------------------
-class ParametersInterface: public ParameterizableInterface
+class ParametersInterface: public ParameterizableInterface, public NameGroupInterface
 {
 public:
 
@@ -72,7 +73,7 @@ public:
      *
      *      @return Index of the selected item.
      */
-    virtual int getItemIndex(string const& itemName) const override final;
+    virtual int getItemIndex(std::string const& itemName) const override final;
     
     /*!
      *  Get name of the indexed item.
@@ -81,7 +82,7 @@ public:
      *
      *      @return Name of the selected item.
      */
-    virtual string getIndexedItemName(int const& itemIndex) const override final;
+    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
     
     /*!
      *  Get the number of available items.
@@ -95,7 +96,7 @@ public:
      *
      *      @return Names of the available items.
      */
-    virtual vector<string> getItemNames() const override final;
+    virtual std::vector<std::string> getItemNames() const override final;
     
     /*!
      *  Set a new name for the selected item.
@@ -105,7 +106,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    virtual bool setName(string const& currentName, string const& newName) override final;
+    virtual bool setName(std::string const& currentName, std::string const& newName) override final;
     
     /*!
      *  Get the description of the selected item.
@@ -114,7 +115,7 @@ public:
      *
      *      @return Description of the selected item.
      */
-    virtual string getDescription(string const& itemName) const override final;
+    virtual std::string getDescription(std::string const& itemName) const override final;
     
     /*!
      *  Set a new description for the selected item.
@@ -124,7 +125,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    virtual bool setDescription(string const& itemName, string const& newDescription) override final;
+    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
     
     /*!
      *  Calculate all the references to the selected ID in the selected item.
@@ -134,7 +135,7 @@ public:
      *
      *      @return Number of references to the selected ID in the selected item.
      */
-    virtual int getAllReferencesToIdInItem(const string& itemName, string const&  valueID) const override final;
+    virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const override final;
     
     /*!
      *  Validates the contained items.
@@ -150,7 +151,7 @@ public:
      *
      *      @return True, if the name is valid, false otherwise.
      */
-    virtual bool itemHasValidName(string const& itemName) const override final;
+    virtual bool itemHasValidName(std::string const& itemName) const override final;
     
     /*!
      *  Get the display name of the selected parameter.
@@ -159,7 +160,7 @@ public:
      *
      *      @return Name of the selected parameter.
      */
-    string getDisplayName(string const& parameterName) const;
+    std::string getDisplayName(std::string const& parameterName) const;
 
     /*!
      *  Set the display name of the selected parameter.
@@ -169,7 +170,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setDisplayName(string const& parameterName, string const& newDisplayName);
+    bool setDisplayName(std::string const& parameterName, std::string const& newDisplayName);
 
     /*!
      *  Get the type of the selected parameter.
@@ -178,7 +179,7 @@ public:
      *
      *      @return Type of the selected parameter.
      */
-    string getType(string const& parameterName) const;
+    std::string getType(std::string const& parameterName) const;
 
     /*!
      *  Set the type of the selected parameter.
@@ -188,7 +189,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setType(string const& parameterName, string const& newType);
+    bool setType(std::string const& parameterName, std::string const& newType);
 
     /*!
      *  Get the calculated bit width left value of the selected parameter.
@@ -198,7 +199,7 @@ public:
      *
      *      @return Calculated bit width left value of the selected parameter.
      */
-    string getBitWidthLeftValue(string const& parameterName, int const& baseNumber = 0) const;
+    std::string getBitWidthLeftValue(std::string const& parameterName, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted bit width left expression of the selected parameter.
@@ -207,7 +208,7 @@ public:
      *
      *      @return Formatted bit width left expression of the selected parameter.
      */
-    string getBitWidthLeftFormattedExpression(string const& parameterName) const;
+    std::string getBitWidthLeftFormattedExpression(std::string const& parameterName) const;
 
     /*!
      *  Get the bit width left expression of the selected parameter.
@@ -216,7 +217,7 @@ public:
      *
      *      @return Bit width left expression of the selected parameter.
      */
-    string getBitWidthLeftExpression(string const& parameterName) const;
+    std::string getBitWidthLeftExpression(std::string const& parameterName) const;
 
     /*!
      *  Set a new bit width left value for the selected parameter.
@@ -226,7 +227,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setBitWidthLeft(string const& parameterName, string const& newBitWidthLeft);
+    bool setBitWidthLeft(std::string const& parameterName, std::string const& newBitWidthLeft);
 
     /*!
      *  Get the calculated bit width right value of the selected parameter.
@@ -236,7 +237,7 @@ public:
      *
      *      @return Calculated bit width right value of the selected port.
      */
-    string getBitWidthRightValue(string const& parameterName, int const& baseNumber = 0) const;
+    std::string getBitWidthRightValue(std::string const& parameterName, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted bit width right expression of the selected parameter.
@@ -245,7 +246,7 @@ public:
      *
      *      @return Formatted bit width right expression of the selected parameter.
      */
-    string getBitWidthRightFormattedExpression(string const& parameterName) const;
+    std::string getBitWidthRightFormattedExpression(std::string const& parameterName) const;
 
     /*!
      *  Get the bit width right expression of the selected parameter.
@@ -254,7 +255,7 @@ public:
      *
      *      @return Bit width right expression of the selected parameter.
      */
-    string getBitWidthRightExpression(string const& parameterName) const;
+    std::string getBitWidthRightExpression(std::string const& parameterName) const;
 
     /*!
      *  Set a new bit width right value for the selected parameter.
@@ -264,7 +265,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setBitWidthRight(string const& parameterName, string const& newBitWidthRight);
+    bool setBitWidthRight(std::string const& parameterName, std::string const& newBitWidthRight);
 
     /*!
      *  Get the minimum value the selected parameter.
@@ -273,7 +274,7 @@ public:
      *
      *      @return Minimum value of the selected parameter.
      */
-    string getMinimum(string const& parameterName) const;
+    std::string getMinimum(std::string const& parameterName) const;
 
     /*!
      *  Set the minimum value for the selected parameter.
@@ -283,7 +284,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setMinimum(string const& parameterName, string const& newMinimum);
+    bool setMinimum(std::string const& parameterName, std::string const& newMinimum);
 
     /*!
      *  Get the maximum value the selected parameter.
@@ -292,7 +293,7 @@ public:
      *
      *      @return Maximum value of the selected parameter.
      */
-    string getMaximum(string const& parameterName) const;
+    std::string getMaximum(std::string const& parameterName) const;
 
     /*!
      *  Set the maximum value for the selected parameter.
@@ -302,7 +303,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setMaximum(string const& parameterName, string const& newMaximum);
+    bool setMaximum(std::string const& parameterName, std::string const& newMaximum);
 
     /*!
      *  Get the choice reference of the selected parameter.
@@ -311,7 +312,7 @@ public:
      *
      *      @return Choice reference of the selected parameter.
      */
-    string getChoice(string const& parameterName) const;
+    std::string getChoice(std::string const& parameterName) const;
 
     /*!
      *  Set the choice reference for the selected parameter.
@@ -321,7 +322,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setChoice(string const& parameterName, string const& newChoice);
+    bool setChoice(std::string const& parameterName, std::string const& newChoice);
 
     /*!
      *  Get the calculated value of the selected parameter.
@@ -331,7 +332,7 @@ public:
      *
      *      @return Calculated value of the selected port.
      */
-    string getValue(string const& parameterName, int const& baseNumber = 0) const;
+    std::string getValue(std::string const& parameterName, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted value expression of the selected parameter.
@@ -340,7 +341,7 @@ public:
      *
      *      @return Formatted value expression of the selected parameter.
      */
-    string getValueFormattedExpression(string const& parameterName) const;
+    std::string getValueFormattedExpression(std::string const& parameterName) const;
 
     /*!
      *  Get the value expression of the selected parameter.
@@ -349,7 +350,7 @@ public:
      *
      *      @return Value expression of the selected parameter.
      */
-    string getValueExpression(string const& parameterName) const;
+    std::string getValueExpression(std::string const& parameterName) const;
 
     /*!
      *  Set a new value for the selected parameter.
@@ -359,7 +360,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setValue(string const& parameterName, string const& newValue);
+    bool setValue(std::string const& parameterName, std::string const& newValue);
 
     /*!
      *  Get the resolve of the selected parameter.
@@ -368,7 +369,7 @@ public:
      *
      *      @return Resolve of the selected parameter.
      */
-    string getResolve(string const& parameterName) const;
+    std::string getResolve(std::string const& parameterName) const;
 
     /*!
      *  Set a resolve for the selected parameter.
@@ -378,7 +379,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setResolve(string const& parameterName, string const& newResolve);
+    bool setResolve(std::string const& parameterName, std::string const& newResolve);
 
     /*!
      *  Get the calculated array left value of the selected parameter.
@@ -388,7 +389,7 @@ public:
      *
      *      @return Calculated array left value of the selected port.
      */
-    string getArrayLeftValue(string const& parameterName, int const& baseNumber = 0) const;
+    std::string getArrayLeftValue(std::string const& parameterName, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted array left expression of the selected parameter.
@@ -397,7 +398,7 @@ public:
      *
      *      @return Formatted array left expression of the selected parameter.
      */
-    string getArrayLeftFormattedExpression(string const& parameterName) const;
+    std::string getArrayLeftFormattedExpression(std::string const& parameterName) const;
 
     /*!
      *  Get the array left expression of the selected parameter.
@@ -406,7 +407,7 @@ public:
      *
      *      @return Array left expression of the selected parameter.
      */
-    string getArrayLeftExpression(string const& parameterName) const;
+    std::string getArrayLeftExpression(std::string const& parameterName) const;
 
     /*!
      *  Set a new array left value for the selected parameter.
@@ -416,7 +417,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setArrayLeft(string const& parameterName, string const& newArrayLeft);
+    bool setArrayLeft(std::string const& parameterName, std::string const& newArrayLeft);
 
     /*!
      *  Get the calculated array right value of the selected parameter.
@@ -426,7 +427,7 @@ public:
      *
      *      @return Calculated array right value of the selected port.
      */
-    string getArrayRightValue(string const& parameterName, int const& baseNumber = 0) const;
+    std::string getArrayRightValue(std::string const& parameterName, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted array right expression of the selected parameter.
@@ -435,7 +436,7 @@ public:
      *
      *      @return Formatted array right expression of the selected parameter.
      */
-    string getArrayRightFormattedExpression(string const& parameterName) const;
+    std::string getArrayRightFormattedExpression(std::string const& parameterName) const;
 
     /*!
      *  Get the array right expression of the selected parameter.
@@ -444,7 +445,7 @@ public:
      *
      *      @return Array right expression of the selected parameter.
      */
-    string getArrayRightExpression(string const& parameterName) const;
+    std::string getArrayRightExpression(std::string const& parameterName) const;
 
     /*!
      *  Set a new array right value for the selected parameter.
@@ -454,7 +455,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setArrayRight(string const& parameterName, string const& newArrayRight);
+    bool setArrayRight(std::string const& parameterName, std::string const& newArrayRight);
 
     /*!
      *  Get the ID of the selected parameter.
@@ -463,7 +464,7 @@ public:
      *
      *      @return ID of the selected parameter.
      */
-    string getID(string const& parameterName) const;
+    std::string getID(std::string const& parameterName) const;
 
     /*!
      *  Set a new ID for the selected parameter.
@@ -473,7 +474,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setID(string const& parameterName, string const& newID);
+    bool setID(std::string const& parameterName, std::string const& newID);
 
     /*!
      *  Get the usage count of the selected parameter.
@@ -482,7 +483,7 @@ public:
      *
      *      @return Usage count of the selected parameter.
      */
-    int getUsageCount(string const& parameterName) const;
+    int getUsageCount(std::string const& parameterName) const;
 
     /*!
      *  Set a new usage count for the selected parameter.
@@ -492,7 +493,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setUsageCount(string const& parameterName, int const& newUsageCount);
+    bool setUsageCount(std::string const& parameterName, int const& newUsageCount);
 
     /*!
      *  Get the data type of the selected module parameter.
@@ -501,7 +502,7 @@ public:
      *
      *      @return Data type of the selected module parameter.
      */
-    string getDataType(string const& parameterName) const;
+    std::string getDataType(std::string const& parameterName) const;
 
     /*!
      *  Set a new data type for the selected module parameter.
@@ -511,7 +512,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setDataType(string const& parameterName, string const& newDataType);
+    bool setDataType(std::string const& parameterName, std::string const& newDataType);
 
     /*!
      *  Get the usage type of the selected module parameter.
@@ -520,7 +521,7 @@ public:
      *
      *      @return Usage type of the selected module parameter.
      */
-    string getUsageType(string const& parameterName) const;
+    std::string getUsageType(std::string const& parameterName) const;
 
     /*!
      *  Set a new usage type for the selected module parameter.
@@ -530,7 +531,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setUsageType(string const& parameterName, string const& newUsageType);
+    bool setUsageType(std::string const& parameterName, std::string const& newUsageType);
 
     /*!
      *  Increase the usage count of the selected parameter.
@@ -539,7 +540,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool increaseUsageCount(string const& parameterName);
+    bool increaseUsageCount(std::string const& parameterName);
 
     /*!
      *  Decrease the usage count of the selected parameter.
@@ -548,7 +549,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool reduceUsageCount(string const& parameterName);
+    bool reduceUsageCount(std::string const& parameterName);
 
     /*!
      *  Add a new parameter.
@@ -556,7 +557,7 @@ public:
      *      @param [in] row                 Index of the new parameter.
      *      @param [in] newParameterName    New of the new parameter.
      */
-    void addParameter(int const& row, string const& newParameterName = string(""));
+    void addParameter(int const& row, std::string const& newParameterName = std::string(""));
 
     /*!
      *  Add a new module parameter.
@@ -564,7 +565,7 @@ public:
      *      @param [in] row                 Index of the new parameter.
      *      @param [in] newParameterName    New of the new parameter.
      */
-    void addModuleParameter(int const& row, string const& newParameterName = string(""));
+    void addModuleParameter(int const& row, std::string const& newParameterName = std::string(""));
 
     /*!
      *  Remove the selected parameter.
@@ -573,7 +574,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool removeParameter(string const& parameterName);
+    bool removeParameter(std::string const& parameterName);
 
     /*!
      *  Remove the selected module parameter.
@@ -582,7 +583,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool removeModuleParameter(string const& parameterName);
+    bool removeModuleParameter(std::string const& parameterName);
 
     /*!
      *  Check if the selected parameter has a valid type.
@@ -591,7 +592,7 @@ public:
      *
      *      @return True, if the type is valid, false otherwise.
      */
-    bool hasValidType(string const& parameterName) const;
+    bool hasValidType(std::string const& parameterName) const;
 
     /*!
      *  Check if the selected parameter has a valid bit width.
@@ -600,7 +601,7 @@ public:
      *
      *      @return True, if the bit width is valid, false otherwise.
      */
-    bool hasValidBitWidth(string const& parameterName) const;
+    bool hasValidBitWidth(std::string const& parameterName) const;
 
     /*!
      *  Check if the selected parameter has a valid minimum.
@@ -609,7 +610,7 @@ public:
      *
      *      @return True, if the minimum is valid, false otherwise.
      */
-    bool hasValidMinimum(string const& parameterName) const;
+    bool hasValidMinimum(std::string const& parameterName) const;
 
     /*!
      *  Check if the selected parameter has a valid maximum.
@@ -618,7 +619,7 @@ public:
      *
      *      @return True, if the maximum is valid, false otherwise.
      */
-    bool hasValidMaximum(string const& parameterName) const;
+    bool hasValidMaximum(std::string const& parameterName) const;
 
     /*!
      *  Check if the selected parameter has a valid choice.
@@ -627,7 +628,7 @@ public:
      *
      *      @return True, if the choice is valid, false otherwise.
      */
-    bool hasValidChoice(string const& parameterName) const;
+    bool hasValidChoice(std::string const& parameterName) const;
 
     /*!
      *  Check if the selected parameter has a valid value.
@@ -636,7 +637,7 @@ public:
      *
      *      @return True, if the value is valid, false otherwise.
      */
-    bool hasValidValue(string const& parameterName) const;
+    bool hasValidValue(std::string const& parameterName) const;
 
     /*!
      *  Check if the selected parameter has a valid resolve.
@@ -645,7 +646,7 @@ public:
      *
      *      @return True, if the resolve is valid, false otherwise.
      */
-    bool hasValidResolve(string const& parameterName) const;
+    bool hasValidResolve(std::string const& parameterName) const;
 
     /*!
      *  Check if the selected parameter has valid array values.
@@ -654,7 +655,7 @@ public:
      *
      *      @return True, if the array values are valid, false otherwise.
      */
-    bool hasValidArrayValues(string const& parameterName) const;
+    bool hasValidArrayValues(std::string const& parameterName) const;
 
     //! No copying. No assignment.
     ParametersInterface(const ParametersInterface& other) = delete;
@@ -669,7 +670,7 @@ private:
      *
      *      @return The selected parameter.
      */
-    QSharedPointer<Parameter> getParameter(string const& parameterName) const;
+    QSharedPointer<Parameter> getParameter(std::string const& parameterName) const;
 
     /*!
      *  Get the selected module parameter.
@@ -678,7 +679,7 @@ private:
      *
      *      @return The selected module parameter.
      */
-    QSharedPointer<ModuleParameter> getModuleParameter(string const& parameterName) const;
+    QSharedPointer<ModuleParameter> getModuleParameter(std::string const& parameterName) const;
 
     /*!
      *  Evaluate the value of the selected parameter.

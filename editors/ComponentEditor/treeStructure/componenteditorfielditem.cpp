@@ -11,13 +11,15 @@
 
 #include "componenteditorfielditem.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <editors/ComponentEditor/memoryMaps/SingleFieldEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-    
-#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -31,15 +33,25 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-    QSharedPointer<FieldValidator> fieldValidator, ComponentEditorItem* parent):
+    QSharedPointer<FieldValidator> fieldValidator, FieldInterface* fieldInterface,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
 visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
-fieldValidator_(fieldValidator)
+fieldValidator_(fieldValidator),
+fieldInterface_(fieldInterface),
+resetInterface_(new ResetInterface())
 {
+    fieldInterface_->addResetInterface(resetInterface_);
+
+    resetInterface_->setResets(field_);
+    resetInterface_->setValidator(fieldValidator);
+    resetInterface_->setExpressionParser(expressionParser);
+    resetInterface_->setExpressionFormatter(formatter);
+
 	Q_ASSERT(field_);
 
     setParameterFinder(parameterFinder);
@@ -54,7 +66,7 @@ fieldValidator_(fieldValidator)
 //-----------------------------------------------------------------------------
 ComponentEditorFieldItem::~ComponentEditorFieldItem()
 {
-
+    fieldInterface_->removeResetInterface(resetInterface_);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,8 +101,8 @@ ItemEditor* ComponentEditorFieldItem::editor()
 	if (!editor_)
     {
         editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_, expressionParser_,
-            expressionFormatter_, fieldValidator_);
-		editor_->setProtection(locked_);
+            fieldValidator_, resetInterface_);
+        editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);

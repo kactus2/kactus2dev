@@ -16,6 +16,8 @@
 
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
+using namespace std;
+
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()
 //-----------------------------------------------------------------------------

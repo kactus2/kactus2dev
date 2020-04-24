@@ -27,6 +27,8 @@ class FieldReset;
 class FieldValidator;
 class ResetType;
 
+class ResetInterface;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the resets of a field.
 //-----------------------------------------------------------------------------
@@ -39,18 +41,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] resets                  List of resets being edited.
-     *      @param [in] resetTypes              List of reset types within the containing component.
-     *      @param [in] fieldValidator          Validator for register fields.
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] parameterFinder         Component parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions containing references.
-	 *      @param [in] parent                  Pointer to the parent of this editor.
+     *      @param [in] resetInterface      Interface for resets.
+     *      @param [in] resetTypes          List of reset types within the containing component.
+     *      @param [in] expressionParser    The expression parser.
+     *      @param [in] parameterFinder     Component parameter finder.
+	 *      @param [in] parent              Pointer to the parent of this editor.
 	 */
-	ResetsEditor(QSharedPointer<QList<QSharedPointer<FieldReset> > > resets,
-        QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes,
-        QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ResetsEditor(ResetInterface* resetInterface, QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
         QWidget* parent = 0);
 
 	/*!

@@ -18,6 +18,8 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
+using namespace std;
+
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::PortsInterface()
 //-----------------------------------------------------------------------------

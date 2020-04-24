@@ -17,6 +17,8 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
+using namespace std;
+
 namespace
 {
     QString const ARRAY_LEFT_ATTRIBTE = QLatin1String("kactus2:arrayLeft");

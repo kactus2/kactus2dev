@@ -16,7 +16,7 @@
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
-#include <editors/ComponentEditor/memoryMaps/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 
 #include <common/KactusColors.h>
 
@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::RegisterTableModel()
 //-----------------------------------------------------------------------------
-RegisterTableModel::RegisterTableModel(QSharedPointer<FieldInterface> fieldInterface,
+RegisterTableModel::RegisterTableModel(FieldInterface* fieldInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
@@ -41,7 +41,7 @@ fieldInterface_(fieldInterface)
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::rowCount()
 //-----------------------------------------------------------------------------
-int RegisterTableModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
+int RegisterTableModel::rowCount( const QModelIndex& /*parent = QModelIndex()*/ ) const 
 {
     return fieldInterface_->itemCount();
 }

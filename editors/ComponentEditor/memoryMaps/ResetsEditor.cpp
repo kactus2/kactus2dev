@@ -23,14 +23,13 @@
 //-----------------------------------------------------------------------------
 // Function: ResetsEditor::ResetsEditor()
 //-----------------------------------------------------------------------------
-ResetsEditor::ResetsEditor(QSharedPointer<QList<QSharedPointer<FieldReset>>> resets,
-    QSharedPointer<QList<QSharedPointer<ResetType>>> resetTypes, QSharedPointer<FieldValidator> fieldValidator,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent):
+ResetsEditor::ResetsEditor(ResetInterface* resetInterface,
+    QSharedPointer<QList<QSharedPointer<ResetType>>> resetTypes, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
 QGroupBox(tr("Resets"), parent),
 resetsView_(new EditableTableView(this)),
 resetsProxy_(new QSortFilterProxyModel(this)),
-resetsModel_(new ResetsModel(resets, expressionParser, parameterFinder, expressionFormatter, fieldValidator, this))
+resetsModel_(new ResetsModel(resetInterface, expressionParser, parameterFinder, this))
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(resetsView_, 0);

@@ -29,6 +29,8 @@ class Component;
 class Register;
 class Field;
 class RegisterValidator;
+class FieldInterface;
+
 //-----------------------------------------------------------------------------
 //! The item for single register in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -156,6 +158,9 @@ private:
 
     //! The used register validator.
     QSharedPointer<RegisterValidator> registerValidator_;
+
+    //! Interface for fields.
+    FieldInterface* fieldInterface_;
 };
 
 #endif // COMPONENTEDITORREGISTERITEM_H

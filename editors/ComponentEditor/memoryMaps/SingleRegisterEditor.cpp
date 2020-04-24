@@ -36,22 +36,19 @@
 //-----------------------------------------------------------------------------
 SingleRegisterEditor::SingleRegisterEditor(QSharedPointer<Register> selectedRegister,
     QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<RegisterValidator> registerValidator,
-    QWidget* parent /* = 0 */):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    FieldInterface* fieldInterface, QWidget* parent):
 ItemEditor(component, handler, parent),
 selectedRegister_(selectedRegister),
 nameEditor_(selectedRegister, this, tr("Register name and description")),
-fieldsEditor_(new RegisterEditor(selectedRegister, component, handler, parameterFinder, expressionFormatter,
-              registerValidator->getFieldValidator(), this)),
+fieldsEditor_(new RegisterEditor(selectedRegister, component, handler, parameterFinder, fieldInterface, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 sizeEditor_(new ExpressionEditor(parameterFinder, this)),
 dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 volatileEditor_(),
 accessEditor_(),
-expressionParser_(expressionParser),
-registerValidator_(registerValidator)
+expressionParser_(expressionParser)
 {
     offsetEditor_->setFixedHeight(20);
     sizeEditor_->setFixedHeight(20);

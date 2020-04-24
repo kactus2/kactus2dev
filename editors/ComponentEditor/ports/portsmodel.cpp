@@ -21,6 +21,8 @@
 #include <QStringList>
 #include <QRegularExpression>
 
+using namespace std;
+
 //-----------------------------------------------------------------------------
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------

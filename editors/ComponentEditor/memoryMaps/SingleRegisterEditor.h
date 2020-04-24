@@ -24,13 +24,14 @@
 
 class LibraryInterface;
 class ParameterFinder;
-class ExpressionFormatter;
 class AccessComboBox;
 class BooleanComboBox;
 class ExpressionEditor;
 class ExpressionParser;
 class Register;
 class RegisterValidator;
+class FieldInterface;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
@@ -43,23 +44,17 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] singleRegister          The register being edited.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance that manages the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] registerValidator       Validator used for registers.
-	 *      @param [in] parent                  The parent of this editor.
+	 *      @param [in] singleRegister      The register being edited.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] handler             The instance that manages the library.
+	 *      @param [in] parameterFinder     The parameter finder.
+     *      @param [in] expressionParser    The expression parser to use.
+     *      @param [in] fieldInterface      Interface for fields.
+	 *      @param [in] parent              The parent of this editor.
 	 */
-    SingleRegisterEditor(QSharedPointer<Register> selectedRegister,
-        QSharedPointer<Component> component,
-        LibraryInterface* handler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<RegisterValidator> registerValidator,
-        QWidget* parent = 0);
+    SingleRegisterEditor(QSharedPointer<Register> selectedRegister, QSharedPointer<Component> component,
+        LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, FieldInterface* fieldInterface, QWidget* parent = 0);
 
     /*!
      *  The destructor.

@@ -23,7 +23,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/memoryMaps/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -32,27 +32,19 @@
 // Function: registereditor::RegisterEditor()
 //-----------------------------------------------------------------------------
 RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Component> component,
-    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
-    QWidget* parent /* = 0 */):
+    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface,
+    QWidget* parent):
 QGroupBox(tr("Fields summary"), parent),
 view_(new EditableTableView(this)),
-model_(0),
-fieldInterface_(new FieldInterface())
+model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-
-    fieldInterface_->setFields(reg->getFields());
-    fieldInterface_->setValidator(fieldValidator);
-    fieldInterface_->setExpressionParser(expressionParser);
-    fieldInterface_->setExpressionFormatter(expressionFormatter);
-
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
     view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
     view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-    model_ = new RegisterTableModel(fieldInterface_, expressionParser, parameterFinder, this);
+    model_ = new RegisterTableModel(fieldInterface, expressionParser, parameterFinder, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);

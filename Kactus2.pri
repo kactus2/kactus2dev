@@ -498,6 +498,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
+    ./editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h \
     ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
@@ -510,7 +511,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/MultipleParameterFinder.h \
     ./editors/ComponentEditor/common/NullParser.h \
     ./editors/ComponentEditor/common/ParameterFinder.h \
-    ./editors/ComponentEditor/common/ParameterizableInterface.h \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
@@ -524,6 +524,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/ParameterizableTable.h \
     ./editors/ComponentEditor/common/ReferencingTableModel.h \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
+    ./editors/ComponentEditor/common/interfaces/CommonInterface.h \
+    ./editors/ComponentEditor/common/interfaces/NameGroupInterface.h \
+    ./editors/ComponentEditor/common/interfaces/ParameterizableInterface.h \
     ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
     ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h \
@@ -614,6 +617,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
     ./editors/ComponentEditor/resetTypes/ResetTypeColumns.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesModel.h \
@@ -848,9 +853,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h \
-    ./editors/ComponentEditor/memoryMaps/FieldInterface.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1256,6 +1259,8 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
@@ -1316,6 +1321,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
+    ./editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp \
     ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.cpp \
@@ -1332,11 +1338,13 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/common/NullParser.cpp \
     ./editors/ComponentEditor/common/ParameterCache.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
-    ./editors/ComponentEditor/common/ParameterizableInterface.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
+    ./editors/ComponentEditor/common/interfaces/CommonInterface.cpp \
+    ./editors/ComponentEditor/common/interfaces/NameGroupInterface.cpp \
+    ./editors/ComponentEditor/common/interfaces/ParameterizableInterface.cpp \
     ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.cpp \
@@ -1587,7 +1595,5 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp \
-    ./editors/ComponentEditor/memoryMaps/FieldInterface.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
 RESOURCES += kactus.qrc

@@ -959,6 +959,18 @@
     <Filter Include="Source Files\mainwindow\PythonConsole">
       <UniqueIdentifier>{568a4c91-5702-4d4e-ba13-4caf59b977bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\memoryMaps\interfaces">
+      <UniqueIdentifier>{c34883a7-39da-429d-a472-68966f4183c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\interfaces">
+      <UniqueIdentifier>{214bede0-fbd8-4fa3-8988-455278b915e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\common\interfaces">
+      <UniqueIdentifier>{5693bb11-e718-4073-b034-7be67388395d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\common\interfaces">
+      <UniqueIdentifier>{8907f090-54b3-49ac-bd20-cdd212c82ac2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4855,17 +4867,26 @@
     <ClCompile Include="editors\ComponentEditor\parameters\ParametersInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ParameterizableInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\interfaces\ParameterizableInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\interfaces\NameGroupInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\interfaces\CommonInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6666,6 +6687,9 @@
     <CustomBuild Include="editors\ComponentEditor\parameters\ParametersInterface.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7442,14 +7466,20 @@
     <ClInclude Include="common\widgets\tagEditor\TagManager.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ParameterizableInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\FieldInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\interfaces\ParameterizableInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\interfaces\CommonInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\interfaces\NameGroupInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

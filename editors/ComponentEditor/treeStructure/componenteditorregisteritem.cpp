@@ -13,6 +13,7 @@
 #include "componenteditorfielditem.h"
 
 #include <editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
@@ -40,8 +41,14 @@ reg_(reg),
 visualizer_(nullptr),
 registerItem_(nullptr),
 expressionParser_(expressionParser),
-registerValidator_(registerValidator)
+registerValidator_(registerValidator),
+fieldInterface_(new FieldInterface())
 {
+    fieldInterface_->setFields(reg->getFields());
+    fieldInterface_->setValidator(registerValidator->getFieldValidator());
+    fieldInterface_->setExpressionParser(expressionParser);
+    fieldInterface_->setExpressionFormatter(expressionFormatter);
+
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -52,10 +59,10 @@ registerValidator_(registerValidator)
     {
 		if (field)
         {
-			QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-				reg, field, model, libHandler, component, parameterFinder, referenceCounter, expressionParser_,
-                expressionFormatter, registerValidator_->getFieldValidator(), this));
-			childItems_.append(fieldItem);
+            QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
+                reg, field, model, libHandler, component, parameterFinder, referenceCounter, expressionParser_,
+                expressionFormatter, registerValidator_->getFieldValidator(), fieldInterface_, this));
+            childItems_.append(fieldItem);
 
             connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
 		}
@@ -93,9 +100,9 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleRegisterEditor(reg_, component_, libHandler_, parameterFinder_, expressionFormatter_,
-            expressionParser_, registerValidator_);
-		editor_->setProtection(locked_);
+        editor_ = new SingleRegisterEditor(
+            reg_, component_, libHandler_, parameterFinder_, expressionParser_, fieldInterface_);
+        editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -116,7 +123,7 @@ void ComponentEditorRegisterItem::createChild( int index )
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 		reg_, reg_->getFields()->at(index), model_, libHandler_, component_, parameterFinder_, 
         referenceCounter_, expressionParser_, expressionFormatter_, registerValidator_->getFieldValidator(),
-        this));
+        fieldInterface_, this));
 	fieldItem->setLocked(locked_);
 	
 	if (visualizer_)
