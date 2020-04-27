@@ -45,7 +45,7 @@ fieldValidator_(fieldValidator),
 fieldInterface_(fieldInterface),
 resetInterface_(new ResetInterface())
 {
-    fieldInterface_->addResetInterface(resetInterface_);
+    fieldInterface_->addResetInterface(field_->name().toStdString(), resetInterface_);
 
     resetInterface_->setResets(field_);
     resetInterface_->setValidator(fieldValidator);

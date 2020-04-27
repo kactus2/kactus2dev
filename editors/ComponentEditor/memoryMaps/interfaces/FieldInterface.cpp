@@ -140,8 +140,34 @@ bool FieldInterface::setName(string const& currentName, string const& newName)
 
     QString uniqueNewName = getUniqueName(newName, FIELD_TYPE);
 
+    changeKeyInSubInterfaces(QString::fromStdString(currentName), uniqueNewName);
+
     editedField->setName(uniqueNewName);
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::changeKeyInSubInterfaces()
+//-----------------------------------------------------------------------------
+void FieldInterface::changeKeyInSubInterfaces(QString const& currentName, QString const& newName)
+{
+    QMap<QString, ResetInterface*> newResets;
+
+    QMapIterator<QString, ResetInterface*> resetIterator(resetInterfaces_);
+    while (resetIterator.hasNext())
+    {
+        resetIterator.next();
+
+        QString interfaceKey = resetIterator.key();
+        if (interfaceKey == currentName)
+        {
+            interfaceKey = newName;
+        }
+
+        newResets.insert(interfaceKey, resetIterator.value());
+    }
+
+    resetInterfaces_.swap(newResets);
 }
 
 //-----------------------------------------------------------------------------
@@ -881,9 +907,9 @@ std::vector<std::string> FieldInterface::getExpressionsInSelectedFields(std::vec
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::addResetInterface()
 //-----------------------------------------------------------------------------
-void FieldInterface::addResetInterface(ResetInterface* newResetInterface)
+void FieldInterface::addResetInterface(std::string const& fieldName, ResetInterface* newResetInterface)
 {
-    resetInterfaces_.push_back(newResetInterface);
+    resetInterfaces_.insert(QString::fromStdString(fieldName), newResetInterface);
 }
 
 //-----------------------------------------------------------------------------
@@ -891,23 +917,14 @@ void FieldInterface::addResetInterface(ResetInterface* newResetInterface)
 //-----------------------------------------------------------------------------
 bool FieldInterface::removeResetInterface(ResetInterface* removedInterface)
 {
-    int index = -1;
-    for (int i = 0; i < resetInterfaces_.size(); ++i)
-    {
-        if (resetInterfaces_.at(i) == removedInterface)
-        {
-            index = i;
-            break;
-        }
-    }
-
-    if (index < 0)
+    QString interfaceKey = resetInterfaces_.key(removedInterface);
+    int numberRemoved = resetInterfaces_.remove(interfaceKey);
+    if (numberRemoved == 0)
     {
         return false;
     }
     else
     {
-        resetInterfaces_.erase(resetInterfaces_.begin() + index);
         return true;
     }
 }
@@ -917,5 +934,27 @@ bool FieldInterface::removeResetInterface(ResetInterface* removedInterface)
 //-----------------------------------------------------------------------------
 std::vector<ResetInterface*> FieldInterface::getResetInterfaces() const
 {
-    return resetInterfaces_;
+    std::vector<ResetInterface*> allResetInterfaces;
+
+    QMapIterator<QString, ResetInterface*> resetIterator(resetInterfaces_);
+    while (resetIterator.hasNext())
+    {
+        resetIterator.next();
+        allResetInterfaces.push_back(resetIterator.value());
+    }
+
+    return allResetInterfaces;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getResetInterface()
+//-----------------------------------------------------------------------------
+ResetInterface* FieldInterface::getResetInterface(std::string const& fieldName) const
+{
+    if (resetInterfaces_.contains(QString::fromStdString(fieldName)))
+    {
+        return resetInterfaces_.value(QString::fromStdString(fieldName));
+    }
+
+    return nullptr;
 }

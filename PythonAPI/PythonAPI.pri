@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./PythonAPI.h \
+HEADERS += ../editors/ComponentEditor/common/interfaces/ParameterizableInterface.h \
+    ./PythonAPI.h \
     ./pythonapi_global.h \
     ./messageMediator/PythonMessageMediator.h \
     ../library/DocumentFileAccess.h \
@@ -22,12 +23,14 @@ HEADERS += ./PythonAPI.h \
     ../library/LibraryTreeModel.h \
     ../library/HierarchyView/hierarchymodel.h \
     ../library/HierarchyView/hierarchyitem.h \
+    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h \
     ../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../editors/ComponentEditor/common/ListParameterFinder.h \
     ../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../editors/ComponentEditor/common/ParameterCache.h \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h \
     ../common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
     ../common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
     ../common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
@@ -55,12 +58,12 @@ HEADERS += ./PythonAPI.h \
     ../common/widgets/tagEditor/TagCompleterModel.h \
     ../common/validators/LibraryPathValidator/librarypathvalidator.h \
     ../VersionHelper.h \
-    ../editors/ComponentEditor/common/ParameterizableInterface.h \
-    ../editors/ComponentEditor/ports/PortsInterface.h \
+    ../editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h \
+    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
     ../editors/ComponentEditor/parameters/ParametersInterface.h \
-    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h \
-    ../editors/ComponentEditor/memoryMaps/FieldInterface.h \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h
+    ../editors/ComponentEditor/ports/PortsInterface.h \
+    ../editors/ComponentEditor/common/interfaces/CommonInterface.h \
+    ../editors/ComponentEditor/common/interfaces/NameGroupInterface.h
 SOURCES += ./PythonAPI.cpp \
     ./PythonAPI_wrap.cxx \
     ./messageMediator/PythonMessageMediator.cpp \
@@ -76,12 +79,14 @@ SOURCES += ./PythonAPI.cpp \
     ../library/TableViewDialog.cpp \
     ../library/HierarchyView/hierarchyitem.cpp \
     ../library/HierarchyView/hierarchymodel.cpp \
+    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp \
     ../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../editors/ComponentEditor/common/ParameterCache.cpp \
     ../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp \
     ../common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ../common/dialogs/newObjectDialog/newobjectdialog.cpp \
@@ -109,9 +114,10 @@ SOURCES += ./PythonAPI.cpp \
     ../common/widgets/vlnvEditor/vlnveditor.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ../VersionHelper.cpp \
-    ../editors/ComponentEditor/common/ParameterizableInterface.cpp \
-    ../editors/ComponentEditor/ports/PortsInterface.cpp \
+    ../editors/ComponentEditor/common/interfaces/ParameterizableInterface.cpp \
     ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
-    ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp \
-    ../editors/ComponentEditor/memoryMaps/FieldInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp
+    ../editors/ComponentEditor/ports/PortsInterface.cpp \
+    ../editors/ComponentEditor/common/interfaces/NameGroupInterface.cpp \
+    ../editors/ComponentEditor/common/interfaces/CommonInterface.cpp \
+    ../editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.cpp \
+    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp

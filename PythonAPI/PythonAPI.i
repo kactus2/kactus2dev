@@ -9,10 +9,13 @@
 
 %{
 #include "PythonAPI.h"
-#include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
+#include "..\editors\ComponentEditor\common\interfaces\CommonInterface.h"
+#include "..\editors\ComponentEditor\common\interfaces\NameGroupInterface.h"
+#include "..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h"
 #include "..\editors\ComponentEditor\ports\PortsInterface.h"
 #include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
-#include "..\editors\ComponentEditor\memoryMaps\FieldInterface.h"
+#include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
+#include "..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h"
 %}
 
 
@@ -20,11 +23,15 @@ namespace std {
 //	%template(portsVector) vector<SimplePort*>;
 	%template(stringVector) vector<string>;
 	%template(fieldInterfaceVector) vector<FieldInterface*>;
+	%template(resetInterfaceVector) vector<ResetInterface*>;
 };
 
 /* Let's just grab the original header file here */
 %include "PythonAPI.h"
-%include "..\editors\ComponentEditor\common\ParameterizableInterface.h"
+%include "..\editors\ComponentEditor\common\interfaces\CommonInterface.h"
+%include "..\editors\ComponentEditor\common\interfaces\NameGroupInterface.h"
+%include "..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h"
 %include "..\editors\ComponentEditor\ports\PortsInterface.h"
 %include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
-%include "..\editors\ComponentEditor\memoryMaps\FieldInterface.h"
+%include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
+%include "..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h"

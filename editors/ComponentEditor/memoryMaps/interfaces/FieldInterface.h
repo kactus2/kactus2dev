@@ -20,6 +20,7 @@ class FieldValidator;
 class ResetInterface;
 
 #include <QVector>
+#include <QMap>
 
 //-----------------------------------------------------------------------------
 //! Interface for editing fields.
@@ -490,9 +491,10 @@ public:
     /*!
      *  Add a reset interface.
      *
+     *      @param [in] fieldName           Name of the field containing the resets.
      *      @param [in] newResetInterface   The new reset interface.
      */
-    void addResetInterface(ResetInterface* newResetInterface);
+    void addResetInterface(std::string const& fieldName, ResetInterface* newResetInterface);
 
     /*!
      *  Remove the selected reset interface.
@@ -508,6 +510,15 @@ public:
      */
     std::vector<ResetInterface*> getResetInterfaces() const;
 
+    /*!
+     *  Get the reset interface of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Reset interface of the selected field.
+     */
+    ResetInterface* getResetInterface(std::string const& fieldName) const;
+
 private:
 
     /*!
@@ -519,6 +530,14 @@ private:
      */
     QSharedPointer<Field> getField(std::string const& fieldName) const;
 
+    /*!
+     *  Change the key in the reset interfaces.
+     *
+     *      @param [in] currentName     The current key.
+     *      @param [in] newName         The new key.
+     */
+    void changeKeyInSubInterfaces(QString const& currentName, QString const& newName);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -529,8 +548,8 @@ private:
     //! Validator for fields.
     QSharedPointer<FieldValidator> validator_;
 
-    //! List of the contained reset interfaces.
-    std::vector<ResetInterface*> resetInterfaces_;
+    //! Map for the contained reset interfaces.
+    QMap<QString, ResetInterface*> resetInterfaces_;
 };
 
 #endif // REGISTERTABLEMODEL_H

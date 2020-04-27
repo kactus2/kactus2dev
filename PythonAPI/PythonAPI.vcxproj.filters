@@ -234,20 +234,29 @@
     <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
       <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\ParameterizableInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp">
       <Filter>Source Files\interfaces</Filter>
     </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
       <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\FieldInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\NameGroupInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\CommonInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -311,20 +320,29 @@
     <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h">
       <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\ParameterizableInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h">
       <Filter>Header Files\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
       <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\FieldInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\CommonInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\NameGroupInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h">
+      <Filter>Header Files\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

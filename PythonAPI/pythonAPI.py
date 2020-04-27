@@ -387,6 +387,112 @@ class fieldInterfaceVector(object):
 # Register fieldInterfaceVector in _pythonAPI:
 _pythonAPI.fieldInterfaceVector_swigregister(fieldInterfaceVector)
 
+class resetInterfaceVector(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _pythonAPI.resetInterfaceVector_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _pythonAPI.resetInterfaceVector___nonzero__(self)
+
+    def __bool__(self):
+        return _pythonAPI.resetInterfaceVector___bool__(self)
+
+    def __len__(self):
+        return _pythonAPI.resetInterfaceVector___len__(self)
+
+    def __getslice__(self, i, j):
+        return _pythonAPI.resetInterfaceVector___getslice__(self, i, j)
+
+    def __setslice__(self, *args):
+        return _pythonAPI.resetInterfaceVector___setslice__(self, *args)
+
+    def __delslice__(self, i, j):
+        return _pythonAPI.resetInterfaceVector___delslice__(self, i, j)
+
+    def __delitem__(self, *args):
+        return _pythonAPI.resetInterfaceVector___delitem__(self, *args)
+
+    def __getitem__(self, *args):
+        return _pythonAPI.resetInterfaceVector___getitem__(self, *args)
+
+    def __setitem__(self, *args):
+        return _pythonAPI.resetInterfaceVector___setitem__(self, *args)
+
+    def pop(self):
+        return _pythonAPI.resetInterfaceVector_pop(self)
+
+    def append(self, x):
+        return _pythonAPI.resetInterfaceVector_append(self, x)
+
+    def empty(self):
+        return _pythonAPI.resetInterfaceVector_empty(self)
+
+    def size(self):
+        return _pythonAPI.resetInterfaceVector_size(self)
+
+    def swap(self, v):
+        return _pythonAPI.resetInterfaceVector_swap(self, v)
+
+    def begin(self):
+        return _pythonAPI.resetInterfaceVector_begin(self)
+
+    def end(self):
+        return _pythonAPI.resetInterfaceVector_end(self)
+
+    def rbegin(self):
+        return _pythonAPI.resetInterfaceVector_rbegin(self)
+
+    def rend(self):
+        return _pythonAPI.resetInterfaceVector_rend(self)
+
+    def clear(self):
+        return _pythonAPI.resetInterfaceVector_clear(self)
+
+    def get_allocator(self):
+        return _pythonAPI.resetInterfaceVector_get_allocator(self)
+
+    def pop_back(self):
+        return _pythonAPI.resetInterfaceVector_pop_back(self)
+
+    def erase(self, *args):
+        return _pythonAPI.resetInterfaceVector_erase(self, *args)
+
+    def __init__(self, *args):
+        _pythonAPI.resetInterfaceVector_swiginit(self, _pythonAPI.new_resetInterfaceVector(*args))
+
+    def push_back(self, x):
+        return _pythonAPI.resetInterfaceVector_push_back(self, x)
+
+    def front(self):
+        return _pythonAPI.resetInterfaceVector_front(self)
+
+    def back(self):
+        return _pythonAPI.resetInterfaceVector_back(self)
+
+    def assign(self, n, x):
+        return _pythonAPI.resetInterfaceVector_assign(self, n, x)
+
+    def resize(self, *args):
+        return _pythonAPI.resetInterfaceVector_resize(self, *args)
+
+    def insert(self, *args):
+        return _pythonAPI.resetInterfaceVector_insert(self, *args)
+
+    def reserve(self, n):
+        return _pythonAPI.resetInterfaceVector_reserve(self, n)
+
+    def capacity(self):
+        return _pythonAPI.resetInterfaceVector_capacity(self)
+    __swig_destroy__ = _pythonAPI.delete_resetInterfaceVector
+
+# Register resetInterfaceVector in _pythonAPI:
+_pythonAPI.resetInterfaceVector_swigregister(resetInterfaceVector)
+
 class PythonAPI(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
@@ -434,6 +540,55 @@ class PythonAPI(object):
 # Register PythonAPI in _pythonAPI:
 _pythonAPI.PythonAPI_swigregister(PythonAPI)
 
+class CommonInterface(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _pythonAPI.delete_CommonInterface
+
+    def getItemNames(self):
+        return _pythonAPI.CommonInterface_getItemNames(self)
+
+    def itemCount(self):
+        return _pythonAPI.CommonInterface_itemCount(self)
+
+    def validateItems(self):
+        return _pythonAPI.CommonInterface_validateItems(self)
+
+# Register CommonInterface in _pythonAPI:
+_pythonAPI.CommonInterface_swigregister(CommonInterface)
+
+class NameGroupInterface(CommonInterface):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _pythonAPI.delete_NameGroupInterface
+
+    def getItemIndex(self, itemName):
+        return _pythonAPI.NameGroupInterface_getItemIndex(self, itemName)
+
+    def getIndexedItemName(self, itemIndex):
+        return _pythonAPI.NameGroupInterface_getIndexedItemName(self, itemIndex)
+
+    def setName(self, currentName, newName):
+        return _pythonAPI.NameGroupInterface_setName(self, currentName, newName)
+
+    def getDescription(self, itemName):
+        return _pythonAPI.NameGroupInterface_getDescription(self, itemName)
+
+    def setDescription(self, itemName, newDescription):
+        return _pythonAPI.NameGroupInterface_setDescription(self, itemName, newDescription)
+
+    def itemHasValidName(self, itemName):
+        return _pythonAPI.NameGroupInterface_itemHasValidName(self, itemName)
+
+# Register NameGroupInterface in _pythonAPI:
+_pythonAPI.NameGroupInterface_swigregister(NameGroupInterface)
+
 class ParameterizableInterface(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
 
@@ -448,40 +603,13 @@ class ParameterizableInterface(object):
     def setExpressionFormatter(self, formatter):
         return _pythonAPI.ParameterizableInterface_setExpressionFormatter(self, formatter)
 
-    def getItemIndex(self, itemName):
-        return _pythonAPI.ParameterizableInterface_getItemIndex(self, itemName)
-
-    def getIndexedItemName(self, itemIndex):
-        return _pythonAPI.ParameterizableInterface_getIndexedItemName(self, itemIndex)
-
-    def itemCount(self):
-        return _pythonAPI.ParameterizableInterface_itemCount(self)
-
-    def getItemNames(self):
-        return _pythonAPI.ParameterizableInterface_getItemNames(self)
-
-    def setName(self, currentName, newName):
-        return _pythonAPI.ParameterizableInterface_setName(self, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.ParameterizableInterface_getDescription(self, itemName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.ParameterizableInterface_setDescription(self, itemName, newDescription)
-
     def getAllReferencesToIdInItem(self, itemName, valueID):
         return _pythonAPI.ParameterizableInterface_getAllReferencesToIdInItem(self, itemName, valueID)
-
-    def validateItems(self):
-        return _pythonAPI.ParameterizableInterface_validateItems(self)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.ParameterizableInterface_itemHasValidName(self, itemName)
 
 # Register ParameterizableInterface in _pythonAPI:
 _pythonAPI.ParameterizableInterface_swigregister(ParameterizableInterface)
 
-class PortsInterface(ParameterizableInterface):
+class PortsInterface(ParameterizableInterface, NameGroupInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
@@ -726,7 +854,7 @@ class PortsInterface(ParameterizableInterface):
 # Register PortsInterface in _pythonAPI:
 _pythonAPI.PortsInterface_swigregister(PortsInterface)
 
-class ParametersInterface(ParameterizableInterface):
+class ParametersInterface(ParameterizableInterface, NameGroupInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
@@ -941,7 +1069,7 @@ class ParametersInterface(ParameterizableInterface):
 # Register ParametersInterface in _pythonAPI:
 _pythonAPI.ParametersInterface_swigregister(ParametersInterface)
 
-class FieldInterface(ParameterizableInterface):
+class FieldInterface(ParameterizableInterface, NameGroupInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
@@ -1099,8 +1227,94 @@ class FieldInterface(ParameterizableInterface):
     def getExpressionsInSelectedFields(self, fieldNames):
         return _pythonAPI.FieldInterface_getExpressionsInSelectedFields(self, fieldNames)
 
+    def addResetInterface(self, fieldName, newResetInterface):
+        return _pythonAPI.FieldInterface_addResetInterface(self, fieldName, newResetInterface)
+
+    def removeResetInterface(self, removedInterface):
+        return _pythonAPI.FieldInterface_removeResetInterface(self, removedInterface)
+
+    def getResetInterfaces(self):
+        return _pythonAPI.FieldInterface_getResetInterfaces(self)
+
+    def getResetInterface(self, fieldName):
+        return _pythonAPI.FieldInterface_getResetInterface(self, fieldName)
+
 # Register FieldInterface in _pythonAPI:
 _pythonAPI.FieldInterface_swigregister(FieldInterface)
+
+class ResetInterface(ParameterizableInterface, CommonInterface):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self):
+        _pythonAPI.ResetInterface_swiginit(self, _pythonAPI.new_ResetInterface())
+    __swig_destroy__ = _pythonAPI.delete_ResetInterface
+
+    def setResets(self, containingField):
+        return _pythonAPI.ResetInterface_setResets(self, containingField)
+
+    def setValidator(self, validator):
+        return _pythonAPI.ResetInterface_setValidator(self, validator)
+
+    def getItemNames(self):
+        return _pythonAPI.ResetInterface_getItemNames(self)
+
+    def itemCount(self):
+        return _pythonAPI.ResetInterface_itemCount(self)
+
+    def getResetTypeReference(self, itemIndex):
+        return _pythonAPI.ResetInterface_getResetTypeReference(self, itemIndex)
+
+    def setResetTypeReference(self, currentResetType, newResetType):
+        return _pythonAPI.ResetInterface_setResetTypeReference(self, currentResetType, newResetType)
+
+    def getResetValue(self, resetType, baseNumber=0):
+        return _pythonAPI.ResetInterface_getResetValue(self, resetType, baseNumber)
+
+    def getResetValueFormattedExpression(self, resetType):
+        return _pythonAPI.ResetInterface_getResetValueFormattedExpression(self, resetType)
+
+    def getResetValueExpression(self, resetType):
+        return _pythonAPI.ResetInterface_getResetValueExpression(self, resetType)
+
+    def setResetValue(self, resetType, newResetValue):
+        return _pythonAPI.ResetInterface_setResetValue(self, resetType, newResetValue)
+
+    def getResetMaskValue(self, resetType, baseNumber=0):
+        return _pythonAPI.ResetInterface_getResetMaskValue(self, resetType, baseNumber)
+
+    def getResetMaskFormattedExpression(self, resetType):
+        return _pythonAPI.ResetInterface_getResetMaskFormattedExpression(self, resetType)
+
+    def getResetMaskExpression(self, resetType):
+        return _pythonAPI.ResetInterface_getResetMaskExpression(self, resetType)
+
+    def setResetMask(self, resetType, newResetMask):
+        return _pythonAPI.ResetInterface_setResetMask(self, resetType, newResetMask)
+
+    def validateItems(self):
+        return _pythonAPI.ResetInterface_validateItems(self)
+
+    def hasValidResetType(self, resetType):
+        return _pythonAPI.ResetInterface_hasValidResetType(self, resetType)
+
+    def hasValidResetValue(self, resetType):
+        return _pythonAPI.ResetInterface_hasValidResetValue(self, resetType)
+
+    def hasValidResetMask(self, resetType):
+        return _pythonAPI.ResetInterface_hasValidResetMask(self, resetType)
+
+    def addReset(self, *args):
+        return _pythonAPI.ResetInterface_addReset(self, *args)
+
+    def removeReset(self, resetName):
+        return _pythonAPI.ResetInterface_removeReset(self, resetName)
+
+    def getAllReferencesToIdInItem(self, itemName, valueID):
+        return _pythonAPI.ResetInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+
+# Register ResetInterface in _pythonAPI:
+_pythonAPI.ResetInterface_swigregister(ResetInterface)
 
 
 

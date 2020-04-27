@@ -15,7 +15,8 @@
 
 #include <editors/ComponentEditor/ports/PortsInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
-#include <editors/ComponentEditor/memoryMaps/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
 
 #include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -213,11 +214,31 @@ void PythonAPI::setupFieldInterfaces(QSharedPointer<Component> component)
                         fieldInterface->setExpressionParser(expressionParser_);
                         fieldInterface->setExpressionFormatter(expressionFormatter_);
 
+                        setupResetInterfaces(fieldInterface, blockRegister->getFields());
+
                         fieldInterfaces_.push_back(fieldInterface);
                     }
                 }
             }
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setupResetInterfaces()
+//-----------------------------------------------------------------------------
+void PythonAPI::setupResetInterfaces(FieldInterface* containingFieldInterface,
+    QSharedPointer<QList<QSharedPointer<Field>>> registerFields) const
+{
+    for (auto field : *registerFields)
+    {
+        ResetInterface* newResetInterface(new ResetInterface());
+        newResetInterface->setResets(field);
+        newResetInterface->setValidator(fieldValidator_);
+        newResetInterface->setExpressionParser(expressionParser_);
+        newResetInterface->setExpressionFormatter(expressionFormatter_);
+
+        containingFieldInterface->addResetInterface(field->name().toStdString(), newResetInterface);
     }
 }
 

@@ -31,6 +31,7 @@ class ParametersInterface;
 class ParameterValidator;
 class FieldInterface;
 class FieldValidator;
+class Field;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data through python.
@@ -134,6 +135,15 @@ private:
      *      @param [in] component   Component containing the field interfaces.
      */
     void setupFieldInterfaces(QSharedPointer<Component> component);
+
+    /*!
+     *  Setup the reset interfaces.
+     *
+     *      @param [in] containingFieldInterface    Field interface containing the reset interfaces.
+     *      @param [in] registerFields              List of register fields.
+     */
+    void setupResetInterfaces(FieldInterface* containingFieldInterface,
+        QSharedPointer<QList<QSharedPointer<Field> > > registerFields) const;
 
     //-----------------------------------------------------------------------------
     // Data.
