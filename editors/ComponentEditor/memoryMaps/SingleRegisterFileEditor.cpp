@@ -24,28 +24,23 @@
 //-----------------------------------------------------------------------------
 // Function: SingleRegisterFileEditor::SingleRegisterFileEditor()
 //-----------------------------------------------------------------------------
-SingleRegisterFileEditor::SingleRegisterFileEditor(
-    QSharedPointer<RegisterFile> registerFile,
-    QSharedPointer<Component> component,
-    LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<RegisterFileValidator> registerFileValidator,
-    QWidget* parent /* = 0 */) :
-    ItemEditor(component, handler, parent),
-    registerFile_(registerFile),
-    nameEditor_(registerFile, this, tr("Register file name and description")),
-    registersEditor_(new AddressBlockEditor(registerFile->getRegisterData(), component, handler,
-        parameterFinder, expressionFormatter, registerFileValidator, this)),
-    registerFileEditor_(new RegisterFileEditor(registerFile_->getRegisterData(), component, handler,
-        parameterFinder, expressionFormatter, registerFileValidator, this)),
-    offsetEditor_(new ExpressionEditor(parameterFinder, this)),
-    rangeEditor_(new ExpressionEditor(parameterFinder, this)),
-    dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
-    isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-    expressionParser_(expressionParser),
-    registerFileValidator_(registerFileValidator)
+SingleRegisterFileEditor::SingleRegisterFileEditor(RegisterInterface* registerInterface,
+    QSharedPointer<RegisterFile> registerFile, QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<RegisterFileValidator> registerFileValidator,
+    QWidget* parent):
+ItemEditor(component, handler, parent),
+registerFile_(registerFile),
+nameEditor_(registerFile, this, tr("Register file name and description")),
+registersEditor_(new AddressBlockEditor(registerInterface, component, handler, parameterFinder, this)),
+registerFileEditor_(new RegisterFileEditor(registerFile_->getRegisterData(), component, handler,
+    parameterFinder, expressionFormatter, registerFileValidator, this)),
+offsetEditor_(new ExpressionEditor(parameterFinder, this)),
+rangeEditor_(new ExpressionEditor(parameterFinder, this)),
+dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
+isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
+expressionParser_(expressionParser),
+registerFileValidator_(registerFileValidator)
 {
     offsetEditor_->setFixedHeight(20);
     rangeEditor_->setFixedHeight(20);

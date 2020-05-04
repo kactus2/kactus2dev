@@ -11,54 +11,24 @@
 
 #include "addressblockmodel.h"
 
-#include "AddressBlockColumns.h"
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h>
+#include <editors/ComponentEditor/memoryMaps/AddressBlockColumns.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
-
-#include <IPXACTmodels/Component/Register.h>
-#include <IPXACTmodels/Component/RegisterFile.h>
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/Component/validators/RegisterValidator.h>
-#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/common/AccessTypes.h>
 
 #include <common/KactusColors.h>
 
 #include <QRegularExpression>
-#include <QApplication>
-#include <QClipboard>
-#include <QMimeData>
-#include <QIcon>
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockModel::AddressBlockModel()
 //-----------------------------------------------------------------------------
-AddressBlockModel::AddressBlockModel(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<RegisterFileValidator> registerFileValidator,
-    QObject *parent) :
-    ReferencingTableModel(parameterFinder, parent),
-    ParameterizableTable(parameterFinder),
-    registerData_(registerData),
-    items_(),
-    addressUnitBits_(0),
-    parameterFinder_(parameterFinder),
-    expressionFormatter_(expressionFormatter),
-    registerFileValidator_(registerFileValidator),
-    registerValidator_(registerFileValidator->getRegisterValidator())
+AddressBlockModel::AddressBlockModel(RegisterInterface* registerInterface,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+    QObject *parent):
+ReferencingTableModel(parameterFinder, parent),
+ParameterizableTable(parameterFinder),
+registerInterface_(registerInterface)
 {
-    for (auto item : *registerData_)
-    {
-        QSharedPointer<Register> registerItem = item.dynamicCast<Register>();
-        if (registerItem)
-        {
-            items_.append(registerItem);
-        }
-    }
-
     setExpressionParser(expressionParser);
 }
 
@@ -72,7 +42,7 @@ int AddressBlockModel::rowCount(QModelIndex const& parent) const
         return 0;
     }
 
-    return items_.size();
+    return registerInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +78,7 @@ QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation
 {
     if (orientation == Qt::Vertical && role == Qt::DisplayRole)
     {
-        return items_.at(section)->name();
+        return QString::fromStdString(registerInterface_->getIndexedItemName(section));
     }
 
     else if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -159,16 +129,18 @@ QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation
 //-----------------------------------------------------------------------------
 QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= registerInterface_->itemCount())
     {
         return QVariant();
     }
+
+    std::string registerName = registerInterface_->getIndexedItemName(index.row());
 
     if (role == Qt::DisplayRole)
     {
         if (isValidExpressionColumn(index))
         {
-            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+            return formattedExpressionForIndex(index);
         }
         else if (index.column() == AddressBlockColumns::DESCRIPTION)
         {
@@ -183,33 +155,23 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
 
     else if (role == Qt::EditRole)
     {
-        if (index.column() == AddressBlockColumns::DESCRIPTION)
-        {
-            return valueForIndex(index);
-        }
-
         return expressionOrValueForIndex(index);
     }
 
     else if (role == Qt::ToolTipRole)
     {
-        if (isValidExpressionColumn(index))
-        {
-            return formattedValueFor(valueForIndex(index).toString());
-        }
-        else
-        {
-            return valueForIndex(index).toString();
-        }
+        return valueForIndex(index);
     }
     else if (role == Qt::ForegroundRole)
     {
         if (validateIndex(index))
         {
-            QSharedPointer<Register> reg = items_.at(index.row());
+            std::string registerPresence = registerInterface_->getIsPresentExpression(registerName);
+            qint64 registerPresenceValue =
+                QString::fromStdString(registerInterface_->getIsPresentValue(registerName, 10)).toLongLong();
 
-            if (index.column() != AddressBlockColumns::IS_PRESENT && reg &&
-                    (!reg->getIsPresent().isEmpty() && parseExpressionToDecimal(reg->getIsPresent()).toInt() != 1))
+            if (index.column() != AddressBlockColumns::IS_PRESENT && 
+                (!registerPresence.empty() && registerPresenceValue == 0))
             {
                 return KactusColors::DISABLED_TEXT;
             }
@@ -241,43 +203,95 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: addressblockmodel::formattedExpressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant AddressBlockModel::formattedExpressionForIndex(QModelIndex const& index) const
+{
+    std::string registerName = registerInterface_->getIndexedItemName(index.row());
+    if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
+    {
+        return QString::fromStdString(registerInterface_->getOffsetFormattedExpression(registerName));
+    }
+    else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+    {
+        return QString::fromStdString(registerInterface_->getDimensionFormattedExpression(registerName));
+    }
+    else if (index.column() == AddressBlockColumns::IS_PRESENT)
+    {
+        return QString::fromStdString(registerInterface_->getIsPresentFormattedExpression(registerName));
+    }
+    else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
+    {
+        return QString::fromStdString(registerInterface_->getSizeFormattedExpression(registerName));
+    }
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblockmodel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant AddressBlockModel::expressionForIndex(QModelIndex const& index) const
+{
+    std::string registerName = registerInterface_->getIndexedItemName(index.row());
+    if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
+    {
+        return QString::fromStdString(registerInterface_->getOffsetExpression(registerName));
+    }
+    else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+    {
+        return QString::fromStdString(registerInterface_->getDimensionExpression(registerName));
+    }
+    else if (index.column() == AddressBlockColumns::IS_PRESENT)
+    {
+        return QString::fromStdString(registerInterface_->getIsPresentExpression(registerName));
+    }
+    else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
+    {
+        return QString::fromStdString(registerInterface_->getSizeExpression(registerName));
+    }
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
 // Function: addressblockmodel::valueForIndex()
 //-----------------------------------------------------------------------------
 QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Register> const& reg = items_.at(index.row());
+    std::string registerName = registerInterface_->getIndexedItemName(index.row());
 
     if (index.column() == AddressBlockColumns::NAME)
     {
-        return reg->name();
+        return QString::fromStdString(registerName);
     }
     else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
-        return reg->getAddressOffset();
+        return QString::fromStdString(registerInterface_->getOffsetValue(registerName));
     }
     else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
     {
-        return reg->getDimension();
+        return QString::fromStdString(registerInterface_->getDimensionValue(registerName));
     }
     else if (index.column() == AddressBlockColumns::DESCRIPTION)
     {
-        return reg->description();
+        return QString::fromStdString(registerInterface_->getDescription(registerName));
     }
     else if (index.column() == AddressBlockColumns::IS_PRESENT)
     {
-        return reg->getIsPresent();
+        return QString::fromStdString(registerInterface_->getIsPresentValue(registerName));
     }
     else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
     {
-        return reg->getSize();
+        return QString::fromStdString(registerInterface_->getSizeValue(registerName));
     }
     else if (index.column() == AddressBlockColumns::VOLATILE)
     {
-        return reg->getVolatile();
+        return QString::fromStdString(registerInterface_->getVolatile(registerName));
     }
     else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
-        return AccessTypes::access2Str(reg->getAccess());
+        return QString::fromStdString(registerInterface_->getAccess(registerName));
     }
 
     return QVariant();
@@ -288,26 +302,14 @@ QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Register> const& reg = items_.at(index.row());
-
-    if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+    if (isValidExpressionColumn(index))
     {
-        return reg->getDimension();
+        return expressionForIndex(index);
     }
-    else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
+    else
     {
-        return reg->getAddressOffset();
+        return valueForIndex(index);
     }
-    else if (index.column() == AddressBlockColumns::IS_PRESENT)
-    {
-        return reg->getIsPresent();
-    }
-    else if(index.column() == AddressBlockColumns::REGISTER_SIZE)
-    {
-        return reg->getSize();
-    }
-
-    return data(index, Qt::DisplayRole);
 }
 
 //-----------------------------------------------------------------------------
@@ -315,7 +317,7 @@ QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) 
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= registerInterface_->itemCount())
     {
         return false;
     }
@@ -324,70 +326,63 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
     {
         bool changed = true;
 
-        QSharedPointer<Register> reg = items_.at(index.row());
+        std::string registerName = registerInterface_->getIndexedItemName(index.row());
         if (index.column() == AddressBlockColumns::NAME)
         {
-            reg->setName(value.toString());
+            registerInterface_->setName(registerName, value.toString().toStdString());
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
         }
         else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(reg->getAddressOffset());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(registerInterface_->getOffsetExpression(registerName)));
             }
 
-            reg->setAddressOffset(value.toString());
+            registerInterface_->setOffset(registerName, value.toString().toStdString());
         }
         else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(reg->getDimension());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(registerInterface_->getDimensionExpression(registerName)));
             }
 
-            reg->setDimension(value.toString());
+            registerInterface_->setDimension(registerName, value.toString().toStdString());
         }
         else if (index.column() == AddressBlockColumns::DESCRIPTION)
         {
-            reg->setDescription(value.toString());
+            registerInterface_->setDescription(registerName, value.toString().toStdString());
         }
         else if (index.column() == AddressBlockColumns::IS_PRESENT)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(reg->getIsPresent());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(registerInterface_->getIsPresentExpression(registerName)));
             }
 
-            reg->setIsPresent(value.toString());
+            registerInterface_->setIsPresent(registerName, value.toString().toStdString());
         }
         else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(reg->getSize());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(registerInterface_->getSizeExpression(registerName)));
             }
 
-            reg->setSize(value.toString());
+            registerInterface_->setSize(registerName, value.toString().toStdString());
         }
         else if (index.column() == AddressBlockColumns::VOLATILE)
         {
-            if (value.toString() == QLatin1String("true"))
-            {
-                reg->setVolatile(true);
-            }
-            else if (value.toString() == QLatin1String("false"))
-            {
-                reg->setVolatile(false);
-            }
-            else
-            {
-                reg->clearVolatile();
-            }
+            registerInterface_->setVolatile(registerName, value.toString().toStdString());
         }
         else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
         {
-            reg->setAccess(AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
+            registerInterface_->setAccess(registerName, value.toString().toStdString());
         }
         else
         {
@@ -442,36 +437,30 @@ bool AddressBlockModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::validateIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Register> const& reg = items_.at(index.row());
+    std::string registerName = registerInterface_->getIndexedItemName(index.row());
 
     if (index.column() == AddressBlockColumns::NAME)
     {
-        QStringList registerNames;
-        for (QSharedPointer<RegisterBase> registerItem : *registerData_)
-        {
-            registerNames.append(registerItem->name());
-        }
-
-        return registerNames.count(reg->name()) == 1 && registerValidator_->hasValidName(reg);
+        return registerInterface_->itemHasValidName(registerName);
     }
     else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
     {
-        return registerValidator_->hasValidDimension(reg);
+        return registerInterface_->hasValidDimension(registerName);
     }
 
     else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
-        return registerValidator_->hasValidAddressOffset(reg);
+        return registerInterface_->hasValidOffset(registerName);
     }
 
     else if (index.column() == AddressBlockColumns::IS_PRESENT)
     {
-        return registerValidator_->hasValidIsPresent(reg);
+        return registerInterface_->hasValidIsPresent(registerName);
     }
 
     else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
     {
-        return registerValidator_->hasValidSize(reg);
+        return registerInterface_->hasValidSize(registerName);
     }
 
     return true;
@@ -482,15 +471,8 @@ bool AddressBlockModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int AddressBlockModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    QSharedPointer<Register> const& reg = items_.at(row);
-
-    int count = 0;
-    count += reg->getAddressOffset().count(valueID);
-    count += reg->getDimension().count(valueID);
-    count += reg->getIsPresent().count(valueID);
-    count += reg->getSize().count(valueID);
-
-    return count;
+    return registerInterface_->getAllReferencesToIdInItem(
+        registerInterface_->getIndexedItemName(row), valueID.toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -498,60 +480,18 @@ int AddressBlockModel::getAllReferencesToIdInItemOnRow(const int& row, QString c
 //-----------------------------------------------------------------------------
 void AddressBlockModel::onAddItem(QModelIndex const& index)
 {
-    // Find last register/registerFile by address offset.
-    auto lastRegister = std::max_element(registerData_->cbegin(), registerData_->cend(),
-        [this](QSharedPointer<RegisterBase> const& a, QSharedPointer<RegisterBase> const& b)
-    {
-        return parseExpressionToDecimal(a->getAddressOffset()).toInt() <
-            parseExpressionToDecimal(b->getAddressOffset()).toInt();
-    });
-
-    quint64 lastRegAddress = 0;
-    quint64 lastRegDimension = 0;
-    quint64 lastRegRange = 0;
-
-    if (lastRegister != registerData_->cend())
-    {
-        lastRegAddress = parseExpressionToDecimal((*lastRegister)->getAddressOffset()).toInt();
-        lastRegDimension = parseExpressionToDecimal((*lastRegister)->getDimension()).toInt();
-
-        QSharedPointer<Register> reg = lastRegister->dynamicCast<Register>();
-        QSharedPointer<RegisterFile> regFile = lastRegister->dynamicCast<RegisterFile>();
-        if (reg)
-        {
-            lastRegRange = parseExpressionToDecimal(reg->getSize()).toInt() / qMax(addressUnitBits_, 1u);
-        }
-        else if (regFile)
-        {
-            lastRegRange = parseExpressionToDecimal(regFile->getRange()).toInt();
-        }
-    }
-
-    qreal offsetIncrease = qMax(quint64(1), lastRegRange * qMax(quint64(1), lastRegDimension));
-
-    // convert the address to hexadecimal form
-    quint64 itemAddress = lastRegAddress + offsetIncrease;
-    QString offset = QStringLiteral("'h") + QString::number(itemAddress, 16);
-
-    // if the index is valid then add the item to the correct position
-    int row = items_.size();
+    int row = registerInterface_->itemCount();
     if (index.isValid())
     {
         row = index.row();
     }
 
-    int dataIndex = registerData_->size();
-    if (row < items_.size() - 1)
-    {
-        dataIndex = registerData_->indexOf(items_.at(row + 1));
-    }
+    int dataIndex = registerInterface_->indexInRegisterData(row);
 
     beginInsertRows(QModelIndex(), row, row);
 
-    QSharedPointer<Register> regItem(new Register());    
-    regItem->setAddressOffset(offset);
-    items_.insert(row, regItem);
-    registerData_->insert(dataIndex, regItem);
+    registerInterface_->addRegister(row, dataIndex);
+
     endInsertRows();
 
     // inform navigation tree that file set is added
@@ -567,23 +507,20 @@ void AddressBlockModel::onAddItem(QModelIndex const& index)
 void AddressBlockModel::onRemoveItem(QModelIndex const& index )
 {
     // don't remove anything if index is invalid
-    if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    int dataIndex = registerInterface_->indexInRegisterData(index.row());
+    if (!index.isValid() || index.row() < 0 || index.row() >= registerInterface_->itemCount() || dataIndex < 0)
     {
         return;
     }
 
+    std::string removedRegisterName = registerInterface_->getIndexedItemName(index.row());
+
     // remove the specified item
     beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    QSharedPointer<Register> removedRegister = items_.at(index.row());
-    if (removedRegister)
-    {
-        decreaseReferencesWithRemovedRegister(removedRegister);
-    }
+    removeReferencesInItemOnRow(index.row());
+    registerInterface_->removeRegister(removedRegisterName, dataIndex);
 
-    int dataIndex = registerData_->indexOf(removedRegister);
-    registerData_->removeAt(dataIndex);
-    items_.removeAt(index.row());
     endRemoveRows();
 
     // inform navigation tree that file set has been removed
@@ -594,39 +531,72 @@ void AddressBlockModel::onRemoveItem(QModelIndex const& index )
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockModel::decreaserReferencesWithRemovedRegisters()
+// Function: AddressBlockModel::addressUnitBitsChanged()
 //-----------------------------------------------------------------------------
-void AddressBlockModel::decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister)
+void AddressBlockModel::addressUnitBitsChanged(int newAddressUnitbits)
 {
-    QStringList expressionList;
+    registerInterface_->setAddressUnitBits(newAddressUnitbits);
+}
 
-    RegisterExpressionsGatherer registerGatherer;
-    expressionList << registerGatherer.getExpressions(removedRegister);
-
-    ReferenceCalculator referenceCalculator(getParameterFinder());
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
-
-    foreach (QString referencedID, referencedParameters.keys())
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::onCopyRows()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::onCopyRows(QModelIndexList indexList)
+{
+    std::vector<int> registerIndexes;
+    for (auto index : indexList)
     {
-        for (int i = 0; i < referencedParameters.value(referencedID); ++i)
-        {
-            emit decreaseReferences(referencedID);
-        }
+        registerIndexes.push_back(index.row());
     }
+
+    registerInterface_->copyRows(registerIndexes);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::onPasteRows()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::onPasteRows()
+{
+    int pastedRegisterCount = registerInterface_->getPasteRowCount();
+    if (pastedRegisterCount == 0)
+    {
+        return;
+    }
+
+    int rowBegin = registerInterface_->itemCount();
+    int rowEnd = rowBegin + pastedRegisterCount - 1;
+    
+    beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+    std::vector<std::string> insertedItemNames = registerInterface_->pasteRows();
+
+    for (int i = rowBegin; i <= rowEnd; ++i)
+    {
+        emit itemAdded(i);
+    }
+
+    endInsertRows();
+
+    QStringList pastedExpressions;
+    for (auto expression : registerInterface_->getExpressionsInSelectedRegisters(insertedItemNames))
+    {
+        pastedExpressions.append(QString::fromStdString(expression));
+    }
+    increaseReferencesInPastedExpressions(pastedExpressions);
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockModel::increaseReferencesInPastedField()
 //-----------------------------------------------------------------------------
-void AddressBlockModel::increaseReferencesInPastedRegister(QSharedPointer<Register> pastedRegister,
-                                                           RegisterExpressionsGatherer& gatherer,
-                                                           ReferenceCalculator& referenceCalculator)
+void AddressBlockModel::increaseReferencesInPastedExpressions(QStringList const& expressionList)
 {
-    QStringList registerExpressions = gatherer.getExpressions(pastedRegister);
+    ReferenceCalculator referenceCalculator(getParameterFinder());
 
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(registerExpressions);
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
 
-    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    QMapIterator<QString, int> refParameterIterator(referencedParameters);
     while (refParameterIterator.hasNext())
     {
         refParameterIterator.next();
@@ -635,90 +605,4 @@ void AddressBlockModel::increaseReferencesInPastedRegister(QSharedPointer<Regist
             emit increaseReferences(refParameterIterator.key());
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockModel::addressUnitBitsChanged()
-//-----------------------------------------------------------------------------
-void AddressBlockModel::addressUnitBitsChanged(int newAddressUnitbits)
-{
-    addressUnitBits_ = newAddressUnitbits;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockModel::onCopyRows()
-//-----------------------------------------------------------------------------
-void AddressBlockModel::onCopyRows(QModelIndexList indexList)
-{
-    QList<QSharedPointer<Register> > copiedRegisters;
-    for (QModelIndex index : indexList)
-    {
-        copiedRegisters.append(items_.at(index.row()));
-    }
-
-    QVariant registerVariant;
-    registerVariant.setValue(copiedRegisters);
-
-    QMimeData* newMimeData = new QMimeData();
-    newMimeData->setData("text/xml/ipxact:register", QByteArray());
-    newMimeData->setImageData(registerVariant);
-
-    QApplication::clipboard()->setMimeData(newMimeData);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockModel::onPasteRows()
-//-----------------------------------------------------------------------------
-void AddressBlockModel::onPasteRows()
-{
-    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
-
-    if (pasteData->hasImage())
-    {
-        QVariant pasteVariant = pasteData->imageData();
-        if (pasteVariant.canConvert<QList<QSharedPointer<Register> > >())
-        {
-            RegisterExpressionsGatherer gatherer;
-            ReferenceCalculator referenceCalculator(getParameterFinder());
-
-            QList<QSharedPointer<Register> > newRegsiters =
-                    pasteVariant.value<QList<QSharedPointer<Register> > >();
-
-            int rowBegin = items_.size();
-            int rowEnd = rowBegin + newRegsiters.size() - 1;
-
-            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
-
-            for (QSharedPointer<Register> copiedRegister : newRegsiters)
-            {
-                QSharedPointer<Register> newRegister(new Register(*copiedRegister));
-                newRegister->setName(getUniqueName(newRegister->name(), getAllNames()));
-                
-                registerData_->append(newRegister);
-                items_.append(newRegister);
-
-                increaseReferencesInPastedRegister(newRegister, gatherer, referenceCalculator);
-
-                emit itemAdded(registerData_->size() - 1);
-            }
-
-            endInsertRows();
-
-            emit contentChanged();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: addressblockmodel::getAllNames()
-//-----------------------------------------------------------------------------
-QStringList AddressBlockModel::getAllNames() const
-{
-    QStringList names;
-    for (QSharedPointer<RegisterBase> registerItem : *registerData_)
-    {
-        names.append(registerItem->name());
-    }
-
-    return names;
 }

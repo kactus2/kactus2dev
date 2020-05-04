@@ -30,6 +30,7 @@ class Register;
 class Field;
 class RegisterValidator;
 class FieldInterface;
+class RegisterInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for single register in component editor's navigation tree.
@@ -52,6 +53,7 @@ public:
 	 *      @param [in] referenceCounter        The instance counting references made to parameters.
 	 *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] registerValidator       Validator for registers.
+     *      @param [in] registerInterface       Interface for registers.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorRegisterItem(QSharedPointer<Register> reg, 
@@ -63,10 +65,11 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<RegisterValidator> registerValidator,
+        RegisterInterface* registerInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
-	virtual ~ComponentEditorRegisterItem() = default;
+	virtual ~ComponentEditorRegisterItem();
 
     //! No copying. No assignment.
     ComponentEditorRegisterItem(const ComponentEditorRegisterItem& other) = delete;
@@ -161,6 +164,9 @@ private:
 
     //! Interface for fields.
     FieldInterface* fieldInterface_;
+
+    //! Interface for registers.
+    RegisterInterface* registerInterface_;
 };
 
 #endif // COMPONENTEDITORREGISTERITEM_H

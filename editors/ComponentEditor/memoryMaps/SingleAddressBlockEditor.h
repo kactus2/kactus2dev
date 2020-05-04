@@ -33,6 +33,8 @@ class AccessComboBox;
 class BooleanComboBox;
 class RegisterFileEditor;
 class AddressBlockValidator;
+class RegisterInterface;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single address block.
 //-----------------------------------------------------------------------------
@@ -45,6 +47,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
+     *      @param [in] registerInterface       Interface for registers.
 	 *      @param [in] addressBlock            The address block being edited.
 	 *      @param [in] component               The component being edited.
 	 *      @param [in] handler                 The instance managing the library.
@@ -54,7 +57,8 @@ public:
      *      @param [in] addressBlockValidator   Validator used for address blocks.
 	 *      @param [in] parent                  The parent of this editor.
 	 */
-    SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
+    SingleAddressBlockEditor(RegisterInterface* registerInterface,
+        QSharedPointer<AddressBlock> addressBlock,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,

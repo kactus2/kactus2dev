@@ -507,6 +507,8 @@ public:
 
     /*!
      *  Get the list of reset interfaces.
+     *
+     *      @return The contained reset interfaces.
      */
     std::vector<ResetInterface*> getResetInterfaces() const;
 

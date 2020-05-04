@@ -126,7 +126,6 @@ vector<string> FieldInterface::getItemNames() const
     return names;
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setName()
 //-----------------------------------------------------------------------------

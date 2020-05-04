@@ -23,6 +23,8 @@ class MemoryMapsVisualizer;
 class AddressBlockGraphItem;
 class ExpressionParser;
 class AddressBlockValidator;
+class RegisterInterface;
+
 //-----------------------------------------------------------------------------
 //! The item for a single address block in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -177,6 +179,9 @@ private:
 
     //! The used address block validator.
     QSharedPointer<AddressBlockValidator> addressBlockValidator_;
+
+    //! Interface for registers.
+    RegisterInterface* registerInterface_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

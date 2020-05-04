@@ -12,13 +12,15 @@
 #include "componenteditorregisteritem.h"
 #include "componenteditorfielditem.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
-#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Register.h>
@@ -35,15 +37,19 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<RegisterValidator> registerValidator, ComponentEditorItem* parent):
+    QSharedPointer<RegisterValidator> registerValidator, RegisterInterface* registerInterface,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 visualizer_(nullptr),
 registerItem_(nullptr),
 expressionParser_(expressionParser),
 registerValidator_(registerValidator),
-fieldInterface_(new FieldInterface())
+fieldInterface_(new FieldInterface()),
+registerInterface_(registerInterface)
 {
+    registerInterface_->addSubInterface(reg->name().toStdString(), fieldInterface_);
+
     fieldInterface_->setFields(reg->getFields());
     fieldInterface_->setValidator(registerValidator->getFieldValidator());
     fieldInterface_->setExpressionParser(expressionParser);
@@ -67,6 +73,14 @@ fieldInterface_(new FieldInterface())
             connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::~ComponentEditorRegisterItem()
+//-----------------------------------------------------------------------------
+ComponentEditorRegisterItem::~ComponentEditorRegisterItem()
+{
+    registerInterface_->removeSubInterface(fieldInterface_);
 }
 
 //-----------------------------------------------------------------------------

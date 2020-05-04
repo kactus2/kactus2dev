@@ -30,10 +30,8 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockEditor::AddressBlockEditor()
 //-----------------------------------------------------------------------------
-AddressBlockEditor::AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData,
-    QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<RegisterFileValidator> registerFileValidator, QWidget* parent):
+AddressBlockEditor::AddressBlockEditor(RegisterInterface* registerInterface, QSharedPointer<Component> component,
+    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
 QGroupBox(tr("Registers summary"), parent),
     view_(new EditableTableView(this)),
     model_(0)
@@ -45,8 +43,7 @@ QGroupBox(tr("Registers summary"), parent),
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new AddressBlockModel(registerData, expressionParser, parameterFinder,
-        expressionFormatter, registerFileValidator, this);
+    model_ = new AddressBlockModel(registerInterface, expressionParser, parameterFinder, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);

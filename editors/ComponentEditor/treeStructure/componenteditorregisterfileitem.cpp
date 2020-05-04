@@ -13,11 +13,14 @@
 
 #include "componenteditorregisteritem.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h>
+
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
@@ -44,8 +47,14 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
     visualizer_(nullptr),
     registerFileItem_(nullptr),
     expressionParser_(expressionParser),
-    registerFileValidator_(registerFileValidator)
+    registerFileValidator_(registerFileValidator),
+    registerInterface_(new RegisterInterface())
 {
+    registerInterface_->setRegisters(registerFile_->getRegisterData());
+    registerInterface_->setValidator(registerFileValidator_->getRegisterValidator());
+    registerInterface_->setExpressionParser(expressionParser);
+    registerInterface_->setExpressionFormatter(expressionFormatter);
+
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -58,7 +67,7 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
         {
             QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
                 libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
-                expressionParser_, registerFileValidator_->getRegisterValidator(), this));
+                expressionParser_, registerFileValidator_->getRegisterValidator(), registerInterface_, this));
             childItems_.append(regItem);
             continue;
         }
@@ -110,7 +119,7 @@ void ComponentEditorRegisterFileItem::createChild( int index )
     {
         QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
             libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
-            expressionParser_, registerFileValidator_->getRegisterValidator(), this));
+            expressionParser_, registerFileValidator_->getRegisterValidator(), registerInterface_, this));
         regItem->setLocked(locked_);
 
         if (visualizer_)
@@ -158,8 +167,8 @@ ItemEditor* ComponentEditorRegisterFileItem::editor()
 {
     if (!editor_)
     {
-        editor_ = new SingleRegisterFileEditor(registerFile_, component_, libHandler_, parameterFinder_, 
-            expressionFormatter_, expressionParser_, registerFileValidator_);
+        editor_ = new SingleRegisterFileEditor(registerInterface_, registerFile_, component_, libHandler_,
+            parameterFinder_, expressionFormatter_, expressionParser_, registerFileValidator_);
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);

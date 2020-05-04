@@ -35,26 +35,25 @@
 //-----------------------------------------------------------------------------
 // Function: SingleAddressBlockEditor::SingleAddressBlockEditor()
 //-----------------------------------------------------------------------------
-SingleAddressBlockEditor::SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
-    QSharedPointer<Component> component, LibraryInterface* handler,
+SingleAddressBlockEditor::SingleAddressBlockEditor(RegisterInterface* registerInterface,
+    QSharedPointer<AddressBlock> addressBlock, QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<AddressBlockValidator> addressBlockValidator,
     QWidget* parent):
 ItemEditor(component, handler, parent),
-    nameEditor_(addressBlock, this, tr("Address block name and description")),
-    usageEditor_(),
-    baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
-    rangeEditor_(new ExpressionEditor(parameterFinder, this)),
-    widthEditor_(new ExpressionEditor(parameterFinder, this)),
-    isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-    accessEditor_(),
-    volatileEditor_(),
-    registersEditor_(new AddressBlockEditor(addressBlock->getRegisterData(), component, handler, 
-        parameterFinder, expressionFormatter, addressBlockValidator->getRegisterFileValidator(), this)),
-    registerFilesEditor_(new RegisterFileEditor(addressBlock->getRegisterData(), component, handler,
-        parameterFinder, expressionFormatter, addressBlockValidator->getRegisterFileValidator(), this)),
-    addressBlock_(addressBlock),
-    expressionParser_(expressionParser)
+nameEditor_(addressBlock, this, tr("Address block name and description")),
+usageEditor_(),
+baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
+rangeEditor_(new ExpressionEditor(parameterFinder, this)),
+widthEditor_(new ExpressionEditor(parameterFinder, this)),
+isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
+accessEditor_(),
+volatileEditor_(),
+registersEditor_(new AddressBlockEditor(registerInterface, component, handler, parameterFinder, this)),
+registerFilesEditor_(new RegisterFileEditor(addressBlock->getRegisterData(), component, handler,
+    parameterFinder, expressionFormatter, addressBlockValidator->getRegisterFileValidator(), this)),
+addressBlock_(addressBlock),
+expressionParser_(expressionParser)
 {
     baseAddressEditor_->setFixedHeight(20);
     rangeEditor_->setFixedHeight(20);

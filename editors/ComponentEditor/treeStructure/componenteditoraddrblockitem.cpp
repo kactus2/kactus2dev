@@ -14,6 +14,7 @@
 #include "componenteditorregisterfileitem.h"
 
 #include <editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
@@ -40,8 +41,14 @@ visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
 addressUnitBits_(0),
-addressBlockValidator_(addressBlockValidator)
+addressBlockValidator_(addressBlockValidator),
+registerInterface_(new RegisterInterface())
 {
+    registerInterface_->setRegisters(addrBlock_->getRegisterData());
+    registerInterface_->setValidator(addressBlockValidator_->getRegisterValidator());
+    registerInterface_->setExpressionParser(expressionParser);
+    registerInterface_->setExpressionFormatter(expressionFormatter);
+
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -53,26 +60,20 @@ addressBlockValidator_(addressBlockValidator)
 		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
 		if (reg)
         {
-			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
+            QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
                 libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
-                expressionParser_, addressBlockValidator_->getRegisterValidator(), this));
-			childItems_.append(regItem);
+                expressionParser_, addressBlockValidator_->getRegisterValidator(), registerInterface_, this));
+            childItems_.append(regItem);
             continue;
 		}
 
         QSharedPointer<RegisterFile> regfile = regModel.dynamicCast<RegisterFile>();
-        if(regfile){
+        if(regfile)
+        {
             QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(
-                new ComponentEditorRegisterFileItem(regfile,
-                    model,
-                    libHandler,
-                    component,
-                    parameterFinder_,
-                    expressionFormatter_,
-                    referenceCounter_,
-                    expressionParser_,
-                    addressBlockValidator_->getRegisterFileValidator(),
-                    this));
+                new ComponentEditorRegisterFileItem(regfile, model, libHandler, component, parameterFinder_,
+                    expressionFormatter_, referenceCounter_, expressionParser_,
+                    addressBlockValidator_->getRegisterFileValidator(), this));
             childItems_.append(regFileItem);
         }
     }
@@ -117,8 +118,8 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleAddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
-            expressionFormatter_, expressionParser_, addressBlockValidator_);
+        editor_ = new SingleAddressBlockEditor(registerInterface_, addrBlock_, component_, libHandler_,
+            parameterFinder_, expressionFormatter_, expressionParser_, addressBlockValidator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -149,7 +150,7 @@ void ComponentEditorAddrBlockItem::createChild( int index )
     {
 		QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
             libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_, 
-            expressionParser_, addressBlockValidator_->getRegisterValidator(), this));
+            expressionParser_, addressBlockValidator_->getRegisterValidator(), registerInterface_, this));
 		regItem->setLocked(locked_);
 		
 		if (visualizer_)

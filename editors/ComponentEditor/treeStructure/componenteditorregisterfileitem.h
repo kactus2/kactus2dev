@@ -21,6 +21,7 @@ class MemoryVisualizationItem;
 class MemoryMapsVisualizer;
 class RegisterFileGraphItem;
 class RegisterFileValidator;
+class RegisterInterface;
 
 //-----------------------------------------------------------------------------
 //! Item representing a register file in the component editor browser tree.
@@ -146,6 +147,9 @@ private:
 
     //! The used address block validator.
     QSharedPointer<RegisterFileValidator> registerFileValidator_;
+
+    //! Interface for registers.
+    RegisterInterface* registerInterface_;
 };
 
 #endif // COMPONENTEDITORREGISTERFILEITEM_H

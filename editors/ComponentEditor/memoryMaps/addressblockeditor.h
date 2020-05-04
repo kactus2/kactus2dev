@@ -23,8 +23,7 @@ class EditableTableView;
 class ExpressionFormatter;
 class LibraryInterface;
 class ParameterFinder;
-
-class RegisterFileValidator;
+class RegisterInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of registers in an address block.
@@ -38,21 +37,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addressBlock            The address block being edited.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance managing the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] registerFileValidator   Validator used for registers/registerFiles.
-	 *      @param [in] parent                  The parent of this editor.
+     *      @param [in] registerInterface   Interface for registers.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] handler             The instance managing the library.
+	 *      @param [in] parameterFinder     The parameter finder.
+	 *      @param [in] parent              The parent of this editor.
 	 */
-	AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData,
-		QSharedPointer<Component> component,
-		LibraryInterface* handler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<RegisterFileValidator> registerFileValidator,
-		QWidget* parent = 0);
+    AddressBlockEditor(RegisterInterface* registerInterface, QSharedPointer<Component> component,
+        LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
 
 	//! The destructor.
 	virtual ~AddressBlockEditor() = default;

@@ -26,6 +26,7 @@ class ExpressionFormatter;
 class ExpressionEditor;
 class ExpressionParser;
 class RegisterFileValidator;
+class RegisterInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for a single register file item in component editor tree.
@@ -37,17 +38,19 @@ class SingleRegisterFileEditor : public ItemEditor
 public:
 
     /*!
-    * The constructor.
-    *
-    *     @param [in] registerFile             The register file to edit.
-    *     @param [in] component                The component containing the register file.
-    *     @param [in] handler                  The available IP-XACT library.
-    *     @param [in] parameterFinder          Finder for parameters.
-    *     @param [in] expressionFormatter      Formatter for expressions.
-    *     @param [in] registerFileValidator    Validator for register files.
-    *     @param [in] parent                   The parent widget.
+     * The constructor.
+     *
+     *      @param [in] registerInterface       Interface for registers.
+     *      @param [in] registerFile            The register file to edit.
+     *      @param [in] component               The component containing the register file.
+     *      @param [in] handler                 The available IP-XACT library.
+     *      @param [in] parameterFinder         Finder for parameters.
+     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] registerFileValidator   Validator for register files.
+     *      @param [in] parent                  The parent widget.
     */
-    SingleRegisterFileEditor(QSharedPointer<RegisterFile> registerFile,
+    SingleRegisterFileEditor(RegisterInterface* registerInterface,
+        QSharedPointer<RegisterFile> registerFile,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
