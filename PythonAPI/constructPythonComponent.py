@@ -1,6 +1,7 @@
 from ipmm_core_pkg.component import Component
 from ipmm_core_pkg.port import Port
 from ipmm_core_pkg.parameter import Parameter
+from ipmm_core_pkg.register import Register
 from ipmm_core_pkg.field import Field
 from ipmm_core_pkg.reset import Reset
 
@@ -35,30 +36,39 @@ def createComponent(api, portsInterface, parameterInterface):
 		
 		newComponent.add_parameter(Parameter(parameterName, description, dataType, bitWidth, value))
 	
-	fieldInterfaceList = api.getFieldInterfaces()
-	for fieldInterface in fieldInterfaceList:
-		for fieldName in fieldInterface.getItemNames():
+	for registerInterface in api.getRegisterInterfaces():
+		for registerName in registerInterface.getItemNames():
+			registerDescription = registerInterface.getDescription(registerName)
+			registerOffset = registerInterface.getOffsetValue(registerName, 10)
+			registerSize = registerInterface.getSizeValue(registerName, 10)
 			
-			fieldDescription = fieldInterface.getDescription(fieldName)
-			fieldBitOffset = fieldInterface.getOffsetValue(fieldName, 10)
-			fieldBitWidth = fieldInterface.getWidthValue(fieldName, 10)
-			fieldAccess = fieldInterface.getAccess(fieldName)
+			newRegister = Register(registerName, registerDescription, registerOffset, registerSize)
 			
-			newField = Field(fieldName, fieldDescription, fieldBitOffset, fieldBitWidth, fieldAccess)
+			fieldInterface = registerInterface.getSelectedSubInterface(registerName)
+			for fieldName in fieldInterface.getItemNames():
 			
-			resetInterface = fieldInterface.getResetInterface(fieldName)
-			if resetInterface is not None:
-				for resetType in resetInterface.getItemNames():
-					newResetType = resetType
-					if not newResetType:
-						newResetType = "HARD"
-					resetName = ""
-					resetDescription = ""
-					resetValue = resetInterface.getResetValue(resetType, 10)
-					resetMask = resetInterface.getResetMaskValue(resetType, 10)
+				fieldDescription = fieldInterface.getDescription(fieldName)
+				fieldBitOffset = fieldInterface.getOffsetValue(fieldName, 10)
+				fieldBitWidth = fieldInterface.getWidthValue(fieldName, 10)
+				fieldAccess = fieldInterface.getAccess(fieldName)
+			
+				newField = Field(fieldName, fieldDescription, fieldBitOffset, fieldBitWidth, fieldAccess)
+				newRegister.add_field(newField)
+				
+				resetInterface = fieldInterface.getResetInterface(fieldName)
+				if resetInterface is not None:
+					for resetType in resetInterface.getItemNames():
+						newResetType = resetType
+						if not newResetType:
+							newResetType = "HARD"
+						resetName = ""
+						resetDescription = ""
+						resetValue = resetInterface.getResetValue(resetType, 10)
+						resetMask = resetInterface.getResetMaskValue(resetType, 10)
 					
-					newField.add_reset(Reset(resetName, resetDescription, newResetType, resetValue, resetMask))
-		
-			newField.printer()
+						newField.add_reset(Reset(resetName, resetDescription, newResetType, resetValue, resetMask))
 	
+			newRegister.printer()
+			print("\n")
+		
 	return newComponent

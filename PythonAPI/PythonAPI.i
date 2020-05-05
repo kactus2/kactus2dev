@@ -14,6 +14,7 @@
 #include "..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h"
 #include "..\editors\ComponentEditor\ports\PortsInterface.h"
 #include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
+#include "..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h"
 %}
@@ -24,6 +25,7 @@ namespace std {
 	%template(stringVector) vector<string>;
 	%template(fieldInterfaceVector) vector<FieldInterface*>;
 	%template(resetInterfaceVector) vector<ResetInterface*>;
+	%template(registerInterfaceVector) vector<RegisterInterface*>;
 };
 
 /* Let's just grab the original header file here */
@@ -33,5 +35,6 @@ namespace std {
 %include "..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h"
 %include "..\editors\ComponentEditor\ports\PortsInterface.h"
 %include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
+%include "..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h"
 %include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
 %include "..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h"

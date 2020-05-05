@@ -258,6 +258,12 @@
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp">
       <Filter>Source Files\interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PythonAPI.h">
@@ -343,6 +349,12 @@
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h">
       <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -63,7 +63,9 @@ HEADERS += ../editors/ComponentEditor/common/interfaces/ParameterizableInterface
     ../editors/ComponentEditor/parameters/ParametersInterface.h \
     ../editors/ComponentEditor/ports/PortsInterface.h \
     ../editors/ComponentEditor/common/interfaces/CommonInterface.h \
-    ../editors/ComponentEditor/common/interfaces/NameGroupInterface.h
+    ../editors/ComponentEditor/common/interfaces/NameGroupInterface.h \
+    ../editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h
 SOURCES += ./PythonAPI.cpp \
     ./PythonAPI_wrap.cxx \
     ./messageMediator/PythonMessageMediator.cpp \
@@ -120,4 +122,6 @@ SOURCES += ./PythonAPI.cpp \
     ../editors/ComponentEditor/common/interfaces/NameGroupInterface.cpp \
     ../editors/ComponentEditor/common/interfaces/CommonInterface.cpp \
     ../editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp
+    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
+    ../editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.cpp \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp

@@ -15,6 +15,7 @@
 
 #include <editors/ComponentEditor/ports/PortsInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
 
@@ -40,6 +41,7 @@
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
 
 #include <QCoreApplication>
 
@@ -52,13 +54,13 @@ messager_(new PythonMessageMediator()),
 activeComponent_(),
 portsInterface_(new PortsInterface()),
 componentParameterInterface_(new ParametersInterface()),
-fieldInterfaces_(),
+registerInterfaces_(),
 parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Component>())),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 portValidator_(new PortValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<View> > >())),
 parameterValidator_(new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >())),
-fieldValidator_()
+registerValidator_()
 {
     portsInterface_->setExpressionParser(expressionParser_);
     portsInterface_->setExpressionFormatter(expressionFormatter_);
@@ -69,8 +71,11 @@ fieldValidator_()
     componentParameterInterface_->setValidator(parameterValidator_);
 
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(expressionParser_));
-    fieldValidator_ =
-        QSharedPointer<FieldValidator>(new FieldValidator(expressionParser_, enumValidator, parameterValidator_));
+    QSharedPointer<FieldValidator>fieldValidator_(
+        new FieldValidator(expressionParser_, enumValidator, parameterValidator_));
+
+    registerValidator_ = QSharedPointer<RegisterValidator>(
+        new RegisterValidator(expressionParser_, fieldValidator_, parameterValidator_));
 }
 
 //-----------------------------------------------------------------------------
@@ -169,7 +174,11 @@ bool PythonAPI::openComponent(QString const& componentVLNV)
             componentParameterInterface_->setParameters(component->getParameters());
             componentParameterInterface_->setChoices(component->getChoices());
 
-            setupFieldInterfaces(component);
+            registerValidator_->componentChange(component->getResetTypes());
+
+            setupRegisterInterfaces(component);
+            
+            messager_->showMessage(QString("Registers found: %1").arg(QString::number(registerInterfaces_.at(0)->getItemNames().size())));
 
             activeComponent_ = component;
             messager_->showMessage(QString("Component %1 is open").arg(componentVLNV));
@@ -189,11 +198,11 @@ bool PythonAPI::openComponent(QString const& componentVLNV)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::setupFieldInterfaces()
+// Function: PythonAPI::setupRegisterInterfaces()
 //-----------------------------------------------------------------------------
-void PythonAPI::setupFieldInterfaces(QSharedPointer<Component> component)
+void PythonAPI::setupRegisterInterfaces(QSharedPointer<Component> component)
 {
-    fieldInterfaces_.clear();
+    registerInterfaces_.clear();
 
     for (auto map : *component->getMemoryMaps())
     {
@@ -202,24 +211,43 @@ void PythonAPI::setupFieldInterfaces(QSharedPointer<Component> component)
             QSharedPointer<AddressBlock> block = blockBase.dynamicCast<AddressBlock>();
             if (block)
             {
-                for (auto registerBase : *block->getRegisterData())
-                {
-                    QSharedPointer<Register> blockRegister = registerBase.dynamicCast<Register>();
-                    if (blockRegister)
-                    {
-                        FieldInterface* fieldInterface(new FieldInterface());
+                RegisterInterface* registerInterface(new RegisterInterface());
 
-                        fieldInterface->setFields(blockRegister->getFields());
-                        fieldInterface->setValidator(fieldValidator_);
-                        fieldInterface->setExpressionParser(expressionParser_);
-                        fieldInterface->setExpressionFormatter(expressionFormatter_);
+                registerInterface->setRegisters(block->getRegisterData());
+                registerInterface->setValidator(registerValidator_);
+                registerInterface->setExpressionParser(expressionParser_);
+                registerInterface->setExpressionFormatter(expressionFormatter_);
 
-                        setupResetInterfaces(fieldInterface, blockRegister->getFields());
+                setupFieldInterfaces(registerInterface, block->getRegisterData(),
+                    registerValidator_->getFieldValidator());
 
-                        fieldInterfaces_.push_back(fieldInterface);
-                    }
-                }
+                registerInterfaces_.push_back(registerInterface);
             }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setupFieldInterfaces()
+//-----------------------------------------------------------------------------
+void PythonAPI::setupFieldInterfaces(RegisterInterface* containingRegisterInterface,
+    QSharedPointer<QList<QSharedPointer<RegisterBase>>> registers, QSharedPointer<FieldValidator> validator) const
+{
+    for (auto registerBase : *registers)
+    {
+        QSharedPointer<Register> blockRegister = registerBase.dynamicCast<Register>();
+        if (blockRegister)
+        {
+            FieldInterface* fieldInterface(new FieldInterface());
+
+            fieldInterface->setFields(blockRegister->getFields());
+            fieldInterface->setValidator(validator);
+            fieldInterface->setExpressionParser(expressionParser_);
+            fieldInterface->setExpressionFormatter(expressionFormatter_);
+            
+            setupResetInterfaces(fieldInterface, blockRegister->getFields(), validator);
+
+            containingRegisterInterface->addSubInterface(blockRegister->name().toStdString(), fieldInterface);
         }
     }
 }
@@ -228,13 +256,13 @@ void PythonAPI::setupFieldInterfaces(QSharedPointer<Component> component)
 // Function: PythonAPI::setupResetInterfaces()
 //-----------------------------------------------------------------------------
 void PythonAPI::setupResetInterfaces(FieldInterface* containingFieldInterface,
-    QSharedPointer<QList<QSharedPointer<Field>>> registerFields) const
+    QSharedPointer<QList<QSharedPointer<Field>>> registerFields, QSharedPointer<FieldValidator> validator) const
 {
     for (auto field : *registerFields)
     {
         ResetInterface* newResetInterface(new ResetInterface());
         newResetInterface->setResets(field);
-        newResetInterface->setValidator(fieldValidator_);
+        newResetInterface->setValidator(validator);
         newResetInterface->setExpressionParser(expressionParser_);
         newResetInterface->setExpressionFormatter(expressionFormatter_);
 
@@ -300,9 +328,9 @@ ParametersInterface* PythonAPI::getComponentParameterInterface() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::getFieldInterfaces()
+// Function: PythonAPI::getRegisterInterfaces()
 //-----------------------------------------------------------------------------
-std::vector<FieldInterface*> PythonAPI::getFieldInterfaces() const
+std::vector<RegisterInterface*> PythonAPI::getRegisterInterfaces() const
 {
-    return fieldInterfaces_;
+    return registerInterfaces_;
 }

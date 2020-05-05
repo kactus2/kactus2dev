@@ -32,6 +32,9 @@ class ParameterValidator;
 class FieldInterface;
 class FieldValidator;
 class Field;
+class RegisterBase;
+class RegisterInterface;
+class RegisterValidator;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data through python.
@@ -125,25 +128,38 @@ public:
      *
      *      @return Interface for accessing the address block fields.
      */
-    std::vector<FieldInterface*> getFieldInterfaces() const;
+    std::vector<RegisterInterface*> getRegisterInterfaces() const;
 
 private:
 
     /*!
+     *  Setup the register interfaces.
+     *
+     *      @param [in] component   Component containing the registers.
+     */
+    void setupRegisterInterfaces(QSharedPointer<Component> component);
+
+    /*!
      *  Setup the field interfaces.
      *
-     *      @param [in] component   Component containing the field interfaces.
+     *      @param [in] containingRegisterInterface     Register interface containing the field interfaces.
+     *      @param [in] registers                       List of component registers.
+     *      @param [in] validator                       Validator for fields.
      */
-    void setupFieldInterfaces(QSharedPointer<Component> component);
+    void setupFieldInterfaces(RegisterInterface* containingRegisterInterface,
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > > registers, QSharedPointer<FieldValidator> validator)
+        const;
 
     /*!
      *  Setup the reset interfaces.
      *
      *      @param [in] containingFieldInterface    Field interface containing the reset interfaces.
      *      @param [in] registerFields              List of register fields.
+     *      @param [in] validator                   Validator for fields.
      */
     void setupResetInterfaces(FieldInterface* containingFieldInterface,
-        QSharedPointer<QList<QSharedPointer<Field> > > registerFields) const;
+        QSharedPointer<QList<QSharedPointer<Field> > > registerFields, QSharedPointer<FieldValidator> validator)
+        const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -164,8 +180,8 @@ private:
     //! Interface for accessing the component parameters.
     ParametersInterface* componentParameterInterface_;
 
-    //! List of the field interfaces.
-    std::vector<FieldInterface*> fieldInterfaces_;
+    //! List of register interfaces.
+    std::vector<RegisterInterface*> registerInterfaces_;
 
     //! Component parameter finder.
     QSharedPointer<ComponentParameterFinder> parameterFinder_;
@@ -182,6 +198,6 @@ private:
     //! Validator for parameters.
     QSharedPointer<ParameterValidator> parameterValidator_;
 
-    //! Validator for fields.
-    QSharedPointer<FieldValidator> fieldValidator_;
+    //! Validator for registers.
+    QSharedPointer<RegisterValidator> registerValidator_;
 };
