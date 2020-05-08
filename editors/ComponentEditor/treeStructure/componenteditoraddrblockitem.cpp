@@ -15,6 +15,7 @@
 
 #include <editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
@@ -34,7 +35,8 @@ ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<Addres
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<AddressBlockValidator> addressBlockValidator, ComponentEditorItem* parent):
+    QSharedPointer<AddressBlockValidator> addressBlockValidator, AddressBlockInterface* blockInterface,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
 visualizer_(NULL),
@@ -42,7 +44,8 @@ graphItem_(NULL),
 expressionParser_(expressionParser),
 addressUnitBits_(0),
 addressBlockValidator_(addressBlockValidator),
-registerInterface_(new RegisterInterface())
+registerInterface_(new RegisterInterface()),
+blockInterface_(blockInterface)
 {
     registerInterface_->setRegisters(addrBlock_->getRegisterData());
     registerInterface_->setValidator(addressBlockValidator_->getRegisterValidator());
@@ -85,6 +88,7 @@ registerInterface_(new RegisterInterface())
 //-----------------------------------------------------------------------------
 ComponentEditorAddrBlockItem::~ComponentEditorAddrBlockItem()
 {
+    blockInterface_->removeSubInterface(registerInterface_);
 }
 
 //-----------------------------------------------------------------------------

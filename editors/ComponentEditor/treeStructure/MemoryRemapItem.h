@@ -25,6 +25,8 @@ class MemoryMap;
 class MemoryMapBase;
 class MemoryBlockBase;
 class MemoryMapValidator;
+class AddressBlockInterface;
+
 //-----------------------------------------------------------------------------
 //! The item for a single memory remap in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -180,6 +182,9 @@ private:
 
     //! The used memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
+
+    //! Interface for address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // MEMORYREMAPITEM_H

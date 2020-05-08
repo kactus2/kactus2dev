@@ -25,6 +25,8 @@ class AddressSpace;
 class MemoryMapBase;
 class MemoryBlockBase;
 class AddressSpaceValidator;
+class AddressBlockInterface;
+
 //-----------------------------------------------------------------------------
 //! The item for a single address space in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -169,6 +171,9 @@ private:
 
     //! The used address space validator.
     QSharedPointer<AddressSpaceValidator> spaceValidator_;
+
+    //! Block interface for address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // COMPONENTEDITORADDRSPACEITEM_H

@@ -22,8 +22,6 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/RemapState.h>
 
-#include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
-
 #include <QFormLayout>
 #include <QSplitter>
 
@@ -31,25 +29,19 @@
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
 SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component,
-    QSharedPointer<MemoryMapBase> memoryRemap,
-    QSharedPointer<MemoryMap> parentMemoryMap,
-    LibraryInterface* libHandler,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
-    QWidget* parent):
+    QSharedPointer<MemoryMapBase> memoryRemap, QSharedPointer<MemoryMap> parentMemoryMap,
+    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, AddressBlockInterface* blockInterface, QWidget* parent):
 ItemEditor(component, libHandler, parent),
-    nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
-    memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter,
-    expressionParser, memoryMapBaseValidator->getAddressBlockValidator(), parentMemoryMap->getAddressUnitBits(),
+nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
+memoryMapEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, expressionParser, blockInterface,
     this)),
-    addressUnitBitsEditor_(new QLineEdit(parent)),
-    isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-    slaveInterfaceLabel_(new QLabel(this)),
-    remapStateSelector_(new ReferenceSelector(this)),
-    memoryRemap_(memoryRemap),
-    parentMemoryMap_(parentMemoryMap)
+addressUnitBitsEditor_(new QLineEdit(parent)),
+isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
+slaveInterfaceLabel_(new QLabel(this)),
+remapStateSelector_(new ReferenceSelector(this)),
+memoryRemap_(memoryRemap),
+parentMemoryMap_(parentMemoryMap)
 {
     addressUnitBitsEditor_->setValidator
         (new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));

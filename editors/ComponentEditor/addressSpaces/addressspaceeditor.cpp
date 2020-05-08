@@ -16,8 +16,6 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 
-#include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
-
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QScrollArea>
@@ -28,12 +26,9 @@
 // Function: AddressSpaceEditor::AddressSpaceEditor()
 //-----------------------------------------------------------------------------
 AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-                                       QSharedPointer<AddressSpace> addrSpace,
-                                       QSharedPointer<ParameterFinder> parameterFinder,
-                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                       QSharedPointer<ExpressionParser> expressionParser,
-                                       QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
-                                       QWidget* parent /* = 0 */):
+    QSharedPointer<AddressSpace> addrSpace, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    AddressBlockInterface* blockInterface, QWidget* parent):
 ItemEditor(component, handler, parent),
 addrSpace_(addrSpace),
 nameEditor_(addrSpace, this),
@@ -41,8 +36,7 @@ generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), pa
     this),
 segmentsEditor_(addrSpace, component, handler->getDirectoryPath(component->getVlnv()), parameterFinder,
     expressionParser, expressionFormatter, this),
-localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFormatter,
-                   addressSpaceValidator->getLocalMemoryMapValidator(), this)
+localMemMapEditor_(addrSpace, component, handler, parameterFinder, blockInterface, this)
 {
 	Q_ASSERT(addrSpace_);
 

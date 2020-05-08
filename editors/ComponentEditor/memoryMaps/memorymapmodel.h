@@ -15,20 +15,12 @@
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-
-#include <IPXACTmodels/Component/MemoryMapBase.h>
-#include <IPXACTmodels/Component/MemoryBlockBase.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include <QList>
 
-class Choice;
-class AddressBlock;
-class AddressBlockValidator;
-class AddressBlockExpressionGatherer;
-class ReferenceCalculator;
+class AddressBlockInterface;
 
 //-----------------------------------------------------------------------------
 //! The model to manage the details of a single memory map.
@@ -42,23 +34,19 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] memoryRemap             Pointer to the memory remap being edited.
-	 *      @param [in] expressionParser        Pointer to the expression parser.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] addressBlockValidator   Validator used for address blocks.
-     *      @param [in] addressUnitBits         The current address unit bits.
-	 *      @param [in] parent                  Pointer to the owner of this model.
+     *      @param [in] blockInterface      Interface for address blocks;
+	 *      @param [in] expressionParser    Pointer to the expression parser.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] parent              Pointer to the owner of this model.
 	 */
-	MemoryMapModel(QSharedPointer<MemoryMapBase> memoryRemap,
+    MemoryMapModel(AddressBlockInterface* blockInterface,
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
-        QSharedPointer <ExpressionFormatter> expressionFormatter,
-        QSharedPointer<AddressBlockValidator> addressBlockValidator,
-        QString const& addressUnitBits,
-		QObject *parent);
-	
-	//! The destructor.
+        QObject *parent);
+
+	/*!
+     *  The destructor.
+     */
 	virtual ~MemoryMapModel();
 
 	/*!
@@ -226,6 +214,24 @@ private:
 	MemoryMapModel& operator=(const MemoryMapModel& other);
 
     /*!
+     *  Get the formatted value of an expression in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The formatted value of an expression in the selected index.
+     */
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the expression of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The expression of the selected index.
+     */
+    virtual QVariant expressionForIndex(QModelIndex const& index) const;
+
+    /*!
      *  Gets the value for the given index.
      *
      *      @param [in] index   The index of the target data.
@@ -235,54 +241,18 @@ private:
     QVariant valueForIndex(QModelIndex const& index) const;
 
     /*!
-     *  Decrease the number of references made from a removed address block..
+     *  Increase the number of references made in the selected expressions.
      *
-     *      @param [in] removedAddressBlock     The removed address block.
+     *      @param [in] expressionList  List of expressions.
      */
-    void decreaseReferencesWithRemovedAddressBlock(QSharedPointer<AddressBlock> removedAddressBlock);
-
-    /*!
-     *  Get the names of the contained address blocks.
-     *
-     *      @return The names of the contained address blocks.
-     */
-    QStringList getCurrentItemNames();
-
-    /*!
-     *  Increase the number of references made in the copied address block.
-     *
-     *      @param [in] pastedBlock             The copied address block.
-     *      @param [in] gatherer                Register expressions gatherer.
-     *      @param [in] referenceCalculator     The reference calculator.
-     */
-    void increaseReferencesInPastedAddressBlock(QSharedPointer<AddressBlock> pastedBlock,
-        AddressBlockExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator);
-
-    /*!
-     *  Get the last used address.
-     *
-     *      @return The last used address.
-     */
-    quint64 getLastAddress() const;
+    void increaseReferencesInPastedExpressions(QStringList const& expressionList);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the memory remap being edited.
-    QSharedPointer<MemoryMapBase> memoryRemap_;
-
-	//! Contains the memory map items being edited.
-    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks_;
-
-    //! The expression formatter, changes referenced ids to parameter names.
-    QSharedPointer <ExpressionFormatter> expressionFormatter_;
-
-    //! The used address block validator.
-    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
-
-    //! The current address unit bits.
-    QString addressUnitBits_;
+    //! Interface for address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // MEMORYMAPMODEL_H

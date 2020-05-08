@@ -32,16 +32,11 @@
 // Function: MemoryMapEditor::MemoryMapEditor()
 //-----------------------------------------------------------------------------
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-                                 QSharedPointer<MemoryMapBase> memoryRemap,
-                                 QSharedPointer<ParameterFinder> parameterFinder,
-                                 QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                 QSharedPointer<ExpressionParser> expressionParser,
-                                 QSharedPointer<AddressBlockValidator> addressBlockValidator,
-                                 QString const& addressUnitBits, QWidget* parent /* = 0 */):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    AddressBlockInterface* blockInterface, QWidget* parent):
 QGroupBox(tr("Address blocks summary"), parent),
 view_(new EditableTableView(this)),
-model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expressionFormatter,
-       addressBlockValidator, addressUnitBits, this))
+model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this))
 {
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);

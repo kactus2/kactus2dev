@@ -27,7 +27,7 @@ class MemoryMap;
 class MemoryMapBase;
 class ExpressionEditor;
 class ExpressionParser;
-class MemoryMapBaseValidator;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single memory map.
 //-----------------------------------------------------------------------------
@@ -40,24 +40,22 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component               The component that contains the editor.
-     *      @param [in] memoryRemap             The memory remap being edited.
-     *      @param [in] parentMemoryMap         The parent of the memory remap being edited.
-     *      @param [in] libHandler              The instance that manages the library.
-     *      @param [in] parameterFinder         The finder for the parameter references.
-     *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] memoryMapBaseValidator  Validator used for memory map base.
-     *      @param [in] parent                  The owner of this editor.
+     *      @param [in] component           The component that contains the editor.
+     *      @param [in] memoryRemap         The memory remap being edited.
+     *      @param [in] parentMemoryMap     The parent of the memory remap being edited.
+     *      @param [in] libHandler          The instance that manages the library.
+     *      @param [in] parameterFinder     The finder for the parameter references.
+     *      @param [in] expressionParser    The expression parser.
+     *      @param [in] blockInterface      Interface for address blocks.
+     *      @param [in] parent              The owner of this editor.
      */
     SingleMemoryMapEditor(QSharedPointer<Component> component,
         QSharedPointer<MemoryMapBase> memoryRemap,
         QSharedPointer<MemoryMap> parentMemoryMap,
         LibraryInterface* libHandler,
         QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
+        AddressBlockInterface* blockInterface,
         QWidget* parent = 0);
 
     /*!

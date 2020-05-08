@@ -461,7 +461,7 @@ public:
     /*!
      *  Get the field interface of the selected register.
      *
-     *      @param [in] registetName    Name of the selected register.
+     *      @param [in] registerName    Name of the selected register.
      *
      *      @return Field interface of the selected register.
      */
@@ -497,9 +497,10 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! List of the contained registers.
+    //! List of the contained register data.
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;
 
+    //! List of contained registers.
     QList<QSharedPointer<Register> > registers_;
 
     //! Validator for registers.

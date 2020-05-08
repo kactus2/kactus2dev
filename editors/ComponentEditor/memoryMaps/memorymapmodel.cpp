@@ -13,6 +13,7 @@
 
 #include "MemoryMapColumns.h"
 
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
@@ -22,7 +23,6 @@
 
 #include <common/KactusColors.h>
 
-
 #include <QRegularExpression>
 #include <QApplication>
 #include <QClipboard>
@@ -31,23 +31,14 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapModel::MemoryMapModel()
 //-----------------------------------------------------------------------------
-MemoryMapModel::MemoryMapModel(QSharedPointer<MemoryMapBase> memoryRemap,
-                               QSharedPointer<ExpressionParser> expressionParser,
-                               QSharedPointer<ParameterFinder> parameterFinder,
-                               QSharedPointer<ExpressionFormatter> expressionFormatter,
-                               QSharedPointer<AddressBlockValidator> addressBlockValidator,
-                               QString const& addressUnitBits, QObject *parent):
+MemoryMapModel::MemoryMapModel(AddressBlockInterface* blockInterface,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+    QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-memoryRemap_(memoryRemap),
-memoryBlocks_(memoryRemap->getMemoryBlocks()),
-expressionFormatter_(expressionFormatter),
-addressBlockValidator_(addressBlockValidator),
-addressUnitBits_(addressUnitBits)
+blockInterface_(blockInterface)
 {
     setExpressionParser(expressionParser);
-
-    Q_ASSERT(memoryRemap_);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +58,7 @@ int MemoryMapModel::rowCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-	return memoryBlocks_->size();
+    return blockInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -162,23 +153,18 @@ QVariant MemoryMapModel::headerData(int section, Qt::Orientation orientation, in
 //-----------------------------------------------------------------------------
 QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= blockInterface_->itemCount())
     {
 		return QVariant();
 	}
 
+    std::string blockName = blockInterface_->getIndexedItemName(index.row());
+
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
     {
-        if (isValidExpressionColumn(index))
+        if (isValidExpressionColumn(index) && role == Qt::DisplayRole)
         {
-            if (role == Qt::DisplayRole)
-            {
-                return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
-            }
-            else if (role == Qt::ToolTipRole)
-            {
-                return formattedValueFor(valueForIndex(index).toString());
-            }
+            return formattedExpressionForIndex(index);
         }
         else if (role == Qt::DisplayRole && index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
         {
@@ -191,21 +177,16 @@ QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
 
     else if (role == Qt::EditRole)
     {
-        if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
-        {
-            return valueForIndex(index);
-        }
-
         return expressionOrValueForIndex(index);
     }
 
 	else if (role == Qt::ForegroundRole)
     {
-        QSharedPointer<MemoryBlockBase> memoryBlock = memoryBlocks_->at(index.row());
+        std::string blockPresence = blockInterface_->getIsPresentExpression(blockName);
+        qint64 blockPresenceValue =
+            QString::fromStdString(blockInterface_->getIsPresentValue(blockName, 10)).toLongLong();
 
-        if (index.column() != MemoryMapColumns::IS_PRESENT &&
-            (!memoryBlock->getIsPresent().isEmpty() &&
-             parseExpressionToDecimal(memoryBlock->getIsPresent()).toInt() != 1))
+        if (index.column() != MemoryMapColumns::IS_PRESENT && (!blockPresence.empty() && blockPresenceValue != 1))
         {
             return KactusColors::DISABLED_TEXT;
         }
@@ -235,100 +216,78 @@ QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= blockInterface_->itemCount())
     {
 		return false;
 	}
 
     if (Qt::EditRole == role)
     {
+        std::string blockName = blockInterface_->getIndexedItemName(index.row());
+
         if (index.column() == MemoryMapColumns::USAGE_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-            if (addrBlock)
-            {
-                addrBlock->setUsage(General::str2Usage(value.toString(), General::USAGE_COUNT));
-            }
-            // if the item is not address block then usage can not be saved
-            else 
+            if (!blockInterface_->setUsage(blockName, value.toString().toStdString()))
             {
                 return false;
             }
         }
         else if (index.column() == MemoryMapColumns::NAME_COLUMN)
         {
-            memoryBlocks_->at(index.row())->setName(value.toString());
+            blockInterface_->setName(blockName, value.toString().toStdString());
         }									
         else if (index.column() == MemoryMapColumns::BASE_COLUMN)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(memoryBlocks_->at(index.row())->getBaseAddress());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(blockInterface_->getBaseAddressExpression(blockName)));
             }
 
-            memoryBlocks_->at(index.row())->setBaseAddress(value.toString());
+            blockInterface_->setBaseAddress(blockName, value.toString().toStdString());
         }
         else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-            if (addrBlock)
+            std::string oldValue = blockInterface_->getRangeExpression(blockName);
+            if (blockInterface_->setRange(blockName, value.toString().toStdString()))
             {
-                if (!value.isValid())
-                {
-                    removeReferencesFromSingleExpression(addrBlock->getRange());
-                }
-                addrBlock->setRange(value.toString());
+                removeReferencesFromSingleExpression(QString::fromStdString(oldValue));
             }
-            // if the item is not address block then range can not be saved
-            else 
+            else
             {
                 return false;
             }
         }
         else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-            if (addrBlock)
+            std::string oldValue = blockInterface_->getWidthExpression(blockName);
+            if (blockInterface_->setWidth(blockName, value.toString().toStdString()))
             {
-                if (!value.isValid())
-                {
-                    removeReferencesFromSingleExpression(addrBlock->getWidth());
-                }
-                addrBlock->setWidth(value.toString());
+                removeReferencesFromSingleExpression(QString::fromStdString(oldValue));
             }
-            else 
+            else
             {
                 return false;
             }
         }
         else if (index.column() == MemoryMapColumns::IS_PRESENT)
         {
-            memoryBlocks_->at(index.row())->setIsPresent(value.toString());
+            blockInterface_->setIsPresent(blockName, value.toString().toStdString());
         }
         else if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
         {
-            memoryBlocks_->at(index.row())->setDescription(value.toString());
+            blockInterface_->setDescription(blockName, value.toString().toStdString());
         }
         else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-            if (addrBlock)
-            {
-                addrBlock->setAccess(AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
-            }
-            else 
+            if (!blockInterface_->setAccess(blockName, value.toString().toStdString()))
             {
                 return false;
             }
         }
         else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-            if (addrBlock)
-            {
-                addrBlock->setVolatile(value.toBool());
-            }
-            else 
+            if (!blockInterface_->setVolatile(blockName, value.toBool()))
             {
                 return false;
             }
@@ -360,7 +319,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
 //-----------------------------------------------------------------------------
 void MemoryMapModel::addressUnitBitsUpdated(QString const& newAddressUnitBits)
 {
-    addressUnitBits_ = newAddressUnitBits;
+    blockInterface_->setAddressUnitBits(newAddressUnitBits.toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -368,7 +327,7 @@ void MemoryMapModel::addressUnitBitsUpdated(QString const& newAddressUnitBits)
 //-----------------------------------------------------------------------------
 void MemoryMapModel::onAddItem( QModelIndex const& index )
 {
-	int row = memoryBlocks_->size();
+    int row = blockInterface_->itemCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -376,46 +335,8 @@ void MemoryMapModel::onAddItem( QModelIndex const& index )
 		row = index.row();
 	}
 
-	// the address where the current memory map ends
-    quint64 previousEnd = getLastAddress();
-	// if this is the first item to add then do not increase address
-	if (previousEnd != 0)
-    {
-		++previousEnd;
-	}
-    
-    int lastBaseAddress = 0;
-    int lastRange = 0;
-
-    for (int itemIndex = 0; itemIndex < memoryBlocks_->size(); ++itemIndex)
-    {
-        QString calculatedExpression = parseExpressionToDecimal(memoryBlocks_->at(itemIndex)->getBaseAddress());
-        int addressBlockBaseAddress = calculatedExpression.toInt();
-
-        if (addressBlockBaseAddress > lastBaseAddress ||
-            (itemIndex == memoryBlocks_->size() - 1 && lastBaseAddress == 0))
-        {
-            QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(itemIndex).dynamicCast<AddressBlock>();
-            if (addressBlock)
-            {
-                lastBaseAddress = addressBlockBaseAddress;
-                lastRange = parseExpressionToDecimal(addressBlock->getRange()).toInt();
-            }
-        }
-    }
-
-
-	// convert the address to hexadecimal form
-    QString newBase = QString::number(lastBaseAddress + lastRange, 16);
-	newBase = newBase.toUpper();
-    newBase.prepend("'h");
-
 	beginInsertRows(QModelIndex(), row, row);
-	QSharedPointer<AddressBlock> addrBlock(new AddressBlock());
-    addrBlock->setWidth("32");
-	addrBlock->setRange("4");
-	addrBlock->setBaseAddress(newBase);
-	memoryBlocks_->insert(row, addrBlock);
+    blockInterface_->addBlock(row);
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -431,21 +352,15 @@ void MemoryMapModel::onAddItem( QModelIndex const& index )
 void MemoryMapModel::onRemoveItem( QModelIndex const& index )
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= blockInterface_->itemCount())
     {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-    if (addressBlock)
-    {
-        decreaseReferencesWithRemovedAddressBlock(addressBlock);
-    }
-
-	memoryBlocks_->removeAt(index.row());
+    removeReferencesInItemOnRow(index.row());
+    blockInterface_->removeBlock(blockInterface_->getIndexedItemName(index.row()));
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
@@ -453,26 +368,6 @@ void MemoryMapModel::onRemoveItem( QModelIndex const& index )
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapmodel::decreaseReferencesWithRemovedAddressBlock()
-//-----------------------------------------------------------------------------
-void MemoryMapModel::decreaseReferencesWithRemovedAddressBlock(QSharedPointer<AddressBlock> removedAddressBlock)
-{
-    AddressBlockExpressionGatherer addressBlockGatherer;
-    QStringList expressionList = addressBlockGatherer.getExpressions(removedAddressBlock);
-
-    ReferenceCalculator referenceCalculator(getParameterFinder());
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
-
-    foreach (QString referencedId, referencedParameters.keys())
-    {
-        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
-        {
-            emit decreaseReferences(referencedId);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -489,33 +384,14 @@ bool MemoryMapModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant MemoryMapModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-
-    if (addressBlock)
+    if (isValidExpressionColumn(index))
     {
-        if (index.column() == MemoryMapColumns::BASE_COLUMN)
-        {
-            return addressBlock->getBaseAddress();
-        }
-        else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
-        {
-            return addressBlock->getRange();
-        }
-        else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
-        {
-            return addressBlock->getWidth();
-        }
-        else if (index.column() == MemoryMapColumns::IS_PRESENT)
-        {
-            return addressBlock->getIsPresent();
-        }
-        else
-        {
-            return data(index, Qt::DisplayRole);
-        }
+        return expressionForIndex(index);
     }
-
-    return QVariant();
+    else
+    {
+        return valueForIndex(index);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -523,35 +399,35 @@ QVariant MemoryMapModel::expressionOrValueForIndex(QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 bool MemoryMapModel::validateIndex(QModelIndex const& index) const
 {
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-    if (!addressBlock)
+    std::string blockName = blockInterface_->getIndexedItemName(index.row());
+    if (blockName.empty())
     {
         return false;
     }
 
     if (index.column() == MemoryMapColumns::NAME_COLUMN)
     {
-        return addressBlockValidator_->hasValidName(addressBlock);
+        return blockInterface_->itemHasValidName(blockName);
     }
     else if (index.column() == MemoryMapColumns::BASE_COLUMN)
     {
-        return addressBlockValidator_->hasValidBaseAddress(addressBlock);
+        blockInterface_->hasValidBaseAddress(blockName);
     }
     else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
     {
-        return addressBlockValidator_->hasValidRange(addressBlock);
+        return blockInterface_->hasValidRange(blockName);
     }
     else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
     {
-        return addressBlockValidator_->hasValidWidth(addressBlock);
+        return blockInterface_->hasValidWidth(blockName);
     }
     else if (index.column() == MemoryMapColumns::IS_PRESENT)
     {
-        return addressBlockValidator_->hasValidIsPresent(addressBlock);
+        return blockInterface_->hasValidIsPresent(blockName);
     }
     else if (index.column() == MemoryMapColumns::USAGE_COLUMN)
     {
-        return addressBlockValidator_->hasValidUsage(addressBlock);
+        return blockInterface_->hasValidUsage(blockName);
     }
 
     return true;
@@ -562,24 +438,60 @@ bool MemoryMapModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int MemoryMapModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(row).dynamicCast<AddressBlock>();
+    return blockInterface_->getAllReferencesToIdInItem(
+        blockInterface_->getIndexedItemName(row), valueID.toStdString());
+}
 
-    if (addressBlock)
+//-----------------------------------------------------------------------------
+// Function: memorymapmodel::formattedExpressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant MemoryMapModel::formattedExpressionForIndex(QModelIndex const& index) const
+{
+    std::string blockName = blockInterface_->getIndexedItemName(index.row());
+    if (index.column() == MemoryMapColumns::BASE_COLUMN)
     {
-        int referencesInBaseAddress = memoryBlocks_->at(row)->getBaseAddress().count(valueID);
-        int referencesInRange = addressBlock->getRange().count(valueID);
-        int referencesInWidth = addressBlock->getWidth().count(valueID);
-        int referencesInIsPresent = addressBlock->getIsPresent().count(valueID);
-
-        int totalReferences = referencesInBaseAddress + referencesInRange + referencesInWidth
-            + referencesInIsPresent;
-        return totalReferences;
+        return QString::fromStdString(blockInterface_->getBaseAddressFormattedExpression(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
+    {
+        return QString::fromStdString(blockInterface_->getRangeFormattedExpression(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
+    {
+        return QString::fromStdString(blockInterface_->getWidthFormattedExpression(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::IS_PRESENT)
+    {
+        return QString::fromStdString(blockInterface_->getIsPresentFormattedExpression(blockName));
     }
 
-    else
+    return valueForIndex(index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapmodel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant MemoryMapModel::expressionForIndex(QModelIndex const& index) const
+{
+    std::string blockName = blockInterface_->getIndexedItemName(index.row());
+    if (index.column() == MemoryMapColumns::BASE_COLUMN)
     {
-        return 0;
+        return QString::fromStdString(blockInterface_->getBaseAddressExpression(blockName));
     }
+    else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
+    {
+        return QString::fromStdString(blockInterface_->getRangeExpression(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
+    {
+        return QString::fromStdString(blockInterface_->getWidthExpression(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::IS_PRESENT)
+    {
+        return QString::fromStdString(blockInterface_->getIsPresentExpression(blockName));
+    }
+
+    return valueForIndex(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -587,90 +499,45 @@ int MemoryMapModel::getAllReferencesToIdInItemOnRow(const int& row, QString cons
 //-----------------------------------------------------------------------------
 QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
 {
+    std::string blockName = blockInterface_->getIndexedItemName(index.row());
     if (index.column() == MemoryMapColumns::NAME_COLUMN)
     {
-        return memoryBlocks_->at(index.row())->name();
+        return QString::fromStdString(blockName);
     }
     else if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
     {
-        return memoryBlocks_->at(index.row())->description();
+        return QString::fromStdString(blockInterface_->getDescription(blockName));
     }
     else if (index.column() == MemoryMapColumns::BASE_COLUMN)
     {
-        return memoryBlocks_->at(index.row())->getBaseAddress();
+        return QString::fromStdString(blockInterface_->getBaseAddressValue(blockName));
     }
     else if (index.column() == MemoryMapColumns::IS_PRESENT)
     {
-        return memoryBlocks_->at(index.row())->getIsPresent();
+        return QString::fromStdString(blockInterface_->getIsPresentValue(blockName));
     }
-
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
-    if (addressBlock)
+    else if (index.column() == MemoryMapColumns::USAGE_COLUMN)
     {
-        if (index.column() == MemoryMapColumns::USAGE_COLUMN)
-        {
-            return General::usage2Str(addressBlock->getUsage());
-        }
-
-        else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
-        {
-            return addressBlock->getRange();
-        }
-        else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
-        {
-            return addressBlock->getWidth();
-        }
-
-        else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
-        {
-            return AccessTypes::access2Str(addressBlock->getAccess());
-        }
-        else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
-        {
-            return addressBlock->getVolatile();
-        }
+        return QString::fromStdString(blockInterface_->getUsage(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
+    {
+        return QString::fromStdString(blockInterface_->getRangeValue(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
+    {
+        return QString::fromStdString(blockInterface_->getWidthValue(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
+    {
+        return QString::fromStdString(blockInterface_->getAccess(blockName));
+    }
+    else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
+    {
+        return QString::fromStdString(blockInterface_->getVolatile(blockName));
     }
     
     return QVariant();
-}
-
-//-----------------------------------------------------------------------------
-// Function: memorymapmodel::getLastAddress()
-//-----------------------------------------------------------------------------
-quint64 MemoryMapModel::getLastAddress() const
-{
-    int index = -1;
-    unsigned int lastBaseAddress = 0;
-
-    for (int i = 0; i < memoryRemap_->getMemoryBlocks()->size(); ++i)
-    {
-        AddressBlock* block = dynamic_cast<AddressBlock*>(memoryRemap_->getMemoryBlocks()->at(i).data());
-        if (block != 0)
-        {
-            bool ok = true;
-//             unsigned int baseAddress = General::str2Uint(block->getBaseAddress());
-            unsigned int baseAddress = parseExpressionToDecimal(block->getBaseAddress()).toUInt(&ok);
-
-            if (ok)
-            {
-                if (baseAddress >= lastBaseAddress)
-                {
-                    lastBaseAddress = baseAddress;
-                    index = i;
-                }
-            }
-        }
-    }
-
-    if (index == -1)
-    {
-        return 0;
-    }
-
-    AddressBlock* block = dynamic_cast<AddressBlock*>(memoryRemap_->getMemoryBlocks()->at(index).data());
-
-//     return lastBaseAddress + General::str2Uint(static_cast<AddressBlock*>(memoryRemap_->getMemoryBlocks()->at(index).data())->getRange()) - 1;
-    return lastBaseAddress + parseExpressionToDecimal(block->getRange()).toInt() - 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -678,21 +545,13 @@ quint64 MemoryMapModel::getLastAddress() const
 //-----------------------------------------------------------------------------
 void MemoryMapModel::onCopyRows(QModelIndexList indexList)
 {
-    QList<QSharedPointer<MemoryBlockBase> > copiedBlocks;
-    foreach (QModelIndex index, indexList)
+    std::vector<int> registerIndexes;
+    for (auto index : indexList)
     {
-        QSharedPointer<MemoryBlockBase> memoryBlock = memoryBlocks_->at(index.row());
-        copiedBlocks.append(memoryBlock);
+        registerIndexes.push_back(index.row());
     }
 
-    QVariant memoryBlockVariant;
-    memoryBlockVariant.setValue(copiedBlocks);
-
-    QMimeData* newMimeData = new QMimeData();
-    newMimeData->setData("text/xml/ipxact:addressBlock", QByteArray());
-    newMimeData->setImageData(memoryBlockVariant);
-
-    QApplication::clipboard()->setMimeData(newMimeData);
+    blockInterface_->copyRows(registerIndexes);
 }
 
 //-----------------------------------------------------------------------------
@@ -700,72 +559,46 @@ void MemoryMapModel::onCopyRows(QModelIndexList indexList)
 //-----------------------------------------------------------------------------
 void MemoryMapModel::onPasteRows()
 {
-    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+    int rowBegin = blockInterface_->itemCount();
 
-    if (pasteData->hasImage())
+    std::vector<std::string> pastedBlockNames = blockInterface_->pasteRows();
+    int pasteCount = static_cast<int>(pastedBlockNames.size());
+    if (pasteCount == 0)
     {
-        QVariant pasteVariant = pasteData->imageData();
-        if (pasteVariant.canConvert<QList<QSharedPointer<MemoryBlockBase> > >())
-        {
-            AddressBlockExpressionGatherer gatherer;
-            ReferenceCalculator referenceCalculator(getParameterFinder());
-
-            QList<QSharedPointer<MemoryBlockBase> > newMemoryBlocks =
-                pasteVariant.value<QList<QSharedPointer<MemoryBlockBase> > >();
-
-            int rowBegin = memoryBlocks_->size();
-            int rowEnd = rowBegin + newMemoryBlocks.size() - 1;
-
-            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
-
-            foreach(QSharedPointer<MemoryBlockBase> copiedBlock, newMemoryBlocks)
-            {
-                QSharedPointer<AddressBlock> addressBlock = copiedBlock.dynamicCast<AddressBlock>();
-                if (addressBlock)
-                {
-                    QSharedPointer<AddressBlock> newBlock (new AddressBlock(*addressBlock.data()));
-                    newBlock->setName(getUniqueName(newBlock->name(), getCurrentItemNames()));
-
-                    memoryBlocks_->append(newBlock);
-
-                    increaseReferencesInPastedAddressBlock(newBlock, gatherer, referenceCalculator);
-
-                    emit itemAdded(memoryBlocks_->size() - 1);
-                }
-            }
-
-            endInsertRows();
-
-            emit contentChanged();
-        }
+        return;
     }
+
+    int rowEnd = rowBegin + pasteCount - 1;
+
+    beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+    for (int i = rowBegin; i <= rowEnd; ++i)
+    {
+        emit itemAdded(i);
+    }
+
+    endInsertRows();
+
+    QStringList pastedExpressions;
+    for (auto expression : blockInterface_->getExpressionsInSelectedItems(pastedBlockNames))
+    {
+        pastedExpressions.append(QString::fromStdString(expression));
+    }
+    increaseReferencesInPastedExpressions(pastedExpressions);
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: memorymapmodel::getCurrentItemNames()
+// Function: MemoryMapModel::increaseReferencesInPastedField()
 //-----------------------------------------------------------------------------
-QStringList MemoryMapModel::getCurrentItemNames()
+void MemoryMapModel::increaseReferencesInPastedExpressions(QStringList const& expressionList)
 {
-    QStringList names;
-    foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryBlocks_)
-    {
-        names.append(memoryBlock->name());
-    }
+    ReferenceCalculator referenceCalculator(getParameterFinder());
 
-    return names;
-}
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
 
-//-----------------------------------------------------------------------------
-// Function: MemoryMapModel::increaseReferencesInPastedAddressBlock()
-//-----------------------------------------------------------------------------
-void MemoryMapModel::increaseReferencesInPastedAddressBlock(QSharedPointer<AddressBlock> pastedBlock,
-    AddressBlockExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator)
-{
-    QStringList blockExpressions = gatherer.getExpressions(pastedBlock);
-
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(blockExpressions);
-
-    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    QMapIterator<QString, int> refParameterIterator(referencedParameters);
     while (refParameterIterator.hasNext())
     {
         refParameterIterator.next();

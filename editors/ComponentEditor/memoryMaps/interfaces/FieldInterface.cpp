@@ -807,6 +807,7 @@ bool FieldInterface::removeField(string const& fieldName)
         return false;
     }
 
+    resetInterfaces_.remove(removedField->name());
     return fields_->removeOne(removedField);
 }
 

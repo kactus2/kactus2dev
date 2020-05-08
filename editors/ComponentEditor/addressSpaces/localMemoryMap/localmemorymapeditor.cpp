@@ -15,12 +15,15 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+
 #include <editors/ComponentEditor/memoryMaps/MemoryMapColumns.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapdelegate.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapmodel.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <library/LibraryInterface.h>
@@ -29,19 +32,14 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 
-#include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
-
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::LocalMemoryMapEditor()
 //-----------------------------------------------------------------------------
 LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<AddressSpace> addressSpace,
-                                           QSharedPointer<Component> component, LibraryInterface* handler,
-                                           QSharedPointer<ParameterFinder> parameterFinder,
-                                           QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                           QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
-                                           QWidget *parent):
+    QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, AddressBlockInterface* blockInterface, QWidget *parent):
 QGroupBox(tr("Local memory map"), parent),
 addressSpace_(addressSpace),
 localMemoryMap_(0),
@@ -59,6 +57,8 @@ handler_(handler)
         localMemoryMap_ = QSharedPointer<MemoryMapBase>(new MemoryMapBase());
     }
 
+    blockInterface->setAddressBlocks(localMemoryMap_->getMemoryBlocks());
+
     nameEditor_ = (new NameGroupEditor(localMemoryMap_, this));
 
     setCheckable(true);
@@ -68,8 +68,7 @@ handler_(handler)
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new MemoryMapModel(localMemoryMap_, expressionParser, parameterFinder, expressionFormatter,
-        memoryMapBaseValidator->getAddressBlockValidator(), addressSpace->getAddressUnitBits(), this);
+    model_ = new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);

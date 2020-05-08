@@ -24,6 +24,7 @@ class AddressBlockGraphItem;
 class ExpressionParser;
 class AddressBlockValidator;
 class RegisterInterface;
+class AddressBlockInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for a single address block in component editor's navigation tree.
@@ -46,6 +47,7 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression formatter.
      *      @param [in] addressBlockValidator   Validator used for address blocks.
+     *      @param [in] blockInterface          Interface for address blocks.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
@@ -57,6 +59,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressBlockValidator> addressBlockValidator,
+        AddressBlockInterface* blockInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -182,6 +185,9 @@ private:
 
     //! Interface for registers.
     RegisterInterface* registerInterface_;
+
+    //! Interface for address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

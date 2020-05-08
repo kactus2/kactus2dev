@@ -4891,6 +4891,9 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7485,6 +7488,9 @@
       <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
     </ClInclude>
   </ItemGroup>

@@ -131,7 +131,7 @@ int RegisterInterface::indexInRegisterData(int const& index) const
         return registerData_->indexOf(indexedRegister);
     }
 
-    return -1;
+    return registerDataCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -708,6 +708,7 @@ bool RegisterInterface::removeRegister(std::string const& registerName, int cons
         return false;
     }
 
+    subInterfaces_.remove(removedRegister->name());
     registerData_->removeAt(dataIndex);
     return registers_.removeOne(removedRegister);
 }

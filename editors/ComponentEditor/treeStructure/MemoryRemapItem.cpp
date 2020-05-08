@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
@@ -33,7 +34,7 @@ MemoryRemapItem::MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<MemoryMapValidator> memoryMapBaseValidator, ComponentEditorItem* parent):
+    QSharedPointer<MemoryMapValidator> memoryMapBaseValidator, ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),
 memoryRemap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap),
@@ -41,8 +42,15 @@ memoryBlocks_(memoryRemap->getMemoryBlocks()),
 visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
-memoryMapValidator_(memoryMapBaseValidator)
+memoryMapValidator_(memoryMapBaseValidator),
+blockInterface_(new AddressBlockInterface())
 {
+    blockInterface_->setAddressBlocks(memoryBlocks_);
+    blockInterface_->setValidator(memoryMapValidator_->getAddressBlockValidator());
+    blockInterface_->setExpressionParser(expressionParser);
+    blockInterface_->setExpressionFormatter(expressionFormatter);
+    blockInterface_->setAddressUnitBits(parentMemoryMap->getAddressUnitBits().toStdString());
+
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -58,7 +66,7 @@ memoryMapValidator_(memoryMapBaseValidator)
         {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(new ComponentEditorAddrBlockItem(
                 addrBlock, model, libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-                expressionParser_, memoryMapBaseValidator->getAddressBlockValidator(), this));
+                expressionParser_, memoryMapBaseValidator->getAddressBlockValidator(), blockInterface_, this));
 			childItems_.append(addrBlockItem);
 		}
 	}
@@ -128,7 +136,7 @@ ItemEditor* MemoryRemapItem::editor()
     if (!editor_)
     {
         editor_ = new SingleMemoryMapEditor(component_, memoryRemap_, parentMemoryMap_, libHandler_,
-            parameterFinder_, expressionFormatter_, expressionParser_, memoryMapValidator_);
+            parameterFinder_, expressionParser_, blockInterface_);
         editor_->setProtection(locked_);
         
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -175,7 +183,7 @@ void MemoryRemapItem::createChild( int index )
     {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem (new ComponentEditorAddrBlockItem(
             addrBlock, model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, memoryMapValidator_->getAddressBlockValidator(), this));
+            expressionParser_, memoryMapValidator_->getAddressBlockValidator(), blockInterface_, this));
 		addrBlockItem->setLocked(locked_);
 
         int newAddressUnitBits = expressionParser_->parseExpression(parentMemoryMap_->getAddressUnitBits()).toInt();
