@@ -23,10 +23,11 @@ using namespace std;
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::PortsInterface()
 //-----------------------------------------------------------------------------
-PortsInterface::PortsInterface() :
-ParameterizableInterface(),
+PortsInterface::PortsInterface(QSharedPointer<PortValidator> validator,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
+ParameterizableInterface(expressionParser, expressionFormatter),
 ports_(),
-portValidator_()
+portValidator_(validator)
 {
 
 }
@@ -37,14 +38,6 @@ portValidator_()
 void PortsInterface::setPorts(QSharedPointer<Component> component)
 {
     ports_ = component->getPorts();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsInterface::setValidator()
-//-----------------------------------------------------------------------------
-void PortsInterface::setValidator(QSharedPointer<PortValidator> validator)
-{
-    portValidator_ = validator;
 }
 
 //-----------------------------------------------------------------------------

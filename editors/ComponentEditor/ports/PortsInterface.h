@@ -28,8 +28,14 @@ public:
 
     /*!
      *  The constructor.
+     *
+     *      @param [in] validator               Validator for ports.
+     *      @param [in] expressionParser        Parser for expressions.
+     *      @param [in] expressionFormatter     Formatter for expressions.
      */
-    PortsInterface();
+    PortsInterface(QSharedPointer<PortValidator> validator,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter);
 
 	/*!
      *  The destructor.
@@ -42,13 +48,6 @@ public:
      *      @param [in] component   Component containing the selected ports.
      */
     void setPorts(QSharedPointer<Component> component);
-
-    /*!
-     *  Set port validator.
-     *
-     *      @param [in] validator   Validator for ports.
-     */
-    void setValidator(QSharedPointer<PortValidator> validator);
 
     /*!
      *  Get index of the selected port.

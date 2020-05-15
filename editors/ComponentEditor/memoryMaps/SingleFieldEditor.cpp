@@ -54,7 +54,7 @@ SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer
 ItemEditor(component, handler, parent),
 nameEditor_(field, this, tr("Field name and description")),
 resetsEditor_(new ResetsEditor(resetInterface, component->getResetTypes(), expressionParser, parameterFinder,
-    this)),
+    field, this)),
 enumerationsEditor_(new FieldEditor(field->getEnumeratedValues(), fieldValidator->getEnumeratedValueValidator(),
                     component, handler, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),

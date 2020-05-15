@@ -19,6 +19,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 
 #include <common/views/EditableTableView/editabletableview.h>
 
@@ -30,12 +31,17 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockEditor::AddressBlockEditor()
 //-----------------------------------------------------------------------------
-AddressBlockEditor::AddressBlockEditor(RegisterInterface* registerInterface, QSharedPointer<Component> component,
-    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
+AddressBlockEditor::AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase>>> registers,
+    RegisterInterface* registerInterface, QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
 QGroupBox(tr("Registers summary"), parent),
-    view_(new EditableTableView(this)),
-    model_(0)
+view_(new EditableTableView(this)),
+model_(0),
+interface_(registerInterface),
+registers_(registers)
 {
+    interface_->setRegisters(registers_);
+
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
     view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
@@ -120,4 +126,6 @@ QGroupBox(tr("Registers summary"), parent),
 void AddressBlockEditor::refresh()
 {
 	view_->update();
+
+    interface_->setRegisters(registers_);
 }

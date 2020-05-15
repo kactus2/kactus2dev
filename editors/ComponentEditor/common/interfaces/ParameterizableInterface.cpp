@@ -19,28 +19,13 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterizableInterface::ParameterizableInterface()
 //-----------------------------------------------------------------------------
-ParameterizableInterface::ParameterizableInterface() :
-expressionParser_(),
-formatter_(),
+ParameterizableInterface::ParameterizableInterface(QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter):
+expressionParser_(expressionParser),
+formatter_(expressionFormatter),
 valueFormatter_(new ValueFormatter())
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterizableInterface::setExpressionParser()
-//-----------------------------------------------------------------------------
-void ParameterizableInterface::setExpressionParser(QSharedPointer<ExpressionParser> parser)
-{
-    expressionParser_ = parser;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterizableInterface::setExprressionFormatter()
-//-----------------------------------------------------------------------------
-void ParameterizableInterface::setExpressionFormatter(QSharedPointer<ExpressionFormatter> formatter)
-{
-    formatter_ = formatter;
 }
 
 //-----------------------------------------------------------------------------

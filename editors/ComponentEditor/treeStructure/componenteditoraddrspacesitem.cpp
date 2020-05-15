@@ -15,6 +15,11 @@
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/addressSpaces/addressspaceseditor.h>
 
+#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 
@@ -38,7 +43,8 @@ ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTree
 ComponentEditorItem(model, libHandler, component, parent),
 addressSpaces_(component->getAddressSpaces()),
 expressionParser_(expressionParser),
-spaceValidator_()
+spaceValidator_(),
+blockInterface_()
 {
     createAddressSpaceValidator();
 
@@ -46,11 +52,13 @@ spaceValidator_()
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
+    createAddressBlockInterface();
+
 	foreach (QSharedPointer<AddressSpace> addrSpace, *addressSpaces_)
     {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_, spaceValidator_, this));	
+            parameterFinder_, expressionFormatter_, expressionParser_, spaceValidator_, blockInterface_, this));	
 		childItems_.append(addrItem);
 	};
 }
@@ -120,9 +128,9 @@ QString ComponentEditorAddrSpacesItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpacesItem::createChild( int index )
 {
-	QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
-		new ComponentEditorAddrSpaceItem(addressSpaces_->at(index), model_, libHandler_, component_,
-        referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, spaceValidator_, this));
+	QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(new ComponentEditorAddrSpaceItem(
+        addressSpaces_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
+        expressionFormatter_, expressionParser_, spaceValidator_, blockInterface_, this));
 	addrItem->setLocked(locked_);
 	childItems_.insert(index, addrItem);
 }
@@ -166,4 +174,24 @@ void ComponentEditorAddrSpacesItem::addressUnitBitsChangedInRow(int spaceIndex)
     {
         childSpace->changeAdressUnitBitsOnAddressBlocks();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoraddrspacesitem::createAddressBlockInterface()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpacesItem::createAddressBlockInterface()
+{
+    QSharedPointer<AddressBlockValidator> blockValidator =
+        spaceValidator_->getLocalMemoryMapValidator()->getAddressBlockValidator();
+    QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
+    QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
+
+    ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
+    FieldInterface* fieldInterface(
+        new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
+
+    RegisterInterface* registerInterface(
+        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
+    blockInterface_ =
+        new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_, registerInterface);
 }

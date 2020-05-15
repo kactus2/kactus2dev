@@ -35,11 +35,13 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::AddressBlockInterface()
 //-----------------------------------------------------------------------------
-AddressBlockInterface::AddressBlockInterface() :
-ParameterizableInterface(),
+AddressBlockInterface::AddressBlockInterface(QSharedPointer<AddressBlockValidator> blockValidator,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    RegisterInterface* subInterface):
+ParameterizableInterface(expressionParser, expressionFormatter),
 blockData_(),
-validator_(),
-subInterfaces_(),
+validator_(blockValidator),
+subInterface_(subInterface),
 addressUnitBits_("")
 {
 
@@ -53,15 +55,6 @@ void AddressBlockInterface::setAddressBlocks(
 {
     blockData_ = newAddressBlocks;
 }
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::setValidator()
-//-----------------------------------------------------------------------------
-void AddressBlockInterface::setValidator(QSharedPointer<AddressBlockValidator> validator)
-{
-    validator_ = validator;
-}
-
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::getItemIndex()
@@ -128,34 +121,8 @@ bool AddressBlockInterface::setName(string const& currentName, string const& new
 
     QString uniqueNewName = getUniqueName(newName, BLOCK_TYPE);
 
-    changeKeyInSubInterfaces(QString::fromStdString(currentName), uniqueNewName);
-
     editedItem->setName(uniqueNewName);
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::changeKeyInSubInterfaces()
-//-----------------------------------------------------------------------------
-void AddressBlockInterface::changeKeyInSubInterfaces(QString const& currentName, QString const& newName)
-{
-    QMap<QString, RegisterInterface*> newSubInterfaces;
-
-    QMapIterator<QString, RegisterInterface*> subIterator(subInterfaces_);
-    while (subIterator.hasNext())
-    {
-        subIterator.next();
-
-        QString interfaceKey = subIterator.key();
-        if (interfaceKey == currentName)
-        {
-            interfaceKey = newName;
-        }
-
-        newSubInterfaces.insertMulti(interfaceKey, subIterator.value());
-    }
-
-    subInterfaces_.swap(newSubInterfaces);
 }
 
 //-----------------------------------------------------------------------------
@@ -705,7 +672,6 @@ bool AddressBlockInterface::removeBlock(std::string const& blockName)
         return false;
     }
 
-    subInterfaces_.remove(removedItem->name());
     return blockData_->removeOne(removedItem);
 }
 
@@ -810,56 +776,9 @@ std::vector<std::string> AddressBlockInterface::getExpressionsInSelectedItems(st
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::addSubInterface()
+// Function: AddressBlockInterface::getSubInterface()
 //-----------------------------------------------------------------------------
-void AddressBlockInterface::addSubInterface(std::string const& itemName, RegisterInterface* newSubInterface)
+RegisterInterface* AddressBlockInterface::getSubInterface() const
 {
-    subInterfaces_.insertMulti(QString::fromStdString(itemName), newSubInterface);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::removeSubInterface()
-//-----------------------------------------------------------------------------
-bool AddressBlockInterface::removeSubInterface(RegisterInterface* removedInterface)
-{
-    QString interfaceKey = subInterfaces_.key(removedInterface);
-    int numberRemoved = subInterfaces_.remove(interfaceKey);
-    if (numberRemoved == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::getSubInterfaces()
-//-----------------------------------------------------------------------------
-std::vector<RegisterInterface*> AddressBlockInterface::getSubInterfaces() const
-{
-    std::vector<RegisterInterface*> allSubInterfaces;
-
-    QMapIterator<QString, RegisterInterface*> subIterator(subInterfaces_);
-    while (subIterator.hasNext())
-    {
-        subIterator.next();
-        allSubInterfaces.push_back(subIterator.value());
-    }
-
-    return allSubInterfaces;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::getSelectedSubInterface()
-//-----------------------------------------------------------------------------
-RegisterInterface* AddressBlockInterface::getSelectedSubInterface(std::string const& registerName) const
-{
-    if (subInterfaces_.contains(QString::fromStdString(registerName)))
-    {
-        return subInterfaces_.value(QString::fromStdString(registerName));
-    }
-
-    return nullptr;
+    return subInterface_;
 }

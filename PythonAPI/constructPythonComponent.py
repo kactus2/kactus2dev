@@ -1,6 +1,7 @@
 from ipmm_core_pkg.component import Component
 from ipmm_core_pkg.port import Port
 from ipmm_core_pkg.parameter import Parameter
+from ipmm_core_pkg.addressBlock import AddressBlock
 from ipmm_core_pkg.register import Register
 from ipmm_core_pkg.field import Field
 from ipmm_core_pkg.reset import Reset
@@ -35,28 +36,46 @@ def createComponent(api, portsInterface, parameterInterface):
 		value = parameterInterface.getValueFormattedExpression(parameterName)
 		
 		newComponent.add_parameter(Parameter(parameterName, description, dataType, bitWidth, value))
+		
+	mapName = "Map"
+	blockInterface = api.getAddressBlockInterface(mapName)
+	if blockInterface is not None:
+		for blockName in blockInterface.getItemNames():
+			blockDescription = blockInterface.getDescription(blockName)
+			blockRange = blockInterface.getRangeValue(blockName, 10)
+			blockWidth = blockInterface.getWidthValue(blockName, 10)
 	
-	for registerInterface in api.getRegisterInterfaces():
-		for registerName in registerInterface.getItemNames():
-			registerDescription = registerInterface.getDescription(registerName)
-			registerOffset = registerInterface.getOffsetValue(registerName, 10)
-			registerSize = registerInterface.getSizeValue(registerName, 10)
+			newBlock  = AddressBlock(blockName, blockDescription, blockRange, blockWidth)
+		
+			registerInterface = api.getRegisterInterface(mapName, blockName)
+			if registerInterface is None:
+				continue
 			
-			newRegister = Register(registerName, registerDescription, registerOffset, registerSize)
+			for registerName in registerInterface.getItemNames():
+				registerDescription = registerInterface.getDescription(registerName)
+				registerOffset = registerInterface.getOffsetValue(registerName, 10)
+				registerSize = registerInterface.getSizeValue(registerName, 10)
 			
-			fieldInterface = registerInterface.getSelectedSubInterface(registerName)
-			for fieldName in fieldInterface.getItemNames():
-			
-				fieldDescription = fieldInterface.getDescription(fieldName)
-				fieldBitOffset = fieldInterface.getOffsetValue(fieldName, 10)
-				fieldBitWidth = fieldInterface.getWidthValue(fieldName, 10)
-				fieldAccess = fieldInterface.getAccess(fieldName)
-			
-				newField = Field(fieldName, fieldDescription, fieldBitOffset, fieldBitWidth, fieldAccess)
-				newRegister.add_field(newField)
+				newRegister = Register(registerName, registerDescription, registerOffset, registerSize)
+				newBlock.add_register(newRegister)
 				
-				resetInterface = fieldInterface.getResetInterface(fieldName)
-				if resetInterface is not None:
+				fieldInterface = api.getFieldInterface(mapName, blockName, registerName)
+				if fieldInterface is None:
+					continue
+					
+				for fieldName in fieldInterface.getItemNames():
+					fieldDescription = fieldInterface.getDescription(fieldName)
+					fieldBitOffset = fieldInterface.getOffsetValue(fieldName, 10)
+					fieldBitWidth = fieldInterface.getWidthValue(fieldName, 10)
+					fieldAccess = fieldInterface.getAccess(fieldName)
+			
+					newField = Field(fieldName, fieldDescription, fieldBitOffset, fieldBitWidth, fieldAccess)
+					newRegister.add_field(newField)
+				
+					resetInterface = api.getResetInterface(mapName, blockName, registerName, fieldName)
+					if resetInterface is None:
+						continue
+						
 					for resetType in resetInterface.getItemNames():
 						newResetType = resetType
 						if not newResetType:
@@ -67,8 +86,8 @@ def createComponent(api, portsInterface, parameterInterface):
 						resetMask = resetInterface.getResetMaskValue(resetType, 10)
 					
 						newField.add_reset(Reset(resetName, resetDescription, newResetType, resetValue, resetMask))
-	
-			newRegister.printer()
-			print("\n")
 		
+			newBlock.printer()
+			print("\n")
+
 	return newComponent

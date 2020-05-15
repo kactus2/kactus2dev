@@ -13,7 +13,6 @@
 #define REGISTEREDITOR_H
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Register.h>
 
 #include <QSharedPointer>
 #include <QGroupBox>
@@ -25,6 +24,7 @@ class EditableTableView;
 class ExpressionFormatter;
 class FieldValidator;
 class FieldInterface;
+class Field;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of fields in a register.
@@ -38,15 +38,19 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] reg                 Pointer to the register being edited.
+     *      @param [in] fields              Pointer to the available fields.
 	 *      @param [in] component           Pointer to the component being edited.
 	 *      @param [in] handler             Pointer to the instance that manages the library.
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
      *      @param [in] fieldInterface      Interface for fields.
 	 *      @param [in] parent              Pointer to the parent of this editor.
 	 */
-    RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Component> component, LibraryInterface* handler,
-        QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface, QWidget* parent = 0);
+    RegisterEditor(QSharedPointer<QList<QSharedPointer<Field> > > fields,
+        QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        FieldInterface* fieldInterface,
+        QWidget* parent = 0);
 
 	/*!
      *  The destructor.
@@ -129,6 +133,12 @@ private:
 
 	//! Pointer to the model that manages the details of items.
 	RegisterTableModel* model_;
+
+    //! Interface for accessing fields.
+    FieldInterface* interface_;
+
+    //! Pointer to the available fields.
+    QSharedPointer<QList<QSharedPointer<Field> > > fields_;
 };
 
 #endif // REGISTEREDITOR_H

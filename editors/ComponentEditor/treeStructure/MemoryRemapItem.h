@@ -49,6 +49,7 @@ public:
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] memoryMapValidator      Validator for memory maps.
+     *      @param [in] blockInterface          Interface for accessing address blocks.
      *      @param [in] parent                  The parent item.
      */
     MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
@@ -61,6 +62,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<MemoryMapValidator> memoryMapValidator,
+        AddressBlockInterface* blockInterface,
         ComponentEditorItem* parent);
 
     /*!

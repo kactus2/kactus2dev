@@ -21,6 +21,7 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 
 #include <library/LibraryInterface.h>
 
@@ -33,11 +34,16 @@
 //-----------------------------------------------------------------------------
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-    AddressBlockInterface* blockInterface, QWidget* parent):
+    AddressBlockInterface* blockInterface, QSharedPointer<QList<QSharedPointer<MemoryBlockBase>>> blocks,
+    QWidget* parent):
 QGroupBox(tr("Address blocks summary"), parent),
 view_(new EditableTableView(this)),
-model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this))
+model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this)),
+interface_(blockInterface),
+blocks_(blocks)
 {
+    interface_->setAddressBlocks(blocks_);
+
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
@@ -112,4 +118,6 @@ MemoryMapEditor::~MemoryMapEditor()
 void MemoryMapEditor::refresh()
 {
 	view_->update();
+
+    interface_->setAddressBlocks(blocks_);
 }

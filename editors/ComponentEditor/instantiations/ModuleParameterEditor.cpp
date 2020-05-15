@@ -41,15 +41,15 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
 QGroupBox(tr("Module parameters"), parent),
 proxy_(new QSortFilterProxyModel(this)),
 model_(0),
-parameterInterface_(new ParametersInterface()),
+parameterInterface_(),
 view_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    parameterInterface_->setExpressionParser(expressionParser);
-    parameterInterface_->setExpressionFormatter(expressionFormatter);
-    parameterInterface_->setValidator(
-        QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, componentChoices)));
+    QSharedPointer<ParameterValidator> validator(new ParameterValidator(expressionParser, componentChoices));
+
+    parameterInterface_ = QSharedPointer<ParametersInterface>(
+        new ParametersInterface(validator, expressionParser, expressionFormatter));
     parameterInterface_->setChoices(componentChoices);
 
     model_ = new ModuleParameterModel(parameterInterface_, expressionParser, parameterFinder, this);

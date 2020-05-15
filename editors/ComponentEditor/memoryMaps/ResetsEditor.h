@@ -29,6 +29,8 @@ class ResetType;
 
 class ResetInterface;
 
+class Field;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the resets of a field.
 //-----------------------------------------------------------------------------
@@ -45,11 +47,12 @@ public:
      *      @param [in] resetTypes          List of reset types within the containing component.
      *      @param [in] expressionParser    The expression parser.
      *      @param [in] parameterFinder     Component parameter finder.
+     *      @param [in] containingField     Field containing the resets.
 	 *      @param [in] parent              Pointer to the parent of this editor.
 	 */
     ResetsEditor(ResetInterface* resetInterface, QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes,
         QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-        QWidget* parent = 0);
+        QSharedPointer<Field> containingField, QWidget* parent = 0);
 
 	/*!
 	 *  The destructor.
@@ -96,6 +99,12 @@ private:
 
 	//! The model that manages the resets.
     ResetsModel* resetsModel_;
+
+    //! Field containing the resets.
+    QSharedPointer<Field> containingField_;
+
+    //! Interface for accessing resets.
+    ResetInterface* interface_;
 };
 
 #endif // RESETSEDITOR_H

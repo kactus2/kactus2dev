@@ -24,6 +24,7 @@ class ExpressionFormatter;
 class LibraryInterface;
 class ParameterFinder;
 class RegisterInterface;
+class RegisterBase;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of registers in an address block.
@@ -37,13 +38,15 @@ public:
 	/*!
 	 *  The constructor.
 	 *
+     *      @param [in] registers           Registers for the interface.
      *      @param [in] registerInterface   Interface for registers.
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] handler             The instance managing the library.
 	 *      @param [in] parameterFinder     The parameter finder.
 	 *      @param [in] parent              The parent of this editor.
 	 */
-    AddressBlockEditor(RegisterInterface* registerInterface, QSharedPointer<Component> component,
+    AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registers,
+        RegisterInterface* registerInterface, QSharedPointer<Component> component,
         LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
 
 	//! The destructor.
@@ -129,6 +132,12 @@ private:
 
 	//! The model that manages the details of address block.
 	AddressBlockModel* model_;
+
+    //! Interface for accessing registers.
+    RegisterInterface* interface_;
+
+    //! Pointer to the registers for the interface.
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registers_;
 };
 
 #endif // ADDRESSBLOCKEDITOR_H

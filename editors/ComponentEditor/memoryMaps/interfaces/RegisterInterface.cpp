@@ -37,11 +37,13 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::RegisterInterface()
 //-----------------------------------------------------------------------------
-RegisterInterface::RegisterInterface() :
-ParameterizableInterface(),
+RegisterInterface::RegisterInterface(QSharedPointer<RegisterValidator> validator,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    FieldInterface* subInterface):
+ParameterizableInterface(expressionParser, expressionFormatter),
 registers_(),
-validator_(),
-subInterfaces_(),
+validator_(validator),
+subInterface_(subInterface),
 addressUnitBits_(0)
 {
 
@@ -64,15 +66,6 @@ void RegisterInterface::setRegisters(QSharedPointer<QList<QSharedPointer<Registe
         }
     }
 }
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::setValidator()
-//-----------------------------------------------------------------------------
-void RegisterInterface::setValidator(QSharedPointer<RegisterValidator> validator)
-{
-    validator_ = validator;
-}
-
 
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::getItemIndex()
@@ -161,34 +154,8 @@ bool RegisterInterface::setName(string const& currentName, string const& newName
 
     QString uniqueNewName = getUniqueName(newName, REGISTER_TYPE);
 
-    changeKeyInSubInterfaces(QString::fromStdString(currentName), uniqueNewName);
-
     editedRegister->setName(uniqueNewName);
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::changeKeyInSubInterfaces()
-//-----------------------------------------------------------------------------
-void RegisterInterface::changeKeyInSubInterfaces(QString const& currentName, QString const& newName)
-{
-    QMap<QString, FieldInterface*> newSubInterfaces;
-
-    QMapIterator<QString, FieldInterface*> subIterator(subInterfaces_);
-    while (subIterator.hasNext())
-    {
-        subIterator.next();
-
-        QString interfaceKey = subIterator.key();
-        if (interfaceKey == currentName)
-        {
-            interfaceKey = newName;
-        }
-
-        newSubInterfaces.insertMulti(interfaceKey, subIterator.value());
-    }
-
-    subInterfaces_.swap(newSubInterfaces);
 }
 
 //-----------------------------------------------------------------------------
@@ -708,7 +675,6 @@ bool RegisterInterface::removeRegister(std::string const& registerName, int cons
         return false;
     }
 
-    subInterfaces_.remove(removedRegister->name());
     registerData_->removeAt(dataIndex);
     return registers_.removeOne(removedRegister);
 }
@@ -810,56 +776,9 @@ std::vector<std::string> RegisterInterface::
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterInterface::addSubInterface()
+// Function: RegisterInterface::getSubInterface()
 //-----------------------------------------------------------------------------
-void RegisterInterface::addSubInterface(std::string const& registerName, FieldInterface* newSubInterface)
+FieldInterface* RegisterInterface::getSubInterface() const
 {
-    subInterfaces_.insertMulti(QString::fromStdString(registerName), newSubInterface);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::removeSubInterface()
-//-----------------------------------------------------------------------------
-bool RegisterInterface::removeSubInterface(FieldInterface* removedInterface)
-{
-    QString interfaceKey = subInterfaces_.key(removedInterface);
-    int numberRemoved = subInterfaces_.remove(interfaceKey);
-    if (numberRemoved == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::getSubInterfaces()
-//-----------------------------------------------------------------------------
-std::vector<FieldInterface*> RegisterInterface::getSubInterfaces() const
-{
-    std::vector<FieldInterface*> allSubInterfaces;
-
-    QMapIterator<QString, FieldInterface*> subIterator(subInterfaces_);
-    while (subIterator.hasNext())
-    {
-        subIterator.next();
-        allSubInterfaces.push_back(subIterator.value());
-    }
-
-    return allSubInterfaces;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::getSelectedSubInterface()
-//-----------------------------------------------------------------------------
-FieldInterface* RegisterInterface::getSelectedSubInterface(std::string const& registerName) const
-{
-    if (subInterfaces_.contains(QString::fromStdString(registerName)))
-    {
-        return subInterfaces_.value(QString::fromStdString(registerName));
-    }
-
-    return nullptr;
+    return subInterface_;
 }

@@ -32,42 +32,34 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem()
 //-----------------------------------------------------------------------------
-ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<RegisterFile> registerFile,
-    ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<RegisterFileValidator> registerFileValidator,
-    ComponentEditorItem* parent) :
-    ComponentEditorItem(model, libHandler, component, parent),
-    registerFile_(registerFile),
-    visualizer_(nullptr),
-    registerFileItem_(nullptr),
-    expressionParser_(expressionParser),
-    registerFileValidator_(registerFileValidator),
-    registerInterface_(new RegisterInterface())
+ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<RegisterFile> regFile,
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<RegisterFileValidator> registerFileValidator, RegisterInterface* registerInterface,
+    ComponentEditorItem* parent):
+ComponentEditorItem(model, libHandler, component, parent),
+registerFile_(regFile),
+visualizer_(nullptr),
+registerFileItem_(nullptr),
+expressionParser_(expressionParser),
+registerFileValidator_(registerFileValidator),
+registerInterface_(registerInterface)
 {
-    registerInterface_->setRegisters(registerFile_->getRegisterData());
-    registerInterface_->setValidator(registerFileValidator_->getRegisterValidator());
-    registerInterface_->setExpressionParser(expressionParser);
-    registerInterface_->setExpressionFormatter(expressionFormatter);
-
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
     setObjectName(tr("ComponentEditorRegFileItem"));
 
-    for (QSharedPointer<RegisterBase> regModel : *registerFile->getRegisterData())
+    for (QSharedPointer<RegisterBase> regModel : *regFile->getRegisterData())
     {
         QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
         if (reg)
         {
             QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
                 libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
-                expressionParser_, registerFileValidator_->getRegisterValidator(), registerInterface_, this));
+                expressionParser_, registerFileValidator_->getRegisterValidator(),
+                registerInterface_->getSubInterface(), this));
             childItems_.append(regItem);
             continue;
         }
@@ -77,7 +69,7 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
         {
             QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(
                 regfile, model, libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
-                  expressionParser_, registerFileValidator_, this));
+                  expressionParser_, registerFileValidator_, registerInterface_, this));
             childItems_.append(regFileItem);
         }
     }
@@ -119,7 +111,8 @@ void ComponentEditorRegisterFileItem::createChild( int index )
     {
         QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
             libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
-            expressionParser_, registerFileValidator_->getRegisterValidator(), registerInterface_, this));
+            expressionParser_, registerFileValidator_->getRegisterValidator(),
+            registerInterface_->getSubInterface(), this));
         regItem->setLocked(locked_);
 
         if (visualizer_)
@@ -146,7 +139,7 @@ void ComponentEditorRegisterFileItem::createChild( int index )
     {
         QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regFile, model_,
             libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
-            expressionParser_, registerFileValidator_, this));
+            expressionParser_, registerFileValidator_, registerInterface_, this));
         regFileItem->setLocked(locked_);
 
         if (visualizer_)

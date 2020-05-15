@@ -17,6 +17,7 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsModel.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsDelegate.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
 
 #include <QVBoxLayout>
 
@@ -25,12 +26,16 @@
 //-----------------------------------------------------------------------------
 ResetsEditor::ResetsEditor(ResetInterface* resetInterface,
     QSharedPointer<QList<QSharedPointer<ResetType>>> resetTypes, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<Field> containingField, QWidget* parent):
 QGroupBox(tr("Resets"), parent),
 resetsView_(new EditableTableView(this)),
 resetsProxy_(new QSortFilterProxyModel(this)),
-resetsModel_(new ResetsModel(resetInterface, expressionParser, parameterFinder, this))
+resetsModel_(new ResetsModel(resetInterface, expressionParser, parameterFinder, this)),
+containingField_(containingField),
+interface_(resetInterface)
 {
+    interface_->setResets(containingField_);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(resetsView_, 0);
 
@@ -79,4 +84,6 @@ ResetsEditor::~ResetsEditor()
 void ResetsEditor::refresh()
 {
 	resetsView_->update();
+
+    interface_->setResets(containingField_);
 }

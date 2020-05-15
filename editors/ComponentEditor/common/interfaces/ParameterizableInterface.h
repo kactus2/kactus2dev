@@ -27,27 +27,17 @@ public:
 
     /*!
      *  The constructor.
+     *
+     *      @param [in] expressionParser        Parser for expressions.
+     *      @param [in] expressionFormatter     Formatter for expressions.
      */
-    ParameterizableInterface();
+    ParameterizableInterface(QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter);
 
 	/*!
      *  The destructor.
      */
     virtual ~ParameterizableInterface() = default;
-
-    /*!
-     *  Set expression parser.
-     *
-     *      @param [in] parser  Parser for expressions.
-     */
-    void setExpressionParser(QSharedPointer<ExpressionParser> parser);
-
-    /*!
-     *  Set expression formatter.
-     *
-     *      @param [in] formatter   Formatter for expressions.
-     */
-    void setExpressionFormatter(QSharedPointer<ExpressionFormatter> formatter);
 
     /*!
      *  Calculate all the references to the selected ID in the selected item.

@@ -32,10 +32,18 @@ class AddressBlockInterface : public ParameterizableInterface, public NameGroupI
 
 public:
 
-	/*!
-	 *  The constructor.
-	 */
-    AddressBlockInterface();
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] blockValidator          Validator for address blocks.
+     *      @param [in] expressionParser        Parser for expressions.
+     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] subInterface            Interface for accessing registers.
+     */
+    AddressBlockInterface(QSharedPointer<AddressBlockValidator> blockValidator,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        RegisterInterface* subInterface);
 	
 	/*!
      *  The destructor.
@@ -48,13 +56,6 @@ public:
      *      @param [in] newRegisterData     The new register data.
      */
     void setAddressBlocks(QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > newAddressBlocks);
-
-    /*!
-     *  Set register validator.
-     *
-     *      @param [in] validator   Validator for registers.
-     */
-    void setValidator(QSharedPointer<AddressBlockValidator> validator);
 
     /*!
      *  Get index of the selected item.
@@ -446,44 +447,18 @@ public:
     std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> itemNames) const;
 
     /*!
-     *  Add a sub interface.
-     *
-     *      @param [in] blockName           Name of the address block containing the registers.
-     *      @param [in] newSubInterface     The new sub interface.
-     */
-    void addSubInterface(std::string const& itemName, RegisterInterface* newSubInterface);
-
-    /*!
-     *  Remove the selected sub interface.
-     *
-     *      @param [in] removedInterface    The selected interface.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    bool removeSubInterface(RegisterInterface* removedInterface);
-
-    /*!
-     *  Get the list of sub interfaces.
-     *
-     *      @return The contained sub interfaces.
-     */
-    std::vector<RegisterInterface*> getSubInterfaces() const;
-
-    /*!
-     *  Get the register interface of the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *
-     *      @return Register interface of the selected address block.
-     */
-    RegisterInterface* getSelectedSubInterface(std::string const& blockName) const;
-    
-    /*!
      *  Change the value for address unit bits.
      *
      *      @param [in] newAddressUnitbits  The new value for address unit bits.
      */
     void setAddressUnitBits(std::string const& newAddressUnitbits);
+
+    /*!
+     *  Get the sub interface.
+     *
+     *      @return Interface for accessing registers.
+     */
+    RegisterInterface* getSubInterface() const;
 
 private:
 
@@ -496,14 +471,6 @@ private:
      */
     QSharedPointer<AddressBlock> getBlock(std::string const& itemName) const;
 
-    /*!
-     *  Change the key in the contained interfaces.
-     *
-     *      @param [in] currentKey  The current key.
-     *      @param [in] newKey      The new key.
-     */
-    void changeKeyInSubInterfaces(QString const& currentName, QString const& newName);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -514,8 +481,8 @@ private:
     //! Validator for registers.
     QSharedPointer<AddressBlockValidator> validator_;
 
-    //! Map for the contained register interfaces.
-    QMap<QString, RegisterInterface*> subInterfaces_;
+    //! Interface for accessing registers.
+    RegisterInterface* subInterface_;
 
     //! The address unit bits of the memory map.
     QString addressUnitBits_;

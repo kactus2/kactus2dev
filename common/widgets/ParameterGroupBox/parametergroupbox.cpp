@@ -43,7 +43,7 @@ view_(new ParametersView(this)),
 proxy_(new QSortFilterProxyModel(this)),
 model_(0),
 parameterFinder_(parameterFinder),
-parameterInterface_(new ParametersInterface())
+parameterInterface_()
 {
     ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
     view_->setHorizontalHeader(parameterHorizontalHeader);
@@ -58,9 +58,9 @@ parameterInterface_(new ParametersInterface())
     QSharedPointer<ParameterValidator> validator(new ParameterValidator(expressionParser, 
         choices));
 
-    parameterInterface_->setExpressionParser(expressionParser);
-    parameterInterface_->setExpressionFormatter(expressionFormatter);
-    parameterInterface_->setValidator(validator);
+    parameterInterface_ = QSharedPointer<ParametersInterface>(
+        new ParametersInterface(validator, expressionParser, expressionFormatter));
+
     parameterInterface_->setParameters(parameters);
     parameterInterface_->setChoices(choices);
 

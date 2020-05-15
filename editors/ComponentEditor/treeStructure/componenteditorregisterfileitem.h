@@ -43,6 +43,7 @@ public:
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression formatter.
      *      @param [in] addressBlockValidator   Validator used for address blocks.
+     *      @param [in] registerInterface       Interface for accessing registers.
      *      @param [in] parent                  The parent item.
      */
     ComponentEditorRegisterFileItem(
@@ -55,9 +56,12 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<RegisterFileValidator> registerFileValidator,
+        RegisterInterface* registerInterface,
         ComponentEditorItem* parent);
 
-    //! The destructor.
+    /*!
+     *  The destructor.
+     */
     virtual ~ComponentEditorRegisterFileItem() = default;
 
     //! No copying. No assignment.

@@ -28,6 +28,7 @@ class LibraryInterface;
 class ExpressionParser;
 class Component;
 class AddressBlockInterface;
+class AddressBlock;
 
 //-----------------------------------------------------------------------------
 //! The editor to edit the address blocks of a single memory map.
@@ -46,6 +47,7 @@ public:
 	 *      @param [in] parameterFinder     The parameter finder for component.
      *      @param [in] expressionParser    The expression parser.
      *      @param [in] blockInterface      Interface for address blocks.
+     *      @param [in] blocks              Pointer to the available address blocks.
 	 *      @param [in] parent              The parent of this editor.
 	 */
     MemoryMapEditor(QSharedPointer<Component> component,
@@ -53,6 +55,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
         AddressBlockInterface* blockInterface,
+        QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blocks,
         QWidget* parent = 0);
 
 	//! The destructor.
@@ -137,6 +140,12 @@ private:
 
 	//! The model that manages the items.
 	MemoryMapModel* model_;
+
+    //! Interface for accessing address blocks.
+    AddressBlockInterface* interface_;
+
+    //! Pointer to the available address blocks.
+    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blocks_;
 };
 
 #endif // MEMORYMAPEDITOR_H

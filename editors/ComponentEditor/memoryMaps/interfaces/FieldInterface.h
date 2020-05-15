@@ -30,10 +30,18 @@ class FieldInterface : public ParameterizableInterface, public NameGroupInterfac
 
 public:
 
-	/*!
-	 *  The constructor.
-	 */
-	FieldInterface();
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] validator               Validator for fields.
+     *      @param [in] expressionParser        Parser for expressions.
+     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] subInterface            Interface for accessing resets.
+     */
+    FieldInterface(QSharedPointer<FieldValidator> validator,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        ResetInterface* subInterface);
 	
 	/*!
      *  The destructor.
@@ -46,13 +54,6 @@ public:
      *      @param [in] newFields   The new fields.
      */
     void setFields(QSharedPointer<QList<QSharedPointer<Field> > > newFields);
-
-    /*!
-     *  Set field validator.
-     *
-     *      @param [in] validator   Validator for fields.
-     */
-    void setValidator(QSharedPointer<FieldValidator> validator);
 
     /*!
      *  Get index of the selected item.
@@ -489,37 +490,11 @@ public:
     std::vector<std::string> getExpressionsInSelectedFields(std::vector<std::string> fieldNames) const;
 
     /*!
-     *  Add a reset interface.
+     *  Get the sub interface.
      *
-     *      @param [in] fieldName           Name of the field containing the resets.
-     *      @param [in] newResetInterface   The new reset interface.
+     *      @return Interface for accessing resets.
      */
-    void addResetInterface(std::string const& fieldName, ResetInterface* newResetInterface);
-
-    /*!
-     *  Remove the selected reset interface.
-     *
-     *      @param [in] removedInterface    The selected reset interface.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    bool removeResetInterface(ResetInterface* removedInterface);
-
-    /*!
-     *  Get the list of reset interfaces.
-     *
-     *      @return The contained reset interfaces.
-     */
-    std::vector<ResetInterface*> getResetInterfaces() const;
-
-    /*!
-     *  Get the reset interface of the selected field.
-     *
-     *      @param [in] fieldName   Name of the selected field.
-     *
-     *      @return Reset interface of the selected field.
-     */
-    ResetInterface* getResetInterface(std::string const& fieldName) const;
+    ResetInterface* getSubInterface() const;
 
 private:
 
@@ -532,14 +507,6 @@ private:
      */
     QSharedPointer<Field> getField(std::string const& fieldName) const;
 
-    /*!
-     *  Change the key in the reset interfaces.
-     *
-     *      @param [in] currentName     The current key.
-     *      @param [in] newName         The new key.
-     */
-    void changeKeyInSubInterfaces(QString const& currentName, QString const& newName);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -550,8 +517,8 @@ private:
     //! Validator for fields.
     QSharedPointer<FieldValidator> validator_;
 
-    //! Map for the contained reset interfaces.
-    QMap<QString, ResetInterface*> resetInterfaces_;
+    //! Interface for accessing resets.
+    ResetInterface* subInterface_;
 };
 
 #endif // REGISTERTABLEMODEL_H

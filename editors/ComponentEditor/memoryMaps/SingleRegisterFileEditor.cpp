@@ -32,7 +32,8 @@ SingleRegisterFileEditor::SingleRegisterFileEditor(RegisterInterface* registerIn
 ItemEditor(component, handler, parent),
 registerFile_(registerFile),
 nameEditor_(registerFile, this, tr("Register file name and description")),
-registersEditor_(new AddressBlockEditor(registerInterface, component, handler, parameterFinder, this)),
+registersEditor_(new AddressBlockEditor(
+    registerFile->getRegisterData(), registerInterface, component, handler, parameterFinder, this)),
 registerFileEditor_(new RegisterFileEditor(registerFile_->getRegisterData(), component, handler,
     parameterFinder, expressionFormatter, registerFileValidator, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),

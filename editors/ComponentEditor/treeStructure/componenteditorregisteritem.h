@@ -65,11 +65,13 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<RegisterValidator> registerValidator,
-        RegisterInterface* registerInterface,
+        FieldInterface* fieldInterface,
 		ComponentEditorItem* parent);
 
-	//! The destructor.
-	virtual ~ComponentEditorRegisterItem();
+	/*!
+     *  The destructor.
+     */
+	virtual ~ComponentEditorRegisterItem() = default;
 
     //! No copying. No assignment.
     ComponentEditorRegisterItem(const ComponentEditorRegisterItem& other) = delete;
@@ -164,9 +166,6 @@ private:
 
     //! Interface for fields.
     FieldInterface* fieldInterface_;
-
-    //! Interface for registers.
-    RegisterInterface* registerInterface_;
 };
 
 #endif // COMPONENTEDITORREGISTERITEM_H

@@ -66,11 +66,9 @@ portsInterface_()
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
-    portsInterface_ = QSharedPointer<PortsInterface>(new PortsInterface());
+    portsInterface_ =
+        QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressionParser, expressionFormatter));
     portsInterface_->setPorts(component);
-    portsInterface_->setValidator(portValidator);
-    portsInterface_->setExpressionParser(expressionParser);
-    portsInterface_->setExpressionFormatter(expressionFormatter);
 
     wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, new WirePortsEditorConstructor(),
         parameterFinder, portValidator, parameterCompleter, defaultPath, this);

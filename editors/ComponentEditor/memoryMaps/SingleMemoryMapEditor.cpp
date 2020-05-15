@@ -35,7 +35,7 @@ SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component
 ItemEditor(component, libHandler, parent),
 nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
 memoryMapEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, expressionParser, blockInterface,
-    this)),
+    memoryRemap->getMemoryBlocks(), this)),
 addressUnitBitsEditor_(new QLineEdit(parent)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 slaveInterfaceLabel_(new QLabel(this)),

@@ -2660,49 +2660,46 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_CommonInterface swig_types[0]
-#define SWIGTYPE_p_FieldInterface swig_types[1]
-#define SWIGTYPE_p_NameGroup swig_types[2]
-#define SWIGTYPE_p_NameGroupInterface swig_types[3]
-#define SWIGTYPE_p_ParameterizableInterface swig_types[4]
-#define SWIGTYPE_p_ParametersInterface swig_types[5]
-#define SWIGTYPE_p_PortsInterface swig_types[6]
-#define SWIGTYPE_p_PythonAPI swig_types[7]
-#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[8]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[9]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[10]
-#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[11]
-#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[12]
-#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[13]
-#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[14]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[15]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[16]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t swig_types[17]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[18]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[19]
-#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[20]
-#define SWIGTYPE_p_QString swig_types[21]
-#define SWIGTYPE_p_RegisterInterface swig_types[22]
-#define SWIGTYPE_p_ResetInterface swig_types[23]
-#define SWIGTYPE_p_allocator_type swig_types[24]
-#define SWIGTYPE_p_char swig_types[25]
-#define SWIGTYPE_p_difference_type swig_types[26]
-#define SWIGTYPE_p_p_PyObject swig_types[27]
-#define SWIGTYPE_p_size_type swig_types[28]
-#define SWIGTYPE_p_std__allocatorT_FieldInterface_p_t swig_types[29]
-#define SWIGTYPE_p_std__allocatorT_RegisterInterface_p_t swig_types[30]
-#define SWIGTYPE_p_std__allocatorT_ResetInterface_p_t swig_types[31]
+#define SWIGTYPE_p_AddressBlockInterface swig_types[0]
+#define SWIGTYPE_p_CommonInterface swig_types[1]
+#define SWIGTYPE_p_FieldInterface swig_types[2]
+#define SWIGTYPE_p_NameGroup swig_types[3]
+#define SWIGTYPE_p_NameGroupInterface swig_types[4]
+#define SWIGTYPE_p_ParameterizableInterface swig_types[5]
+#define SWIGTYPE_p_ParametersInterface swig_types[6]
+#define SWIGTYPE_p_PortsInterface swig_types[7]
+#define SWIGTYPE_p_PythonAPI swig_types[8]
+#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[9]
+#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[10]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[11]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[12]
+#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[13]
+#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[14]
+#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[15]
+#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[16]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[17]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[18]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[19]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t swig_types[20]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[21]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[22]
+#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[23]
+#define SWIGTYPE_p_QString swig_types[24]
+#define SWIGTYPE_p_RegisterInterface swig_types[25]
+#define SWIGTYPE_p_ResetInterface swig_types[26]
+#define SWIGTYPE_p_allocator_type swig_types[27]
+#define SWIGTYPE_p_char swig_types[28]
+#define SWIGTYPE_p_difference_type swig_types[29]
+#define SWIGTYPE_p_p_PyObject swig_types[30]
+#define SWIGTYPE_p_size_type swig_types[31]
 #define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[32]
 #define SWIGTYPE_p_std__invalid_argument swig_types[33]
-#define SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t swig_types[34]
-#define SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t swig_types[35]
-#define SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t swig_types[36]
-#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[37]
-#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[38]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[39]
-#define SWIGTYPE_p_value_type swig_types[40]
-static swig_type_info *swig_types[42];
-static swig_module_info swig_module = {swig_types, 41, 0, 0, 0, 0};
+#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[34]
+#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[35]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[36]
+#define SWIGTYPE_p_value_type swig_types[37]
+static swig_type_info *swig_types[39];
+static swig_module_info swig_module = {swig_types, 38, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3525,6 +3522,7 @@ SWIGINTERNINLINE PyObject*
 #include "..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h"
 #include "..\editors\ComponentEditor\ports\PortsInterface.h"
 #include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
+#include "..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h"
@@ -4918,333 +4916,6 @@ SWIGINTERN std::vector< std::string >::iterator std_vector_Sl_std_string_Sg__era
 SWIGINTERN std::vector< std::string >::iterator std_vector_Sl_std_string_Sg__erase__SWIG_1(std::vector< std::string > *self,std::vector< std::string >::iterator first,std::vector< std::string >::iterator last){ return self->erase(first, last); }
 SWIGINTERN std::vector< std::string >::iterator std_vector_Sl_std_string_Sg__insert__SWIG_0(std::vector< std::string > *self,std::vector< std::string >::iterator pos,std::vector< std::string >::value_type const &x){ return self->insert(pos, x); }
 SWIGINTERN void std_vector_Sl_std_string_Sg__insert__SWIG_1(std::vector< std::string > *self,std::vector< std::string >::iterator pos,std::vector< std::string >::size_type n,std::vector< std::string >::value_type const &x){ self->insert(pos, n, x); }
-
-  namespace swig {
-    template <>  struct traits< FieldInterface > {
-      typedef pointer_category category;
-      static const char* type_name() { return"FieldInterface"; }
-    };
-  }
-
-
-      namespace swig {
-	template <>  struct traits<std::vector< FieldInterface*, std::allocator< FieldInterface * > > > {
-	  typedef value_category category;
-	  static const char* type_name() {
-	    return "std::vector<" "FieldInterface" " *," "std::allocator< FieldInterface * >" " >";
-	  }
-	};
-      }
-    
-SWIGINTERN swig::SwigPyIterator *std_vector_Sl_FieldInterface_Sm__Sg__iterator(std::vector< FieldInterface * > *self,PyObject **PYTHON_SELF){
-      return swig::make_output_iterator(self->begin(), self->begin(), self->end(), *PYTHON_SELF);
-    }
-SWIGINTERN bool std_vector_Sl_FieldInterface_Sm__Sg____nonzero__(std::vector< FieldInterface * > const *self){
-      return !(self->empty());
-    }
-SWIGINTERN bool std_vector_Sl_FieldInterface_Sm__Sg____bool__(std::vector< FieldInterface * > const *self){
-      return !(self->empty());
-    }
-SWIGINTERN std::vector< FieldInterface * >::size_type std_vector_Sl_FieldInterface_Sm__Sg____len__(std::vector< FieldInterface * > const *self){
-      return self->size();
-    }
-SWIGINTERN std::vector< FieldInterface *,std::allocator< FieldInterface * > > *std_vector_Sl_FieldInterface_Sm__Sg____getslice__(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::difference_type i,std::vector< FieldInterface * >::difference_type j){
-      return swig::getslice(self, i, j, 1);
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg____setslice____SWIG_0(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::difference_type i,std::vector< FieldInterface * >::difference_type j){
-      swig::setslice(self, i, j, 1, std::vector< FieldInterface*,std::allocator< FieldInterface * > >());
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg____setslice____SWIG_1(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::difference_type i,std::vector< FieldInterface * >::difference_type j,std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &v){
-      swig::setslice(self, i, j, 1, v);
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg____delslice__(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::difference_type i,std::vector< FieldInterface * >::difference_type j){
-      swig::delslice(self, i, j, 1);
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg____delitem____SWIG_0(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::difference_type i){
-      swig::erase(self, swig::getpos(self, i));
-    }
-SWIGINTERN std::vector< FieldInterface *,std::allocator< FieldInterface * > > *std_vector_Sl_FieldInterface_Sm__Sg____getitem____SWIG_0(std::vector< FieldInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return NULL;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::difference_type id = i;
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::difference_type jd = j;
-      return swig::getslice(self, id, jd, step);
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg____setitem____SWIG_0(std::vector< FieldInterface * > *self,PySliceObject *slice,std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &v){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::difference_type id = i;
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::difference_type jd = j;
-      swig::setslice(self, id, jd, step, v);
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg____setitem____SWIG_1(std::vector< FieldInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::difference_type id = i;
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::difference_type jd = j;
-      swig::delslice(self, id, jd, step);
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg____delitem____SWIG_1(std::vector< FieldInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::difference_type id = i;
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::difference_type jd = j;
-      swig::delslice(self, id, jd, step);
-    }
-SWIGINTERN std::vector< FieldInterface * >::value_type std_vector_Sl_FieldInterface_Sm__Sg____getitem____SWIG_1(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::difference_type i){
-      return *(swig::cgetpos(self, i));
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg____setitem____SWIG_2(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::difference_type i,std::vector< FieldInterface * >::value_type x){
-      *(swig::getpos(self,i)) = x;
-    }
-SWIGINTERN std::vector< FieldInterface * >::value_type std_vector_Sl_FieldInterface_Sm__Sg__pop(std::vector< FieldInterface * > *self){
-      if (self->size() == 0)
-	throw std::out_of_range("pop from empty container");
-      std::vector< FieldInterface*,std::allocator< FieldInterface * > >::value_type x = self->back();
-      self->pop_back();
-      return x;
-    }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg__append(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::value_type x){
-      self->push_back(x);
-    }
-SWIGINTERN std::vector< FieldInterface * >::iterator std_vector_Sl_FieldInterface_Sm__Sg__erase__SWIG_0(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::iterator pos){ return self->erase(pos); }
-SWIGINTERN std::vector< FieldInterface * >::iterator std_vector_Sl_FieldInterface_Sm__Sg__erase__SWIG_1(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::iterator first,std::vector< FieldInterface * >::iterator last){ return self->erase(first, last); }
-SWIGINTERN std::vector< FieldInterface * >::iterator std_vector_Sl_FieldInterface_Sm__Sg__insert__SWIG_0(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::iterator pos,std::vector< FieldInterface * >::value_type x){ return self->insert(pos, x); }
-SWIGINTERN void std_vector_Sl_FieldInterface_Sm__Sg__insert__SWIG_1(std::vector< FieldInterface * > *self,std::vector< FieldInterface * >::iterator pos,std::vector< FieldInterface * >::size_type n,std::vector< FieldInterface * >::value_type x){ self->insert(pos, n, x); }
-
-  namespace swig {
-    template <>  struct traits< ResetInterface > {
-      typedef pointer_category category;
-      static const char* type_name() { return"ResetInterface"; }
-    };
-  }
-
-
-      namespace swig {
-	template <>  struct traits<std::vector< ResetInterface*, std::allocator< ResetInterface * > > > {
-	  typedef value_category category;
-	  static const char* type_name() {
-	    return "std::vector<" "ResetInterface" " *," "std::allocator< ResetInterface * >" " >";
-	  }
-	};
-      }
-    
-SWIGINTERN swig::SwigPyIterator *std_vector_Sl_ResetInterface_Sm__Sg__iterator(std::vector< ResetInterface * > *self,PyObject **PYTHON_SELF){
-      return swig::make_output_iterator(self->begin(), self->begin(), self->end(), *PYTHON_SELF);
-    }
-SWIGINTERN bool std_vector_Sl_ResetInterface_Sm__Sg____nonzero__(std::vector< ResetInterface * > const *self){
-      return !(self->empty());
-    }
-SWIGINTERN bool std_vector_Sl_ResetInterface_Sm__Sg____bool__(std::vector< ResetInterface * > const *self){
-      return !(self->empty());
-    }
-SWIGINTERN std::vector< ResetInterface * >::size_type std_vector_Sl_ResetInterface_Sm__Sg____len__(std::vector< ResetInterface * > const *self){
-      return self->size();
-    }
-SWIGINTERN std::vector< ResetInterface *,std::allocator< ResetInterface * > > *std_vector_Sl_ResetInterface_Sm__Sg____getslice__(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::difference_type i,std::vector< ResetInterface * >::difference_type j){
-      return swig::getslice(self, i, j, 1);
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg____setslice____SWIG_0(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::difference_type i,std::vector< ResetInterface * >::difference_type j){
-      swig::setslice(self, i, j, 1, std::vector< ResetInterface*,std::allocator< ResetInterface * > >());
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg____setslice____SWIG_1(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::difference_type i,std::vector< ResetInterface * >::difference_type j,std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &v){
-      swig::setslice(self, i, j, 1, v);
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg____delslice__(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::difference_type i,std::vector< ResetInterface * >::difference_type j){
-      swig::delslice(self, i, j, 1);
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg____delitem____SWIG_0(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::difference_type i){
-      swig::erase(self, swig::getpos(self, i));
-    }
-SWIGINTERN std::vector< ResetInterface *,std::allocator< ResetInterface * > > *std_vector_Sl_ResetInterface_Sm__Sg____getitem____SWIG_0(std::vector< ResetInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return NULL;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::difference_type id = i;
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::difference_type jd = j;
-      return swig::getslice(self, id, jd, step);
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg____setitem____SWIG_0(std::vector< ResetInterface * > *self,PySliceObject *slice,std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &v){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::difference_type id = i;
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::difference_type jd = j;
-      swig::setslice(self, id, jd, step, v);
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg____setitem____SWIG_1(std::vector< ResetInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::difference_type id = i;
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::difference_type jd = j;
-      swig::delslice(self, id, jd, step);
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg____delitem____SWIG_1(std::vector< ResetInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::difference_type id = i;
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::difference_type jd = j;
-      swig::delslice(self, id, jd, step);
-    }
-SWIGINTERN std::vector< ResetInterface * >::value_type std_vector_Sl_ResetInterface_Sm__Sg____getitem____SWIG_1(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::difference_type i){
-      return *(swig::cgetpos(self, i));
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg____setitem____SWIG_2(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::difference_type i,std::vector< ResetInterface * >::value_type x){
-      *(swig::getpos(self,i)) = x;
-    }
-SWIGINTERN std::vector< ResetInterface * >::value_type std_vector_Sl_ResetInterface_Sm__Sg__pop(std::vector< ResetInterface * > *self){
-      if (self->size() == 0)
-	throw std::out_of_range("pop from empty container");
-      std::vector< ResetInterface*,std::allocator< ResetInterface * > >::value_type x = self->back();
-      self->pop_back();
-      return x;
-    }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg__append(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::value_type x){
-      self->push_back(x);
-    }
-SWIGINTERN std::vector< ResetInterface * >::iterator std_vector_Sl_ResetInterface_Sm__Sg__erase__SWIG_0(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::iterator pos){ return self->erase(pos); }
-SWIGINTERN std::vector< ResetInterface * >::iterator std_vector_Sl_ResetInterface_Sm__Sg__erase__SWIG_1(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::iterator first,std::vector< ResetInterface * >::iterator last){ return self->erase(first, last); }
-SWIGINTERN std::vector< ResetInterface * >::iterator std_vector_Sl_ResetInterface_Sm__Sg__insert__SWIG_0(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::iterator pos,std::vector< ResetInterface * >::value_type x){ return self->insert(pos, x); }
-SWIGINTERN void std_vector_Sl_ResetInterface_Sm__Sg__insert__SWIG_1(std::vector< ResetInterface * > *self,std::vector< ResetInterface * >::iterator pos,std::vector< ResetInterface * >::size_type n,std::vector< ResetInterface * >::value_type x){ self->insert(pos, n, x); }
-
-  namespace swig {
-    template <>  struct traits< RegisterInterface > {
-      typedef pointer_category category;
-      static const char* type_name() { return"RegisterInterface"; }
-    };
-  }
-
-
-      namespace swig {
-	template <>  struct traits<std::vector< RegisterInterface*, std::allocator< RegisterInterface * > > > {
-	  typedef value_category category;
-	  static const char* type_name() {
-	    return "std::vector<" "RegisterInterface" " *," "std::allocator< RegisterInterface * >" " >";
-	  }
-	};
-      }
-    
-SWIGINTERN swig::SwigPyIterator *std_vector_Sl_RegisterInterface_Sm__Sg__iterator(std::vector< RegisterInterface * > *self,PyObject **PYTHON_SELF){
-      return swig::make_output_iterator(self->begin(), self->begin(), self->end(), *PYTHON_SELF);
-    }
-SWIGINTERN bool std_vector_Sl_RegisterInterface_Sm__Sg____nonzero__(std::vector< RegisterInterface * > const *self){
-      return !(self->empty());
-    }
-SWIGINTERN bool std_vector_Sl_RegisterInterface_Sm__Sg____bool__(std::vector< RegisterInterface * > const *self){
-      return !(self->empty());
-    }
-SWIGINTERN std::vector< RegisterInterface * >::size_type std_vector_Sl_RegisterInterface_Sm__Sg____len__(std::vector< RegisterInterface * > const *self){
-      return self->size();
-    }
-SWIGINTERN std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *std_vector_Sl_RegisterInterface_Sm__Sg____getslice__(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::difference_type i,std::vector< RegisterInterface * >::difference_type j){
-      return swig::getslice(self, i, j, 1);
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg____setslice____SWIG_0(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::difference_type i,std::vector< RegisterInterface * >::difference_type j){
-      swig::setslice(self, i, j, 1, std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >());
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg____setslice____SWIG_1(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::difference_type i,std::vector< RegisterInterface * >::difference_type j,std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &v){
-      swig::setslice(self, i, j, 1, v);
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg____delslice__(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::difference_type i,std::vector< RegisterInterface * >::difference_type j){
-      swig::delslice(self, i, j, 1);
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg____delitem____SWIG_0(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::difference_type i){
-      swig::erase(self, swig::getpos(self, i));
-    }
-SWIGINTERN std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *std_vector_Sl_RegisterInterface_Sm__Sg____getitem____SWIG_0(std::vector< RegisterInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return NULL;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::difference_type id = i;
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::difference_type jd = j;
-      return swig::getslice(self, id, jd, step);
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg____setitem____SWIG_0(std::vector< RegisterInterface * > *self,PySliceObject *slice,std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &v){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::difference_type id = i;
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::difference_type jd = j;
-      swig::setslice(self, id, jd, step, v);
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg____setitem____SWIG_1(std::vector< RegisterInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::difference_type id = i;
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::difference_type jd = j;
-      swig::delslice(self, id, jd, step);
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg____delitem____SWIG_1(std::vector< RegisterInterface * > *self,PySliceObject *slice){
-      Py_ssize_t i, j, step;
-      if( !PySlice_Check(slice) ) {
-        SWIG_Error(SWIG_TypeError, "Slice object expected.");
-        return;
-      }
-      PySlice_GetIndices(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &i, &j, &step);
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::difference_type id = i;
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::difference_type jd = j;
-      swig::delslice(self, id, jd, step);
-    }
-SWIGINTERN std::vector< RegisterInterface * >::value_type std_vector_Sl_RegisterInterface_Sm__Sg____getitem____SWIG_1(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::difference_type i){
-      return *(swig::cgetpos(self, i));
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg____setitem____SWIG_2(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::difference_type i,std::vector< RegisterInterface * >::value_type x){
-      *(swig::getpos(self,i)) = x;
-    }
-SWIGINTERN std::vector< RegisterInterface * >::value_type std_vector_Sl_RegisterInterface_Sm__Sg__pop(std::vector< RegisterInterface * > *self){
-      if (self->size() == 0)
-	throw std::out_of_range("pop from empty container");
-      std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >::value_type x = self->back();
-      self->pop_back();
-      return x;
-    }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg__append(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::value_type x){
-      self->push_back(x);
-    }
-SWIGINTERN std::vector< RegisterInterface * >::iterator std_vector_Sl_RegisterInterface_Sm__Sg__erase__SWIG_0(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::iterator pos){ return self->erase(pos); }
-SWIGINTERN std::vector< RegisterInterface * >::iterator std_vector_Sl_RegisterInterface_Sm__Sg__erase__SWIG_1(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::iterator first,std::vector< RegisterInterface * >::iterator last){ return self->erase(first, last); }
-SWIGINTERN std::vector< RegisterInterface * >::iterator std_vector_Sl_RegisterInterface_Sm__Sg__insert__SWIG_0(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::iterator pos,std::vector< RegisterInterface * >::value_type x){ return self->insert(pos, x); }
-SWIGINTERN void std_vector_Sl_RegisterInterface_Sm__Sg__insert__SWIG_1(std::vector< RegisterInterface * > *self,std::vector< RegisterInterface * >::iterator pos,std::vector< RegisterInterface * >::size_type n,std::vector< RegisterInterface * >::value_type x){ self->insert(pos, n, x); }
 
 SWIGINTERN int
 SWIG_AsVal_int (PyObject * obj, int *val)
@@ -8441,5406 +8112,6 @@ SWIGINTERN PyObject *stringVector_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObj
   return SWIG_Python_InitShadowInstance(args);
 }
 
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_iterator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  PyObject **arg2 = (PyObject **) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  swig::SwigPyIterator *result = 0 ;
-  
-  arg2 = &swig_obj[0];
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_iterator" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (swig::SwigPyIterator *)std_vector_Sl_FieldInterface_Sm__Sg__iterator(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___nonzero__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___nonzero__" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (bool)std_vector_Sl_FieldInterface_Sm__Sg____nonzero__((std::vector< FieldInterface * > const *)arg1);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___bool__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___bool__" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (bool)std_vector_Sl_FieldInterface_Sm__Sg____bool__((std::vector< FieldInterface * > const *)arg1);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___len__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___len__" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = std_vector_Sl_FieldInterface_Sm__Sg____len__((std::vector< FieldInterface * > const *)arg1);
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___getslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::difference_type arg2 ;
-  std::vector< FieldInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  std::vector< FieldInterface *,std::allocator< FieldInterface * > > *result = 0 ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "fieldInterfaceVector___getslice__", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___getslice__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector___getslice__" "', argument " "2"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "fieldInterfaceVector___getslice__" "', argument " "3"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< FieldInterface * >::difference_type >(val3);
-  try {
-    result = (std::vector< FieldInterface *,std::allocator< FieldInterface * > > *)std_vector_Sl_FieldInterface_Sm__Sg____getslice__(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___setslice____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::difference_type arg2 ;
-  std::vector< FieldInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___setslice__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector___setslice__" "', argument " "2"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "fieldInterfaceVector___setslice__" "', argument " "3"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< FieldInterface * >::difference_type >(val3);
-  try {
-    std_vector_Sl_FieldInterface_Sm__Sg____setslice____SWIG_0(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___setslice____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::difference_type arg2 ;
-  std::vector< FieldInterface * >::difference_type arg3 ;
-  std::vector< FieldInterface *,std::allocator< FieldInterface * > > *arg4 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  int res4 = SWIG_OLDOBJ ;
-  
-  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___setslice__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector___setslice__" "', argument " "2"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "fieldInterfaceVector___setslice__" "', argument " "3"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< FieldInterface * >::difference_type >(val3);
-  {
-    std::vector< FieldInterface*,std::allocator< FieldInterface * > > *ptr = (std::vector< FieldInterface*,std::allocator< FieldInterface * > > *)0;
-    res4 = swig::asptr(swig_obj[3], &ptr);
-    if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "fieldInterfaceVector___setslice__" "', argument " "4"" of type '" "std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "fieldInterfaceVector___setslice__" "', argument " "4"" of type '" "std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &""'"); 
-    }
-    arg4 = ptr;
-  }
-  try {
-    std_vector_Sl_FieldInterface_Sm__Sg____setslice____SWIG_1(arg1,arg2,arg3,(std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &)*arg4);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res4)) delete arg4;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res4)) delete arg4;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___setslice__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "fieldInterfaceVector___setslice__", 0, 4, argv))) SWIG_fail;
-  --argc;
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_ptrdiff_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_fieldInterfaceVector___setslice____SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_ptrdiff_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          int res = swig::asptr(argv[3], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_fieldInterfaceVector___setslice____SWIG_1(self, argc, argv);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'fieldInterfaceVector___setslice__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< FieldInterface * >::__setslice__(std::vector< FieldInterface * >::difference_type,std::vector< FieldInterface * >::difference_type)\n"
-    "    std::vector< FieldInterface * >::__setslice__(std::vector< FieldInterface * >::difference_type,std::vector< FieldInterface * >::difference_type,std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___delslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::difference_type arg2 ;
-  std::vector< FieldInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "fieldInterfaceVector___delslice__", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___delslice__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector___delslice__" "', argument " "2"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "fieldInterfaceVector___delslice__" "', argument " "3"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< FieldInterface * >::difference_type >(val3);
-  try {
-    std_vector_Sl_FieldInterface_Sm__Sg____delslice__(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___delitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::difference_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___delitem__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector___delitem__" "', argument " "2"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::difference_type >(val2);
-  try {
-    std_vector_Sl_FieldInterface_Sm__Sg____delitem____SWIG_0(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___getitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  std::vector< FieldInterface *,std::allocator< FieldInterface * > > *result = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___getitem__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector___getitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    result = (std::vector< FieldInterface *,std::allocator< FieldInterface * > > *)std_vector_Sl_FieldInterface_Sm__Sg____getitem____SWIG_0(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___setitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  std::vector< FieldInterface *,std::allocator< FieldInterface * > > *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res3 = SWIG_OLDOBJ ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  {
-    std::vector< FieldInterface*,std::allocator< FieldInterface * > > *ptr = (std::vector< FieldInterface*,std::allocator< FieldInterface * > > *)0;
-    res3 = swig::asptr(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "fieldInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "fieldInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  try {
-    std_vector_Sl_FieldInterface_Sm__Sg____setitem____SWIG_0(arg1,arg2,(std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &)*arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___setitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    std_vector_Sl_FieldInterface_Sm__Sg____setitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___delitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___delitem__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector___delitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    std_vector_Sl_FieldInterface_Sm__Sg____delitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___delitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "fieldInterfaceVector___delitem__", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_fieldInterfaceVector___delitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_fieldInterfaceVector___delitem____SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'fieldInterfaceVector___delitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< FieldInterface * >::__delitem__(std::vector< FieldInterface * >::difference_type)\n"
-    "    std::vector< FieldInterface * >::__delitem__(PySliceObject *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___getitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::difference_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  std::vector< FieldInterface * >::value_type result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___getitem__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector___getitem__" "', argument " "2"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::difference_type >(val2);
-  try {
-    result = (std::vector< FieldInterface * >::value_type)std_vector_Sl_FieldInterface_Sm__Sg____getitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___getitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "fieldInterfaceVector___getitem__", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_fieldInterfaceVector___getitem____SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_fieldInterfaceVector___getitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'fieldInterfaceVector___getitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< FieldInterface * >::__getitem__(PySliceObject *)\n"
-    "    std::vector< FieldInterface * >::__getitem__(std::vector< FieldInterface * >::difference_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___setitem____SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::difference_type arg2 ;
-  std::vector< FieldInterface * >::value_type arg3 = (std::vector< FieldInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector___setitem__" "', argument " "2"" of type '" "std::vector< FieldInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::difference_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "fieldInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< FieldInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< FieldInterface * >::value_type >(argp3);
-  try {
-    std_vector_Sl_FieldInterface_Sm__Sg____setitem____SWIG_2(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector___setitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "fieldInterfaceVector___setitem__", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_fieldInterfaceVector___setitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        int res = swig::asptr(argv[2], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_fieldInterfaceVector___setitem____SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_FieldInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_fieldInterfaceVector___setitem____SWIG_2(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'fieldInterfaceVector___setitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< FieldInterface * >::__setitem__(PySliceObject *,std::vector< FieldInterface *,std::allocator< FieldInterface * > > const &)\n"
-    "    std::vector< FieldInterface * >::__setitem__(PySliceObject *)\n"
-    "    std::vector< FieldInterface * >::__setitem__(std::vector< FieldInterface * >::difference_type,std::vector< FieldInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_pop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_pop" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  try {
-    result = (std::vector< FieldInterface * >::value_type)std_vector_Sl_FieldInterface_Sm__Sg__pop(arg1);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_append(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::value_type arg2 = (std::vector< FieldInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "fieldInterfaceVector_append", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_append" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "fieldInterfaceVector_append" "', argument " "2"" of type '" "std::vector< FieldInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< FieldInterface * >::value_type >(argp2);
-  std_vector_Sl_FieldInterface_Sm__Sg__append(arg1,arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_fieldInterfaceVector__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *result = 0 ;
-  
-  if ((nobjs < 0) || (nobjs > 0)) SWIG_fail;
-  result = (std::vector< FieldInterface * > *)new std::vector< FieldInterface * >();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_fieldInterfaceVector__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = 0 ;
-  int res1 = SWIG_OLDOBJ ;
-  std::vector< FieldInterface * > *result = 0 ;
-  
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
-  {
-    std::vector< FieldInterface*,std::allocator< FieldInterface * > > *ptr = (std::vector< FieldInterface*,std::allocator< FieldInterface * > > *)0;
-    res1 = swig::asptr(swig_obj[0], &ptr);
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_fieldInterfaceVector" "', argument " "1"" of type '" "std::vector< FieldInterface * > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_fieldInterfaceVector" "', argument " "1"" of type '" "std::vector< FieldInterface * > const &""'"); 
-    }
-    arg1 = ptr;
-  }
-  result = (std::vector< FieldInterface * > *)new std::vector< FieldInterface * >((std::vector< FieldInterface * > const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  if (SWIG_IsNewObj(res1)) delete arg1;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res1)) delete arg1;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_empty(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_empty" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (bool)((std::vector< FieldInterface * > const *)arg1)->empty();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_size" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = ((std::vector< FieldInterface * > const *)arg1)->size();
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_swap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "fieldInterfaceVector_swap", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_swap" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "fieldInterfaceVector_swap" "', argument " "2"" of type '" "std::vector< FieldInterface * > &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "fieldInterfaceVector_swap" "', argument " "2"" of type '" "std::vector< FieldInterface * > &""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< FieldInterface * > * >(argp2);
-  (arg1)->swap(*arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_begin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_begin" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (arg1)->begin();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< FieldInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_end(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_end" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (arg1)->end();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< FieldInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_rbegin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::reverse_iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_rbegin" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (arg1)->rbegin();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< FieldInterface * >::reverse_iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_rend(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::reverse_iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_rend" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (arg1)->rend();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< FieldInterface * >::reverse_iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_clear(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_clear" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  (arg1)->clear();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_get_allocator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  SwigValueWrapper< std::allocator< FieldInterface * > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_get_allocator" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = ((std::vector< FieldInterface * > const *)arg1)->get_allocator();
-  resultobj = SWIG_NewPointerObj((new std::vector< FieldInterface * >::allocator_type(static_cast< const std::vector< FieldInterface * >::allocator_type& >(result))), SWIGTYPE_p_std__allocatorT_FieldInterface_p_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_fieldInterfaceVector__SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * >::size_type arg1 ;
-  size_t val1 ;
-  int ecode1 = 0 ;
-  std::vector< FieldInterface * > *result = 0 ;
-  
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
-  ecode1 = SWIG_AsVal_size_t(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_fieldInterfaceVector" "', argument " "1"" of type '" "std::vector< FieldInterface * >::size_type""'");
-  } 
-  arg1 = static_cast< std::vector< FieldInterface * >::size_type >(val1);
-  result = (std::vector< FieldInterface * > *)new std::vector< FieldInterface * >(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_pop_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_pop_back" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  (arg1)->pop_back();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_resize__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::size_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_resize" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector_resize" "', argument " "2"" of type '" "std::vector< FieldInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::size_type >(val2);
-  (arg1)->resize(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_erase__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::iterator arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  std::vector< FieldInterface * >::iterator result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_erase" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< FieldInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< FieldInterface * >::iterator""'");
-    }
-  }
-  result = std_vector_Sl_FieldInterface_Sm__Sg__erase__SWIG_0(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< FieldInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_erase__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::iterator arg2 ;
-  std::vector< FieldInterface * >::iterator arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  swig::SwigPyIterator *iter3 = 0 ;
-  int res3 ;
-  std::vector< FieldInterface * >::iterator result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_erase" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< FieldInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< FieldInterface * >::iterator""'");
-    }
-  }
-  res3 = SWIG_ConvertPtr(swig_obj[2], SWIG_as_voidptrptr(&iter3), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res3) || !iter3) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_erase" "', argument " "3"" of type '" "std::vector< FieldInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter3);
-    if (iter_t) {
-      arg3 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_erase" "', argument " "3"" of type '" "std::vector< FieldInterface * >::iterator""'");
-    }
-  }
-  result = std_vector_Sl_FieldInterface_Sm__Sg__erase__SWIG_1(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< FieldInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_erase(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "fieldInterfaceVector_erase", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        return _wrap_fieldInterfaceVector_erase__SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        swig::SwigPyIterator *iter = 0;
-        int res = SWIG_ConvertPtr(argv[2], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-        _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter) != 0));
-        if (_v) {
-          return _wrap_fieldInterfaceVector_erase__SWIG_1(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'fieldInterfaceVector_erase'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< FieldInterface * >::erase(std::vector< FieldInterface * >::iterator)\n"
-    "    std::vector< FieldInterface * >::erase(std::vector< FieldInterface * >::iterator,std::vector< FieldInterface * >::iterator)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_fieldInterfaceVector__SWIG_3(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * >::size_type arg1 ;
-  std::vector< FieldInterface * >::value_type arg2 = (std::vector< FieldInterface * >::value_type) 0 ;
-  size_t val1 ;
-  int ecode1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  std::vector< FieldInterface * > *result = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  ecode1 = SWIG_AsVal_size_t(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_fieldInterfaceVector" "', argument " "1"" of type '" "std::vector< FieldInterface * >::size_type""'");
-  } 
-  arg1 = static_cast< std::vector< FieldInterface * >::size_type >(val1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_fieldInterfaceVector" "', argument " "2"" of type '" "std::vector< FieldInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< FieldInterface * >::value_type >(argp2);
-  result = (std::vector< FieldInterface * > *)new std::vector< FieldInterface * >(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_fieldInterfaceVector(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_fieldInterfaceVector", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 0) {
-    return _wrap_new_fieldInterfaceVector__SWIG_0(self, argc, argv);
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_size_t(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_fieldInterfaceVector__SWIG_2(self, argc, argv);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_fieldInterfaceVector__SWIG_1(self, argc, argv);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      int res = SWIG_AsVal_size_t(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_FieldInterface, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_new_fieldInterfaceVector__SWIG_3(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_fieldInterfaceVector'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< FieldInterface * >::vector()\n"
-    "    std::vector< FieldInterface * >::vector(std::vector< FieldInterface * > const &)\n"
-    "    std::vector< FieldInterface * >::vector(std::vector< FieldInterface * >::size_type)\n"
-    "    std::vector< FieldInterface * >::vector(std::vector< FieldInterface * >::size_type,std::vector< FieldInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_push_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::value_type arg2 = (std::vector< FieldInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "fieldInterfaceVector_push_back", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_push_back" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "fieldInterfaceVector_push_back" "', argument " "2"" of type '" "std::vector< FieldInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< FieldInterface * >::value_type >(argp2);
-  (arg1)->push_back(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_front(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_front" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (std::vector< FieldInterface * >::value_type)((std::vector< FieldInterface * > const *)arg1)->front();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_back" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = (std::vector< FieldInterface * >::value_type)((std::vector< FieldInterface * > const *)arg1)->back();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_assign(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::size_type arg2 ;
-  std::vector< FieldInterface * >::value_type arg3 = (std::vector< FieldInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "fieldInterfaceVector_assign", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_assign" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector_assign" "', argument " "2"" of type '" "std::vector< FieldInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::size_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "fieldInterfaceVector_assign" "', argument " "3"" of type '" "std::vector< FieldInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< FieldInterface * >::value_type >(argp3);
-  (arg1)->assign(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_resize__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::size_type arg2 ;
-  std::vector< FieldInterface * >::value_type arg3 = (std::vector< FieldInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_resize" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector_resize" "', argument " "2"" of type '" "std::vector< FieldInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::size_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "fieldInterfaceVector_resize" "', argument " "3"" of type '" "std::vector< FieldInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< FieldInterface * >::value_type >(argp3);
-  (arg1)->resize(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_resize(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "fieldInterfaceVector_resize", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_fieldInterfaceVector_resize__SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_FieldInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_fieldInterfaceVector_resize__SWIG_1(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'fieldInterfaceVector_resize'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< FieldInterface * >::resize(std::vector< FieldInterface * >::size_type)\n"
-    "    std::vector< FieldInterface * >::resize(std::vector< FieldInterface * >::size_type,std::vector< FieldInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_insert__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::iterator arg2 ;
-  std::vector< FieldInterface * >::value_type arg3 = (std::vector< FieldInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  std::vector< FieldInterface * >::iterator result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_insert" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< FieldInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< FieldInterface * >::iterator""'");
-    }
-  }
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "fieldInterfaceVector_insert" "', argument " "3"" of type '" "std::vector< FieldInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< FieldInterface * >::value_type >(argp3);
-  result = std_vector_Sl_FieldInterface_Sm__Sg__insert__SWIG_0(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< FieldInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_insert__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::iterator arg2 ;
-  std::vector< FieldInterface * >::size_type arg3 ;
-  std::vector< FieldInterface * >::value_type arg4 = (std::vector< FieldInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  size_t val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  
-  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_insert" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< FieldInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "fieldInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< FieldInterface * >::iterator""'");
-    }
-  }
-  ecode3 = SWIG_AsVal_size_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "fieldInterfaceVector_insert" "', argument " "3"" of type '" "std::vector< FieldInterface * >::size_type""'");
-  } 
-  arg3 = static_cast< std::vector< FieldInterface * >::size_type >(val3);
-  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "fieldInterfaceVector_insert" "', argument " "4"" of type '" "std::vector< FieldInterface * >::value_type""'"); 
-  }
-  arg4 = reinterpret_cast< std::vector< FieldInterface * >::value_type >(argp4);
-  std_vector_Sl_FieldInterface_Sm__Sg__insert__SWIG_1(arg1,arg2,arg3,arg4);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_insert(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "fieldInterfaceVector_insert", 0, 4, argv))) SWIG_fail;
-  --argc;
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_FieldInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_fieldInterfaceVector_insert__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< FieldInterface*,std::allocator< FieldInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< FieldInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        {
-          int res = SWIG_AsVal_size_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          void *vptr = 0;
-          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_FieldInterface, 0);
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_fieldInterfaceVector_insert__SWIG_1(self, argc, argv);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'fieldInterfaceVector_insert'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< FieldInterface * >::insert(std::vector< FieldInterface * >::iterator,std::vector< FieldInterface * >::value_type)\n"
-    "    std::vector< FieldInterface * >::insert(std::vector< FieldInterface * >::iterator,std::vector< FieldInterface * >::size_type,std::vector< FieldInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_reserve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  std::vector< FieldInterface * >::size_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "fieldInterfaceVector_reserve", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_reserve" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "fieldInterfaceVector_reserve" "', argument " "2"" of type '" "std::vector< FieldInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< FieldInterface * >::size_type >(val2);
-  (arg1)->reserve(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_fieldInterfaceVector_capacity(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fieldInterfaceVector_capacity" "', argument " "1"" of type '" "std::vector< FieldInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  result = ((std::vector< FieldInterface * > const *)arg1)->capacity();
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_fieldInterfaceVector(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< FieldInterface * > *arg1 = (std::vector< FieldInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_fieldInterfaceVector" "', argument " "1"" of type '" "std::vector< FieldInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< FieldInterface * > * >(argp1);
-  delete arg1;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *fieldInterfaceVector_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
-SWIGINTERN PyObject *fieldInterfaceVector_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  return SWIG_Python_InitShadowInstance(args);
-}
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_iterator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  PyObject **arg2 = (PyObject **) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  swig::SwigPyIterator *result = 0 ;
-  
-  arg2 = &swig_obj[0];
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_iterator" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (swig::SwigPyIterator *)std_vector_Sl_ResetInterface_Sm__Sg__iterator(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___nonzero__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___nonzero__" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (bool)std_vector_Sl_ResetInterface_Sm__Sg____nonzero__((std::vector< ResetInterface * > const *)arg1);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___bool__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___bool__" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (bool)std_vector_Sl_ResetInterface_Sm__Sg____bool__((std::vector< ResetInterface * > const *)arg1);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___len__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___len__" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = std_vector_Sl_ResetInterface_Sm__Sg____len__((std::vector< ResetInterface * > const *)arg1);
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___getslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::difference_type arg2 ;
-  std::vector< ResetInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  std::vector< ResetInterface *,std::allocator< ResetInterface * > > *result = 0 ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "resetInterfaceVector___getslice__", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___getslice__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector___getslice__" "', argument " "2"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "resetInterfaceVector___getslice__" "', argument " "3"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< ResetInterface * >::difference_type >(val3);
-  try {
-    result = (std::vector< ResetInterface *,std::allocator< ResetInterface * > > *)std_vector_Sl_ResetInterface_Sm__Sg____getslice__(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___setslice____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::difference_type arg2 ;
-  std::vector< ResetInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___setslice__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector___setslice__" "', argument " "2"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "resetInterfaceVector___setslice__" "', argument " "3"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< ResetInterface * >::difference_type >(val3);
-  try {
-    std_vector_Sl_ResetInterface_Sm__Sg____setslice____SWIG_0(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___setslice____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::difference_type arg2 ;
-  std::vector< ResetInterface * >::difference_type arg3 ;
-  std::vector< ResetInterface *,std::allocator< ResetInterface * > > *arg4 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  int res4 = SWIG_OLDOBJ ;
-  
-  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___setslice__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector___setslice__" "', argument " "2"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "resetInterfaceVector___setslice__" "', argument " "3"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< ResetInterface * >::difference_type >(val3);
-  {
-    std::vector< ResetInterface*,std::allocator< ResetInterface * > > *ptr = (std::vector< ResetInterface*,std::allocator< ResetInterface * > > *)0;
-    res4 = swig::asptr(swig_obj[3], &ptr);
-    if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "resetInterfaceVector___setslice__" "', argument " "4"" of type '" "std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "resetInterfaceVector___setslice__" "', argument " "4"" of type '" "std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &""'"); 
-    }
-    arg4 = ptr;
-  }
-  try {
-    std_vector_Sl_ResetInterface_Sm__Sg____setslice____SWIG_1(arg1,arg2,arg3,(std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &)*arg4);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res4)) delete arg4;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res4)) delete arg4;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___setslice__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "resetInterfaceVector___setslice__", 0, 4, argv))) SWIG_fail;
-  --argc;
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_ptrdiff_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_resetInterfaceVector___setslice____SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_ptrdiff_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          int res = swig::asptr(argv[3], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_resetInterfaceVector___setslice____SWIG_1(self, argc, argv);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'resetInterfaceVector___setslice__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< ResetInterface * >::__setslice__(std::vector< ResetInterface * >::difference_type,std::vector< ResetInterface * >::difference_type)\n"
-    "    std::vector< ResetInterface * >::__setslice__(std::vector< ResetInterface * >::difference_type,std::vector< ResetInterface * >::difference_type,std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___delslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::difference_type arg2 ;
-  std::vector< ResetInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "resetInterfaceVector___delslice__", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___delslice__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector___delslice__" "', argument " "2"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "resetInterfaceVector___delslice__" "', argument " "3"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< ResetInterface * >::difference_type >(val3);
-  try {
-    std_vector_Sl_ResetInterface_Sm__Sg____delslice__(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___delitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::difference_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___delitem__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector___delitem__" "', argument " "2"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::difference_type >(val2);
-  try {
-    std_vector_Sl_ResetInterface_Sm__Sg____delitem____SWIG_0(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___getitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  std::vector< ResetInterface *,std::allocator< ResetInterface * > > *result = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___getitem__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector___getitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    result = (std::vector< ResetInterface *,std::allocator< ResetInterface * > > *)std_vector_Sl_ResetInterface_Sm__Sg____getitem____SWIG_0(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___setitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  std::vector< ResetInterface *,std::allocator< ResetInterface * > > *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res3 = SWIG_OLDOBJ ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  {
-    std::vector< ResetInterface*,std::allocator< ResetInterface * > > *ptr = (std::vector< ResetInterface*,std::allocator< ResetInterface * > > *)0;
-    res3 = swig::asptr(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "resetInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "resetInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  try {
-    std_vector_Sl_ResetInterface_Sm__Sg____setitem____SWIG_0(arg1,arg2,(std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &)*arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___setitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    std_vector_Sl_ResetInterface_Sm__Sg____setitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___delitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___delitem__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector___delitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    std_vector_Sl_ResetInterface_Sm__Sg____delitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___delitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "resetInterfaceVector___delitem__", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_resetInterfaceVector___delitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_resetInterfaceVector___delitem____SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'resetInterfaceVector___delitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< ResetInterface * >::__delitem__(std::vector< ResetInterface * >::difference_type)\n"
-    "    std::vector< ResetInterface * >::__delitem__(PySliceObject *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___getitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::difference_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  std::vector< ResetInterface * >::value_type result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___getitem__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector___getitem__" "', argument " "2"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::difference_type >(val2);
-  try {
-    result = (std::vector< ResetInterface * >::value_type)std_vector_Sl_ResetInterface_Sm__Sg____getitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___getitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "resetInterfaceVector___getitem__", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_resetInterfaceVector___getitem____SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_resetInterfaceVector___getitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'resetInterfaceVector___getitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< ResetInterface * >::__getitem__(PySliceObject *)\n"
-    "    std::vector< ResetInterface * >::__getitem__(std::vector< ResetInterface * >::difference_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___setitem____SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::difference_type arg2 ;
-  std::vector< ResetInterface * >::value_type arg3 = (std::vector< ResetInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector___setitem__" "', argument " "2"" of type '" "std::vector< ResetInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::difference_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "resetInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< ResetInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< ResetInterface * >::value_type >(argp3);
-  try {
-    std_vector_Sl_ResetInterface_Sm__Sg____setitem____SWIG_2(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector___setitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "resetInterfaceVector___setitem__", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_resetInterfaceVector___setitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        int res = swig::asptr(argv[2], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_resetInterfaceVector___setitem____SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_ResetInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_resetInterfaceVector___setitem____SWIG_2(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'resetInterfaceVector___setitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< ResetInterface * >::__setitem__(PySliceObject *,std::vector< ResetInterface *,std::allocator< ResetInterface * > > const &)\n"
-    "    std::vector< ResetInterface * >::__setitem__(PySliceObject *)\n"
-    "    std::vector< ResetInterface * >::__setitem__(std::vector< ResetInterface * >::difference_type,std::vector< ResetInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_pop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_pop" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  try {
-    result = (std::vector< ResetInterface * >::value_type)std_vector_Sl_ResetInterface_Sm__Sg__pop(arg1);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_append(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::value_type arg2 = (std::vector< ResetInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "resetInterfaceVector_append", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_append" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "resetInterfaceVector_append" "', argument " "2"" of type '" "std::vector< ResetInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< ResetInterface * >::value_type >(argp2);
-  std_vector_Sl_ResetInterface_Sm__Sg__append(arg1,arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_resetInterfaceVector__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *result = 0 ;
-  
-  if ((nobjs < 0) || (nobjs > 0)) SWIG_fail;
-  result = (std::vector< ResetInterface * > *)new std::vector< ResetInterface * >();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_resetInterfaceVector__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = 0 ;
-  int res1 = SWIG_OLDOBJ ;
-  std::vector< ResetInterface * > *result = 0 ;
-  
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
-  {
-    std::vector< ResetInterface*,std::allocator< ResetInterface * > > *ptr = (std::vector< ResetInterface*,std::allocator< ResetInterface * > > *)0;
-    res1 = swig::asptr(swig_obj[0], &ptr);
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_resetInterfaceVector" "', argument " "1"" of type '" "std::vector< ResetInterface * > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_resetInterfaceVector" "', argument " "1"" of type '" "std::vector< ResetInterface * > const &""'"); 
-    }
-    arg1 = ptr;
-  }
-  result = (std::vector< ResetInterface * > *)new std::vector< ResetInterface * >((std::vector< ResetInterface * > const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  if (SWIG_IsNewObj(res1)) delete arg1;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res1)) delete arg1;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_empty(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_empty" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (bool)((std::vector< ResetInterface * > const *)arg1)->empty();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_size" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = ((std::vector< ResetInterface * > const *)arg1)->size();
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_swap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "resetInterfaceVector_swap", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_swap" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "resetInterfaceVector_swap" "', argument " "2"" of type '" "std::vector< ResetInterface * > &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "resetInterfaceVector_swap" "', argument " "2"" of type '" "std::vector< ResetInterface * > &""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< ResetInterface * > * >(argp2);
-  (arg1)->swap(*arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_begin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_begin" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (arg1)->begin();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< ResetInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_end(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_end" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (arg1)->end();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< ResetInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_rbegin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::reverse_iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_rbegin" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (arg1)->rbegin();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< ResetInterface * >::reverse_iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_rend(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::reverse_iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_rend" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (arg1)->rend();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< ResetInterface * >::reverse_iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_clear(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_clear" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  (arg1)->clear();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_get_allocator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  SwigValueWrapper< std::allocator< ResetInterface * > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_get_allocator" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = ((std::vector< ResetInterface * > const *)arg1)->get_allocator();
-  resultobj = SWIG_NewPointerObj((new std::vector< ResetInterface * >::allocator_type(static_cast< const std::vector< ResetInterface * >::allocator_type& >(result))), SWIGTYPE_p_std__allocatorT_ResetInterface_p_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_resetInterfaceVector__SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * >::size_type arg1 ;
-  size_t val1 ;
-  int ecode1 = 0 ;
-  std::vector< ResetInterface * > *result = 0 ;
-  
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
-  ecode1 = SWIG_AsVal_size_t(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_resetInterfaceVector" "', argument " "1"" of type '" "std::vector< ResetInterface * >::size_type""'");
-  } 
-  arg1 = static_cast< std::vector< ResetInterface * >::size_type >(val1);
-  result = (std::vector< ResetInterface * > *)new std::vector< ResetInterface * >(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_pop_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_pop_back" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  (arg1)->pop_back();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_resize__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::size_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_resize" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector_resize" "', argument " "2"" of type '" "std::vector< ResetInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::size_type >(val2);
-  (arg1)->resize(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_erase__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::iterator arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  std::vector< ResetInterface * >::iterator result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_erase" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< ResetInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< ResetInterface * >::iterator""'");
-    }
-  }
-  result = std_vector_Sl_ResetInterface_Sm__Sg__erase__SWIG_0(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< ResetInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_erase__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::iterator arg2 ;
-  std::vector< ResetInterface * >::iterator arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  swig::SwigPyIterator *iter3 = 0 ;
-  int res3 ;
-  std::vector< ResetInterface * >::iterator result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_erase" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< ResetInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< ResetInterface * >::iterator""'");
-    }
-  }
-  res3 = SWIG_ConvertPtr(swig_obj[2], SWIG_as_voidptrptr(&iter3), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res3) || !iter3) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_erase" "', argument " "3"" of type '" "std::vector< ResetInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter3);
-    if (iter_t) {
-      arg3 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_erase" "', argument " "3"" of type '" "std::vector< ResetInterface * >::iterator""'");
-    }
-  }
-  result = std_vector_Sl_ResetInterface_Sm__Sg__erase__SWIG_1(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< ResetInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_erase(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "resetInterfaceVector_erase", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        return _wrap_resetInterfaceVector_erase__SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        swig::SwigPyIterator *iter = 0;
-        int res = SWIG_ConvertPtr(argv[2], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-        _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter) != 0));
-        if (_v) {
-          return _wrap_resetInterfaceVector_erase__SWIG_1(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'resetInterfaceVector_erase'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< ResetInterface * >::erase(std::vector< ResetInterface * >::iterator)\n"
-    "    std::vector< ResetInterface * >::erase(std::vector< ResetInterface * >::iterator,std::vector< ResetInterface * >::iterator)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_resetInterfaceVector__SWIG_3(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * >::size_type arg1 ;
-  std::vector< ResetInterface * >::value_type arg2 = (std::vector< ResetInterface * >::value_type) 0 ;
-  size_t val1 ;
-  int ecode1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  std::vector< ResetInterface * > *result = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  ecode1 = SWIG_AsVal_size_t(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_resetInterfaceVector" "', argument " "1"" of type '" "std::vector< ResetInterface * >::size_type""'");
-  } 
-  arg1 = static_cast< std::vector< ResetInterface * >::size_type >(val1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_resetInterfaceVector" "', argument " "2"" of type '" "std::vector< ResetInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< ResetInterface * >::value_type >(argp2);
-  result = (std::vector< ResetInterface * > *)new std::vector< ResetInterface * >(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_resetInterfaceVector(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_resetInterfaceVector", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 0) {
-    return _wrap_new_resetInterfaceVector__SWIG_0(self, argc, argv);
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_size_t(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_resetInterfaceVector__SWIG_2(self, argc, argv);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_resetInterfaceVector__SWIG_1(self, argc, argv);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      int res = SWIG_AsVal_size_t(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_ResetInterface, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_new_resetInterfaceVector__SWIG_3(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_resetInterfaceVector'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< ResetInterface * >::vector()\n"
-    "    std::vector< ResetInterface * >::vector(std::vector< ResetInterface * > const &)\n"
-    "    std::vector< ResetInterface * >::vector(std::vector< ResetInterface * >::size_type)\n"
-    "    std::vector< ResetInterface * >::vector(std::vector< ResetInterface * >::size_type,std::vector< ResetInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_push_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::value_type arg2 = (std::vector< ResetInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "resetInterfaceVector_push_back", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_push_back" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "resetInterfaceVector_push_back" "', argument " "2"" of type '" "std::vector< ResetInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< ResetInterface * >::value_type >(argp2);
-  (arg1)->push_back(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_front(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_front" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (std::vector< ResetInterface * >::value_type)((std::vector< ResetInterface * > const *)arg1)->front();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_back" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = (std::vector< ResetInterface * >::value_type)((std::vector< ResetInterface * > const *)arg1)->back();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_assign(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::size_type arg2 ;
-  std::vector< ResetInterface * >::value_type arg3 = (std::vector< ResetInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "resetInterfaceVector_assign", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_assign" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector_assign" "', argument " "2"" of type '" "std::vector< ResetInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::size_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "resetInterfaceVector_assign" "', argument " "3"" of type '" "std::vector< ResetInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< ResetInterface * >::value_type >(argp3);
-  (arg1)->assign(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_resize__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::size_type arg2 ;
-  std::vector< ResetInterface * >::value_type arg3 = (std::vector< ResetInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_resize" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector_resize" "', argument " "2"" of type '" "std::vector< ResetInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::size_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "resetInterfaceVector_resize" "', argument " "3"" of type '" "std::vector< ResetInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< ResetInterface * >::value_type >(argp3);
-  (arg1)->resize(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_resize(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "resetInterfaceVector_resize", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_resetInterfaceVector_resize__SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_ResetInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_resetInterfaceVector_resize__SWIG_1(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'resetInterfaceVector_resize'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< ResetInterface * >::resize(std::vector< ResetInterface * >::size_type)\n"
-    "    std::vector< ResetInterface * >::resize(std::vector< ResetInterface * >::size_type,std::vector< ResetInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_insert__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::iterator arg2 ;
-  std::vector< ResetInterface * >::value_type arg3 = (std::vector< ResetInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  std::vector< ResetInterface * >::iterator result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_insert" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< ResetInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< ResetInterface * >::iterator""'");
-    }
-  }
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "resetInterfaceVector_insert" "', argument " "3"" of type '" "std::vector< ResetInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< ResetInterface * >::value_type >(argp3);
-  result = std_vector_Sl_ResetInterface_Sm__Sg__insert__SWIG_0(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< ResetInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_insert__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::iterator arg2 ;
-  std::vector< ResetInterface * >::size_type arg3 ;
-  std::vector< ResetInterface * >::value_type arg4 = (std::vector< ResetInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  size_t val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  
-  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_insert" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< ResetInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "resetInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< ResetInterface * >::iterator""'");
-    }
-  }
-  ecode3 = SWIG_AsVal_size_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "resetInterfaceVector_insert" "', argument " "3"" of type '" "std::vector< ResetInterface * >::size_type""'");
-  } 
-  arg3 = static_cast< std::vector< ResetInterface * >::size_type >(val3);
-  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "resetInterfaceVector_insert" "', argument " "4"" of type '" "std::vector< ResetInterface * >::value_type""'"); 
-  }
-  arg4 = reinterpret_cast< std::vector< ResetInterface * >::value_type >(argp4);
-  std_vector_Sl_ResetInterface_Sm__Sg__insert__SWIG_1(arg1,arg2,arg3,arg4);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_insert(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "resetInterfaceVector_insert", 0, 4, argv))) SWIG_fail;
-  --argc;
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_ResetInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_resetInterfaceVector_insert__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< ResetInterface*,std::allocator< ResetInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< ResetInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        {
-          int res = SWIG_AsVal_size_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          void *vptr = 0;
-          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_ResetInterface, 0);
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_resetInterfaceVector_insert__SWIG_1(self, argc, argv);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'resetInterfaceVector_insert'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< ResetInterface * >::insert(std::vector< ResetInterface * >::iterator,std::vector< ResetInterface * >::value_type)\n"
-    "    std::vector< ResetInterface * >::insert(std::vector< ResetInterface * >::iterator,std::vector< ResetInterface * >::size_type,std::vector< ResetInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_reserve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  std::vector< ResetInterface * >::size_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "resetInterfaceVector_reserve", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_reserve" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "resetInterfaceVector_reserve" "', argument " "2"" of type '" "std::vector< ResetInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< ResetInterface * >::size_type >(val2);
-  (arg1)->reserve(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_resetInterfaceVector_capacity(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< ResetInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "resetInterfaceVector_capacity" "', argument " "1"" of type '" "std::vector< ResetInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  result = ((std::vector< ResetInterface * > const *)arg1)->capacity();
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_resetInterfaceVector(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< ResetInterface * > *arg1 = (std::vector< ResetInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_resetInterfaceVector" "', argument " "1"" of type '" "std::vector< ResetInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< ResetInterface * > * >(argp1);
-  delete arg1;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *resetInterfaceVector_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
-SWIGINTERN PyObject *resetInterfaceVector_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  return SWIG_Python_InitShadowInstance(args);
-}
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_iterator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  PyObject **arg2 = (PyObject **) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  swig::SwigPyIterator *result = 0 ;
-  
-  arg2 = &swig_obj[0];
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_iterator" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (swig::SwigPyIterator *)std_vector_Sl_RegisterInterface_Sm__Sg__iterator(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___nonzero__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___nonzero__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (bool)std_vector_Sl_RegisterInterface_Sm__Sg____nonzero__((std::vector< RegisterInterface * > const *)arg1);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___bool__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___bool__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (bool)std_vector_Sl_RegisterInterface_Sm__Sg____bool__((std::vector< RegisterInterface * > const *)arg1);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___len__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___len__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = std_vector_Sl_RegisterInterface_Sm__Sg____len__((std::vector< RegisterInterface * > const *)arg1);
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___getslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::difference_type arg2 ;
-  std::vector< RegisterInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *result = 0 ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "registerInterfaceVector___getslice__", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___getslice__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector___getslice__" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "registerInterfaceVector___getslice__" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< RegisterInterface * >::difference_type >(val3);
-  try {
-    result = (std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *)std_vector_Sl_RegisterInterface_Sm__Sg____getslice__(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___setslice____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::difference_type arg2 ;
-  std::vector< RegisterInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___setslice__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector___setslice__" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "registerInterfaceVector___setslice__" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< RegisterInterface * >::difference_type >(val3);
-  try {
-    std_vector_Sl_RegisterInterface_Sm__Sg____setslice____SWIG_0(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___setslice____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::difference_type arg2 ;
-  std::vector< RegisterInterface * >::difference_type arg3 ;
-  std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *arg4 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  int res4 = SWIG_OLDOBJ ;
-  
-  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___setslice__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector___setslice__" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "registerInterfaceVector___setslice__" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< RegisterInterface * >::difference_type >(val3);
-  {
-    std::vector< RegisterInterface*,std::allocator< RegisterInterface * > > *ptr = (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > > *)0;
-    res4 = swig::asptr(swig_obj[3], &ptr);
-    if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "registerInterfaceVector___setslice__" "', argument " "4"" of type '" "std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "registerInterfaceVector___setslice__" "', argument " "4"" of type '" "std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &""'"); 
-    }
-    arg4 = ptr;
-  }
-  try {
-    std_vector_Sl_RegisterInterface_Sm__Sg____setslice____SWIG_1(arg1,arg2,arg3,(std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &)*arg4);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res4)) delete arg4;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res4)) delete arg4;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___setslice__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "registerInterfaceVector___setslice__", 0, 4, argv))) SWIG_fail;
-  --argc;
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_ptrdiff_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_registerInterfaceVector___setslice____SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_ptrdiff_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          int res = swig::asptr(argv[3], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_registerInterfaceVector___setslice____SWIG_1(self, argc, argv);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'registerInterfaceVector___setslice__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< RegisterInterface * >::__setslice__(std::vector< RegisterInterface * >::difference_type,std::vector< RegisterInterface * >::difference_type)\n"
-    "    std::vector< RegisterInterface * >::__setslice__(std::vector< RegisterInterface * >::difference_type,std::vector< RegisterInterface * >::difference_type,std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___delslice__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::difference_type arg2 ;
-  std::vector< RegisterInterface * >::difference_type arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  ptrdiff_t val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "registerInterfaceVector___delslice__", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___delslice__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector___delslice__" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::difference_type >(val2);
-  ecode3 = SWIG_AsVal_ptrdiff_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "registerInterfaceVector___delslice__" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg3 = static_cast< std::vector< RegisterInterface * >::difference_type >(val3);
-  try {
-    std_vector_Sl_RegisterInterface_Sm__Sg____delslice__(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___delitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::difference_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___delitem__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector___delitem__" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::difference_type >(val2);
-  try {
-    std_vector_Sl_RegisterInterface_Sm__Sg____delitem____SWIG_0(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___getitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *result = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___getitem__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector___getitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    result = (std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *)std_vector_Sl_RegisterInterface_Sm__Sg____getitem____SWIG_0(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___setitem____SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res3 = SWIG_OLDOBJ ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  {
-    std::vector< RegisterInterface*,std::allocator< RegisterInterface * > > *ptr = (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > > *)0;
-    res3 = swig::asptr(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "registerInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "registerInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  try {
-    std_vector_Sl_RegisterInterface_Sm__Sg____setitem____SWIG_0(arg1,arg2,(std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &)*arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___setitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector___setitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    std_vector_Sl_RegisterInterface_Sm__Sg____setitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___delitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  PySliceObject *arg2 = (PySliceObject *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___delitem__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  {
-    if (!PySlice_Check(swig_obj[1])) {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector___delitem__" "', argument " "2"" of type '" "PySliceObject *""'");
-    }
-    arg2 = (PySliceObject *) swig_obj[1];
-  }
-  try {
-    std_vector_Sl_RegisterInterface_Sm__Sg____delitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  } catch(std::invalid_argument &_e) {
-    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___delitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "registerInterfaceVector___delitem__", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_registerInterfaceVector___delitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_registerInterfaceVector___delitem____SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'registerInterfaceVector___delitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< RegisterInterface * >::__delitem__(std::vector< RegisterInterface * >::difference_type)\n"
-    "    std::vector< RegisterInterface * >::__delitem__(PySliceObject *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___getitem____SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::difference_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  std::vector< RegisterInterface * >::value_type result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___getitem__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector___getitem__" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::difference_type >(val2);
-  try {
-    result = (std::vector< RegisterInterface * >::value_type)std_vector_Sl_RegisterInterface_Sm__Sg____getitem____SWIG_1(arg1,arg2);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___getitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "registerInterfaceVector___getitem__", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_registerInterfaceVector___getitem____SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_registerInterfaceVector___getitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'registerInterfaceVector___getitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< RegisterInterface * >::__getitem__(PySliceObject *)\n"
-    "    std::vector< RegisterInterface * >::__getitem__(std::vector< RegisterInterface * >::difference_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___setitem____SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::difference_type arg2 ;
-  std::vector< RegisterInterface * >::value_type arg3 = (std::vector< RegisterInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  ptrdiff_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector___setitem__" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_ptrdiff_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector___setitem__" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::difference_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::difference_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "registerInterfaceVector___setitem__" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< RegisterInterface * >::value_type >(argp3);
-  try {
-    std_vector_Sl_RegisterInterface_Sm__Sg____setitem____SWIG_2(arg1,arg2,arg3);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector___setitem__(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "registerInterfaceVector___setitem__", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        return _wrap_registerInterfaceVector___setitem____SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        int res = swig::asptr(argv[2], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_registerInterfaceVector___setitem____SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_registerInterfaceVector___setitem____SWIG_2(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'registerInterfaceVector___setitem__'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< RegisterInterface * >::__setitem__(PySliceObject *,std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > const &)\n"
-    "    std::vector< RegisterInterface * >::__setitem__(PySliceObject *)\n"
-    "    std::vector< RegisterInterface * >::__setitem__(std::vector< RegisterInterface * >::difference_type,std::vector< RegisterInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_pop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_pop" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  try {
-    result = (std::vector< RegisterInterface * >::value_type)std_vector_Sl_RegisterInterface_Sm__Sg__pop(arg1);
-  } catch(std::out_of_range &_e) {
-    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
-  }
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_append(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::value_type arg2 = (std::vector< RegisterInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "registerInterfaceVector_append", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_append" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "registerInterfaceVector_append" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< RegisterInterface * >::value_type >(argp2);
-  std_vector_Sl_RegisterInterface_Sm__Sg__append(arg1,arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_registerInterfaceVector__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *result = 0 ;
-  
-  if ((nobjs < 0) || (nobjs > 0)) SWIG_fail;
-  result = (std::vector< RegisterInterface * > *)new std::vector< RegisterInterface * >();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_registerInterfaceVector__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = 0 ;
-  int res1 = SWIG_OLDOBJ ;
-  std::vector< RegisterInterface * > *result = 0 ;
-  
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
-  {
-    std::vector< RegisterInterface*,std::allocator< RegisterInterface * > > *ptr = (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > > *)0;
-    res1 = swig::asptr(swig_obj[0], &ptr);
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_registerInterfaceVector" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_registerInterfaceVector" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const &""'"); 
-    }
-    arg1 = ptr;
-  }
-  result = (std::vector< RegisterInterface * > *)new std::vector< RegisterInterface * >((std::vector< RegisterInterface * > const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  if (SWIG_IsNewObj(res1)) delete arg1;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res1)) delete arg1;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_empty(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_empty" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (bool)((std::vector< RegisterInterface * > const *)arg1)->empty();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_size" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = ((std::vector< RegisterInterface * > const *)arg1)->size();
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_swap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "registerInterfaceVector_swap", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_swap" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "registerInterfaceVector_swap" "', argument " "2"" of type '" "std::vector< RegisterInterface * > &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "registerInterfaceVector_swap" "', argument " "2"" of type '" "std::vector< RegisterInterface * > &""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp2);
-  (arg1)->swap(*arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_begin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_begin" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (arg1)->begin();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< RegisterInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_end(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_end" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (arg1)->end();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< RegisterInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_rbegin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::reverse_iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_rbegin" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (arg1)->rbegin();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< RegisterInterface * >::reverse_iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_rend(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::reverse_iterator result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_rend" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (arg1)->rend();
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< RegisterInterface * >::reverse_iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_clear(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_clear" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  (arg1)->clear();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_get_allocator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  SwigValueWrapper< std::allocator< RegisterInterface * > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_get_allocator" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = ((std::vector< RegisterInterface * > const *)arg1)->get_allocator();
-  resultobj = SWIG_NewPointerObj((new std::vector< RegisterInterface * >::allocator_type(static_cast< const std::vector< RegisterInterface * >::allocator_type& >(result))), SWIGTYPE_p_std__allocatorT_RegisterInterface_p_t, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_registerInterfaceVector__SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * >::size_type arg1 ;
-  size_t val1 ;
-  int ecode1 = 0 ;
-  std::vector< RegisterInterface * > *result = 0 ;
-  
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
-  ecode1 = SWIG_AsVal_size_t(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_registerInterfaceVector" "', argument " "1"" of type '" "std::vector< RegisterInterface * >::size_type""'");
-  } 
-  arg1 = static_cast< std::vector< RegisterInterface * >::size_type >(val1);
-  result = (std::vector< RegisterInterface * > *)new std::vector< RegisterInterface * >(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_pop_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_pop_back" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  (arg1)->pop_back();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_resize__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::size_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_resize" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector_resize" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::size_type >(val2);
-  (arg1)->resize(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_erase__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::iterator arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  std::vector< RegisterInterface * >::iterator result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_erase" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-    }
-  }
-  result = std_vector_Sl_RegisterInterface_Sm__Sg__erase__SWIG_0(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< RegisterInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_erase__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::iterator arg2 ;
-  std::vector< RegisterInterface * >::iterator arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  swig::SwigPyIterator *iter3 = 0 ;
-  int res3 ;
-  std::vector< RegisterInterface * >::iterator result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_erase" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_erase" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-    }
-  }
-  res3 = SWIG_ConvertPtr(swig_obj[2], SWIG_as_voidptrptr(&iter3), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res3) || !iter3) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_erase" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter3);
-    if (iter_t) {
-      arg3 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_erase" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-    }
-  }
-  result = std_vector_Sl_RegisterInterface_Sm__Sg__erase__SWIG_1(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< RegisterInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_erase(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "registerInterfaceVector_erase", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        return _wrap_registerInterfaceVector_erase__SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        swig::SwigPyIterator *iter = 0;
-        int res = SWIG_ConvertPtr(argv[2], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-        _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter) != 0));
-        if (_v) {
-          return _wrap_registerInterfaceVector_erase__SWIG_1(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'registerInterfaceVector_erase'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< RegisterInterface * >::erase(std::vector< RegisterInterface * >::iterator)\n"
-    "    std::vector< RegisterInterface * >::erase(std::vector< RegisterInterface * >::iterator,std::vector< RegisterInterface * >::iterator)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_registerInterfaceVector__SWIG_3(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * >::size_type arg1 ;
-  std::vector< RegisterInterface * >::value_type arg2 = (std::vector< RegisterInterface * >::value_type) 0 ;
-  size_t val1 ;
-  int ecode1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  std::vector< RegisterInterface * > *result = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  ecode1 = SWIG_AsVal_size_t(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_registerInterfaceVector" "', argument " "1"" of type '" "std::vector< RegisterInterface * >::size_type""'");
-  } 
-  arg1 = static_cast< std::vector< RegisterInterface * >::size_type >(val1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_registerInterfaceVector" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< RegisterInterface * >::value_type >(argp2);
-  result = (std::vector< RegisterInterface * > *)new std::vector< RegisterInterface * >(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_registerInterfaceVector(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_registerInterfaceVector", 0, 2, argv))) SWIG_fail;
-  --argc;
-  if (argc == 0) {
-    return _wrap_new_registerInterfaceVector__SWIG_0(self, argc, argv);
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_size_t(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_registerInterfaceVector__SWIG_2(self, argc, argv);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_registerInterfaceVector__SWIG_1(self, argc, argv);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      int res = SWIG_AsVal_size_t(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_new_registerInterfaceVector__SWIG_3(self, argc, argv);
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_registerInterfaceVector'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< RegisterInterface * >::vector()\n"
-    "    std::vector< RegisterInterface * >::vector(std::vector< RegisterInterface * > const &)\n"
-    "    std::vector< RegisterInterface * >::vector(std::vector< RegisterInterface * >::size_type)\n"
-    "    std::vector< RegisterInterface * >::vector(std::vector< RegisterInterface * >::size_type,std::vector< RegisterInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_push_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::value_type arg2 = (std::vector< RegisterInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "registerInterfaceVector_push_back", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_push_back" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "registerInterfaceVector_push_back" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::value_type""'"); 
-  }
-  arg2 = reinterpret_cast< std::vector< RegisterInterface * >::value_type >(argp2);
-  (arg1)->push_back(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_front(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_front" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (std::vector< RegisterInterface * >::value_type)((std::vector< RegisterInterface * > const *)arg1)->front();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_back(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::value_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_back" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = (std::vector< RegisterInterface * >::value_type)((std::vector< RegisterInterface * > const *)arg1)->back();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_assign(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::size_type arg2 ;
-  std::vector< RegisterInterface * >::value_type arg3 = (std::vector< RegisterInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "registerInterfaceVector_assign", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_assign" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector_assign" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::size_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "registerInterfaceVector_assign" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< RegisterInterface * >::value_type >(argp3);
-  (arg1)->assign(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_resize__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::size_type arg2 ;
-  std::vector< RegisterInterface * >::value_type arg3 = (std::vector< RegisterInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_resize" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector_resize" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::size_type >(val2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "registerInterfaceVector_resize" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< RegisterInterface * >::value_type >(argp3);
-  (arg1)->resize(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_resize(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "registerInterfaceVector_resize", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_registerInterfaceVector_resize__SWIG_0(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_registerInterfaceVector_resize__SWIG_1(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'registerInterfaceVector_resize'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< RegisterInterface * >::resize(std::vector< RegisterInterface * >::size_type)\n"
-    "    std::vector< RegisterInterface * >::resize(std::vector< RegisterInterface * >::size_type,std::vector< RegisterInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_insert__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::iterator arg2 ;
-  std::vector< RegisterInterface * >::value_type arg3 = (std::vector< RegisterInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  std::vector< RegisterInterface * >::iterator result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_insert" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-    }
-  }
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "registerInterfaceVector_insert" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::value_type""'"); 
-  }
-  arg3 = reinterpret_cast< std::vector< RegisterInterface * >::value_type >(argp3);
-  result = std_vector_Sl_RegisterInterface_Sm__Sg__insert__SWIG_0(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(swig::make_output_iterator(static_cast< const std::vector< RegisterInterface * >::iterator & >(result)),
-    swig::SwigPyIterator::descriptor(),SWIG_POINTER_OWN);
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_insert__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::iterator arg2 ;
-  std::vector< RegisterInterface * >::size_type arg3 ;
-  std::vector< RegisterInterface * >::value_type arg4 = (std::vector< RegisterInterface * >::value_type) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  swig::SwigPyIterator *iter2 = 0 ;
-  int res2 ;
-  size_t val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  
-  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_insert" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], SWIG_as_voidptrptr(&iter2), swig::SwigPyIterator::descriptor(), 0);
-  if (!SWIG_IsOK(res2) || !iter2) {
-    SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-  } else {
-    swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *iter_t = dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter2);
-    if (iter_t) {
-      arg2 = iter_t->get_current();
-    } else {
-      SWIG_exception_fail(SWIG_ArgError(SWIG_TypeError), "in method '" "registerInterfaceVector_insert" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::iterator""'");
-    }
-  }
-  ecode3 = SWIG_AsVal_size_t(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "registerInterfaceVector_insert" "', argument " "3"" of type '" "std::vector< RegisterInterface * >::size_type""'");
-  } 
-  arg3 = static_cast< std::vector< RegisterInterface * >::size_type >(val3);
-  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "registerInterfaceVector_insert" "', argument " "4"" of type '" "std::vector< RegisterInterface * >::value_type""'"); 
-  }
-  arg4 = reinterpret_cast< std::vector< RegisterInterface * >::value_type >(argp4);
-  std_vector_Sl_RegisterInterface_Sm__Sg__insert__SWIG_1(arg1,arg2,arg3,arg4);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_insert(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "registerInterfaceVector_insert", 0, 4, argv))) SWIG_fail;
-  --argc;
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_registerInterfaceVector_insert__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< RegisterInterface*,std::allocator< RegisterInterface * > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< RegisterInterface * >::iterator > *>(iter) != 0));
-      if (_v) {
-        {
-          int res = SWIG_AsVal_size_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          void *vptr = 0;
-          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_registerInterfaceVector_insert__SWIG_1(self, argc, argv);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'registerInterfaceVector_insert'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    std::vector< RegisterInterface * >::insert(std::vector< RegisterInterface * >::iterator,std::vector< RegisterInterface * >::value_type)\n"
-    "    std::vector< RegisterInterface * >::insert(std::vector< RegisterInterface * >::iterator,std::vector< RegisterInterface * >::size_type,std::vector< RegisterInterface * >::value_type)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_reserve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  std::vector< RegisterInterface * >::size_type arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  size_t val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "registerInterfaceVector_reserve", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_reserve" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  ecode2 = SWIG_AsVal_size_t(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "registerInterfaceVector_reserve" "', argument " "2"" of type '" "std::vector< RegisterInterface * >::size_type""'");
-  } 
-  arg2 = static_cast< std::vector< RegisterInterface * >::size_type >(val2);
-  (arg1)->reserve(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_registerInterfaceVector_capacity(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface * >::size_type result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "registerInterfaceVector_capacity" "', argument " "1"" of type '" "std::vector< RegisterInterface * > const *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  result = ((std::vector< RegisterInterface * > const *)arg1)->capacity();
-  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_registerInterfaceVector(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  std::vector< RegisterInterface * > *arg1 = (std::vector< RegisterInterface * > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_registerInterfaceVector" "', argument " "1"" of type '" "std::vector< RegisterInterface * > *""'"); 
-  }
-  arg1 = reinterpret_cast< std::vector< RegisterInterface * > * >(argp1);
-  delete arg1;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *registerInterfaceVector_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
-SWIGINTERN PyObject *registerInterfaceVector_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  return SWIG_Python_InitShadowInstance(args);
-}
-
 SWIGINTERN PyObject *_wrap_new_PythonAPI(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *result = 0 ;
@@ -14213,25 +8484,240 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PythonAPI_getRegisterInterfaces(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PythonAPI_getAddressBlockInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > result;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  AddressBlockInterface *result = 0 ;
   
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getAddressBlockInterface", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getRegisterInterfaces" "', argument " "1"" of type '" "PythonAPI const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getAddressBlockInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  result = ((PythonAPI const *)arg1)->getRegisterInterfaces();
-  resultobj = swig::from(static_cast< std::vector< RegisterInterface*,std::allocator< RegisterInterface * > > >(result));
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getAddressBlockInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getAddressBlockInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (AddressBlockInterface *)(arg1)->getAddressBlockInterface((std::string const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_getRegisterInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  RegisterInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getRegisterInterface", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getRegisterInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getRegisterInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getRegisterInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_getRegisterInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getRegisterInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (RegisterInterface *)(arg1)->getRegisterInterface((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, 0 |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_getFieldInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int res4 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[4] ;
+  FieldInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getFieldInterface", 4, 4, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getFieldInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getFieldInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getFieldInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_getFieldInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getFieldInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PythonAPI_getFieldInterface" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getFieldInterface" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  result = (FieldInterface *)(arg1)->getFieldInterface((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_getResetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  std::string *arg5 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int res4 = SWIG_OLDOBJ ;
+  int res5 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[5] ;
+  ResetInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getResetInterface", 5, 5, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getResetInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getResetInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getResetInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_getResetInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getResetInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PythonAPI_getResetInterface" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getResetInterface" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res5 = SWIG_AsPtr_std_string(swig_obj[4], &ptr);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "PythonAPI_getResetInterface" "', argument " "5"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getResetInterface" "', argument " "5"" of type '" "std::string const &""'"); 
+    }
+    arg5 = ptr;
+  }
+  result = (ResetInterface *)(arg1)->getResetInterface((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, 0 |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res5)) delete arg5;
   return NULL;
 }
 
@@ -14643,80 +9129,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ParameterizableInterface_setExpressionParser(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_setExpressionParser", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_setExpressionParser" "', argument " "1"" of type '" "ParameterizableInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_setExpressionParser" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_setExpressionParser" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
-    } else {
-      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setExpressionParser(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParameterizableInterface_setExpressionFormatter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParameterizableInterface_setExpressionFormatter", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParameterizableInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParameterizableInterface_setExpressionFormatter" "', argument " "1"" of type '" "ParameterizableInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParameterizableInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParameterizableInterface_setExpressionFormatter" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParameterizableInterface_setExpressionFormatter" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'");
-    } else {
-      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setExpressionFormatter(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_ParameterizableInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ParameterizableInterface *arg1 = (ParameterizableInterface *) 0 ;
@@ -14778,10 +9190,59 @@ SWIGINTERN PyObject *ParameterizableInterface_swigregister(PyObject *SWIGUNUSEDP
 
 SWIGINTERN PyObject *_wrap_new_PortsInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< PortValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  PyObject *swig_obj[3] ;
   PortsInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "new_PortsInterface", 0, 0, 0)) SWIG_fail;
-  result = (PortsInterface *)new PortsInterface();
+  if (!SWIG_Python_UnpackTuple(args, "new_PortsInterface", 3, 3, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_PortValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_PortsInterface" "', argument " "1"" of type '" "QSharedPointer< PortValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_PortsInterface" "', argument " "1"" of type '" "QSharedPointer< PortValidator >""'");
+    } else {
+      QSharedPointer< PortValidator > * temp = reinterpret_cast< QSharedPointer< PortValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_PortsInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_PortsInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_PortsInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_PortsInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  result = (PortsInterface *)new PortsInterface(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PortsInterface, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -14841,43 +9302,6 @@ SWIGINTERN PyObject *_wrap_PortsInterface_setPorts(PyObject *SWIGUNUSEDPARM(self
     }
   }
   (arg1)->setPorts(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_setValidator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< PortValidator > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setValidator", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setValidator" "', argument " "1"" of type '" "PortsInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_PortValidator_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< PortValidator >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< PortValidator >""'");
-    } else {
-      QSharedPointer< PortValidator > * temp = reinterpret_cast< QSharedPointer< PortValidator > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setValidator(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -18817,10 +13241,59 @@ SWIGINTERN PyObject *PortsInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyO
 
 SWIGINTERN PyObject *_wrap_new_ParametersInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< ParameterValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  PyObject *swig_obj[3] ;
   ParametersInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "new_ParametersInterface", 0, 0, 0)) SWIG_fail;
-  result = (ParametersInterface *)new ParametersInterface();
+  if (!SWIG_Python_UnpackTuple(args, "new_ParametersInterface", 3, 3, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_ParameterValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_ParametersInterface" "', argument " "1"" of type '" "QSharedPointer< ParameterValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ParametersInterface" "', argument " "1"" of type '" "QSharedPointer< ParameterValidator >""'");
+    } else {
+      QSharedPointer< ParameterValidator > * temp = reinterpret_cast< QSharedPointer< ParameterValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ParametersInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ParametersInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_ParametersInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ParametersInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  result = (ParametersInterface *)new ParametersInterface(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ParametersInterface, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -18954,43 +13427,6 @@ SWIGINTERN PyObject *_wrap_ParametersInterface_setChoices(PyObject *SWIGUNUSEDPA
     }
   }
   (arg1)->setChoices(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setValidator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< ParameterValidator > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setValidator", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setValidator" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ParameterValidator_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< ParameterValidator >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< ParameterValidator >""'");
-    } else {
-      QSharedPointer< ParameterValidator > * temp = reinterpret_cast< QSharedPointer< ParameterValidator > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setValidator(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -22250,12 +16686,2392 @@ SWIGINTERN PyObject *ParametersInterface_swiginit(PyObject *SWIGUNUSEDPARM(self)
   return SWIG_Python_InitShadowInstance(args);
 }
 
-SWIGINTERN PyObject *_wrap_new_RegisterInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_AddressBlockInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< AddressBlockValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  RegisterInterface *arg4 = (RegisterInterface *) 0 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject *swig_obj[4] ;
+  AddressBlockInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "new_AddressBlockInterface", 4, 4, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_AddressBlockInterface" "', argument " "1"" of type '" "QSharedPointer< AddressBlockValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_AddressBlockInterface" "', argument " "1"" of type '" "QSharedPointer< AddressBlockValidator >""'");
+    } else {
+      QSharedPointer< AddressBlockValidator > * temp = reinterpret_cast< QSharedPointer< AddressBlockValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_AddressBlockInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_AddressBlockInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_AddressBlockInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_AddressBlockInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_RegisterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_AddressBlockInterface" "', argument " "4"" of type '" "RegisterInterface *""'"); 
+  }
+  arg4 = reinterpret_cast< RegisterInterface * >(argp4);
+  result = (AddressBlockInterface *)new AddressBlockInterface(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_AddressBlockInterface, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_AddressBlockInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_AddressBlockInterface" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setAddressBlocks(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setAddressBlocks", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setAddressBlocks" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setAddressBlocks" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setAddressBlocks" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > >""'");
+    } else {
+      QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > > * temp = reinterpret_cast< QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setAddressBlocks(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getItemIndex" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (int)((AddressBlockInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getIndexedItemName" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "AddressBlockInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((AddressBlockInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  int result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_itemCount" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  result = (int)((AddressBlockInterface const *)arg1)->itemCount();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getItemNames" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  result = ((AddressBlockInterface const *)arg1)->getItemNames();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setName" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getDescription" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getDescription((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setDescription" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getBaseAddressValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getBaseAddressValue" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getBaseAddressValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getBaseAddressValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AddressBlockInterface_getBaseAddressValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AddressBlockInterface const *)arg1)->getBaseAddressValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getBaseAddressValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getBaseAddressValue" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getBaseAddressValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getBaseAddressValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getBaseAddressValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getBaseAddressValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getBaseAddressValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AddressBlockInterface_getBaseAddressValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AddressBlockInterface_getBaseAddressValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AddressBlockInterface_getBaseAddressValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AddressBlockInterface::getBaseAddressValue(std::string const &,int const &) const\n"
+    "    AddressBlockInterface::getBaseAddressValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getBaseAddressFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getBaseAddressFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getBaseAddressFormattedExpression" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getBaseAddressFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getBaseAddressFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getBaseAddressFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getBaseAddressExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getBaseAddressExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getBaseAddressExpression" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getBaseAddressExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getBaseAddressExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getBaseAddressExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setBaseAddress(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setBaseAddress", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setBaseAddress" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setBaseAddress" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setBaseAddress" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setBaseAddress" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setBaseAddress" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->setBaseAddress((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getIsPresentValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getIsPresentValue" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AddressBlockInterface_getIsPresentValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AddressBlockInterface const *)arg1)->getIsPresentValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getIsPresentValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getIsPresentValue" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getIsPresentValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getIsPresentValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getIsPresentValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AddressBlockInterface_getIsPresentValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AddressBlockInterface_getIsPresentValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AddressBlockInterface_getIsPresentValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AddressBlockInterface::getIsPresentValue(std::string const &,int const &) const\n"
+    "    AddressBlockInterface::getIsPresentValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getIsPresentFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getIsPresentFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getIsPresentFormattedExpression" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getIsPresentFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getIsPresentFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getIsPresentFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getIsPresentExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getIsPresentExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getIsPresentExpression" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getIsPresentExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getIsPresentExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getIsPresentExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setIsPresent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setIsPresent", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setIsPresent" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setIsPresent" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setIsPresent" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->setIsPresent((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getRangeValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getRangeValue" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getRangeValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getRangeValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AddressBlockInterface_getRangeValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AddressBlockInterface const *)arg1)->getRangeValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getRangeValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getRangeValue" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getRangeValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getRangeValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getRangeValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getRangeValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getRangeValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AddressBlockInterface_getRangeValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AddressBlockInterface_getRangeValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AddressBlockInterface_getRangeValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AddressBlockInterface::getRangeValue(std::string const &,int const &) const\n"
+    "    AddressBlockInterface::getRangeValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getRangeFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getRangeFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getRangeFormattedExpression" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getRangeFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getRangeFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getRangeFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getRangeExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getRangeExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getRangeExpression" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getRangeExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getRangeExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getRangeExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setRange(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setRange", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setRange" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setRange" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setRange" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setRange" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setRange" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->setRange((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getWidthValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getWidthValue" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getWidthValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getWidthValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AddressBlockInterface_getWidthValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AddressBlockInterface const *)arg1)->getWidthValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getWidthValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getWidthValue" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getWidthValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getWidthValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getWidthValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getWidthValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getWidthValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AddressBlockInterface_getWidthValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AddressBlockInterface_getWidthValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AddressBlockInterface_getWidthValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AddressBlockInterface::getWidthValue(std::string const &,int const &) const\n"
+    "    AddressBlockInterface::getWidthValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getWidthFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getWidthFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getWidthFormattedExpression" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getWidthFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getWidthFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getWidthFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getWidthExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getWidthExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getWidthExpression" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getWidthExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getWidthExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getWidthExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setWidth", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setWidth" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setWidth" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setWidth" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->setWidth((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getUsage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getUsage", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getUsage" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getUsage" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getUsage" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getUsage((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setUsage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setUsage", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setUsage" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setUsage" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setUsage" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setUsage" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setUsage" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->setUsage((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getAccess(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getAccess", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getAccess" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getAccess" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getAccess" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getAccess((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setAccess(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setAccess", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setAccess" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setAccess" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setAccess" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setAccess" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setAccess" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->setAccess((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getVolatile(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getVolatile", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getVolatile" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getVolatile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getVolatile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getVolatile((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setVolatile(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setVolatile", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setVolatile" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setVolatile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setVolatile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AddressBlockInterface_setVolatile" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (bool)((AddressBlockInterface const *)arg1)->setVolatile((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (int)((AddressBlockInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_validateItems" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  result = (bool)((AddressBlockInterface const *)arg1)->validateItems();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_itemHasValidName" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_hasValidBaseAddress(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_hasValidBaseAddress", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_hasValidBaseAddress" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_hasValidBaseAddress" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_hasValidBaseAddress" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->hasValidBaseAddress((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_hasValidRange(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_hasValidRange", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_hasValidRange" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_hasValidRange" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_hasValidRange" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->hasValidRange((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_hasValidWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_hasValidWidth", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_hasValidWidth" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_hasValidWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_hasValidWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->hasValidWidth((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_hasValidIsPresent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_hasValidIsPresent", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_hasValidIsPresent" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_hasValidIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_hasValidIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->hasValidIsPresent((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_hasValidUsage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_hasValidUsage", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_hasValidUsage" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_hasValidUsage" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_hasValidUsage" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->hasValidUsage((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_addBlock__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  int *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_addBlock" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "AddressBlockInterface_addBlock" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_addBlock" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_addBlock" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  (arg1)->addBlock((int const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_addBlock__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_addBlock" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "AddressBlockInterface_addBlock" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  (arg1)->addBlock((int const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_addBlock(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_addBlock", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_AddressBlockInterface_addBlock__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_AddressBlockInterface_addBlock__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AddressBlockInterface_addBlock'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AddressBlockInterface::addBlock(int const &,std::string const &)\n"
+    "    AddressBlockInterface::addBlock(int const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_removeBlock(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_removeBlock", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_removeBlock" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_removeBlock" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_removeBlock" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)(arg1)->removeBlock((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_copyRows(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  SwigValueWrapper< std::vector< int,std::allocator< int > > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_copyRows", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_copyRows" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_copyRows" "', argument " "2"" of type '" "std::vector< int,std::allocator< int > >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_copyRows" "', argument " "2"" of type '" "std::vector< int,std::allocator< int > >""'");
+    } else {
+      std::vector< int,std::allocator< int > > * temp = reinterpret_cast< std::vector< int,std::allocator< int > > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->copyRows(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_pasteRows(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_pasteRows" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  result = (arg1)->pasteRows();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getPasteRowCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  int result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getPasteRowCount" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  result = (int)((AddressBlockInterface const *)arg1)->getPasteRowCount();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getExpressionsInSelectedItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getExpressionsInSelectedItems", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getExpressionsInSelectedItems" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "AddressBlockInterface_getExpressionsInSelectedItems" "', argument " "2"" of type '" "std::vector< std::string,std::allocator< std::string > >""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getExpressionsInSelectedItems(arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setAddressUnitBits(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setAddressUnitBits", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setAddressUnitBits" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setAddressUnitBits" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setAddressUnitBits" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->setAddressUnitBits((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getSubInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
   RegisterInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "new_RegisterInterface", 0, 0, 0)) SWIG_fail;
-  result = (RegisterInterface *)new RegisterInterface();
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getSubInterface" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  result = (RegisterInterface *)((AddressBlockInterface const *)arg1)->getSubInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *AddressBlockInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_AddressBlockInterface, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *AddressBlockInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  return SWIG_Python_InitShadowInstance(args);
+}
+
+SWIGINTERN PyObject *_wrap_new_RegisterInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< RegisterValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  FieldInterface *arg4 = (FieldInterface *) 0 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject *swig_obj[4] ;
+  RegisterInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "new_RegisterInterface", 4, 4, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_RegisterValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_RegisterInterface" "', argument " "1"" of type '" "QSharedPointer< RegisterValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_RegisterInterface" "', argument " "1"" of type '" "QSharedPointer< RegisterValidator >""'");
+    } else {
+      QSharedPointer< RegisterValidator > * temp = reinterpret_cast< QSharedPointer< RegisterValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_RegisterInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_RegisterInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_RegisterInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_RegisterInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_RegisterInterface" "', argument " "4"" of type '" "FieldInterface *""'"); 
+  }
+  arg4 = reinterpret_cast< FieldInterface * >(argp4);
+  result = (RegisterInterface *)new RegisterInterface(arg1,arg2,arg3,arg4);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -22315,43 +19131,6 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_setRegisters(PyObject *SWIGUNUSEDPA
     }
   }
   (arg1)->setRegisters(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_setValidator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< RegisterValidator > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_setValidator", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_setValidator" "', argument " "1"" of type '" "RegisterInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_RegisterValidator_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< RegisterValidator >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< RegisterValidator >""'");
-    } else {
-      QSharedPointer< RegisterValidator > * temp = reinterpret_cast< QSharedPointer< RegisterValidator > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setValidator(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -24461,140 +21240,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RegisterInterface_addSubInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  FieldInterface *arg3 = (FieldInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_addSubInterface", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_addSubInterface" "', argument " "1"" of type '" "RegisterInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_addSubInterface" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_addSubInterface" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "RegisterInterface_addSubInterface" "', argument " "3"" of type '" "FieldInterface *""'"); 
-  }
-  arg3 = reinterpret_cast< FieldInterface * >(argp3);
-  (arg1)->addSubInterface((std::string const &)*arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_removeSubInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  FieldInterface *arg2 = (FieldInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_removeSubInterface", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_removeSubInterface" "', argument " "1"" of type '" "RegisterInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_removeSubInterface" "', argument " "2"" of type '" "FieldInterface *""'"); 
-  }
-  arg2 = reinterpret_cast< FieldInterface * >(argp2);
-  result = (bool)(arg1)->removeSubInterface(arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_getSubInterfaces(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< FieldInterface *,std::allocator< FieldInterface * > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getSubInterfaces" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  result = ((RegisterInterface const *)arg1)->getSubInterfaces();
-  resultobj = swig::from(static_cast< std::vector< FieldInterface*,std::allocator< FieldInterface * > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_getSelectedSubInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  FieldInterface *result = 0 ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_getSelectedSubInterface", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getSelectedSubInterface" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_getSelectedSubInterface" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_getSelectedSubInterface" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (FieldInterface *)((RegisterInterface const *)arg1)->getSelectedSubInterface((std::string const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_RegisterInterface_setAddressUnitBits(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   RegisterInterface *arg1 = (RegisterInterface *) 0 ;
@@ -24626,6 +21271,29 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_RegisterInterface_getSubInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  FieldInterface *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getSubInterface" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
+  result = (FieldInterface *)((RegisterInterface const *)arg1)->getSubInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *RegisterInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
@@ -24639,10 +21307,67 @@ SWIGINTERN PyObject *RegisterInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), 
 
 SWIGINTERN PyObject *_wrap_new_FieldInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< FieldValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  ResetInterface *arg4 = (ResetInterface *) 0 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject *swig_obj[4] ;
   FieldInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "new_FieldInterface", 0, 0, 0)) SWIG_fail;
-  result = (FieldInterface *)new FieldInterface();
+  if (!SWIG_Python_UnpackTuple(args, "new_FieldInterface", 4, 4, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_FieldValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FieldInterface" "', argument " "1"" of type '" "QSharedPointer< FieldValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FieldInterface" "', argument " "1"" of type '" "QSharedPointer< FieldValidator >""'");
+    } else {
+      QSharedPointer< FieldValidator > * temp = reinterpret_cast< QSharedPointer< FieldValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_FieldInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FieldInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_FieldInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FieldInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_ResetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_FieldInterface" "', argument " "4"" of type '" "ResetInterface *""'"); 
+  }
+  arg4 = reinterpret_cast< ResetInterface * >(argp4);
+  result = (FieldInterface *)new FieldInterface(arg1,arg2,arg3,arg4);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -24702,43 +21427,6 @@ SWIGINTERN PyObject *_wrap_FieldInterface_setFields(PyObject *SWIGUNUSEDPARM(sel
     }
   }
   (arg1)->setFields(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_setValidator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< FieldValidator > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_setValidator", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_setValidator" "', argument " "1"" of type '" "FieldInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_FieldValidator_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< FieldValidator >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< FieldValidator >""'");
-    } else {
-      QSharedPointer< FieldValidator > * temp = reinterpret_cast< QSharedPointer< FieldValidator > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setValidator(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -26997,136 +23685,25 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_FieldInterface_addResetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  ResetInterface *arg3 = (ResetInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_addResetInterface", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_addResetInterface" "', argument " "1"" of type '" "FieldInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_addResetInterface" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_addResetInterface" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_addResetInterface" "', argument " "3"" of type '" "ResetInterface *""'"); 
-  }
-  arg3 = reinterpret_cast< ResetInterface * >(argp3);
-  (arg1)->addResetInterface((std::string const &)*arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_removeResetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  ResetInterface *arg2 = (ResetInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_removeResetInterface", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_removeResetInterface" "', argument " "1"" of type '" "FieldInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_removeResetInterface" "', argument " "2"" of type '" "ResetInterface *""'"); 
-  }
-  arg2 = reinterpret_cast< ResetInterface * >(argp2);
-  result = (bool)(arg1)->removeResetInterface(arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_getResetInterfaces(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_FieldInterface_getSubInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   FieldInterface *arg1 = (FieldInterface *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  std::vector< ResetInterface *,std::allocator< ResetInterface * > > result;
+  ResetInterface *result = 0 ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getResetInterfaces" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getSubInterface" "', argument " "1"" of type '" "FieldInterface const *""'"); 
   }
   arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  result = ((FieldInterface const *)arg1)->getResetInterfaces();
-  resultobj = swig::from(static_cast< std::vector< ResetInterface*,std::allocator< ResetInterface * > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_getResetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  ResetInterface *result = 0 ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getResetInterface", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getResetInterface" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getResetInterface" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getResetInterface" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (ResetInterface *)((FieldInterface const *)arg1)->getResetInterface((std::string const &)*arg2);
+  result = (ResetInterface *)((FieldInterface const *)arg1)->getSubInterface();
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -27144,10 +23721,59 @@ SWIGINTERN PyObject *FieldInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyO
 
 SWIGINTERN PyObject *_wrap_new_ResetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< FieldValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  PyObject *swig_obj[3] ;
   ResetInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "new_ResetInterface", 0, 0, 0)) SWIG_fail;
-  result = (ResetInterface *)new ResetInterface();
+  if (!SWIG_Python_UnpackTuple(args, "new_ResetInterface", 3, 3, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_FieldValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_ResetInterface" "', argument " "1"" of type '" "QSharedPointer< FieldValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ResetInterface" "', argument " "1"" of type '" "QSharedPointer< FieldValidator >""'");
+    } else {
+      QSharedPointer< FieldValidator > * temp = reinterpret_cast< QSharedPointer< FieldValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ResetInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ResetInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_ResetInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ResetInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  result = (ResetInterface *)new ResetInterface(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -27207,43 +23833,6 @@ SWIGINTERN PyObject *_wrap_ResetInterface_setResets(PyObject *SWIGUNUSEDPARM(sel
     }
   }
   (arg1)->setResets(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ResetInterface_setValidator(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ResetInterface *arg1 = (ResetInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< FieldValidator > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ResetInterface_setValidator", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_setValidator" "', argument " "1"" of type '" "ResetInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_FieldValidator_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< FieldValidator >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_setValidator" "', argument " "2"" of type '" "QSharedPointer< FieldValidator >""'");
-    } else {
-      QSharedPointer< FieldValidator > * temp = reinterpret_cast< QSharedPointer< FieldValidator > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setValidator(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -28330,111 +24919,6 @@ static PyMethodDef SwigMethods[] = {
 	 { "delete_stringVector", _wrap_delete_stringVector, METH_O, NULL},
 	 { "stringVector_swigregister", stringVector_swigregister, METH_O, NULL},
 	 { "stringVector_swiginit", stringVector_swiginit, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_iterator", _wrap_fieldInterfaceVector_iterator, METH_O, NULL},
-	 { "fieldInterfaceVector___nonzero__", _wrap_fieldInterfaceVector___nonzero__, METH_O, NULL},
-	 { "fieldInterfaceVector___bool__", _wrap_fieldInterfaceVector___bool__, METH_O, NULL},
-	 { "fieldInterfaceVector___len__", _wrap_fieldInterfaceVector___len__, METH_O, NULL},
-	 { "fieldInterfaceVector___getslice__", _wrap_fieldInterfaceVector___getslice__, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector___setslice__", _wrap_fieldInterfaceVector___setslice__, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector___delslice__", _wrap_fieldInterfaceVector___delslice__, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector___delitem__", _wrap_fieldInterfaceVector___delitem__, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector___getitem__", _wrap_fieldInterfaceVector___getitem__, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector___setitem__", _wrap_fieldInterfaceVector___setitem__, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_pop", _wrap_fieldInterfaceVector_pop, METH_O, NULL},
-	 { "fieldInterfaceVector_append", _wrap_fieldInterfaceVector_append, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_empty", _wrap_fieldInterfaceVector_empty, METH_O, NULL},
-	 { "fieldInterfaceVector_size", _wrap_fieldInterfaceVector_size, METH_O, NULL},
-	 { "fieldInterfaceVector_swap", _wrap_fieldInterfaceVector_swap, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_begin", _wrap_fieldInterfaceVector_begin, METH_O, NULL},
-	 { "fieldInterfaceVector_end", _wrap_fieldInterfaceVector_end, METH_O, NULL},
-	 { "fieldInterfaceVector_rbegin", _wrap_fieldInterfaceVector_rbegin, METH_O, NULL},
-	 { "fieldInterfaceVector_rend", _wrap_fieldInterfaceVector_rend, METH_O, NULL},
-	 { "fieldInterfaceVector_clear", _wrap_fieldInterfaceVector_clear, METH_O, NULL},
-	 { "fieldInterfaceVector_get_allocator", _wrap_fieldInterfaceVector_get_allocator, METH_O, NULL},
-	 { "fieldInterfaceVector_pop_back", _wrap_fieldInterfaceVector_pop_back, METH_O, NULL},
-	 { "fieldInterfaceVector_erase", _wrap_fieldInterfaceVector_erase, METH_VARARGS, NULL},
-	 { "new_fieldInterfaceVector", _wrap_new_fieldInterfaceVector, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_push_back", _wrap_fieldInterfaceVector_push_back, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_front", _wrap_fieldInterfaceVector_front, METH_O, NULL},
-	 { "fieldInterfaceVector_back", _wrap_fieldInterfaceVector_back, METH_O, NULL},
-	 { "fieldInterfaceVector_assign", _wrap_fieldInterfaceVector_assign, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_resize", _wrap_fieldInterfaceVector_resize, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_insert", _wrap_fieldInterfaceVector_insert, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_reserve", _wrap_fieldInterfaceVector_reserve, METH_VARARGS, NULL},
-	 { "fieldInterfaceVector_capacity", _wrap_fieldInterfaceVector_capacity, METH_O, NULL},
-	 { "delete_fieldInterfaceVector", _wrap_delete_fieldInterfaceVector, METH_O, NULL},
-	 { "fieldInterfaceVector_swigregister", fieldInterfaceVector_swigregister, METH_O, NULL},
-	 { "fieldInterfaceVector_swiginit", fieldInterfaceVector_swiginit, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_iterator", _wrap_resetInterfaceVector_iterator, METH_O, NULL},
-	 { "resetInterfaceVector___nonzero__", _wrap_resetInterfaceVector___nonzero__, METH_O, NULL},
-	 { "resetInterfaceVector___bool__", _wrap_resetInterfaceVector___bool__, METH_O, NULL},
-	 { "resetInterfaceVector___len__", _wrap_resetInterfaceVector___len__, METH_O, NULL},
-	 { "resetInterfaceVector___getslice__", _wrap_resetInterfaceVector___getslice__, METH_VARARGS, NULL},
-	 { "resetInterfaceVector___setslice__", _wrap_resetInterfaceVector___setslice__, METH_VARARGS, NULL},
-	 { "resetInterfaceVector___delslice__", _wrap_resetInterfaceVector___delslice__, METH_VARARGS, NULL},
-	 { "resetInterfaceVector___delitem__", _wrap_resetInterfaceVector___delitem__, METH_VARARGS, NULL},
-	 { "resetInterfaceVector___getitem__", _wrap_resetInterfaceVector___getitem__, METH_VARARGS, NULL},
-	 { "resetInterfaceVector___setitem__", _wrap_resetInterfaceVector___setitem__, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_pop", _wrap_resetInterfaceVector_pop, METH_O, NULL},
-	 { "resetInterfaceVector_append", _wrap_resetInterfaceVector_append, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_empty", _wrap_resetInterfaceVector_empty, METH_O, NULL},
-	 { "resetInterfaceVector_size", _wrap_resetInterfaceVector_size, METH_O, NULL},
-	 { "resetInterfaceVector_swap", _wrap_resetInterfaceVector_swap, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_begin", _wrap_resetInterfaceVector_begin, METH_O, NULL},
-	 { "resetInterfaceVector_end", _wrap_resetInterfaceVector_end, METH_O, NULL},
-	 { "resetInterfaceVector_rbegin", _wrap_resetInterfaceVector_rbegin, METH_O, NULL},
-	 { "resetInterfaceVector_rend", _wrap_resetInterfaceVector_rend, METH_O, NULL},
-	 { "resetInterfaceVector_clear", _wrap_resetInterfaceVector_clear, METH_O, NULL},
-	 { "resetInterfaceVector_get_allocator", _wrap_resetInterfaceVector_get_allocator, METH_O, NULL},
-	 { "resetInterfaceVector_pop_back", _wrap_resetInterfaceVector_pop_back, METH_O, NULL},
-	 { "resetInterfaceVector_erase", _wrap_resetInterfaceVector_erase, METH_VARARGS, NULL},
-	 { "new_resetInterfaceVector", _wrap_new_resetInterfaceVector, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_push_back", _wrap_resetInterfaceVector_push_back, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_front", _wrap_resetInterfaceVector_front, METH_O, NULL},
-	 { "resetInterfaceVector_back", _wrap_resetInterfaceVector_back, METH_O, NULL},
-	 { "resetInterfaceVector_assign", _wrap_resetInterfaceVector_assign, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_resize", _wrap_resetInterfaceVector_resize, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_insert", _wrap_resetInterfaceVector_insert, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_reserve", _wrap_resetInterfaceVector_reserve, METH_VARARGS, NULL},
-	 { "resetInterfaceVector_capacity", _wrap_resetInterfaceVector_capacity, METH_O, NULL},
-	 { "delete_resetInterfaceVector", _wrap_delete_resetInterfaceVector, METH_O, NULL},
-	 { "resetInterfaceVector_swigregister", resetInterfaceVector_swigregister, METH_O, NULL},
-	 { "resetInterfaceVector_swiginit", resetInterfaceVector_swiginit, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_iterator", _wrap_registerInterfaceVector_iterator, METH_O, NULL},
-	 { "registerInterfaceVector___nonzero__", _wrap_registerInterfaceVector___nonzero__, METH_O, NULL},
-	 { "registerInterfaceVector___bool__", _wrap_registerInterfaceVector___bool__, METH_O, NULL},
-	 { "registerInterfaceVector___len__", _wrap_registerInterfaceVector___len__, METH_O, NULL},
-	 { "registerInterfaceVector___getslice__", _wrap_registerInterfaceVector___getslice__, METH_VARARGS, NULL},
-	 { "registerInterfaceVector___setslice__", _wrap_registerInterfaceVector___setslice__, METH_VARARGS, NULL},
-	 { "registerInterfaceVector___delslice__", _wrap_registerInterfaceVector___delslice__, METH_VARARGS, NULL},
-	 { "registerInterfaceVector___delitem__", _wrap_registerInterfaceVector___delitem__, METH_VARARGS, NULL},
-	 { "registerInterfaceVector___getitem__", _wrap_registerInterfaceVector___getitem__, METH_VARARGS, NULL},
-	 { "registerInterfaceVector___setitem__", _wrap_registerInterfaceVector___setitem__, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_pop", _wrap_registerInterfaceVector_pop, METH_O, NULL},
-	 { "registerInterfaceVector_append", _wrap_registerInterfaceVector_append, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_empty", _wrap_registerInterfaceVector_empty, METH_O, NULL},
-	 { "registerInterfaceVector_size", _wrap_registerInterfaceVector_size, METH_O, NULL},
-	 { "registerInterfaceVector_swap", _wrap_registerInterfaceVector_swap, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_begin", _wrap_registerInterfaceVector_begin, METH_O, NULL},
-	 { "registerInterfaceVector_end", _wrap_registerInterfaceVector_end, METH_O, NULL},
-	 { "registerInterfaceVector_rbegin", _wrap_registerInterfaceVector_rbegin, METH_O, NULL},
-	 { "registerInterfaceVector_rend", _wrap_registerInterfaceVector_rend, METH_O, NULL},
-	 { "registerInterfaceVector_clear", _wrap_registerInterfaceVector_clear, METH_O, NULL},
-	 { "registerInterfaceVector_get_allocator", _wrap_registerInterfaceVector_get_allocator, METH_O, NULL},
-	 { "registerInterfaceVector_pop_back", _wrap_registerInterfaceVector_pop_back, METH_O, NULL},
-	 { "registerInterfaceVector_erase", _wrap_registerInterfaceVector_erase, METH_VARARGS, NULL},
-	 { "new_registerInterfaceVector", _wrap_new_registerInterfaceVector, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_push_back", _wrap_registerInterfaceVector_push_back, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_front", _wrap_registerInterfaceVector_front, METH_O, NULL},
-	 { "registerInterfaceVector_back", _wrap_registerInterfaceVector_back, METH_O, NULL},
-	 { "registerInterfaceVector_assign", _wrap_registerInterfaceVector_assign, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_resize", _wrap_registerInterfaceVector_resize, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_insert", _wrap_registerInterfaceVector_insert, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_reserve", _wrap_registerInterfaceVector_reserve, METH_VARARGS, NULL},
-	 { "registerInterfaceVector_capacity", _wrap_registerInterfaceVector_capacity, METH_O, NULL},
-	 { "delete_registerInterfaceVector", _wrap_delete_registerInterfaceVector, METH_O, NULL},
-	 { "registerInterfaceVector_swigregister", registerInterfaceVector_swigregister, METH_O, NULL},
-	 { "registerInterfaceVector_swiginit", registerInterfaceVector_swiginit, METH_VARARGS, NULL},
 	 { "new_PythonAPI", _wrap_new_PythonAPI, METH_NOARGS, NULL},
 	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, NULL},
 	 { "PythonAPI_setupLibrary", _wrap_PythonAPI_setupLibrary, METH_VARARGS, NULL},
@@ -28448,7 +24932,10 @@ static PyMethodDef SwigMethods[] = {
 	 { "PythonAPI_saveComponent", _wrap_PythonAPI_saveComponent, METH_O, NULL},
 	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, NULL},
 	 { "PythonAPI_getComponentParameterInterface", _wrap_PythonAPI_getComponentParameterInterface, METH_O, NULL},
-	 { "PythonAPI_getRegisterInterfaces", _wrap_PythonAPI_getRegisterInterfaces, METH_O, NULL},
+	 { "PythonAPI_getAddressBlockInterface", _wrap_PythonAPI_getAddressBlockInterface, METH_VARARGS, NULL},
+	 { "PythonAPI_getRegisterInterface", _wrap_PythonAPI_getRegisterInterface, METH_VARARGS, NULL},
+	 { "PythonAPI_getFieldInterface", _wrap_PythonAPI_getFieldInterface, METH_VARARGS, NULL},
+	 { "PythonAPI_getResetInterface", _wrap_PythonAPI_getResetInterface, METH_VARARGS, NULL},
 	 { "PythonAPI_swigregister", PythonAPI_swigregister, METH_O, NULL},
 	 { "PythonAPI_swiginit", PythonAPI_swiginit, METH_VARARGS, NULL},
 	 { "delete_CommonInterface", _wrap_delete_CommonInterface, METH_O, NULL},
@@ -28465,14 +24952,11 @@ static PyMethodDef SwigMethods[] = {
 	 { "NameGroupInterface_itemHasValidName", _wrap_NameGroupInterface_itemHasValidName, METH_VARARGS, NULL},
 	 { "NameGroupInterface_swigregister", NameGroupInterface_swigregister, METH_O, NULL},
 	 { "delete_ParameterizableInterface", _wrap_delete_ParameterizableInterface, METH_O, NULL},
-	 { "ParameterizableInterface_setExpressionParser", _wrap_ParameterizableInterface_setExpressionParser, METH_VARARGS, NULL},
-	 { "ParameterizableInterface_setExpressionFormatter", _wrap_ParameterizableInterface_setExpressionFormatter, METH_VARARGS, NULL},
 	 { "ParameterizableInterface_getAllReferencesToIdInItem", _wrap_ParameterizableInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
 	 { "ParameterizableInterface_swigregister", ParameterizableInterface_swigregister, METH_O, NULL},
-	 { "new_PortsInterface", _wrap_new_PortsInterface, METH_NOARGS, NULL},
+	 { "new_PortsInterface", _wrap_new_PortsInterface, METH_VARARGS, NULL},
 	 { "delete_PortsInterface", _wrap_delete_PortsInterface, METH_O, NULL},
 	 { "PortsInterface_setPorts", _wrap_PortsInterface_setPorts, METH_VARARGS, NULL},
-	 { "PortsInterface_setValidator", _wrap_PortsInterface_setValidator, METH_VARARGS, NULL},
 	 { "PortsInterface_getItemIndex", _wrap_PortsInterface_getItemIndex, METH_VARARGS, NULL},
 	 { "PortsInterface_getIndexedItemName", _wrap_PortsInterface_getIndexedItemName, METH_VARARGS, NULL},
 	 { "PortsInterface_itemCount", _wrap_PortsInterface_itemCount, METH_O, NULL},
@@ -28551,12 +25035,11 @@ static PyMethodDef SwigMethods[] = {
 	 { "PortsInterface_portHasValidMinConnections", _wrap_PortsInterface_portHasValidMinConnections, METH_VARARGS, NULL},
 	 { "PortsInterface_swigregister", PortsInterface_swigregister, METH_O, NULL},
 	 { "PortsInterface_swiginit", PortsInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_ParametersInterface", _wrap_new_ParametersInterface, METH_NOARGS, NULL},
+	 { "new_ParametersInterface", _wrap_new_ParametersInterface, METH_VARARGS, NULL},
 	 { "delete_ParametersInterface", _wrap_delete_ParametersInterface, METH_O, NULL},
 	 { "ParametersInterface_setParameters", _wrap_ParametersInterface_setParameters, METH_VARARGS, NULL},
 	 { "ParametersInterface_setModuleParameters", _wrap_ParametersInterface_setModuleParameters, METH_VARARGS, NULL},
 	 { "ParametersInterface_setChoices", _wrap_ParametersInterface_setChoices, METH_VARARGS, NULL},
-	 { "ParametersInterface_setValidator", _wrap_ParametersInterface_setValidator, METH_VARARGS, NULL},
 	 { "ParametersInterface_getItemIndex", _wrap_ParametersInterface_getItemIndex, METH_VARARGS, NULL},
 	 { "ParametersInterface_getIndexedItemName", _wrap_ParametersInterface_getIndexedItemName, METH_VARARGS, NULL},
 	 { "ParametersInterface_itemCount", _wrap_ParametersInterface_itemCount, METH_O, NULL},
@@ -28623,10 +25106,59 @@ static PyMethodDef SwigMethods[] = {
 	 { "ParametersInterface_hasValidArrayValues", _wrap_ParametersInterface_hasValidArrayValues, METH_VARARGS, NULL},
 	 { "ParametersInterface_swigregister", ParametersInterface_swigregister, METH_O, NULL},
 	 { "ParametersInterface_swiginit", ParametersInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_RegisterInterface", _wrap_new_RegisterInterface, METH_NOARGS, NULL},
+	 { "new_AddressBlockInterface", _wrap_new_AddressBlockInterface, METH_VARARGS, NULL},
+	 { "delete_AddressBlockInterface", _wrap_delete_AddressBlockInterface, METH_O, NULL},
+	 { "AddressBlockInterface_setAddressBlocks", _wrap_AddressBlockInterface_setAddressBlocks, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getItemIndex", _wrap_AddressBlockInterface_getItemIndex, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getIndexedItemName", _wrap_AddressBlockInterface_getIndexedItemName, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_itemCount", _wrap_AddressBlockInterface_itemCount, METH_O, NULL},
+	 { "AddressBlockInterface_getItemNames", _wrap_AddressBlockInterface_getItemNames, METH_O, NULL},
+	 { "AddressBlockInterface_setName", _wrap_AddressBlockInterface_setName, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getDescription", _wrap_AddressBlockInterface_getDescription, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setDescription", _wrap_AddressBlockInterface_setDescription, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getBaseAddressValue", _wrap_AddressBlockInterface_getBaseAddressValue, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getBaseAddressFormattedExpression", _wrap_AddressBlockInterface_getBaseAddressFormattedExpression, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getBaseAddressExpression", _wrap_AddressBlockInterface_getBaseAddressExpression, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setBaseAddress", _wrap_AddressBlockInterface_setBaseAddress, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getIsPresentValue", _wrap_AddressBlockInterface_getIsPresentValue, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getIsPresentFormattedExpression", _wrap_AddressBlockInterface_getIsPresentFormattedExpression, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getIsPresentExpression", _wrap_AddressBlockInterface_getIsPresentExpression, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setIsPresent", _wrap_AddressBlockInterface_setIsPresent, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getRangeValue", _wrap_AddressBlockInterface_getRangeValue, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getRangeFormattedExpression", _wrap_AddressBlockInterface_getRangeFormattedExpression, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getRangeExpression", _wrap_AddressBlockInterface_getRangeExpression, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setRange", _wrap_AddressBlockInterface_setRange, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getWidthValue", _wrap_AddressBlockInterface_getWidthValue, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getWidthFormattedExpression", _wrap_AddressBlockInterface_getWidthFormattedExpression, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getWidthExpression", _wrap_AddressBlockInterface_getWidthExpression, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setWidth", _wrap_AddressBlockInterface_setWidth, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getUsage", _wrap_AddressBlockInterface_getUsage, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setUsage", _wrap_AddressBlockInterface_setUsage, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getAccess", _wrap_AddressBlockInterface_getAccess, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setAccess", _wrap_AddressBlockInterface_setAccess, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getVolatile", _wrap_AddressBlockInterface_getVolatile, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setVolatile", _wrap_AddressBlockInterface_setVolatile, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getAllReferencesToIdInItem", _wrap_AddressBlockInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_validateItems", _wrap_AddressBlockInterface_validateItems, METH_O, NULL},
+	 { "AddressBlockInterface_itemHasValidName", _wrap_AddressBlockInterface_itemHasValidName, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_hasValidBaseAddress", _wrap_AddressBlockInterface_hasValidBaseAddress, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_hasValidRange", _wrap_AddressBlockInterface_hasValidRange, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_hasValidWidth", _wrap_AddressBlockInterface_hasValidWidth, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_hasValidIsPresent", _wrap_AddressBlockInterface_hasValidIsPresent, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_hasValidUsage", _wrap_AddressBlockInterface_hasValidUsage, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_addBlock", _wrap_AddressBlockInterface_addBlock, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_removeBlock", _wrap_AddressBlockInterface_removeBlock, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_copyRows", _wrap_AddressBlockInterface_copyRows, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_pasteRows", _wrap_AddressBlockInterface_pasteRows, METH_O, NULL},
+	 { "AddressBlockInterface_getPasteRowCount", _wrap_AddressBlockInterface_getPasteRowCount, METH_O, NULL},
+	 { "AddressBlockInterface_getExpressionsInSelectedItems", _wrap_AddressBlockInterface_getExpressionsInSelectedItems, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_setAddressUnitBits", _wrap_AddressBlockInterface_setAddressUnitBits, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getSubInterface", _wrap_AddressBlockInterface_getSubInterface, METH_O, NULL},
+	 { "AddressBlockInterface_swigregister", AddressBlockInterface_swigregister, METH_O, NULL},
+	 { "AddressBlockInterface_swiginit", AddressBlockInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_RegisterInterface", _wrap_new_RegisterInterface, METH_VARARGS, NULL},
 	 { "delete_RegisterInterface", _wrap_delete_RegisterInterface, METH_O, NULL},
 	 { "RegisterInterface_setRegisters", _wrap_RegisterInterface_setRegisters, METH_VARARGS, NULL},
-	 { "RegisterInterface_setValidator", _wrap_RegisterInterface_setValidator, METH_VARARGS, NULL},
 	 { "RegisterInterface_getItemIndex", _wrap_RegisterInterface_getItemIndex, METH_VARARGS, NULL},
 	 { "RegisterInterface_getIndexedItemName", _wrap_RegisterInterface_getIndexedItemName, METH_VARARGS, NULL},
 	 { "RegisterInterface_itemCount", _wrap_RegisterInterface_itemCount, METH_O, NULL},
@@ -28669,17 +25201,13 @@ static PyMethodDef SwigMethods[] = {
 	 { "RegisterInterface_pasteRows", _wrap_RegisterInterface_pasteRows, METH_O, NULL},
 	 { "RegisterInterface_getPasteRowCount", _wrap_RegisterInterface_getPasteRowCount, METH_O, NULL},
 	 { "RegisterInterface_getExpressionsInSelectedRegisters", _wrap_RegisterInterface_getExpressionsInSelectedRegisters, METH_VARARGS, NULL},
-	 { "RegisterInterface_addSubInterface", _wrap_RegisterInterface_addSubInterface, METH_VARARGS, NULL},
-	 { "RegisterInterface_removeSubInterface", _wrap_RegisterInterface_removeSubInterface, METH_VARARGS, NULL},
-	 { "RegisterInterface_getSubInterfaces", _wrap_RegisterInterface_getSubInterfaces, METH_O, NULL},
-	 { "RegisterInterface_getSelectedSubInterface", _wrap_RegisterInterface_getSelectedSubInterface, METH_VARARGS, NULL},
 	 { "RegisterInterface_setAddressUnitBits", _wrap_RegisterInterface_setAddressUnitBits, METH_VARARGS, NULL},
+	 { "RegisterInterface_getSubInterface", _wrap_RegisterInterface_getSubInterface, METH_O, NULL},
 	 { "RegisterInterface_swigregister", RegisterInterface_swigregister, METH_O, NULL},
 	 { "RegisterInterface_swiginit", RegisterInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_FieldInterface", _wrap_new_FieldInterface, METH_NOARGS, NULL},
+	 { "new_FieldInterface", _wrap_new_FieldInterface, METH_VARARGS, NULL},
 	 { "delete_FieldInterface", _wrap_delete_FieldInterface, METH_O, NULL},
 	 { "FieldInterface_setFields", _wrap_FieldInterface_setFields, METH_VARARGS, NULL},
-	 { "FieldInterface_setValidator", _wrap_FieldInterface_setValidator, METH_VARARGS, NULL},
 	 { "FieldInterface_getItemIndex", _wrap_FieldInterface_getItemIndex, METH_VARARGS, NULL},
 	 { "FieldInterface_getIndexedItemName", _wrap_FieldInterface_getIndexedItemName, METH_VARARGS, NULL},
 	 { "FieldInterface_itemCount", _wrap_FieldInterface_itemCount, METH_O, NULL},
@@ -28728,16 +25256,12 @@ static PyMethodDef SwigMethods[] = {
 	 { "FieldInterface_pasteRows", _wrap_FieldInterface_pasteRows, METH_O, NULL},
 	 { "FieldInterface_getPasteRowCount", _wrap_FieldInterface_getPasteRowCount, METH_O, NULL},
 	 { "FieldInterface_getExpressionsInSelectedFields", _wrap_FieldInterface_getExpressionsInSelectedFields, METH_VARARGS, NULL},
-	 { "FieldInterface_addResetInterface", _wrap_FieldInterface_addResetInterface, METH_VARARGS, NULL},
-	 { "FieldInterface_removeResetInterface", _wrap_FieldInterface_removeResetInterface, METH_VARARGS, NULL},
-	 { "FieldInterface_getResetInterfaces", _wrap_FieldInterface_getResetInterfaces, METH_O, NULL},
-	 { "FieldInterface_getResetInterface", _wrap_FieldInterface_getResetInterface, METH_VARARGS, NULL},
+	 { "FieldInterface_getSubInterface", _wrap_FieldInterface_getSubInterface, METH_O, NULL},
 	 { "FieldInterface_swigregister", FieldInterface_swigregister, METH_O, NULL},
 	 { "FieldInterface_swiginit", FieldInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_ResetInterface", _wrap_new_ResetInterface, METH_NOARGS, NULL},
+	 { "new_ResetInterface", _wrap_new_ResetInterface, METH_VARARGS, NULL},
 	 { "delete_ResetInterface", _wrap_delete_ResetInterface, METH_O, NULL},
 	 { "ResetInterface_setResets", _wrap_ResetInterface_setResets, METH_VARARGS, NULL},
-	 { "ResetInterface_setValidator", _wrap_ResetInterface_setValidator, METH_VARARGS, NULL},
 	 { "ResetInterface_getItemNames", _wrap_ResetInterface_getItemNames, METH_O, NULL},
 	 { "ResetInterface_itemCount", _wrap_ResetInterface_itemCount, METH_O, NULL},
 	 { "ResetInterface_getResetTypeReference", _wrap_ResetInterface_getResetTypeReference, METH_VARARGS, NULL},
@@ -28778,6 +25302,9 @@ static void *_p_PortsInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(
 static void *_p_ParametersInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((CommonInterface *) (NameGroupInterface *) ((ParametersInterface *) x));
 }
+static void *_p_AddressBlockInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((CommonInterface *) (NameGroupInterface *) ((AddressBlockInterface *) x));
+}
 static void *_p_RegisterInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((CommonInterface *) (NameGroupInterface *) ((RegisterInterface *) x));
 }
@@ -28792,6 +25319,9 @@ static void *_p_PortsInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUN
 }
 static void *_p_ParametersInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((ParametersInterface *) x));
+}
+static void *_p_AddressBlockInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ParameterizableInterface *)  ((AddressBlockInterface *) x));
 }
 static void *_p_RegisterInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((RegisterInterface *) x));
@@ -28808,20 +25338,25 @@ static void *_p_PortsInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPA
 static void *_p_ParametersInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((NameGroupInterface *)  ((ParametersInterface *) x));
 }
+static void *_p_AddressBlockInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((AddressBlockInterface *) x));
+}
 static void *_p_RegisterInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((NameGroupInterface *)  ((RegisterInterface *) x));
 }
 static void *_p_FieldInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((NameGroupInterface *)  ((FieldInterface *) x));
 }
+static swig_type_info _swigt__p_AddressBlockInterface = {"_p_AddressBlockInterface", "AddressBlockInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_CommonInterface = {"_p_CommonInterface", "CommonInterface *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_FieldInterface = {"_p_FieldInterface", "std::vector< FieldInterface * >::value_type|FieldInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_FieldInterface = {"_p_FieldInterface", "FieldInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_NameGroup = {"_p_NameGroup", "NameGroup *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_NameGroupInterface = {"_p_NameGroupInterface", "NameGroupInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ParameterizableInterface = {"_p_ParameterizableInterface", "ParameterizableInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ParametersInterface = {"_p_ParametersInterface", "ParametersInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PortsInterface = {"_p_PortsInterface", "PortsInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PythonAPI = {"_p_PythonAPI", "PythonAPI *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_AddressBlockValidator_t = {"_p_QSharedPointerT_AddressBlockValidator_t", "QSharedPointer< AddressBlockValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_Component_t = {"_p_QSharedPointerT_Component_t", "QSharedPointer< Component > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_ExpressionFormatter_t = {"_p_QSharedPointerT_ExpressionFormatter_t", "QSharedPointer< ExpressionFormatter > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_ExpressionParser_t = {"_p_QSharedPointerT_ExpressionParser_t", "QSharedPointer< ExpressionParser > *", 0, 0, (void*)0, 0};
@@ -28831,32 +25366,28 @@ static swig_type_info _swigt__p_QSharedPointerT_ParameterValidator_t = {"_p_QSha
 static swig_type_info _swigt__p_QSharedPointerT_PortValidator_t = {"_p_QSharedPointerT_PortValidator_t", "QSharedPointer< PortValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t", "QSharedPointer< QList< QSharedPointer< Choice > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t", "QSharedPointer< QList< QSharedPointer< Field > > > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t", "QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t", "QSharedPointer< QList< QSharedPointer< ModuleParameter > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t", "QSharedPointer< QList< QSharedPointer< Parameter > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t", "QSharedPointer< QList< QSharedPointer< RegisterBase > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_RegisterValidator_t = {"_p_QSharedPointerT_RegisterValidator_t", "QSharedPointer< RegisterValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QString = {"_p_QString", "QString *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_RegisterInterface = {"_p_RegisterInterface", "std::vector< RegisterInterface * >::value_type|RegisterInterface *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_ResetInterface = {"_p_ResetInterface", "std::vector< ResetInterface * >::value_type|ResetInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_RegisterInterface = {"_p_RegisterInterface", "RegisterInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ResetInterface = {"_p_ResetInterface", "ResetInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_allocator_type = {"_p_allocator_type", "allocator_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_difference_type = {"_p_difference_type", "difference_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_PyObject = {"_p_p_PyObject", "PyObject **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_size_type = {"_p_size_type", "size_type *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__allocatorT_FieldInterface_p_t = {"_p_std__allocatorT_FieldInterface_p_t", "std::vector< FieldInterface * >::allocator_type *|std::allocator< FieldInterface * > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__allocatorT_RegisterInterface_p_t = {"_p_std__allocatorT_RegisterInterface_p_t", "std::vector< RegisterInterface * >::allocator_type *|std::allocator< RegisterInterface * > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__allocatorT_ResetInterface_p_t = {"_p_std__allocatorT_ResetInterface_p_t", "std::vector< ResetInterface * >::allocator_type *|std::allocator< ResetInterface * > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__allocatorT_std__string_t = {"_p_std__allocatorT_std__string_t", "std::vector< std::string >::allocator_type *|std::allocator< std::string > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__invalid_argument = {"_p_std__invalid_argument", "std::invalid_argument *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t = {"_p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t", "std::vector< FieldInterface *,std::allocator< FieldInterface * > > *|std::vector< FieldInterface * > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t = {"_p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t", "std::vector< RegisterInterface *,std::allocator< RegisterInterface * > > *|std::vector< RegisterInterface * > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t = {"_p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t", "std::vector< ResetInterface *,std::allocator< ResetInterface * > > *|std::vector< ResetInterface * > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_int_std__allocatorT_int_t_t = {"_p_std__vectorT_int_std__allocatorT_int_t_t", "std::vector< int,std::allocator< int > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t = {"_p_std__vectorT_std__string_std__allocatorT_std__string_t_t", "std::vector< std::string,std::allocator< std::string > > *|std::vector< std::string > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__SwigPyIterator = {"_p_swig__SwigPyIterator", "swig::SwigPyIterator *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_value_type = {"_p_value_type", "value_type *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
+  &_swigt__p_AddressBlockInterface,
   &_swigt__p_CommonInterface,
   &_swigt__p_FieldInterface,
   &_swigt__p_NameGroup,
@@ -28865,6 +25396,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ParametersInterface,
   &_swigt__p_PortsInterface,
   &_swigt__p_PythonAPI,
+  &_swigt__p_QSharedPointerT_AddressBlockValidator_t,
   &_swigt__p_QSharedPointerT_Component_t,
   &_swigt__p_QSharedPointerT_ExpressionFormatter_t,
   &_swigt__p_QSharedPointerT_ExpressionParser_t,
@@ -28874,6 +25406,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_QSharedPointerT_PortValidator_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t,
+  &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t,
@@ -28886,28 +25419,24 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_difference_type,
   &_swigt__p_p_PyObject,
   &_swigt__p_size_type,
-  &_swigt__p_std__allocatorT_FieldInterface_p_t,
-  &_swigt__p_std__allocatorT_RegisterInterface_p_t,
-  &_swigt__p_std__allocatorT_ResetInterface_p_t,
   &_swigt__p_std__allocatorT_std__string_t,
   &_swigt__p_std__invalid_argument,
-  &_swigt__p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t,
-  &_swigt__p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t,
-  &_swigt__p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t,
   &_swigt__p_std__vectorT_int_std__allocatorT_int_t_t,
   &_swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t,
   &_swigt__p_swig__SwigPyIterator,
   &_swigt__p_value_type,
 };
 
-static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_CommonInterface, 0, 0, 0},  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_AddressBlockInterface[] = {  {&_swigt__p_AddressBlockInterface, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_CommonInterface, 0, 0, 0},  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_FieldInterface[] = {  {&_swigt__p_FieldInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_NameGroup[] = {  {&_swigt__p_NameGroup, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_NameGroupInterface[] = {  {&_swigt__p_NameGroupInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_NameGroupInterface, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_NameGroupInterface[] = {  {&_swigt__p_NameGroupInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_NameGroupInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ParametersInterface[] = {  {&_swigt__p_ParametersInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PortsInterface[] = {  {&_swigt__p_PortsInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PythonAPI[] = {  {&_swigt__p_PythonAPI, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_AddressBlockValidator_t[] = {  {&_swigt__p_QSharedPointerT_AddressBlockValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_Component_t[] = {  {&_swigt__p_QSharedPointerT_Component_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_ExpressionFormatter_t[] = {  {&_swigt__p_QSharedPointerT_ExpressionFormatter_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_ExpressionParser_t[] = {  {&_swigt__p_QSharedPointerT_ExpressionParser_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -28917,6 +25446,7 @@ static swig_cast_info _swigc__p_QSharedPointerT_ParameterValidator_t[] = {  {&_s
 static swig_cast_info _swigc__p_QSharedPointerT_PortValidator_t[] = {  {&_swigt__p_QSharedPointerT_PortValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -28929,20 +25459,15 @@ static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0,
 static swig_cast_info _swigc__p_difference_type[] = {  {&_swigt__p_difference_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_PyObject[] = {  {&_swigt__p_p_PyObject, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_size_type[] = {  {&_swigt__p_size_type, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__allocatorT_FieldInterface_p_t[] = {  {&_swigt__p_std__allocatorT_FieldInterface_p_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__allocatorT_RegisterInterface_p_t[] = {  {&_swigt__p_std__allocatorT_RegisterInterface_p_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__allocatorT_ResetInterface_p_t[] = {  {&_swigt__p_std__allocatorT_ResetInterface_p_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__allocatorT_std__string_t[] = {  {&_swigt__p_std__allocatorT_std__string_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__invalid_argument[] = {  {&_swigt__p_std__invalid_argument, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t[] = {  {&_swigt__p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t[] = {  {&_swigt__p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t[] = {  {&_swigt__p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_int_std__allocatorT_int_t_t[] = {  {&_swigt__p_std__vectorT_int_std__allocatorT_int_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_std__string_std__allocatorT_std__string_t_t[] = {  {&_swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__SwigPyIterator[] = {  {&_swigt__p_swig__SwigPyIterator, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_value_type[] = {  {&_swigt__p_value_type, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
+  _swigc__p_AddressBlockInterface,
   _swigc__p_CommonInterface,
   _swigc__p_FieldInterface,
   _swigc__p_NameGroup,
@@ -28951,6 +25476,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ParametersInterface,
   _swigc__p_PortsInterface,
   _swigc__p_PythonAPI,
+  _swigc__p_QSharedPointerT_AddressBlockValidator_t,
   _swigc__p_QSharedPointerT_Component_t,
   _swigc__p_QSharedPointerT_ExpressionFormatter_t,
   _swigc__p_QSharedPointerT_ExpressionParser_t,
@@ -28960,6 +25486,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_QSharedPointerT_PortValidator_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t,
+  _swigc__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t,
@@ -28972,14 +25499,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_difference_type,
   _swigc__p_p_PyObject,
   _swigc__p_size_type,
-  _swigc__p_std__allocatorT_FieldInterface_p_t,
-  _swigc__p_std__allocatorT_RegisterInterface_p_t,
-  _swigc__p_std__allocatorT_ResetInterface_p_t,
   _swigc__p_std__allocatorT_std__string_t,
   _swigc__p_std__invalid_argument,
-  _swigc__p_std__vectorT_FieldInterface_p_std__allocatorT_FieldInterface_p_t_t,
-  _swigc__p_std__vectorT_RegisterInterface_p_std__allocatorT_RegisterInterface_p_t_t,
-  _swigc__p_std__vectorT_ResetInterface_p_std__allocatorT_ResetInterface_p_t_t,
   _swigc__p_std__vectorT_int_std__allocatorT_int_t_t,
   _swigc__p_std__vectorT_std__string_std__allocatorT_std__string_t_t,
   _swigc__p_swig__SwigPyIterator,

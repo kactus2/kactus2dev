@@ -49,20 +49,26 @@ public:
      *      @param [in] expressionParser    Expression parser to use.
      *      @param [in] formatter           The expression formatter.
      *      @param [in] fieldValidator      Validator used for fields.
-     *      @param [in] fieldInterface      Interface for fields.
+     *      @param [in] resetInterface      Interface for accessing resets.
      *      @param [in] parent              The parent item.
 	 */
-	ComponentEditorFieldItem(QSharedPointer<Register> reg, QSharedPointer<Field> field,
-        ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-        QSharedPointer<FieldValidator> fieldValidator, FieldInterface* fieldInterface,
+	ComponentEditorFieldItem(QSharedPointer<Register> reg,
+        QSharedPointer<Field> field,
+        ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ReferenceCounter> referenceCounter,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> formatter,
+        QSharedPointer<FieldValidator> fieldValidator,
+        ResetInterface* resetInterface,
         ComponentEditorItem* parent);
 
 	/*!
      *  The destructor.
      */
-	virtual ~ComponentEditorFieldItem();
+	virtual ~ComponentEditorFieldItem() = default;
 
 	/*!
      *  Get the tool tip for the item.
@@ -162,9 +168,6 @@ private:
 
     //! The used field validator.
     QSharedPointer<FieldValidator> fieldValidator_;
-
-    //! Interface for fields.
-    FieldInterface* fieldInterface_;
 
     //! Interface for resets.
     ResetInterface* resetInterface_;

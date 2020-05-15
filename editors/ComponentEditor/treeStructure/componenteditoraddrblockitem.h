@@ -47,7 +47,7 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression formatter.
      *      @param [in] addressBlockValidator   Validator used for address blocks.
-     *      @param [in] blockInterface          Interface for address blocks.
+     *      @param [in] registerInterface       Interface for accessing registers.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
@@ -59,11 +59,13 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressBlockValidator> addressBlockValidator,
-        AddressBlockInterface* blockInterface,
+        RegisterInterface* registerInterface,
 		ComponentEditorItem* parent);
 
-	//! The destructor.
-	virtual ~ComponentEditorAddrBlockItem();
+	/*!
+     * The destructor.
+     */
+	virtual ~ComponentEditorAddrBlockItem() = default;
 
 	/*!
      *  Get the tool tip for the item.
@@ -185,9 +187,6 @@ private:
 
     //! Interface for registers.
     RegisterInterface* registerInterface_;
-
-    //! Interface for address blocks.
-    AddressBlockInterface* blockInterface_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

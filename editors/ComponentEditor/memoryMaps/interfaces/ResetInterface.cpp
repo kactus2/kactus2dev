@@ -26,11 +26,13 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::ResetInterface()
 //-----------------------------------------------------------------------------
-ResetInterface::ResetInterface():
-ParameterizableInterface(),
+ResetInterface::ResetInterface(QSharedPointer<FieldValidator> validator,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
+ParameterizableInterface(expressionParser, expressionFormatter),
 CommonInterface(),
 containingField_(),
-resets_()
+resets_(),
+validator_(validator)
 {
 }
 
@@ -41,14 +43,6 @@ void ResetInterface::setResets(QSharedPointer<Field> containingField)
 {
     containingField_ = containingField;
     resets_ = containingField->getResets();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ResetInterface::setValidator()
-//-----------------------------------------------------------------------------
-void ResetInterface::setValidator(QSharedPointer<FieldValidator> validator)
-{
-    validator_ = validator;
 }
 
 //-----------------------------------------------------------------------------

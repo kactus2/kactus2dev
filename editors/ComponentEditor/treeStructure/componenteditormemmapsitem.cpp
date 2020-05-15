@@ -15,6 +15,11 @@
 #include <editors/ComponentEditor/memoryMaps/memorymapseditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
+#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+
 #include <IPXACTmodels/Component/MemoryMap.h>
 
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
@@ -40,7 +45,8 @@ ComponentEditorItem(model, libHandler, component, parent),
     memoryMaps_(component->getMemoryMaps()),
     visualizer_(new MemoryMapsVisualizer()),
     expressionParser_(expressionParser),
-    memoryMapValidator_()
+    memoryMapValidator_(),
+    blockInterface_()
 {
     createMemoryMapValidator();
 
@@ -48,13 +54,15 @@ ComponentEditorItem(model, libHandler, component, parent),
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
+    createAddressBlockInterface();
+
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
 	foreach (QSharedPointer<MemoryMap> memoryMap, *memoryMaps_)
     {
 		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMap, model,
             libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
-            memoryMapValidator_, this));
+            memoryMapValidator_, blockInterface_, this));
 		memoryMapItem->setVisualizer(visualizer_);
 		childItems_.append(memoryMapItem);
 
@@ -143,7 +151,7 @@ void ComponentEditorMemMapsItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMaps_->at(index),
         model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser_, memoryMapValidator_, this));
+        expressionParser_, memoryMapValidator_, blockInterface_, this));
 	memoryMapItem->setLocked(locked_);
 	childItems_.insert(index, memoryMapItem);
 	
@@ -204,4 +212,23 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
     memoryMapValidator_ = memoryMapValidator;
 
     memoryMapValidator_->componentChange(component_->getRemapStates(), component_->getResetTypes());
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::createAddressBlockInterface()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapsItem::createAddressBlockInterface()
+{
+    QSharedPointer<AddressBlockValidator> blockValidator = memoryMapValidator_->getAddressBlockValidator();
+    QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
+    QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
+
+    ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
+    FieldInterface* fieldInterface(
+        new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
+
+    RegisterInterface* registerInterface(
+        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
+    blockInterface_ =
+        new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_, registerInterface);
 }

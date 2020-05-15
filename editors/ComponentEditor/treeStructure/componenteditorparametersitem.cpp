@@ -28,13 +28,10 @@ ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTree
 ParameterizableItem(model, libHandler, component, parent),
 expressionParser_(expressionParser),
 validator_(new ParameterValidator(expressionParser, component->getChoices())),
-parameterInterface_(new ParametersInterface())
+parameterInterface_(new ParametersInterface(validator_, expressionParser, expressionFormatter))
 {
     parameterInterface_->setParameters(component->getParameters());
     parameterInterface_->setChoices(component->getChoices());
-    parameterInterface_->setValidator(validator_);
-    parameterInterface_->setExpressionParser(expressionParser);
-    parameterInterface_->setExpressionFormatter(expressionFormatter);
 
     setReferenceCounter(refCounter);
     setParameterFinder(parameterFinder);

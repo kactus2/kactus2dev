@@ -37,7 +37,7 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<RegisterValidator> registerValidator, RegisterInterface* registerInterface,
+    QSharedPointer<RegisterValidator> registerValidator, FieldInterface* fieldInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
@@ -45,16 +45,8 @@ visualizer_(nullptr),
 registerItem_(nullptr),
 expressionParser_(expressionParser),
 registerValidator_(registerValidator),
-fieldInterface_(new FieldInterface()),
-registerInterface_(registerInterface)
+fieldInterface_(fieldInterface)
 {
-    registerInterface_->addSubInterface(reg->name().toStdString(), fieldInterface_);
-
-    fieldInterface_->setFields(reg->getFields());
-    fieldInterface_->setValidator(registerValidator->getFieldValidator());
-    fieldInterface_->setExpressionParser(expressionParser);
-    fieldInterface_->setExpressionFormatter(expressionFormatter);
-
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -67,20 +59,13 @@ registerInterface_(registerInterface)
         {
             QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
                 reg, field, model, libHandler, component, parameterFinder, referenceCounter, expressionParser_,
-                expressionFormatter, registerValidator_->getFieldValidator(), fieldInterface_, this));
+                expressionFormatter, registerValidator_->getFieldValidator(), fieldInterface_->getSubInterface(),
+                this));
             childItems_.append(fieldItem);
 
             connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorregisteritem::~ComponentEditorRegisterItem()
-//-----------------------------------------------------------------------------
-ComponentEditorRegisterItem::~ComponentEditorRegisterItem()
-{
-    registerInterface_->removeSubInterface(fieldInterface_);
 }
 
 //-----------------------------------------------------------------------------
@@ -137,7 +122,7 @@ void ComponentEditorRegisterItem::createChild( int index )
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 		reg_, reg_->getFields()->at(index), model_, libHandler_, component_, parameterFinder_, 
         referenceCounter_, expressionParser_, expressionFormatter_, registerValidator_->getFieldValidator(),
-        fieldInterface_, this));
+        fieldInterface_->getSubInterface(), this));
 	fieldItem->setLocked(locked_);
 	
 	if (visualizer_)

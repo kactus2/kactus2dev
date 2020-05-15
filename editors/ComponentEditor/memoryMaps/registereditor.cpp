@@ -31,13 +31,17 @@
 //-----------------------------------------------------------------------------
 // Function: registereditor::RegisterEditor()
 //-----------------------------------------------------------------------------
-RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Component> component,
-    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface,
-    QWidget* parent):
+RegisterEditor::RegisterEditor(QSharedPointer<QList<QSharedPointer<Field>>> fields,
+    QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface, QWidget* parent):
 QGroupBox(tr("Fields summary"), parent),
 view_(new EditableTableView(this)),
-model_(0)
+model_(0),
+interface_(fieldInterface),
+fields_(fields)
 {
+    interface_->setFields(fields_);
+
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
@@ -119,4 +123,6 @@ RegisterEditor::~RegisterEditor()
 void RegisterEditor::refresh()
 {
 	view_->update();
+
+    interface_->setFields(fields_);
 }

@@ -29,8 +29,14 @@ public:
 
     /*!
      *  The constructor.
+     *
+     *      @param [in] validator               Validator for fields.
+     *      @param [in] expressionParser        Parser for expressions.
+     *      @param [in] expressionFormatter     Formatter for expressions.
      */
-    ResetInterface();
+    ResetInterface(QSharedPointer<FieldValidator> validator,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter);
 
     /*!
      *  The destructor.
@@ -43,13 +49,6 @@ public:
      *      @param [in] containingField     Field containing the resets.
      */
     void setResets(QSharedPointer<Field> containingField);
-
-    /*!
-     *  Set field validator.
-     *
-     *      @param [in] validator   Validator for fields.
-     */
-    void setValidator(QSharedPointer<FieldValidator> validator);
 
     /*!
      *  Get the names of the available items.

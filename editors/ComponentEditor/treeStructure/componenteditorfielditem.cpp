@@ -33,7 +33,7 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-    QSharedPointer<FieldValidator> fieldValidator, FieldInterface* fieldInterface,
+    QSharedPointer<FieldValidator> fieldValidator, ResetInterface* resetInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
@@ -42,16 +42,8 @@ visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
 fieldValidator_(fieldValidator),
-fieldInterface_(fieldInterface),
-resetInterface_(new ResetInterface())
+resetInterface_(resetInterface)
 {
-    fieldInterface_->addResetInterface(field_->name().toStdString(), resetInterface_);
-
-    resetInterface_->setResets(field_);
-    resetInterface_->setValidator(fieldValidator);
-    resetInterface_->setExpressionParser(expressionParser);
-    resetInterface_->setExpressionFormatter(formatter);
-
 	Q_ASSERT(field_);
 
     setParameterFinder(parameterFinder);
@@ -59,14 +51,6 @@ resetInterface_(new ResetInterface())
     setExpressionFormatter(formatter);
 
 	setObjectName(tr("ComponentEditorFieldItem"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::~ComponentEditorFieldItem()
-//-----------------------------------------------------------------------------
-ComponentEditorFieldItem::~ComponentEditorFieldItem()
-{
-    fieldInterface_->removeResetInterface(resetInterface_);
 }
 
 //-----------------------------------------------------------------------------

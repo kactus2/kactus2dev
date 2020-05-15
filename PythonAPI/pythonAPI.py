@@ -281,324 +281,6 @@ class stringVector(object):
 # Register stringVector in _pythonAPI:
 _pythonAPI.stringVector_swigregister(stringVector)
 
-class fieldInterfaceVector(object):
-    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
-    __repr__ = _swig_repr
-
-    def iterator(self):
-        return _pythonAPI.fieldInterfaceVector_iterator(self)
-    def __iter__(self):
-        return self.iterator()
-
-    def __nonzero__(self):
-        return _pythonAPI.fieldInterfaceVector___nonzero__(self)
-
-    def __bool__(self):
-        return _pythonAPI.fieldInterfaceVector___bool__(self)
-
-    def __len__(self):
-        return _pythonAPI.fieldInterfaceVector___len__(self)
-
-    def __getslice__(self, i, j):
-        return _pythonAPI.fieldInterfaceVector___getslice__(self, i, j)
-
-    def __setslice__(self, *args):
-        return _pythonAPI.fieldInterfaceVector___setslice__(self, *args)
-
-    def __delslice__(self, i, j):
-        return _pythonAPI.fieldInterfaceVector___delslice__(self, i, j)
-
-    def __delitem__(self, *args):
-        return _pythonAPI.fieldInterfaceVector___delitem__(self, *args)
-
-    def __getitem__(self, *args):
-        return _pythonAPI.fieldInterfaceVector___getitem__(self, *args)
-
-    def __setitem__(self, *args):
-        return _pythonAPI.fieldInterfaceVector___setitem__(self, *args)
-
-    def pop(self):
-        return _pythonAPI.fieldInterfaceVector_pop(self)
-
-    def append(self, x):
-        return _pythonAPI.fieldInterfaceVector_append(self, x)
-
-    def empty(self):
-        return _pythonAPI.fieldInterfaceVector_empty(self)
-
-    def size(self):
-        return _pythonAPI.fieldInterfaceVector_size(self)
-
-    def swap(self, v):
-        return _pythonAPI.fieldInterfaceVector_swap(self, v)
-
-    def begin(self):
-        return _pythonAPI.fieldInterfaceVector_begin(self)
-
-    def end(self):
-        return _pythonAPI.fieldInterfaceVector_end(self)
-
-    def rbegin(self):
-        return _pythonAPI.fieldInterfaceVector_rbegin(self)
-
-    def rend(self):
-        return _pythonAPI.fieldInterfaceVector_rend(self)
-
-    def clear(self):
-        return _pythonAPI.fieldInterfaceVector_clear(self)
-
-    def get_allocator(self):
-        return _pythonAPI.fieldInterfaceVector_get_allocator(self)
-
-    def pop_back(self):
-        return _pythonAPI.fieldInterfaceVector_pop_back(self)
-
-    def erase(self, *args):
-        return _pythonAPI.fieldInterfaceVector_erase(self, *args)
-
-    def __init__(self, *args):
-        _pythonAPI.fieldInterfaceVector_swiginit(self, _pythonAPI.new_fieldInterfaceVector(*args))
-
-    def push_back(self, x):
-        return _pythonAPI.fieldInterfaceVector_push_back(self, x)
-
-    def front(self):
-        return _pythonAPI.fieldInterfaceVector_front(self)
-
-    def back(self):
-        return _pythonAPI.fieldInterfaceVector_back(self)
-
-    def assign(self, n, x):
-        return _pythonAPI.fieldInterfaceVector_assign(self, n, x)
-
-    def resize(self, *args):
-        return _pythonAPI.fieldInterfaceVector_resize(self, *args)
-
-    def insert(self, *args):
-        return _pythonAPI.fieldInterfaceVector_insert(self, *args)
-
-    def reserve(self, n):
-        return _pythonAPI.fieldInterfaceVector_reserve(self, n)
-
-    def capacity(self):
-        return _pythonAPI.fieldInterfaceVector_capacity(self)
-    __swig_destroy__ = _pythonAPI.delete_fieldInterfaceVector
-
-# Register fieldInterfaceVector in _pythonAPI:
-_pythonAPI.fieldInterfaceVector_swigregister(fieldInterfaceVector)
-
-class resetInterfaceVector(object):
-    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
-    __repr__ = _swig_repr
-
-    def iterator(self):
-        return _pythonAPI.resetInterfaceVector_iterator(self)
-    def __iter__(self):
-        return self.iterator()
-
-    def __nonzero__(self):
-        return _pythonAPI.resetInterfaceVector___nonzero__(self)
-
-    def __bool__(self):
-        return _pythonAPI.resetInterfaceVector___bool__(self)
-
-    def __len__(self):
-        return _pythonAPI.resetInterfaceVector___len__(self)
-
-    def __getslice__(self, i, j):
-        return _pythonAPI.resetInterfaceVector___getslice__(self, i, j)
-
-    def __setslice__(self, *args):
-        return _pythonAPI.resetInterfaceVector___setslice__(self, *args)
-
-    def __delslice__(self, i, j):
-        return _pythonAPI.resetInterfaceVector___delslice__(self, i, j)
-
-    def __delitem__(self, *args):
-        return _pythonAPI.resetInterfaceVector___delitem__(self, *args)
-
-    def __getitem__(self, *args):
-        return _pythonAPI.resetInterfaceVector___getitem__(self, *args)
-
-    def __setitem__(self, *args):
-        return _pythonAPI.resetInterfaceVector___setitem__(self, *args)
-
-    def pop(self):
-        return _pythonAPI.resetInterfaceVector_pop(self)
-
-    def append(self, x):
-        return _pythonAPI.resetInterfaceVector_append(self, x)
-
-    def empty(self):
-        return _pythonAPI.resetInterfaceVector_empty(self)
-
-    def size(self):
-        return _pythonAPI.resetInterfaceVector_size(self)
-
-    def swap(self, v):
-        return _pythonAPI.resetInterfaceVector_swap(self, v)
-
-    def begin(self):
-        return _pythonAPI.resetInterfaceVector_begin(self)
-
-    def end(self):
-        return _pythonAPI.resetInterfaceVector_end(self)
-
-    def rbegin(self):
-        return _pythonAPI.resetInterfaceVector_rbegin(self)
-
-    def rend(self):
-        return _pythonAPI.resetInterfaceVector_rend(self)
-
-    def clear(self):
-        return _pythonAPI.resetInterfaceVector_clear(self)
-
-    def get_allocator(self):
-        return _pythonAPI.resetInterfaceVector_get_allocator(self)
-
-    def pop_back(self):
-        return _pythonAPI.resetInterfaceVector_pop_back(self)
-
-    def erase(self, *args):
-        return _pythonAPI.resetInterfaceVector_erase(self, *args)
-
-    def __init__(self, *args):
-        _pythonAPI.resetInterfaceVector_swiginit(self, _pythonAPI.new_resetInterfaceVector(*args))
-
-    def push_back(self, x):
-        return _pythonAPI.resetInterfaceVector_push_back(self, x)
-
-    def front(self):
-        return _pythonAPI.resetInterfaceVector_front(self)
-
-    def back(self):
-        return _pythonAPI.resetInterfaceVector_back(self)
-
-    def assign(self, n, x):
-        return _pythonAPI.resetInterfaceVector_assign(self, n, x)
-
-    def resize(self, *args):
-        return _pythonAPI.resetInterfaceVector_resize(self, *args)
-
-    def insert(self, *args):
-        return _pythonAPI.resetInterfaceVector_insert(self, *args)
-
-    def reserve(self, n):
-        return _pythonAPI.resetInterfaceVector_reserve(self, n)
-
-    def capacity(self):
-        return _pythonAPI.resetInterfaceVector_capacity(self)
-    __swig_destroy__ = _pythonAPI.delete_resetInterfaceVector
-
-# Register resetInterfaceVector in _pythonAPI:
-_pythonAPI.resetInterfaceVector_swigregister(resetInterfaceVector)
-
-class registerInterfaceVector(object):
-    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
-    __repr__ = _swig_repr
-
-    def iterator(self):
-        return _pythonAPI.registerInterfaceVector_iterator(self)
-    def __iter__(self):
-        return self.iterator()
-
-    def __nonzero__(self):
-        return _pythonAPI.registerInterfaceVector___nonzero__(self)
-
-    def __bool__(self):
-        return _pythonAPI.registerInterfaceVector___bool__(self)
-
-    def __len__(self):
-        return _pythonAPI.registerInterfaceVector___len__(self)
-
-    def __getslice__(self, i, j):
-        return _pythonAPI.registerInterfaceVector___getslice__(self, i, j)
-
-    def __setslice__(self, *args):
-        return _pythonAPI.registerInterfaceVector___setslice__(self, *args)
-
-    def __delslice__(self, i, j):
-        return _pythonAPI.registerInterfaceVector___delslice__(self, i, j)
-
-    def __delitem__(self, *args):
-        return _pythonAPI.registerInterfaceVector___delitem__(self, *args)
-
-    def __getitem__(self, *args):
-        return _pythonAPI.registerInterfaceVector___getitem__(self, *args)
-
-    def __setitem__(self, *args):
-        return _pythonAPI.registerInterfaceVector___setitem__(self, *args)
-
-    def pop(self):
-        return _pythonAPI.registerInterfaceVector_pop(self)
-
-    def append(self, x):
-        return _pythonAPI.registerInterfaceVector_append(self, x)
-
-    def empty(self):
-        return _pythonAPI.registerInterfaceVector_empty(self)
-
-    def size(self):
-        return _pythonAPI.registerInterfaceVector_size(self)
-
-    def swap(self, v):
-        return _pythonAPI.registerInterfaceVector_swap(self, v)
-
-    def begin(self):
-        return _pythonAPI.registerInterfaceVector_begin(self)
-
-    def end(self):
-        return _pythonAPI.registerInterfaceVector_end(self)
-
-    def rbegin(self):
-        return _pythonAPI.registerInterfaceVector_rbegin(self)
-
-    def rend(self):
-        return _pythonAPI.registerInterfaceVector_rend(self)
-
-    def clear(self):
-        return _pythonAPI.registerInterfaceVector_clear(self)
-
-    def get_allocator(self):
-        return _pythonAPI.registerInterfaceVector_get_allocator(self)
-
-    def pop_back(self):
-        return _pythonAPI.registerInterfaceVector_pop_back(self)
-
-    def erase(self, *args):
-        return _pythonAPI.registerInterfaceVector_erase(self, *args)
-
-    def __init__(self, *args):
-        _pythonAPI.registerInterfaceVector_swiginit(self, _pythonAPI.new_registerInterfaceVector(*args))
-
-    def push_back(self, x):
-        return _pythonAPI.registerInterfaceVector_push_back(self, x)
-
-    def front(self):
-        return _pythonAPI.registerInterfaceVector_front(self)
-
-    def back(self):
-        return _pythonAPI.registerInterfaceVector_back(self)
-
-    def assign(self, n, x):
-        return _pythonAPI.registerInterfaceVector_assign(self, n, x)
-
-    def resize(self, *args):
-        return _pythonAPI.registerInterfaceVector_resize(self, *args)
-
-    def insert(self, *args):
-        return _pythonAPI.registerInterfaceVector_insert(self, *args)
-
-    def reserve(self, n):
-        return _pythonAPI.registerInterfaceVector_reserve(self, n)
-
-    def capacity(self):
-        return _pythonAPI.registerInterfaceVector_capacity(self)
-    __swig_destroy__ = _pythonAPI.delete_registerInterfaceVector
-
-# Register registerInterfaceVector in _pythonAPI:
-_pythonAPI.registerInterfaceVector_swigregister(registerInterfaceVector)
-
 class PythonAPI(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
@@ -640,8 +322,17 @@ class PythonAPI(object):
     def getComponentParameterInterface(self):
         return _pythonAPI.PythonAPI_getComponentParameterInterface(self)
 
-    def getRegisterInterfaces(self):
-        return _pythonAPI.PythonAPI_getRegisterInterfaces(self)
+    def getAddressBlockInterface(self, mapName):
+        return _pythonAPI.PythonAPI_getAddressBlockInterface(self, mapName)
+
+    def getRegisterInterface(self, mapName, blockName):
+        return _pythonAPI.PythonAPI_getRegisterInterface(self, mapName, blockName)
+
+    def getFieldInterface(self, mapName, blockName, registerName):
+        return _pythonAPI.PythonAPI_getFieldInterface(self, mapName, blockName, registerName)
+
+    def getResetInterface(self, mapName, blockName, registerName, fieldName):
+        return _pythonAPI.PythonAPI_getResetInterface(self, mapName, blockName, registerName, fieldName)
 
 # Register PythonAPI in _pythonAPI:
 _pythonAPI.PythonAPI_swigregister(PythonAPI)
@@ -703,12 +394,6 @@ class ParameterizableInterface(object):
     __repr__ = _swig_repr
     __swig_destroy__ = _pythonAPI.delete_ParameterizableInterface
 
-    def setExpressionParser(self, parser):
-        return _pythonAPI.ParameterizableInterface_setExpressionParser(self, parser)
-
-    def setExpressionFormatter(self, formatter):
-        return _pythonAPI.ParameterizableInterface_setExpressionFormatter(self, formatter)
-
     def getAllReferencesToIdInItem(self, itemName, valueID):
         return _pythonAPI.ParameterizableInterface_getAllReferencesToIdInItem(self, itemName, valueID)
 
@@ -719,15 +404,12 @@ class PortsInterface(ParameterizableInterface, NameGroupInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
-    def __init__(self):
-        _pythonAPI.PortsInterface_swiginit(self, _pythonAPI.new_PortsInterface())
+    def __init__(self, validator, expressionParser, expressionFormatter):
+        _pythonAPI.PortsInterface_swiginit(self, _pythonAPI.new_PortsInterface(validator, expressionParser, expressionFormatter))
     __swig_destroy__ = _pythonAPI.delete_PortsInterface
 
     def setPorts(self, component):
         return _pythonAPI.PortsInterface_setPorts(self, component)
-
-    def setValidator(self, validator):
-        return _pythonAPI.PortsInterface_setValidator(self, validator)
 
     def getItemIndex(self, itemName):
         return _pythonAPI.PortsInterface_getItemIndex(self, itemName)
@@ -964,8 +646,8 @@ class ParametersInterface(ParameterizableInterface, NameGroupInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
-    def __init__(self):
-        _pythonAPI.ParametersInterface_swiginit(self, _pythonAPI.new_ParametersInterface())
+    def __init__(self, validator, expressionParser, expressionFormatter):
+        _pythonAPI.ParametersInterface_swiginit(self, _pythonAPI.new_ParametersInterface(validator, expressionParser, expressionFormatter))
     __swig_destroy__ = _pythonAPI.delete_ParametersInterface
 
     def setParameters(self, newParameters):
@@ -976,9 +658,6 @@ class ParametersInterface(ParameterizableInterface, NameGroupInterface):
 
     def setChoices(self, newChoices):
         return _pythonAPI.ParametersInterface_setChoices(self, newChoices)
-
-    def setValidator(self, validator):
-        return _pythonAPI.ParametersInterface_setValidator(self, validator)
 
     def getItemIndex(self, itemName):
         return _pythonAPI.ParametersInterface_getItemIndex(self, itemName)
@@ -1175,19 +854,165 @@ class ParametersInterface(ParameterizableInterface, NameGroupInterface):
 # Register ParametersInterface in _pythonAPI:
 _pythonAPI.ParametersInterface_swigregister(ParametersInterface)
 
+class AddressBlockInterface(ParameterizableInterface, NameGroupInterface):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self, blockValidator, expressionParser, expressionFormatter, subInterface):
+        _pythonAPI.AddressBlockInterface_swiginit(self, _pythonAPI.new_AddressBlockInterface(blockValidator, expressionParser, expressionFormatter, subInterface))
+    __swig_destroy__ = _pythonAPI.delete_AddressBlockInterface
+
+    def setAddressBlocks(self, newAddressBlocks):
+        return _pythonAPI.AddressBlockInterface_setAddressBlocks(self, newAddressBlocks)
+
+    def getItemIndex(self, itemName):
+        return _pythonAPI.AddressBlockInterface_getItemIndex(self, itemName)
+
+    def getIndexedItemName(self, itemIndex):
+        return _pythonAPI.AddressBlockInterface_getIndexedItemName(self, itemIndex)
+
+    def itemCount(self):
+        return _pythonAPI.AddressBlockInterface_itemCount(self)
+
+    def getItemNames(self):
+        return _pythonAPI.AddressBlockInterface_getItemNames(self)
+
+    def setName(self, currentName, newName):
+        return _pythonAPI.AddressBlockInterface_setName(self, currentName, newName)
+
+    def getDescription(self, itemName):
+        return _pythonAPI.AddressBlockInterface_getDescription(self, itemName)
+
+    def setDescription(self, itemName, newDescription):
+        return _pythonAPI.AddressBlockInterface_setDescription(self, itemName, newDescription)
+
+    def getBaseAddressValue(self, blockName, baseNumber=0):
+        return _pythonAPI.AddressBlockInterface_getBaseAddressValue(self, blockName, baseNumber)
+
+    def getBaseAddressFormattedExpression(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getBaseAddressFormattedExpression(self, blockName)
+
+    def getBaseAddressExpression(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getBaseAddressExpression(self, blockName)
+
+    def setBaseAddress(self, blockName, newBaseAdress):
+        return _pythonAPI.AddressBlockInterface_setBaseAddress(self, blockName, newBaseAdress)
+
+    def getIsPresentValue(self, blockName, baseNumber=0):
+        return _pythonAPI.AddressBlockInterface_getIsPresentValue(self, blockName, baseNumber)
+
+    def getIsPresentFormattedExpression(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getIsPresentFormattedExpression(self, blockName)
+
+    def getIsPresentExpression(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getIsPresentExpression(self, blockName)
+
+    def setIsPresent(self, blockName, newIsPresent):
+        return _pythonAPI.AddressBlockInterface_setIsPresent(self, blockName, newIsPresent)
+
+    def getRangeValue(self, blockName, baseNumber=0):
+        return _pythonAPI.AddressBlockInterface_getRangeValue(self, blockName, baseNumber)
+
+    def getRangeFormattedExpression(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getRangeFormattedExpression(self, blockName)
+
+    def getRangeExpression(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getRangeExpression(self, blockName)
+
+    def setRange(self, blockName, newRange):
+        return _pythonAPI.AddressBlockInterface_setRange(self, blockName, newRange)
+
+    def getWidthValue(self, blockName, baseNumber=0):
+        return _pythonAPI.AddressBlockInterface_getWidthValue(self, blockName, baseNumber)
+
+    def getWidthFormattedExpression(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getWidthFormattedExpression(self, blockName)
+
+    def getWidthExpression(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getWidthExpression(self, blockName)
+
+    def setWidth(self, blockName, newWidth):
+        return _pythonAPI.AddressBlockInterface_setWidth(self, blockName, newWidth)
+
+    def getUsage(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getUsage(self, blockName)
+
+    def setUsage(self, blockName, newUsage):
+        return _pythonAPI.AddressBlockInterface_setUsage(self, blockName, newUsage)
+
+    def getAccess(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getAccess(self, blockName)
+
+    def setAccess(self, blockName, newAccess):
+        return _pythonAPI.AddressBlockInterface_setAccess(self, blockName, newAccess)
+
+    def getVolatile(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getVolatile(self, blockName)
+
+    def setVolatile(self, blockName, newVolatile):
+        return _pythonAPI.AddressBlockInterface_setVolatile(self, blockName, newVolatile)
+
+    def getAllReferencesToIdInItem(self, itemName, valueID):
+        return _pythonAPI.AddressBlockInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+
+    def validateItems(self):
+        return _pythonAPI.AddressBlockInterface_validateItems(self)
+
+    def itemHasValidName(self, itemName):
+        return _pythonAPI.AddressBlockInterface_itemHasValidName(self, itemName)
+
+    def hasValidBaseAddress(self, itemName):
+        return _pythonAPI.AddressBlockInterface_hasValidBaseAddress(self, itemName)
+
+    def hasValidRange(self, itemName):
+        return _pythonAPI.AddressBlockInterface_hasValidRange(self, itemName)
+
+    def hasValidWidth(self, itemName):
+        return _pythonAPI.AddressBlockInterface_hasValidWidth(self, itemName)
+
+    def hasValidIsPresent(self, itemName):
+        return _pythonAPI.AddressBlockInterface_hasValidIsPresent(self, itemName)
+
+    def hasValidUsage(self, itemName):
+        return _pythonAPI.AddressBlockInterface_hasValidUsage(self, itemName)
+
+    def addBlock(self, *args):
+        return _pythonAPI.AddressBlockInterface_addBlock(self, *args)
+
+    def removeBlock(self, blockName):
+        return _pythonAPI.AddressBlockInterface_removeBlock(self, blockName)
+
+    def copyRows(self, selectedRows):
+        return _pythonAPI.AddressBlockInterface_copyRows(self, selectedRows)
+
+    def pasteRows(self):
+        return _pythonAPI.AddressBlockInterface_pasteRows(self)
+
+    def getPasteRowCount(self):
+        return _pythonAPI.AddressBlockInterface_getPasteRowCount(self)
+
+    def getExpressionsInSelectedItems(self, itemNames):
+        return _pythonAPI.AddressBlockInterface_getExpressionsInSelectedItems(self, itemNames)
+
+    def setAddressUnitBits(self, newAddressUnitbits):
+        return _pythonAPI.AddressBlockInterface_setAddressUnitBits(self, newAddressUnitbits)
+
+    def getSubInterface(self):
+        return _pythonAPI.AddressBlockInterface_getSubInterface(self)
+
+# Register AddressBlockInterface in _pythonAPI:
+_pythonAPI.AddressBlockInterface_swigregister(AddressBlockInterface)
+
 class RegisterInterface(ParameterizableInterface, NameGroupInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
-    def __init__(self):
-        _pythonAPI.RegisterInterface_swiginit(self, _pythonAPI.new_RegisterInterface())
+    def __init__(self, validator, expressionParser, expressionFormatter, subInterface):
+        _pythonAPI.RegisterInterface_swiginit(self, _pythonAPI.new_RegisterInterface(validator, expressionParser, expressionFormatter, subInterface))
     __swig_destroy__ = _pythonAPI.delete_RegisterInterface
 
     def setRegisters(self, newRegisterData):
         return _pythonAPI.RegisterInterface_setRegisters(self, newRegisterData)
-
-    def setValidator(self, validator):
-        return _pythonAPI.RegisterInterface_setValidator(self, validator)
 
     def getItemIndex(self, itemName):
         return _pythonAPI.RegisterInterface_getItemIndex(self, itemName)
@@ -1315,20 +1140,11 @@ class RegisterInterface(ParameterizableInterface, NameGroupInterface):
     def getExpressionsInSelectedRegisters(self, registerNames):
         return _pythonAPI.RegisterInterface_getExpressionsInSelectedRegisters(self, registerNames)
 
-    def addSubInterface(self, registerName, newSubInterface):
-        return _pythonAPI.RegisterInterface_addSubInterface(self, registerName, newSubInterface)
-
-    def removeSubInterface(self, removedInterface):
-        return _pythonAPI.RegisterInterface_removeSubInterface(self, removedInterface)
-
-    def getSubInterfaces(self):
-        return _pythonAPI.RegisterInterface_getSubInterfaces(self)
-
-    def getSelectedSubInterface(self, registerName):
-        return _pythonAPI.RegisterInterface_getSelectedSubInterface(self, registerName)
-
     def setAddressUnitBits(self, newAddressUnitbits):
         return _pythonAPI.RegisterInterface_setAddressUnitBits(self, newAddressUnitbits)
+
+    def getSubInterface(self):
+        return _pythonAPI.RegisterInterface_getSubInterface(self)
 
 # Register RegisterInterface in _pythonAPI:
 _pythonAPI.RegisterInterface_swigregister(RegisterInterface)
@@ -1337,15 +1153,12 @@ class FieldInterface(ParameterizableInterface, NameGroupInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
-    def __init__(self):
-        _pythonAPI.FieldInterface_swiginit(self, _pythonAPI.new_FieldInterface())
+    def __init__(self, validator, expressionParser, expressionFormatter, subInterface):
+        _pythonAPI.FieldInterface_swiginit(self, _pythonAPI.new_FieldInterface(validator, expressionParser, expressionFormatter, subInterface))
     __swig_destroy__ = _pythonAPI.delete_FieldInterface
 
     def setFields(self, newFields):
         return _pythonAPI.FieldInterface_setFields(self, newFields)
-
-    def setValidator(self, validator):
-        return _pythonAPI.FieldInterface_setValidator(self, validator)
 
     def getItemIndex(self, itemName):
         return _pythonAPI.FieldInterface_getItemIndex(self, itemName)
@@ -1491,17 +1304,8 @@ class FieldInterface(ParameterizableInterface, NameGroupInterface):
     def getExpressionsInSelectedFields(self, fieldNames):
         return _pythonAPI.FieldInterface_getExpressionsInSelectedFields(self, fieldNames)
 
-    def addResetInterface(self, fieldName, newResetInterface):
-        return _pythonAPI.FieldInterface_addResetInterface(self, fieldName, newResetInterface)
-
-    def removeResetInterface(self, removedInterface):
-        return _pythonAPI.FieldInterface_removeResetInterface(self, removedInterface)
-
-    def getResetInterfaces(self):
-        return _pythonAPI.FieldInterface_getResetInterfaces(self)
-
-    def getResetInterface(self, fieldName):
-        return _pythonAPI.FieldInterface_getResetInterface(self, fieldName)
+    def getSubInterface(self):
+        return _pythonAPI.FieldInterface_getSubInterface(self)
 
 # Register FieldInterface in _pythonAPI:
 _pythonAPI.FieldInterface_swigregister(FieldInterface)
@@ -1510,15 +1314,12 @@ class ResetInterface(ParameterizableInterface, CommonInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
-    def __init__(self):
-        _pythonAPI.ResetInterface_swiginit(self, _pythonAPI.new_ResetInterface())
+    def __init__(self, validator, expressionParser, expressionFormatter):
+        _pythonAPI.ResetInterface_swiginit(self, _pythonAPI.new_ResetInterface(validator, expressionParser, expressionFormatter))
     __swig_destroy__ = _pythonAPI.delete_ResetInterface
 
     def setResets(self, containingField):
         return _pythonAPI.ResetInterface_setResets(self, containingField)
-
-    def setValidator(self, validator):
-        return _pythonAPI.ResetInterface_setValidator(self, validator)
 
     def getItemNames(self):
         return _pythonAPI.ResetInterface_getItemNames(self)

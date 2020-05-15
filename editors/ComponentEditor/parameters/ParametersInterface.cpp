@@ -28,11 +28,12 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: ParametersInterface::ParametersInterface()
 //-----------------------------------------------------------------------------
-ParametersInterface::ParametersInterface():
-ParameterizableInterface(),
+ParametersInterface::ParametersInterface(QSharedPointer<ParameterValidator> validator,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
+ParameterizableInterface(expressionParser, expressionFormatter),
 parameters_(),
 moduleParameters_(),
-parameterValidator_(),
+parameterValidator_(validator),
 choices_()
 {
 
@@ -60,14 +61,6 @@ void ParametersInterface::setModuleParameters(QSharedPointer<QList<QSharedPointe
 void ParametersInterface::setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices)
 {
     choices_ = newChoices;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersInterface::setValidator()
-//-----------------------------------------------------------------------------
-void ParametersInterface::setValidator(QSharedPointer<ParameterValidator> validator)
-{
-    parameterValidator_ = validator;
 }
 
 //-----------------------------------------------------------------------------

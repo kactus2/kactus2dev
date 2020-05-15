@@ -31,10 +31,18 @@ class RegisterInterface : public ParameterizableInterface, public NameGroupInter
 
 public:
 
-	/*!
-	 *  The constructor.
-	 */
-    RegisterInterface();
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] validator               Validator for registers.
+     *      @param [in] expressionParser        Parser for expressions.
+     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] subInterface            Interface for accessing fields.
+     */
+    RegisterInterface(QSharedPointer<RegisterValidator> validator,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        FieldInterface* subInterface);
 	
 	/*!
      *  The destructor.
@@ -47,13 +55,6 @@ public:
      *      @param [in] newRegisterData     The new register data.
      */
     void setRegisters(QSharedPointer<QList<QSharedPointer<RegisterBase> > > newRegisterData);
-
-    /*!
-     *  Set register validator.
-     *
-     *      @param [in] validator   Validator for registers.
-     */
-    void setValidator(QSharedPointer<RegisterValidator> validator);
 
     /*!
      *  Get index of the selected item.
@@ -435,44 +436,18 @@ public:
     std::vector<std::string> getExpressionsInSelectedRegisters(std::vector<std::string> registerNames) const;
 
     /*!
-     *  Add a sub interface.
-     *
-     *      @param [in] registerName        Name of the register containing the fields.
-     *      @param [in] newSubInterface     The new sub interface.
-     */
-    void addSubInterface(std::string const& registerName, FieldInterface* newSubInterface);
-
-    /*!
-     *  Remove the selected sub interface.
-     *
-     *      @param [in] removedInterface    The selected interface.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    bool removeSubInterface(FieldInterface* removedInterface);
-
-    /*!
-     *  Get the list of sub interfaces.
-     *
-     *      @return The contained sub interfaces.
-     */
-    std::vector<FieldInterface*> getSubInterfaces() const;
-
-    /*!
-     *  Get the field interface of the selected register.
-     *
-     *      @param [in] registerName    Name of the selected register.
-     *
-     *      @return Field interface of the selected register.
-     */
-    FieldInterface* getSelectedSubInterface(std::string const& registerName) const;
-    
-    /*!
      *  Change the value for address unit bits.
      *
      *      @param [in] newAddressUnitbits  The new value for address unit bits.
      */
     void setAddressUnitBits(int const& newAddressUnitbits);
+
+    /*!
+     *  Get the sub interface.
+     *
+     *      @return Interface for accessing fields.
+     */
+    FieldInterface* getSubInterface() const;
 
 private:
 
@@ -484,14 +459,6 @@ private:
      *      @return The selected register.
      */
     QSharedPointer<Register> getRegister(std::string const& registerName) const;
-
-    /*!
-     *  Change the key in the contained interfaces.
-     *
-     *      @param [in] currentKey  The current key.
-     *      @param [in] newKey      The new key.
-     */
-    void changeKeyInSubInterfaces(QString const& currentName, QString const& newName);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -506,8 +473,8 @@ private:
     //! Validator for registers.
     QSharedPointer<RegisterValidator> validator_;
 
-    //! Map for the contained field interfaces.
-    QMap<QString, FieldInterface*> subInterfaces_;
+    //! Interface for accessing fields.
+    FieldInterface* subInterface_;
 
     //! The address unit bits of the memory map.
     unsigned int addressUnitBits_;

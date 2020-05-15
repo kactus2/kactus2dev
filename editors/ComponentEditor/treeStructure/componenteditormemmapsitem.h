@@ -21,6 +21,8 @@ class MemoryMapsVisualizer;
 class ExpressionParser;
 class MemoryMap;
 class MemoryMapValidator;
+class AddressBlockInterface;
+
 //-----------------------------------------------------------------------------
 //! The Memory maps-item in the component navigation tree.
 //-----------------------------------------------------------------------------
@@ -135,6 +137,15 @@ private:
      */
     void createMemoryMapValidator();
 
+    /*!
+     *  Create the interfaces for memory maps.
+     */
+    void createAddressBlockInterface();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! Contains the memory maps being edited.
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps_;
 
@@ -146,6 +157,9 @@ private:
 
     //! The current memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
+
+    //! Interface for accessing address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // COMPONENTEDITORMEMMAPSITEM_H

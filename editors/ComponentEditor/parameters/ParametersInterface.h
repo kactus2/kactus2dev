@@ -30,8 +30,14 @@ public:
 
 	/*!
      *  The constructor.
+     *
+     *      @param [in] validator               Validator for parameters.
+     *      @param [in] expressionParser        Parser for expressions.
+     *      @param [in] expressionFormatter     Formatter for expressions.
      */
-	ParametersInterface();
+    ParametersInterface(QSharedPointer<ParameterValidator> validator,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter);
 	
 	/*!
      *  The destructor.
@@ -58,13 +64,6 @@ public:
      *      @param [in] newChoices  The new choices.
      */
     void setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices);
-
-    /*!
-     *  Set parameter validator.
-     *
-     *      @param [in] validator   Validator for parameters.
-     */
-    void setValidator(QSharedPointer<ParameterValidator> validator);
 
     /*!
      *  Get index of the selected item.

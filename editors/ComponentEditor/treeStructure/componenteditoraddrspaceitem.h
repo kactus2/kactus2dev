@@ -48,6 +48,7 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] addressSpaceValidator   Validator for address spaces.
+     *      @param [in] blockInterface          Interface for accessing address blocks.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
@@ -59,6 +60,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
+        AddressBlockInterface* blockInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
