@@ -46,11 +46,11 @@ public:
     RegisterGraphItem(const RegisterGraphItem& other) = delete;
     RegisterGraphItem& operator=(const RegisterGraphItem& other) = delete;
 
-	//! Refresh the item, refresh and re-layout the sub-items and refresh parent item.
-    virtual void refresh() override final;
-
     //! Updates the labels and tooltip for the item.
     virtual  void updateDisplay() override final;
+
+    //! Re-layouts the child items.
+    virtual void redoChildLayout() override final;
 
     //! Add child item.
     virtual void addChild(MemoryVisualizationItem* childItem) override final;
@@ -100,18 +100,24 @@ public:
      */
     virtual bool isPresent() const override final;
 
-    //! Re-layouts the child items.
-     virtual void redoChildLayout() override final;
 
 protected:
-
-    //! Update the child items in the map. Field items are organized according to last address.
-    virtual void updateChildMap() override final;
 
     /*!
      *  Repositions the child items and fills the empty gaps between them.
      */
     virtual void repositionChildren() override final;
+
+    //! Removes current gaps between field items and re-sorts fields by offset.
+    virtual void removeGapsAndSortChildren() override final;
+
+    /*!
+     * Fills the gaps between fields with gap items.
+     */
+    virtual void fillGapsBetweenChildren() override final;
+
+    //! Mark all invalid fields outside register boundaries.
+    virtual void markConflictingChildren() override final;
 
 private:
 		
@@ -136,15 +142,6 @@ private:
      */
     unsigned int findHighestReservedBit();
 
-    //! Removes current gaps between field items and re-sorts fields by offset.
-    void removeGapsAndSortChildren();
-
-    /*!
-     * Fills the gaps between fields with items.
-     *
-     *     @param [in] highestReservedBit  The highest bit index reserved by the register.
-     */
-     void fillGapsBetweenChildren(unsigned int highestReservedBit);
 
     /*!
      *  Checks if there is empty memory space between the given child and the last known used bit index.
@@ -164,8 +161,7 @@ private:
      */
     QMap<quint64, MemoryVisualizationItem*>::iterator addMemoryGap(quint64 startAddress, quint64 endAddress);
 
-    //! Mark all invalid fields outside register boundaries.
-    void markConflictingChildren();
+
 
     /*!
      *  Checks if the two consecutive children overlap.

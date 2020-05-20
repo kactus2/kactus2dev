@@ -45,9 +45,6 @@ public:
     FieldGraphItem(const FieldGraphItem& other) = delete;
     FieldGraphItem& operator=(const FieldGraphItem& other) = delete;
 
-    //! Refresh the item and the parent item.
-	virtual void refresh() override final;
-
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override final;
 
@@ -107,6 +104,9 @@ public:
      *      @return True, if the item should be used, otherwise false.
      */
     virtual bool isPresent() const override final;
+
+    //! Re-layouts the child items.
+    virtual void redoChildLayout() override;
 
 protected:
      

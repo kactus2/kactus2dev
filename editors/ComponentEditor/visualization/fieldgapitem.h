@@ -63,6 +63,7 @@ public:
 
     //! Set the item into conflicted (overlapping memory) state.
     virtual void setConflicted(bool conflicted) override final;
+
 };
 
 #endif // FIELDGAPITEM_H

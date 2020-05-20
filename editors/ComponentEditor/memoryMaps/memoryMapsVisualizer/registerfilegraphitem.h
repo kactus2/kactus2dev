@@ -47,10 +47,6 @@ public:
     RegisterFileGraphItem(const RegisterFileGraphItem& other) = delete;
     RegisterFileGraphItem& operator=(const RegisterFileGraphItem& other) = delete;
 
-
-    //! Refresh the item and the parent item.
-    virtual void refresh() override final;
-
     virtual void redoChildLayout() override final;
 
     //! Updates the labels and tooltip for the item.

@@ -35,15 +35,6 @@ RegisterFileGraphItem::RegisterFileGraphItem(QSharedPointer<RegisterFile> regFil
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterFileGraphItem::refresh()
-//-----------------------------------------------------------------------------
-void RegisterFileGraphItem::refresh()
-{
-    //updateDisplay();
-    //reorganizeChildren();
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterFileGraphItem::redoChildLayout()
 //-----------------------------------------------------------------------------
 void RegisterFileGraphItem::redoChildLayout()

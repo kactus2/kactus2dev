@@ -33,10 +33,10 @@ MemoryGapItem(expressionParser, parent)
 //-----------------------------------------------------------------------------
 void FieldGapItem::updateDisplay()
 {
-	QString startStr = QString::number(firstFreeAddress_);
+	QString startStr = QString::number(firstAddress_);
     VisualizerItem::setBottomLabelText(startStr);
 
-	QString endStr = QString::number(lastFreeAddress_);
+	QString endStr = QString::number(lastAddress_);
     VisualizerItem::setTopLabelText(endStr);
     setToolTip("<b>" + name() + "</b> [" + endStr + ".." + startStr + "]");
 }
@@ -46,7 +46,7 @@ void FieldGapItem::updateDisplay()
 //-----------------------------------------------------------------------------
 int FieldGapItem::getBitWidth() const
 {
-	return lastFreeAddress_ - firstFreeAddress_ + 1;
+	return lastAddress_ - firstAddress_ + 1;
 }
 
 //-----------------------------------------------------------------------------

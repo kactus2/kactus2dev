@@ -34,15 +34,6 @@ addrBlock_(addrBlock)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockGraphItem::refresh()
-//-----------------------------------------------------------------------------
-void AddressBlockGraphItem::refresh() 
-{
-   // updateDisplay();
-  //  reorganizeChildren();
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 void AddressBlockGraphItem::updateDisplay()
@@ -69,8 +60,6 @@ void AddressBlockGraphItem::redoChildLayout()
 {
     reorganizeChildren();
     ExpandableItem::reorganizeChildren();
-
-    setShowExpandableItem(childItems_.isEmpty() == false);
 }
 
 //-----------------------------------------------------------------------------

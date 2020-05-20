@@ -46,20 +46,12 @@ public:
 	//! The destructor.
 	virtual ~MemoryVisualizationItem() = default;
 
-    /*!
-     *  Set the item brush and store it as default brush.
-     *
-     *      @param [in] brush   The brush to set.
-     */
-    void setBrush(QBrush const& brush);
-
-	//! Refresh the item.
-	virtual void refresh() = 0;
+    //! No copying.
+    MemoryVisualizationItem(const MemoryVisualizationItem& other) = delete;
+    MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other) = delete;
 
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() = 0;
-
-    virtual void redoChildLayout() { Q_ASSERT(false); };
 
 	/*!
      *  Get the offset of the item. 
@@ -88,6 +80,9 @@ public:
 	 *      @return The size of least addressable unit.
 	 */
 	virtual unsigned int getAddressUnitSize() const = 0;
+
+    //! Re-layouts the child items.
+    virtual void redoChildLayout() = 0;
 
 	/*!
      *  Add a child visualization item for this item.
@@ -145,16 +140,6 @@ public:
      */
     virtual quint64 getDisplayLastAddress();
 
-	//! Sets the item to be completely overlapped by adjacent items.
-    virtual void setCompleteOverlap();
-
-    /*!
-     *  Tells if the item is completely overlapped by other items.
-     *
-     *      @return True, if the item's memory is completely under other memory blocks, otherwise false.
-     */
-    virtual bool isCompletelyOverlapped() const;
-
     //! Set the item into conflicted (overlapping memory) state.
     virtual void setConflicted(bool conflicted);
 
@@ -178,11 +163,6 @@ public:
      *      @return True, if the item should be used, otherwise false.
      */
     virtual bool isPresent() const;
-
-public slots:
-
-    //! Refresh the item and all the sub items.
-   // virtual void recursiveRefresh();
 
 signals:
 
@@ -216,15 +196,19 @@ protected:
     //! Shows the expand/collapse icon if the item has any children. Otherwise the icon is hidden.
     void showExpandIconIfHasChildren();
 
-    //! Update the offsets of the child items in the map and fills the empty gaps between them..
-    virtual void updateChildMap();
-        
+    //! Update the offsets of the child items in the map and fills the empty gaps between them.
+    void updateChildMap();
+
+    //! Removes current gaps between child items and re-sorts items by offset.
+    virtual void removeGapsAndSortChildren();
+
     /*!
-     *  Checks if the children must be repositioned inside this item.
-     *
-     *      @return True, if the repositioning is required.
+     * Fills the gaps between child items with gap items.
      */
-    bool mustRepositionChildren();
+    virtual void fillGapsBetweenChildren();
+
+    //! Mark all invalid children outside item boundaries.
+    virtual void markConflictingChildren();
  
 	//! Handler for mouse press events
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -273,29 +257,13 @@ protected:
 	//! Contains the child memory items. The offset of the child is the key.
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
 
-    //! The first non-overlapping address.
-    quint64 firstFreeAddress_ = 0;
+    //! The first address of the item.
+    quint64 firstAddress_ = 0;
 
-    //! The last non-overlapping address.
-    quint64 lastFreeAddress_ = 0;
-
-    //! Width for child items.
-    qreal childWidth_;
+    //! The last address of the item.
+    quint64 lastAddress_ = 0;
 
 private:
-	
-	//! No copying.
-	MemoryVisualizationItem(const MemoryVisualizationItem& other);
-	MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other);
-
-    /*!
-     *  Checks if there is empty memory space between the beginning of the item and its first child.
-     *
-     *      @param [in] current   The currently iterated child.
-     *
-     *      @return True, if there is empty space, otherwise false.
-     */
-    bool emptySpaceBeforeFirstChild(MemoryVisualizationItem* current) const;
     
     /*!
      *  Checks if there is empty memory space between the given child and the last known used address.
@@ -305,7 +273,7 @@ private:
      *
      *      @return True, if there is empty space, otherwise false.
      */
-    bool emptySpaceBeforeChild(MemoryVisualizationItem* current, quint64 lastAddressInUse) const;
+    bool emptySpaceBeforeChild(MemoryVisualizationItem const* current, quint64 lastAddressInUse) const;
 
     /*!
      *  Checks if the two consecutive children overlap.
@@ -315,7 +283,7 @@ private:
      *
      *      @return True, if the children overlap, otherwise false.
      */
-    bool childrenOverlap(MemoryVisualizationItem* current, MemoryVisualizationItem* previous) const;
+    bool childrenOverlap(MemoryVisualizationItem const* current, MemoryVisualizationItem const* previous) const;
 
     /*!
      *  Creates a new child for representing a free memory slot.
@@ -325,20 +293,7 @@ private:
      *
      *      @return The created child item.
      */
-    MemoryGapItem* createMemoryGap(quint64 offset, quint64 lastAddress);
-    
-    /*!
-     *  Creates a new child for representing an overlapping memory slot.
-     *
-     *      @param [in] offset          The offset of the overlapping memory slot.
-     *      @param [in] lastAddress     The last address of the overlapping memory slot.
-     *
-     *      @return The created child item.
-     */
-    MemoryGapItem* createConflictItem(qint64 offset, qint64 lastAddress);
-
-    //! comparison function for two equal offsets.
-    static bool compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
+    QMap<quint64, MemoryVisualizationItem*>::iterator createMemoryGap(quint64 offset, quint64 lastAddress);
 
     /*!
      *  Groups a given address text to groups of four digits.
@@ -349,18 +304,22 @@ private:
      */
     QString groupByFourDigits(QString const& text) const;
 
+    //! comparison function for two equal offsets.
+    static bool compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
 	//! Conflicted state. Item is conflicted if it overlaps with other items.
-    bool conflicted_;
+    bool conflicted_ = false;
 
-    //! Tells if the item is completely overlapped by other items.
-    bool overlapped_;
+    //! Width for child items.
+    qreal childWidth_ = VisualizerItem::DEFAULT_WIDTH;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
 };
 
 #endif // MEMORYVISUALIZATIONITEM_H

@@ -42,7 +42,7 @@ public:
     MemoryGapItem& operator=(const MemoryGapItem& other) = delete;
 
 	//! Refresh the gap item.
-	virtual void refresh() override;
+	void refresh();
 
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override;
@@ -75,6 +75,8 @@ public:
 	 */
 	virtual unsigned int getAddressUnitSize() const override;
 
+    //! Re-layouts the child items.
+    virtual void redoChildLayout() override final;
 };
 
 #endif // MEMORYGAPITEM_H

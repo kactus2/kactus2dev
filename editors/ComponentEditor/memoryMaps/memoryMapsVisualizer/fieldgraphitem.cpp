@@ -42,15 +42,6 @@ field_(field)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldGraphItem::refresh()
-//-----------------------------------------------------------------------------
-void FieldGraphItem::refresh()
-{
-    updateDisplay();
-    //ExpandableItem::reorganizeChildren();
-}
-
-//-----------------------------------------------------------------------------
 // Function: FieldGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 void FieldGraphItem::updateDisplay()
@@ -111,8 +102,9 @@ quint64 FieldGraphItem::getLastAddress() const
 //-----------------------------------------------------------------------------
 void FieldGraphItem::setDisplayOffset(quint64 const& address)
 {
-    firstFreeAddress_ = address;
-    VisualizerItem::setTopLabelText(QString::number(firstFreeAddress_));
+    // Fields show decimal number offsets.
+    firstAddress_ = address;
+    VisualizerItem::setTopLabelText(QString::number(firstAddress_));
 }
 
 //-----------------------------------------------------------------------------
@@ -120,8 +112,9 @@ void FieldGraphItem::setDisplayOffset(quint64 const& address)
 //-----------------------------------------------------------------------------
 void FieldGraphItem::setDisplayLastAddress(quint64 const& address)
 {
-    lastFreeAddress_ = address;
-    VisualizerItem::setBottomLabelText(QString::number(lastFreeAddress_));
+    // Fields show decimal number offsets.
+    lastAddress_ = address;
+    VisualizerItem::setBottomLabelText(QString::number(lastAddress_));
 }
 
 //-----------------------------------------------------------------------------
@@ -146,4 +139,12 @@ void FieldGraphItem::setConflicted(bool conflicted)
 bool FieldGraphItem::isPresent() const
 {
     return field_->getIsPresent().isEmpty() || parseExpression(field_->getIsPresent()) == 1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::redoChildLayout()
+//-----------------------------------------------------------------------------
+void FieldGraphItem::redoChildLayout()
+{
+    // Do nothing.
 }

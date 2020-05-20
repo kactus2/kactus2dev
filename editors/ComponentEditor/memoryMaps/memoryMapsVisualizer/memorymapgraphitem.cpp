@@ -162,3 +162,12 @@ QSharedPointer<MemoryMapBase> MemoryMapGraphItem::getMemoryMap() const
 {
     return memoryMap_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: memorymapgraphitem::redoChildLayout()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphItem::redoChildLayout()
+{
+    // TODO.
+}
+

@@ -554,6 +554,7 @@ void AddressBlockModel::onAddItem(QModelIndex const& index)
 
     QSharedPointer<Register> regItem(new Register());    
     regItem->setAddressOffset(offset);
+    regItem->setSize(QString::number(addressUnitBits_));
     items_.insert(row, regItem);
     registerData_->insert(dataIndex, regItem);
     endInsertRows();

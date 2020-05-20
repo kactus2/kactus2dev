@@ -64,7 +64,7 @@ public:
     VisualizerItem& operator=(const VisualizerItem& other) = delete;
 
 	//! Refresh the item and possible sub-items
-	virtual void refresh() = 0;
+    virtual void refresh(){ };
 
 	/*! Get the rectangle reserved by this item and it's sub-items recursively.
 	 *

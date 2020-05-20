@@ -33,18 +33,9 @@ register_(reg)
 {
 	Q_ASSERT(register_);
 
-    QBrush brush(KactusColors::REGISTER_COLOR);
-	setDefaultBrush(brush);
+	setDefaultBrush(QBrush(KactusColors::REGISTER_COLOR));
 
     updateDisplay();
-}
-
-//-----------------------------------------------------------------------------
-// Function: registergraphitem::refresh()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::refresh() 
-{
-    // Nothing to do.
 }
 
 //-----------------------------------------------------------------------------
@@ -72,6 +63,28 @@ void RegisterGraphItem::updateDisplay()
         "<b>First address: </b>" % toHexString(offset) % "<br>" %
         "<b>Last address: </b>" % toHexString(lastAddress) % "<br>" %
         "<b>Size [bits]: </b>" % QString::number(getBitWidth()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::redoChildLayout()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::redoChildLayout()
+{
+    reorganizeChildren();
+    ExpandableItem::reorganizeChildren();
+
+    setShowExpandableItem(childItems_.isEmpty() == false);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::addChild()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::addChild(MemoryVisualizationItem* childItem)
+{
+    childItems_.insertMulti(childItem->getOffset(), childItem);
+
+    childItem->setParentItem(this);    
+    childItem->setVisible(isExpanded());
 }
 
 //-----------------------------------------------------------------------------
@@ -139,13 +152,10 @@ unsigned int RegisterGraphItem::getAddressUnitSize() const
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::setWidth(qreal width)
 {
-    if (childWidth_ != width)
-    {
-        childWidth_ = width;
-        VisualizerItem::setWidth(width);
-       
-        repositionChildren();
-    }
+    VisualizerItem::setWidth(width);
+
+    // Child width is adjusted according to width and number of bits.
+    repositionChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -154,43 +164,6 @@ void RegisterGraphItem::setWidth(qreal width)
 bool RegisterGraphItem::isPresent() const
 {
     return register_->getIsPresent().isEmpty() || parseExpression(register_->getIsPresent()) == 1;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::addChild()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::addChild(MemoryVisualizationItem* childItem)
-{
-    childItems_.insertMulti(childItem->getOffset(), childItem);
-
-    childItem->setParentItem(this);
-    childItem->setWidth(childWidth_);
-    childItem->setVisible(isExpanded());
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::redoChildLayout()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::redoChildLayout()
-{
-    reorganizeChildren();
-    ExpandableItem::reorganizeChildren();
-    
-    setShowExpandableItem(childItems_.isEmpty() == false);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::updateChildMap()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::updateChildMap()
-{
-    removeGapsAndSortChildren();
-
-    // In the new sorted order, fill possible gaps between fields.
-    unsigned int highestBitInUse = findHighestReservedBit();
-    fillGapsBetweenChildren(highestBitInUse);
-
-    markConflictingChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -294,15 +267,16 @@ void RegisterGraphItem::removeGapsAndSortChildren()
             sortedMap.insertMulti((*item)->getLastAddress(), *item);
         }
     }
+
     childItems_ = sortedMap;
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::fillGapsBetweenChildren()
 //-----------------------------------------------------------------------------
-void RegisterGraphItem::fillGapsBetweenChildren(unsigned int highestReservedBit)
+void RegisterGraphItem::fillGapsBetweenChildren()
 {
-    quint64 lowestBitHandled = highestReservedBit + 1;
+    quint64 lowestBitHandled = findHighestReservedBit() + 1;
 
     // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB). 
     for (auto i = childItems_.end() - 1; i != childItems_.begin() - 1; --i)
@@ -366,7 +340,7 @@ void RegisterGraphItem::markConflictingChildren()
             bool overlaps = childrenOverlap(current, previous);
             bool isOutsideRegister = current->getOffset() > registerMSB || current->getLastAddress() > registerMSB;
 
-            current->setConflicted(overlaps|| isOutsideRegister);
+            current->setConflicted(overlaps || isOutsideRegister);
             if (overlaps)
             {
                 previous->setConflicted(true);
@@ -396,7 +370,7 @@ void RegisterGraphItem::resizeAndPositionChild(MemoryVisualizationItem* child,
     quint64 availableBits = BIT_WIDTH - child->getOffset();
     quint64 childBitWidth = qMin(quint64(child->getBitWidth()), availableBits);
 
-    qreal pixelsPerBit = childWidth_ / BIT_WIDTH;
+    qreal pixelsPerBit = rect().width() / BIT_WIDTH;
 
     qreal width = qMax(1.0, pixelsPerBit * childBitWidth);
     child->setWidth(width);

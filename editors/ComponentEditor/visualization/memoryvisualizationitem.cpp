@@ -26,22 +26,11 @@ MemoryVisualizationItem::MemoryVisualizationItem(QSharedPointer<ExpressionParser
     QGraphicsItem* parent):
 ExpandableItem(parent),
     childItems_(),
-    childWidth_(VisualizerItem::DEFAULT_WIDTH),
-    conflicted_(false),
-    overlapped_(false),
     expressionParser_(expressionParser)
 {
     QPen pen(Qt::gray);
     setPen(pen);
     setExpansionPen(pen);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setBrush()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setBrush(QBrush const& brush)
-{
-    setDefaultBrush(brush);
 }
 
 //-----------------------------------------------------------------------------
@@ -88,7 +77,6 @@ void MemoryVisualizationItem::setWidth(qreal width)
         childWidth_ = newChildWidth;
 
         VisualizerItem::setWidth(width);
-        //ExpandableItem::reorganizeChildren();
         
         for (auto child : childItems_)
         {
@@ -110,13 +98,8 @@ QRectF MemoryVisualizationItem::boundingRect() const
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::setDisplayOffset(quint64 const& address)
 {
-    firstFreeAddress_ = address;
-    setTopLabelText(firstFreeAddress_);
-
-    if (firstFreeAddress_ == lastFreeAddress_)
-    {        
-        setBottomLabelText(QString());
-    }
+    firstAddress_ = address;
+    setTopLabelText(firstAddress_);
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +107,7 @@ void MemoryVisualizationItem::setDisplayOffset(quint64 const& address)
 //-----------------------------------------------------------------------------
 quint64 MemoryVisualizationItem::getDisplayOffset()
 {
-    return firstFreeAddress_;
+    return firstAddress_;
 }
 
 //-----------------------------------------------------------------------------
@@ -132,10 +115,13 @@ quint64 MemoryVisualizationItem::getDisplayOffset()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::setDisplayLastAddress(quint64 const& address)
 {
-    lastFreeAddress_ = address;
-    setBottomLabelText(lastFreeAddress_);
+    lastAddress_ = address;
 
-    if (firstFreeAddress_ == lastFreeAddress_)
+    if (firstAddress_ != lastAddress_)
+    {
+        setBottomLabelText(lastAddress_);
+    }
+    else
     {
         setBottomLabelText(QString());
     }
@@ -146,27 +132,7 @@ void MemoryVisualizationItem::setDisplayLastAddress(quint64 const& address)
 //-----------------------------------------------------------------------------
 quint64 MemoryVisualizationItem::getDisplayLastAddress()
 {
-    return lastFreeAddress_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setCompleteOverlap()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setCompleteOverlap()
-{
-    overlapped_ = true;
-    setConflicted(true);
-    
-    setTopLabelText(QString());
-    setBottomLabelText(QString());
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::isCompletelyOverlapped()
-//-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::isCompletelyOverlapped() const
-{
-    return overlapped_;
+    return lastAddress_;
 }
 
 //-----------------------------------------------------------------------------
@@ -175,7 +141,6 @@ bool MemoryVisualizationItem::isCompletelyOverlapped() const
 void MemoryVisualizationItem::setConflicted(bool conflicted)
 {
     conflicted_ = conflicted;
-    overlapped_ = conflicted;
 
     QBrush colorBrush = defaultBrush();
     if (conflicted)
@@ -244,30 +209,31 @@ void MemoryVisualizationItem::showExpandIconIfHasChildren()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::updateChildMap()
 {
+    removeGapsAndSortChildren();
+   
+    fillGapsBetweenChildren();
+
+    markConflictingChildren();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryVisualizationItem::removeGapsAndSortChildren()
+//-----------------------------------------------------------------------------
+void MemoryVisualizationItem::removeGapsAndSortChildren()
+{
     QMap<quint64, MemoryVisualizationItem*> updatedMap;
 
-    for (auto item = childItems_.begin(); item != childItems_.end(); /* iterator incremented in the loop*/)
+    for (auto item = childItems_.cbegin(); item != childItems_.cend(); ++item)
     {
         MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(*item);
         if (gap)
-        {                   
+        {
             delete gap;
-            item = childItems_.erase(item);
         }
         else
         {
-            ++item;
+            updatedMap.insertMulti((*item)->getOffset(), *item);
         }
-    }
-
-    quint64 lastAvailableAddress = getLastAddress();    
-    for (MemoryVisualizationItem* item : childItems_)
-    {
-        item->updateDisplay();
-        item->setConflicted(item->getLastAddress() > lastAvailableAddress);
-        item->setVisible(isExpanded() && item->isPresent());
-
-        updatedMap.insertMulti(item->getOffset(), item);
     }
 
     // Sort childs with same offset for stable order.
@@ -279,7 +245,6 @@ void MemoryVisualizationItem::updateChildMap()
             updatedMap.remove(offset);
 
             qStableSort(childs.begin(), childs.end(), compareItems);
-
             for (auto& child : childs)
             {
                 updatedMap.insertMulti(offset, child);
@@ -288,78 +253,72 @@ void MemoryVisualizationItem::updateChildMap()
     }
 
     childItems_ = updatedMap;
+}
 
-    quint64 lastAddressInUse = getOffset();    
+//-----------------------------------------------------------------------------
+// Function: MemoryVisualizationItem::fillGapsBetweenChildren()
+//-----------------------------------------------------------------------------
+void MemoryVisualizationItem::fillGapsBetweenChildren()
+{
+    quint64 lastAddressInUse = getOffset();
 
-    MemoryGapItem const* previousOverlap = 0;
-    MemoryVisualizationItem* previous = 0;
-    quint64 previousLastAddress = lastAddressInUse;
-
-    for (MemoryVisualizationItem* current : childItems_)    
-    {    
+    for (auto i = childItems_.begin(); i != childItems_.end(); ++i)
+    {
+        auto current = i.value();
         if (current->isPresent())
         {
             quint64 currentOffset = childItems_.key(current);
-            quint64 currentLastAddress = current->getLastAddress();
-            if (emptySpaceBeforeFirstChild(current))
+
+            if (lastAddressInUse == 0 && currentOffset > 0 && i == childItems_.begin())
             {
-                createMemoryGap(getOffset(), currentOffset - 1);
-            }  
+                i = createMemoryGap(0, currentOffset - 1);
+                lastAddressInUse = currentOffset - 1;
+            }
             else if (emptySpaceBeforeChild(current, lastAddressInUse))
             {
-                createMemoryGap(lastAddressInUse + 1, currentOffset - 1);
-            }
-            else if (childrenOverlap(current, previous))
-            {
-                current->setConflicted(true);
-                previous->setConflicted(true);
-
-                if (currentLastAddress > previousLastAddress)
-                {
-                    current->setDisplayOffset(previousLastAddress + 1);
-
-                    previous->setDisplayLastAddress(qMin(previousLastAddress, currentOffset - 1));
-
-                    // If previous block is completely overlapped by the preceding block and this block.
-                    if (previousOverlap && previousOverlap->getLastAddress() + 1 >= currentOffset)
-                    {
-                        previous->setCompleteOverlap();
-                    }
-
-                    previousOverlap = createConflictItem(currentOffset, previousLastAddress);
-                }
-                else
-                {
-                    quint64 nonOverlappingOffset = qMax(currentOffset, previous->getDisplayOffset());
-                    current->setDisplayOffset(nonOverlappingOffset);
-                }
-            }
-            else if (previous && currentOffset <= lastAddressInUse)
-            {
-                current->setConflicted(true);
+                i = createMemoryGap(lastAddressInUse + 1, currentOffset - 1);
             }
 
-
-            lastAddressInUse = qMax(currentLastAddress, lastAddressInUse);
-
-            previous = current;
-            previousLastAddress = currentLastAddress;
+            lastAddressInUse = qMax(current->getLastAddress(), lastAddressInUse);
         }
     }
 
     // Fill in any addresses left between children and the end of this item.
-    if (!childItems_.isEmpty() && getLastAddress() > lastAddressInUse)
+    if (getLastAddress() > lastAddressInUse)
     {
         createMemoryGap(lastAddressInUse + 1, getLastAddress());
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::mustRepositionChildren()
+// Function: MemoryVisualizationItem::markConflictingChildren()
 //-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::mustRepositionChildren()
+void MemoryVisualizationItem::markConflictingChildren()
 {
-    return !childItems_.isEmpty() && isExpanded();
+    MemoryVisualizationItem* previous = 0;
+
+    const auto offset = getOffset();
+    const auto lastAddress = getLastAddress();
+
+    for (MemoryVisualizationItem* current : childItems_)
+    {
+        if (current->isPresent())
+        {
+            quint64 currentOffset = childItems_.key(current);
+
+            bool overlaps = childrenOverlap(current, previous);
+            bool isOutsideBounds = currentOffset < offset || current->getLastAddress() > lastAddress;
+
+            current->setConflicted(overlaps || isOutsideBounds);
+
+            if (overlaps)
+            {
+                previous->setConflicted(true);
+            }
+
+            previous = current;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -371,7 +330,10 @@ void MemoryVisualizationItem::repositionChildren()
     
     for (MemoryVisualizationItem* current : childItems_)
     {
-        if (current->isPresent())
+        bool present = current->isPresent();
+        current->setVisible(present && isExpanded());
+
+        if (present)
         {
             current->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
             yCoordinate = mapRectFromItem(current, current->itemTotalRect()).bottom();
@@ -420,7 +382,7 @@ QString MemoryVisualizationItem::toHexString(quint64 address)
     int fieldSize = bitWidth / 4;
     if (fieldSize*4 < bitWidth)
     {
-        fieldSize++; //Round upwards, e.g. 7bits needs 4 hex digits
+        fieldSize++; //Round upwards, e.g. 7 bits needs 4 hex digits
     }
 
     QString padded = QString("%1").arg(str, fieldSize, QLatin1Char('0'));
@@ -442,65 +404,38 @@ void MemoryVisualizationItem::setBottomLabelText(quint64 address)
 {
     VisualizerItem::setBottomLabelText(toHexString(address));
 }
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::emptySpaceBeforeFirstChild()
-//-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::emptySpaceBeforeFirstChild(MemoryVisualizationItem* current) const
-{
-    return current == childItems_.first() && current->getOffset() > getOffset(); 
-}
 
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::emptySpaceBeforeChild()
 //-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::emptySpaceBeforeChild(MemoryVisualizationItem* current, quint64 lastAddressInUse) const
-{
+bool MemoryVisualizationItem::emptySpaceBeforeChild(MemoryVisualizationItem const* current,
+    quint64 lastAddressInUse) const
+{    
     return current->getOffset() > lastAddressInUse + 1;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::childrenOverlap()
 //-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::childrenOverlap(MemoryVisualizationItem* current, MemoryVisualizationItem* previous) const
+bool MemoryVisualizationItem::childrenOverlap(MemoryVisualizationItem const* current,
+    MemoryVisualizationItem const* previous) const
 {
-    return previous && previous->getLastAddress() >= current->getOffset();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::createConflictItem()
-//-----------------------------------------------------------------------------
-MemoryGapItem* MemoryVisualizationItem::createConflictItem(qint64 offset, qint64 lastAddress)
-{
-    MemoryGapItem* gap = createMemoryGap(offset, lastAddress);
-    gap->setConflicted(true);
-    gap->setName(QStringLiteral("conflicted"));
-
-    return gap;
+    return previous != nullptr && previous->getLastAddress() >= current->getOffset();
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::createMemoryGap()
 //-----------------------------------------------------------------------------
-MemoryGapItem* MemoryVisualizationItem::createMemoryGap(quint64 startAddress, quint64 endAddress)
+QMap<quint64, MemoryVisualizationItem*>::iterator MemoryVisualizationItem::createMemoryGap(quint64 startAddress,
+    quint64 endAddress)
 {
     MemoryGapItem* gap = new MemoryGapItem(expressionParser_, this);
     gap->setWidth(childWidth_);
     gap->setDisplayOffset(startAddress);
-    gap->setDisplayOffset(endAddress);
-    gap->setVisible(isExpanded());
-    gap->updateDisplay();
+    gap->setDisplayLastAddress(endAddress);
+    gap->refresh();
 
-    childItems_.insert(gap->getOffset(), gap);
-    return gap;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::compareItems()
-//-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2)
-{
-    // Item with bigger last address precedes the other.
-    return s1->getLastAddress() > s2->getLastAddress();
+    return childItems_.insert(gap->getOffset(), gap);
 }
 
 //-----------------------------------------------------------------------------
@@ -517,4 +452,13 @@ QString MemoryVisualizationItem::groupByFourDigits(QString const& text) const
     }
 
     return groupedText;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryVisualizationItem::compareItems()
+//-----------------------------------------------------------------------------
+bool MemoryVisualizationItem::compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2)
+{
+    // Item with bigger last address precedes the other.
+    return s1->getLastAddress() > s2->getLastAddress();
 }

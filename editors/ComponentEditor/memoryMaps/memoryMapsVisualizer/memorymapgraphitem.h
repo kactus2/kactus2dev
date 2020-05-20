@@ -102,6 +102,9 @@ public:
      */
     virtual bool isPresent() const override final;
 
+    //! Re-layouts the child items.
+    virtual void redoChildLayout() override final;
+
 protected:
 
     /*!

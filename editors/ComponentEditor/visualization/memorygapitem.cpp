@@ -21,7 +21,7 @@
 MemoryGapItem::MemoryGapItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
 MemoryVisualizationItem(expressionParser, parent)
 {
-	setBrush(QBrush(QColor(Qt::white)));
+	setDefaultBrush(QBrush(QColor(Qt::white)));
 	ExpandableItem::setExpansionBrush(QBrush(QColor(Qt::white)));
 
     setShowExpandableItem(false);
@@ -44,9 +44,7 @@ void MemoryGapItem::refresh()
 //-----------------------------------------------------------------------------
 void MemoryGapItem::updateDisplay()
 {
-    setTopLabelText(QString::number(firstFreeAddress_));
-
-    setBottomLabelText(QString::number(lastFreeAddress_));
+    // Nothing to do.
 }
 
 //-----------------------------------------------------------------------------
@@ -54,7 +52,7 @@ void MemoryGapItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 MemoryGapItem::getOffset() const
 {
-	return firstFreeAddress_;
+	return firstAddress_;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +60,7 @@ quint64 MemoryGapItem::getOffset() const
 //-----------------------------------------------------------------------------
 quint64 MemoryGapItem::getLastAddress() const
 {
-    return lastFreeAddress_;
+    return lastAddress_;
 }
 
 //-----------------------------------------------------------------------------
@@ -83,4 +81,12 @@ unsigned int MemoryGapItem::getAddressUnitSize() const
 	auto memItem = static_cast<MemoryVisualizationItem const*>(parentItem());
 	Q_ASSERT(memItem);
 	return memItem->getAddressUnitSize();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGapItem::redoChildLayout()
+//-----------------------------------------------------------------------------
+void MemoryGapItem::redoChildLayout()
+{
+    // Do nothing. Gaps do not have child items.
 }
