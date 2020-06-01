@@ -30,6 +30,7 @@ class MemoryMapValidator;
 class MemoryMapExpressionGatherer;
 class MemoryRemapExpressionGatherer;
 class ReferenceCalculator;
+class MemoryMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The model to manage the memory maps summary.
@@ -43,17 +44,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component that contains the memory maps to edit.
-     *      @param [in] parameterFinder         The instance used to find parameters.
-     *      @param [in] expressionParser        The used expression parser.
-     *      @param [in] expressionFormatter     The formatter for expressions.
-     *      @param [in] memoryMapValidator      Validator used for memory maps.
-	 *      @param [in] parent                  The owner of the model.
+     *      @param [in] parameterFinder     The instance used to find parameters.
+     *      @param [in] expressionParser    The used expression parser.
+     *      @param [in] mapInterface        Interface for memory maps.
+	 *      @param [in] parent              The owner of the model.
 	 */
-	MemoryMapsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+	MemoryMapsModel(
+        QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<MemoryMapValidator> memoryMapValidator, QObject *parent);
+        MemoryMapInterface* mapInterface,
+        QObject *parent);
 
     //! No copying
     MemoryMapsModel(const MemoryMapsModel& other) = delete;
@@ -215,11 +215,11 @@ signals:
     //! Emitted when address unit bits are changed.
     void aubChangedOnRow(int memoryMapIndex);
     
-    //! Emitted when a new memory remap is added to the given memorymap.
-    void memoryRemapAdded(int index, QSharedPointer<MemoryMap> parentMemoryMap);
+    //! Emitted when a new memory remap is added to the given memory map.
+    void memoryRemapAdded(int index, QString const& parentMemoryMapName);
 
     //! Emitted when a memory remap is removed from the given index.
-    void memoryRemapRemoved(int index, QSharedPointer<MemoryMap> parentMemoryMap);
+    void memoryRemapRemoved(int index, QString const& parentMemoryMapName);
 
     /*!
      *  Informs of an increase in references for a given parameter.
@@ -267,6 +267,24 @@ protected:
 private:
     
     /*!
+     *  Get the formatted value of an expression in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The formatted value of an expression in the selected index.
+     */
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the expression of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The expression of the selected index.
+     */
+    virtual QVariant expressionForIndex(QModelIndex const& index) const;
+
+    /*!
      *  Gets the value for the given index.
      *
      *      @param [in] index   The index of target data.
@@ -278,30 +296,17 @@ private:
     /*!
      *  Increaser the number of references when creating a new memory remap.
      *
-     *      @param [in] parentMemoryMap     The parent memory map of the memory remap.
+     *      @param [in] memoryMapName   Name of the memory map.
      */
-    void increaseReferencesWithNewRemap(QSharedPointer<MemoryMap> parentMemoryMap);
+    void increaseReferencesWithNewRemap(QString const& memoryMapName);
 
     /*!
      *  Decrease the number of references when removing a memory remap.
      *
-     *      @param [in] removedMemoryRemap  The removed memory remap.
+     *      @param [in] mapName     Name of the memory map containing the selected memory remap.
+     *      @param [in] remapName   Name of the removed memory remap.
      */
-    void decreaseReferencesWithRemovedMemoryRemap(QSharedPointer<MemoryRemap> removedMemoryRemap);
-
-    /*!
-     *  Get the referenced parameters in the given abstract memory map.
-     *
-     *      @param [in] memoryMap   The given memory map.
-     */
-    QMap<QString, int> getReferencedParameters(QSharedPointer<MemoryMapBase> memoryMap) const;
-
-    /*!
-     *  Decrease the number of references when removing a memory map.
-     *
-     *      @param [in] removedMemoryMap    The removed memory map.
-     */
-    void decreaseReferencesWithRemovedMemoryMap(QSharedPointer<MemoryMap> removedMemoryMap);
+    void decreaseReferencesWithRemovedMemoryMap(QString const& mapName, QString const& remapName);
 
     /*!
      *  Create a parent index for the index of a memory remap.
@@ -313,25 +318,6 @@ private:
     QModelIndex createParentIndexForMemoryRemap(MemoryRemap* childItem) const;
 
     /*!
-     *  Get the indexed memory remap.
-     *
-     *      @param [in] parentIndex     The parent index of the memory remap.
-     *      @param [in] row             The row of the memory remap.
-     *
-     *      @return The indexed memory remap.
-     */
-    QSharedPointer<MemoryRemap> getIndexedMemoryRemap(QModelIndex const& parentIndex, int row) const;
-
-    /*!
-     *  Get the parent memory map of a memory remap.
-     *
-     *      @param [in] memoryRemap     The memory remap whose parent is wanted.
-     *
-     *      @return The parent memory map of the given memory remap.
-     */
-    QSharedPointer<MemoryMap> getParentMemoryMap(QSharedPointer<MemoryRemap> memoryRemap) const;
-
-    /*!
      *  Check if the index is valid in the model.
      *
      *      @param [in] index   The index whose validity is being checked.
@@ -339,44 +325,6 @@ private:
      *      @return True, if the index is valid, false otherwise.
      */
     bool isIndexValid(QModelIndex const& index) const;
-
-    /*!
-     *  Create a copy from the selected memory map.
-     *
-     *      @param [in] memoryMap               The selected memory map.
-     *      @param [in] gatherer                The memory map expression gatherer.
-     *      @param [in] referenceCalculator     The reference calculator.
-     */
-    void createPastedMemoryMap(QSharedPointer<MemoryMap> memoryMap, MemoryMapExpressionGatherer& gatherer,
-        ReferenceCalculator& referenceCalculator);
-
-    /*!
-     *  Create a copy from the selected memory remap.
-     *
-     *      @param [in] memoryRemap             The selected memory remap.
-     *      @param [in] parentIndex             The index of the parent memory map of the copied memory remap.
-     *      @param [in] gatherer                The memory remap expression gatherer.
-     *      @param [in] referenceCalculator     The reference calculator.
-     */
-    void createPastedMemoryRemap(QSharedPointer<MemoryRemap> memoryRemap, QModelIndex const& parentIndex,
-        MemoryRemapExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator);
-
-    /*!
-     *  Create a unique name from the selected name.
-     *
-     *      @param [in] originalName    The selected name.
-     *      @param [in] currentNames    The list of currently used names.
-     *
-     *      @return A unique name created from the original name.
-     */
-    QString createUniqueName(QString const& originalName, QStringList currentNames) const;
-
-    /*!
-     *  Get the names of the root memory maps.
-     *
-     *      @return The root memory map names.
-     */
-    QStringList getRootMemoryMapNames() const;
 
     /*!
      *  Increase the number of references in the referenced parameters.
@@ -387,30 +335,20 @@ private:
     void increaseReferencesInPastedMap(QStringList mapExpressions, ReferenceCalculator& referenceCalculator);
 
     /*!
-     *  Get the names of the memory maps contained within the selected memory map.
+     *  Get the memory map and remap names associated with the selected index.
      *
-     *      @param [in] currentMap  The selected memory map.
+     *      @param [in] index   The selected index.
      *
-     *      @return The names of the memory remaps contained within the selected memory map.
+     *      @return Pair containing the memory map and memory remap names.
      */
-    QStringList getMemoryRemapNames(QSharedPointer<MemoryMap> currentMap) const;
-
+    QPair<QString, QString> getIndexedMapRemapNames(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The component that contains the memory maps to edit.
-	QSharedPointer<Component> component_;
-
-    //! The formatter for expressions.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
-
-	//! Contains the memory maps to show in the summary.
-    QSharedPointer<QList<QSharedPointer<MemoryMap> > > rootMemoryMaps_;
-
-    //! The used memory map validator.
-    QSharedPointer<MemoryMapValidator> memoryMapValidator_;
+    //! Interface for accessing memory maps.
+    MemoryMapInterface* mapInterface_;
 };
 
 #endif // MEMORYMAPSMODEL_H

@@ -191,9 +191,9 @@ void ComponentEditorMemMapItem::changeAdressUnitBitsOnAddressBlocks()
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::onMemoryRemapAdded()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap)
+void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QString const& mapName)
 {
-    if (parentMemoryMap == memoryMap_)
+    if (mapName == memoryMap_->name())
     {
         onAddChild(memoryRemapIndex + 1);
     }
@@ -202,9 +202,9 @@ void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QShared
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::onMemoryRemapRemoved()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap)
+void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex, QString const& mapName)
 {
-    if (parentMemoryMap == memoryMap_)
+    if (mapName == memoryMap_->name())
     {
         onRemoveChild(memoryRemapIndex + 1);
     }

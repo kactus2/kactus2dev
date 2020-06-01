@@ -30,6 +30,7 @@ class ExpressionFormatter;
 class ExpressionParser;
 class MemoryMapValidator;
 class EditableTreeSortFilter;
+class MemoryMapInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the memory maps of a component.
@@ -50,17 +51,19 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionParser        The used expression parser.
-     *      @param [in] expressionFormatter     The formatter for expressions.
-	 *      @param [in] handler                 The instance managing the library.
-     *      @param [in] memoryMapValidator      Validator used for memory maps.
-	 *      @param [in] parent                  The owner of this editor.
+     *      @param [in] mapInterface        Interface for memory maps.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] parameterFinder     The parameter finder.
+     *      @param [in] expressionParser    The used expression parser.
+	 *      @param [in] handler             The instance managing the library.
+	 *      @param [in] parent              The owner of this editor.
 	 */
-	MemoryMapsEditor(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-		LibraryInterface* handler,  QSharedPointer<MemoryMapValidator> memoryMapValidator, QWidget *parent = 0);
+	MemoryMapsEditor(MemoryMapInterface* mapInterface,
+        QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+		LibraryInterface* handler,
+        QWidget *parent = 0);
 	
 	//! The destructor.
 	virtual ~MemoryMapsEditor();
@@ -92,18 +95,18 @@ signals:
     /*!
      *  Inform of the added memory remap.
      *
-     *      @param [in] memoryRemapIndex    The index of the new memory remap.
-     *      @param [in] parentMemoryMap     The owner of the new memory remap.
+     *      @param [in] memoryRemapIndex        The index of the new memory remap.
+     *      @param [in] parentMemoryMapName     Name of the owner of the new memory remap.
      */
-    void memoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+    void memoryRemapAdded(int memoryRemapIndex, QString const& parentMemoryMapName);
 
     /*!
      *  Inform of the removed memory remap.
      *
-     *      @param [in] memoryRemapIndex    The index of the removed memory remap.
-     *      @param [in] parentMemoryMap     The owner of the removed memory remap.
+     *      @param [in] memoryRemapIndex        The index of the removed memory remap.
+     *      @param [in] parentMemoryMapName     Name of the owner of the removed memory remap.
      */
-    void memoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+    void memoryRemapRemoved(int memoryRemapIndex, QString const& parentMemoryMapName);
 
 protected:
 
@@ -150,6 +153,12 @@ private:
 
     //! The delegate of the view.
     MemoryMapsDelegate* delegate_;
+
+    //! Interface for memory maps.
+    MemoryMapInterface* interface_;
+
+    //! Component containing the memory maps.
+    QSharedPointer<Component> component_;
 };
 
 #endif // MEMORYMAPSEDITOR_H

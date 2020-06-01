@@ -141,17 +141,17 @@ public slots:
      *  Add a memory remap item to the tree.
      *
      *      @param [in] memoryRemapIndex    The index of the new memory remap item.
-     *      @param [in] parentMemoryMap     The parent of the new memory remap item.
+     *      @param [in] mapName             Name of the parent of the new memory remap item.
      */
-    void onMemoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+    void onMemoryRemapAdded(int memoryRemapIndex, QString const& mapName);
 
     /*!
      *  Remove a memory remap item from the tree.
      *
      *      @param [in] memoryRemapIndex    The index of the removed memory remap item.
-     *      @param [in] parentMemoryMap     The parent of the removed memory remap item.
+     *      @param [in] mapName             Name of the parent of the removed memory remap item.
      */
-    void onMemoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+    void onMemoryRemapRemoved(int memoryRemapIndex, QString const& mapName);
 
 private:
 	//! No copying. No assignment.

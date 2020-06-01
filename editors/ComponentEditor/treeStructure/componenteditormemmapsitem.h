@@ -21,7 +21,7 @@ class MemoryMapsVisualizer;
 class ExpressionParser;
 class MemoryMap;
 class MemoryMapValidator;
-class AddressBlockInterface;
+class MemoryMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The Memory maps-item in the component navigation tree.
@@ -112,18 +112,18 @@ signals:
     /*!
      *  Informs that a new memory remap item should be added.
      *
-     *      @param [in] memoryRemapIndex    The index of the new memory remap item.
-     *      @param [in] parentMemoryMap     The parent memory map of the new memory remap.
+     *      @param [in] memoryRemapIndex        The index of the new memory remap item.
+     *      @param [in] parentMemoryMapName     Name of the parent memory map of the new memory remap.
      */
-    void memoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+    void memoryRemapAdded(int memoryRemapIndex, QString const& parentMemoryMapName);
 
     /*!
      *  Informs that a memory remap item should be removed.
      *
-     *      @param [in] memoryRemapIndex    The index of the removed memory remap item.
-     *      @param [in] parentMemoryMap     The parent memory map of the removed memory remap.
+     *      @param [in] memoryRemapIndex        The index of the removed memory remap item.
+     *      @param [in] parentMemoryMapName     Name of the parent memory map of the removed memory remap.
      */
-    void memoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+    void memoryRemapRemoved(int memoryRemapIndex, QString const& parentMemoryMapName);
 
 private:
 	//! No copying.
@@ -140,7 +140,7 @@ private:
     /*!
      *  Create the interfaces for memory maps.
      */
-    void createAddressBlockInterface();
+    void createMemoryMapInterface();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -158,8 +158,8 @@ private:
     //! The current memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 
-    //! Interface for accessing address blocks.
-    AddressBlockInterface* blockInterface_;
+    //! Interface for accessing memory maps.
+    MemoryMapInterface* mapInterface_;
 };
 
 #endif // COMPONENTEDITORMEMMAPSITEM_H
