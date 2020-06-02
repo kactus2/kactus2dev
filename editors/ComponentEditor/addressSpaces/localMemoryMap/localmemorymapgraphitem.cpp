@@ -59,5 +59,5 @@ void LocalMemoryMapGraphItem::refresh()
         "<b>Last address: </b>" + toHexString(lastAddress));
 
 	// set the positions for the children
-	MemoryVisualizationItem::reorganizeChildren();
+	redoChildLayout();
 }

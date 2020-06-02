@@ -222,21 +222,21 @@ void SingleRegisterEditor::connectSignals()
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
     
     connect(sizeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(sizeEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    connect(sizeEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
     //connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressInfoChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
     connect(fieldsEditor_, SIGNAL(graphicsChanged(int)), 
         this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
-    connect(fieldsEditor_, SIGNAL(addressInfoChanged(int)), 
-        this, SIGNAL(childAddressInfoChanged(int)), Qt::UniqueConnection);
+    connect(fieldsEditor_, SIGNAL(addressingChanged(int)), 
+        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

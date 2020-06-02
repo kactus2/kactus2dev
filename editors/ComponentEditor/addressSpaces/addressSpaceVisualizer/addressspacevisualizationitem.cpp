@@ -84,7 +84,7 @@ void AddressSpaceVisualizationItem::setBottomCoordinate(qreal yCoordinate)
 	qreal width = rect().width();
 	qreal height = yCoordinate - y();
 	setRect(0, 0, width, height);
-	VisualizerItem::reorganizeChildren();
+	repositionLabels();
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ void AddressSpaceVisualizationItem::setHeight(qreal height)
 
     setRect(0, 0, width, height);
     
-	VisualizerItem::reorganizeChildren();
+	VisualizerItem::repositionLabels();
 }
 
 //-----------------------------------------------------------------------------

@@ -52,9 +52,6 @@ public:
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override final;
 
-    //! Re-layouts the child items.
-    void redoChildLayout();
-
 	/*!
      *  Get the offset of the item. 
 	 *

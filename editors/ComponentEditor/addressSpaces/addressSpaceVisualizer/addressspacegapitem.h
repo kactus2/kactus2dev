@@ -103,6 +103,7 @@ public:
 	 */
     virtual void setOverlappingBottom(quint64 const& address) override final;
 
+
 private:
 		
 	//! The start address of the gap.

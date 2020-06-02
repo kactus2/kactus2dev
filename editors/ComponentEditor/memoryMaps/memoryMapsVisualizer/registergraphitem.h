@@ -49,9 +49,6 @@ public:
     //! Updates the labels and tooltip for the item.
     virtual  void updateDisplay() override final;
 
-    //! Re-layouts the child items.
-    virtual void redoChildLayout() override final;
-
     //! Add child item.
     virtual void addChild(MemoryVisualizationItem* childItem) override final;
 
@@ -173,15 +170,6 @@ private:
      */
     bool childrenOverlap(MemoryVisualizationItem const* current, MemoryVisualizationItem const* previous);
 
-    /*!
-     * Resizes and repositions the given child item.
-     *
-     *     @param [in] child               The child item to adjust.
-     *     @param [in] highestReservedBit  The highest bit index used by the register.
-     *
-     *     @return 
-     */
-     void resizeAndPositionChild(MemoryVisualizationItem* child, unsigned int highestReservedBit) const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -34,6 +34,25 @@ ExpandableItem(parent),
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryVisualizationItem::itemTotalRect()
+//-----------------------------------------------------------------------------
+QRectF MemoryVisualizationItem::itemTotalRect() const
+{    
+    QRectF totalRect(rect());
+
+    // The rectangle must contain this item and also the child item.
+    for (auto child : childItems_)
+    {   
+        if (child->isVisible())
+        {
+            totalRect = totalRect.united(mapRectFromItem(child, child->itemTotalRect()));
+        }        
+    }
+
+    return totalRect;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::addChild()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::addChild(MemoryVisualizationItem* childItem)
@@ -42,8 +61,6 @@ void MemoryVisualizationItem::addChild(MemoryVisualizationItem* childItem)
 
     childItem->setWidth(childWidth_);
     childItem->setVisible(isExpanded());
-
-    reorganizeChildren();
 
     connect(childItem, SIGNAL(expandStateChanged()), this, SLOT(repositionChildren()), Qt::UniqueConnection);
     connect(childItem, SIGNAL(expandStateChanged()), this, SIGNAL(expandStateChanged()), Qt::UniqueConnection);
@@ -80,7 +97,7 @@ void MemoryVisualizationItem::setWidth(qreal width)
         
         for (auto child : childItems_)
         {
-            child->setWidth(newChildWidth);
+            child->setWidth(childWidth_);
         }
     }
 }
@@ -161,15 +178,15 @@ bool MemoryVisualizationItem::isConflicted() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::reorganizeChildren()
+// Function: MemoryVisualizationItem::redoChildLayout()
 //-----------------------------------------------------------------------------
-void MemoryVisualizationItem::reorganizeChildren()
-{
-    showExpandIconIfHasChildren();
-
+void MemoryVisualizationItem::redoChildLayout()
+{    
     updateChildMap();
 
     repositionChildren();
+
+    showExpandIconIfHasChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -340,7 +357,7 @@ void MemoryVisualizationItem::repositionChildren()
         }
     }
 
-    ExpandableItem::reorganizeChildren();
+    resizeToContent();
 }
 
 //-----------------------------------------------------------------------------
@@ -432,8 +449,7 @@ QMap<quint64, MemoryVisualizationItem*>::iterator MemoryVisualizationItem::creat
     MemoryGapItem* gap = new MemoryGapItem(expressionParser_, this);
     gap->setWidth(childWidth_);
     gap->setDisplayOffset(startAddress);
-    gap->setDisplayLastAddress(endAddress);
-    gap->refresh();
+    gap->setDisplayLastAddress(endAddress);    
 
     return childItems_.insert(gap->getOffset(), gap);
 }

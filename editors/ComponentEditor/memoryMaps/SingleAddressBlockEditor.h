@@ -88,9 +88,9 @@ signals:
      */
     void addressUnitBitsChanged(int newAddressUnitBits);
 
-    void addressInfoChanged();
+    void addressingChanged();
 
-    void childAddressInfoChanged(int index);
+    void childAddressingChanged(int index);
 
 protected:
 

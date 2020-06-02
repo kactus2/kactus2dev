@@ -66,17 +66,6 @@ void RegisterGraphItem::updateDisplay()
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::redoChildLayout()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::redoChildLayout()
-{
-    reorganizeChildren();
-    ExpandableItem::reorganizeChildren();
-
-    setShowExpandableItem(childItems_.isEmpty() == false);
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::addChild()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::addChild(MemoryVisualizationItem* childItem)
@@ -172,6 +161,8 @@ bool RegisterGraphItem::isPresent() const
 void RegisterGraphItem::repositionChildren()
 {
     unsigned int highestBitInUse = findHighestReservedBit();
+    const unsigned int BIT_WIDTH = highestBitInUse + 1;
+    const qreal PIXELS_PER_BIT = rect().width() / BIT_WIDTH;
 
     for (auto current : childItems_)
     {
@@ -180,11 +171,20 @@ void RegisterGraphItem::repositionChildren()
 
         if (present)
         {
-            resizeAndPositionChild(current, highestBitInUse);
+            quint64 availableBits = BIT_WIDTH - current->getOffset();
+            quint64 childBitWidth = qMin(quint64(current->getBitWidth()), availableBits);
+
+            qreal width = qMax(1.0, PIXELS_PER_BIT * childBitWidth);
+            current->setWidth(width);
+
+            quint64 highestChildBit = current->getLastAddress();
+            qreal xPos = (highestBitInUse - highestChildBit) * PIXELS_PER_BIT;
+
+            current->setPos(QPointF(xPos, rect().bottom()));
         }
     }
 
-    ExpandableItem::reorganizeChildren();
+    resizeToContent();
 }
 
 //-----------------------------------------------------------------------------
@@ -358,25 +358,4 @@ bool RegisterGraphItem::childrenOverlap(MemoryVisualizationItem const* current,
     MemoryVisualizationItem const* previous)
 {
     return previous != nullptr && current->getLastAddress() >= previous->getOffset();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::resizeAndPositionChild()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::resizeAndPositionChild(MemoryVisualizationItem* child, 
-    unsigned int highestReservedBit) const
-{
-    const unsigned int BIT_WIDTH = highestReservedBit + 1;
-    quint64 availableBits = BIT_WIDTH - child->getOffset();
-    quint64 childBitWidth = qMin(quint64(child->getBitWidth()), availableBits);
-
-    qreal pixelsPerBit = rect().width() / BIT_WIDTH;
-
-    qreal width = qMax(1.0, pixelsPerBit * childBitWidth);
-    child->setWidth(width);
-
-    quint64 highestChildBit = child->getLastAddress();
-    qreal x = (highestReservedBit - highestChildBit) * pixelsPerBit;
-
-    child->setPos(QPointF(x, rect().bottom()));
 }

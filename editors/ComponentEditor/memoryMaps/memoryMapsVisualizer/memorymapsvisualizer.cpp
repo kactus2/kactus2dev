@@ -43,13 +43,6 @@ memGraphItems_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapsVisualizer::~MemoryMapsVisualizer()
-//-----------------------------------------------------------------------------
-MemoryMapsVisualizer::~MemoryMapsVisualizer() 
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapsVisualizer::addMemoryMapItem()
 //-----------------------------------------------------------------------------
 void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) 
@@ -104,7 +97,6 @@ void MemoryMapsVisualizer::showEvent(QShowEvent* event)
         if (memoryMap->isPresent())
         {
             memoryMap->updateDisplay();
-//            memoryMap->recursiveRefresh();
         }
     }
     scene_->rePosition();

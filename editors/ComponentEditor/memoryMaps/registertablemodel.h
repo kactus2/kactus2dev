@@ -200,7 +200,7 @@ signals:
      */
     void graphicsChanged(int index);
 
-    void addressInfoChanged(int index);
+    void addressingChanged(int index);
 
 	//! Emitted when a new field is added to the given index.
 	void fieldAdded(int index);

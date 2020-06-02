@@ -21,6 +21,9 @@ expansionArrow_(new QGraphicsPixmapItem(this))
 
     setShowExpandableItem(false);
 
+    expandCollapseItem_->setRect(-GraphicsExpandCollapseItem::SIDE, 0,
+        GraphicsExpandCollapseItem::SIDE, VisualizerItem::DEFAULT_HEIGHT);
+
     QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_right.png"));
     QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
         GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
@@ -54,7 +57,6 @@ void ExpandableItem::onExpandStateChange(bool expanded)
 
     if (expanded)
     {
-        //reorganizeChildren();
         QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_down.png"));
         QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
             Qt::KeepAspectRatio);
@@ -90,12 +92,12 @@ bool ExpandableItem::isExpanded() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ExpandableItem::reorganizeChildren()
+// Function: ExpandableItem::resizeToContent()
 //-----------------------------------------------------------------------------
-void ExpandableItem::reorganizeChildren()
+void ExpandableItem::resizeToContent()
 {
     updateRectangle();
-	VisualizerItem::reorganizeChildren();
+	repositionLabels();
 }
 
 //-----------------------------------------------------------------------------

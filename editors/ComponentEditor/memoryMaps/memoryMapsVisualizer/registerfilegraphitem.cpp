@@ -27,22 +27,11 @@ RegisterFileGraphItem::RegisterFileGraphItem(QSharedPointer<RegisterFile> regFil
     MemoryVisualizationItem(expressionParser, parent),
     regFile_(regFile)
 {
-    Q_ASSERT(regFile_);
-    QBrush brush(KactusColors::REGISTER_FILE_COLOR);
+    Q_ASSERT(regFile_);    
 
-    setDefaultBrush(brush);
+    setDefaultBrush(QBrush(KactusColors::REGISTER_FILE_COLOR));
+
     updateDisplay();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileGraphItem::redoChildLayout()
-//-----------------------------------------------------------------------------
-void RegisterFileGraphItem::redoChildLayout()
-{
-    reorganizeChildren();
-    ExpandableItem::reorganizeChildren();
-
-    setShowExpandableItem(childItems_.isEmpty() == false);
 }
 
 //-----------------------------------------------------------------------------

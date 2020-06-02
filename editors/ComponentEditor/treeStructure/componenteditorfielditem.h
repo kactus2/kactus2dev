@@ -134,7 +134,7 @@ signals:
     //void graphicsChanged();
 
     //! Inform that address information has changed.
-    void addressInfoChanged();
+    void addressingChanged();
 
 protected slots:
 

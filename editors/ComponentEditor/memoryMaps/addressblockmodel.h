@@ -210,7 +210,7 @@ signals:
      */
     void graphicsChanged();
 
-    void childAddressInfoChanged(int index);
+    void childAddressingChanged(int index);
 
     //! Prints an error message to the user.
     void errorMessage(const QString& msg) const;

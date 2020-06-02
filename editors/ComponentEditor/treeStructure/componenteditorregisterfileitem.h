@@ -124,7 +124,7 @@ public:
 
 signals:
 
-    void addressInfoChanged();
+    void addressingChanged();
 
 protected slots:
 
@@ -136,9 +136,9 @@ protected slots:
     //!  Handler for editor's contentChanged signal.
     virtual void onGraphicsChanged() override final;
 
-    void onAddressInfoChanged();
+    void onAddressingChanged();
 
-    void onChildAddressInfoChanged(int index);
+    void onChildAddressingChanged(int index);
 private:
 
     //! The register file being edited.

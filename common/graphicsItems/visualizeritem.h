@@ -66,12 +66,6 @@ public:
 	//! Refresh the item and possible sub-items
     virtual void refresh(){ };
 
-	/*! Get the rectangle reserved by this item and it's sub-items recursively.
-	 *
-	 *      @return The rectangle of this item and sub-items and their children recursively.
-	*/
-	virtual QRectF itemTotalRect() const;
-
 	/*! Get the displayed name of the object. 
      *
 	 *      @return The name of the object.
@@ -99,7 +93,7 @@ protected slots:
 	 * 
 	 * The base class implementation only updates the position of the name and corner texts.
 	*/
-	virtual void reorganizeChildren();
+	virtual void repositionLabels();
 
 protected:
 

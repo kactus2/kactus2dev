@@ -119,7 +119,7 @@ signals:
 
     void addressUnitBitsChanged(int);
 
-    void childAddressInfoChanged(int index);
+    void childAddressingChanged(int index);
 
 private:
 

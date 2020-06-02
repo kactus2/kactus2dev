@@ -129,7 +129,7 @@ signals:
      */
     void childRemoved(int index);
 
-    void childAddressInfoChanged(int index);
+    void childAddressingChanged(int index);
 
 private:
 	

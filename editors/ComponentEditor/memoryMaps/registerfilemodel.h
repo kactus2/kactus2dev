@@ -225,7 +225,7 @@ signals:
     //! Emitted when a register item is removed from the given index.
     void itemRemoved(int index);
 
-    void childAddressInfoChanged(int index);
+    void childAddressingChanged(int index);
 
 private:
 

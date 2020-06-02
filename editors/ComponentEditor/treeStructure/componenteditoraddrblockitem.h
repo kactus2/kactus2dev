@@ -139,17 +139,18 @@ public:
      */
     void addressUnitBitsChanged(int newAddressUnitBits);
 
+public slots:
+
+    void onAddressingChanged();
+
+    void onChildAddressingChanged(int index);
+
 protected slots:
     
     /*!
      *  Handles the redrawing of the visualization of the item.
      */
     virtual void onGraphicsChanged();
-
-    void onAddressInfoChanged();
-
-    void onChildAddressInfoChanged(int index);
-
 
 signals:
     
@@ -159,6 +160,8 @@ signals:
      *      @param [in] newAddressUnitBits  The new address unit bits.
      */
     void changeInAddressUnitBits(int newAddressUnitBits);
+
+    void addressingChanged();
 
 private:	
 

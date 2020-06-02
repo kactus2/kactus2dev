@@ -80,7 +80,7 @@ QGroupBox(tr("Fields summary"), parent),
     view_->sortByColumn(RegisterColumns::OFFSET_COLUMN, Qt::AscendingOrder);
 
     connect(model_, SIGNAL(graphicsChanged(int)), this, SIGNAL(graphicsChanged(int)), Qt::UniqueConnection);
-    connect(model_, SIGNAL(addressInfoChanged(int)), this, SIGNAL(addressInfoChanged(int)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(addressingChanged(int)), this, SIGNAL(addressingChanged(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(fieldAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(fieldRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);

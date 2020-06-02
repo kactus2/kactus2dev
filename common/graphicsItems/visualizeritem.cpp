@@ -39,28 +39,7 @@ VisualizerItem::VisualizerItem(QGraphicsItem* parent /*= 0*/) :
 	setFlags(QGraphicsItem::ItemIsSelectable);    
 
     setLayoutType(LABELS_LEFT);
-	VisualizerItem::reorganizeChildren();
-}
-
-//-----------------------------------------------------------------------------
-// Function: VisualizerItem::itemTotalRect()
-//-----------------------------------------------------------------------------
-QRectF VisualizerItem::itemTotalRect() const
-{
-    // the rectangle that contains this item
-    QRectF totalRect(rect());
-
-    // if there are children	
-    for (QGraphicsItem const* child : childItems())
-    {
-        // the rectangle must contain this item and also the child item
-        VisualizerItem const* childItem = dynamic_cast<VisualizerItem const*>(child);
-        if (childItem && childItem->isVisible())
-        {
-            totalRect = totalRect.united(mapRectFromItem(child, childItem->itemTotalRect()));
-        }
-    }
-    return totalRect;
+	repositionLabels();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +56,7 @@ QString VisualizerItem::name() const
 void VisualizerItem::setWidth(qreal width)
 {
     setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
-    VisualizerItem::reorganizeChildren();
+    repositionLabels();
 
     if (clipText_)
     {
@@ -96,9 +75,9 @@ qreal VisualizerItem::itemTotalWidth() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VisualizerItem::reorganizeChildren()
+// Function: VisualizerItem::repositionLabels()
 //-----------------------------------------------------------------------------
-void VisualizerItem::reorganizeChildren()
+void VisualizerItem::repositionLabels()
 {
     if (labelPositioning_ == LABELS_LEFT)
     {

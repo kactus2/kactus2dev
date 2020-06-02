@@ -367,7 +367,7 @@ bool RegisterFileModel::setData(QModelIndex const& index, QVariant const& value,
 
                 if (index.column() != RegisterFileColumns::NAME)
                 {
-                    emit childAddressInfoChanged(registerData_->indexOf(regFile));
+                    emit childAddressingChanged(registerData_->indexOf(regFile));
                 }
             }
 

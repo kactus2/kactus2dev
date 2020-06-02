@@ -27,8 +27,8 @@ MemoryVisualizationItem(expressionParser, parent),
 addrBlock_(addrBlock)
 {
 	Q_ASSERT(addrBlock_);
-	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
-	setDefaultBrush(brush);
+	
+	setDefaultBrush(QBrush(KactusColors::ADDR_BLOCK_COLOR));
 
     updateDisplay();
 }
@@ -51,15 +51,6 @@ void AddressBlockGraphItem::updateDisplay()
         "<b>Offset: </b>" % toHexString(offset) % "<br>" %
         "<b>Last address: </b>" % toHexString(lastAddress) % "<br>" %
         "<b>Size [AUB]: </b>" % QString::number(parseExpression(addrBlock_->getRange())));
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockGraphItem::redoChildLayout()
-//-----------------------------------------------------------------------------
-void AddressBlockGraphItem::redoChildLayout()
-{
-    reorganizeChildren();
-    ExpandableItem::reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------

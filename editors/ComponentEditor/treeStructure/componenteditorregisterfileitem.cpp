@@ -110,8 +110,8 @@ void ComponentEditorRegisterFileItem::createChild( int index )
             regItem->setVisualizer(visualizer_);
         }
 
-        connect(regItem.data(), SIGNAL(addressInfoChanged()),
-            this, SLOT(onAddressInfoChanged()), Qt::UniqueConnection);
+        connect(regItem.data(), SIGNAL(addressingChanged()),
+            this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
         childItems_.insert(index, regItem);
     }
 
@@ -128,8 +128,8 @@ void ComponentEditorRegisterFileItem::createChild( int index )
             regFileItem->setVisualizer(visualizer_);
         }
 
-        connect(regFileItem.data(), SIGNAL(addressInfoChanged()),
-            this, SLOT(onAddressInfoChanged()), Qt::UniqueConnection);
+        connect(regFileItem.data(), SIGNAL(addressingChanged()),
+            this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
         childItems_.insert(index, regFileItem);
     }
 
@@ -139,7 +139,7 @@ void ComponentEditorRegisterFileItem::createChild( int index )
         Q_ASSERT(childItem);
 
         registerFileItem_->addChild(childItem);
-        onAddressInfoChanged();
+        onAddressingChanged();
     }
 }
 
@@ -154,7 +154,7 @@ void ComponentEditorRegisterFileItem::removeChild(int index)
         Q_ASSERT(childItem);
 
         registerFileItem_->removeChild(childItem);
-        onAddressInfoChanged();
+        onAddressingChanged();
     }
 
     ComponentEditorItem::removeChild(index);
@@ -172,9 +172,9 @@ ItemEditor* ComponentEditorRegisterFileItem::editor()
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(addressInfoChanged()), this, SLOT(onAddressInfoChanged()), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(childAddressInfoChanged(int)),
-            this, SLOT(onChildAddressInfoChanged(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAddressingChanged(int)),
+            this, SLOT(onChildAddressingChanged(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -225,6 +225,8 @@ void ComponentEditorRegisterFileItem::setVisualizer( MemoryMapsVisualizer* visua
         auto childGraphicItem = static_cast<MemoryVisualizationItem*>(child->getGraphicsItem());
         registerFileItem_->addChild(childGraphicItem);
     }
+
+    registerFileItem_->redoChildLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -255,22 +257,22 @@ void ComponentEditorRegisterFileItem::onGraphicsChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterFileItem::onAddressInfoChanged()
+// Function: ComponentEditorRegisterFileItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorRegisterFileItem::onAddressInfoChanged()
+void ComponentEditorRegisterFileItem::onAddressingChanged()
 {
     if (registerFileItem_ != nullptr)
     {
         registerFileItem_->redoChildLayout();
 
-        emit addressInfoChanged();
+        emit addressingChanged();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterFileItem::onChildAddressInfoChanged()
+// Function: ComponentEditorRegisterFileItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorRegisterFileItem::onChildAddressInfoChanged(int index)
+void ComponentEditorRegisterFileItem::onChildAddressingChanged(int index)
 {
     if (registerFileItem_ != nullptr)
     {
@@ -281,7 +283,7 @@ void ComponentEditorRegisterFileItem::onChildAddressInfoChanged(int index)
 
         if (childRegister)
         {
-            childRegister->onChildAddressInfoChanged();
+            childRegister->onChildAddressingChanged();
         }
         else if (childRegisterFile)
         {
@@ -289,7 +291,7 @@ void ComponentEditorRegisterFileItem::onChildAddressInfoChanged(int index)
         }
     }
 
-    onAddressInfoChanged();
+    onAddressingChanged();
 }
 
 

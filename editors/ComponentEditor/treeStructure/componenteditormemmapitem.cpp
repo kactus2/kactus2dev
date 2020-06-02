@@ -32,8 +32,6 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
     QSharedPointer<MemoryMapValidator> memoryMapValidator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
-visualizer_(NULL),
-graphItem_(NULL),
 expressionParser_(expressionParser),
 memoryMapValidator_(memoryMapValidator)
 {
@@ -53,7 +51,7 @@ memoryMapValidator_(memoryMapValidator)
 
     childItems_.append(defaultRemapItem);
 
-    foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap_->getMemoryRemaps())
+    for (QSharedPointer<MemoryRemap> memoryRemap : *memoryMap_->getMemoryRemaps())
     {
         QSharedPointer<MemoryRemapItem> memoryRemapItem(new MemoryRemapItem(memoryRemap, memoryMap_, model,
             libHandler, component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_,
@@ -67,14 +65,6 @@ memoryMapValidator_(memoryMapValidator)
     }
 
 	Q_ASSERT(memoryMap_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditormemmapitem::~ComponentEditorMemMapItem()
-//-----------------------------------------------------------------------------
-ComponentEditorMemMapItem::~ComponentEditorMemMapItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -189,7 +179,8 @@ void ComponentEditorMemMapItem::changeAdressUnitBitsOnAddressBlocks()
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::onMemoryRemapAdded()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap)
+void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex,
+    QSharedPointer<MemoryMap> parentMemoryMap)
 {
     if (parentMemoryMap == memoryMap_)
     {
@@ -200,7 +191,8 @@ void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QShared
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::onMemoryRemapRemoved()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap)
+void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex,
+    QSharedPointer<MemoryMap> parentMemoryMap)
 {
     if (parentMemoryMap == memoryMap_)
     {

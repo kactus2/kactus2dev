@@ -43,8 +43,11 @@ public:
 	 */
 	MemoryVisualizationItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent = 0);
 	
-	//! The destructor.
+   
+    //! The destructor.
 	virtual ~MemoryVisualizationItem() = default;
+    
+    virtual  QRectF itemTotalRect() const override final;
 
     //! No copying.
     MemoryVisualizationItem(const MemoryVisualizationItem& other) = delete;
@@ -82,7 +85,7 @@ public:
 	virtual unsigned int getAddressUnitSize() const = 0;
 
     //! Re-layouts the child items.
-    virtual void redoChildLayout() = 0;
+    virtual void redoChildLayout();
 
 	/*!
      *  Add a child visualization item for this item.
@@ -149,13 +152,6 @@ public:
      *      @return True, if the item is conflicted, otherwise false.
      */
     bool isConflicted() const;
-   
-    /*!
-     *  Set new positions for child items.
-	 * 
-	 * The child items are organized in the order of their offset.
-	 */
-	virtual void reorganizeChildren();
 
     /*!
      *  Checks if the item is to be used in the visualization.

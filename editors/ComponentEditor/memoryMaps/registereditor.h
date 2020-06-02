@@ -73,7 +73,7 @@ signals:
      */
     void graphicsChanged(int index);
 
-    void addressInfoChanged(int);
+    void addressingChanged(int);
 
     /*!
      *  Sends an error message forward.

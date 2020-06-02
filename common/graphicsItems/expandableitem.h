@@ -45,6 +45,14 @@ public:
 	*/
 	virtual bool isExpanded() const;
 
+    void resizeToContent();
+
+    /*! Get the rectangle reserved by this item and it's sub-items recursively.
+     *
+     *      @return The rectangle of this item and sub-items and their children recursively.
+    */
+    virtual QRectF itemTotalRect() const = 0;
+
 signals: 
     //! Emitted when the item is expanded or collapsed.
     void expandStateChanged();
@@ -64,13 +72,6 @@ protected slots:
 	 *
 	*/
 	void setShowExpandableItem(bool show);
-
-	/*! Set new positions for child items.
-	 * 
-	 * The implementation updates the position of the expand/collapse button and
-	 * calls base class implementation.
-	*/
-	virtual void reorganizeChildren() override;
 
 
 protected:

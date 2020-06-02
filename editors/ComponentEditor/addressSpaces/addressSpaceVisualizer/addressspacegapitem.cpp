@@ -68,7 +68,7 @@ void AddressSpaceGapItem::refresh()
     setOverlappingTop(start_);
     setOverlappingBottom(end_);
 
-    VisualizerItem::reorganizeChildren();
+    repositionLabels();
 }
 
 //-----------------------------------------------------------------------------

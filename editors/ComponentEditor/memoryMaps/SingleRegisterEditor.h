@@ -80,9 +80,9 @@ public:
 signals:
     void childGraphicsChanged(int);
 
-    void addressInfoChanged();
+    void addressingChanged();
 
-    void childAddressInfoChanged(int);
+    void childAddressingChanged(int);
 
 protected:
 

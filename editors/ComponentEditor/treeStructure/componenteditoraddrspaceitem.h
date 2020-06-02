@@ -135,6 +135,10 @@ protected slots:
 	 */
 	virtual void onGraphicsChanged();
 
+    void onAddressingChanged();
+
+    void onChildAddressingChanged(int index);
+
 signals:
 
     /*!
@@ -143,6 +147,8 @@ signals:
      *      @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
+
+    void addressingChanged();
 
 private:
 
@@ -156,7 +162,7 @@ private:
 	QSharedPointer<AddressSpace> addrSpace_;
 
 	//! The graph item of the local memory map.
-	LocalMemoryMapGraphItem* graphItem_;
+	LocalMemoryMapGraphItem* graphItem_ = nullptr;
 
 	//! The visualizer for the local memory maps.
 	MemoryMapsVisualizer* localMemMapVisualizer_;

@@ -99,7 +99,7 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
         Qt::UniqueConnection);
     connect(model_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()),
         Qt::UniqueConnection);
-    connect(model_, SIGNAL(childAddressInfoChanged(int)), this, SIGNAL(childAddressInfoChanged(int)),
+    connect(model_, SIGNAL(childAddressingChanged(int)), this, SIGNAL(childAddressingChanged(int)),
         Qt::UniqueConnection);
     connect(model_, SIGNAL(errorMessage(const QString &)), this,
         SIGNAL(errorMessage(const QString &)), Qt::UniqueConnection);

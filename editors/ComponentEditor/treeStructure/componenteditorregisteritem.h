@@ -126,13 +126,13 @@ public:
 
 signals:
 
-    void addressInfoChanged();
+    void addressingChanged();
 
 public slots:
 
-    void onAddressInfoChanged();
+    void onAddressingChanged();
 
-    void onChildAddressInfoChanged();
+    void onChildAddressingChanged();
 
 protected slots:
 

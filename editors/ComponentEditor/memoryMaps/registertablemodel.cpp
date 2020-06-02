@@ -399,7 +399,7 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
             fields_->at(index.row())->setBitOffset(value.toString());
 
             emit graphicsChanged(index.row());
-            emit addressInfoChanged(index.row());
+            emit addressingChanged(index.row());
         }
         else if (index.column() == RegisterColumns::WIDTH_COLUMN)
         {
@@ -411,7 +411,7 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
             fields_->at(index.row())->setBitWidth(value.toString());
 
             emit graphicsChanged(index.row());
-            emit addressInfoChanged(index.row());
+            emit addressingChanged(index.row());
         }
         else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
         {
@@ -473,7 +473,7 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
             fields_->at(index.row())->setIsPresent(value.toString());
 
             emit graphicsChanged(index.row());
-            emit addressInfoChanged(index.row());
+            emit addressingChanged(index.row());
         }
         else
         {

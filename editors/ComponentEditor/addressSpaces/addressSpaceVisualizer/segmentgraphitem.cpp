@@ -52,7 +52,7 @@ void SegmentGraphItem::refresh()
         "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth())  + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(segment_->getRange()));
 
-    VisualizerItem::reorganizeChildren();
+    repositionLabels(); 
 }
 
 //-----------------------------------------------------------------------------

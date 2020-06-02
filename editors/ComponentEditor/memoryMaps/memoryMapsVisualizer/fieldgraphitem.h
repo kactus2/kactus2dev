@@ -81,7 +81,7 @@ public:
 	 *
 	 *      @param [in] width The new width of the item.
 	 */
-    void setWidth(qreal width);
+    virtual void setWidth(qreal width) override final;
 
 	/*!
      *  Sets the first non-overlapping address to display.

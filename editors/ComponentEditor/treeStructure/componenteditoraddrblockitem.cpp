@@ -91,9 +91,9 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(addressInfoChanged()), this, SLOT(onAddressInfoChanged()), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(childAddressInfoChanged(int)), 
-            this, SLOT(onChildAddressInfoChanged(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAddressingChanged(int)), 
+            this, SLOT(onChildAddressingChanged(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(const QString&)),
@@ -137,8 +137,8 @@ void ComponentEditorAddrBlockItem::createChild( int index )
             regItem->createChild(0);
         }
 
-        connect(regItem.data(), SIGNAL(addressInfoChanged()),
-            this, SLOT(onAddressInfoChanged()), Qt::UniqueConnection);
+        connect(regItem.data(), SIGNAL(addressingChanged()),
+            this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
 		childItems_.insert(index, regItem);
 	}
 
@@ -155,8 +155,8 @@ void ComponentEditorAddrBlockItem::createChild( int index )
             regFileItem->setVisualizer(visualizer_);
         }
 
-        connect(regFileItem.data(), SIGNAL(addressInfoChanged()),
-            this, SLOT(onAddressInfoChanged()), Qt::UniqueConnection);
+        connect(regFileItem.data(), SIGNAL(addressingChanged()),
+            this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
         childItems_.insert(index, regFileItem);
     }
 
@@ -166,7 +166,7 @@ void ComponentEditorAddrBlockItem::createChild( int index )
         Q_ASSERT(childItem);
 
         graphItem_->addChild(childItem);
-        onAddressInfoChanged();
+        onAddressingChanged();
     }
 }
 
@@ -181,11 +181,11 @@ void ComponentEditorAddrBlockItem::removeChild(int index)
         Q_ASSERT(childItem);
 
         graphItem_->removeChild(childItem);
-        onAddressInfoChanged();
+
+        onAddressingChanged();
     }
 
     ComponentEditorItem::removeChild(index);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -200,22 +200,22 @@ void ComponentEditorAddrBlockItem::onGraphicsChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorAddrBlockItem::onAddressInfoChanged()
+// Function: ComponentEditorAddrBlockItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrBlockItem::onAddressInfoChanged()
+void ComponentEditorAddrBlockItem::onAddressingChanged()
 {
     if (graphItem_ != nullptr)
     {
         graphItem_->redoChildLayout();
 
-        
+        emit addressingChanged();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorAddrBlockItem::onChildAddressInfoChanged()
+// Function: ComponentEditorAddrBlockItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrBlockItem::onChildAddressInfoChanged(int index)
+void ComponentEditorAddrBlockItem::onChildAddressingChanged(int index)
 {
     if (graphItem_ != nullptr)
     {
@@ -224,7 +224,7 @@ void ComponentEditorAddrBlockItem::onChildAddressInfoChanged(int index)
         auto childRegister = childItems_.at(index).dynamicCast<ComponentEditorRegisterItem>();
         if (childRegister)
         {
-            childRegister->onChildAddressInfoChanged();
+            childRegister->onChildAddressingChanged();
         }
         
         graphItem_->redoChildLayout();
@@ -254,20 +254,17 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 	graphItem_ = new AddressBlockGraphItem(addrBlock_, expressionParser_, parentItem);
     graphItem_->setAddressableUnitBits(addressUnitBits_);
 
-	// TODO: move to parent! register the addr block graph item for the parent
-	parentItem->addChild(graphItem_);
-	
 	// update the visualizers for register items
 	for (auto child : childItems_)
     {        
         auto regItem = child.dynamicCast<ComponentEditorRegisterItem>();
         auto regFileItem = child.dynamicCast<ComponentEditorRegisterFileItem>();
 
-        if(regItem)
+        if (regItem)
         {
           regItem->setVisualizer(visualizer_);
         }
-        else if(regFileItem)
+        else if (regFileItem)
         {
           regFileItem->setVisualizer(visualizer_);
         }
@@ -275,6 +272,8 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
         auto childGraphicItem = static_cast<MemoryVisualizationItem*>(child->getGraphicsItem());
         graphItem_->addChild(childGraphicItem);
 	}
+
+    graphItem_->redoChildLayout();
 
 	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }

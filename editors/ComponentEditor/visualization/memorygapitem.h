@@ -41,9 +41,6 @@ public:
     //! No assignment.
     MemoryGapItem& operator=(const MemoryGapItem& other) = delete;
 
-	//! Refresh the gap item.
-	void refresh();
-
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override;
 

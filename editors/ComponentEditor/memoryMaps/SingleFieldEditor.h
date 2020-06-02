@@ -73,7 +73,7 @@ public:
 	virtual void refresh();
 
 signals:
-    void addressInfoChanged();
+    void addressingChanged();
 
 protected:
 

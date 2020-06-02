@@ -51,9 +51,6 @@ public:
 
     //! No assignment.
     MemoryMapGraphItem& operator=(const MemoryMapGraphItem& other) = delete;
-
-    //! Refresh the item and re-layout the sub-items.
-	virtual void refresh() override;
         
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override final;
@@ -102,8 +99,6 @@ public:
      */
     virtual bool isPresent() const override final;
 
-    //! Re-layouts the child items.
-    virtual void redoChildLayout() override final;
 
 protected:
 
