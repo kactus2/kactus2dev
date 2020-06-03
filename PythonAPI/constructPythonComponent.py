@@ -38,56 +38,58 @@ def createComponent(api, portsInterface, parameterInterface):
 		newComponent.add_parameter(Parameter(parameterName, description, dataType, bitWidth, value))
 		
 	mapName = "Map"
-	blockInterface = api.getAddressBlockInterface(mapName)
-	if blockInterface is not None:
-		for blockName in blockInterface.getItemNames():
-			blockDescription = blockInterface.getDescription(blockName)
-			blockRange = blockInterface.getRangeValue(blockName, 10)
-			blockWidth = blockInterface.getWidthValue(blockName, 10)
+	mapInterface = api.getMapInterface()
+	blockInterface = mapInterface.getSubInterface()
+	registerInterface = blockInterface.getSubInterface()
+	fieldInterface = registerInterface.getSubInterface()
+	resetInterface = fieldInterface.getSubInterface()
 	
-			newBlock  = AddressBlock(blockName, blockDescription, blockRange, blockWidth)
-		
-			registerInterface = api.getRegisterInterface(mapName, blockName)
-			if registerInterface is None:
-				continue
-			
-			for registerName in registerInterface.getItemNames():
-				registerDescription = registerInterface.getDescription(registerName)
-				registerOffset = registerInterface.getOffsetValue(registerName, 10)
-				registerSize = registerInterface.getSizeValue(registerName, 10)
-			
-				newRegister = Register(registerName, registerDescription, registerOffset, registerSize)
-				newBlock.add_register(newRegister)
+	if mapInterface is not None:
+		for mapName in mapInterface.getItemNames():
+			api.setBlocksForInterface(mapName)
+
+			for blockName in blockInterface.getItemNames():
+				blockDescription = blockInterface.getDescription(blockName)
+				blockRange = blockInterface.getRangeValue(blockName, 10)
+				blockWidth = blockInterface.getWidthValue(blockName, 10)
 				
-				fieldInterface = api.getFieldInterface(mapName, blockName, registerName)
-				if fieldInterface is None:
-					continue
+				newBlock  = AddressBlock(blockName, blockDescription, blockRange, blockWidth)
+				
+				api.setRegistersForInterface(mapName, blockName)
+				
+				for registerName in registerInterface.getItemNames():
+					registerDescription = registerInterface.getDescription(registerName)
+					registerOffset = registerInterface.getOffsetValue(registerName, 10)
+					registerSize = registerInterface.getSizeValue(registerName, 10)
 					
-				for fieldName in fieldInterface.getItemNames():
-					fieldDescription = fieldInterface.getDescription(fieldName)
-					fieldBitOffset = fieldInterface.getOffsetValue(fieldName, 10)
-					fieldBitWidth = fieldInterface.getWidthValue(fieldName, 10)
-					fieldAccess = fieldInterface.getAccess(fieldName)
+					newRegister = Register(registerName, registerDescription, registerOffset, registerSize)
+					newBlock.add_register(newRegister)
+					
+					api.setFieldsForInterface(mapName, blockName, registerName)
+					
+					for fieldName in fieldInterface.getItemNames():
+						fieldDescription = fieldInterface.getDescription(fieldName)
+						fieldBitOffset = fieldInterface.getOffsetValue(fieldName, 10)
+						fieldBitWidth = fieldInterface.getWidthValue(fieldName, 10)
+						fieldAccess = fieldInterface.getAccess(fieldName)
 			
-					newField = Field(fieldName, fieldDescription, fieldBitOffset, fieldBitWidth, fieldAccess)
-					newRegister.add_field(newField)
+						newField = Field(fieldName, fieldDescription, fieldBitOffset, fieldBitWidth, fieldAccess)
+						newRegister.add_field(newField)
 				
-					resetInterface = api.getResetInterface(mapName, blockName, registerName, fieldName)
-					if resetInterface is None:
-						continue
+						api.setResetsForInterface(mapName, blockName, registerName, fieldName)
 						
-					for resetType in resetInterface.getItemNames():
-						newResetType = resetType
-						if not newResetType:
-							newResetType = "HARD"
-						resetName = ""
-						resetDescription = ""
-						resetValue = resetInterface.getResetValue(resetType, 10)
-						resetMask = resetInterface.getResetMaskValue(resetType, 10)
-					
-						newField.add_reset(Reset(resetName, resetDescription, newResetType, resetValue, resetMask))
+						for resetType in resetInterface.getItemNames():
+							newResetType = resetType
+							if not newResetType:
+								newResetType = "HARD"
+							resetName = ""
+							resetDescription = ""
+							resetValue = resetInterface.getResetValue(resetType, 10)
+							resetMask = resetInterface.getResetMaskValue(resetType, 10)
+							
+							newField.add_reset(Reset(resetName, resetDescription, newResetType, resetValue, resetMask))
 		
-			newBlock.printer()
-			print("\n")
+				newBlock.printer()
+				print("\n")
 
 	return newComponent

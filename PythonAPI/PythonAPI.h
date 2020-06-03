@@ -31,10 +31,7 @@ class MemoryMap;
 
 class PortsInterface;
 class ParametersInterface;
-class ResetInterface;
-class FieldInterface;
-class RegisterInterface;
-class AddressBlockInterface;
+class MemoryMapInterface;
 
 class ComponentParameterFinder;
 class ExpressionParser;
@@ -42,7 +39,7 @@ class PortValidator;
 class ExpressionFormatter;
 
 class ParameterValidator;
-class AddressBlockValidator;
+class MemoryMapValidator;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data through python.
@@ -132,47 +129,46 @@ public:
     ParametersInterface* getComponentParameterInterface() const;
 
     /*!
-     *  Get the interface for accessing address blocks.
+     *  Get the interface for accessing component memory maps.
      *
-     *      @param [in] mapName     Name of the memory map containing the desired address blocks.
-     *
-     *      @return Interface for accessing address blocks.
+     *      @return Interface for accessing component memory maps.
      */
-    AddressBlockInterface* getAddressBlockInterface(std::string const& mapName);
+    MemoryMapInterface* getMapInterface();
 
     /*!
-     *  Get the interface for accessing registers.
+     *  Set the available address blocks for the address block interface.
+     *
+     *      @param [in] mapName     Name of the memory map containing the desired address blocks.
+     */
+    void setBlocksForInterface(std::string const& mapName);
+
+    /*!
+     *  Set the available registers for the register interface.
      *
      *      @param [in] mapName     Name of the memory map containing the desired address blocks.
      *      @param [in] blockName   Name of the address block containing the desired registers.
-     *
-     *      @return Interface for accessing registers.
      */
-    RegisterInterface* getRegisterInterface(std::string const& mapName, std::string const& blockName);
+    void setRegistersForInterface(std::string const& mapName, std::string const& blockName);
 
     /*!
-     *  Get the interface for accessing fields.
+     *  Set the available fields for the field interface.
      *
      *      @param [in] mapName         Name of the memory map containing the desired address blocks.
      *      @param [in] blockName       Name of the address block containing the desired registers.
      *      @param [in] registerName    Name of the register containing the desired fields.
-     *
-     *      @return Interface for accessing fields.
      */
-    FieldInterface* getFieldInterface(std::string const& mapName, std::string const& blockName,
+    void setFieldsForInterface(std::string const& mapName, std::string const& blockName,
         std::string const& registerName);
 
     /*!
-     *  Get the interface for accessing resets.
+     *  Set the available resets for the reset interface.
      *
      *      @param [in] mapName         Name of the memory map containing the desired address blocks.
      *      @param [in] blockName       Name of the address block containing the desired registers.
      *      @param [in] registerName    Name of the register containing the desired fields.
      *      @param [in] fieldName       Name of the field containing the desired resets.
-     *
-     *      @return Interface for accessing fields.
      */
-    ResetInterface* getResetInterface(std::string const& mapName, std::string const& blockName,
+    void setResetsForInterface(std::string const& mapName, std::string const& blockName,
         std::string const& registerName, std::string const& fieldName);
 
 private:
@@ -283,8 +279,8 @@ private:
     //! Interface for accessing the component parameters.
     ParametersInterface* componentParameterInterface_;
 
-    //! Interface for accessing address blocks.
-    AddressBlockInterface* blockInterface_;
+    //! Interface for accessing memory maps.
+    MemoryMapInterface* mapInterface_;
 
     //! Component parameter finder.
     QSharedPointer<ComponentParameterFinder> parameterFinder_;
@@ -301,6 +297,6 @@ private:
     //! Validator for parameters.
     QSharedPointer<ParameterValidator> parameterValidator_;
 
-    //! Validator for address blocks.
-    QSharedPointer<AddressBlockValidator> blockValidator_;
+    //! Validator for memory maps.
+    QSharedPointer<MemoryMapValidator> mapValidator_;
 };

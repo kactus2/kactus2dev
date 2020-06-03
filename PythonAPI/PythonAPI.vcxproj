@@ -123,10 +123,12 @@
     <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp" />
@@ -156,10 +158,12 @@
     <ClInclude Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h" />
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h" />
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h" />

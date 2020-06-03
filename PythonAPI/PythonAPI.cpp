@@ -19,6 +19,7 @@
 #include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
 
 #include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -45,6 +46,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 
 #include <QCoreApplication>
 
@@ -57,13 +59,13 @@ messager_(new PythonMessageMediator()),
 activeComponent_(),
 portsInterface_(),
 componentParameterInterface_(),
-blockInterface_(),
+mapInterface_(),
 parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Component>())),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 portValidator_(new PortValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<View> > >())),
 parameterValidator_(new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >())),
-blockValidator_()
+mapValidator_()
 {
     portsInterface_ = new PortsInterface(portValidator_, expressionParser_, expressionFormatter_);
     componentParameterInterface_ =
@@ -169,7 +171,8 @@ bool PythonAPI::openComponent(QString const& componentVLNV)
             componentParameterInterface_->setParameters(component->getParameters());
             componentParameterInterface_->setChoices(component->getChoices());
 
-            blockValidator_->componentChange(component->getResetTypes());
+            mapValidator_->componentChange(component->getRemapStates(), component->getResetTypes());
+            mapInterface_->setMemoryMaps(component);
 
             activeComponent_ = component;
             messager_->showMessage(QString("Component %1 is open").arg(componentVLNV));
@@ -261,7 +264,10 @@ void PythonAPI::constructMemoryValidators()
     QSharedPointer<AddressBlockValidator> blockValidator(new AddressBlockValidator(
         expressionParser_, registerValidator, registerFileValidator, parameterValidator_));
 
-    blockValidator_ = blockValidator;
+    QSharedPointer<MemoryMapValidator> mapValidator(new MemoryMapValidator(expressionParser_, blockValidator,
+        QSharedPointer<QList<QSharedPointer<RemapState>>>()));
+
+    mapValidator_ = mapValidator;
 }
 
 //-----------------------------------------------------------------------------
@@ -269,45 +275,54 @@ void PythonAPI::constructMemoryValidators()
 //-----------------------------------------------------------------------------
 void PythonAPI::constructMemoryInterface()
 {
-    QSharedPointer<RegisterValidator> registerValidator = blockValidator_->getRegisterValidator();
+    QSharedPointer<AddressBlockValidator> blockValidator = mapValidator_->getAddressBlockValidator();
+    QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
     QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
 
     ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
-
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
-    blockInterface_ =
-        new AddressBlockInterface(blockValidator_, expressionParser_, expressionFormatter_, registerInterface);
+    AddressBlockInterface* blockInterface(
+        new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_, registerInterface));
+
+    mapInterface_ = new MemoryMapInterface(mapValidator_, expressionParser_, expressionFormatter_, blockInterface);
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::getAddressBlockInterface()
+// Function: PythonAPI::getMapInterface()
 //-----------------------------------------------------------------------------
-AddressBlockInterface* PythonAPI::getAddressBlockInterface(std::string const& mapName)
+MemoryMapInterface* PythonAPI::getMapInterface()
 {
-    QString mapNameQT = QString::fromStdString(mapName);
+    return mapInterface_;
+}
 
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setBlocksForInterface()
+//-----------------------------------------------------------------------------
+void PythonAPI::setBlocksForInterface(std::string const& mapName)
+{
+    AddressBlockInterface* blockInterface = mapInterface_->getSubInterface();
+
+    QString mapNameQT = QString::fromStdString(mapName);
     QSharedPointer<MemoryMap> containingMap = getMemoryMap(mapNameQT);
     if (!containingMap)
     {
         sendMemoryMapNotFoundError(mapNameQT);
-        return nullptr;
+        return;
     }
 
-    blockInterface_->setAddressBlocks(containingMap->getMemoryBlocks());
-    blockInterface_->setAddressUnitBits(containingMap->getAddressUnitBits().toStdString());
-
-    return blockInterface_;
+    blockInterface->setAddressBlocks(containingMap->getMemoryBlocks());
+    blockInterface->setAddressUnitBits(containingMap->getAddressUnitBits().toStdString());
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::getRegisterInterface()
+// Function: PythonAPI::setRegistersForInterface()
 //-----------------------------------------------------------------------------
-RegisterInterface* PythonAPI::getRegisterInterface(std::string const& mapName, std::string const& blockName)
+void PythonAPI::setRegistersForInterface(std::string const& mapName, std::string const& blockName)
 {
-    RegisterInterface* interfacePointer = nullptr;
+    RegisterInterface* interfacePointer = mapInterface_->getSubInterface()->getSubInterface();
 
     QString mapNameQT = QString::fromStdString(mapName);
     QString blockNameQT = QString::fromStdString(blockName);
@@ -318,7 +333,6 @@ RegisterInterface* PythonAPI::getRegisterInterface(std::string const& mapName, s
         QSharedPointer<AddressBlock> containingBlock = getAddressBock(containingMap, blockNameQT);
         if (containingBlock)
         {
-            interfacePointer = blockInterface_->getSubInterface();
             interfacePointer->setRegisters(containingBlock->getRegisterData());
             interfacePointer->setAddressUnitBits(
                 expressionParser_->parseExpression(containingMap->getAddressUnitBits()).toInt());
@@ -332,17 +346,15 @@ RegisterInterface* PythonAPI::getRegisterInterface(std::string const& mapName, s
     {
         sendMemoryMapNotFoundError(mapNameQT);
     }
-
-    return interfacePointer;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::getFieldInterface()
+// Function: PythonAPI::setFieldsForInterface()
 //-----------------------------------------------------------------------------
-FieldInterface* PythonAPI::getFieldInterface(std::string const& mapName, std::string const& blockName,
+void PythonAPI::setFieldsForInterface(std::string const& mapName, std::string const& blockName,
     std::string const& registerName)
 {
-    FieldInterface* interfacePointer = nullptr;
+    FieldInterface* interfacePointer = mapInterface_->getSubInterface()->getSubInterface()->getSubInterface();
 
     QString mapNameQT = QString::fromStdString(mapName);
     QString blockNameQT = QString::fromStdString(blockName);
@@ -357,7 +369,6 @@ FieldInterface* PythonAPI::getFieldInterface(std::string const& mapName, std::st
             QSharedPointer<Register> containingRegister = getRegister(containingBlock, registerNameQT);
             if (containingRegister)
             {
-                interfacePointer = blockInterface_->getSubInterface()->getSubInterface();
                 interfacePointer->setFields(containingRegister->getFields());
             }
             else
@@ -374,17 +385,16 @@ FieldInterface* PythonAPI::getFieldInterface(std::string const& mapName, std::st
     {
         sendMemoryMapNotFoundError(mapNameQT);
     }
-
-    return interfacePointer;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::getResetInterface()
+// Function: PythonAPI::setResetsForInterface()
 //-----------------------------------------------------------------------------
-ResetInterface* PythonAPI::getResetInterface(std::string const& mapName, std::string const& blockName,
+void PythonAPI::setResetsForInterface(std::string const& mapName, std::string const& blockName,
     std::string const& registerName, std::string const& fieldName)
 {
-    ResetInterface* interfacePointer = nullptr;
+    ResetInterface* interfacePointer =
+        mapInterface_->getSubInterface()->getSubInterface()->getSubInterface()->getSubInterface();
 
     QString mapNameQT = QString::fromStdString(mapName);
     QString blockNameQT = QString::fromStdString(blockName);
@@ -403,7 +413,6 @@ ResetInterface* PythonAPI::getResetInterface(std::string const& mapName, std::st
                 QSharedPointer<Field> containingField = getField(containingRegister, fieldNameQT);
                 if (containingField)
                 {
-                    interfacePointer = blockInterface_->getSubInterface()->getSubInterface()->getSubInterface();
                     interfacePointer->setResets(containingField);
                 }
                 else
@@ -425,8 +434,6 @@ ResetInterface* PythonAPI::getResetInterface(std::string const& mapName, std::st
     {
         sendMemoryMapNotFoundError(mapNameQT);
     }
-
-    return interfacePointer;
 }
 
 //-----------------------------------------------------------------------------

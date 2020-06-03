@@ -322,17 +322,20 @@ class PythonAPI(object):
     def getComponentParameterInterface(self):
         return _pythonAPI.PythonAPI_getComponentParameterInterface(self)
 
-    def getAddressBlockInterface(self, mapName):
-        return _pythonAPI.PythonAPI_getAddressBlockInterface(self, mapName)
+    def getMapInterface(self):
+        return _pythonAPI.PythonAPI_getMapInterface(self)
 
-    def getRegisterInterface(self, mapName, blockName):
-        return _pythonAPI.PythonAPI_getRegisterInterface(self, mapName, blockName)
+    def setBlocksForInterface(self, mapName):
+        return _pythonAPI.PythonAPI_setBlocksForInterface(self, mapName)
 
-    def getFieldInterface(self, mapName, blockName, registerName):
-        return _pythonAPI.PythonAPI_getFieldInterface(self, mapName, blockName, registerName)
+    def setRegistersForInterface(self, mapName, blockName):
+        return _pythonAPI.PythonAPI_setRegistersForInterface(self, mapName, blockName)
 
-    def getResetInterface(self, mapName, blockName, registerName, fieldName):
-        return _pythonAPI.PythonAPI_getResetInterface(self, mapName, blockName, registerName, fieldName)
+    def setFieldsForInterface(self, mapName, blockName, registerName):
+        return _pythonAPI.PythonAPI_setFieldsForInterface(self, mapName, blockName, registerName)
+
+    def setResetsForInterface(self, mapName, blockName, registerName, fieldName):
+        return _pythonAPI.PythonAPI_setResetsForInterface(self, mapName, blockName, registerName, fieldName)
 
 # Register PythonAPI in _pythonAPI:
 _pythonAPI.PythonAPI_swigregister(PythonAPI)
@@ -853,6 +856,149 @@ class ParametersInterface(ParameterizableInterface, NameGroupInterface):
 
 # Register ParametersInterface in _pythonAPI:
 _pythonAPI.ParametersInterface_swigregister(ParametersInterface)
+
+class MemoryMapInterface(ParameterizableInterface, NameGroupInterface):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self, mapValidator, expressionParser, expressionFormatter, subInterface):
+        _pythonAPI.MemoryMapInterface_swiginit(self, _pythonAPI.new_MemoryMapInterface(mapValidator, expressionParser, expressionFormatter, subInterface))
+    __swig_destroy__ = _pythonAPI.delete_MemoryMapInterface
+
+    def setMemoryMaps(self, component):
+        return _pythonAPI.MemoryMapInterface_setMemoryMaps(self, component)
+
+    def getItemIndex(self, itemName):
+        return _pythonAPI.MemoryMapInterface_getItemIndex(self, itemName)
+
+    def getMemoryRemapIndex(self, mapName, remapName):
+        return _pythonAPI.MemoryMapInterface_getMemoryRemapIndex(self, mapName, remapName)
+
+    def getIndexedItemName(self, itemIndex):
+        return _pythonAPI.MemoryMapInterface_getIndexedItemName(self, itemIndex)
+
+    def getIndexedRemapName(self, mapName, itemIndex):
+        return _pythonAPI.MemoryMapInterface_getIndexedRemapName(self, mapName, itemIndex)
+
+    def itemCount(self):
+        return _pythonAPI.MemoryMapInterface_itemCount(self)
+
+    def remapCount(self, mapName):
+        return _pythonAPI.MemoryMapInterface_remapCount(self, mapName)
+
+    def getItemNames(self):
+        return _pythonAPI.MemoryMapInterface_getItemNames(self)
+
+    def getRemapNames(self, mapName):
+        return _pythonAPI.MemoryMapInterface_getRemapNames(self, mapName)
+
+    def setName(self, currentName, newName):
+        return _pythonAPI.MemoryMapInterface_setName(self, currentName, newName)
+
+    def setRemapName(self, mapName, currentName, newName):
+        return _pythonAPI.MemoryMapInterface_setRemapName(self, mapName, currentName, newName)
+
+    def getDescription(self, itemName):
+        return _pythonAPI.MemoryMapInterface_getDescription(self, itemName)
+
+    def getRemapDescription(self, mapName, remapName):
+        return _pythonAPI.MemoryMapInterface_getRemapDescription(self, mapName, remapName)
+
+    def setDescription(self, itemName, newDescription):
+        return _pythonAPI.MemoryMapInterface_setDescription(self, itemName, newDescription)
+
+    def setRemapDescription(self, mapName, itemName, newDescription):
+        return _pythonAPI.MemoryMapInterface_setRemapDescription(self, mapName, itemName, newDescription)
+
+    def getIsPresentValue(self, *args):
+        return _pythonAPI.MemoryMapInterface_getIsPresentValue(self, *args)
+
+    def getIsPresentFormattedExpression(self, *args):
+        return _pythonAPI.MemoryMapInterface_getIsPresentFormattedExpression(self, *args)
+
+    def getIsPresentExpression(self, *args):
+        return _pythonAPI.MemoryMapInterface_getIsPresentExpression(self, *args)
+
+    def setIsPresent(self, *args):
+        return _pythonAPI.MemoryMapInterface_setIsPresent(self, *args)
+
+    def getRemapState(self, *args):
+        return _pythonAPI.MemoryMapInterface_getRemapState(self, *args)
+
+    def setRemapState(self, mapName, remapName, newRemapState):
+        return _pythonAPI.MemoryMapInterface_setRemapState(self, mapName, remapName, newRemapState)
+
+    def getAddressUnitBits(self, mapName):
+        return _pythonAPI.MemoryMapInterface_getAddressUnitBits(self, mapName)
+
+    def setAddressUnitBits(self, mapName, newAddressUnitBits):
+        return _pythonAPI.MemoryMapInterface_setAddressUnitBits(self, mapName, newAddressUnitBits)
+
+    def getInterfaceBinding(self, mapName):
+        return _pythonAPI.MemoryMapInterface_getInterfaceBinding(self, mapName)
+
+    def getAssociatedSlaveInterfaces(self, mapName):
+        return _pythonAPI.MemoryMapInterface_getAssociatedSlaveInterfaces(self, mapName)
+
+    def getAllReferencesToIdInItem(self, itemName, valueID):
+        return _pythonAPI.MemoryMapInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+
+    def getMapExpressions(self, mapName, remapName):
+        return _pythonAPI.MemoryMapInterface_getMapExpressions(self, mapName, remapName)
+
+    def getAllReferencesToIdInRemapItem(self, mapName, remapName, valueID):
+        return _pythonAPI.MemoryMapInterface_getAllReferencesToIdInRemapItem(self, mapName, remapName, valueID)
+
+    def validateItems(self):
+        return _pythonAPI.MemoryMapInterface_validateItems(self)
+
+    def itemHasValidName(self, itemName):
+        return _pythonAPI.MemoryMapInterface_itemHasValidName(self, itemName)
+
+    def remapHasValidName(self, mapName, itemName):
+        return _pythonAPI.MemoryMapInterface_remapHasValidName(self, mapName, itemName)
+
+    def remapHasValidRemapState(self, mapName, itemName):
+        return _pythonAPI.MemoryMapInterface_remapHasValidRemapState(self, mapName, itemName)
+
+    def itemHasValidIsPresent(self, *args):
+        return _pythonAPI.MemoryMapInterface_itemHasValidIsPresent(self, *args)
+
+    def memoryMapHasValidAddressUnitBits(self, mapName):
+        return _pythonAPI.MemoryMapInterface_memoryMapHasValidAddressUnitBits(self, mapName)
+
+    def addMemoryMap(self, *args):
+        return _pythonAPI.MemoryMapInterface_addMemoryMap(self, *args)
+
+    def addMemoryRemap(self, *args):
+        return _pythonAPI.MemoryMapInterface_addMemoryRemap(self, *args)
+
+    def removeMap(self, mapName):
+        return _pythonAPI.MemoryMapInterface_removeMap(self, mapName)
+
+    def removeRemap(self, mapName, remapName):
+        return _pythonAPI.MemoryMapInterface_removeRemap(self, mapName, remapName)
+
+    def copyRows(self, selectedRows):
+        return _pythonAPI.MemoryMapInterface_copyRows(self, selectedRows)
+
+    def pasteMemoryMaps(self):
+        return _pythonAPI.MemoryMapInterface_pasteMemoryMaps(self)
+
+    def pasteMemoryRemaps(self, memoryMapName):
+        return _pythonAPI.MemoryMapInterface_pasteMemoryRemaps(self, memoryMapName)
+
+    def getSubInterface(self):
+        return _pythonAPI.MemoryMapInterface_getSubInterface(self)
+
+    def getMapPointer(self, mapName):
+        return _pythonAPI.MemoryMapInterface_getMapPointer(self, mapName)
+
+    def getRemapPointer(self, mapName, remapName):
+        return _pythonAPI.MemoryMapInterface_getRemapPointer(self, mapName, remapName)
+
+# Register MemoryMapInterface in _pythonAPI:
+_pythonAPI.MemoryMapInterface_swigregister(MemoryMapInterface)
 
 class AddressBlockInterface(ParameterizableInterface, NameGroupInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")

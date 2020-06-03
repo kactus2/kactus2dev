@@ -2663,43 +2663,48 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 #define SWIGTYPE_p_AddressBlockInterface swig_types[0]
 #define SWIGTYPE_p_CommonInterface swig_types[1]
 #define SWIGTYPE_p_FieldInterface swig_types[2]
-#define SWIGTYPE_p_NameGroup swig_types[3]
-#define SWIGTYPE_p_NameGroupInterface swig_types[4]
-#define SWIGTYPE_p_ParameterizableInterface swig_types[5]
-#define SWIGTYPE_p_ParametersInterface swig_types[6]
-#define SWIGTYPE_p_PortsInterface swig_types[7]
-#define SWIGTYPE_p_PythonAPI swig_types[8]
-#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[9]
-#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[10]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[11]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[12]
-#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[13]
-#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[14]
-#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[15]
-#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[16]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[17]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[18]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[19]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t swig_types[20]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[21]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[22]
-#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[23]
-#define SWIGTYPE_p_QString swig_types[24]
-#define SWIGTYPE_p_RegisterInterface swig_types[25]
-#define SWIGTYPE_p_ResetInterface swig_types[26]
-#define SWIGTYPE_p_allocator_type swig_types[27]
-#define SWIGTYPE_p_char swig_types[28]
-#define SWIGTYPE_p_difference_type swig_types[29]
-#define SWIGTYPE_p_p_PyObject swig_types[30]
-#define SWIGTYPE_p_size_type swig_types[31]
-#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[32]
-#define SWIGTYPE_p_std__invalid_argument swig_types[33]
-#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[34]
-#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[35]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[36]
-#define SWIGTYPE_p_value_type swig_types[37]
-static swig_type_info *swig_types[39];
-static swig_module_info swig_module = {swig_types, 38, 0, 0, 0, 0};
+#define SWIGTYPE_p_MemoryMap swig_types[3]
+#define SWIGTYPE_p_MemoryMapInterface swig_types[4]
+#define SWIGTYPE_p_MemoryRemap swig_types[5]
+#define SWIGTYPE_p_NameGroup swig_types[6]
+#define SWIGTYPE_p_NameGroupInterface swig_types[7]
+#define SWIGTYPE_p_ParameterizableInterface swig_types[8]
+#define SWIGTYPE_p_ParametersInterface swig_types[9]
+#define SWIGTYPE_p_PortsInterface swig_types[10]
+#define SWIGTYPE_p_PythonAPI swig_types[11]
+#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[12]
+#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[13]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[14]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[15]
+#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[16]
+#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[17]
+#define SWIGTYPE_p_QSharedPointerT_MemoryMapValidator_t swig_types[18]
+#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[19]
+#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[20]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[21]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[22]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[23]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t swig_types[24]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[25]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[26]
+#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[27]
+#define SWIGTYPE_p_QString swig_types[28]
+#define SWIGTYPE_p_RegisterInterface swig_types[29]
+#define SWIGTYPE_p_ResetInterface swig_types[30]
+#define SWIGTYPE_p_allocator_type swig_types[31]
+#define SWIGTYPE_p_char swig_types[32]
+#define SWIGTYPE_p_difference_type swig_types[33]
+#define SWIGTYPE_p_p_PyObject swig_types[34]
+#define SWIGTYPE_p_size_type swig_types[35]
+#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[36]
+#define SWIGTYPE_p_std__invalid_argument swig_types[37]
+#define SWIGTYPE_p_std__string swig_types[38]
+#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[39]
+#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[40]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[41]
+#define SWIGTYPE_p_value_type swig_types[42]
+static swig_type_info *swig_types[44];
+static swig_module_info swig_module = {swig_types, 43, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3522,6 +3527,7 @@ SWIGINTERNINLINE PyObject*
 #include "..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h"
 #include "..\editors\ComponentEditor\ports\PortsInterface.h"
 #include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
+#include "..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
@@ -8484,7 +8490,30 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PythonAPI_getAddressBlockInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PythonAPI_getMapInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  MemoryMapInterface *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getMapInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  result = (MemoryMapInterface *)(arg1)->getMapInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_setBlocksForInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
   std::string *arg2 = 0 ;
@@ -8492,27 +8521,26 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getAddressBlockInterface(PyObject *SWIGUNUS
   int res1 = 0 ;
   int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
-  AddressBlockInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getAddressBlockInterface", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setBlocksForInterface", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getAddressBlockInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setBlocksForInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getAddressBlockInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setBlocksForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getAddressBlockInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setBlocksForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     arg2 = ptr;
   }
-  result = (AddressBlockInterface *)(arg1)->getAddressBlockInterface((std::string const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  (arg1)->setBlocksForInterface((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -8521,7 +8549,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PythonAPI_getRegisterInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PythonAPI_setRegistersForInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
   std::string *arg2 = 0 ;
@@ -8531,22 +8559,21 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getRegisterInterface(PyObject *SWIGUNUSEDPA
   int res2 = SWIG_OLDOBJ ;
   int res3 = SWIG_OLDOBJ ;
   PyObject *swig_obj[3] ;
-  RegisterInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getRegisterInterface", 3, 3, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setRegistersForInterface", 3, 3, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getRegisterInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setRegistersForInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getRegisterInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setRegistersForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getRegisterInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setRegistersForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     arg2 = ptr;
   }
@@ -8554,15 +8581,15 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getRegisterInterface(PyObject *SWIGUNUSEDPA
     std::string *ptr = (std::string *)0;
     res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
     if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_getRegisterInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_setRegistersForInterface" "', argument " "3"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getRegisterInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setRegistersForInterface" "', argument " "3"" of type '" "std::string const &""'"); 
     }
     arg3 = ptr;
   }
-  result = (RegisterInterface *)(arg1)->getRegisterInterface((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, 0 |  0 );
+  (arg1)->setRegistersForInterface((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_Py_Void();
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
@@ -8573,7 +8600,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PythonAPI_getFieldInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PythonAPI_setFieldsForInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
   std::string *arg2 = 0 ;
@@ -8585,22 +8612,21 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getFieldInterface(PyObject *SWIGUNUSEDPARM(
   int res3 = SWIG_OLDOBJ ;
   int res4 = SWIG_OLDOBJ ;
   PyObject *swig_obj[4] ;
-  FieldInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getFieldInterface", 4, 4, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setFieldsForInterface", 4, 4, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getFieldInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setFieldsForInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getFieldInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setFieldsForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getFieldInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setFieldsForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     arg2 = ptr;
   }
@@ -8608,10 +8634,10 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getFieldInterface(PyObject *SWIGUNUSEDPARM(
     std::string *ptr = (std::string *)0;
     res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
     if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_getFieldInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_setFieldsForInterface" "', argument " "3"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getFieldInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setFieldsForInterface" "', argument " "3"" of type '" "std::string const &""'"); 
     }
     arg3 = ptr;
   }
@@ -8619,15 +8645,15 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getFieldInterface(PyObject *SWIGUNUSEDPARM(
     std::string *ptr = (std::string *)0;
     res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PythonAPI_getFieldInterface" "', argument " "4"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PythonAPI_setFieldsForInterface" "', argument " "4"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getFieldInterface" "', argument " "4"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setFieldsForInterface" "', argument " "4"" of type '" "std::string const &""'"); 
     }
     arg4 = ptr;
   }
-  result = (FieldInterface *)(arg1)->getFieldInterface((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FieldInterface, 0 |  0 );
+  (arg1)->setFieldsForInterface((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4);
+  resultobj = SWIG_Py_Void();
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   if (SWIG_IsNewObj(res4)) delete arg4;
@@ -8640,7 +8666,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PythonAPI_getResetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PythonAPI_setResetsForInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
   std::string *arg2 = 0 ;
@@ -8654,22 +8680,21 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getResetInterface(PyObject *SWIGUNUSEDPARM(
   int res4 = SWIG_OLDOBJ ;
   int res5 = SWIG_OLDOBJ ;
   PyObject *swig_obj[5] ;
-  ResetInterface *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getResetInterface", 5, 5, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setResetsForInterface", 5, 5, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getResetInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setResetsForInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getResetInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setResetsForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getResetInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setResetsForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     arg2 = ptr;
   }
@@ -8677,10 +8702,10 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getResetInterface(PyObject *SWIGUNUSEDPARM(
     std::string *ptr = (std::string *)0;
     res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
     if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_getResetInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_setResetsForInterface" "', argument " "3"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getResetInterface" "', argument " "3"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setResetsForInterface" "', argument " "3"" of type '" "std::string const &""'"); 
     }
     arg3 = ptr;
   }
@@ -8688,10 +8713,10 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getResetInterface(PyObject *SWIGUNUSEDPARM(
     std::string *ptr = (std::string *)0;
     res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PythonAPI_getResetInterface" "', argument " "4"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PythonAPI_setResetsForInterface" "', argument " "4"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getResetInterface" "', argument " "4"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setResetsForInterface" "', argument " "4"" of type '" "std::string const &""'"); 
     }
     arg4 = ptr;
   }
@@ -8699,15 +8724,15 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getResetInterface(PyObject *SWIGUNUSEDPARM(
     std::string *ptr = (std::string *)0;
     res5 = SWIG_AsPtr_std_string(swig_obj[4], &ptr);
     if (!SWIG_IsOK(res5)) {
-      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "PythonAPI_getResetInterface" "', argument " "5"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "PythonAPI_setResetsForInterface" "', argument " "5"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getResetInterface" "', argument " "5"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setResetsForInterface" "', argument " "5"" of type '" "std::string const &""'"); 
     }
     arg5 = ptr;
   }
-  result = (ResetInterface *)(arg1)->getResetInterface((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, 0 |  0 );
+  (arg1)->setResetsForInterface((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5);
+  resultobj = SWIG_Py_Void();
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   if (SWIG_IsNewObj(res4)) delete arg4;
@@ -16683,6 +16708,2829 @@ SWIGINTERN PyObject *ParametersInterface_swigregister(PyObject *SWIGUNUSEDPARM(s
 }
 
 SWIGINTERN PyObject *ParametersInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  return SWIG_Python_InitShadowInstance(args);
+}
+
+SWIGINTERN PyObject *_wrap_new_MemoryMapInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< MemoryMapValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  AddressBlockInterface *arg4 = (AddressBlockInterface *) 0 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject *swig_obj[4] ;
+  MemoryMapInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "new_MemoryMapInterface", 4, 4, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_MemoryMapValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_MemoryMapInterface" "', argument " "1"" of type '" "QSharedPointer< MemoryMapValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_MemoryMapInterface" "', argument " "1"" of type '" "QSharedPointer< MemoryMapValidator >""'");
+    } else {
+      QSharedPointer< MemoryMapValidator > * temp = reinterpret_cast< QSharedPointer< MemoryMapValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_MemoryMapInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_MemoryMapInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_MemoryMapInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_MemoryMapInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_MemoryMapInterface" "', argument " "4"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg4 = reinterpret_cast< AddressBlockInterface * >(argp4);
+  result = (MemoryMapInterface *)new MemoryMapInterface(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MemoryMapInterface, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_MemoryMapInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MemoryMapInterface" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setMemoryMaps(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< Component > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setMemoryMaps", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setMemoryMaps" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_Component_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setMemoryMaps" "', argument " "2"" of type '" "QSharedPointer< Component >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setMemoryMaps" "', argument " "2"" of type '" "QSharedPointer< Component >""'");
+    } else {
+      QSharedPointer< Component > * temp = reinterpret_cast< QSharedPointer< Component > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setMemoryMaps(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getItemIndex" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (int)((MemoryMapInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getMemoryRemapIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getMemoryRemapIndex", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getMemoryRemapIndex" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getMemoryRemapIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getMemoryRemapIndex" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getMemoryRemapIndex" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getMemoryRemapIndex" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (int)((MemoryMapInterface const *)arg1)->getMemoryRemapIndex((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIndexedItemName" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MemoryMapInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((MemoryMapInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIndexedRemapName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string arg2 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIndexedRemapName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIndexedRemapName" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MemoryMapInterface_getIndexedRemapName" "', argument " "2"" of type '" "std::string""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MemoryMapInterface_getIndexedRemapName" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((MemoryMapInterface const *)arg1)->getIndexedRemapName(arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  int result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_itemCount" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  result = (int)((MemoryMapInterface const *)arg1)->itemCount();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_remapCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_remapCount", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_remapCount" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_remapCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_remapCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (int)((MemoryMapInterface const *)arg1)->remapCount((std::string const &)*arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getItemNames" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  result = ((MemoryMapInterface const *)arg1)->getItemNames();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getRemapNames", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getRemapNames" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getRemapNames" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getRemapNames" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getRemapNames((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setName" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setRemapName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int res4 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[4] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setRemapName", 4, 4, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setRemapName" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setRemapName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setRemapName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MemoryMapInterface_setRemapName" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapName" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  result = (bool)(arg1)->setRemapName((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getDescription" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getDescription((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getRemapDescription", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getRemapDescription" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getRemapDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getRemapDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getRemapDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getRemapDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getRemapDescription((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setDescription" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setRemapDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int res4 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[4] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setRemapDescription", 4, 4, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setRemapDescription" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setRemapDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setRemapDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MemoryMapInterface_setRemapDescription" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapDescription" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  result = (bool)(arg1)->setRemapDescription((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  int *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int temp4 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  ecode4 = SWIG_AsVal_int(swig_obj[3], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "4"" of type '" "int""'");
+  } 
+  temp4 = static_cast< int >(val4);
+  arg4 = &temp4;
+  result = ((MemoryMapInterface const *)arg1)->getIsPresentValue((std::string const &)*arg2,(std::string const &)*arg3,(int const &)*arg4);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getIsPresentValue((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentValue__SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getIsPresentValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[5] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIsPresentValue", 0, 4, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_MemoryMapInterface_getIsPresentValue__SWIG_2(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MemoryMapInterface_getIsPresentValue__SWIG_1(self, argc, argv);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          {
+            int res = SWIG_AsVal_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            return _wrap_MemoryMapInterface_getIsPresentValue__SWIG_0(self, argc, argv);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MemoryMapInterface_getIsPresentValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MemoryMapInterface::getIsPresentValue(std::string const &,std::string const &,int const &) const\n"
+    "    MemoryMapInterface::getIsPresentValue(std::string const &,std::string const &) const\n"
+    "    MemoryMapInterface::getIsPresentValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentFormattedExpression__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIsPresentFormattedExpression" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getIsPresentFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getIsPresentFormattedExpression" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentFormattedExpression" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getIsPresentFormattedExpression((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentFormattedExpression__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIsPresentFormattedExpression" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getIsPresentFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getIsPresentFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentFormattedExpression(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIsPresentFormattedExpression", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_MemoryMapInterface_getIsPresentFormattedExpression__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MemoryMapInterface_getIsPresentFormattedExpression__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MemoryMapInterface_getIsPresentFormattedExpression'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MemoryMapInterface::getIsPresentFormattedExpression(std::string const &,std::string const &) const\n"
+    "    MemoryMapInterface::getIsPresentFormattedExpression(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentExpression__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIsPresentExpression" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getIsPresentExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getIsPresentExpression" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentExpression" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getIsPresentExpression((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentExpression__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIsPresentExpression" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getIsPresentExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getIsPresentExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getIsPresentExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentExpression(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIsPresentExpression", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_MemoryMapInterface_getIsPresentExpression__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MemoryMapInterface_getIsPresentExpression__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MemoryMapInterface_getIsPresentExpression'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MemoryMapInterface::getIsPresentExpression(std::string const &,std::string const &) const\n"
+    "    MemoryMapInterface::getIsPresentExpression(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setIsPresent__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int res4 = SWIG_OLDOBJ ;
+  bool result;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setIsPresent" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setIsPresent" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setIsPresent" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MemoryMapInterface_setIsPresent" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setIsPresent" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  result = (bool)(arg1)->setIsPresent((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setIsPresent__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  bool result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setIsPresent" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setIsPresent" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setIsPresent" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setIsPresent((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setIsPresent(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[5] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setIsPresent", 0, 4, argv))) SWIG_fail;
+  --argc;
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MemoryMapInterface_setIsPresent__SWIG_1(self, argc, argv);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          int res = SWIG_AsPtr_std_string(argv[3], (std::string**)(0));
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_MemoryMapInterface_setIsPresent__SWIG_0(self, argc, argv);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MemoryMapInterface_setIsPresent'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MemoryMapInterface::setIsPresent(std::string const &,std::string const &,std::string const &)\n"
+    "    MemoryMapInterface::setIsPresent(std::string const &,std::string const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapState__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getRemapState" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getRemapState" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getRemapState" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getRemapState" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getRemapState" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getRemapState((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapState__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getRemapState" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getRemapState" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getRemapState" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getRemapState((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapState(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getRemapState", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_MemoryMapInterface_getRemapState__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MemoryMapInterface_getRemapState__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MemoryMapInterface_getRemapState'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MemoryMapInterface::getRemapState(std::string const &,std::string const &) const\n"
+    "    MemoryMapInterface::getRemapState(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setRemapState(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int res4 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[4] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setRemapState", 4, 4, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setRemapState" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setRemapState" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapState" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setRemapState" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapState" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MemoryMapInterface_setRemapState" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setRemapState" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  result = (bool)(arg1)->setRemapState((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getAddressUnitBits(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getAddressUnitBits", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getAddressUnitBits" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getAddressUnitBits" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAddressUnitBits" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getAddressUnitBits((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_setAddressUnitBits(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setAddressUnitBits", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setAddressUnitBits" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setAddressUnitBits" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setAddressUnitBits" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setAddressUnitBits" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setAddressUnitBits" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((MemoryMapInterface const *)arg1)->setAddressUnitBits((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getInterfaceBinding(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getInterfaceBinding", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getInterfaceBinding" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getInterfaceBinding" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getInterfaceBinding" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getInterfaceBinding((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getAssociatedSlaveInterfaces(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getAssociatedSlaveInterfaces", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getAssociatedSlaveInterfaces" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getAssociatedSlaveInterfaces" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAssociatedSlaveInterfaces" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getAssociatedSlaveInterfaces((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (int)((MemoryMapInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getMapExpressions(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getMapExpressions", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getMapExpressions" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getMapExpressions" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getMapExpressions" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getMapExpressions" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getMapExpressions" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = ((MemoryMapInterface const *)arg1)->getMapExpressions((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getAllReferencesToIdInRemapItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  int res4 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[4] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getAllReferencesToIdInRemapItem", 4, 4, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getAllReferencesToIdInRemapItem" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getAllReferencesToIdInRemapItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAllReferencesToIdInRemapItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_std__string,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getAllReferencesToIdInRemapItem" "', argument " "3"" of type '" "std::string &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAllReferencesToIdInRemapItem" "', argument " "3"" of type '" "std::string &""'"); 
+  }
+  arg3 = reinterpret_cast< std::string * >(argp3);
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MemoryMapInterface_getAllReferencesToIdInRemapItem" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAllReferencesToIdInRemapItem" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  result = (int)((MemoryMapInterface const *)arg1)->getAllReferencesToIdInRemapItem((std::string const &)*arg2,*arg3,(std::string const &)*arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_validateItems" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  result = (bool)((MemoryMapInterface const *)arg1)->validateItems();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_itemHasValidName" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((MemoryMapInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_remapHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_remapHasValidName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_remapHasValidName" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_remapHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_remapHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_remapHasValidName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_remapHasValidName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((MemoryMapInterface const *)arg1)->remapHasValidName((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_remapHasValidRemapState(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_remapHasValidRemapState", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_remapHasValidRemapState" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_remapHasValidRemapState" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_remapHasValidRemapState" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_remapHasValidRemapState" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_remapHasValidRemapState" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((MemoryMapInterface const *)arg1)->remapHasValidRemapState((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_itemHasValidIsPresent__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  bool result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_itemHasValidIsPresent" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_itemHasValidIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_itemHasValidIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_itemHasValidIsPresent" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_itemHasValidIsPresent" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)((MemoryMapInterface const *)arg1)->itemHasValidIsPresent((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_itemHasValidIsPresent__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_itemHasValidIsPresent" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_itemHasValidIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_itemHasValidIsPresent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((MemoryMapInterface const *)arg1)->itemHasValidIsPresent((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_itemHasValidIsPresent(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_itemHasValidIsPresent", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_MemoryMapInterface_itemHasValidIsPresent__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MemoryMapInterface_itemHasValidIsPresent__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MemoryMapInterface_itemHasValidIsPresent'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MemoryMapInterface::itemHasValidIsPresent(std::string const &,std::string const &) const\n"
+    "    MemoryMapInterface::itemHasValidIsPresent(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_memoryMapHasValidAddressUnitBits(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_memoryMapHasValidAddressUnitBits", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_memoryMapHasValidAddressUnitBits" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_memoryMapHasValidAddressUnitBits" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_memoryMapHasValidAddressUnitBits" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((MemoryMapInterface const *)arg1)->memoryMapHasValidAddressUnitBits((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_addMemoryMap__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  int *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_addMemoryMap" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MemoryMapInterface_addMemoryMap" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_addMemoryMap" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_addMemoryMap" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  (arg1)->addMemoryMap((int const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_addMemoryMap__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_addMemoryMap" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MemoryMapInterface_addMemoryMap" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  (arg1)->addMemoryMap((int const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_addMemoryMap(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_addMemoryMap", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_MemoryMapInterface_addMemoryMap__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MemoryMapInterface_addMemoryMap__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MemoryMapInterface_addMemoryMap'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MemoryMapInterface::addMemoryMap(int const &,std::string const &)\n"
+    "    MemoryMapInterface::addMemoryMap(int const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_addMemoryRemap__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_addMemoryRemap" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_addMemoryRemap" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_addMemoryRemap" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_addMemoryRemap" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_addMemoryRemap" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  (arg1)->addMemoryRemap((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_addMemoryRemap__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_addMemoryRemap" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_addMemoryRemap" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_addMemoryRemap" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->addMemoryRemap((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_addMemoryRemap(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_addMemoryRemap", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_MemoryMapInterface_addMemoryRemap__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MemoryMapInterface_addMemoryRemap__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MemoryMapInterface_addMemoryRemap'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MemoryMapInterface::addMemoryRemap(std::string const &,std::string const &)\n"
+    "    MemoryMapInterface::addMemoryRemap(std::string const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_removeMap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_removeMap", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_removeMap" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_removeMap" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_removeMap" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)(arg1)->removeMap((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_removeRemap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_removeRemap", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_removeRemap" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_removeRemap" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_removeRemap" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MemoryMapInterface_removeRemap" "', argument " "3"" of type '" "std::string""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->removeRemap((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_copyRows(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_copyRows", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_copyRows" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MemoryMapInterface_copyRows" "', argument " "2"" of type '" "std::vector< std::string,std::allocator< std::string > >""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  (arg1)->copyRows(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_pasteMemoryMaps(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_pasteMemoryMaps" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  result = (arg1)->pasteMemoryMaps();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_pasteMemoryRemaps(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_pasteMemoryRemaps", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_pasteMemoryRemaps" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_pasteMemoryRemaps" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_pasteMemoryRemaps" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (arg1)->pasteMemoryRemaps((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getSubInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  AddressBlockInterface *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getSubInterface" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  result = (AddressBlockInterface *)((MemoryMapInterface const *)arg1)->getSubInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getMapPointer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  MemoryMap *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getMapPointer", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getMapPointer" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getMapPointer" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getMapPointer" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (MemoryMap *)((MemoryMapInterface const *)arg1)->getMapPointer((std::string const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MemoryMap, 0 |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapPointer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  MemoryRemap *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getRemapPointer", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getRemapPointer" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getRemapPointer" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getRemapPointer" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MemoryMapInterface_getRemapPointer" "', argument " "3"" of type '" "std::string""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (MemoryRemap *)((MemoryMapInterface const *)arg1)->getRemapPointer((std::string const &)*arg2,arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MemoryRemap, 0 |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *MemoryMapInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_MemoryMapInterface, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *MemoryMapInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   return SWIG_Python_InitShadowInstance(args);
 }
 
@@ -24932,10 +27780,11 @@ static PyMethodDef SwigMethods[] = {
 	 { "PythonAPI_saveComponent", _wrap_PythonAPI_saveComponent, METH_O, NULL},
 	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, NULL},
 	 { "PythonAPI_getComponentParameterInterface", _wrap_PythonAPI_getComponentParameterInterface, METH_O, NULL},
-	 { "PythonAPI_getAddressBlockInterface", _wrap_PythonAPI_getAddressBlockInterface, METH_VARARGS, NULL},
-	 { "PythonAPI_getRegisterInterface", _wrap_PythonAPI_getRegisterInterface, METH_VARARGS, NULL},
-	 { "PythonAPI_getFieldInterface", _wrap_PythonAPI_getFieldInterface, METH_VARARGS, NULL},
-	 { "PythonAPI_getResetInterface", _wrap_PythonAPI_getResetInterface, METH_VARARGS, NULL},
+	 { "PythonAPI_getMapInterface", _wrap_PythonAPI_getMapInterface, METH_O, NULL},
+	 { "PythonAPI_setBlocksForInterface", _wrap_PythonAPI_setBlocksForInterface, METH_VARARGS, NULL},
+	 { "PythonAPI_setRegistersForInterface", _wrap_PythonAPI_setRegistersForInterface, METH_VARARGS, NULL},
+	 { "PythonAPI_setFieldsForInterface", _wrap_PythonAPI_setFieldsForInterface, METH_VARARGS, NULL},
+	 { "PythonAPI_setResetsForInterface", _wrap_PythonAPI_setResetsForInterface, METH_VARARGS, NULL},
 	 { "PythonAPI_swigregister", PythonAPI_swigregister, METH_O, NULL},
 	 { "PythonAPI_swiginit", PythonAPI_swiginit, METH_VARARGS, NULL},
 	 { "delete_CommonInterface", _wrap_delete_CommonInterface, METH_O, NULL},
@@ -25106,6 +27955,54 @@ static PyMethodDef SwigMethods[] = {
 	 { "ParametersInterface_hasValidArrayValues", _wrap_ParametersInterface_hasValidArrayValues, METH_VARARGS, NULL},
 	 { "ParametersInterface_swigregister", ParametersInterface_swigregister, METH_O, NULL},
 	 { "ParametersInterface_swiginit", ParametersInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_MemoryMapInterface", _wrap_new_MemoryMapInterface, METH_VARARGS, NULL},
+	 { "delete_MemoryMapInterface", _wrap_delete_MemoryMapInterface, METH_O, NULL},
+	 { "MemoryMapInterface_setMemoryMaps", _wrap_MemoryMapInterface_setMemoryMaps, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getItemIndex", _wrap_MemoryMapInterface_getItemIndex, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getMemoryRemapIndex", _wrap_MemoryMapInterface_getMemoryRemapIndex, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getIndexedItemName", _wrap_MemoryMapInterface_getIndexedItemName, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getIndexedRemapName", _wrap_MemoryMapInterface_getIndexedRemapName, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_itemCount", _wrap_MemoryMapInterface_itemCount, METH_O, NULL},
+	 { "MemoryMapInterface_remapCount", _wrap_MemoryMapInterface_remapCount, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getItemNames", _wrap_MemoryMapInterface_getItemNames, METH_O, NULL},
+	 { "MemoryMapInterface_getRemapNames", _wrap_MemoryMapInterface_getRemapNames, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_setName", _wrap_MemoryMapInterface_setName, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_setRemapName", _wrap_MemoryMapInterface_setRemapName, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getDescription", _wrap_MemoryMapInterface_getDescription, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getRemapDescription", _wrap_MemoryMapInterface_getRemapDescription, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_setDescription", _wrap_MemoryMapInterface_setDescription, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_setRemapDescription", _wrap_MemoryMapInterface_setRemapDescription, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getIsPresentValue", _wrap_MemoryMapInterface_getIsPresentValue, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getIsPresentFormattedExpression", _wrap_MemoryMapInterface_getIsPresentFormattedExpression, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getIsPresentExpression", _wrap_MemoryMapInterface_getIsPresentExpression, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_setIsPresent", _wrap_MemoryMapInterface_setIsPresent, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getRemapState", _wrap_MemoryMapInterface_getRemapState, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_setRemapState", _wrap_MemoryMapInterface_setRemapState, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getAddressUnitBits", _wrap_MemoryMapInterface_getAddressUnitBits, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_setAddressUnitBits", _wrap_MemoryMapInterface_setAddressUnitBits, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getInterfaceBinding", _wrap_MemoryMapInterface_getInterfaceBinding, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getAssociatedSlaveInterfaces", _wrap_MemoryMapInterface_getAssociatedSlaveInterfaces, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getAllReferencesToIdInItem", _wrap_MemoryMapInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getMapExpressions", _wrap_MemoryMapInterface_getMapExpressions, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getAllReferencesToIdInRemapItem", _wrap_MemoryMapInterface_getAllReferencesToIdInRemapItem, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_validateItems", _wrap_MemoryMapInterface_validateItems, METH_O, NULL},
+	 { "MemoryMapInterface_itemHasValidName", _wrap_MemoryMapInterface_itemHasValidName, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_remapHasValidName", _wrap_MemoryMapInterface_remapHasValidName, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_remapHasValidRemapState", _wrap_MemoryMapInterface_remapHasValidRemapState, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_itemHasValidIsPresent", _wrap_MemoryMapInterface_itemHasValidIsPresent, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_memoryMapHasValidAddressUnitBits", _wrap_MemoryMapInterface_memoryMapHasValidAddressUnitBits, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_addMemoryMap", _wrap_MemoryMapInterface_addMemoryMap, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_addMemoryRemap", _wrap_MemoryMapInterface_addMemoryRemap, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_removeMap", _wrap_MemoryMapInterface_removeMap, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_removeRemap", _wrap_MemoryMapInterface_removeRemap, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_copyRows", _wrap_MemoryMapInterface_copyRows, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_pasteMemoryMaps", _wrap_MemoryMapInterface_pasteMemoryMaps, METH_O, NULL},
+	 { "MemoryMapInterface_pasteMemoryRemaps", _wrap_MemoryMapInterface_pasteMemoryRemaps, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getSubInterface", _wrap_MemoryMapInterface_getSubInterface, METH_O, NULL},
+	 { "MemoryMapInterface_getMapPointer", _wrap_MemoryMapInterface_getMapPointer, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_getRemapPointer", _wrap_MemoryMapInterface_getRemapPointer, METH_VARARGS, NULL},
+	 { "MemoryMapInterface_swigregister", MemoryMapInterface_swigregister, METH_O, NULL},
+	 { "MemoryMapInterface_swiginit", MemoryMapInterface_swiginit, METH_VARARGS, NULL},
 	 { "new_AddressBlockInterface", _wrap_new_AddressBlockInterface, METH_VARARGS, NULL},
 	 { "delete_AddressBlockInterface", _wrap_delete_AddressBlockInterface, METH_O, NULL},
 	 { "AddressBlockInterface_setAddressBlocks", _wrap_AddressBlockInterface_setAddressBlocks, METH_VARARGS, NULL},
@@ -25302,6 +28199,9 @@ static void *_p_PortsInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(
 static void *_p_ParametersInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((CommonInterface *) (NameGroupInterface *) ((ParametersInterface *) x));
 }
+static void *_p_MemoryMapInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((CommonInterface *) (NameGroupInterface *) ((MemoryMapInterface *) x));
+}
 static void *_p_AddressBlockInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((CommonInterface *) (NameGroupInterface *) ((AddressBlockInterface *) x));
 }
@@ -25319,6 +28219,9 @@ static void *_p_PortsInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUN
 }
 static void *_p_ParametersInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((ParametersInterface *) x));
+}
+static void *_p_MemoryMapInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ParameterizableInterface *)  ((MemoryMapInterface *) x));
 }
 static void *_p_AddressBlockInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((AddressBlockInterface *) x));
@@ -25338,6 +28241,9 @@ static void *_p_PortsInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPA
 static void *_p_ParametersInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((NameGroupInterface *)  ((ParametersInterface *) x));
 }
+static void *_p_MemoryMapInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((MemoryMapInterface *) x));
+}
 static void *_p_AddressBlockInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((NameGroupInterface *)  ((AddressBlockInterface *) x));
 }
@@ -25350,6 +28256,9 @@ static void *_p_FieldInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPA
 static swig_type_info _swigt__p_AddressBlockInterface = {"_p_AddressBlockInterface", "AddressBlockInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_CommonInterface = {"_p_CommonInterface", "CommonInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_FieldInterface = {"_p_FieldInterface", "FieldInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MemoryMap = {"_p_MemoryMap", "MemoryMap *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MemoryMapInterface = {"_p_MemoryMapInterface", "MemoryMapInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MemoryRemap = {"_p_MemoryRemap", "MemoryRemap *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_NameGroup = {"_p_NameGroup", "NameGroup *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_NameGroupInterface = {"_p_NameGroupInterface", "NameGroupInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ParameterizableInterface = {"_p_ParameterizableInterface", "ParameterizableInterface *", 0, 0, (void*)0, 0};
@@ -25362,6 +28271,7 @@ static swig_type_info _swigt__p_QSharedPointerT_ExpressionFormatter_t = {"_p_QSh
 static swig_type_info _swigt__p_QSharedPointerT_ExpressionParser_t = {"_p_QSharedPointerT_ExpressionParser_t", "QSharedPointer< ExpressionParser > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_FieldValidator_t = {"_p_QSharedPointerT_FieldValidator_t", "QSharedPointer< FieldValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_Field_t = {"_p_QSharedPointerT_Field_t", "QSharedPointer< Field > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_MemoryMapValidator_t = {"_p_QSharedPointerT_MemoryMapValidator_t", "QSharedPointer< MemoryMapValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_ParameterValidator_t = {"_p_QSharedPointerT_ParameterValidator_t", "QSharedPointer< ParameterValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_PortValidator_t = {"_p_QSharedPointerT_PortValidator_t", "QSharedPointer< PortValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t", "QSharedPointer< QList< QSharedPointer< Choice > > > *", 0, 0, (void*)0, 0};
@@ -25381,6 +28291,7 @@ static swig_type_info _swigt__p_p_PyObject = {"_p_p_PyObject", "PyObject **", 0,
 static swig_type_info _swigt__p_size_type = {"_p_size_type", "size_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__allocatorT_std__string_t = {"_p_std__allocatorT_std__string_t", "std::vector< std::string >::allocator_type *|std::allocator< std::string > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__invalid_argument = {"_p_std__invalid_argument", "std::invalid_argument *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__string = {"_p_std__string", "std::string *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_int_std__allocatorT_int_t_t = {"_p_std__vectorT_int_std__allocatorT_int_t_t", "std::vector< int,std::allocator< int > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t = {"_p_std__vectorT_std__string_std__allocatorT_std__string_t_t", "std::vector< std::string,std::allocator< std::string > > *|std::vector< std::string > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__SwigPyIterator = {"_p_swig__SwigPyIterator", "swig::SwigPyIterator *", 0, 0, (void*)0, 0};
@@ -25390,6 +28301,9 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_AddressBlockInterface,
   &_swigt__p_CommonInterface,
   &_swigt__p_FieldInterface,
+  &_swigt__p_MemoryMap,
+  &_swigt__p_MemoryMapInterface,
+  &_swigt__p_MemoryRemap,
   &_swigt__p_NameGroup,
   &_swigt__p_NameGroupInterface,
   &_swigt__p_ParameterizableInterface,
@@ -25402,6 +28316,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_QSharedPointerT_ExpressionParser_t,
   &_swigt__p_QSharedPointerT_FieldValidator_t,
   &_swigt__p_QSharedPointerT_Field_t,
+  &_swigt__p_QSharedPointerT_MemoryMapValidator_t,
   &_swigt__p_QSharedPointerT_ParameterValidator_t,
   &_swigt__p_QSharedPointerT_PortValidator_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,
@@ -25421,6 +28336,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_size_type,
   &_swigt__p_std__allocatorT_std__string_t,
   &_swigt__p_std__invalid_argument,
+  &_swigt__p_std__string,
   &_swigt__p_std__vectorT_int_std__allocatorT_int_t_t,
   &_swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t,
   &_swigt__p_swig__SwigPyIterator,
@@ -25428,11 +28344,14 @@ static swig_type_info *swig_type_initial[] = {
 };
 
 static swig_cast_info _swigc__p_AddressBlockInterface[] = {  {&_swigt__p_AddressBlockInterface, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_CommonInterface, 0, 0, 0},  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_CommonInterface, 0, 0, 0},  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_FieldInterface[] = {  {&_swigt__p_FieldInterface, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MemoryMap[] = {  {&_swigt__p_MemoryMap, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MemoryMapInterface[] = {  {&_swigt__p_MemoryMapInterface, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MemoryRemap[] = {  {&_swigt__p_MemoryRemap, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_NameGroup[] = {  {&_swigt__p_NameGroup, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_NameGroupInterface[] = {  {&_swigt__p_NameGroupInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_NameGroupInterface, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_NameGroupInterface[] = {  {&_swigt__p_NameGroupInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_NameGroupInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ParametersInterface[] = {  {&_swigt__p_ParametersInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PortsInterface[] = {  {&_swigt__p_PortsInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PythonAPI[] = {  {&_swigt__p_PythonAPI, 0, 0, 0},{0, 0, 0, 0}};
@@ -25442,6 +28361,7 @@ static swig_cast_info _swigc__p_QSharedPointerT_ExpressionFormatter_t[] = {  {&_
 static swig_cast_info _swigc__p_QSharedPointerT_ExpressionParser_t[] = {  {&_swigt__p_QSharedPointerT_ExpressionParser_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_FieldValidator_t[] = {  {&_swigt__p_QSharedPointerT_FieldValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_Field_t[] = {  {&_swigt__p_QSharedPointerT_Field_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_MemoryMapValidator_t[] = {  {&_swigt__p_QSharedPointerT_MemoryMapValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_ParameterValidator_t[] = {  {&_swigt__p_QSharedPointerT_ParameterValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_PortValidator_t[] = {  {&_swigt__p_QSharedPointerT_PortValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -25461,6 +28381,7 @@ static swig_cast_info _swigc__p_p_PyObject[] = {  {&_swigt__p_p_PyObject, 0, 0, 
 static swig_cast_info _swigc__p_size_type[] = {  {&_swigt__p_size_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__allocatorT_std__string_t[] = {  {&_swigt__p_std__allocatorT_std__string_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__invalid_argument[] = {  {&_swigt__p_std__invalid_argument, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__string[] = {  {&_swigt__p_std__string, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_int_std__allocatorT_int_t_t[] = {  {&_swigt__p_std__vectorT_int_std__allocatorT_int_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_std__string_std__allocatorT_std__string_t_t[] = {  {&_swigt__p_std__vectorT_std__string_std__allocatorT_std__string_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__SwigPyIterator[] = {  {&_swigt__p_swig__SwigPyIterator, 0, 0, 0},{0, 0, 0, 0}};
@@ -25470,6 +28391,9 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_AddressBlockInterface,
   _swigc__p_CommonInterface,
   _swigc__p_FieldInterface,
+  _swigc__p_MemoryMap,
+  _swigc__p_MemoryMapInterface,
+  _swigc__p_MemoryRemap,
   _swigc__p_NameGroup,
   _swigc__p_NameGroupInterface,
   _swigc__p_ParameterizableInterface,
@@ -25482,6 +28406,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_QSharedPointerT_ExpressionParser_t,
   _swigc__p_QSharedPointerT_FieldValidator_t,
   _swigc__p_QSharedPointerT_Field_t,
+  _swigc__p_QSharedPointerT_MemoryMapValidator_t,
   _swigc__p_QSharedPointerT_ParameterValidator_t,
   _swigc__p_QSharedPointerT_PortValidator_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,
@@ -25501,6 +28426,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_size_type,
   _swigc__p_std__allocatorT_std__string_t,
   _swigc__p_std__invalid_argument,
+  _swigc__p_std__string,
   _swigc__p_std__vectorT_int_std__allocatorT_int_t_t,
   _swigc__p_std__vectorT_std__string_std__allocatorT_std__string_t_t,
   _swigc__p_swig__SwigPyIterator,
