@@ -236,6 +236,29 @@ private:
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 
+    /*!
+     *  Decrease the number of references when removing a field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     */
+    void decreaseReferencesWithRemovedField(QString const& fieldName);
+
+    /*!
+     *  Increase the number of references made in the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     */
+    void increaseReferencesInPastedField(QString const& fieldName);
+
+    /*!
+     *  Calculates the parameters used in the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return A map containing pairs of referenced ids and the number of references made to them.
+     */
+    QMap<QString, int> getReferencedParameters(QString const& fieldName) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

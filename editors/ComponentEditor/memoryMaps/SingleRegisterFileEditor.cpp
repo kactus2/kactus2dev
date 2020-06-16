@@ -93,6 +93,9 @@ void SingleRegisterFileEditor::refresh()
     nameEditor_.refresh();
     registerFileEditor_->refresh();
 
+    registersEditor_->refresh();
+    registerFileEditor_->refresh();
+
     changeExpressionEditorsSignalBlockStatus(true);
 
     offsetEditor_->setExpression(registerFile_->getAddressOffset());

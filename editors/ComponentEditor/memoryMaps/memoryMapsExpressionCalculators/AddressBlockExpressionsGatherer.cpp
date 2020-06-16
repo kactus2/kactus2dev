@@ -41,6 +41,7 @@ QStringList AddressBlockExpressionGatherer::getExpressions(QSharedPointer<Addres
     expressionList.append(currentAddressBlock->getBaseAddress());
     expressionList.append(currentAddressBlock->getRange());
     expressionList.append(currentAddressBlock->getWidth());
+    expressionList.append(currentAddressBlock->getIsPresent());
 
     RegisterExpressionsGatherer registerGatherer;
     RegisterFileExpressionsGatherer registerFileGatherer;

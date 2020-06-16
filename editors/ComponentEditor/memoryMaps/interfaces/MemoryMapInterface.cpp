@@ -542,21 +542,24 @@ int MemoryMapInterface::getAllReferencesToIdInItem(const std::string& itemName, 
 std::vector<std::string> MemoryMapInterface::getMapExpressions(std::string const& mapName,
     std::string const& remapName) const
 {
-    QSharedPointer<MemoryMapBase> selectedMap;
+    QStringList mapExpressions;
 
     if (remapName.empty())
     {
-        selectedMap = getMemoryMap(mapName);
+        QSharedPointer<MemoryMap> selectedMap = getMemoryMap(mapName);
+        MemoryMapExpressionGatherer* expressionGatherer = new MemoryMapExpressionGatherer();
+        mapExpressions = expressionGatherer->getExpressions(selectedMap);
     }
     else
     {
-        selectedMap = getMemoryRemap(mapName, remapName);
+        QSharedPointer<MemoryRemap> selectedMap = getMemoryRemap(mapName, remapName);
+        MemoryRemapExpressionGatherer* expressionGatherer = new MemoryRemapExpressionGatherer();
+        mapExpressions = expressionGatherer->getExpressions(selectedMap);
     }
 
     std::vector<std::string> expressionList;
 
-    MemoryRemapExpressionGatherer* expressionGatherer = new MemoryRemapExpressionGatherer();
-    for (auto expression : expressionGatherer->getExpressions(selectedMap))
+    for (auto expression : mapExpressions)
     {
         expressionList.push_back(expression.toStdString());
     }

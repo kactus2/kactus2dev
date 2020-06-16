@@ -39,6 +39,8 @@ QStringList MemoryRemapExpressionGatherer::getExpressions(QSharedPointer<MemoryM
 {
     QStringList expressionList;
 
+    expressionList.append(memoryMap->getIsPresent());
+
     AddressBlockExpressionGatherer addressBlockGatherer;
 
     foreach(QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
