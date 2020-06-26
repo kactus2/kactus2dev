@@ -15,6 +15,7 @@
 #include <QLabel>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
@@ -29,26 +30,35 @@
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
 SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component,
-    QSharedPointer<MemoryMapBase> memoryRemap, QSharedPointer<MemoryMap> parentMemoryMap,
-    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionParser> expressionParser, AddressBlockInterface* blockInterface, QWidget* parent):
+    QSharedPointer<MemoryMapBase> memoryRemap, QString const& parentMapName, LibraryInterface* libHandler,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    MemoryMapInterface* mapInterface, bool isMemoryRemap, QWidget* parent):
 ItemEditor(component, libHandler, parent),
 nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
-memoryMapEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, expressionParser, blockInterface,
-    memoryRemap->getMemoryBlocks(), this)),
+memoryMapEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, expressionParser,
+    mapInterface->getSubInterface(), memoryRemap->getMemoryBlocks(), this)),
 addressUnitBitsEditor_(new QLineEdit(parent)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 slaveInterfaceLabel_(new QLabel(this)),
 remapStateSelector_(new ReferenceSelector(this)),
-memoryRemap_(memoryRemap),
-parentMemoryMap_(parentMemoryMap)
+remapName_(memoryRemap->name().toStdString()),
+parentMapName_(parentMapName.toStdString()),
+mapInterface_(mapInterface),
+isMemoryRemap_(isMemoryRemap)
 {
+    if (!isMemoryRemap_)
+    {
+        remapName_ = "";
+    }
+
+    mapInterface_->setMemoryMaps(component);
+
     addressUnitBitsEditor_->setValidator
         (new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
 
     isPresentEditor_->setFixedHeight(20);
 
-    if (!isMemoryMap())
+    if (isMemoryRemap_)
     {
         addressUnitBitsEditor_->setEnabled(false);
     }
@@ -100,25 +110,30 @@ SingleMemoryMapEditor::~SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
 void SingleMemoryMapEditor::refresh()
 {
+    mapInterface_->setMemoryMaps(component());
+
     nameEditor_.refresh();
     memoryMapEditor_->refresh();
     refreshSlaveBinding();
-    addressUnitBitsEditor_->setText(parentMemoryMap_->getAddressUnitBits());
-    
-    if (isMemoryMap())
+    addressUnitBitsEditor_->setText(QString::fromStdString(mapInterface_->getAddressUnitBits(parentMapName_)));
+
+    if (!isMemoryRemap_)
     {
         remapStateSelector_->setEnabled(false);
         QStringList defaultList;
         defaultList.append("Default");
         remapStateSelector_->refresh(defaultList);
         remapStateSelector_->selectItem("Default");
-        isPresentEditor_->setExpression(parentMemoryMap_->getIsPresent());
     }
     else
     {
         refreshRemapStateSelector();
-        isPresentEditor_->setExpression(memoryRemap_->getIsPresent());
     }
+
+    isPresentEditor_->setExpression(
+        QString::fromStdString(mapInterface_->getIsPresentExpression(parentMapName_, remapName_)));
+    isPresentEditor_->setToolTip(
+        QString::fromStdString(mapInterface_->getIsPresentValue(parentMapName_, remapName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -195,7 +210,7 @@ void SingleMemoryMapEditor::refreshSlaveBinding()
 {
     QString slaveInterfaceText ("No binding");
 
-    QStringList interfaceNames = component()->getSlaveInterfaces(parentMemoryMap_->name());
+    QStringList interfaceNames = component()->getSlaveInterfaces(QString::fromStdString(parentMapName_));
     if (!interfaceNames.isEmpty())
     {
         slaveInterfaceText = interfaceNames.join(", ");
@@ -208,7 +223,8 @@ void SingleMemoryMapEditor::refreshSlaveBinding()
 //-----------------------------------------------------------------------------
 void SingleMemoryMapEditor::updateAddressUnitBits()
 {
-    parentMemoryMap_->setAddressUnitBits(addressUnitBitsEditor_->text());
+    mapInterface_->setAddressUnitBits(parentMapName_, addressUnitBitsEditor_->text().toStdString());
+
     emit addressUnitBitsChanged();
     emit contentChanged();
 
@@ -225,14 +241,9 @@ void SingleMemoryMapEditor::onIsPresentEdited()
     QString newIsPresent = isPresentEditor_->getExpression();
     //isPresentEditor_->setToolTip(formattedValueFor(newIsPresent));
 
-    if (isMemoryMap())
-    {
-        parentMemoryMap_->setIsPresent(newIsPresent);   
-    }
-    else
-    {
-        memoryRemap_->setIsPresent(newIsPresent);
-    }
+    mapInterface_->setIsPresent(parentMapName_, newIsPresent.toStdString(), remapName_);
+    isPresentEditor_->setToolTip(
+        QString::fromStdString(mapInterface_->getIsPresentValue(parentMapName_, remapName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -249,34 +260,17 @@ void SingleMemoryMapEditor::refreshRemapStateSelector()
 
     remapStateSelector_->refresh(remapStateNames);
 
-    MemoryRemap* changedMemoryRemap = static_cast<MemoryRemap*>(memoryRemap_.data());
-    if (changedMemoryRemap)
+    if (isMemoryRemap_)
     {
-        if (changedMemoryRemap->getRemapState().isEmpty())
+        QString remapState = QString::fromStdString(mapInterface_->getRemapState(parentMapName_, remapName_));
+        if (remapState.isEmpty())
         {
             remapStateSelector_->selectItem(QString("No remap state selected."));
         }
         else
         {
-            remapStateSelector_->selectItem(changedMemoryRemap->getRemapState());
+            remapStateSelector_->selectItem(remapState);
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleMemoryMapEditor::isMemoryMap()
-//-----------------------------------------------------------------------------
-bool SingleMemoryMapEditor::isMemoryMap() const
-{
-    QSharedPointer<MemoryMap> transFormedMemoryRemap = memoryRemap_.dynamicCast<MemoryMap>();
-
-    if (transFormedMemoryRemap && transFormedMemoryRemap == parentMemoryMap_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
     }
 }
 
@@ -285,10 +279,9 @@ bool SingleMemoryMapEditor::isMemoryMap() const
 //-----------------------------------------------------------------------------
 void SingleMemoryMapEditor::onRemapStateSelected(QString const& newRemapState)
 {
-    QSharedPointer<MemoryRemap> changedMemoryRemap = memoryRemap_.dynamicCast<MemoryRemap>();
-    if (changedMemoryRemap)
+    if (isMemoryRemap_)
     {
-        changedMemoryRemap->setRemapState(newRemapState);
+        mapInterface_->setRemapState(parentMapName_, remapName_, newRemapState.toStdString());
         emit contentChanged();
     }
 }

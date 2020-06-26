@@ -291,7 +291,7 @@ QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
-        return QString::fromStdString(registerInterface_->getAccess(registerName));
+        return QString::fromStdString(registerInterface_->getAccessString(registerName));
     }
 
     return QVariant();

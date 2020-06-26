@@ -25,7 +25,7 @@ class MemoryMap;
 class MemoryMapBase;
 class MemoryBlockBase;
 class MemoryMapValidator;
-class AddressBlockInterface;
+class MemoryMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for a single memory remap in component editor's navigation tree.
@@ -49,7 +49,7 @@ public:
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] memoryMapValidator      Validator for memory maps.
-     *      @param [in] blockInterface          Interface for accessing address blocks.
+     *      @param [in] mapInterface            Interface for accessing memory maps.
      *      @param [in] parent                  The parent item.
      */
     MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
@@ -62,7 +62,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<MemoryMapValidator> memoryMapValidator,
-        AddressBlockInterface* blockInterface,
+        MemoryMapInterface* mapInterface,
         ComponentEditorItem* parent);
 
     /*!
@@ -185,8 +185,8 @@ private:
     //! The used memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 
-    //! Interface for address blocks.
-    AddressBlockInterface* blockInterface_;
+    //! Interface for memory maps.
+    MemoryMapInterface* mapInterface_;
 };
 
 #endif // MEMORYREMAPITEM_H

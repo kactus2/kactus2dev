@@ -24,6 +24,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Field.h>
 
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
@@ -34,10 +35,11 @@
 // Function: componenteditorregisteritem::ComponentEditorRegisterItem()
 //-----------------------------------------------------------------------------
 ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register> reg,
-    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<QList<QSharedPointer<RegisterBase>>> containingRegisterData, ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<RegisterValidator> registerValidator, FieldInterface* fieldInterface,
+    QSharedPointer<RegisterValidator> registerValidator, RegisterInterface* registerInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
@@ -45,7 +47,8 @@ visualizer_(nullptr),
 registerItem_(nullptr),
 expressionParser_(expressionParser),
 registerValidator_(registerValidator),
-fieldInterface_(fieldInterface)
+registerInterface_(registerInterface),
+containingRegisterData_(containingRegisterData)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -58,9 +61,9 @@ fieldInterface_(fieldInterface)
 		if (field)
         {
             QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-                reg, field, model, libHandler, component, parameterFinder, referenceCounter, expressionParser_,
-                expressionFormatter, registerValidator_->getFieldValidator(), fieldInterface_->getSubInterface(),
-                this));
+                reg_, field, model, libHandler, component, parameterFinder, referenceCounter, expressionParser_,
+                expressionFormatter, registerValidator_->getFieldValidator(),
+                registerInterface_->getSubInterface(), this));
             childItems_.append(fieldItem);
 
             connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -99,8 +102,8 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleRegisterEditor(
-            reg_, component_, libHandler_, parameterFinder_, expressionParser_, fieldInterface_);
+        editor_ = new SingleRegisterEditor(reg_, component_, libHandler_, parameterFinder_, expressionParser_,
+            registerInterface_, containingRegisterData_);
         editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -122,7 +125,7 @@ void ComponentEditorRegisterItem::createChild( int index )
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 		reg_, reg_->getFields()->at(index), model_, libHandler_, component_, parameterFinder_, 
         referenceCounter_, expressionParser_, expressionFormatter_, registerValidator_->getFieldValidator(),
-        fieldInterface_->getSubInterface(), this));
+        registerInterface_->getSubInterface(), this));
 	fieldItem->setLocked(locked_);
 	
 	if (visualizer_)

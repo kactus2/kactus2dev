@@ -923,7 +923,7 @@ MemoryMap* MemoryMapInterface::getMapPointer(std::string const& mapName) const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getRemapPointer()
 //-----------------------------------------------------------------------------
-MemoryRemap* MemoryMapInterface::getRemapPointer(std::string const& mapName, std::string remapName) const
+MemoryRemap* MemoryMapInterface::getRemapPointer(std::string const& mapName, std::string const& remapName) const
 {
     MemoryRemap* reMapPointer = nullptr;
 

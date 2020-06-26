@@ -328,15 +328,15 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getAccess(fieldName));
+        return QString::fromStdString(fieldInterface_->getAccessString(fieldName));
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getModifiedWrite(fieldName));
+        return QString::fromStdString(fieldInterface_->getModifiedWriteString(fieldName));
     }
     else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getReadAction(fieldName));
+        return QString::fromStdString(fieldInterface_->getReadActionString(fieldName));
     }
     else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
     {
@@ -344,7 +344,7 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getTestConstraint(fieldName));
+        return QString::fromStdString(fieldInterface_->getTestConstraintString(fieldName));
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {

@@ -383,9 +383,9 @@ bool AddressBlockInterface::setWidth(std::string const& blockName, std::string c
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::getUsage()
+// Function: AddressBlockInterface::getUsageString()
 //-----------------------------------------------------------------------------
-std::string AddressBlockInterface::getUsage(std::string const& blockName) const
+std::string AddressBlockInterface::getUsageString(std::string const& blockName) const
 {
     QSharedPointer<AddressBlock> selectedBlock = getBlock(blockName);
     if (selectedBlock)
@@ -394,6 +394,20 @@ std::string AddressBlockInterface::getUsage(std::string const& blockName) const
     }
 
     return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockInterface::getUsage()
+//-----------------------------------------------------------------------------
+General::Usage AddressBlockInterface::getUsage(std::string const& blockName) const
+{
+    QSharedPointer<AddressBlock> selectedBlock = getBlock(blockName);
+    if (selectedBlock)
+    {
+        return selectedBlock->getUsage();
+    }
+
+    return General::USAGE_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -412,9 +426,9 @@ bool AddressBlockInterface::setUsage(std::string const& blockName, std::string c
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::getAccess()
+// Function: AddressBlockInterface::getAccessString()
 //-----------------------------------------------------------------------------
-std::string AddressBlockInterface::getAccess(std::string const& blockName) const
+std::string AddressBlockInterface::getAccessString(std::string const& blockName) const
 {
     QSharedPointer<AddressBlock> selectedBlock = getBlock(blockName);
     if (selectedBlock)
@@ -423,6 +437,20 @@ std::string AddressBlockInterface::getAccess(std::string const& blockName) const
     }
 
     return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockInterface::getAccess()
+//-----------------------------------------------------------------------------
+AccessTypes::Access AddressBlockInterface::getAccess(std::string const& blockName) const
+{
+    QSharedPointer<AddressBlock> selectedBlock = getBlock(blockName);
+    if (selectedBlock)
+    {
+        return selectedBlock->getAccess();
+    }
+
+    return AccessTypes::ACCESS_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -466,6 +494,33 @@ bool AddressBlockInterface::setVolatile(std::string const& blockName, bool newVo
     }
 
     selectedBlock->setVolatile(newVolatile);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockInterface::setVolatile()
+//-----------------------------------------------------------------------------
+bool AddressBlockInterface::setVolatile(std::string const& blockName, std::string const& newVolatileValue)
+{
+    QSharedPointer<AddressBlock> selectedBlock = getBlock(blockName);
+    if (!selectedBlock)
+    {
+        return false;
+    }
+
+    if (newVolatileValue == ("true"))
+    {
+        selectedBlock->setVolatile(true);
+    }
+    else if (newVolatileValue == ("false"))
+    {
+        selectedBlock->setVolatile(false);
+    }
+    else
+    {
+        selectedBlock->clearVolatile();
+    }
+
     return true;
 }
 
@@ -781,4 +836,18 @@ std::vector<std::string> AddressBlockInterface::getExpressionsInSelectedItems(st
 RegisterInterface* AddressBlockInterface::getSubInterface() const
 {
     return subInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockInterface::hasRegisters()
+//-----------------------------------------------------------------------------
+bool AddressBlockInterface::hasRegisters(std::string const& blockName) const
+{
+    QSharedPointer<AddressBlock> block = getBlock(blockName);
+    if (block && block->getRegisterData() && !block->getRegisterData()->isEmpty())
+    {
+        return true;
+    }
+
+    return false;
 }

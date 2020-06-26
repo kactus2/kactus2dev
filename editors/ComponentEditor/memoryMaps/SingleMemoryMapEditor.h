@@ -27,6 +27,7 @@ class MemoryMap;
 class MemoryMapBase;
 class ExpressionEditor;
 class ExpressionParser;
+class MemoryMapInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single memory map.
@@ -42,20 +43,22 @@ public:
      *
      *      @param [in] component           The component that contains the editor.
      *      @param [in] memoryRemap         The memory remap being edited.
-     *      @param [in] parentMemoryMap     The parent of the memory remap being edited.
+     *      @param [in] parentMapName       Name of the parent of the memory remap being edited.
      *      @param [in] libHandler          The instance that manages the library.
      *      @param [in] parameterFinder     The finder for the parameter references.
      *      @param [in] expressionParser    The expression parser.
-     *      @param [in] blockInterface      Interface for address blocks.
+     *      @param [in] mapInterface        Interface for memory maps.
+     *      @param [in] isMemoryRemap       Flag for informing if the edited item is a memory map or a remap.
      *      @param [in] parent              The owner of this editor.
      */
     SingleMemoryMapEditor(QSharedPointer<Component> component,
         QSharedPointer<MemoryMapBase> memoryRemap,
-        QSharedPointer<MemoryMap> parentMemoryMap,
+        QString const& parentMapName,
         LibraryInterface* libHandler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
-        AddressBlockInterface* blockInterface,
+        MemoryMapInterface* mapInterface,
+        bool isMemoryRemap,
         QWidget* parent = 0);
 
     /*!
@@ -131,13 +134,6 @@ private:
      */
     void refreshRemapStateSelector();
 
-    /*!
-     *  Check if the memory remap is actually a memory map.
-     *
-     *      @return True, if the memory remap is memory map, false otherwise.
-     */
-    bool isMemoryMap() const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -160,11 +156,17 @@ private:
     //! The remap state selector.
     ReferenceSelector* remapStateSelector_;
 
-    //! The memory remap being edited.
-    QSharedPointer<MemoryMapBase> memoryRemap_;
+    //! Name of the memory remap being edited.
+    std::string remapName_;
 
-    //! The parent of the memory remap.
-    QSharedPointer<MemoryMap> parentMemoryMap_;
+    //! Name of the parent of the memory remap.
+    std::string parentMapName_;
+
+    //! Interface for memory maps.
+    MemoryMapInterface* mapInterface_;
+
+    //! Flag for identifying memory maps and remaps.
+    bool isMemoryRemap_;
 };
 
 #endif // SINGLEMEMORYMAPEDITOR_H

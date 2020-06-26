@@ -518,7 +518,7 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == MemoryMapColumns::USAGE_COLUMN)
     {
-        return QString::fromStdString(blockInterface_->getUsage(blockName));
+        return QString::fromStdString(blockInterface_->getUsageString(blockName));
     }
     else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
     {
@@ -530,7 +530,7 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
     {
-        return QString::fromStdString(blockInterface_->getAccess(blockName));
+        return QString::fromStdString(blockInterface_->getAccessString(blockName));
     }
     else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
     {

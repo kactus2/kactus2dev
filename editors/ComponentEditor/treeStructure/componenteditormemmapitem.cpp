@@ -29,7 +29,7 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<MemoryMapValidator> memoryMapValidator, AddressBlockInterface* blockInterface,
+    QSharedPointer<MemoryMapValidator> memoryMapValidator, MemoryMapInterface* mapInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
@@ -37,7 +37,7 @@ visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
 memoryMapValidator_(memoryMapValidator),
-blockInterface_(blockInterface)
+mapInterface_(mapInterface)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -47,7 +47,7 @@ blockInterface_(blockInterface)
 
     QSharedPointer<MemoryRemapItem> defaultRemapItem(new MemoryRemapItem(memoryMap_, memoryMap_, model, libHandler,
         component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, memoryMapValidator_,
-        blockInterface_, this));
+        mapInterface_, this));
     defaultRemapItem->setLocked(locked_);
 
     connect(defaultRemapItem.data(), SIGNAL(addressUnitBitsChanged()),
@@ -59,7 +59,7 @@ blockInterface_(blockInterface)
     {
         QSharedPointer<MemoryRemapItem> memoryRemapItem(new MemoryRemapItem(memoryRemap, memoryMap_, model,
             libHandler, component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_,
-            memoryMapValidator_, blockInterface_, this));
+            memoryMapValidator_, mapInterface_, this));
         memoryRemapItem->setLocked(locked_);
 
         MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
@@ -121,7 +121,7 @@ void ComponentEditorMemMapItem::createChild( int index )
 
     QSharedPointer<MemoryRemapItem> memoryRemapItem (new MemoryRemapItem(memoryRemap, memoryMap_, model_,
         libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
-        memoryMapValidator_, blockInterface_, this));
+        memoryMapValidator_, mapInterface_, this));
     memoryRemapItem->setLocked(locked_);
 
     MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();

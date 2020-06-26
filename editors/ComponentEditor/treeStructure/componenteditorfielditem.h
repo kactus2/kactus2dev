@@ -49,10 +49,10 @@ public:
      *      @param [in] expressionParser    Expression parser to use.
      *      @param [in] formatter           The expression formatter.
      *      @param [in] fieldValidator      Validator used for fields.
-     *      @param [in] resetInterface      Interface for accessing resets.
+     *      @param [in] fieldInterface      Interface for accessing fields.
      *      @param [in] parent              The parent item.
 	 */
-	ComponentEditorFieldItem(QSharedPointer<Register> reg,
+    ComponentEditorFieldItem(QSharedPointer<Register> reg,
         QSharedPointer<Field> field,
         ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
@@ -62,7 +62,7 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> formatter,
         QSharedPointer<FieldValidator> fieldValidator,
-        ResetInterface* resetInterface,
+        FieldInterface* fieldInterface,
         ComponentEditorItem* parent);
 
 	/*!
@@ -169,8 +169,8 @@ private:
     //! The used field validator.
     QSharedPointer<FieldValidator> fieldValidator_;
 
-    //! Interface for resets.
-    ResetInterface* resetInterface_;
+    //! Interface for fields.
+    FieldInterface* fieldInterface_;
 };
 
 #endif // COMPONENTEDITORFIELDITEM_H

@@ -29,10 +29,11 @@ class TestConstraintComboBox;
 class ParameterFinder;
 class ExpressionParser;
 
+class Register;
 class Field;
 class Component;
 class FieldValidator;
-class ResetInterface;
+class FieldInterface;
 
 #include <QComboBox>
 
@@ -48,19 +49,25 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] field               The field being edited.
+	 *      @param [in] fieldItem           The field being edited.
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] handler             The instance managing the library.
      *      @param [in] parameterFinder     The instance for finding parameter references.
      *      @param [in] expressionParser    The expression parser to use.
      *      @param [in] fieldValidator      The used field validator.
-     *      @param [in] resetInterface      Interface for resets.
+     *      @param [in] fieldInterface      Interface for fields.
+     *      @param [in] containingRegister  Register containing the edited field.
 	 *      @param [in] parent              The parent of this editor.
 	 */
-    SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
-        LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
-        ResetInterface* resetInterface, QWidget* parent = 0);
+    SingleFieldEditor(QSharedPointer<Field> fieldItem,
+        QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<FieldValidator> fieldValidator,
+        FieldInterface* fieldInterface,
+        QSharedPointer<Register> containingRegister,
+        QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -268,11 +275,17 @@ private:
     //! The write constraint maximum value editor.
     ExpressionEditor* writeConstraintMaxLimit_;
 
-    //! The field being edited.
-    QSharedPointer<Field> field_;
+    //! Name of the edited field.
+    std::string fieldName_;
 
     //! The used field validator.
     QSharedPointer<FieldValidator> fieldValidator_;
+
+    //! Interface for fields.
+    FieldInterface* fieldInterface_;
+
+    //! Register containing the edited field.
+    QSharedPointer<Register> containingRegister_;
 };
 
 #endif // SINGLEFIELDEDITOR_H

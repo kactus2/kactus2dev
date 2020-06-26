@@ -15,6 +15,8 @@
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
+#include <IPXACTmodels/common/AccessTypes.h>
+
 class Register;
 class RegisterBase;
 class RegisterValidator;
@@ -305,13 +307,22 @@ public:
     bool setVolatile(std::string const& registerName, std::string const& newVolatile);
     
     /*!
+     *  Get the access string of the selected register.
+     *
+     *      @param [in] registerName    Name of the selected register.
+     *
+     *      @return The access string of the selected register.
+     */
+    std::string getAccessString(std::string const& registerName) const;
+
+    /*!
      *  Get the access of the selected register.
      *
      *      @param [in] registerName    Name of the selected register.
      *
      *      @return The access value of the selected register.
      */
-    std::string getAccess(std::string const& registerName) const;
+    AccessTypes::Access getAccess(std::string const& registerName) const;
 
     /*!
      *  Set the access value for the selected register.

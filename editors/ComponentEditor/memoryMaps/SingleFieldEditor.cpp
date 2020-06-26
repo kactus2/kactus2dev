@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h>
 #include <editors/ComponentEditor/memoryMaps/fieldeditor.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsEditor.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -34,6 +35,7 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/ResetType.h>
+#include <IPXACTmodels/Component/Register.h>
 
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
@@ -47,16 +49,16 @@
 //-----------------------------------------------------------------------------
 // Function: SingleFieldEditor::SingleFieldEditor()
 //-----------------------------------------------------------------------------
-SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
+SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> fieldItem, QSharedPointer<Component> component,
     LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
-    ResetInterface* resetInterface, QWidget* parent):
+    FieldInterface* fieldInterface, QSharedPointer<Register> containingRegister, QWidget* parent):
 ItemEditor(component, handler, parent),
-nameEditor_(field, this, tr("Field name and description")),
-resetsEditor_(new ResetsEditor(resetInterface, component->getResetTypes(), expressionParser, parameterFinder,
-    field, this)),
-enumerationsEditor_(new FieldEditor(field->getEnumeratedValues(), fieldValidator->getEnumeratedValueValidator(),
-                    component, handler, this)),
+nameEditor_(fieldItem, this, tr("Field name and description")),
+resetsEditor_(new ResetsEditor(fieldInterface->getSubInterface(), component->getResetTypes(), expressionParser,
+    parameterFinder, fieldItem, this)),
+enumerationsEditor_(new FieldEditor(fieldItem->getEnumeratedValues(),
+    fieldValidator->getEnumeratedValueValidator(), component, handler, this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 widthEditor_(new ExpressionEditor(parameterFinder, this)),
 volatileEditor_(),
@@ -72,9 +74,13 @@ expressionParser_(expressionParser),
 writeConstraintEditor_(new QComboBox(this)),
 writeConstraintMinLimit_(new ExpressionEditor(parameterFinder, this)),
 writeConstraintMaxLimit_(new ExpressionEditor(parameterFinder, this)),
-field_(field),
-fieldValidator_(fieldValidator)
+fieldName_(fieldItem->name().toStdString()),
+fieldValidator_(fieldValidator),
+fieldInterface_(fieldInterface),
+containingRegister_(containingRegister)
 {
+    fieldInterface_->setFields(containingRegister_->getFields());
+
     offsetEditor_->setFixedHeight(20);
     widthEditor_->setFixedHeight(20);
     isPresentEditor_->setFixedHeight(20);
@@ -118,19 +124,11 @@ fieldValidator_(fieldValidator)
     writeConstraintMaxLimit_->setAppendingCompleter(writeValueMaxCompleter);
 
     writeConstraintEditor_->setEditable(false);
-    writeConstraintEditor_->addItem(tr("Write as read"));
-    writeConstraintEditor_->addItem(tr("Use enumerated values"));
-    writeConstraintEditor_->addItem(tr("Set minimum and maximum limits"));
-    writeConstraintEditor_->addItem(tr("No constraints"));
+    writeConstraintEditor_->addItems(WriteValueConversions::getConstraintTypes());
 
-    if (!field->getWriteConstraint().isNull())
-    {
-        writeConstraintEditor_->setCurrentIndex(field->getWriteConstraint()->getType());
-    }
-    else
-    {
-        writeConstraintEditor_->setCurrentText(tr("No constraints"));
-    }
+    writeConstraintEditor_->setCurrentText(
+        QString::fromStdString(fieldInterface_->getWriteConstraint(fieldName_)));
+
     setWriteMinMaxConstraintEnableStatus(writeConstraintEditor_->currentIndex());
 
     setupLayout();
@@ -153,49 +151,55 @@ SingleFieldEditor::~SingleFieldEditor()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::refresh()
 {
+    fieldInterface_->setFields(containingRegister_->getFields());
+
     nameEditor_.refresh();
     resetsEditor_->refresh();
     enumerationsEditor_->refresh();
 
     changeExpressionEditorSignalBlockStatus(true);
 
-    offsetEditor_->setExpression(field_->getBitOffset());
-    offsetEditor_->setToolTip(formattedValueFor(field_->getBitOffset()));
+    offsetEditor_->setExpression(QString::fromStdString(fieldInterface_->getOffsetExpression(fieldName_)));
+    offsetEditor_->setToolTip(QString::fromStdString(fieldInterface_->getOffsetValue(fieldName_)));
 
-    widthEditor_->setExpression(field_->getBitWidth());
-    widthEditor_->setToolTip(formattedValueFor(field_->getBitWidth()));
+    widthEditor_->setExpression(QString::fromStdString(fieldInterface_->getWidthExpression(fieldName_)));
+    widthEditor_->setToolTip(QString::fromStdString(fieldInterface_->getWidthValue(fieldName_)));
 
-    isPresentEditor_->setExpression(field_->getIsPresent());
-    isPresentEditor_->setToolTip(formattedValueFor(field_->getIsPresent()));
+    isPresentEditor_->setExpression(QString::fromStdString(fieldInterface_->getIsPresentExpression(fieldName_)));
+    isPresentEditor_->setToolTip(QString::fromStdString(fieldInterface_->getIsPresentValue(fieldName_)));
 
-    reservedEditor_->setExpression(field_->getReserved());
-    reservedEditor_->setToolTip(formattedValueFor(field_->getReserved()));
+    reservedEditor_->setExpression(QString::fromStdString(fieldInterface_->getReservedExpression(fieldName_)));
+    reservedEditor_->setToolTip(QString::fromStdString(fieldInterface_->getReservedValue(fieldName_)));
 
-    fieldIdEditor_->setText(field_->getId());
+    fieldIdEditor_->setText(QString::fromStdString(fieldInterface_->getID(fieldName_)));
 
-    if (field_->getWriteConstraint())
+    if (fieldInterface_->hasWriteConstraint(fieldName_))
     {
-        writeConstraintMinLimit_->setExpression(field_->getWriteConstraint()->getMinimum());
-        writeConstraintMinLimit_->setToolTip(formattedValueFor(field_->getWriteConstraint()->getMinimum()));
+        writeConstraintMinLimit_->setExpression(
+            QString::fromStdString(fieldInterface_->getWriteConstraintMinimumExpression(fieldName_)));
+        writeConstraintMinLimit_->setToolTip(
+            QString::fromStdString(fieldInterface_->getWriteConstraintMinimumValue(fieldName_)));
 
-        writeConstraintMaxLimit_->setExpression(field_->getWriteConstraint()->getMaximum());
-        writeConstraintMaxLimit_->setToolTip(formattedValueFor(field_->getWriteConstraint()->getMaximum()));
+        writeConstraintMaxLimit_->setExpression(
+            QString::fromStdString(fieldInterface_->getWriteConstraintMaximumExpression(fieldName_)));
+        writeConstraintMaxLimit_->setToolTip(
+            QString::fromStdString(fieldInterface_->getWriteConstraintMaximumValue(fieldName_)));
     }
 
     fieldValidator_->componentChange(component()->getResetTypes());
 
     changeExpressionEditorSignalBlockStatus(false);
 
-    volatileEditor_->setCurrentValue(field_->getVolatile().toString());
-    accessEditor_->setCurrentValue(field_->getAccess());
-    modifiedWriteValueEditor_->setCurrentValue(field_->getModifiedWrite());
-    readActionEditor_->setCurrentValue(field_->getReadAction());
-    testableEditor_->setCurrentValue(field_->getTestable().toString());
-    testConstrainedEditor_->setCurrentValue(field_->getTestConstraint());
-    
-    if (field_->getWriteConstraint())
+    volatileEditor_->setCurrentValue(QString::fromStdString(fieldInterface_->getVolatile(fieldName_)));
+    accessEditor_->setCurrentValue(fieldInterface_->getAccessType(fieldName_));
+    modifiedWriteValueEditor_->setCurrentValue(fieldInterface_->getModifiedWriteValue(fieldName_));
+    readActionEditor_->setCurrentValue(fieldInterface_->getReadAction(fieldName_));
+    testableEditor_->setCurrentValue(QString::fromStdString(fieldInterface_->getTestableValue(fieldName_)));
+    testConstrainedEditor_->setCurrentValue(fieldInterface_->getTestConstraint(fieldName_));
+
+    if (fieldInterface_->hasWriteConstraint(fieldName_))
     {
-        setWriteMinMaxConstraintEnableStatus(field_->getWriteConstraint()->getType());
+        setWriteMinMaxConstraintEnableStatus(writeConstraintEditor_->currentIndex());
     }
 }
 
@@ -237,7 +241,7 @@ void SingleFieldEditor::onOffsetEdited()
     offsetEditor_->finishEditingCurrentWord();
     QString newBitOffset = offsetEditor_->getExpression();
 
-    field_->setBitOffset(newBitOffset);
+    fieldInterface_->setOffset(fieldName_, newBitOffset.toStdString());
     offsetEditor_->setToolTip(formattedValueFor(newBitOffset));
 }
 
@@ -249,7 +253,7 @@ void SingleFieldEditor::onWidthEdited()
     widthEditor_->finishEditingCurrentWord();
     QString newBitWidth = widthEditor_->getExpression();
 
-    field_->setBitWidth(newBitWidth);
+    fieldInterface_->setWidth(fieldName_, newBitWidth.toStdString());
     widthEditor_->setToolTip(formattedValueFor(newBitWidth));
 }
 
@@ -258,18 +262,7 @@ void SingleFieldEditor::onWidthEdited()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onVolatileSelected(QString const& newVolatileValue)
 {
-    if (newVolatileValue == QLatin1String("true"))
-    {
-        field_->setVolatile(true);
-    }
-    else if (newVolatileValue == QLatin1String("false"))
-    {
-        field_->setVolatile(false);
-    }
-    else
-    {
-        field_->clearVolatile();
-    }
+    fieldInterface_->setVolatile(fieldName_, newVolatileValue.toStdString());
 
     emit contentChanged();
 }
@@ -279,7 +272,7 @@ void SingleFieldEditor::onVolatileSelected(QString const& newVolatileValue)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onAccessSelected(QString const& newAccessValue)
 {
-    field_->setAccess(AccessTypes::str2Access(newAccessValue, AccessTypes::ACCESS_COUNT));
+    fieldInterface_->setAccess(fieldName_, newAccessValue.toStdString());
 
     emit contentChanged();
 }
@@ -289,7 +282,7 @@ void SingleFieldEditor::onAccessSelected(QString const& newAccessValue)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onModifiedWriteSelected(QString const& newModWriteValue)
 {
-    field_->setModifiedWrite(General::str2ModifiedWrite(newModWriteValue));
+    fieldInterface_->setModifiedWrite(fieldName_, newModWriteValue.toStdString());
 
     emit contentChanged();
 }
@@ -299,7 +292,7 @@ void SingleFieldEditor::onModifiedWriteSelected(QString const& newModWriteValue)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onReadActionSelected(QString const& newReadActionValue)
 {
-    field_->setReadAction(General::str2ReadAction(newReadActionValue));
+    fieldInterface_->setReadAction(fieldName_, newReadActionValue.toStdString());
 
     emit contentChanged();
 }
@@ -309,18 +302,7 @@ void SingleFieldEditor::onReadActionSelected(QString const& newReadActionValue)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onTestableSelected(QString const& newTestableValue)
 {
-    if (newTestableValue == QLatin1String("true"))
-    {
-        field_->setTestable(true);
-    }
-    else if (newTestableValue == QLatin1String("false"))
-    {
-        field_->setTestable(false);
-    }
-    else
-    {
-        field_->clearTestable();
-    }
+    fieldInterface_->setTestable(fieldName_, newTestableValue.toStdString());
 
     emit contentChanged();
 }
@@ -330,7 +312,7 @@ void SingleFieldEditor::onTestableSelected(QString const& newTestableValue)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onTestConstrainedSelected(QString const& newTestConstrainedValue)
 {
-    field_->setTestConstraint(General::str2TestConstraint(newTestConstrainedValue));
+    fieldInterface_->setTestConstraint(fieldName_, newTestConstrainedValue.toStdString());
 
     emit contentChanged();
 }
@@ -343,7 +325,7 @@ void SingleFieldEditor::onIsPresentEdited()
     isPresentEditor_->finishEditingCurrentWord();
     QString newIsPresent = isPresentEditor_->getExpression();
 
-    field_->setIsPresent(newIsPresent);
+    fieldInterface_->setIsPresent(fieldName_, newIsPresent.toStdString());
     isPresentEditor_->setToolTip(formattedValueFor(newIsPresent));
 }
 
@@ -355,7 +337,7 @@ void SingleFieldEditor::onReservedEdited()
     reservedEditor_->finishEditingCurrentWord();
     QString newReserved = reservedEditor_->getExpression();
 
-    field_->setReserved(newReserved);
+    fieldInterface_->setReserved(fieldName_, newReserved.toStdString());
     reservedEditor_->setToolTip(formattedValueFor(newReserved));
 }
 
@@ -364,7 +346,7 @@ void SingleFieldEditor::onReservedEdited()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onFieldIdChanged()
 {
-    field_->setId(fieldIdEditor_->text());
+    fieldInterface_->setID(fieldName_, fieldIdEditor_->text().toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -389,21 +371,9 @@ void SingleFieldEditor::setWriteMinMaxConstraintEnableStatus(int writeConstraint
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onWriteConstraintSelected(int newIndex)
 {
-    if (newIndex == WriteValueConstraint::TYPE_COUNT)
-    {
-        field_->setWriteConstraint(QSharedPointer<WriteValueConstraint>(0));
-    }
+    QString writeConstaintText = writeConstraintEditor_->currentText();
+    fieldInterface_->setWriteConstraint(fieldName_, writeConstaintText.toStdString());
 
-    else
-    {
-        if (!field_->getWriteConstraint())
-        {
-            field_->setWriteConstraint(QSharedPointer<WriteValueConstraint>(new WriteValueConstraint()));
-        }        
-
-        field_->getWriteConstraint()->setType(static_cast<WriteValueConstraint::Type>(newIndex));
-    }
-    
     setWriteMinMaxConstraintEnableStatus(newIndex);
     emit contentChanged();
 }
@@ -413,19 +383,10 @@ void SingleFieldEditor::onWriteConstraintSelected(int newIndex)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onWriteConstraintMinimumEdited()
 {
-    Q_ASSERT(field_->getWriteConstraint());
-
     writeConstraintMinLimit_->finishEditingCurrentWord();
     QString newMinimumLimit = writeConstraintMinLimit_->getExpression();
 
-    if (!field_->getWriteConstraint())
-    {
-        QSharedPointer<WriteValueConstraint> newWriteValueConstraint (new WriteValueConstraint());
-        newWriteValueConstraint->setType(WriteValueConstraint::MIN_MAX);
-        field_->setWriteConstraint(newWriteValueConstraint);
-    }
-
-    field_->getWriteConstraint()->setMinimum(newMinimumLimit);
+    fieldInterface_->setWriteConstraintMinimum(fieldName_, newMinimumLimit.toStdString());
     writeConstraintMinLimit_->setToolTip(formattedValueFor(newMinimumLimit));
 }
 
@@ -434,19 +395,11 @@ void SingleFieldEditor::onWriteConstraintMinimumEdited()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onWriteConstraintMaximumEdited()
 {
-    Q_ASSERT(field_->getWriteConstraint());
 
     writeConstraintMaxLimit_->finishEditingCurrentWord();
     QString newMaximumLimit = writeConstraintMaxLimit_->getExpression();
 
-    if (!field_->getWriteConstraint())
-    {
-        QSharedPointer<WriteValueConstraint> newWriteValueConstraint (new WriteValueConstraint());
-        newWriteValueConstraint->setType(WriteValueConstraint::MIN_MAX);
-        field_->setWriteConstraint(newWriteValueConstraint);
-    }
-
-    field_->getWriteConstraint()->setMaximum(newMaximumLimit);
+    fieldInterface_->setWriteConstraintMaximum(fieldName_, newMaximumLimit.toStdString());
     writeConstraintMaxLimit_->setToolTip(formattedValueFor(newMaximumLimit));
 }
 

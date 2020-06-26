@@ -33,8 +33,7 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-    QSharedPointer<FieldValidator> fieldValidator, ResetInterface* resetInterface,
-    ComponentEditorItem* parent):
+    QSharedPointer<FieldValidator> fieldValidator, FieldInterface* fieldInterface, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
@@ -42,7 +41,7 @@ visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
 fieldValidator_(fieldValidator),
-resetInterface_(resetInterface)
+fieldInterface_(fieldInterface)
 {
 	Q_ASSERT(field_);
 
@@ -85,7 +84,7 @@ ItemEditor* ComponentEditorFieldItem::editor()
 	if (!editor_)
     {
         editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_, expressionParser_,
-            fieldValidator_, resetInterface_);
+            fieldValidator_, fieldInterface_, reg_);
         editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

@@ -25,6 +25,7 @@ class ExpressionParser;
 class AddressBlockValidator;
 class RegisterInterface;
 class AddressBlockInterface;
+class MemoryMapBase;
 
 //-----------------------------------------------------------------------------
 //! The item for a single address block in component editor's navigation tree.
@@ -38,6 +39,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
+     *      @param [in] containingMap           Memory map containing the address block.
 	 *      @param [in] addrBlock               The address block being edited.
 	 *      @param [in] model                   The model that owns the items.
 	 *      @param [in] libHandler              The instance that manages the library.
@@ -47,19 +49,20 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression formatter.
      *      @param [in] addressBlockValidator   Validator used for address blocks.
-     *      @param [in] registerInterface       Interface for accessing registers.
+     *      @param [in] blockInterface          Interface for accessing address blocks.
 	 *      @param [in] parent                  The parent item.
 	 */
-	ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
-		ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
+    ComponentEditorAddrBlockItem(QSharedPointer<MemoryMapBase> containingMap,
+        QSharedPointer<AddressBlock> addrBlock,
+        ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressBlockValidator> addressBlockValidator,
-        RegisterInterface* registerInterface,
+        AddressBlockInterface* blockInterface,
 		ComponentEditorItem* parent);
 
 	/*!
@@ -167,6 +170,9 @@ private:
 	ComponentEditorAddrBlockItem(const ComponentEditorAddrBlockItem& other);
 	ComponentEditorAddrBlockItem& operator=(const ComponentEditorAddrBlockItem& other);
 
+    //! Memory map containing the edited address block.
+    QSharedPointer<MemoryMapBase> containingMap_;
+
 	//! The address block being edited.
 	QSharedPointer<AddressBlock> addrBlock_;
 
@@ -185,8 +191,8 @@ private:
     //! The used address block validator.
     QSharedPointer<AddressBlockValidator> addressBlockValidator_;
 
-    //! Interface for registers.
-    RegisterInterface* registerInterface_;
+    //! Interface for address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

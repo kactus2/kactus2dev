@@ -60,7 +60,7 @@ mapInterface_()
     {
 		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMap, model,
             libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
-            memoryMapValidator_, mapInterface_->getSubInterface(), this));
+            memoryMapValidator_, mapInterface_, this));
 		memoryMapItem->setVisualizer(visualizer_);
 		childItems_.append(memoryMapItem);
 
@@ -149,7 +149,7 @@ void ComponentEditorMemMapsItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMaps_->at(index),
         model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser_, memoryMapValidator_, mapInterface_->getSubInterface(), this));
+        expressionParser_, memoryMapValidator_, mapInterface_, this));
 	memoryMapItem->setLocked(locked_);
 	childItems_.insert(index, memoryMapItem);
 	

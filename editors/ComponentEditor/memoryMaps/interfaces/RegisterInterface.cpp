@@ -457,9 +457,9 @@ bool RegisterInterface::setVolatile(std::string const& registerName, std::string
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterInterface::getAccess()
+// Function: RegisterInterface::getAccessString()
 //-----------------------------------------------------------------------------
-string RegisterInterface::getAccess(std::string const& registerName) const
+string RegisterInterface::getAccessString(std::string const& registerName) const
 {
     QSharedPointer<Register> selectedRegister = getRegister(registerName);
     if (selectedRegister)
@@ -468,6 +468,20 @@ string RegisterInterface::getAccess(std::string const& registerName) const
     }
 
     return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterInterface::getAccess()
+//-----------------------------------------------------------------------------
+AccessTypes::Access RegisterInterface::getAccess(std::string const& registerName) const
+{
+    QSharedPointer<Register> selectedRegister = getRegister(registerName);
+    if (selectedRegister)
+    {
+        return selectedRegister->getAccess();
+    }
+
+    return AccessTypes::ACCESS_COUNT;
 }
 
 //-----------------------------------------------------------------------------

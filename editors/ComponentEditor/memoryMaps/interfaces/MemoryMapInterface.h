@@ -459,7 +459,7 @@ public:
      *
      *      @return Pointer to the selected memory remap.
      */
-    MemoryRemap* getRemapPointer(std::string const& mapName, std::string remapName) const;
+    MemoryRemap* getRemapPointer(std::string const& mapName, std::string const& remapName) const;
 
 private:
 
