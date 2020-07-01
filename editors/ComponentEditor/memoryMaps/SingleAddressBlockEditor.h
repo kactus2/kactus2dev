@@ -41,7 +41,7 @@ class MemoryMapBase;
 //-----------------------------------------------------------------------------
 class SingleAddressBlockEditor : public ItemEditor
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
@@ -79,6 +79,21 @@ public:
 	 */
 	virtual void refresh();
 
+public slots:
+
+    /*
+     *  Handles addressblock name change from memory map editor.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void onAddressBlockNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Handles addressblock name change from name editor.
+     */
+    void onAddressBlockNameChanged();
+
 signals:
 
     /*!
@@ -87,6 +102,14 @@ signals:
      *      @param [in] newAddressUnitBits  The new address unit bits value.
      */
     void addressUnitBitsChanged(int newAddressUnitBits);
+
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
 
 protected:
 

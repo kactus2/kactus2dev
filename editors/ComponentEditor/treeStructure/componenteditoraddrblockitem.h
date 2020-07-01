@@ -164,6 +164,22 @@ signals:
      */
     void changeInAddressUnitBits(int newAddressUnitBits);
 
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Informs of address block name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void addressBlockNameChanged(QString const& oldName, QString const& newName);
+
 private:
 	
 	//! No copying. No assignment.

@@ -208,6 +208,14 @@ signals:
 	//! Emitted when a register item is removed from the given index.
 	void itemRemoved(int index);
 
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
+
 private:
 
 	//! No copying.

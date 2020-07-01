@@ -136,6 +136,14 @@ signals:
      */
     void graphicsChanged();
 
+    /*
+     *  Informs of field name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void fieldNameChanged(QString const& oldName, QString const& newName);
+
 protected slots:
 
 	/*!

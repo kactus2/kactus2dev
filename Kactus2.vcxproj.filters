@@ -971,6 +971,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\common\interfaces">
       <UniqueIdentifier>{8907f090-54b3-49ac-bd20-cdd212c82ac2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\fileSet\interfaces">
+      <UniqueIdentifier>{87070864-35d7-43b4-b521-35c12ad9742a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\fileSet\interfaces">
+      <UniqueIdentifier>{c0a4d8c3-229e-4ecd-bdad-1c3db702cc61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -2867,9 +2873,6 @@
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryMapsView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SingleAddressBlockEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleAddressBlockEditor.cpp">
@@ -4896,6 +4899,12 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleAddressBlockEditor.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -7498,6 +7507,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -103,6 +103,9 @@ blocks_(blocks)
 
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
         model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+        this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

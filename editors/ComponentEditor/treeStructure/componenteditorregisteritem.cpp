@@ -67,6 +67,9 @@ containingRegisterData_(containingRegisterData)
             childItems_.append(fieldItem);
 
             connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+
+            connect(this, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+                fieldItem.data(), SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 		}
 	}
 }
@@ -111,6 +114,12 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
+        connect(editor_, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+            this, SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(registerNameChanged(QString const&, QString const&)),
+            editor_, SLOT(onRegisterNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
 	}
 
@@ -133,8 +142,10 @@ void ComponentEditorRegisterItem::createChild( int index )
 		fieldItem->setVisualizer(visualizer_);
 	}
 
-
     connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+        fieldItem.data(), SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 
 	childItems_.insert(index, fieldItem);
 }

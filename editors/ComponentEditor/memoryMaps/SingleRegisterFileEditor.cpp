@@ -285,6 +285,9 @@ void SingleRegisterFileEditor::connectSignals()
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registersEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registerFileEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+
+    connect(registersEditor_, SIGNAL(registerNameChanged(QString const&, QString const&)),
+        this, SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

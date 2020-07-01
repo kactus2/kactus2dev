@@ -374,6 +374,11 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
         {
             fieldInterface_->setName(fieldName, value.toString().toStdString());
 
+            QString oldName = QString::fromStdString(fieldName);
+            QString newName = QString::fromStdString(fieldInterface_->getIndexedItemName(index.row()));
+
+            emit fieldNameChanged(oldName, newName);
+
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
             emit graphicsChanged();
         }

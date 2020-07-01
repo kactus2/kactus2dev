@@ -205,6 +205,14 @@ signals:
 	//! Emitted when a memory map item is removed from the given index.
 	void itemRemoved(int index);
 
+    /*
+     *  Informs of address block name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void addressBlockNameChanged(QString const& oldName, QString const& newName);
+
 private:
 	
 	//! No copying.

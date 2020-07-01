@@ -72,12 +72,27 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~SingleFieldEditor();
+    virtual ~SingleFieldEditor() = default;
 
     /*!
 	 *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
+public slots:
+
+    /*
+     *  Handles field name change from register editor.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void onFieldNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Handles field name change from name editor.
+     */
+    void onFieldNameChanged();
 
 protected:
 

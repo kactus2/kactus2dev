@@ -69,6 +69,13 @@ mapInterface_()
 
         connect(this, SIGNAL(memoryRemapRemoved(int, QString const&)),
             memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+            memoryMapItem.data(), SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+            Qt::UniqueConnection);
+        connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            memoryMapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            Qt::UniqueConnection);
     }
 }
 
@@ -129,6 +136,12 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
         connect(editor_, SIGNAL(memoryRemapRemoved(int, QString const&)),
             this, SIGNAL(memoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
 
+        connect(editor_, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+            this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
 	}
 	return editor_;
@@ -158,6 +171,13 @@ void ComponentEditorMemMapsItem::createChild( int index )
 
     connect(this, SIGNAL(memoryRemapRemoved(int, QString const&)),
         memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        memoryMapItem.data(), SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        Qt::UniqueConnection);
+    connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        memoryMapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        Qt::UniqueConnection);
 
 	if (visualizer_)
     {

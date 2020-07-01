@@ -132,6 +132,24 @@ public:
 	//! Remove the graphics item of the register.
 	virtual void removeGraphicsItem();
 
+signals:
+
+    /*
+     *  Informs of field name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void fieldNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
+
 protected slots:
 
 	//! Handler for editor's contentChanged signal.

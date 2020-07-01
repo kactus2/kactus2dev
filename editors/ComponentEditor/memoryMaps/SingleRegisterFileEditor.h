@@ -69,6 +69,16 @@ public:
     //! Refresh the editor.
     virtual void refresh();
 
+signals:
+
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
+
 protected:
 
     virtual void showEvent(QShowEvent* event);

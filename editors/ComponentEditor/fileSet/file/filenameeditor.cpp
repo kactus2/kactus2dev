@@ -11,6 +11,8 @@
 
 #include "filenameeditor.h"
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+
 #include <IPXACTmodels/Component/File.h>
 
 #include <QFormLayout>
@@ -19,11 +21,14 @@
 //-----------------------------------------------------------------------------
 // Function: FileNameEditor::FileNameEditor()
 //-----------------------------------------------------------------------------
-FileNameEditor::FileNameEditor(QSharedPointer<File> file, QWidget* parent) :
+FileNameEditor::FileNameEditor(QSharedPointer<File> file, QWidget *parent):
 QGroupBox(tr("File name and location"), parent),
-    fileNameLabel_(file->name(), this),
-    descriptionEditor_(this),
-    file_(file)
+fileNameLabel_(file->name(), this),
+// fileNameLabel_(fileName),
+descriptionEditor_(this),
+file_(file)
+// fileName_(fileName),
+// fileInterface_(fileInterface)
 {
     setMaximumHeight(150);
 
@@ -56,10 +61,13 @@ FileNameEditor::~FileNameEditor()
 void FileNameEditor::refresh()
 {
     fileNameLabel_.setText(file_->name());
+//     fileNameLabel_.setText(fileName_);
 
     disconnect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 
     descriptionEditor_.setPlainText(file_->getDescription());
+//     descriptionEditor_.setPlainText(
+//         QString::fromStdString(fileInterface_->getDescription(fileName_.toStdString())));
 
     connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
@@ -70,5 +78,6 @@ void FileNameEditor::refresh()
 void FileNameEditor::onDescriptionChanged()
 {
     file_->setDescription(descriptionEditor_.toPlainText());
+//     fileInterface_->setDescription(fileName_.toStdString(), descriptionEditor_.toPlainText().toStdString());
     emit contentChanged();
 }

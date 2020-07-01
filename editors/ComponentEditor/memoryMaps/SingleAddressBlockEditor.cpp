@@ -327,6 +327,9 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(registersEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(registersEditor_, SIGNAL(registerNameChanged(QString const&, QString const&)),
+        this, SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
     connect(registerFilesEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
     connect(registerFilesEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
     connect(registerFilesEditor_, SIGNAL(increaseReferences(QString)),
@@ -373,6 +376,8 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
+    connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onAddressBlockNameChanged()), Qt::UniqueConnection);
+
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         registersEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
@@ -388,4 +393,23 @@ void SingleAddressBlockEditor::changeExpressionEditorSignalBlockStatus(bool bloc
     rangeEditor_->blockSignals(blockStatus);
     widthEditor_->blockSignals(blockStatus);
     isPresentEditor_->blockSignals(blockStatus);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleAddressBlockEditor::onAddressBlockNameChanged()
+//-----------------------------------------------------------------------------
+void SingleAddressBlockEditor::onAddressBlockNameChanged(QString const& oldName, QString const& newName)
+{
+    if (oldName == QString::fromStdString(blockName_))
+    {
+        blockName_ = newName.toStdString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleAddressBlockEditor::onAddressBlockNameChanged()
+//-----------------------------------------------------------------------------
+void SingleAddressBlockEditor::onAddressBlockNameChanged()
+{
+    blockName_ = nameEditor_.name().toStdString();
 }

@@ -144,6 +144,11 @@ void MemoryMapsEditor::connectSignals()
     connect(view_, SIGNAL(copyRows(QModelIndexList)),
         model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
     connect(view_, SIGNAL(pasteRows(QModelIndex)), model_, SLOT(onPasteRows(QModelIndex)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)), this,
+        SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

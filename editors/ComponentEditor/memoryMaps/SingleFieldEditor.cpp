@@ -139,11 +139,22 @@ containingRegister_(containingRegister)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleFieldEditor::~SingleFieldEditor()
+// Function: SingleFieldEditor::onFieldNameChanged()
 //-----------------------------------------------------------------------------
-SingleFieldEditor::~SingleFieldEditor()
+void SingleFieldEditor::onFieldNameChanged(QString const& oldName, QString const& newName)
 {
+    if (oldName == QString::fromStdString(fieldName_))
+    {
+        fieldName_ = newName.toStdString();
+    }
+}
 
+//-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::onFieldNameChanged()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::onFieldNameChanged()
+{
+    fieldName_ = nameEditor_.name().toStdString();
 }
 
 //-----------------------------------------------------------------------------
@@ -458,6 +469,7 @@ void SingleFieldEditor::connectSignals()
     connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()),this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onFieldNameChanged()), Qt::UniqueConnection);
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);

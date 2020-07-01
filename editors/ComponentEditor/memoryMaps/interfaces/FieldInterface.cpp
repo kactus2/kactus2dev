@@ -50,7 +50,7 @@ subInterface_(subInterface)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldInterface::setParameters()
+// Function: FieldInterface::setFields()
 //-----------------------------------------------------------------------------
 void FieldInterface::setFields(QSharedPointer<QList<QSharedPointer<Field> > > newFields)
 {

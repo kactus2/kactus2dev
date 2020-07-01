@@ -98,6 +98,9 @@ registers_(registers)
 	connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
+    connect(model_, SIGNAL(registerNameChanged(QString const&, QString const&)),
+        this, SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
     connect(view_, SIGNAL(addItem(const QModelIndex&)),
         model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
    

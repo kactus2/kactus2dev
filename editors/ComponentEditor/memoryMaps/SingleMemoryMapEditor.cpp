@@ -94,6 +94,11 @@ isMemoryRemap_(isMemoryRemap)
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
         memoryMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
 
+    connect(memoryMapEditor_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+        this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onNameChange()), Qt::UniqueConnection);
+
     setupLayout();
 }
 
@@ -283,5 +288,43 @@ void SingleMemoryMapEditor::onRemapStateSelected(QString const& newRemapState)
     {
         mapInterface_->setRemapState(parentMapName_, remapName_, newRemapState.toStdString());
         emit contentChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleMemoryMapEditor::onMemoryMapNameChanged()
+//-----------------------------------------------------------------------------
+void SingleMemoryMapEditor::onMemoryMapNameChanged(QString const& oldName, QString const& newName)
+{
+    if (remapName_.empty() && oldName == QString::fromStdString(parentMapName_))
+    {
+        parentMapName_ = newName.toStdString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleMemoryMapEditor::onMemoryRemapNameChanged()
+//-----------------------------------------------------------------------------
+void SingleMemoryMapEditor::onMemoryRemapNameChanged(QString const& parentName, QString const& oldName,
+    QString const& newName)
+{
+    if (parentName == QString::fromStdString(parentMapName_) &&  oldName == QString::fromStdString(remapName_))
+    {
+        remapName_ = newName.toStdString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleMemoryMapEditor::onNameChange()
+//-----------------------------------------------------------------------------
+void SingleMemoryMapEditor::onNameChange()
+{
+    if (remapName_.empty())
+    {
+        parentMapName_ = nameEditor_.name().toStdString();
+    }
+    else
+    {
+        remapName_ = nameEditor_.name().toStdString();
     }
 }

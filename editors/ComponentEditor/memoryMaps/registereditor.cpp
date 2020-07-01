@@ -86,6 +86,9 @@ fields_(fields)
 	connect(model_, SIGNAL(fieldAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(fieldRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
+    connect(model_, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+        this, SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
     connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 

@@ -18,6 +18,8 @@
 #include <QPlainTextEdit>
 
 class File;
+class FileInterface;
+
 //-----------------------------------------------------------------------------
 //! FileNameEditor is a widget to display the name element in FileSet.
 //-----------------------------------------------------------------------------
@@ -34,6 +36,7 @@ public:
 	 *
 	*/
 	FileNameEditor(QSharedPointer<File> file, QWidget *parent);
+//     FileNameEditor(QString const& fileName, FileInterface* fileInterface, QWidget *parent);
 
 	//! The destructor
 	virtual ~FileNameEditor();
@@ -69,6 +72,9 @@ private:
 
 	//! Pointer to the file being edited.
 	QSharedPointer<File> file_;
+//     QString fileName_;
+
+//     FileInterface* fileInterface_;
 };
 
 #endif // FILENAMEEDITOR_H

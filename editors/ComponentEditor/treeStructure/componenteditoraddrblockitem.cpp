@@ -63,6 +63,10 @@ blockInterface_(blockInterface)
                 expressionFormatter_, referenceCounter_, expressionParser_,
                 addressBlockValidator_->getRegisterValidator(), blockInterface_->getSubInterface(), this));
             childItems_.append(regItem);
+
+            connect(this, SIGNAL(registerNameChanged(QString const&, QString const&)),
+                regItem.data(), SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
             continue;
 		}
 
@@ -125,6 +129,12 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
         connect(this, SIGNAL(changeInAddressUnitBits(int)),
             editor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
 
+        connect(editor_, SIGNAL(registerNameChanged(QString const&, QString const&)),
+            this, SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+            editor_, SLOT(onAddressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
 
         emit changeInAddressUnitBits(addressUnitBits_);
@@ -145,6 +155,10 @@ void ComponentEditorAddrBlockItem::createChild( int index )
             addrBlock_->getRegisterData(), model_, libHandler_, component_, parameterFinder_, expressionFormatter_,
             referenceCounter_, expressionParser_, addressBlockValidator_->getRegisterValidator(),
             blockInterface_->getSubInterface(), this));
+
+        connect(this, SIGNAL(registerNameChanged(QString const&, QString const&)),
+            regItem.data(), SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
 		regItem->setLocked(locked_);
 		
 		if (visualizer_)

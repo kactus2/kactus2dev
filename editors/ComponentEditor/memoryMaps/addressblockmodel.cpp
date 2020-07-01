@@ -330,6 +330,12 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
         if (index.column() == AddressBlockColumns::NAME)
         {
             registerInterface_->setName(registerName, value.toString().toStdString());
+
+            QString oldName = QString::fromStdString(registerName);
+            QString newName = QString::fromStdString(registerInterface_->getIndexedItemName(index.row()));
+
+            emit registerNameChanged(oldName, newName);
+
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
         }
         else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)

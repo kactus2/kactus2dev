@@ -62,6 +62,11 @@ mapInterface_(mapInterface)
                 memoryRemap_, addrBlock, model, libHandler, component, referenceCounter_, parameterFinder_,
                 expressionFormatter_, expressionParser_, memoryMapValidator_->getAddressBlockValidator(),
                 mapInterface_->getSubInterface(), this));
+
+            connect(this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+                addrBlockItem.data(), SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+                Qt::UniqueConnection);
+
 			childItems_.append(addrBlockItem);
 		}
 	}
@@ -154,6 +159,15 @@ ItemEditor* MemoryRemapItem::editor()
         connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
             editor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
 
+        connect(editor_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+            this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+            editor_, SLOT(onMemoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+        connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            editor_, SLOT(onMemoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
     }
 
@@ -186,6 +200,11 @@ void MemoryRemapItem::createChild( int index )
             memoryRemap_, addrBlock, model_, libHandler_, component_, referenceCounter_, parameterFinder_,
             expressionFormatter_, expressionParser_, memoryMapValidator_->getAddressBlockValidator(),
             mapInterface_->getSubInterface(), this));
+
+        connect(this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+            addrBlockItem.data(), SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+            Qt::UniqueConnection);
+
 		addrBlockItem->setLocked(locked_);
 
         int newAddressUnitBits = expressionParser_->parseExpression(parentMemoryMap_->getAddressUnitBits()).toInt();

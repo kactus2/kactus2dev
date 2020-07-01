@@ -91,6 +91,9 @@ ItemEditor* ComponentEditorFieldItem::editor()
         connect(editor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
+        connect(this, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+            editor_, SLOT(onFieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
 	}
 	return editor_;

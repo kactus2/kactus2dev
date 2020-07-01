@@ -71,6 +71,30 @@ public:
 	 */
 	virtual void refresh();
 
+public slots:
+    
+    /*
+     *  Handles memory map name change from memory maps editor.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void onMemoryMapNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Handles of memory remap name change from memory maps editor.
+     *
+     *      @param [in] parentName  Name of the containing memory map.
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void onMemoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
+
+    /*
+     *  Handles memory item name change from memory name editor.
+     */
+    void onNameChange();
+
 protected:
     
     /*!
@@ -115,6 +139,14 @@ signals:
      *      @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
+
+    /*
+     *  Informs of address block name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void addressBlockNameChanged(QString const& oldName, QString const& newName);
 
 private:
 

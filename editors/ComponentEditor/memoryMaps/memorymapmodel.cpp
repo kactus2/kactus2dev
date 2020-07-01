@@ -235,7 +235,12 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         else if (index.column() == MemoryMapColumns::NAME_COLUMN)
         {
             blockInterface_->setName(blockName, value.toString().toStdString());
-        }									
+
+            QString oldName = QString::fromStdString(blockName);
+            QString newName = QString::fromStdString(blockInterface_->getIndexedItemName(index.row()));
+
+            emit addressBlockNameChanged(oldName, newName);
+        }
         else if (index.column() == MemoryMapColumns::BASE_COLUMN)
         {
             if (!value.isValid())

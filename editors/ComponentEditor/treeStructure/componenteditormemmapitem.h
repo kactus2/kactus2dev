@@ -153,6 +153,24 @@ public slots:
      */
     void onMemoryRemapRemoved(int memoryRemapIndex, QString const& mapName);
 
+signals:
+    
+    /*
+     *  Informs of memory map name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void memoryMapNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Informs of memory remap name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
+
 private:
 	//! No copying. No assignment.
 	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);

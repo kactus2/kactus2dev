@@ -90,14 +90,6 @@ registerInterface_(registerInterface)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::~SingleRegisterEditor()
-//-----------------------------------------------------------------------------
-SingleRegisterEditor::~SingleRegisterEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleRegisterEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void SingleRegisterEditor::setupLayout()
@@ -244,6 +236,11 @@ void SingleRegisterEditor::connectSignals()
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(fieldsEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+
+    connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onRegisterNameChanged()), Qt::UniqueConnection);
+
+    connect(fieldsEditor_, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+        this, SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -340,4 +337,23 @@ void SingleRegisterEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     emit helpUrlRequested("componenteditor/register.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleRegisterEditor::onRegisterNameChanged()
+//-----------------------------------------------------------------------------
+void SingleRegisterEditor::onRegisterNameChanged(QString const& oldName, QString const& newName)
+{
+    if (oldName == QString::fromStdString(registerName_))
+    {
+        registerName_ = newName.toStdString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleRegisterEditor::onRegisterNameChanged()
+//-----------------------------------------------------------------------------
+void SingleRegisterEditor::onRegisterNameChanged()
+{
+    registerName_ = nameEditor_.name().toStdString();
 }

@@ -67,12 +67,37 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~SingleRegisterEditor();
+    virtual ~SingleRegisterEditor() = default;
 
     /*!
 	 *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
+public slots:
+
+    /*
+     *  Handles register name change from address block editor.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void onRegisterNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Handles register name change from name editor.
+     */
+    void onRegisterNameChanged();
+
+signals:
+    
+    /*
+     *  Informs of field name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void fieldNameChanged(QString const& oldName, QString const& newName);
 
 protected:
 

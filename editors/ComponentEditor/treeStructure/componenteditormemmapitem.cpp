@@ -50,6 +50,10 @@ mapInterface_(mapInterface)
         mapInterface_, this));
     defaultRemapItem->setLocked(locked_);
 
+    connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        defaultRemapItem.data(), SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        Qt::UniqueConnection);
+
     connect(defaultRemapItem.data(), SIGNAL(addressUnitBitsChanged()),
         this, SLOT(changeAdressUnitBitsOnAddressBlocks()), Qt::UniqueConnection);
 
@@ -66,6 +70,10 @@ mapInterface_(mapInterface)
         memoryRemapItem->setVisualizer(memoryRemapVisualizer);
 
         childItems_.append(memoryRemapItem);
+
+        connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            memoryRemapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            Qt::UniqueConnection);
     }
 
 	Q_ASSERT(memoryMap_);
@@ -128,6 +136,10 @@ void ComponentEditorMemMapItem::createChild( int index )
     memoryRemapItem->setVisualizer(memoryRemapVisualizer);
 
     childItems_.append(memoryRemapItem);
+
+    connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        memoryRemapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
