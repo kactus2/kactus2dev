@@ -14,24 +14,19 @@
 
 #include <common/dialogs/comboSelector/comboselector.h>
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+
 #include <IPXACTmodels/Component/File.h>
 
 //-----------------------------------------------------------------------------
 // Function: filetypeeditor::FileTypeEditor()
 //-----------------------------------------------------------------------------
-FileTypeEditor::FileTypeEditor(QWidget *parent, QSharedPointer<File> file):
+FileTypeEditor::FileTypeEditor(QWidget *parent, std::string const& fileName, FileInterface* fileInterface):
 ListManager(tr("File types"), parent), 
-file_(file)
+fileName_(fileName),
+fileInterface_(fileInterface)
 {
-	Q_ASSERT_X(file_, "FileTypeEditor constructor", "Null File-pointer given as parameter");
-}
-
-//-----------------------------------------------------------------------------
-// Function: filetypeeditor::~FileTypeEditor()
-//-----------------------------------------------------------------------------
-FileTypeEditor::~FileTypeEditor()
-{
-
+    Q_ASSERT_X(fileInterface_, "FileTypeEditor constructor", "Null File interface-pointer given as parameter");
 }
 
 //-----------------------------------------------------------------------------
@@ -43,10 +38,11 @@ void FileTypeEditor::apply()
 	QStringList items = model_->items();
 
 	// remove all previous file types and userFileTypes from the model
-	file_->clearFileTypes();
+    fileInterface_->clearFileTypes(fileName_);
+
     foreach (QString fileType, items)
     {
-        file_->getFileTypes()->append(fileType);
+        fileInterface_->addFileType(fileName_, fileType.toStdString());
     }
 }
 
@@ -56,9 +52,10 @@ void FileTypeEditor::apply()
 void FileTypeEditor::restore()
 {
     QStringList fileTypes;
-    foreach (QString item, *file_->getFileTypes())
+    std::vector<std::string> types = fileInterface_->getFileTypes(fileName_);
+    for (auto singleType : types)
     {
-        fileTypes.append(item);
+        fileTypes.append(QString::fromStdString(singleType));
     }
 
 	model_->setItems(fileTypes);

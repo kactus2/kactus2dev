@@ -11,10 +11,13 @@
 
 #include "fileeditor.h"
 
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/Component.h>
+
 #include <library/LibraryInterface.h>
 
-#include <IPXACTmodels/Component/File.h>
-#include <IPXACTmodels/Component/Component.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
 
 #include <QScrollArea>
 #include <QVBoxLayout>
@@ -22,23 +25,29 @@
 //-----------------------------------------------------------------------------
 // Function: fileeditor::FileEditor()
 //-----------------------------------------------------------------------------
-FileEditor::FileEditor(LibraryInterface* handler, QSharedPointer<Component> component, QSharedPointer<File> file,
-            QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-            QWidget *parent):
+FileEditor::FileEditor(LibraryInterface* handler, QSharedPointer<Component> component, std::string const& fileName,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    FileInterface* fileInterface, QSharedPointer<QList<QSharedPointer<File>>> files, QWidget *parent):
 ItemEditor(component, handler, parent),
-file_(file),
-nameEditor_(file_, this),
-fileTypeEditor_(this, file),
-generalEditor_(this, file),
+fileName_(fileName),
+nameEditor_(fileName, fileInterface, this),
+fileTypeEditor_(this, fileName, fileInterface),
+generalEditor_(this, fileName, fileInterface),
 exportedNamesEditor_(tr("Exported names"), this),
-buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
+buildCommand_(fileName, fileInterface, handler->getDirectoryPath(component->getVlnv()), parameterFinder,
+    expressionParser, this),
 imageTypesEditor_(tr("Image types"), this),
 dependenciesEditor_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this),
 editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
 runButton_(new QPushButton(QIcon(":/icons/common/graphics/runProgram.png"), tr("Run file"), this)),
 openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"),
-    tr("Open containing folder"), this))
+    tr("Open containing folder"), this)),
+fileInterface_(fileInterface),
+availableFiles_(files)
+FILEINTERFACE_H
 {
+    fileInterface_->setFiles(availableFiles_);
+
     setupLayout();
     
     fileTypeEditor_.initialize();
@@ -68,26 +77,40 @@ openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizont
 }
 
 //-----------------------------------------------------------------------------
-// Function: fileeditor::~FileEditor()
-//-----------------------------------------------------------------------------
-FileEditor::~FileEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: fileeditor::refresh()
 //-----------------------------------------------------------------------------
 void FileEditor::refresh()
 {
+    fileInterface_->setFiles(availableFiles_);
+
     nameEditor_.refresh();
     generalEditor_.refresh();
     fileTypeEditor_.restore();
     buildCommand_.refresh();
 
-    dependenciesEditor_.setItems(*file_->getDependencies());
-    exportedNamesEditor_.setItems(*file_->getExportedNames());
-    imageTypesEditor_.setItems(*file_->getImageTypes());
+    std::vector<std::string> fileDependenciesSTD = fileInterface_->getDependencies(fileName_);
+    QStringList fileDependencies;
+    for (auto dependency : fileDependenciesSTD)
+    {
+        fileDependencies.append(QString::fromStdString(dependency));
+    }
+    dependenciesEditor_.setItems(fileDependencies);
+
+    std::vector<std::string> fileExportedNamesSTD = fileInterface_->getExportedNames(fileName_);
+    QStringList fileExportedNames;
+    for (auto name : fileExportedNamesSTD)
+    {
+        fileExportedNames.append(QString::fromStdString(name));
+    }
+    exportedNamesEditor_.setItems(fileExportedNames);
+
+    std::vector<std::string> fileImageTypesSTD = fileInterface_->getImageTypes(fileName_);
+    QStringList fileImageTypes;
+    for (auto imageType : fileImageTypesSTD)
+    {
+        fileImageTypes.append(QString::fromStdString(imageType));
+    }
+    imageTypesEditor_.setItems(fileImageTypes);
 }
 
 //-----------------------------------------------------------------------------
@@ -104,8 +127,15 @@ void FileEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void FileEditor::onFileTypesChanged()
 {
-    file_->clearFileTypes();
-    file_->getFileTypes()->append(fileTypeEditor_.items());
+    fileInterface_->clearFileTypes(fileName_);
+
+    std::vector<std::string> fileTypesInSTD;
+    for (auto fileType : fileTypeEditor_.items())
+    {
+        fileTypesInSTD.push_back(fileType.toStdString());
+    }
+
+    fileInterface_->addMultipleFileTypes(fileName_, fileTypesInSTD);
 
     emit contentChanged();
 }
@@ -115,8 +145,15 @@ void FileEditor::onFileTypesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onDependenciesChanged()
 {
-    file_->getDependencies()->clear();
-    file_->getDependencies()->append(dependenciesEditor_.items());
+    fileInterface_->clearDependencies(fileName_);
+
+    std::vector<std::string> dependenciesInSTD;
+    for (auto dependency : dependenciesEditor_.items())
+    {
+        dependenciesInSTD.push_back(dependency.toStdString());
+    }
+
+    fileInterface_->addMultipleDependencies(fileName_, dependenciesInSTD);
 
     emit contentChanged();
 }
@@ -126,8 +163,15 @@ void FileEditor::onDependenciesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onExportedNamesChanged()
 {
-    file_->getExportedNames()->clear();
-    file_->getExportedNames()->append(exportedNamesEditor_.items());
+    fileInterface_->clearExportedNames(fileName_);
+
+    std::vector<std::string> exportedNamesInSTD;
+    for (auto name : exportedNamesEditor_.items())
+    {
+        exportedNamesInSTD.push_back(name.toStdString());
+    }
+
+    fileInterface_->addMultipleExportedNames(fileName_, exportedNamesInSTD);
 
     emit contentChanged();
 }
@@ -137,8 +181,15 @@ void FileEditor::onExportedNamesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::onImageTypesChanged()
 {
-    file_->getImageTypes()->clear();
-    file_->getImageTypes()->append(imageTypesEditor_.items());
+    fileInterface_->clearImageTypes(fileName_);
+
+    std::vector<std::string> imageTypesInSTD;
+    for (auto imageType : imageTypesEditor_.items())
+    {
+        imageTypesInSTD.push_back(imageType.toStdString());
+    }
+
+    fileInterface_->addMultipleImageTypes(fileName_, imageTypesInSTD);
 
     emit contentChanged();
 }

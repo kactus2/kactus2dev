@@ -27,17 +27,18 @@
 // Function: ComponentEditorFileSetItem::ComponentEditorFileSetItem()
 //-----------------------------------------------------------------------------
 ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
-        ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<FileSetValidator> validator, QSharedPointer<FileValidator> fileValidator,
-        ComponentEditorItem* parent):
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<FileSetValidator> validator, QSharedPointer<FileValidator> fileValidator,
+    FileInterface* fileInterface, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSet_(fileSet),
 files_(fileSet->getFiles()),
 filesetValidator_(validator),
 fileValidator_(fileValidator),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+fileInterface_(fileInterface)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -129,8 +130,9 @@ QString ComponentEditorFileSetItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorFileSetItem::createChild(int index)
 {
-	QSharedPointer<ComponentEditorFileItem> fileItem (new ComponentEditorFileItem(files_->at(index), model_,
-        libHandler_, component_, fileValidator_, parameterFinder_, expressionParser_, referenceCounter_, this));
+	QSharedPointer<ComponentEditorFileItem> fileItem(
+        new ComponentEditorFileItem(files_->at(index), files_, fileInterface_, model_, libHandler_, component_,
+            fileValidator_, parameterFinder_, expressionParser_, referenceCounter_, this));
 
     connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);

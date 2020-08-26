@@ -279,6 +279,9 @@
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
     </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PythonAPI.h">
@@ -384,6 +387,9 @@
       <Filter>Header Files\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,13 +16,13 @@
 
 #include <QRegExpValidator>
 
-
 class Component;
 class ExpressionParser;
 class File;
 class FileValidator;
 class LibraryInterface;
 class ParameterFinder;
+class FileInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for a single file in component editor's navigation tree.
@@ -37,6 +37,8 @@ public:
      *  The constructor.
 	 *
 	 *      @param [in] file                The file being edited.
+     *      @param [in] availableFiles      The list of available files.
+     *      @param [in] fileInterface       Interface for accessing files.
 	 *      @param [in] model               The model that owns the items.
 	 *      @param [in] libHandler          The instance that manages the library.
 	 *      @param [in] component           The component being edited.
@@ -46,12 +48,21 @@ public:
      *      @param [in] referenceCounter    The counter for parameter references.
 	 *      @param [in] parent              The parent item.
 	 */
-    ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler, QSharedPointer<Component> component, QSharedPointer<FileValidator> validator, 
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ReferenceCounter> referenceCounter, ComponentEditorItem* parent);
+    ComponentEditorFileItem(QSharedPointer<File> file,
+        QSharedPointer<QList<QSharedPointer<File> > > availableFiles,
+        FileInterface* fileInterface,
+        ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<FileValidator> validator,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ReferenceCounter> referenceCounter,
+        ComponentEditorItem* parent);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~ComponentEditorFileItem();
 
 	/*!
@@ -191,6 +202,12 @@ private:
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Interface for accessing files.
+    FileInterface* fileInterface_;
+
+    //! List of available files.
+    QSharedPointer<QList<QSharedPointer<File> > > availableFiles_;
 };
 
 #endif // COMPONENTEDITORFILEITEM_H

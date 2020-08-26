@@ -2660,51 +2660,56 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_AddressBlockInterface swig_types[0]
-#define SWIGTYPE_p_CommonInterface swig_types[1]
-#define SWIGTYPE_p_FieldInterface swig_types[2]
-#define SWIGTYPE_p_MemoryMap swig_types[3]
-#define SWIGTYPE_p_MemoryMapInterface swig_types[4]
-#define SWIGTYPE_p_MemoryRemap swig_types[5]
-#define SWIGTYPE_p_NameGroup swig_types[6]
-#define SWIGTYPE_p_NameGroupInterface swig_types[7]
-#define SWIGTYPE_p_ParameterizableInterface swig_types[8]
-#define SWIGTYPE_p_ParametersInterface swig_types[9]
-#define SWIGTYPE_p_PortsInterface swig_types[10]
-#define SWIGTYPE_p_PythonAPI swig_types[11]
-#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[12]
-#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[13]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[14]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[15]
-#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[16]
-#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[17]
-#define SWIGTYPE_p_QSharedPointerT_MemoryMapValidator_t swig_types[18]
-#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[19]
-#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[20]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[21]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[22]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[23]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t swig_types[24]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[25]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[26]
-#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[27]
-#define SWIGTYPE_p_QString swig_types[28]
-#define SWIGTYPE_p_RegisterInterface swig_types[29]
-#define SWIGTYPE_p_ResetInterface swig_types[30]
-#define SWIGTYPE_p_allocator_type swig_types[31]
-#define SWIGTYPE_p_char swig_types[32]
-#define SWIGTYPE_p_difference_type swig_types[33]
-#define SWIGTYPE_p_p_PyObject swig_types[34]
-#define SWIGTYPE_p_size_type swig_types[35]
-#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[36]
-#define SWIGTYPE_p_std__invalid_argument swig_types[37]
-#define SWIGTYPE_p_std__string swig_types[38]
-#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[39]
-#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[40]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[41]
-#define SWIGTYPE_p_value_type swig_types[42]
-static swig_type_info *swig_types[44];
-static swig_module_info swig_module = {swig_types, 43, 0, 0, 0, 0};
+#define SWIGTYPE_p_AccessTypes__Access swig_types[0]
+#define SWIGTYPE_p_AddressBlockInterface swig_types[1]
+#define SWIGTYPE_p_CommonInterface swig_types[2]
+#define SWIGTYPE_p_FieldInterface swig_types[3]
+#define SWIGTYPE_p_General__ModifiedWrite swig_types[4]
+#define SWIGTYPE_p_General__ReadAction swig_types[5]
+#define SWIGTYPE_p_General__TestConstraint swig_types[6]
+#define SWIGTYPE_p_General__Usage swig_types[7]
+#define SWIGTYPE_p_MemoryMap swig_types[8]
+#define SWIGTYPE_p_MemoryMapInterface swig_types[9]
+#define SWIGTYPE_p_MemoryRemap swig_types[10]
+#define SWIGTYPE_p_NameGroup swig_types[11]
+#define SWIGTYPE_p_NameGroupInterface swig_types[12]
+#define SWIGTYPE_p_ParameterizableInterface swig_types[13]
+#define SWIGTYPE_p_ParametersInterface swig_types[14]
+#define SWIGTYPE_p_PortsInterface swig_types[15]
+#define SWIGTYPE_p_PythonAPI swig_types[16]
+#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[17]
+#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[18]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[19]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[20]
+#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[21]
+#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[22]
+#define SWIGTYPE_p_QSharedPointerT_MemoryMapValidator_t swig_types[23]
+#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[24]
+#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[25]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[26]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[27]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[28]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t swig_types[29]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[30]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[31]
+#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[32]
+#define SWIGTYPE_p_QString swig_types[33]
+#define SWIGTYPE_p_RegisterInterface swig_types[34]
+#define SWIGTYPE_p_ResetInterface swig_types[35]
+#define SWIGTYPE_p_allocator_type swig_types[36]
+#define SWIGTYPE_p_char swig_types[37]
+#define SWIGTYPE_p_difference_type swig_types[38]
+#define SWIGTYPE_p_p_PyObject swig_types[39]
+#define SWIGTYPE_p_size_type swig_types[40]
+#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[41]
+#define SWIGTYPE_p_std__invalid_argument swig_types[42]
+#define SWIGTYPE_p_std__string swig_types[43]
+#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[44]
+#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[45]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[46]
+#define SWIGTYPE_p_value_type swig_types[47]
+static swig_type_info *swig_types[49];
+static swig_module_info swig_module = {swig_types, 48, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -19480,10 +19485,11 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapPointer(PyObject *SWIGUNUS
   PyObject *resultobj = 0;
   MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
   std::string *arg2 = 0 ;
-  std::string arg3 ;
+  std::string *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
   PyObject *swig_obj[3] ;
   MemoryRemap *result = 0 ;
   
@@ -19506,19 +19512,23 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapPointer(PyObject *SWIGUNUS
   }
   {
     std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "MemoryMapInterface_getRemapPointer" "', argument " "3"" of type '" "std::string""'"); 
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getRemapPointer" "', argument " "3"" of type '" "std::string const &""'"); 
     }
-    arg3 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getRemapPointer" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
   }
-  result = (MemoryRemap *)((MemoryMapInterface const *)arg1)->getRemapPointer((std::string const &)*arg2,arg3);
+  result = (MemoryRemap *)((MemoryMapInterface const *)arg1)->getRemapPointer((std::string const &)*arg2,(std::string const &)*arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MemoryRemap, 0 |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
 fail:
   if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
@@ -20951,7 +20961,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_getUsage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getUsageString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -20960,6 +20970,43 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getUsage(PyObject *SWIGUNUSEDPA
   int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getUsageString", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getUsageString" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getUsageString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getUsageString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getUsageString((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getUsage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  General::Usage result;
   
   if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getUsage", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
@@ -20979,7 +21026,7 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getUsage(PyObject *SWIGUNUSEDPA
     arg2 = ptr;
   }
   result = ((AddressBlockInterface const *)arg1)->getUsage((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  resultobj = SWIG_NewPointerObj((new General::Usage(static_cast< const General::Usage& >(result))), SWIGTYPE_p_General__Usage, SWIG_POINTER_OWN |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -21040,7 +21087,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_getAccess(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getAccessString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -21049,6 +21096,43 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getAccess(PyObject *SWIGUNUSEDP
   int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getAccessString", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getAccessString" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getAccessString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getAccessString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AddressBlockInterface const *)arg1)->getAccessString((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_getAccess(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  AccessTypes::Access result;
   
   if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getAccess", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
@@ -21068,7 +21152,7 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getAccess(PyObject *SWIGUNUSEDP
     arg2 = ptr;
   }
   result = ((AddressBlockInterface const *)arg1)->getAccess((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  resultobj = SWIG_NewPointerObj((new AccessTypes::Access(static_cast< const AccessTypes::Access& >(result))), SWIGTYPE_p_AccessTypes__Access, SWIG_POINTER_OWN |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -21166,7 +21250,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_setVolatile(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setVolatile__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -21176,10 +21260,9 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_setVolatile(PyObject *SWIGUNUSE
   int res2 = SWIG_OLDOBJ ;
   bool val3 ;
   int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
   bool result;
   
-  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setVolatile", 3, 3, swig_obj)) SWIG_fail;
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setVolatile" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
@@ -21208,6 +21291,111 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_setVolatile(PyObject *SWIGUNUSE
 fail:
   if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setVolatile__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  bool result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setVolatile" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setVolatile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setVolatile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setVolatile" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setVolatile" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setVolatile((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_setVolatile(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setVolatile", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_bool(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AddressBlockInterface_setVolatile__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_AddressBlockInterface_setVolatile__SWIG_1(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AddressBlockInterface_setVolatile'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AddressBlockInterface::setVolatile(std::string const &,bool) const\n"
+    "    AddressBlockInterface::setVolatile(std::string const &,std::string const &)\n");
+  return 0;
 }
 
 
@@ -21842,6 +22030,43 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getSubInterface(PyObject *SWIGU
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegisterInterface, 0 |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AddressBlockInterface_hasRegisters(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_hasRegisters", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_hasRegisters" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_hasRegisters" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_hasRegisters" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AddressBlockInterface const *)arg1)->hasRegisters((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -23418,7 +23643,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RegisterInterface_getAccess(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_RegisterInterface_getAccessString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   RegisterInterface *arg1 = (RegisterInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -23427,6 +23652,43 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_getAccess(PyObject *SWIGUNUSEDPARM(
   int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_getAccessString", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getAccessString" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_getAccessString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_getAccessString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((RegisterInterface const *)arg1)->getAccessString((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RegisterInterface_getAccess(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  AccessTypes::Access result;
   
   if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_getAccess", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
@@ -23446,7 +23708,7 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_getAccess(PyObject *SWIGUNUSEDPARM(
     arg2 = ptr;
   }
   result = ((RegisterInterface const *)arg1)->getAccess((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  resultobj = SWIG_NewPointerObj((new AccessTypes::Access(static_cast< const AccessTypes::Access& >(result))), SWIGTYPE_p_AccessTypes__Access, SWIG_POINTER_OWN |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -25217,7 +25479,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_FieldInterface_getAccess(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_FieldInterface_getAccessString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   FieldInterface *arg1 = (FieldInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -25227,25 +25489,62 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getAccess(PyObject *SWIGUNUSEDPARM(sel
   PyObject *swig_obj[2] ;
   std::string result;
   
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getAccess", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getAccessString", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getAccess" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getAccessString" "', argument " "1"" of type '" "FieldInterface const *""'"); 
   }
   arg1 = reinterpret_cast< FieldInterface * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getAccess" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getAccessString" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getAccess" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getAccessString" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     arg2 = ptr;
   }
-  result = ((FieldInterface const *)arg1)->getAccess((std::string const &)*arg2);
+  result = ((FieldInterface const *)arg1)->getAccessString((std::string const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getAccessType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  AccessTypes::Access result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getAccessType", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getAccessType" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getAccessType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getAccessType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getAccessType((std::string const &)*arg2);
+  resultobj = SWIG_NewPointerObj((new AccessTypes::Access(static_cast< const AccessTypes::Access& >(result))), SWIGTYPE_p_AccessTypes__Access, SWIG_POINTER_OWN |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -25306,7 +25605,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_FieldInterface_getModifiedWrite(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_FieldInterface_getModifiedWriteString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   FieldInterface *arg1 = (FieldInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -25316,25 +25615,62 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getModifiedWrite(PyObject *SWIGUNUSEDP
   PyObject *swig_obj[2] ;
   std::string result;
   
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getModifiedWrite", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getModifiedWriteString", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getModifiedWrite" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getModifiedWriteString" "', argument " "1"" of type '" "FieldInterface const *""'"); 
   }
   arg1 = reinterpret_cast< FieldInterface * >(argp1);
   {
     std::string *ptr = (std::string *)0;
     res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getModifiedWrite" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getModifiedWriteString" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getModifiedWrite" "', argument " "2"" of type '" "std::string const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getModifiedWriteString" "', argument " "2"" of type '" "std::string const &""'"); 
     }
     arg2 = ptr;
   }
-  result = ((FieldInterface const *)arg1)->getModifiedWrite((std::string const &)*arg2);
+  result = ((FieldInterface const *)arg1)->getModifiedWriteString((std::string const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getModifiedWriteValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  General::ModifiedWrite result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getModifiedWriteValue", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getModifiedWriteValue" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getModifiedWriteValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getModifiedWriteValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getModifiedWriteValue((std::string const &)*arg2);
+  resultobj = SWIG_NewPointerObj((new General::ModifiedWrite(static_cast< const General::ModifiedWrite& >(result))), SWIGTYPE_p_General__ModifiedWrite, SWIG_POINTER_OWN |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -25395,7 +25731,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_FieldInterface_getReadAction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_FieldInterface_getReadActionString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   FieldInterface *arg1 = (FieldInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -25404,6 +25740,43 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getReadAction(PyObject *SWIGUNUSEDPARM
   int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getReadActionString", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getReadActionString" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getReadActionString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getReadActionString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getReadActionString((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getReadAction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  General::ReadAction result;
   
   if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getReadAction", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
@@ -25423,7 +25796,7 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getReadAction(PyObject *SWIGUNUSEDPARM
     arg2 = ptr;
   }
   result = ((FieldInterface const *)arg1)->getReadAction((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  resultobj = SWIG_NewPointerObj((new General::ReadAction(static_cast< const General::ReadAction& >(result))), SWIGTYPE_p_General__ReadAction, SWIG_POINTER_OWN |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -25610,7 +25983,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_FieldInterface_getTestConstraint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_FieldInterface_getTestConstraintString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   FieldInterface *arg1 = (FieldInterface *) 0 ;
   std::string *arg2 = 0 ;
@@ -25619,6 +25992,43 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getTestConstraint(PyObject *SWIGUNUSED
   int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getTestConstraintString", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getTestConstraintString" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getTestConstraintString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getTestConstraintString" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getTestConstraintString((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getTestConstraint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  General::TestConstraint result;
   
   if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getTestConstraint", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
@@ -25638,7 +26048,7 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getTestConstraint(PyObject *SWIGUNUSED
     arg2 = ptr;
   }
   result = ((FieldInterface const *)arg1)->getTestConstraint((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  resultobj = SWIG_NewPointerObj((new General::TestConstraint(static_cast< const General::TestConstraint& >(result))), SWIGTYPE_p_General__TestConstraint, SWIG_POINTER_OWN |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -26552,6 +26962,995 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getSubInterface(PyObject *SWIGUNUSEDPA
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ResetInterface, 0 |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_hasWriteConstraint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_hasWriteConstraint", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_hasWriteConstraint" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_hasWriteConstraint" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_hasWriteConstraint" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((FieldInterface const *)arg1)->hasWriteConstraint((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraint", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraint" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraint" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraint" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getWriteConstraint((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_setWriteConstraint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_setWriteConstraint", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_setWriteConstraint" "', argument " "1"" of type '" "FieldInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_setWriteConstraint" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setWriteConstraint" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_setWriteConstraint" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setWriteConstraint" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setWriteConstraint((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMinimumValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraintMinimumValue" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraintMinimumValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraintMinimumValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FieldInterface_getWriteConstraintMinimumValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((FieldInterface const *)arg1)->getWriteConstraintMinimumValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMinimumValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraintMinimumValue" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraintMinimumValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraintMinimumValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getWriteConstraintMinimumValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMinimumValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraintMinimumValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_FieldInterface_getWriteConstraintMinimumValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_FieldInterface_getWriteConstraintMinimumValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'FieldInterface_getWriteConstraintMinimumValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    FieldInterface::getWriteConstraintMinimumValue(std::string const &,int const &) const\n"
+    "    FieldInterface::getWriteConstraintMinimumValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMinimumFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraintMinimumFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraintMinimumFormattedExpression" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraintMinimumFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraintMinimumFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getWriteConstraintMinimumFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMinimumExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraintMinimumExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraintMinimumExpression" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraintMinimumExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraintMinimumExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getWriteConstraintMinimumExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_setWriteConstraintMinimum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_setWriteConstraintMinimum", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_setWriteConstraintMinimum" "', argument " "1"" of type '" "FieldInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_setWriteConstraintMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setWriteConstraintMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_setWriteConstraintMinimum" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setWriteConstraintMinimum" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setWriteConstraintMinimum((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMaximumValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraintMaximumValue" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraintMaximumValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraintMaximumValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FieldInterface_getWriteConstraintMaximumValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((FieldInterface const *)arg1)->getWriteConstraintMaximumValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMaximumValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraintMaximumValue" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraintMaximumValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraintMaximumValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getWriteConstraintMaximumValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMaximumValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraintMaximumValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_FieldInterface_getWriteConstraintMaximumValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_FieldInterface_getWriteConstraintMaximumValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'FieldInterface_getWriteConstraintMaximumValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    FieldInterface::getWriteConstraintMaximumValue(std::string const &,int const &) const\n"
+    "    FieldInterface::getWriteConstraintMaximumValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMaximumFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraintMaximumFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraintMaximumFormattedExpression" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraintMaximumFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraintMaximumFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getWriteConstraintMaximumFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMaximumExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraintMaximumExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getWriteConstraintMaximumExpression" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getWriteConstraintMaximumExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getWriteConstraintMaximumExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getWriteConstraintMaximumExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_setWriteConstraintMaximum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_setWriteConstraintMaximum", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_setWriteConstraintMaximum" "', argument " "1"" of type '" "FieldInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_setWriteConstraintMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setWriteConstraintMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_setWriteConstraintMaximum" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setWriteConstraintMaximum" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setWriteConstraintMaximum((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getReservedValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getReservedValue" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getReservedValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getReservedValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FieldInterface_getReservedValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((FieldInterface const *)arg1)->getReservedValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getReservedValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getReservedValue" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getReservedValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getReservedValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getReservedValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getReservedValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getReservedValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_FieldInterface_getReservedValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_FieldInterface_getReservedValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'FieldInterface_getReservedValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    FieldInterface::getReservedValue(std::string const &,int const &) const\n"
+    "    FieldInterface::getReservedValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getReservedFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getReservedFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getReservedFormattedExpression" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getReservedFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getReservedFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getReservedFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getReservedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getReservedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getReservedExpression" "', argument " "1"" of type '" "FieldInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getReservedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getReservedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FieldInterface const *)arg1)->getReservedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_setReserved(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_setReserved", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_setReserved" "', argument " "1"" of type '" "FieldInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_setReserved" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setReserved" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_setReserved" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setReserved" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setReserved((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_getID(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getID", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getID" "', argument " "1"" of type '" "FieldInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getID" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getID" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (arg1)->getID((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FieldInterface_setID(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FieldInterface *arg1 = (FieldInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_setID", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_setID" "', argument " "1"" of type '" "FieldInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FieldInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_setID" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setID" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_setID" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setID" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setID((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
@@ -28029,8 +29428,10 @@ static PyMethodDef SwigMethods[] = {
 	 { "AddressBlockInterface_getWidthFormattedExpression", _wrap_AddressBlockInterface_getWidthFormattedExpression, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_getWidthExpression", _wrap_AddressBlockInterface_getWidthExpression, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_setWidth", _wrap_AddressBlockInterface_setWidth, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getUsageString", _wrap_AddressBlockInterface_getUsageString, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_getUsage", _wrap_AddressBlockInterface_getUsage, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_setUsage", _wrap_AddressBlockInterface_setUsage, METH_VARARGS, NULL},
+	 { "AddressBlockInterface_getAccessString", _wrap_AddressBlockInterface_getAccessString, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_getAccess", _wrap_AddressBlockInterface_getAccess, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_setAccess", _wrap_AddressBlockInterface_setAccess, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_getVolatile", _wrap_AddressBlockInterface_getVolatile, METH_VARARGS, NULL},
@@ -28051,6 +29452,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "AddressBlockInterface_getExpressionsInSelectedItems", _wrap_AddressBlockInterface_getExpressionsInSelectedItems, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_setAddressUnitBits", _wrap_AddressBlockInterface_setAddressUnitBits, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_getSubInterface", _wrap_AddressBlockInterface_getSubInterface, METH_O, NULL},
+	 { "AddressBlockInterface_hasRegisters", _wrap_AddressBlockInterface_hasRegisters, METH_VARARGS, NULL},
 	 { "AddressBlockInterface_swigregister", AddressBlockInterface_swigregister, METH_O, NULL},
 	 { "AddressBlockInterface_swiginit", AddressBlockInterface_swiginit, METH_VARARGS, NULL},
 	 { "new_RegisterInterface", _wrap_new_RegisterInterface, METH_VARARGS, NULL},
@@ -28083,6 +29485,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "RegisterInterface_setSize", _wrap_RegisterInterface_setSize, METH_VARARGS, NULL},
 	 { "RegisterInterface_getVolatile", _wrap_RegisterInterface_getVolatile, METH_VARARGS, NULL},
 	 { "RegisterInterface_setVolatile", _wrap_RegisterInterface_setVolatile, METH_VARARGS, NULL},
+	 { "RegisterInterface_getAccessString", _wrap_RegisterInterface_getAccessString, METH_VARARGS, NULL},
 	 { "RegisterInterface_getAccess", _wrap_RegisterInterface_getAccess, METH_VARARGS, NULL},
 	 { "RegisterInterface_setAccess", _wrap_RegisterInterface_setAccess, METH_VARARGS, NULL},
 	 { "RegisterInterface_getAllReferencesToIdInItem", _wrap_RegisterInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
@@ -28124,15 +29527,19 @@ static PyMethodDef SwigMethods[] = {
 	 { "FieldInterface_getResetsToolTip", _wrap_FieldInterface_getResetsToolTip, METH_VARARGS, NULL},
 	 { "FieldInterface_getVolatile", _wrap_FieldInterface_getVolatile, METH_VARARGS, NULL},
 	 { "FieldInterface_setVolatile", _wrap_FieldInterface_setVolatile, METH_VARARGS, NULL},
-	 { "FieldInterface_getAccess", _wrap_FieldInterface_getAccess, METH_VARARGS, NULL},
+	 { "FieldInterface_getAccessString", _wrap_FieldInterface_getAccessString, METH_VARARGS, NULL},
+	 { "FieldInterface_getAccessType", _wrap_FieldInterface_getAccessType, METH_VARARGS, NULL},
 	 { "FieldInterface_setAccess", _wrap_FieldInterface_setAccess, METH_VARARGS, NULL},
-	 { "FieldInterface_getModifiedWrite", _wrap_FieldInterface_getModifiedWrite, METH_VARARGS, NULL},
+	 { "FieldInterface_getModifiedWriteString", _wrap_FieldInterface_getModifiedWriteString, METH_VARARGS, NULL},
+	 { "FieldInterface_getModifiedWriteValue", _wrap_FieldInterface_getModifiedWriteValue, METH_VARARGS, NULL},
 	 { "FieldInterface_setModifiedWrite", _wrap_FieldInterface_setModifiedWrite, METH_VARARGS, NULL},
+	 { "FieldInterface_getReadActionString", _wrap_FieldInterface_getReadActionString, METH_VARARGS, NULL},
 	 { "FieldInterface_getReadAction", _wrap_FieldInterface_getReadAction, METH_VARARGS, NULL},
 	 { "FieldInterface_setReadAction", _wrap_FieldInterface_setReadAction, METH_VARARGS, NULL},
 	 { "FieldInterface_getTestableValue", _wrap_FieldInterface_getTestableValue, METH_VARARGS, NULL},
 	 { "FieldInterface_getTestableBool", _wrap_FieldInterface_getTestableBool, METH_VARARGS, NULL},
 	 { "FieldInterface_setTestable", _wrap_FieldInterface_setTestable, METH_VARARGS, NULL},
+	 { "FieldInterface_getTestConstraintString", _wrap_FieldInterface_getTestConstraintString, METH_VARARGS, NULL},
 	 { "FieldInterface_getTestConstraint", _wrap_FieldInterface_getTestConstraint, METH_VARARGS, NULL},
 	 { "FieldInterface_setTestConstraint", _wrap_FieldInterface_setTestConstraint, METH_VARARGS, NULL},
 	 { "FieldInterface_getIsPresentValue", _wrap_FieldInterface_getIsPresentValue, METH_VARARGS, NULL},
@@ -28154,6 +29561,23 @@ static PyMethodDef SwigMethods[] = {
 	 { "FieldInterface_getPasteRowCount", _wrap_FieldInterface_getPasteRowCount, METH_O, NULL},
 	 { "FieldInterface_getExpressionsInSelectedFields", _wrap_FieldInterface_getExpressionsInSelectedFields, METH_VARARGS, NULL},
 	 { "FieldInterface_getSubInterface", _wrap_FieldInterface_getSubInterface, METH_O, NULL},
+	 { "FieldInterface_hasWriteConstraint", _wrap_FieldInterface_hasWriteConstraint, METH_VARARGS, NULL},
+	 { "FieldInterface_getWriteConstraint", _wrap_FieldInterface_getWriteConstraint, METH_VARARGS, NULL},
+	 { "FieldInterface_setWriteConstraint", _wrap_FieldInterface_setWriteConstraint, METH_VARARGS, NULL},
+	 { "FieldInterface_getWriteConstraintMinimumValue", _wrap_FieldInterface_getWriteConstraintMinimumValue, METH_VARARGS, NULL},
+	 { "FieldInterface_getWriteConstraintMinimumFormattedExpression", _wrap_FieldInterface_getWriteConstraintMinimumFormattedExpression, METH_VARARGS, NULL},
+	 { "FieldInterface_getWriteConstraintMinimumExpression", _wrap_FieldInterface_getWriteConstraintMinimumExpression, METH_VARARGS, NULL},
+	 { "FieldInterface_setWriteConstraintMinimum", _wrap_FieldInterface_setWriteConstraintMinimum, METH_VARARGS, NULL},
+	 { "FieldInterface_getWriteConstraintMaximumValue", _wrap_FieldInterface_getWriteConstraintMaximumValue, METH_VARARGS, NULL},
+	 { "FieldInterface_getWriteConstraintMaximumFormattedExpression", _wrap_FieldInterface_getWriteConstraintMaximumFormattedExpression, METH_VARARGS, NULL},
+	 { "FieldInterface_getWriteConstraintMaximumExpression", _wrap_FieldInterface_getWriteConstraintMaximumExpression, METH_VARARGS, NULL},
+	 { "FieldInterface_setWriteConstraintMaximum", _wrap_FieldInterface_setWriteConstraintMaximum, METH_VARARGS, NULL},
+	 { "FieldInterface_getReservedValue", _wrap_FieldInterface_getReservedValue, METH_VARARGS, NULL},
+	 { "FieldInterface_getReservedFormattedExpression", _wrap_FieldInterface_getReservedFormattedExpression, METH_VARARGS, NULL},
+	 { "FieldInterface_getReservedExpression", _wrap_FieldInterface_getReservedExpression, METH_VARARGS, NULL},
+	 { "FieldInterface_setReserved", _wrap_FieldInterface_setReserved, METH_VARARGS, NULL},
+	 { "FieldInterface_getID", _wrap_FieldInterface_getID, METH_VARARGS, NULL},
+	 { "FieldInterface_setID", _wrap_FieldInterface_setID, METH_VARARGS, NULL},
 	 { "FieldInterface_swigregister", FieldInterface_swigregister, METH_O, NULL},
 	 { "FieldInterface_swiginit", FieldInterface_swiginit, METH_VARARGS, NULL},
 	 { "new_ResetInterface", _wrap_new_ResetInterface, METH_VARARGS, NULL},
@@ -28253,9 +29677,14 @@ static void *_p_RegisterInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSE
 static void *_p_FieldInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((NameGroupInterface *)  ((FieldInterface *) x));
 }
+static swig_type_info _swigt__p_AccessTypes__Access = {"_p_AccessTypes__Access", "AccessTypes::Access *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_AddressBlockInterface = {"_p_AddressBlockInterface", "AddressBlockInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_CommonInterface = {"_p_CommonInterface", "CommonInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_FieldInterface = {"_p_FieldInterface", "FieldInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_General__ModifiedWrite = {"_p_General__ModifiedWrite", "General::ModifiedWrite *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_General__ReadAction = {"_p_General__ReadAction", "General::ReadAction *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_General__TestConstraint = {"_p_General__TestConstraint", "General::TestConstraint *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_General__Usage = {"_p_General__Usage", "General::Usage *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MemoryMap = {"_p_MemoryMap", "MemoryMap *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MemoryMapInterface = {"_p_MemoryMapInterface", "MemoryMapInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MemoryRemap = {"_p_MemoryRemap", "MemoryRemap *", 0, 0, (void*)0, 0};
@@ -28298,9 +29727,14 @@ static swig_type_info _swigt__p_swig__SwigPyIterator = {"_p_swig__SwigPyIterator
 static swig_type_info _swigt__p_value_type = {"_p_value_type", "value_type *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
+  &_swigt__p_AccessTypes__Access,
   &_swigt__p_AddressBlockInterface,
   &_swigt__p_CommonInterface,
   &_swigt__p_FieldInterface,
+  &_swigt__p_General__ModifiedWrite,
+  &_swigt__p_General__ReadAction,
+  &_swigt__p_General__TestConstraint,
+  &_swigt__p_General__Usage,
   &_swigt__p_MemoryMap,
   &_swigt__p_MemoryMapInterface,
   &_swigt__p_MemoryRemap,
@@ -28343,9 +29777,14 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_value_type,
 };
 
+static swig_cast_info _swigc__p_AccessTypes__Access[] = {  {&_swigt__p_AccessTypes__Access, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AddressBlockInterface[] = {  {&_swigt__p_AddressBlockInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_CommonInterface, 0, 0, 0},  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_FieldInterface[] = {  {&_swigt__p_FieldInterface, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_General__ModifiedWrite[] = {  {&_swigt__p_General__ModifiedWrite, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_General__ReadAction[] = {  {&_swigt__p_General__ReadAction, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_General__TestConstraint[] = {  {&_swigt__p_General__TestConstraint, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_General__Usage[] = {  {&_swigt__p_General__Usage, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MemoryMap[] = {  {&_swigt__p_MemoryMap, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MemoryMapInterface[] = {  {&_swigt__p_MemoryMapInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MemoryRemap[] = {  {&_swigt__p_MemoryRemap, 0, 0, 0},{0, 0, 0, 0}};
@@ -28388,9 +29827,14 @@ static swig_cast_info _swigc__p_swig__SwigPyIterator[] = {  {&_swigt__p_swig__Sw
 static swig_cast_info _swigc__p_value_type[] = {  {&_swigt__p_value_type, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
+  _swigc__p_AccessTypes__Access,
   _swigc__p_AddressBlockInterface,
   _swigc__p_CommonInterface,
   _swigc__p_FieldInterface,
+  _swigc__p_General__ModifiedWrite,
+  _swigc__p_General__ReadAction,
+  _swigc__p_General__TestConstraint,
+  _swigc__p_General__Usage,
   _swigc__p_MemoryMap,
   _swigc__p_MemoryMapInterface,
   _swigc__p_MemoryRemap,

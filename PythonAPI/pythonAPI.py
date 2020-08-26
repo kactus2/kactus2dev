@@ -1080,11 +1080,17 @@ class AddressBlockInterface(ParameterizableInterface, NameGroupInterface):
     def setWidth(self, blockName, newWidth):
         return _pythonAPI.AddressBlockInterface_setWidth(self, blockName, newWidth)
 
+    def getUsageString(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getUsageString(self, blockName)
+
     def getUsage(self, blockName):
         return _pythonAPI.AddressBlockInterface_getUsage(self, blockName)
 
     def setUsage(self, blockName, newUsage):
         return _pythonAPI.AddressBlockInterface_setUsage(self, blockName, newUsage)
+
+    def getAccessString(self, blockName):
+        return _pythonAPI.AddressBlockInterface_getAccessString(self, blockName)
 
     def getAccess(self, blockName):
         return _pythonAPI.AddressBlockInterface_getAccess(self, blockName)
@@ -1095,8 +1101,8 @@ class AddressBlockInterface(ParameterizableInterface, NameGroupInterface):
     def getVolatile(self, blockName):
         return _pythonAPI.AddressBlockInterface_getVolatile(self, blockName)
 
-    def setVolatile(self, blockName, newVolatile):
-        return _pythonAPI.AddressBlockInterface_setVolatile(self, blockName, newVolatile)
+    def setVolatile(self, *args):
+        return _pythonAPI.AddressBlockInterface_setVolatile(self, *args)
 
     def getAllReferencesToIdInItem(self, itemName, valueID):
         return _pythonAPI.AddressBlockInterface_getAllReferencesToIdInItem(self, itemName, valueID)
@@ -1145,6 +1151,9 @@ class AddressBlockInterface(ParameterizableInterface, NameGroupInterface):
 
     def getSubInterface(self):
         return _pythonAPI.AddressBlockInterface_getSubInterface(self)
+
+    def hasRegisters(self, blockName):
+        return _pythonAPI.AddressBlockInterface_hasRegisters(self, blockName)
 
 # Register AddressBlockInterface in _pythonAPI:
 _pythonAPI.AddressBlockInterface_swigregister(AddressBlockInterface)
@@ -1240,6 +1249,9 @@ class RegisterInterface(ParameterizableInterface, NameGroupInterface):
 
     def setVolatile(self, registerName, newVolatile):
         return _pythonAPI.RegisterInterface_setVolatile(self, registerName, newVolatile)
+
+    def getAccessString(self, registerName):
+        return _pythonAPI.RegisterInterface_getAccessString(self, registerName)
 
     def getAccess(self, registerName):
         return _pythonAPI.RegisterInterface_getAccess(self, registerName)
@@ -1363,17 +1375,26 @@ class FieldInterface(ParameterizableInterface, NameGroupInterface):
     def setVolatile(self, fieldName, newVolatile):
         return _pythonAPI.FieldInterface_setVolatile(self, fieldName, newVolatile)
 
-    def getAccess(self, fieldName):
-        return _pythonAPI.FieldInterface_getAccess(self, fieldName)
+    def getAccessString(self, fieldName):
+        return _pythonAPI.FieldInterface_getAccessString(self, fieldName)
+
+    def getAccessType(self, fieldName):
+        return _pythonAPI.FieldInterface_getAccessType(self, fieldName)
 
     def setAccess(self, fieldName, newAccess):
         return _pythonAPI.FieldInterface_setAccess(self, fieldName, newAccess)
 
-    def getModifiedWrite(self, fieldName):
-        return _pythonAPI.FieldInterface_getModifiedWrite(self, fieldName)
+    def getModifiedWriteString(self, fieldName):
+        return _pythonAPI.FieldInterface_getModifiedWriteString(self, fieldName)
+
+    def getModifiedWriteValue(self, fieldName):
+        return _pythonAPI.FieldInterface_getModifiedWriteValue(self, fieldName)
 
     def setModifiedWrite(self, fieldName, newModifiedWrite):
         return _pythonAPI.FieldInterface_setModifiedWrite(self, fieldName, newModifiedWrite)
+
+    def getReadActionString(self, fieldName):
+        return _pythonAPI.FieldInterface_getReadActionString(self, fieldName)
 
     def getReadAction(self, fieldName):
         return _pythonAPI.FieldInterface_getReadAction(self, fieldName)
@@ -1389,6 +1410,9 @@ class FieldInterface(ParameterizableInterface, NameGroupInterface):
 
     def setTestable(self, fieldName, newTestable):
         return _pythonAPI.FieldInterface_setTestable(self, fieldName, newTestable)
+
+    def getTestConstraintString(self, fieldName):
+        return _pythonAPI.FieldInterface_getTestConstraintString(self, fieldName)
 
     def getTestConstraint(self, fieldName):
         return _pythonAPI.FieldInterface_getTestConstraint(self, fieldName)
@@ -1452,6 +1476,57 @@ class FieldInterface(ParameterizableInterface, NameGroupInterface):
 
     def getSubInterface(self):
         return _pythonAPI.FieldInterface_getSubInterface(self)
+
+    def hasWriteConstraint(self, fieldName):
+        return _pythonAPI.FieldInterface_hasWriteConstraint(self, fieldName)
+
+    def getWriteConstraint(self, fieldName):
+        return _pythonAPI.FieldInterface_getWriteConstraint(self, fieldName)
+
+    def setWriteConstraint(self, fieldName, newConstraintText):
+        return _pythonAPI.FieldInterface_setWriteConstraint(self, fieldName, newConstraintText)
+
+    def getWriteConstraintMinimumValue(self, fieldName, baseNumber=0):
+        return _pythonAPI.FieldInterface_getWriteConstraintMinimumValue(self, fieldName, baseNumber)
+
+    def getWriteConstraintMinimumFormattedExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getWriteConstraintMinimumFormattedExpression(self, fieldName)
+
+    def getWriteConstraintMinimumExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getWriteConstraintMinimumExpression(self, fieldName)
+
+    def setWriteConstraintMinimum(self, fieldName, newWriteConstraintMinimum):
+        return _pythonAPI.FieldInterface_setWriteConstraintMinimum(self, fieldName, newWriteConstraintMinimum)
+
+    def getWriteConstraintMaximumValue(self, fieldName, baseNumber=0):
+        return _pythonAPI.FieldInterface_getWriteConstraintMaximumValue(self, fieldName, baseNumber)
+
+    def getWriteConstraintMaximumFormattedExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getWriteConstraintMaximumFormattedExpression(self, fieldName)
+
+    def getWriteConstraintMaximumExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getWriteConstraintMaximumExpression(self, fieldName)
+
+    def setWriteConstraintMaximum(self, fieldName, newWriteConstraintMaximum):
+        return _pythonAPI.FieldInterface_setWriteConstraintMaximum(self, fieldName, newWriteConstraintMaximum)
+
+    def getReservedValue(self, fieldName, baseNumber=0):
+        return _pythonAPI.FieldInterface_getReservedValue(self, fieldName, baseNumber)
+
+    def getReservedFormattedExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getReservedFormattedExpression(self, fieldName)
+
+    def getReservedExpression(self, fieldName):
+        return _pythonAPI.FieldInterface_getReservedExpression(self, fieldName)
+
+    def setReserved(self, fieldName, newReserved):
+        return _pythonAPI.FieldInterface_setReserved(self, fieldName, newReserved)
+
+    def getID(self, fieldName):
+        return _pythonAPI.FieldInterface_getID(self, fieldName)
+
+    def setID(self, fieldName, newID):
+        return _pythonAPI.FieldInterface_setID(self, fieldName, newID)
 
 # Register FieldInterface in _pythonAPI:
 _pythonAPI.FieldInterface_swigregister(FieldInterface)

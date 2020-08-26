@@ -15,23 +15,24 @@
 
 #include <IPXACTmodels/Component/File.h>
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+
 #include <QLabel>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: filegeneraleditor::FileGeneralEditor()
 //-----------------------------------------------------------------------------
-FileGeneralEditor::FileGeneralEditor(QWidget *parent, QSharedPointer<File> file):
+FileGeneralEditor::FileGeneralEditor(QWidget *parent, std::string const& fileName, FileInterface* fileInterface):
 QGroupBox(tr("General options"), parent), 
-file_(file),
+fileName_(fileName),
 logicalName_(this), 
 logicalDefault_(tr("Generators can override logical name"), this),
 structuralFile_(tr("File is structural RTL"), this),
 includeFile_(tr("File is include file"), this),
-externalDec_(tr("File contains external declarations"), this)
+externalDec_(tr("File contains external declarations"), this),
+fileInterface_(fileInterface)
 {
-	Q_ASSERT_X(file_, "FileGeneralEditor constructor", "Null File-pointer given for constructor");
-
 	QLabel* logicNameLabel = new QLabel(tr("Logical name:"), this);
 	logicNameLabel->setToolTip(tr("Logical name for the file or directory.\n"
 		"For example VHDL library name for a vhdl-file"));
@@ -59,24 +60,16 @@ externalDec_(tr("File contains external declarations"), this)
 }
 
 //-----------------------------------------------------------------------------
-// Function: filegeneraleditor::~FileGeneralEditor()
-//-----------------------------------------------------------------------------
-FileGeneralEditor::~FileGeneralEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: filegeneraleditor::refresh()
 //-----------------------------------------------------------------------------
 void FileGeneralEditor::refresh()
 {
-	logicalName_.setText(file_->getLogicalName());
+    logicalName_.setText(QString::fromStdString(fileInterface_->getLogicalName(fileName_)));
 
-    logicalDefault_.setChecked(file_->isLogicalNameDefault());
-    structuralFile_.setChecked(file_->isStructural());
-    includeFile_.setChecked(file_->isIncludeFile());
-    externalDec_.setChecked(file_->hasExternalDeclarations());
+    logicalDefault_.setChecked(fileInterface_->isLogicalNameDefault(fileName_));
+    structuralFile_.setChecked(fileInterface_->isStructural(fileName_));
+    includeFile_.setChecked(fileInterface_->isIncludeFile(fileName_));
+    externalDec_.setChecked(fileInterface_->hasExternalDeclarations(fileName_));
 }
 
 //-----------------------------------------------------------------------------
@@ -84,8 +77,9 @@ void FileGeneralEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileGeneralEditor::onLogicalNameChanged()
 {
-	file_->setLogicalName(logicalName_.text());
-	file_->setLogicalNameDefault(logicalDefault_.isChecked());
+    fileInterface_->setLogicalName(fileName_, logicalName_.text().toStdString());
+    fileInterface_->setLogicalNameDefault(fileName_, logicalDefault_.isChecked());
+
 	emit contentChanged();
 }
 
@@ -94,7 +88,7 @@ void FileGeneralEditor::onLogicalNameChanged()
 //-----------------------------------------------------------------------------
 void FileGeneralEditor::onStructuralFileChanged()
 {
-    file_->setStructural(structuralFile_.isChecked());
+    fileInterface_->setStructural(fileName_, structuralFile_.isChecked());
     emit contentChanged();
 }
 
@@ -103,8 +97,8 @@ void FileGeneralEditor::onStructuralFileChanged()
 //-----------------------------------------------------------------------------
 void FileGeneralEditor::onIncludeFileChanged()
 {
-	file_->setIncludeFile(includeFile_.isChecked());
-	emit contentChanged();
+    fileInterface_->setIncludeFile(fileName_, includeFile_.isChecked());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,6 +106,6 @@ void FileGeneralEditor::onIncludeFileChanged()
 //-----------------------------------------------------------------------------
 void FileGeneralEditor::onExternalDecChanged()
 {
-	file_->setExternalDeclarations(externalDec_.isChecked());
-	emit contentChanged();
+    fileInterface_->setExternalDeclarations(fileName_, externalDec_.isChecked());
+    emit contentChanged();
 }

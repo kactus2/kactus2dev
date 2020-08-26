@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 
 class File;
+class FileInterface;
 
 //-----------------------------------------------------------------------------
 //! FileTypeEditor is used to specify a file type for a file.
@@ -30,13 +31,16 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this widget
-	 *      @param [in] file    Pointer to the file being edited
+	 *      @param [in] parent          Pointer to the owner of this widget
+	 *      @param [in] fileName        Name of the file being edited
+     *      @param [in] fileInterface   Interface for accessing files.
 	 */
-	FileTypeEditor(QWidget *parent, QSharedPointer<File> file);
+    FileTypeEditor(QWidget *parent, std::string const& fileName, FileInterface* fileInterface);
 
-	//! The destructor.
-	virtual ~FileTypeEditor();
+	/*!
+     *  The destructor.
+     */
+	virtual ~FileTypeEditor() = default;
 
 	/*!
      *  Initialize the file type editor.
@@ -70,8 +74,11 @@ private:
 	FileTypeEditor(const FileTypeEditor& other);
 	FileTypeEditor& operator=(const FileTypeEditor& other);
 
-	//! Pointer to the file-model being edited.
-	QSharedPointer<File> file_;
+	//! Name of the file-model being edited.
+    std::string fileName_;
+
+    //! Interface for accessing files.
+    FileInterface* fileInterface_;
 };
 
 #endif // FILETYPEEDITOR_H

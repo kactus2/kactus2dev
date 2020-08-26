@@ -27,6 +27,7 @@ class Component;
 class ExpressionEditor;
 class ParameterFinder;
 class ExpressionParser;
+class FileInterface;
 
 //-----------------------------------------------------------------------------
 //! FileBuildCommand is a group box for editing buildCommand of a file.
@@ -40,18 +41,24 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] file                The file that is being edited.
+	 *      @param [in] fileName            The file that is being edited.
+     *      @param [in] fileInterface       Interface for files.
      *      @param [in] componentPath       The path to the component containing the file.
      *      @param [in] parameterFinder     The used parameter finder.
      *      @param [in] expressionParser    Parser for calculating expressions.
      *      @param [in] parent              The owner of this widget.
 	 */
-    FileBuildCommand(QSharedPointer<File> file, QString const& componentPath,
+    FileBuildCommand(std::string fileName,
+        FileInterface* fileInterface,
+        QString const& componentPath,
         QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser, QWidget *parent);
+        QSharedPointer<ExpressionParser> expressionParser,
+        QWidget *parent);
 
-	//! The destructor.
-	virtual ~FileBuildCommand();
+	/*!
+     *  The destructor.
+     */
+	virtual ~FileBuildCommand() = default;
 
 	/*!
      *  Restore the changes from the model to the editor.
@@ -60,7 +67,9 @@ public:
 
 signals:
 
-	//! Emitted when contents of the widget change.
+	/*!
+     *  Emitted when contents of the widget change.
+     */
 	void contentChanged();
 
     /*!
@@ -79,47 +88,57 @@ signals:
 
 private slots:
 
-	//! Handler for command changes.
+	/*!
+     *  Handler for command changes.
+     */
     void onCommandChanged();
 
-    void updateFileBuildCommand();
-
-    //! Handler for flag changes.
+    /*!
+     *  Handler for flag changes.
+     */
     void onFlagsChanged();
 
-    //! Handler for target changes.
+    /*!
+     *  Handler for target changes.
+     */
     void onTargetChanged();
 
+    /*!
+     *  Handler for changes in the replace default flags.
+     */
     void onReplaceDefaultChanged();
 
+    /*!
+     *  Handler for target browsing.
+     */
     void onBrowseTarget();
 
 private:
 
-	//! No copying. No assignment.
+	/*!
+     *  No copying. No assignment.
+     */
 	FileBuildCommand(const FileBuildCommand& other);
-    void setupLayout();
 
+    /*!
+     *  Equals operator.
+     */
     FileBuildCommand& operator=(const FileBuildCommand& other);
 
     /*!
-     *  Get the formatted value for an expression.
-     *
-     *      @param [in] expression  The selected expression.
-     *
-     *      @return The formatted expression.
+     *  Setup the layout.
      */
-    QString formattedValueFor(QString const& expression) const;
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The file whose build command to edit.
-    QSharedPointer<File> file_;
+    //! Name of the file whose build command is being edited.
+    std::string fileName_;
 
-	//! The file's buildCommand.
-    QSharedPointer<BuildCommand> buildCommand_; 
+    //! Interface for files.
+    FileInterface* fileInterface_;
 
     //! Path to the containing component.
     QString componentPath_;

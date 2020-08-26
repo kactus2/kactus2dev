@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/fileSet/filesetseditor.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -35,17 +36,20 @@ ComponentEditorItem(model, libHandler, component, parent),
 fileSets_(component->getFileSets()),
 expressionParser_(expressionParser),
 fileValidator_(new FileValidator(expressionParser_)),
-fileSetValidator_(new FileSetValidator(fileValidator_, expressionParser_))
+fileSetValidator_(new FileSetValidator(fileValidator_, expressionParser_)),
+fileInterface_(0)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
+    constructFileSetInterface();
+
 	foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
     {
         QSharedPointer<ComponentEditorFileSetItem> fileSetItem(new ComponentEditorFileSetItem(
             fileSet, model, libHandler, component, referenceCounter, parameterFinder, expressionParser_,
-            expressionFormatter, fileSetValidator_, fileValidator_, this));
+            expressionFormatter, fileSetValidator_, fileValidator_, fileInterface_, this));
 
         connect(fileSetItem.data(), SIGNAL(childRemoved(int)),
                 this, SIGNAL(refreshDependencyModel()), Qt::UniqueConnection);
@@ -119,7 +123,7 @@ void ComponentEditorFileSetsItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorFileSetItem> fileSetItem(new ComponentEditorFileSetItem(
         fileSets_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
-        expressionParser_, expressionFormatter_, fileSetValidator_, fileValidator_, this));
+        expressionParser_, expressionFormatter_, fileSetValidator_, fileValidator_, fileInterface_, this));
 
     connect(fileSetItem.data(), SIGNAL(childRemoved(int)),
         this, SIGNAL(refreshDependencyModel()), Qt::UniqueConnection);
@@ -160,4 +164,12 @@ bool ComponentEditorFileSetsItem::isParentFileSet(File* file, const FileSet* fil
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetsItem::constructFileSetInterface()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileSetsItem::constructFileSetInterface()
+{
+    fileInterface_ = new FileInterface(fileValidator_, expressionParser_, expressionFormatter_);
 }

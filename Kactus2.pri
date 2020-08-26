@@ -617,7 +617,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h \
     ./editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h \
     ./editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
     ./editors/ComponentEditor/resetTypes/ResetTypeColumns.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
@@ -853,7 +856,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/ComponentEditor/fileSet/interfaces/FileInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1259,7 +1263,10 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.cpp \
     ./editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.cpp \
     ./editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.cpp \
@@ -1595,5 +1602,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/ComponentEditor/fileSet/interfaces/FileInterface.cpp
 RESOURCES += kactus.qrc

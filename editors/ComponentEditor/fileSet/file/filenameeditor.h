@@ -29,19 +29,23 @@ class FileNameEditor : public QGroupBox
 
 public:
 	
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
-	 *      @param [in] file    Pointer to the file being edited.
-     *      @param [in] parent  Pointer to the owner of this widget     
-	 *
-	*/
-	FileNameEditor(QSharedPointer<File> file, QWidget *parent);
-//     FileNameEditor(QString const& fileName, FileInterface* fileInterface, QWidget *parent);
+	 *      @param [in] fileName        Name of to the file being edited.
+     *      @param [in] fileInterface   Interface for accessing files.
+     *      @param [in] parent          Pointer to the owner of this widget     
+	 */
+    FileNameEditor(std::string const& fileName, FileInterface* fileInterface, QWidget *parent);
 
-	//! The destructor
-	virtual ~FileNameEditor();
+	/*!
+     *  The destructor
+     */
+	virtual ~FileNameEditor() = default;
 
-	//! Refresh the editor.
+	/*!
+     *  Refresh the editor.
+     */
 	void refresh();
 
 signals:
@@ -70,11 +74,11 @@ private:
     //! The editor for description of a file.
     QPlainTextEdit descriptionEditor_;
 
-	//! Pointer to the file being edited.
-	QSharedPointer<File> file_;
-//     QString fileName_;
+	//! Name of the file being edited.
+    std::string fileName_;
 
-//     FileInterface* fileInterface_;
+    //! Interface for accessing files.
+    FileInterface* fileInterface_;
 };
 
 #endif // FILENAMEEDITOR_H

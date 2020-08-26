@@ -21,14 +21,12 @@
 //-----------------------------------------------------------------------------
 // Function: FileNameEditor::FileNameEditor()
 //-----------------------------------------------------------------------------
-FileNameEditor::FileNameEditor(QSharedPointer<File> file, QWidget *parent):
+FileNameEditor::FileNameEditor(std::string const& fileName, FileInterface* fileInterface, QWidget *parent):
 QGroupBox(tr("File name and location"), parent),
-fileNameLabel_(file->name(), this),
-// fileNameLabel_(fileName),
+fileNameLabel_(QString::fromStdString(fileName)),
 descriptionEditor_(this),
-file_(file)
-// fileName_(fileName),
-// fileInterface_(fileInterface)
+fileName_(fileName),
+fileInterface_(fileInterface)
 {
     setMaximumHeight(150);
 
@@ -48,26 +46,16 @@ file_(file)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileNameEditor::~FileNameEditor()
-//-----------------------------------------------------------------------------
-FileNameEditor::~FileNameEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileNameEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileNameEditor::refresh()
 {
-    fileNameLabel_.setText(file_->name());
-//     fileNameLabel_.setText(fileName_);
+    fileNameLabel_.setText(QString::fromStdString(fileName_));
 
     disconnect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 
-    descriptionEditor_.setPlainText(file_->getDescription());
-//     descriptionEditor_.setPlainText(
-//         QString::fromStdString(fileInterface_->getDescription(fileName_.toStdString())));
+    descriptionEditor_.setPlainText(
+        QString::fromStdString(fileInterface_->getDescription(fileName_)));
 
     connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
@@ -77,7 +65,6 @@ void FileNameEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileNameEditor::onDescriptionChanged()
 {
-    file_->setDescription(descriptionEditor_.toPlainText());
-//     fileInterface_->setDescription(fileName_.toStdString(), descriptionEditor_.toPlainText().toStdString());
+    fileInterface_->setDescription(fileName_, descriptionEditor_.toPlainText().toStdString());
     emit contentChanged();
 }
